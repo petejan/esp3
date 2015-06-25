@@ -1,0 +1,49 @@
+title: CR 2014 Night Upper 200m
+main_species: HOK
+voyage: tan1401
+areas: CHAT
+author: Yoann Ladroit
+created: 
+comments: Upper 200m
+MBS_revision: ?
+MBS_filename: ?
+
+number_of_strata: 1
+number_of_transects: 1
+number_of_regions: 3
+
+# Usage summary
+processing_completed: 2015-05-14T12:00:05
+computer: ?
+user: ?
+EchoviewMBS_version: ?
+
+# Stratum Summary
+#snapshot stratum no_transects abscf_mean abscf_sd abscf_wmean abscf_var
+1,nighte,1,3.077381e-05,0.000000e+00,3.077381e-05,NaN
+
+# Transect Summary
+#snapshot stratum transect dist vbscf abscf mean_d pings av_speed start_lat start_lon finish_lat finish_lon
+1,nighte,13,45.5046,8.577354e-08,3.077381e-05,358.780,4689,10.52521,-43.4699,177.9695,-42.7469,177.7320
+
+# Sliced Transect Summary
+#snapshot stratum transect slice_size num_slices {latitude longitude slice_abscf}
+1,nighte,13,500,10,-43.4699,177.9695,0,-43.4016,177.9500,0,-43.3265,177.9220,0,-43.2537,177.8909,0,-43.1826,177.8621,0,-43.1107,177.8335,0,-43.0384,177.8046,0,-42.9679,177.7760,0,-42.8984,177.7550,0,-42.8110,177.7317,6.606286e-06
+
+# Region Summary
+#snapshot stratum transect file region_id ref slice_size good_pings start_d mean_d finish_d av_speed vbscf abscf
+1,nighte,13,tan1401/hull/d0000038,1,s,50,2237,10.135,308.450,200.000,10.73156,2.313295e-07,3.459123e-05
+1,nighte,13,tan1401/hull/d0000039,1,s,50,2262,10.135,375.240,200.000,10.40440,1.877501e-07,2.807470e-05
+1,nighte,13,tan1401/hull/d0000040,1,s,50,179,10.135,765.344,200.000,10.04283,4.417966e-08,6.606286e-06
+
+# Region Summary (abscf by vertical slice)
+#snapshot stratum transect file region_id num_v_slices {transmit_start latitude longitude column_abscf}
+1,nighte,13,tan1401/hull/d0000038,1,5,1,-43.4699,177.9695,4.060974e-05,501,-43.4016,177.9500,2.342585e-05,1001,-43.3265,177.9220,3.470851e-05,1501,-43.2537,177.8909,4.788624e-05,2001,-43.1826,177.8621,1.998805e-05
+1,nighte,13,tan1401/hull/d0000039,1,5,1,-43.1411,177.8453,2.600482e-05,501,-43.0693,177.8172,2.778615e-05,1001,-42.9974,177.7874,4.870424e-05,1501,-42.9277,177.7635,2.212093e-05,2001,-42.8588,177.7443,6.157710e-06
+1,nighte,13,tan1401/hull/d0000040,1,1,1,-42.7911,177.7264,6.606286e-06
+
+# Region vbscf
+#snapshot stratum transect file region_id num_h_slices num_v_slices region_vbscf vbscf_values
+1,nighte,13,tan1401/hull/d0000038,1,3,5,2.313295e-07,3.861338e-07,2.780753e-07,3.239647e-07,4.077228e-07,1.966038e-07,3.390684e-07,1.294730e-07,3.030587e-07,5.027001e-07,1.668443e-07,1.329513e-07,6.910751e-08,7.251804e-08,5.503529e-08,3.899910e-08
+1,nighte,13,tan1401/hull/d0000039,1,3,5,1.877501e-07,2.775644e-07,1.913614e-07,6.927855e-07,2.559001e-07,6.128785e-08,1.782340e-07,1.829880e-07,1.733573e-07,1.273664e-07,4.250863e-08,7.346438e-08,1.843211e-07,1.145177e-07,5.876350e-08,2.060284e-08
+1,nighte,13,tan1401/hull/d0000040,1,3,1,4.417966e-08,9.635058e-08,2.819601e-08,1.921228e-08

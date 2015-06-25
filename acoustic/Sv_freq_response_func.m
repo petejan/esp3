@@ -1,0 +1,91 @@
+function Sv_freq_response_func(main_figure,idx_r,idx_pings)
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+app_path=getappdata(main_figure,'App_path');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+range=layer.Transceivers(idx_freq).Data.Range;
+r_min=nanmin(range(idx_r));
+r_max=nanmax(range(idx_r));
+
+f_vec=[];
+Sv_f=[];
+
+cal_path=app_path.cal;
+cal_path_eba=app_path.cal_eba;
+if isempty(cal_path)
+    cal_path=layer.PathToFile;
+end
+
+if isempty(cal_path_eba)
+    cal_path_eba=layer.PathToFile;
+end
+
+for uui=1:length(layer.Frequencies)
+    if strcmp(layer.Transceivers(uui).Mode,'FM')
+        file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
+                
+        file_cal_eba=[cal_path_eba 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
+        
+        
+        if exist(file_cal_eba,'file')>0
+            cal_eba=load(file_cal_eba);
+            disp('EBA Calibration file loaded.');
+        else
+            cal_eba=[];
+        end
+  
+
+        if exist(file_cal,'file')>0 
+            disp('Calibration file loaded.');
+            cal=load(file_cal);
+        else
+            disp('No calibration file');
+            cal=[];
+        end
+        
+        for kk=1:length(idx_pings)
+            [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),r_min,r_max,cal,cal_eba);
+        end
+        
+        Sv_f=[Sv_f; Sv_f_temp];     
+        f_vec=[f_vec; f_vec_temp(:,1)];
+        
+        
+        
+        clear f_vec_temp Sv_f_temp
+    else
+        fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
+        
+        f_vec=layer.Frequencies;
+        
+        idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'Sv'),1);
+        Sv=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
+        range=layer.Transceivers(uui).Data.Range;
+        [nb_samples,~]=size(Sv);
+
+        [~,idx_r1]=nanmin(abs(range-r_min));
+        [~,idx_r2]=nanmin(abs(range-r_max));
+      
+        idx_r1=nanmax(idx_r1,1);
+        idx_r2=nanmin(idx_r2,nb_samples);
+
+        Sv_f(uui,:)=10*log10(nanmean(10.^(Sv(idx_r1:idx_r2,idx_pings)'/10)));
+    end
+end
+
+
+Sv_f_mean=10*log10(nanmean(10.^(Sv_f'/10)));
+
+figure();
+hold on;
+%subplot(1,3,uui)
+%plot(f_vec/1e3,Sv_f,'b','linewidth',0.2);
+hold on;
+plot(f_vec/1e3,Sv_f_mean,'r','linewidth',2)
+grid on;
+xlabel('kHz')
+ylabel('Sv(dB)')
+
+clear Sv_f f_vec
+end

@@ -1,0 +1,8 @@
+function apply_new_absorption(trans,envdata,alpha)
+    
+    alpha_ori=trans.Params.Absorbtion;
+    
+    [Sp,Sv]=apply_new_absorption(trans.Data,trans.Data.Range,trans.Data.Range,envdata.SoundSpeed,alpha_ori,alpha);
+
+
+end

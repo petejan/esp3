@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Parameter>
+  <Channel ChannelID="WBT 545586-15 ES200-7C" ChannelMode="0" PulseForm="1" FrequencyStart="160000" FrequencyEnd="260000" BandWidth="3088.40027385974" PulseLength="0.002048" SampleInterval="8E-06" TransducerDepth="0" TransmitPower="150" Slope="0.006103515625" />
+</Parameter>

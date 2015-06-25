@@ -1,0 +1,321 @@
+<deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
+  <configuration build-checksum="1171045866" file="E:\Docs\MATLAB\niwa_svn\echo_analysis_obj\EchoAnalysis.prj" location="E:\Docs\MATLAB\niwa_svn\echo_analysis_obj" name="EchoAnalysis" preferred-package-location="E:\Docs\MATLAB\niwa_svn\echo_analysis_obj\EchoAnalysis\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="MATLAB Compiler for Standalone Applications">
+    <param.appname>EchoAnalysis</param.appname>
+    <param.icon>${PROJECT_ROOT}\EchoAnalysis_resources\icon.ico</param.icon>
+    <param.icons>
+      <file>${PROJECT_ROOT}\EchoAnalysis_resources\icon_48.png</file>
+      <file>${PROJECT_ROOT}\EchoAnalysis_resources\icon_32.png</file>
+      <file>${PROJECT_ROOT}\EchoAnalysis_resources\icon_24.png</file>
+      <file>${PROJECT_ROOT}\EchoAnalysis_resources\icon_16.png</file>
+    </param.icons>
+    <param.version>1.0</param.version>
+    <param.authnamewatermark>Yoann Ladroit</param.authnamewatermark>
+    <param.email>yoann.ladroit@niwa.co.nz</param.email>
+    <param.company>NIWA</param.company>
+    <param.summary />
+    <param.description />
+    <param.screenshot>${PROJECT_ROOT}\EchoAnalysis.png</param.screenshot>
+    <param.guid />
+    <param.installpath.string>\NIWA\EchoAnalysis\</param.installpath.string>
+    <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
+    <param.logo>${PROJECT_ROOT}\EchoAnalysis.png</param.logo>
+    <param.install.notes />
+    <param.intermediate>${PROJECT_ROOT}\EchoAnalysis\for_testing</param.intermediate>
+    <param.files.only>${PROJECT_ROOT}\EchoAnalysis\for_redistribution_files_only</param.files.only>
+    <param.output>${PROJECT_ROOT}\EchoAnalysis\for_redistribution</param.output>
+    <param.enable.clean.build>false</param.enable.clean.build>
+    <param.user.defined.mcr.options />
+    <param.embed.ctf>true</param.embed.ctf>
+    <param.server.ctf>${PROJECT_ROOT}\EchoAnalysis\for_testing\.ctf</param.server.ctf>
+    <param.server.readme>${PROJECT_ROOT}\EchoAnalysis\for_testing\readme.txt</param.server.readme>
+    <param.target.type>subtarget.standalone</param.target.type>
+    <param.support.packages />
+    <param.required.mcr.products>
+      <item>35000</item>
+    </param.required.mcr.products>
+    <param.web.mcr>true</param.web.mcr>
+    <param.package.mcr>true</param.package.mcr>
+    <param.no.mcr>false</param.no.mcr>
+    <param.web.mcr.name>MyAppInstaller_web</param.web.mcr.name>
+    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
+    <param.create.log>false</param.create.log>
+    <param.log.file />
+    <unset>
+      <param.version />
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.summary />
+      <param.description />
+      <param.guid />
+      <param.installpath.string />
+      <param.installpath.combo />
+      <param.install.notes />
+      <param.intermediate />
+      <param.files.only />
+      <param.output />
+      <param.enable.clean.build />
+      <param.user.defined.mcr.options />
+      <param.embed.ctf />
+      <param.server.ctf />
+      <param.server.readme />
+      <param.target.type />
+      <param.support.packages />
+      <param.web.mcr />
+      <param.no.mcr />
+      <param.web.mcr.name />
+      <param.package.mcr.name />
+      <param.no.mcr.name />
+      <param.create.log />
+      <param.log.file />
+    </unset>
+    <fileset.main>
+      <file>${PROJECT_ROOT}\EchoAnalysis.m</file>
+    </fileset.main>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\@ac_data_cl\ac_data_cl.m</file>
+      <file>${PROJECT_ROOT}\@ac_data_cl\find_type_idx.m</file>
+      <file>${PROJECT_ROOT}\@ac_data_cl\get_datamat.m</file>
+      <file>${PROJECT_ROOT}\@algo_cl\algo_cl.m</file>
+      <file>${PROJECT_ROOT}\@attitude_nav_cl\attitude_nav_cl.m</file>
+      <file>${PROJECT_ROOT}\@bottom_cl\bottom_cl.m</file>
+      <file>${PROJECT_ROOT}\@config_cl\config_cl.m</file>
+      <file>${PROJECT_ROOT}\@curr_state_disp_cl\curr_state_disp_cl.m</file>
+      <file>${PROJECT_ROOT}\@env_data_cl\env_data_cl.m</file>
+      <file>${PROJECT_ROOT}\@filter_cl\filter_cl.m</file>
+      <file>${PROJECT_ROOT}\@gps_data_cl\gps_data_cl.m</file>
+      <file>${PROJECT_ROOT}\@gps_data_cl\resample_gps_data.m</file>
+      <file>${PROJECT_ROOT}\@layer_cl\copy_algo_across.m</file>
+      <file>${PROJECT_ROOT}\@layer_cl\find_freq_idx.m</file>
+      <file>${PROJECT_ROOT}\@layer_cl\get.m</file>
+      <file>${PROJECT_ROOT}\@layer_cl\layer_cl.m</file>
+      <file>${PROJECT_ROOT}\@layer_cl\set.m</file>
+      <file>${PROJECT_ROOT}\@mbs_cl\convertBRfromMbs.m</file>
+      <file>${PROJECT_ROOT}\@mbs_cl\mbs_cl.m</file>
+      <file>${PROJECT_ROOT}\@mbs_cl\readMbsScript.m</file>
+      <file>${PROJECT_ROOT}\@mbs_cl\regionSummary.m</file>
+      <file>${PROJECT_ROOT}\@mbs_cl\stratumSummary.m</file>
+      <file>${PROJECT_ROOT}\@mbs_cl\test.m</file>
+      <file>${PROJECT_ROOT}\@params_cl\params_cl.m</file>
+      <file>${PROJECT_ROOT}\@process_cl\find_process_algo.m</file>
+      <file>${PROJECT_ROOT}\@process_cl\process_cl.m</file>
+      <file>${PROJECT_ROOT}\@process_cl\set_process_list.m</file>
+      <file>${PROJECT_ROOT}\@region_cl\integrate_region.m</file>
+      <file>${PROJECT_ROOT}\@region_cl\integrate_region_comp.m</file>
+      <file>${PROJECT_ROOT}\@region_cl\region_cl.m</file>
+      <file>${PROJECT_ROOT}\@sub_ac_data_cl\sub_ac_data_cl.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\apply_absorption.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\apply_cw_cal.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\find_algo_idx.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\get_cal.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\get_pulse_length.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\set_cal.m</file>
+      <file>${PROJECT_ROOT}\@transceiver_cl\transceiver_cl.m</file>
+      <file>${PROJECT_ROOT}\acoustic\angles_to_pos.m</file>
+      <file>${PROJECT_ROOT}\acoustic\convert_power.m</file>
+      <file>${PROJECT_ROOT}\acoustic\processSv_f_r.m</file>
+      <file>${PROJECT_ROOT}\acoustic\processTS_f.m</file>
+      <file>${PROJECT_ROOT}\acoustic\simradAnglesToSpherical.m</file>
+      <file>${PROJECT_ROOT}\acoustic\simradBeamCompensation.m</file>
+      <file>${PROJECT_ROOT}\acoustic\spherets.m</file>
+      <file>${PROJECT_ROOT}\acoustic\sw_absorption.m</file>
+      <file>${PROJECT_ROOT}\algo\bad_transmit\analyse_ringdown.m</file>
+      <file>${PROJECT_ROOT}\algo\bad_transmit\bad_pings_removal_2.m</file>
+      <file>${PROJECT_ROOT}\algo\bottom_detection\detec_bottom_algo_v2.m</file>
+      <file>${PROJECT_ROOT}\algo\calibration\fit_beampattern.m</file>
+      <file>${PROJECT_ROOT}\algo\calibration\process_data.m</file>
+      <file>${PROJECT_ROOT}\algo\init_algos.m</file>
+      <file>${PROJECT_ROOT}\algo\noise_removal\bg_noise_removal_v2.m</file>
+      <file>${PROJECT_ROOT}\algo\school_detection\C2xyz.m</file>
+      <file>${PROJECT_ROOT}\algo\school_detection\find_candidates.m</file>
+      <file>${PROJECT_ROOT}\algo\school_detection\link_candidates_v2.m</file>
+      <file>${PROJECT_ROOT}\algo\school_detection\reduce_matrice.m</file>
+      <file>${PROJECT_ROOT}\algo\school_detection\school_detect.m</file>
+      <file>${PROJECT_ROOT}\algo\single_targets\init_st_struct.m</file>
+      <file>${PROJECT_ROOT}\algo\single_targets\single_targets_detection.m</file>
+      <file>${PROJECT_ROOT}\algo\tarck_target\track_targets_angular.m</file>
+      <file>${PROJECT_ROOT}\algo\update_algos.m</file>
+      <file>${PROJECT_ROOT}\display\bad_pings_tab\load_bad_pings_tab.m</file>
+      <file>${PROJECT_ROOT}\display\bad_pings_tab\update_bad_pings_tab.m</file>
+      <file>${PROJECT_ROOT}\display\bottom_tab\load_bottom_tab.m</file>
+      <file>${PROJECT_ROOT}\display\bottom_tab\update_bottom_tab.m</file>
+      <file>${PROJECT_ROOT}\display\calibration\display_cal.m</file>
+      <file>${PROJECT_ROOT}\display\calibration\load_calibration_tab.m</file>
+      <file>${PROJECT_ROOT}\display\common\copy_across.m</file>
+      <file>${PROJECT_ROOT}\display\common\create_pos_algo.m</file>
+      <file>${PROJECT_ROOT}\display\common\hand_region_create.m</file>
+      <file>${PROJECT_ROOT}\display\common\inter_region_create.m</file>
+      <file>${PROJECT_ROOT}\display\common\sync_Sl_ed.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\beamwidth_calibration_curves.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\beamwidth_calibration_curves_func.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\disp_loc.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\edit_bottom.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\freq_response.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\get_icons_cdata.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\iconRead.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\load_cursor_tool.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\mark_bad_transmit.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\reset_mode.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\Sv_freq_response_func.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\toggle_func.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\TS_calibration_curves.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\TS_calibration_curves_func.m</file>
+      <file>${PROJECT_ROOT}\display\cursor_tool\TS_freq_response_func.m</file>
+      <file>${PROJECT_ROOT}\display\denoise_tab\load_denoise_tab.m</file>
+      <file>${PROJECT_ROOT}\display\denoise_tab\update_denoise_tab.m</file>
+      <file>${PROJECT_ROOT}\display\display_tab\choose_freq.m</file>
+      <file>${PROJECT_ROOT}\display\display_tab\choose_type.m</file>
+      <file>${PROJECT_ROOT}\display\display_tab\choose_Xaxes.m</file>
+      <file>${PROJECT_ROOT}\display\display_tab\load_display_tab.m</file>
+      <file>${PROJECT_ROOT}\display\info_panel\display_info.m</file>
+      <file>${PROJECT_ROOT}\display\info_panel\load_info_panel.m</file>
+      <file>${PROJECT_ROOT}\display\info_panel\reset_disp_info.m</file>
+      <file>${PROJECT_ROOT}\display\main\closefcn_clean.m</file>
+      <file>${PROJECT_ROOT}\display\main\display_bottom.m</file>
+      <file>${PROJECT_ROOT}\display\main\display_tracks.m</file>
+      <file>${PROJECT_ROOT}\display\main\initialize_display.m</file>
+      <file>${PROJECT_ROOT}\display\main\keyboard_func.m</file>
+      <file>${PROJECT_ROOT}\display\main\load_axis_panel.m</file>
+      <file>${PROJECT_ROOT}\display\main\set_alpha_map.m</file>
+      <file>${PROJECT_ROOT}\display\main\toggle_disp_regions.m</file>
+      <file>${PROJECT_ROOT}\display\main\update_display.m</file>
+      <file>${PROJECT_ROOT}\display\processing_tab\load_processing_tab.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\create_poly_region_func.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\create_region.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\create_region_func.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\display_region_3D.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\display_regions.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\load_regions_tab.m</file>
+      <file>${PROJECT_ROOT}\display\regions_tab\open_fig_3D.m</file>
+      <file>${PROJECT_ROOT}\display\school_detec_tab\load_school_detect_tab.m</file>
+      <file>${PROJECT_ROOT}\display\school_detec_tab\update_school_detect_tab.m</file>
+      <file>${PROJECT_ROOT}\display\single_target_tab\load_single_target_tab.m</file>
+      <file>${PROJECT_ROOT}\display\single_target_tab\update_single_target_tab.m</file>
+      <file>${PROJECT_ROOT}\display\track_target\load_track_target_tab.m</file>
+      <file>${PROJECT_ROOT}\display\track_target\update_track_target_tab.m</file>
+      <file>${PROJECT_ROOT}\esp2\get_bottom_from_esp2.m</file>
+      <file>${PROJECT_ROOT}\esp2\get_regions_from_esp2.m</file>
+      <file>${PROJECT_ROOT}\export\export_cells.m</file>
+      <file>${PROJECT_ROOT}\export\export_regions.m</file>
+      <file>${PROJECT_ROOT}\export\regions_to_struct.m</file>
+      <file>${PROJECT_ROOT}\fileIO\config_from_ek60.m</file>
+      <file>${PROJECT_ROOT}\fileIO\open_EK60_file.m</file>
+      <file>${PROJECT_ROOT}\fileIO\open_EK60_file_stdalone.m</file>
+      <file>${PROJECT_ROOT}\fileIO\open_EK80_files.m</file>
+      <file>${PROJECT_ROOT}\fileIO\open_file.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\compute_PwSpSv.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\computesPhasesAngles.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\generate_sim_pulse.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\get_nb_samples.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\match_filter_data.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\parseNMEA.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\parseXML.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\read_config_xstruct.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\read_dgHeader.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\read_env_xstruct.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\read_params_xstruct.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\readEK80.m</file>
+      <file>${PROJECT_ROOT}\fileIO\readEK80\reorder_ping.m</file>
+      <file>${PROJECT_ROOT}\flares\nangeomean.m</file>
+      <file>${PROJECT_ROOT}\flares\savingdata.m</file>
+      <file>${PROJECT_ROOT}\flares\savingspine.m</file>
+      <file>${PROJECT_ROOT}\flares\spine.m</file>
+      <file>${PROJECT_ROOT}\general\apply_new_absorption.m</file>
+      <file>${PROJECT_ROOT}\general\create_pos_2.m</file>
+      <file>${PROJECT_ROOT}\general\csv2struct.m</file>
+      <file>${PROJECT_ROOT}\general\resample_data.m</file>
+      <file>${PROJECT_ROOT}\general\struct2csv.m</file>
+      <file>${PROJECT_ROOT}\icons\bad_trans.png</file>
+      <file>${PROJECT_ROOT}\icons\eba_cal.png</file>
+      <file>${PROJECT_ROOT}\icons\edit_bot.png</file>
+      <file>${PROJECT_ROOT}\icons\empty_icon.png</file>
+      <file>${PROJECT_ROOT}\icons\freq_plot.png</file>
+      <file>${PROJECT_ROOT}\icons\pan.png</file>
+      <file>${PROJECT_ROOT}\icons\tool_zoom_in.png</file>
+      <file>${PROJECT_ROOT}\icons\tool_zoom_out.png</file>
+      <file>${PROJECT_ROOT}\icons\ts_cal.png</file>
+      <file>${PROJECT_ROOT}\mapping\deg2utm.m</file>
+      <file>${PROJECT_ROOT}\mapping\utm2degx.m</file>
+      <file>${PROJECT_ROOT}\mbs\getCellMatrix.m</file>
+      <file>${PROJECT_ROOT}\mbs\getCellMatrixSubSet.m</file>
+      <file>${PROJECT_ROOT}\mbs\getRegSpecFromRegString.m</file>
+      <file>${PROJECT_ROOT}\signal_processing\filter2_perso.m</file>
+      <file>${PROJECT_ROOT}\signal_processing\filter_nan.m</file>
+      <file>${PROJECT_ROOT}\signal_processing\find_cluster.m</file>
+      <file>${PROJECT_ROOT}\signal_processing\pdf_perso.m</file>
+      <file>${PROJECT_ROOT}\signal_processing\sliding_pdf.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\inpoly.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_AllocateData.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_AllocateSampledata.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_GetSampleCount.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_ParseNMEAstring.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_ReadConfigHeader.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_ReadDgHeader.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_ReadHeader.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_ReadSampledata.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\readEKRaw_ReadTransceiverConfig.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\private\vdist.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\readEKBot.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\readEKRaw.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\readEKRaw_ConvertAngles.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\echolab\readEKRaw\readEKRaw_GetCalParms.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\get_ifile_info.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\get_tempname.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\getCVSRepository.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\getDataRootDir.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\getdf.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\load_bad_transmits.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\esp2\load_bottom_file.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\extras\subplot1.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_coord.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_grid.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_gshhs_h.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_hatch.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_ll2xy.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_lldist.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_plot.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_proj.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\m_xy2ll.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\clabel.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\clabel.m.OLD</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mc_coords.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mc_ellips.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mp_azim.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mp_conic.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mp_cyl.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mp_omerc.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mp_tmerc.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mp_utm.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mu_coast.m</file>
+      <file>E:\Docs\MATLAB\niwa_svn\m_map\private\mu_util.m</file>
+    </fileset.resources>
+    <fileset.package />
+    <build-deliverables>
+      <file location="${PROJECT_ROOT}\EchoAnalysis\for_testing" name="readme.txt" optional="true">E:\Docs\MATLAB\niwa_svn\echo_analysis_obj\EchoAnalysis\for_testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\EchoAnalysis\for_testing" name="EchoAnalysis.exe" optional="false">E:\Docs\MATLAB\niwa_svn\echo_analysis_obj\EchoAnalysis\for_testing\EchoAnalysis.exe</file>
+      <file location="${PROJECT_ROOT}\EchoAnalysis\for_testing" name="splash.png" optional="false">E:\Docs\MATLAB\niwa_svn\echo_analysis_obj\EchoAnalysis\for_testing\splash.png</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2014b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.1</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

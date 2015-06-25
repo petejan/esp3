@@ -1,0 +1,1 @@
+%                                   caps.m%%   Function to convert to Uppercase%%          Ira Leifer                            1/19/93% function string = caps(str);  function string = caps(str);     i = find( abs(str)>=97 & abs(str)<=122 );string = str;string(i) = str(i)-32;setstr(string);

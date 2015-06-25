@@ -1,0 +1,26 @@
+<Project>
+  <Name>EchoAnalysis</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Untitled</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>ac_data_cl</Name>
+        <Access>Public</Access>
+        <Location left="121" top="73" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">sub_ac_data_cl[] Data</Member>
+        <Member type="Field">cellChar Type</Member>
+        <Member type="Field">double[] Range</Member>
+        <Member type="Field">double[] Number</Member>
+        <Member type="Field">bottom_cl[] Bottom</Member>
+        <Member type="Field">double Absorption</Member>
+        <Member type="Constructor">public ac_data_cl()</Member>
+        <Member type="Method">public void find_type_idx()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships />
+  </ProjectItem>
+</Project>
