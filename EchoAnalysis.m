@@ -2,7 +2,7 @@ function EchoAnalysis(varargin)
 global DEBUG;
 DEBUG=0;
 
-%%%%%%%%%%%%%% main_figure is the handle to the main window of the GUI %%%%
+%%%%%%%%%%%%%% main_figure is the handle to the main window of the App %%%%
 %%%%%%%%%%%%%%
 main_figure=figure('Visible','off',...
     'Units','pixels','Position',[100 100 1280 720],...       %Position and size normalized to the screen size ([left, bottom, width, height])
