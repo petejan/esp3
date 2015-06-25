@@ -2,7 +2,6 @@ function EchoAnalysis(varargin)
 global DEBUG;
 DEBUG=0;
 
-%%%%%%%%%%%%%% main_figure is the handle to the main window of the GUI %%%
 %%%%%%%%%%%%%% main_figure is the handle to the main window of the GUI %%%%
 %%%%%%%%%%%%%%
 main_figure=figure('Visible','off',...
