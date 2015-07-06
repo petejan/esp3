@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part 2: Processing of sphere echoes to yield calibration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function transceiver=process_data(transceiver,envData,idx_peak)
+function transceiver=process_data(transceiver,envData,idx_peak,idx_pings)
 
 % Optional single target and sphere processing parameters:
 %
@@ -92,12 +92,12 @@ phase_athwart = zeros(length(pp),2*Np+1);
 
 for j = 1:length(pp)
     if (Np < pp(j) && (pp(j) + Np) < size(Sp,1))
-        tts(j) = Sp(pp(j), j);
-        along(j) = AlongAngle(pp(j), j);
-        athwart(j) = AcrossAngle(pp(j), j);
-        power(j,:) = Power(pp(j)-Np:pp(j)+Np, j);
-        phase_along(j,:) = AlongPhi(pp(j)-Np:pp(j)+Np, j);
-        phase_athwart(j,:) = AcrossPhi(pp(j)-Np:pp(j)+Np, j);
+        tts(j) = Sp(pp(j), idx_pings(j));
+        along(j) = AlongAngle(pp(j), idx_pings(j));
+        athwart(j) = AcrossAngle(pp(j), idx_pings(j));
+        power(j,:) = Power(pp(j)-Np:pp(j)+Np, idx_pings(j));
+        phase_along(j,:) = AlongPhi(pp(j)-Np:pp(j)+Np, idx_pings(j));
+        phase_athwart(j,:) = AcrossPhi(pp(j)-Np:pp(j)+Np, idx_pings(j));
         range(j) = pp(j);
     end
 end
@@ -302,7 +302,7 @@ for k=1:length(p.onAxisMethod)
     elseif strcmp(p.onAxisMethod{k}, 'mean')
         outby(k) = data.cal.sphere_ts - mean_ts_on_axis;
         old_cal=transceiver.get_cal();
-        new_cal.Gain=old_cal.Gain+outby(k);
+        new_cal.Gain=old_cal.Gain-outby(k)/2;
     elseif strcmp(p.onAxisMethod{k}, 'beam fitting')
         outby(k) = data.cal.sphere_ts - peak_ts;
     end
@@ -317,7 +317,7 @@ for k=1:length(p.onAxisMethod)
     
     disp(['G_o from .raw file is ' num2str(gain) ' dB'])
     disp(' ')
-    disp(['So the calibrated G_o = ' num2str(gain-outby(k)/2) ' dB (' p.onAxisMethod{k} ' method)'])
+    disp(['So the calibrated G_o = ' num2str(old_cal.Gain-outby(k)/2) ' dB (' p.onAxisMethod{k} ' method)'])
     disp(' ')
 end
 

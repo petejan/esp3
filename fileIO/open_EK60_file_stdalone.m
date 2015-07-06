@@ -25,6 +25,13 @@ if ~isequal(Filename_cell, 0)
         catch err2
             [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start ping_end],'GPS', 2,'GPSSource','GPGGA','RawNMEA','True','Frequencies',vec_freq);
         end
+        
+        if strcmp(header.soundername(1:4),'ES70') || strcmp(header.soundername(1:4),'ES60')
+            for ki=1:header.transceivercount
+                data.pings(ki).power=correctES60(data.pings(ki).power,[]);
+            end
+        end
+        
                
         %     curr_gps=1;
         curr_dist=1;

@@ -123,7 +123,6 @@ end
         idx_r=find(ydata<=y_max&ydata>=y_min);
         reset_disp_info(main_figure);
         feval(func,main_figure,idx_r,idx_pings);
-        
 
     end
 
