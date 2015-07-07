@@ -162,6 +162,7 @@ classdef transceiver_cl < handle
             end
         end
         
+        
         function id=new_id(obj,name)
             
             reg_curr=obj.Regions;
