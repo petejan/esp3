@@ -48,7 +48,7 @@ for uui=1:length(layer.Frequencies)
     bad_trans(layer.Transceivers(uui).IdxBad)=1;
     
     idx_r=find(range<=r_max&range>=r_min);
-    idx_pings=double(ping_num);
+    idx_pings=double(ping_num)-double(ping_num(1))+1;
     if isempty(idx_r)
         [~,idx_r]=nanmin(abs(range-r_max));
     end
@@ -81,7 +81,7 @@ for uui=1:length(layer.Frequencies)
     r_mean=nanmean(range(idx_peak));
     range_red=range(idx_r);
     range_red_mat=repmat(range_red,1,size(Sp_red,2));
-    Sp_red(abs(range_red_mat-r_mean)>2)=nan;
+    Sp_red(abs(range_red_mat-r_mean)>10)=nan;
     [~,idx_peak]=nanmax(Sp_red,[],1);
     idx_peak=idx_peak+idx_r(1)-1;
     
@@ -97,7 +97,7 @@ for uui=1:length(layer.Frequencies)
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
     
-    idx_low=(Sp_sph<=-55)|compensation>12|bad_trans|(Sp_sph>-30);
+    idx_low=(Sp_sph<=-60)|compensation>12|bad_trans|(Sp_sph>-30);
     
     
     AlongAngle_sph(idx_low)=[];
@@ -214,7 +214,7 @@ for uui=1:length(layer.Frequencies)
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak);
+        layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings);
     end
 end
 
