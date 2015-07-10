@@ -35,13 +35,15 @@ h_unit=h_units{h_unit_idx};
 active_reg.Cell_h_unit=h_unit;
 
 
-range=double(Transceiver.Data.Range);
-samples=(1:length(range))';
-pings=double(Transceiver.Data.Number);
+% range=double(Transceiver.Data.Range);
+% samples=(1:length(range))';
+% pings=double(Transceiver.Data.Number);
+% idx_r=(samples>=active_reg.Sample_ori&samples<active_reg.Sample_ori+active_reg.BBox_h);
+% idx_pings=(pings>=active_reg.Ping_ori&pings<active_reg.Ping_ori+active_reg.BBox_w);
 
-
-idx_r=(samples>=active_reg.Sample_ori&samples<active_reg.Sample_ori+active_reg.BBox_h);
-idx_pings=(pings>=active_reg.Ping_ori&pings<active_reg.Ping_ori+active_reg.BBox_w);
+idx_r=active_reg.Sample_ori:active_reg.Sample_ori+active_reg.BBox_h-1;
+idx_pings=active_reg.Ping_ori-layer.Transceivers(idx_freq).Data.Number(1)+1:active_reg.Ping_ori+active_reg.BBox_w-layer.Transceivers(idx_freq).Data.Number(1);
+      
 
 active_reg.Cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 active_reg.Cell_w=str2double(get(region_tab_comp.cell_w,'string'));

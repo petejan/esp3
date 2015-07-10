@@ -162,10 +162,11 @@ if ~isempty(list_reg)
     [Lat_spine,Long_spine,depth_mean,~,~,~,~,~]=spine(h,...
         30,TS(:),Sv(:),Lat_t(:),...
         Lon_t(:),Z_t(:));
+    
     figure(1235);
     plot3(Lat_spine,Long_spine,depth_mean,'Marker','o','MarkerFaceColor','k','linewidth',2,'color','k');
     
-    open_fig_3D(main_figure,TS,Sv,Lat_t,Lon_t,X_t,Y_t,Z_t,Mask)
+    %open_fig_3D(main_figure,TS,Sv,Lat_t,Lon_t,X_t,Y_t,Z_t,Mask)
     %         end
     
     
