@@ -22,7 +22,7 @@ ah=axes_panel_comp.main_axes;
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     
 
-    dat=layer.Transceivers(idx_freq).Data.SubData(1).DataMat;
+    dat=layer.Transceivers(idx_freq).Data.get_datamat('Power');
     bot=layer.Transceivers(idx_freq).Bottom;
     [nb_samples,nb_pings]=size(dat);
     

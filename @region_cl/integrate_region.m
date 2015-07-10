@@ -1,11 +1,10 @@
 function integrate_region(region,Transceiver,idx_pings,idx_r)
-[idx_type,found]=find_type_idx(Transceiver.Data,'Sv');
-if found==0
+
+Sv=Transceiver.Data.get_datamat('Sv');
+if isempty(Sv)
     error('No Sv, cannot integrate');
 end
     
-
-
 range=double(Transceiver.Data.Range);
 samples=(1:length(range))';
 dr=nanmean(diff(range));
@@ -22,7 +21,6 @@ if isempty(dist)
     lon=nan(size(time));
 end
 
-Sv=Transceiver.Data.SubData(idx_type).DataMat;
 idx=list_regions_type(Transceiver,'Bad Data');
 
 for i=idx

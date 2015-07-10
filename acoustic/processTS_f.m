@@ -19,14 +19,11 @@ if strcmp(Transceiver.Mode,'FM')
     dr=pulse_length*c/8;
     
     
-    idx_type=find(strcmp(Transceiver.Data.Type,'y'),1);
-    idx_phi_along=find(strcmp(Transceiver.Data.Type,'AlongAngle'),1);
-    idx_phi_across=find(strcmp(Transceiver.Data.Type,'AcrossAngle'),1);
-    y_c=Transceiver.Data.SubData(idx_type).DataMat;
+	y_c=Transceiver.Data.get_datamat('y');
+	AcrossAngle=Transceiver.Data.get_datamat('AlongAngle');
+	AlongAngle=Transceiver.Data.get_datamat('AcrossAngle');
     
-    AcrossAngle=Transceiver.Data.SubData(idx_phi_across).DataMat;
-    AlongAngle=Transceiver.Data.SubData(idx_phi_along).DataMat;
-    
+
     range=Transceiver.Data.Range;
     
     idx_ts=range<=r+dr&range>=r-dr;

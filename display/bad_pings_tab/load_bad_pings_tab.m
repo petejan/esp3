@@ -92,19 +92,16 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 idx_algo_bp=find_algo_idx(layer.Transceivers(idx_freq),'BadPings');
 
 if layer.Transceivers(idx_freq).Algo(idx_algo_bp).Varargin.denoised>0
-    [idx_type,found]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv Denoised');
-    if found==0
-        [idx_type,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv Denoised');
+    if isempty(Sv)
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
     end
 else
-    [idx_type,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 end
 
 
-
-
-
-[Bottom,Double_bottom_region,idx_noise_sector]=feval(layer.Transceivers(idx_freq).Algo(idx_algo_bp).Function,layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat,...
+[Bottom,Double_bottom_region,idx_noise_sector]=feval(layer.Transceivers(idx_freq).Algo(idx_algo_bp).Function,Sv,...
     layer.Transceivers(idx_freq).Data.Range,...
     1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
     layer.Transceivers(idx_freq).Params.PulseLength(1),...

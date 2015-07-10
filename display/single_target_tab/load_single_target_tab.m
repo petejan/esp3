@@ -89,6 +89,7 @@ layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 idx_single_target=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
 
+Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 
 ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
     'Type',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.Type,...
@@ -99,7 +100,7 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
     'MaxBeamComp',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxBeamComp,...
     'MaxStdMinAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
     'MaxStdMajAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle);
-dataMat=nan(size(layer.Transceivers(idx_freq).Data.SubData(1).DataMat));
+dataMat=nan(size(Sv));
 dataMat(ST.idx_target_lin)=ST.TS_comp;
 
 

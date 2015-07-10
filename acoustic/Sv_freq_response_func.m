@@ -59,8 +59,8 @@ for uui=1:length(layer.Frequencies)
         
         f_vec=layer.Frequencies;
         
-        idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'Sv'),1);
-        Sv=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
+        Sv=layer.Transceivers(uui).Data.get_datamat('Sv');
+        
         range=layer.Transceivers(uui).Data.Range;
         [nb_samples,~]=size(Sv);
 

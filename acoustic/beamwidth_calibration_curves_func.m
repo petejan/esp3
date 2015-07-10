@@ -43,14 +43,12 @@ for uui=1:length(layer.Frequencies)
     if isempty(idx_r)
         [~,idx_r]=nanmin(abs(range-r_max));
     end
+
+    Sp=layer.Transceivers(uui).Data.get_datamat('Sp');
+	AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
+    AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
+	
     
-    
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'Sp'),1);
-    Sp=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'AlongAngle'),1);
-    AlongAngle=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'AcrossAngle'),1);
-    AcrossAngle=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
     Freq=(layer.Transceivers(uui).Config.Frequency);
     eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
 

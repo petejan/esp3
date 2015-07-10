@@ -12,7 +12,7 @@ cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
     
-    Sv=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat;
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
     Sv_ori=Sv;
     idx=list_regions_type(Transceiver,'Bad Data');
     

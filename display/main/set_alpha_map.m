@@ -10,27 +10,12 @@ curr_disp=getappdata(hObject,'Curr_disp');
 if found==0
     curr_disp.Freq=layer.Frequencies(idx_freq);
 end
-
-[idx_type,found]=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
-
-if found==0
-    curr_disp.Type=layer.Transceivers(idx_freq).Data.Type{idx_type};
-end
-
-
+idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
 min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay(1);
 
-alpha_map=double(layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat>=min_axis);
+data=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Type);
+alpha_map=double(data>=min_axis);
 
-
-%double_bot=layer.Transceivers(idx_freq).Bottom.Double_bot_mask;
-
-% switch curr_disp.DispBottom
-%     case 'on'
-%         if ~isempty(double_bot)
-%             alpha_map(double_bot)=0.5;
-%         end
-% end
 
 if curr_disp.DispBadTrans
     alpha_map(:,layer.Transceivers(idx_freq).IdxBad)=0.5;

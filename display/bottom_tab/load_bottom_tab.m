@@ -74,20 +74,19 @@ idx_algo_bot=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
 
 if isfield(bottom_tab_comp,'denoised')
     if get(bottom_tab_comp.denoised,'Value')>0
-        [idx_type,found]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv Denoised');
-        if found==0
-           [idx_type,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv Denoised');
+        if isempty(Sv)
+            Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
         end
     else
-        [idx_type,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
     end
 else
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 end
 
-%[~,Np]=get_pulse_length(layer.Transceivers(idx_freq));
 
-[Bottom,Double_bottom_region,~,~,~]=feval(layer.Transceivers(idx_freq).Algo(idx_algo_bot).Function,layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat,...
+[Bottom,Double_bottom_region,~,~,~]=feval(layer.Transceivers(idx_freq).Algo(idx_algo_bot).Function,Sv,...
     layer.Transceivers(idx_freq).Data.Range,...
     1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
     layer.Transceivers(idx_freq).Params.PulseLength(1),...

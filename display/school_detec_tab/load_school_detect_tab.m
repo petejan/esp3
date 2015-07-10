@@ -141,7 +141,7 @@ h_unit=h_units{h_unit_idx};
 cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
-Sv=layer.Transceivers(idx_freq).Data.get_datamat(Type);
+Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 if isempty(Sv)
     Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 end

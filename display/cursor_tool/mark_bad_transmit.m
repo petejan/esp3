@@ -20,7 +20,7 @@ else
     return;
 end
 
-dat=layer.Transceivers(idx_freq).Data.SubData(1).DataMat;
+dat=layer.Transceivers(idx_freq).Data.get_datamat('Power');
 
 range=layer.Transceivers(idx_freq).Data.Range;
 

@@ -69,7 +69,6 @@ layer=getappdata(main_figure,'Layer');
 denoise_tab_comp=getappdata(main_figure,'Denoise_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Power');
 idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
 
 
@@ -101,7 +100,7 @@ if strcmp(Transceiver.Mode,'FM')
 else
     t_eff=pulse_length;
 end
-power=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat;
+power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
 
 
 [power_unoised,Sv_unoised,Sp_unoised,SNR]=feval(layer.Transceivers(idx_freq).Algo(idx_algo).Function,...

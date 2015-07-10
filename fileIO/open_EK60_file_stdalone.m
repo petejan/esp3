@@ -102,7 +102,7 @@ if ~isequal(Filename_cell, 0)
         for n=1:header.transceivercount
             f = calParms(n).frequency;
             c = calParms(n).soundvelocity;
-            t = calParms(n).sampleinterval;
+            t = calParms(n).SampleInterval;
             alpha = double(calParms(n).absorptioncoefficient);
             G = calParms(n).gain;
             phi = calParms(n).equivalentbeamangle;

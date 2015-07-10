@@ -20,12 +20,9 @@ eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
 gain=gains(idx_pulse);
 FreqCenter=(FreqStart+FreqEnd)/2;
 
-idx_type=find(strcmp(Transceiver.Data.Type,'y'),1);
-y_c=Transceiver.Data.SubData(idx_type).DataMat;
-
+y_c=Transceiver.Data.get_datamat('y');
 
 [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));
-
 
 range=Transceiver.Data.Range;
 [nb_samples,nb_pings]=size(y_c);

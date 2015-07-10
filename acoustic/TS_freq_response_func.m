@@ -34,9 +34,8 @@ for uui=idx_sort
         [~,idx_r]=nanmin(abs(range-r_max));
     end
        
-    
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'Sp'),1);
-    Sp=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
+
+    Sp=layer.Transceivers(uui).Data.get_datamat('Sp');
     Sp_red=Sp(idx_r,idx_pings);
     
     [Sp_max,idx_peak]=nanmax(Sp_red,[],1);
@@ -74,11 +73,10 @@ for uui=idx_sort
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         f_vec_save=layer.Frequencies;
+
+        AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
+        AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
         
-        idx_phi_along=find(strcmp(layer.Transceivers(uui).Data.Type,'AlongAngle'),1);
-        idx_phi_across=find(strcmp(layer.Transceivers(uui).Data.Type,'AcrossAngle'),1);
-        AcrossAngle=layer.Transceivers(uui).Data.SubData(idx_phi_across).DataMat;
-        AlongAngle=layer.Transceivers(uui).Data.SubData(idx_phi_along).DataMat;
         BeamWidthAlongship=layer.Transceivers(uui).Config.BeamWidthAlongship;
         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
 

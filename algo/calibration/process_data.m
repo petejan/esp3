@@ -60,18 +60,16 @@ p.onAxisMethod = {'mean','max','beam fitting'}; % choices of 'max', 'mean', or '
 
 % Pick out the peak amplitudes for use later on, and discard the
 % rest. For power keep the 9 samples that surround the peak too.
-idx_type=find(strcmp(transceiver.Data.Type,'Sp'),1);
-Sp=transceiver.Data.SubData(idx_type).DataMat;
-idx_type=find(strcmp(transceiver.Data.Type,'Power'),1);
-Power=transceiver.Data.SubData(idx_type).DataMat;
-idx_type=find(strcmp(transceiver.Data.Type,'AlongAngle'),1);
-AlongAngle=transceiver.Data.SubData(idx_type).DataMat;
-idx_type=find(strcmp(transceiver.Data.Type,'AcrossAngle'),1);
-AcrossAngle=transceiver.Data.SubData(idx_type).DataMat;
-idx_type=find(strcmp(transceiver.Data.Type,'AlongPhi'),1);
-AlongPhi=transceiver.Data.SubData(idx_type).DataMat;
-idx_type=find(strcmp(transceiver.Data.Type,'AcrossPhi'),1);
-AcrossPhi=transceiver.Data.SubData(idx_type).DataMat;
+
+
+Sp=layer.Transceivers(uui).Data.get_datamat('Sp');
+AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
+AcrossPhi=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
+Power=layer.Transceivers(uui).Data.get_datamat('Power');
+AlongPhi=layer.Transceivers(uui).Data.get_datamat('AlongPhi');
+AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossPhi');
+
+
 Freq=(transceiver.Config.Frequency);
 pulselength=(transceiver.Params.PulseLength(1));
 gains=transceiver.Config.Gain;

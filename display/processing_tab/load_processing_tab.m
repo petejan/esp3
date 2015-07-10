@@ -95,8 +95,7 @@ for ii=1:length(Filename)
         
         curr_disp.Freq=process_list(kk).Freq;
         idx_freq=find_freq_idx(layer,curr_disp.Freq);
-        idx_type_pow=find_type_idx(layer.Transceivers(idx_freq).Data,'Power');
-        
+
         curr_disp.Type='Sv';
         setappdata(main_figure,'Curr_disp',curr_disp);
         load_axis_panel(main_figure,0);
@@ -106,7 +105,7 @@ for ii=1:length(Filename)
         [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
         [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
         
-        
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
         
         if noise_rem_algo
             Transceiver=layer.Transceivers(idx_freq);
@@ -135,7 +134,8 @@ for ii=1:length(Filename)
             else
                 t_eff=pulse_length;
             end
-            power=layer.Transceivers(idx_freq).Data.SubData(idx_type_pow).DataMat;
+            power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
+
             
             [power_unoised,Sv_unoised,Sp_unoised,SNR]=feval(process_list(kk).Algo(idx_algo_denoise).Function,...
                 power,...
@@ -158,21 +158,18 @@ for ii=1:length(Filename)
         denoised=noise_rem_algo;
         
         if denoised>0
-            [idx_type_sv,found]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv Denoised');
-            curr_disp.Type='Sv Denoised';
-            if found==0
-                [idx_type_sv,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-                curr_disp.Type='Sv';
+            Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv Denoised');
+            if isempty(Sv)
+                Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
             end
         else
-            [idx_type_sv,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-            curr_disp.Type='Sv';
+            Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
         end
-        
+    
         
         
         if bot_algo&&~bad_trans_algo
-            [Bottom,Double_bottom_region,~,~,~]=feval(process_list(kk).Algo(idx_algo_bot).Function,layer.Transceivers(idx_freq).Data.SubData(idx_type_sv).DataMat,...
+            [Bottom,Double_bottom_region,~,~,~]=feval(process_list(kk).Algo(idx_algo_bot).Function,Sv,...
                 layer.Transceivers(idx_freq).Data.Range,...
                 1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
                 layer.Transceivers(idx_freq).Params.PulseLength(1),...
@@ -193,7 +190,7 @@ for ii=1:length(Filename)
         
         
         if bad_trans_algo
-            [Bottom,Double_bottom_region,idx_noise_sector]=feval(process_list(kk).Algo(idx_algo_bp).Function,layer.Transceivers(idx_freq).Data.SubData(idx_type_sv).DataMat,...
+            [Bottom,Double_bottom_region,idx_noise_sector]=feval(process_list(kk).Algo(idx_algo_bp).Function,Sv,...
                 layer.Transceivers(idx_freq).Data.Range,...
                 1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
                 layer.Transceivers(idx_freq).Params.PulseLength(1),...
@@ -237,7 +234,7 @@ for ii=1:length(Filename)
                 return;
             end
             
-            Sv=layer.Transceivers(idx_freq).Data.SubData(idx_type_sv).DataMat;
+
             
             linked_candidates=feval(process_list(kk).Algo(idx_school_detect).Function,layer.Transceivers(idx_freq),...
 			'Type',curr_disp.Type,...

@@ -53,12 +53,11 @@ for uui=1:length(layer.Frequencies)
         [~,idx_r]=nanmin(abs(range-r_max));
     end
     
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'Sp'),1);
-    Sp=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'AlongAngle'),1);
-    AlongAngle=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
-    idx_type=find(strcmp(layer.Transceivers(uui).Data.Type,'AcrossAngle'),1);
-    AcrossAngle=layer.Transceivers(uui).Data.SubData(idx_type).DataMat;
+    
+    Sp=layer.Transceivers(uui).Data.get_datamat('Sp');
+	AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
+    AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
+	
     Freq=(layer.Transceivers(uui).Config.Frequency); 
     pulselength=(layer.Transceivers(uui).Params.PulseLength(1));
     Np=double(round(pulselength/layer.Transceivers(uui).Params.SampleInterval(1)));

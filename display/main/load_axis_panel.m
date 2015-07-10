@@ -31,6 +31,7 @@ if found==0
     [idx_type,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
     curr_disp.Type='Sv';
 end
+
 set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_type);
 
 ydata=layer.Transceivers(idx_freq).Data.Range;
@@ -63,15 +64,15 @@ end
 
 switch(curr_disp.Type)
     case 'y'
-        data_mat=10*log10(abs(layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat));
+        y_c=layer.Transceivers(idx_freq).Data.get_datamat('y');
+        data_mat=10*log10(abs(y_c));
     case {'Power', 'Power Denoised'}
-        data_mat_lin=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat;
+        data_mat_lin=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Type);
         data_mat_lin(data_mat_lin<=0)=nan;
         data_mat=10*log10(data_mat_lin);
     otherwise
-        data_mat=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat;
+        data_mat=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Type);
 end
-
 
 axes(main_axes);
 switch curr_disp.Xaxes
@@ -120,6 +121,7 @@ end
 
 %colorbar;
 grid on;
+idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
 cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
 
 if ~isempty(cax)

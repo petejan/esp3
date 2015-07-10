@@ -25,18 +25,22 @@ if ~isempty(list_reg)
             Mask=~isnan(active_reg.Sv_reg);
     end
     
+
+    Sv_tot=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+    Sv=Sv_tot(idx_r,idx_pings);
+    
+    Sp_tot=layer.Transceivers(idx_freq).Data.get_datamat('Sp');
+    Sp=Sp_tot(idx_r,idx_pings);
     
     idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sp');
-    Sv=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat(idx_r,idx_pings);
-    
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sp');
-    Sp=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat(idx_r,idx_pings);
-    
     cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'AlongAngle');
-    AlongAngle=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat(idx_r,idx_pings);
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'AcrossAngle');
-    AcrossAngle=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat(idx_r,idx_pings);
+  
+    AlongAngle_tot=layer.Transceivers(idx_freq).Data.get_datamat('AlongAngle');
+    AlongAngle=AlongAngle_tot(idx_r,idx_pings);
+    
+    AcrossAngle_tot=layer.Transceivers(idx_freq).Data.get_datamat('AcrossAngle');
+    AcrossAngle=AcrossAngle_tot(idx_r,idx_pings);
+    
     Range=Range_mat(idx_r,idx_pings);
     
     if isempty(layer.Transceivers(idx_freq).GPSDataPing.Lat) 

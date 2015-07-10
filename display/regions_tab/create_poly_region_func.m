@@ -42,8 +42,7 @@ idx_pings=find(pings>=nanmin(poly_pings)&pings<=nanmax(poly_pings));
 
 sub_y=samples(idx_r);
 sub_x=pings(idx_pings);
-idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-Sv=layer.Transceivers(idx_freq).Data.SubData(idx_type).DataMat;
+Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 Sv(~poly2mask(poly_pings,poly_r,length(samples),length(pings)))=nan;
 
 Sv_reg=Sv(idx_r,idx_pings);
