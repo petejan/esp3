@@ -32,9 +32,9 @@ if ~isempty(list_reg)
     idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sp');
     cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
   
-    AlongAngle=layer.Transceivers(idx_freq).Data.get_subdatamat('alongangle',idx_r,idx_pings);
+    AlongAngle=layer.Transceivers(idx_freq).Data.get_datamat('alongangle',idx_r,idx_pings);
     
-    AcrossAngle=layer.Transceivers(idx_freq).Data.get_subdatamat('acrossangle',idx_r,idx_pings);
+    AcrossAngle=layer.Transceivers(idx_freq).Data.get_datamat('acrossangle',idx_r,idx_pings);)
     
     Range=Range_mat(idx_r,idx_pings);
     

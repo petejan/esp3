@@ -131,7 +131,7 @@ shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
 set(region_tab_comp.shape_type,'value',shape_type_idx);
 
 data_types=get(region_tab_comp.data_type,'string');
-data_type_idx=find(strcmp(reg_curr.Fieldname,data_types));
+data_type_idx=find(strcmp(reg_curr.Type,data_types));
 set(region_tab_comp.data_type,'value',data_type_idx);
 
 refs=get(region_tab_comp.tog_ref,'string');

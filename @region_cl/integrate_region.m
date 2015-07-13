@@ -1,7 +1,8 @@
 function integrate_region(region,Transceiver,idx_pings,idx_r)
 
 Sv=Transceiver.Data.get_datamat('Sv');
-if isempty(Sv)
+
+if nansum(strcmpi(fields(Transceiver.Data.MatfileData),'sv'))==0
     error('No Sv, cannot integrate');
 end
     
