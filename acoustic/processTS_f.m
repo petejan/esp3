@@ -17,24 +17,20 @@ if strcmp(Transceiver.Mode,'FM')
     gain=gains(idx_pulse);
     eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
     dr=pulse_length*c/8;
-    
-    
-	y_c=Transceiver.Data.get_datamat('y');
-	AcrossAngle=Transceiver.Data.get_datamat('AlongAngle');
-	AlongAngle=Transceiver.Data.get_datamat('AcrossAngle');
-    
 
     range=Transceiver.Data.Range;
-    
-    idx_ts=range<=r+dr&range>=r-dr;
+
+
+    idx_ts=find(range<=r+dr&range>=r-dr);
     [~,idx_peak]=nanmin(abs(range-r));
     
-    AcrossAngle_val=AcrossAngle(idx_peak,iPing);
-    AlongAngle_val=AlongAngle(idx_peak,iPing);
-    
    
+    y_c_ts=Transceiver.Data.get_subdatamat('y',idx_ts,iPing);
+	AlongAngle_val=Transceiver.Data.get_subdatamat('AlongAngle',idx_peak,iPing);
+	AcrossAngle_val=Transceiver.Data.get_subdatamat('AcrossAngle',idx_peak,iPing);
+    
     r_ts=range(idx_ts);
-    y_c_ts=y_c(idx_ts,iPing);
+
     [~,idx_max]=nanmax(y_c_ts);
     
     [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));
