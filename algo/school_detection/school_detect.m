@@ -47,10 +47,9 @@ addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
 
 parse(p,Transceiver,varargin{:});
 
-Sv_mat=Transceiver.Data.get_datamat(p.Results.Fieldname);
-if isempty(Sv_mat)
-    Sv_mat=Transceiver.Data.get_datamat('Sv');
-end
+
+Sv_mat=Transceiver.Data.get_datamat('sv');
+
    
 [nb_samples,nb_pings]=size(Sv_mat);
 range=Transceiver.Data.Range;

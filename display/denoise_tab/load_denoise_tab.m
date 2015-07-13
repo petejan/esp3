@@ -119,7 +119,6 @@ sub_ac_data_temp=[sub_ac_data_cl('PowerDenoised') ...
 
 
 layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
-
 layer.Transceivers(idx_freq).Data.MatfileData.powerdenoised=power_unoised;
 layer.Transceivers(idx_freq).Data.MatfileData.spdenoised=Sp_unoised;
 layer.Transceivers(idx_freq).Data.MatfileData.svdenoised=Sv_unoised;
@@ -133,11 +132,11 @@ switch curr_disp.Fieldname
     case 'power'
         curr_disp.Fieldname='powerdenoised';
     otherwise
-        curr_disp.Fieldname='svdenoised';
-        
+        curr_disp.Fieldname='svdenoised';     
 end
+
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
-load_axis_panel(main_figure,0);
+update_display(main_figure,0);
 
 end

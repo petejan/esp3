@@ -71,7 +71,7 @@ if ~isequal(Filename, 0)
         curr_data.power=data.pings(i).power;
         curr_data.y=data.pings(i).y;
         curr_data.acrossphi=data.pings(i).AcrossPhi;
-        curr_data.alonghi=data.pings(i).AlongPhi;
+        curr_data.alongphi=data.pings(i).AlongPhi;
         curr_data.acrossangle=data.pings(i).AcrossAngle;
         curr_data.alongangle=data.pings(i).AlongAngle;
         
@@ -80,13 +80,14 @@ if ~isequal(Filename, 0)
         if ~isdir(fullfile(PathToFile,'echoanalysis'))
             mkdir(fullfile(PathToFile,'echoanalysis'));
         end
+        fileID = unidrnd(2^64);
         if iscell(Filename)
-            name_mat=Filename{1};
+            name_mat=Filename{1}(1:end-5);
         else
-            name_mat=Filename;
+            name_mat=Filename(1:end-5);
         end
             
-        MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(i) '.mat']);
+        MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(fileID) '_' num2str(i) '.mat']);
         
         save(MatFileNames{i},'-struct','curr_data','-v7.3');
         
@@ -183,7 +184,7 @@ if ~isequal(Filename, 0)
         
     end
     
-    layer=layer_cl('Filename',Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
+    layer=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
     
     props=fieldnames(data.env);
     

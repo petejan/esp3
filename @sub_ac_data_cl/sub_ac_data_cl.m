@@ -49,7 +49,16 @@ classdef sub_ac_data_cl < handle
                     obj.Type='SNR';
                 case 'acrossphi'
                     obj.CaxisDisplay=[-180 180];
-                    obj.Type='Phase Across Vessel';
+                    obj.Type='Phase Across';
+                case 'alongphi'
+                    obj.CaxisDisplay=[-180 180];
+                    obj.Type='Phase Along';
+                case 'alongangle'
+                    obj.CaxisDisplay=[];
+                    obj.Type='Angle Along';
+                case 'acrossangle'
+                    obj.CaxisDisplay=[];
+                    obj.Type='Angle Across';
                 otherwise
                     obj.CaxisDisplay=[];
                     obj.Type=obj.Fieldname;

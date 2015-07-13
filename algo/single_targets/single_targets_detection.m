@@ -37,10 +37,8 @@ max_TS=-10;
 
 %Initialize usefule variables
 
-TS=Transceiver.Data.get_datamat(p.Results.Fieldname);
-if isempty(TS)
-    TS=Transceiver.Data.get_datamat('Sp');
-end
+TS=Transceiver.Data.get_datamat('Sp');
+
 [nb_samples,nb_pings]=size(TS);
 mask=zeros(size(TS));
 

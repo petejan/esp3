@@ -147,7 +147,7 @@ if ~isequal(Filename_cell, 0)
         
         freq=nan(1,header.transceivercount);
         
-        
+        fileID = unidrnd(2^64);
         for i =1:header.transceivercount
             
             curr_data.power=10.^(double(data.pings(i).power/10));
@@ -162,13 +162,15 @@ if ~isequal(Filename_cell, 0)
                 mkdir(fullfile(PathToFile,'echoanalysis'));
             end
             
+            
             if iscell(Filename)
-                name_mat=Filename{1};
+                name_mat=Filename{1}(1:end-5);
             else
-                name_mat=Filename;
+                name_mat=Filename(1:end-5);
             end
             
-            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(i) '.mat']);
+            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(fileID) '_' num2str(i) '.mat']);
+            
             save(MatFileNames{i},'-struct','curr_data','-v7.3');
             
             sub_ac_data_temp=[];
@@ -229,7 +231,7 @@ if ~isequal(Filename_cell, 0)
             [transceiver(i).Config,transceiver(i).Params]=config_from_ek60(data.config(i),calParms(i));
         end
         
-        layer_temp(uu)=layer_cl('Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
+        layer_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
         
     end
     if exist('opening_file','var')
