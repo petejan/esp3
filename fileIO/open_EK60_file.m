@@ -27,8 +27,8 @@ if ~isequal(Filename, 0)
     
     curr_disp.Freq=layer.Frequencies(idx_freq);
     
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-    curr_disp.Type=layer.Transceivers(idx_freq).Data.SubData(idx_type).Type;
+    idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'Sv');
+    curr_disp.Fieldname=layer.Transceivers(idx_freq).Data.SubData(idx_field).Fieldname;
     
     setappdata(hObject,'Layer',layer);
     setappdata(hObject,'Curr_disp',curr_disp);

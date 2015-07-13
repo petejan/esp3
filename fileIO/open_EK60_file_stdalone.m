@@ -2,14 +2,14 @@
 function  layer=open_EK60_file_stdalone(PathToFile,Filename_cell,read_all,vec_freq,ping_start,ping_end)
 
 if ~isequal(Filename_cell, 0)
-
+    
     if ~iscell(Filename_cell)
         Filename_cell={Filename_cell};
     end
     
     opening_file=msgbox(['Opening file ' Filename_cell '. This box will close when finished...'],'Opening File');
-        hlppos=get(opening_file,'position');
-        set(opening_file,'position',[100 hlppos(2:4)])
+    hlppos=get(opening_file,'position');
+    set(opening_file,'position',[100 hlppos(2:4)])
     
     for uu=1:length(Filename_cell)
         
@@ -32,7 +32,7 @@ if ~isequal(Filename_cell, 0)
             end
         end
         
-               
+        
         %     curr_gps=1;
         curr_dist=1;
         curr_att=1;
@@ -102,7 +102,7 @@ if ~isequal(Filename_cell, 0)
         for n=1:header.transceivercount
             f = calParms(n).frequency;
             c = calParms(n).soundvelocity;
-            t = calParms(n).SampleInterval;
+            t = calParms(n).sampleinterval;
             alpha = double(calParms(n).absorptioncoefficient);
             G = calParms(n).gain;
             phi = calParms(n).equivalentbeamangle;
@@ -150,13 +150,34 @@ if ~isequal(Filename_cell, 0)
         
         for i =1:header.transceivercount
             
-            sub_ac_data_temp=[sub_ac_data_cl('Power',10.^(double(data.pings(i).power/10)))...
-                sub_ac_data_cl('Sp',double(data.pings(i).Sp)) ...
-                sub_ac_data_cl('Sv',double(data.pings(i).Sv)) ...
-                sub_ac_data_cl('AcrossPhi',double(data.pings(i).athwartship_e)) ...
-                sub_ac_data_cl('AlongPhi',double(data.pings(i).alongship_e)) ...
-                sub_ac_data_cl('AcrossAngle',double(data.pings(i).athwartship)) ...
-                sub_ac_data_cl('AlongAngle',double(data.pings(i).alongship))];
+            curr_data.power=10.^(double(data.pings(i).power/10));
+            curr_data.sp=data.pings(i).Sp;
+            curr_data.sv=data.pings(i).Sv;
+            curr_data.acrossphi=data.pings(i).athwartship_e;
+            curr_data.alongphi=data.pings(i).alongship_e;
+            curr_data.acrossangle=data.pings(i).athwartship;
+            curr_data.alongangle=data.pings(i).alongship;
+            %
+            if ~isdir(fullfile(PathToFile,'echoanalysis'))
+                mkdir(fullfile(PathToFile,'echoanalysis'));
+            end
+            
+            if iscell(Filename)
+                name_mat=Filename{1};
+            else
+                name_mat=Filename;
+            end
+            
+            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(i) '.mat']);
+            save(MatFileNames{i},'-struct','curr_data','-v7.3');
+            
+            sub_ac_data_temp=[];
+            ff=fields(curr_data);
+            for uuu=1:length(ff)
+                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},[nanmin(nanmin(curr_data.(ff{uuu}))) nanmax(nanmax(curr_data.(ff{uuu})))])];
+            end
+            
+            clear curr_data;
             
             r=data.pings(i).range;
             gps_data_ping=resample_gps_data(gps_data,data.pings(i).time);
@@ -178,11 +199,12 @@ if ~isequal(Filename_cell, 0)
             
             algo_vec=init_algos(r);
             
-            
+            curr_matfile=matfile(MatFileNames{i},'writable',true);
             ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
                 'Range',double(data.pings(i).range),...
                 'Time',double(data.pings(i).time),...
-                'Number',double(data.pings(i).number));
+                'Number',double(data.pings(i).number),...
+                'MatfileData',curr_matfile);
             
             if length(Bottom_sim(i,:))~=size(data.pings(i).power,2);
                 Bottom=nan(1,size(data.pings(i).power,2));
@@ -197,7 +219,8 @@ if ~isequal(Filename_cell, 0)
                 'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...
                 'Mode','CW',...
-                'AttitudeNavPing',attitude);
+                'AttitudeNavPing',attitude,...
+                'MatFileName',MatFileNames{i});
             
             
             
@@ -221,5 +244,5 @@ if ~isequal(Filename_cell, 0)
             layer=concatenate_Layer(layer_temp(kk+1),layer);
         end
     end
-
+    
 end

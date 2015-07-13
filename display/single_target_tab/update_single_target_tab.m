@@ -4,8 +4,12 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 single_target_tab_comp=getappdata(main_figure,'Single_target_tab');
 
+
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
+[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
+if found==0
+     return
+end
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo=algo_obj.Varargin;
 

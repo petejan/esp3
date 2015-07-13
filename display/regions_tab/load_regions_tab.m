@@ -131,7 +131,7 @@ shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
 set(region_tab_comp.shape_type,'value',shape_type_idx);
 
 data_types=get(region_tab_comp.data_type,'string');
-data_type_idx=find(strcmp(reg_curr.Type,data_types));
+data_type_idx=find(strcmp(reg_curr.Fieldname,data_types));
 set(region_tab_comp.data_type,'value',data_type_idx);
 
 refs=get(region_tab_comp.tog_ref,'string');
@@ -279,10 +279,10 @@ if ~isempty(list_reg)
     idx_pings=active_reg.Ping_ori-idx_x0:(active_reg.Ping_ori-idx_x0+active_reg.BBox_w-1);
     idx_r=active_reg.Sample_ori:active_reg.Sample_ori+active_reg.BBox_h-1;
     
-    switch(curr_disp.Type)
-        case 'Sp'
+    switch(curr_disp.Fieldname)
+        case 'sp'
             TS_freq_response_func(main_figure,idx_r,idx_pings)
-        case 'Sv'
+        case 'sv'
             Sv_freq_response_func(main_figure,idx_r,idx_pings)
     end
 end

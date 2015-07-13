@@ -77,7 +77,7 @@ if strcmp(src.State,'on')
             set(h,'Enable','on','Direction','out');
         case 'fd'
             set(h,'Enable','off');
-            switch(curr_disp.Type)
+            switch(curr_disp.Fieldname)
                 case {'Sv','Sp'}
                     set(main_figure,'WindowButtonDownFcn',{@freq_response,main_figure});
                 otherwise
@@ -87,7 +87,7 @@ if strcmp(src.State,'on')
         case 'ts_cal'
             set(h,'Enable','off');
             set(h_pan,'Enable','off');
-            switch(curr_disp.Type)
+            switch(curr_disp.Fieldname)
                 case {'Sp','Sv'}
                     set(main_figure,'WindowButtonDownFcn',{@TS_calibration_curves,main_figure});
                 otherwise
@@ -96,7 +96,7 @@ if strcmp(src.State,'on')
         case 'eba_cal'
                         set(h,'Enable','off');
             set(h_pan,'Enable','off');
-            switch(curr_disp.Type)
+            switch(curr_disp.Fieldname)
                 case {'Sp','Sv'}
                     set(main_figure,'WindowButtonDownFcn',{@beamwidth_calibration_curves,main_figure});
                 otherwise
@@ -132,7 +132,7 @@ end
 % function display_freq_response(src,~,main_figure)
 % 
 % curr_disp=getappdata(main_figure,'Curr_disp');  
-% switch(curr_disp.Type)
+% switch(curr_disp.Fieldname)
 %     case 'Sv'
 %         set(main_figure,'WindowButtonDownFcn',{@display_sv_freq_response_v2,main_figure});
 %     case 'Sp'

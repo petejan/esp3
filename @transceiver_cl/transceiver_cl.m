@@ -34,6 +34,7 @@ classdef transceiver_cl < handle
         AttitudeNavPing
         Algo
         Mode
+        MatfileName
     end
     
     
@@ -52,7 +53,8 @@ classdef transceiver_cl < handle
             check_att_class=@(obj) isa(obj,'attitude_nav_cl');
             check_algo_class=@(obj) isa(obj,'algo_cl')||isempty(obj);
             
-            addParameter(p,'Data',ac_data_cl(),check_data_class);
+           
+            addParameter(p,'Data',ac_data_cl,check_data_class);
             addParameter(p,'Bottom',bottom_cl(),check_bottom_class);
             addParameter(p,'IdxBad',[],@(obj)(isnumeric(obj)||islogical(obj)));
             addParameter(p,'ST',init_st_struct(),@isstruct);
@@ -64,15 +66,15 @@ classdef transceiver_cl < handle
             addParameter(p,'GPSDataPing',gps_data_cl(),check_gps_class);
             addParameter(p,'AttitudeNavPing',attitude_nav_cl.empty(),check_att_class);
             addParameter(p,'Algo',[],check_algo_class);
-            addParameter(p,'Mode','CW',@ischar);
+            addParameter(p,'Mode','CW',@ischar); 
+            addParameter(p,'MatfileName',[pwd '/data.mat'],@ischar);
             parse(p,varargin{:});
             
             
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)
-                
+            for i=1:length(props)              
                 obj.(props{i})=results.(props{i});
                 
             end
@@ -90,7 +92,8 @@ classdef transceiver_cl < handle
                      'AttitudeNavPing',concatenate_AttitudeNavPing(trans_1(i).AttitudeNavPing,trans_2(i).AttitudeNavPing),...
                      'Params',trans_1(i).Params,...
                      'Config',trans_1(i).Config,...
-                     'Filters',trans_1(i).Filters);
+                     'Filters',trans_1(i).Filters,...
+                     'MatfileName',trans_1(i).MatfileName);
              end
             else
                 error('Cannot concatenate two files with diff frequencies')

@@ -5,14 +5,14 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 list_reg = list_regions(layer.Transceivers(idx_freq));
-idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
+idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
+cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
     
-    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
     Sv_ori=Sv;
     idx=list_regions_type(Transceiver,'Bad Data');
     

@@ -3,6 +3,7 @@ classdef curr_state_disp_cl <handle
     properties (SetObservable = true)
         Freq
         Type
+        Fieldname
         Xaxes
         Cax
         DispBottom 

@@ -43,7 +43,7 @@ if ~isdeployed
         disp(app_path.data)
     end
     
-    if exist([app_path.data 'data_default.mat'],'file')>0
+    if exist([app_path.data 'data_defaultkhjb.mat'],'file')>0
         load([app_path.data 'data_default.mat']);
         layer_obj=layer;
         %curr_disp_obj=curr_disp;

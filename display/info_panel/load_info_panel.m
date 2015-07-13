@@ -16,9 +16,9 @@ if ~isempty(info_panel_comp)
     
     
     if iscell(layer.Filename)
-        summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',curr_disp.Type,layer.Filename{1},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
+        summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',curr_disp.Fieldname,layer.Filename{1},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
     else
-        summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',curr_disp.Type,layer.Filename,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
+        summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',curr_disp.Fieldname,layer.Filename,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
     end
     
     info_panel_comp.summary=uicontrol(info_panel_comp.info_panel,'Style','Text','String',summary_str,'units','normalized','Position',[0.7 0 0.3 1],'BackgroundColor',[1 1 1]);

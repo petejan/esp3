@@ -10,10 +10,10 @@ curr_disp=getappdata(hObject,'Curr_disp');
 if found==0
     curr_disp.Freq=layer.Frequencies(idx_freq);
 end
-idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
-min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay(1);
+idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(1);
 
-data=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Type);
+data=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Fieldname);
 alpha_map=double(data>=min_axis);
 
 

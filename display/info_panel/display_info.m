@@ -28,7 +28,7 @@ cp = ah.CurrentPoint;
 x=cp(1,1);
 y=cp(1,2);
 
-if x>=x_lim(1)&&x<=x_lim(2)&&y>=y_lim(1)&&y<=y_lim(2)
+if x>=x_lim(1)&&x<=x_lim(2)&&y>=y_lim(1)&&y<=y_lim(2)&&~isempty(cdata)
     [~,idx_ping]=nanmin(abs(xdata-x));
     [~,idx_r]=nanmin(abs(ydata-y));
     xy_string=sprintf('Range: %.2f m\n Ping #:%.0f ',Range(idx_r),Number(idx_ping));
@@ -38,13 +38,13 @@ if x>=x_lim(1)&&x<=x_lim(2)&&y>=y_lim(1)&&y<=y_lim(2)
         pos_string=sprintf('No Navigation Data');  
     end
     time_str=datestr(Time(idx_ping));
-    switch curr_disp.Type
-        case{'AlongAngle','AcrossAngle'}
+    switch lower(deblank(curr_disp.Fieldname))
+        case{'alongangle','acrossangle'}
             val_str=sprintf('Angle: %.2f deg.',cdata(idx_r,idx_ping));
-        case{'AlongPhi','AcrossPhi'}
+        case{'alongphi','acrossphi'}
             val_str=sprintf('Phase: %.2f deg.(phase)',cdata(idx_r,idx_ping));
         otherwise
-            val_str=sprintf('%s: %.2f dB',curr_disp.Type,cdata(idx_r,idx_ping));
+            val_str=sprintf('%s: %.2f dB',curr_disp.Fieldname,cdata(idx_r,idx_ping));
     end
 
     

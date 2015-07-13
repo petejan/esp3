@@ -10,15 +10,14 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
-
+[idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 
 display_tab_comp.display_tab=uitab(option_tab_panel,'Title','Display Option');
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Frequency','units','normalized','Position',[0 0.8 0.2 0.1]);
 display_tab_comp.tog_freq=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',num2str(layer.Frequencies'),'Value',idx_freq,'units','normalized','Position', [0.2 0.8 0.2 0.1],'Callback',{@choose_freq,main_figure});
 
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Data','units','normalized','Position',[0 0.6 0.2 0.1]);
-display_tab_comp.tog_type=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_type,'units','normalized','Position', [0.2 0.6 0.2 0.1],'Callback',{@choose_type,main_figure});
+display_tab_comp.tog_type=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field,'units','normalized','Position', [0.2 0.6 0.2 0.1],'Callback',{@choose_field,main_figure});
 
 if isempty(layer.Transceivers(idx_freq).GPSDataPing)
     Axes_type={'Number','Time'};
@@ -35,7 +34,7 @@ uicontrol(display_tab_comp.display_tab,'Style','Text','String','Axes','units','n
 display_tab_comp.tog_axes=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',Axes_type,'Value',idx_axes,'units','normalized','Position', [0.7 0.8 0.2 0.1],'Callback',{@choose_Xaxes,main_figure});
 
 
-cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
+cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 if isempty(cax)
     cax=[0 1];
 end
@@ -79,8 +78,8 @@ idx_freq=find(layer.Frequencies==curr_disp.Freq);
 if isempty(idx_freq)
     return
 end
-idx_type=find(strcmp(layer.Transceivers(idx_freq).Data.Type,curr_disp.Type),1);
-if isempty(idx_type)
+[idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+if isempty(idx_field)
     return
 end
 
@@ -102,8 +101,8 @@ if isempty(idx_freq)
     return
 end
 
-idx_type=find(strcmp(layer.Transceivers(idx_freq).Data.Type,curr_disp.Type),1);
-if isempty(idx_type)
+[idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+if isempty(idx_field)
     return
 end
 
@@ -128,21 +127,22 @@ idx_freq=find(layer.Frequencies==curr_disp.Freq);
 if isempty(idx_freq)
     return
 end
-idx_type=find(strcmp(layer.Transceivers(idx_freq).Data.Type,curr_disp.Type),1);
-if isempty(idx_type)
+
+[idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+if isempty(idx_field)
     return
 end
 
 cax=str2double(get([display_tab_comp.caxis_down display_tab_comp.caxis_up],'String'));
 
 if cax(2)<cax(1)||isnan(cax(1))||isnan(cax(2))
-    cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
+    cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
     set(display_tab_comp.caxis_up,'String',num2str(cax(2),'%.0f'));
     set(display_tab_comp.caxis_down,'String',num2str(cax(1),'%.0f'));
 end
 curr_disp.Cax=cax;
 
-layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay=[cax(1) cax(2)];
+layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay=[cax(1) cax(2)];
 setappdata(main_figure,'Layer',layer);
 %update_display(main_figure,0);
 load_axis_panel(main_figure,0);

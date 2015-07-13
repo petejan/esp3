@@ -112,22 +112,28 @@ power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
     'VertFilt',round(get(denoise_tab_comp.VertFilt_sl,'Value')*2/c*f_s_sig),...
     'NoiseThr',round(get(denoise_tab_comp.NoiseThr_sl,'Value')));
 
-sub_ac_data_temp=[sub_ac_data_cl('Power Denoised',power_unoised) ...
-    sub_ac_data_cl('Sp Denoised',Sp_unoised) ...
-    sub_ac_data_cl('Sv Denoised',Sv_unoised) ...
-    sub_ac_data_cl('SNR',SNR)];
+sub_ac_data_temp=[sub_ac_data_cl('PowerDenoised') ...
+    sub_ac_data_cl('SpDenoised') ...
+    sub_ac_data_cl('SvDenoised') ...
+    sub_ac_data_cl('SNR')];
+
 
 layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
 
-switch curr_disp.Type
-    case 'Sv'
-        curr_disp.Type='Sv Denoised';
-    case 'Sp'
-        curr_disp.Type='Sp Denoised';
-    case 'Power'
-        curr_disp.Type='Power Denoised';
+layer.Transceivers(idx_freq).Data.MatfileData.powerdenoised=power_unoised;
+layer.Transceivers(idx_freq).Data.MatfileData.spdenoised=Sp_unoised;
+layer.Transceivers(idx_freq).Data.MatfileData.svdenoised=Sv_unoised;
+layer.Transceivers(idx_freq).Data.MatfileData.snr=SNR;
+
+switch curr_disp.Fieldname
+    case 'sv'
+        curr_disp.Fieldname='svdenoised';
+    case 'sp'
+        curr_disp.Fieldname='spdenoised';
+    case 'power'
+        curr_disp.Fieldname='powerdenoised';
     otherwise
-        curr_disp.Type='Sv Denoised';
+        curr_disp.Fieldname='svdenoised';
         
 end
 setappdata(main_figure,'Layer',layer);

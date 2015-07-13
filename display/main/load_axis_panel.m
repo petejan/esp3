@@ -25,14 +25,14 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
 
 
-[idx_type,found]=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
+[idx_field,found]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 
 if found==0
-    [idx_type,~]=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-    curr_disp.Type='Sv';
+    [idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
+    curr_disp.Fieldname='sv';
 end
 
-set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_type);
+set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field);
 
 ydata=layer.Transceivers(idx_freq).Data.Range;
 
@@ -62,16 +62,16 @@ end
 
 
 
-switch(curr_disp.Type)
+switch lower(deblank(curr_disp.Fieldname))
     case 'y'
         y_c=layer.Transceivers(idx_freq).Data.get_datamat('y');
         data_mat=10*log10(abs(y_c));
-    case {'Power', 'Power Denoised'}
-        data_mat_lin=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Type);
+    case {'power','powerdenoised'}
+        data_mat_lin=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Fieldname);
         data_mat_lin(data_mat_lin<=0)=nan;
         data_mat=10*log10(data_mat_lin);
     otherwise
-        data_mat=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Type);
+        data_mat=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Fieldname);
 end
 
 axes(main_axes);
@@ -111,7 +111,7 @@ switch curr_disp.Xaxes
         xlabel('Ping Number')
 end
 
-if new==0
+if new==0 && idx_xlim_min~=idx_xlim_max
     zoom reset
     set(main_axes,'xlim',[xdata(idx_xlim_min) xdata(idx_xlim_max)]);
     set(main_axes,'ylim',y);
@@ -121,7 +121,7 @@ end
 
 %colorbar;
 grid on;
-idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,curr_disp.Type);
+idx_type=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
 
 if ~isempty(cax)

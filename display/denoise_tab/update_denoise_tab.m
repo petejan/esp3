@@ -8,7 +8,11 @@ f_s_sig=round(1/(layer.Transceivers(idx_freq).Params.SampleInterval(1)));
 c=(layer.EnvData.SoundSpeed);
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
+[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
+if found==0
+     return
+end
+
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo_denoise_var=algo_obj.Varargin;
 

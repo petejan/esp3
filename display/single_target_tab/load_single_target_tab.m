@@ -92,7 +92,7 @@ idx_single_target=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
 Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
 
 ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
-    'Type',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.Type,...
+    'Type',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.Fieldname,...
     'TS_threshold',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold,...
     'PLDL',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.PLDL,...
     'MinNormPL',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MinNormPL,...
@@ -103,16 +103,15 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
 dataMat=nan(size(Sv));
 dataMat(ST.idx_target_lin)=ST.TS_comp;
 
+subdata=sub_ac_data_cl('singletarget',[layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold+20]);
 
-subdata=sub_ac_data_cl('Single Target Comp TS',dataMat);
-%idx_sp=find_type_idx(layer.Transceivers(idx_freq).Data,'Sp');
-subdata.CaxisDisplay=[layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold+20];
 layer.Transceivers(idx_freq).Data.add_sub_data(subdata);
 layer.Transceivers(idx_freq).ST=ST;
+layer.Transceivers(idx_freq).Data.MatfileData.singletarget=dataMat;
 
 
 layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
-curr_disp.Type='Single Target Comp TS';
+curr_disp.Fieldname='SingleTargetCompTS';
 
 setappdata(main_figure,'Layer',layer);
     

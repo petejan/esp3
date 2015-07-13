@@ -51,9 +51,9 @@ if found_bp>0
 end
 
 if found_school>0
-    type=layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.Type;
+    Type=layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.Type;
     layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin=struct(...
-        'Type',type,....
+        'Type',field,....
         'Sv_thr',get(school_detect_tab_comp.sv_thr_sl,'Value'),...
         'l_min_can',get(school_detect_tab_comp.l_min_can_sl,'Value'),...
         'h_min_tot',get(school_detect_tab_comp.h_min_tot_sl,'Value'),...
@@ -77,7 +77,7 @@ end
 if found_single>0
     if isfield(bottom_tab_comp,'denoised')
         if get(bottom_tab_comp.denoised,'Value')>0
-            Type='Sp Denoised';
+            Type='SpDenoised';
         else
             Type='Sp';
         end

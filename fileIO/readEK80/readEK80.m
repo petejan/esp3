@@ -19,7 +19,6 @@ addParameter(p,'GPSOnly',true,@islogical);
 
 parse(p,path,filenames,varargin{:});
 
-
 if ~iscell(filenames)
     filenames={filenames};
 end
@@ -96,8 +95,7 @@ for ii=1:length(filenames)
     
     if ii==1
         for i=1:length(data.config)
-            nb_pings(i)=nanmin(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);
-            
+            nb_pings(i)=nanmin(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);            
             data.pings(i).comp_sig_1=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));

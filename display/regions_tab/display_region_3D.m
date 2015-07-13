@@ -26,19 +26,19 @@ if ~isempty(list_reg)
     end
     
 
-    Sv_tot=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+    Sv_tot=layer.Transceivers(idx_freq).Data.get_datamat('sv');
     Sv=Sv_tot(idx_r,idx_pings);
     
-    Sp_tot=layer.Transceivers(idx_freq).Data.get_datamat('Sp');
+    Sp_tot=layer.Transceivers(idx_freq).Data.get_datamat('sp');
     Sp=Sp_tot(idx_r,idx_pings);
     
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sp');
-    cax=layer.Transceivers(idx_freq).Data.SubData(idx_type).CaxisDisplay;
+    idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sp');
+    cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
   
-    AlongAngle_tot=layer.Transceivers(idx_freq).Data.get_datamat('AlongAngle');
+    AlongAngle_tot=layer.Transceivers(idx_freq).Data.get_datamat('alongangle');
     AlongAngle=AlongAngle_tot(idx_r,idx_pings);
     
-    AcrossAngle_tot=layer.Transceivers(idx_freq).Data.get_datamat('AcrossAngle');
+    AcrossAngle_tot=layer.Transceivers(idx_freq).Data.get_datamat('acrossangle');
     AcrossAngle=AcrossAngle_tot(idx_r,idx_pings);
     
     Range=Range_mat(idx_r,idx_pings);

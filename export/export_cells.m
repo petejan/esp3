@@ -7,7 +7,6 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 
-
 data_types=get(region_tab_comp.data_type,'string');
 data_type_idx=get(region_tab_comp.data_type,'value');
 data_type=data_types{data_type_idx};
@@ -70,8 +69,8 @@ end
 
 active_reg=reg_temp;
 sv_disp=active_reg.Output.Sv_mean;
-idx_type=find_type_idx(Transceiver.Data,'Sv');
-cax=Transceiver.Data.SubData(idx_type).CaxisDisplay;
+idx_field=find_field_idx(Transceiver.Data,'sv');
+cax=Transceiver.Data.SubData(idx_field).CaxisDisplay;
 
 
 %sv_disp(sv_disp<cax(1))=nan;

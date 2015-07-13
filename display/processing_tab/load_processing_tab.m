@@ -96,7 +96,7 @@ for ii=1:length(Filename)
         curr_disp.Freq=process_list(kk).Freq;
         idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-        curr_disp.Type='Sv';
+        curr_disp.Fieldname='Sv';
         setappdata(main_figure,'Curr_disp',curr_disp);
         load_axis_panel(main_figure,0);
         
@@ -146,19 +146,25 @@ for ii=1:length(Filename)
                 'VertFilt',process_list(kk).Algo(idx_algo_denoise).Varargin.VertFilt,...
                 'NoiseThr',process_list(kk).Algo(idx_algo_denoise).Varargin.NoiseThr);
             
-            sub_ac_data_temp=[sub_ac_data_cl('Power Denoised',power_unoised) ...
-                sub_ac_data_cl('Sp Denoised',Sp_unoised) ...
-                sub_ac_data_cl('Sv Denoised',Sv_unoised) ...
-                sub_ac_data_cl('SNR',SNR)];
+            sub_ac_data_temp=[sub_ac_data_cl('powerdenoised') ...
+                sub_ac_data_cl('spdenoised') ...
+                sub_ac_data_cl('svdenoised') ...
+                sub_ac_data_cl('snr')];
             
             layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
-            curr_disp.Type='Sv Denoised';
+            
+            layer.Transceivers(idx_freq).Data.MatfileData.PowerDenoised=power_unoised;
+            layer.Transceivers(idx_freq).Data.MatfileData.SpDenoised=Sp_unoised;
+            layer.Transceivers(idx_freq).Data.MatfileData.SvDenoised=Sv_unoised;
+            layer.Transceivers(idx_freq).Data.MatfileData.SNR=SNR;
+            
+            curr_disp.Fieldname='Sv Denoised';
         end
         
         denoised=noise_rem_algo;
         
         if denoised>0
-            Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv Denoised');
+            Sv=layer.Transceivers(idx_freq).Data.get_datamat('SvDenoised');
             if isempty(Sv)
                 Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
             end
@@ -237,7 +243,7 @@ for ii=1:length(Filename)
 
             
             linked_candidates=feval(process_list(kk).Algo(idx_school_detect).Function,layer.Transceivers(idx_freq),...
-			'Type',curr_disp.Type,...
+			'Type',curr_disp.Fieldname,...
                 'Sv_thr',process_list(kk).Algo(idx_school_detect).Varargin.Sv_thr,...
                 'l_min_can',process_list(kk).Algo(idx_school_detect).Varargin.l_min_can,...
                 'h_min_tot',process_list(kk).Algo(idx_school_detect).Varargin.h_min_tot,...

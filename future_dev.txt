@@ -9,4 +9,5 @@ This way each we'll be able to work on several layer at the same time as the mem
 
 A good way to code that will be to create a get_sub_data_mat method in the data_cl class that will return a matrix containing the ask datamat, after having read it from the appropriate .mat file.
 
-The property Datamat in subdata_cl will be replace by the filename in which you can find the data itself, the field in which you have to look for being the Type.
+Done...
+Lots of testing to do as it changes a lot of things... Looks a lot faster to me...

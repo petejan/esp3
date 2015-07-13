@@ -8,7 +8,7 @@ D_2=F2.DecimationFactor;
 filt_1=(F1.Coefficients(1:2:end)+1i*F1.Coefficients(2:2:end));
 filt_2=(F2.Coefficients(1:2:end)+1i*F2.Coefficients(2:2:end));
 
-f_s_sig=round(1/(Params.SampleInterval(1)));
+f_s_sig=round(1/(params.SampleInterval(1)));
 FreqStart=(params.FrequencyStart(1));
 FreqEnd=(params.FrequencyEnd(1));
 ptx=(params.TransmitPower(1));

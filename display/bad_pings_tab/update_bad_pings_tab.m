@@ -5,7 +5,14 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'BadPings');
+
+[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'BadPings');
+if found==0
+     return
+end
+
+
+
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo=algo_obj.Varargin;
 

@@ -27,7 +27,7 @@ if ~isequal(Filename, 0)
     opening_file=msgbox(['Opening file ' Filename '. This box will close when finished...'],'Opening File');
     hlppos=get(opening_file,'position');
     set(opening_file,'position',[100 hlppos(2:4)])
-      
+    
     [header,data]=readEK80(PathToFile,Filename,'PingRange',[ping_start ping_end]);
     
     if ~isstruct(header)
@@ -64,16 +64,40 @@ if ~isequal(Filename, 0)
     
     for i =1:header.transceivercount
         
-        sub_ac_data_temp=[...
-            sub_ac_data_cl('Sp UnMatched',data_ori.pings(i).Sp)...
-            sub_ac_data_cl('Sp',data.pings(i).Sp) ...
-            sub_ac_data_cl('Sv',data.pings(i).Sv) ...
-            sub_ac_data_cl('Power',data.pings(i).power)...
-            sub_ac_data_cl('y',data.pings(i).y)...
-            sub_ac_data_cl('AcrossPhi',data.pings(i).AcrossPhi) ...
-            sub_ac_data_cl('AlongPhi',data.pings(i).AlongPhi) ...
-            sub_ac_data_cl('AcrossAngle',data.pings(i).AcrossAngle) ...
-            sub_ac_data_cl('AlongAngle',data.pings(i).AlongAngle)];
+        
+        curr_data.spunmatched=data_ori.pings(i).Sp;
+        curr_data.sp=data.pings(i).Sp;
+        curr_data.sv=data.pings(i).Sv;
+        curr_data.power=data.pings(i).power;
+        curr_data.y=data.pings(i).y;
+        curr_data.acrossphi=data.pings(i).AcrossPhi;
+        curr_data.alonghi=data.pings(i).AlongPhi;
+        curr_data.acrossangle=data.pings(i).AcrossAngle;
+        curr_data.alongangle=data.pings(i).AlongAngle;
+        
+        %
+        
+        if ~isdir(fullfile(PathToFile,'echoanalysis'))
+            mkdir(fullfile(PathToFile,'echoanalysis'));
+        end
+        if iscell(Filename)
+            name_mat=Filename{1};
+        else
+            name_mat=Filename;
+        end
+            
+        MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(i) '.mat']);
+        
+        save(MatFileNames{i},'-struct','curr_data','-v7.3');
+        
+        
+        
+        sub_ac_data_temp=[];
+        ff=fields(curr_data);
+        for uuu=1:length(ff)
+            sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},[nanmin(nanmin(curr_data.(ff{uuu}))) nanmax(nanmax(curr_data.(ff{uuu})))])];
+        end
+        clear curr_data;
         
         if isfield(data,'gps')
             gps_data_ping=resample_gps_data(gps_data,data.pings(i).time);
@@ -98,11 +122,12 @@ if ~isequal(Filename, 0)
         
         algo_vec=init_algos(r);
         
-              
+        curr_matfile=matfile(MatFileNames{i},'writable',true);
         ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
             'Range',data.pings(i).range,...
             'Time',data.pings(i).time,...
-            'Number',data.pings(i).number);
+            'Number',data.pings(i).number,...
+            'MatfileData',curr_matfile);
         
         
         Bottom=nan(1,size(data.pings(i).power,2));
@@ -114,7 +139,8 @@ if ~isequal(Filename, 0)
             'Algo',algo_vec,...
             'GPSDataPing',gps_data_ping,...
             'Mode',mode{i},...
-            'AttitudeNavPing',attitude);
+            'AttitudeNavPing',attitude,...
+            'MatFileName',MatFileNames{i});
         
         freq(i)=data.config(i).Frequency(1);
         
@@ -173,11 +199,10 @@ if ~isequal(Filename, 0)
     
     curr_disp.Freq=layer.Frequencies(idx_freq);
     
-    idx_type=find_type_idx(layer.Transceivers(idx_freq).Data,'Sv');
-    curr_disp.Type=layer.Transceivers(idx_freq).Data.SubData(idx_type).Type;
+    idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
+    curr_disp.Fieldname=layer.Transceivers(idx_freq).Data.SubData(idx_field).Fieldname;
     
-    
-    
+  
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Curr_disp',curr_disp);
     if exist('opening_file','var')
