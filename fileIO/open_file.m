@@ -96,7 +96,6 @@ else
     return
 end
 
-layer.Transceivers=transceiver_cl.empty();
 setappdata(main_figure,'Layer',layer);
 
 switch ftype

@@ -1,7 +1,7 @@
 function [nSamples,nPings]=get_nb_samples(fid,CIDs)
 
 HEADER_LEN = 12;               
-ping=1;
+ping=0;
 
 
 fPosition=ftell(fid);
@@ -31,22 +31,19 @@ while (nXcvrs > 0)
         sampleCount=fread(fid,1,'int32', 'l');
         
         idx = find(strcmp(deblank(CIDs),deblank(channelID)));
-        nPings(idx) = nPings(idx) + 1;
+       
         
-        if (~isempty(idx)) && (sampleCount > 0) && ...
-                (nPings(idx) >= ping) 
+        if (~isempty(idx)) && (sampleCount > 0) && (nPings(idx) >= ping) 
+             nPings(idx) = nPings(idx) + 1;
             nSamples(idx) = sampleCount;
-             %nXcvrs = nXcvrs - 1;
         end
         
         fseek(fid, len - 140 - HEADER_LEN, 0);
         
     else
         fseek(fid, len - HEADER_LEN, 0);
-    end
-    
+    end   
     len=fread(fid, 1, 'int32', 'l');
-    
 end
 
 fseek(fid, fPosition, 'bof');

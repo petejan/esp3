@@ -8,7 +8,7 @@ function datamat=get_datamat(data,field)
 % end
 varlist=who(data.MatfileData);
 if nansum(strcmpi(varlist,(deblank(field))))==1
-    datamat=data.MatfileData.(lower(deblank(field)));
+    datamat=double(data.MatfileData.(lower(deblank(field))));
 else
     datamat=[];
 end

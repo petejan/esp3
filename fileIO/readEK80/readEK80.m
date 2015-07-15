@@ -72,6 +72,9 @@ for ii=1:length(filenames)
             
             nb_samples=nanmax(nb_samples_curr,nb_samples);
             nb_pings=nb_pings+nb_pings_curr;
+            nb_pings_asked=p.Results.PingRange(2)-p.Results.PingRange(1)+1;
+           nb_pings=nanmin(nb_pings,nb_pings_asked);
+            
             fclose(fid);
             
             
@@ -100,6 +103,7 @@ for ii=1:length(filenames)
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_4=(nan(nb_samples(i),nb_pings(i)));
+            data.pings(i).number=nan(1,nb_pings(i));
             data.pings(i).time=nan(1,nb_pings(i));
         end
         curr_ping = ones(length(data.config),1);
@@ -113,7 +117,7 @@ for ii=1:length(filenames)
     
     while (true)
         
-        len = fread(fid, 1, 'int32', 'l');
+        len = fread(fid, 1, 'int32', 'l'); 
         if (feof(fid))
             break;
         end
@@ -239,22 +243,27 @@ for ii=1:length(filenames)
                     data.pings(idx).sampleCount=fread(fid,1,'int32', 'l');
                     %  store sample number if required/valid
                     data.pings(idx).number(curr_ping(idx)-p.Results.PingRange(1)+1)=curr_ping(idx);
+                    data.pings(idx).time(curr_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
+                    
                     if (data.pings(idx).sampleCount > 0)
                         temp = fread(fid,8*data.pings(idx).sampleCount,'float32', 'l');
                         data.pings(idx).comp_sig_1(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
                         data.pings(idx).comp_sig_2(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
                         data.pings(idx).comp_sig_3(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
                         data.pings(idx).comp_sig_4(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
-                        data.pings(idx).time(curr_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                     end
+                    
                     curr_ping(idx) = curr_ping(idx) + 1;
                 else
+                    
                     fseek(fid, len - HEADER_LEN, 0);
                     curr_ping(idx) = curr_ping(idx) + 1;
+                    
                     if curr_ping(idx)>p.Results.PingRange(2)
                         fclose(fid);
                         return;
                     end
+                    
                 end
             case 'MRU0'
                 fseek(fid, len - HEADER_LEN, 0);

@@ -196,6 +196,11 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
+if isempty(layer.Transceivers(idx_freq).AttitudeNavPing)
+    warning('No attitude');
+    return;
+end
+
 heading=layer.Transceivers(idx_freq).AttitudeNavPing.Heading;
 pitch=layer.Transceivers(idx_freq).AttitudeNavPing.Pitch;
 roll=layer.Transceivers(idx_freq).AttitudeNavPing.Roll;
@@ -258,6 +263,8 @@ if ~isempty(long)
     m_grid('box','fancy','tickdir','in');
     m_plot(long,lat,'color','r');
     %m_gshhs_h('color','k')
+else
+   warning('No navigation data'); 
 end
 
 end

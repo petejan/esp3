@@ -198,13 +198,7 @@ for j=1:nanmax(linked_candidates(:))
 end
 setappdata(main_figure,'Layer',layer);
 
-main_childs=get(main_figure,'children');
-tags=get(main_childs,'Tag');
-idx_opt=strcmp(tags,'option_tab_panel');
-load_regions_tab(main_figure,main_childs(idx_opt));
-
-load_axis_panel(main_figure,0);
-
+update_display(main_figure,0);
 end
 
 

@@ -9,7 +9,7 @@ classdef layer_cl < handle
         Frequencies
         GPSData
         EnvData
-    end  
+    end
     
     
     methods
@@ -44,15 +44,15 @@ classdef layer_cl < handle
         end
         
         function layer_out=concatenate_Layer(layer_1,layer_2)
-            
+
             layer_out=layer_cl('ID_num',layer_1.ID_num,...
-			'Filename',[layer_1.Filename layer_2.Filename]...
+                'Filename',{layer_1.Filename layer_2.Filename}...
                 ,'Filetype',layer_1.Filetype,...
                 'PathToFile',layer_1.PathToFile,...
                 'Transceivers',concatenate_Transceivers(layer_1.Transceivers,layer_2.Transceivers),...
                 'GPSData',concatenate_GPSData(layer_1.GPSData,layer_2.GPSData),...
                 'Frequencies',layer_1.Frequencies);
-   
+            
         end
         
         

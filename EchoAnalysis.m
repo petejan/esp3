@@ -43,20 +43,22 @@ if ~isdeployed
         disp(app_path.data)
     end
     
-    if exist([app_path.data 'data_defaultsadf.mat'],'file')>0
-        load([app_path.data 'data_default.mat']);
-        layer_obj=layer;
-        %curr_disp_obj=curr_disp;
-    end
+%     if exist([app_path.data 'data_default.mat'],'file')>0
+%         load([app_path.data 'data_default.mat']);
+%         layer_obj=layer;
+%         %curr_disp_obj=curr_disp;
+%     end
 end
 
-
+layers=layer_obj;
+setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Layer',layer_obj);
 setappdata(main_figure,'Curr_disp',curr_disp_obj);
 setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 
 movegui(main_figure,'center')
+
 initialize_display(main_figure);
 update_display(main_figure,1);
 

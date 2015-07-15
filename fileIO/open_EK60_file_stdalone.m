@@ -1,5 +1,9 @@
 
-function  layer=open_EK60_file_stdalone(PathToFile,Filename_cell,read_all,vec_freq,ping_start,ping_end)
+function  layers=open_EK60_file_stdalone(main_figure,PathToFile,Filename_cell,vec_freq,ping_start,ping_end)
+
+layers=getappdata(main_figure,'Layers');
+
+matfiles_list=list_matfiles(layers);
 
 if ~isequal(Filename_cell, 0)
     
@@ -11,19 +15,26 @@ if ~isequal(Filename_cell, 0)
     hlppos=get(opening_file,'position');
     set(opening_file,'position',[100 hlppos(2:4)])
     
+    prev_ping_end=0;
+    prev_ping_start=1;
+    
     for uu=1:length(Filename_cell)
         
         Filename=Filename_cell{uu};
         
         %s=warning('error','readEKRaw:Datagram');
-        
         if isempty(vec_freq)
             vec_freq=-1;
         end
+        
+        if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
+            break;
+        end
+        
         try
-            [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'PingRange',[ping_start ping_end],'GPS', 2,'GPSSource','GPGGA','RawNMEA','True','Frequencies',vec_freq);
+            [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq);
         catch err2
-            [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start ping_end],'GPS', 2,'GPSSource','GPGGA','RawNMEA','True','Frequencies',vec_freq);
+            [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq);
         end
         
         if strcmp(header.soundername(1:4),'ES70') || strcmp(header.soundername(1:4),'ES60')
@@ -32,8 +43,11 @@ if ~isequal(Filename_cell, 0)
             end
         end
         
+        prev_ping_start=ping_start;
+        prev_ping_end=data.pings(1).number(end);
         
-        %     curr_gps=1;
+        
+        curr_gps=1;
         curr_dist=1;
         curr_att=1;
         curr_heading=1;
@@ -42,21 +56,25 @@ if ~isequal(Filename_cell, 0)
         for iiii=1:length(data.NMEA.string)
             [nmea,nmea_type]=parseNMEA(data.NMEA.string{iiii});
             switch nmea_type
-                %             case 'gps'
-                %                 data.gps.time(curr_gps) = dgTime;
-                %                 %data.gps.time_gps(curr_gps) = nmea.time;
-                %                 %  set lat/lon signs and store values
-                %                 if (nmea.lat_hem == 'S');
-                %                     data.gps.lat(curr_gps) = -nmea.lat;
-                %                 else
-                %                     data.gps.lat(curr_gps) = nmea.lat;
-                %                 end
-                %                 if (nmea.lon_hem == 'W');
-                %                     data.gps.lon(curr_gps) = -nmea.lon;
-                %                 else
-                %                     data.gps.lon(curr_gps) = nmea.lon;
-                %                 end
-                %                 curr_gps=curr_gps+1;
+                case 'gps'
+                    if curr_gps==1
+                       data.gps.type=nmea.type;
+                    end
+                    if strcmp(nmea.type,data.gps.type) 
+                        data.gps.time(curr_gps) = data.NMEA.time(iiii);
+                        %  set lat/lon signs and store values
+                        if (nmea.lat_hem == 'S');
+                            data.gps.lat(curr_gps) = -nmea.lat;
+                        else
+                            data.gps.lat(curr_gps) = nmea.lat;
+                        end
+                        if (nmea.lon_hem == 'W');
+                            data.gps.lon(curr_gps) = -nmea.lon;
+                        else
+                            data.gps.lon(curr_gps) = nmea.lon;
+                        end
+                        curr_gps=curr_gps+1;
+                    end
                 %             case 'speed'
                 %                 data.vspeed.time(curr_speed) = dgTime;
                 %                 data.vspeed.speed(curr_speed) = nmea.sog_knts;
@@ -88,14 +106,6 @@ if ~isequal(Filename_cell, 0)
             return;
         end
         
-        if isempty(data.gps.lon)
-            try
-                [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'PingRange',[ping_start ping_end],'GPS', 2,'GPSSource','GPGLL','Frequencies',vec_freq);
-            catch err2
-                [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start ping_end],'GPS', 2,'GPSSource','GPGLL','Frequencies',vec_freq);
-            end
-        end
-        
         calParms = readEKRaw_GetCalParms(header,data);
         data = readEKRaw_ConvertAngles(data,calParms,'KeepElecAngles',true);
         
@@ -125,9 +135,6 @@ if ~isequal(Filename_cell, 0)
             power=double(10.^(data.pings(n).power/10));
             [data.pings(n).Sp,data.pings(n).Sv]=convert_power(power,double(data.pings(n).range),double(c),double(alpha),double(tau),double(pt),double(c/f),double(G),double(phi),double(Sac));
         end
-        %     data = readEKRaw_Power2Sp(data, calParms,'Double',true,'KeepPower',true);
-        %     data = readEKRaw_Power2Sv(data, calParms,'Double',true,'KeepPower',true);
-        
         
         Filename_bot=[Filename(1:end-4) '.bot'];
         if exist([PathToFile Filename_bot],'file')
@@ -142,21 +149,25 @@ if ~isequal(Filename_cell, 0)
         end
         Bottom_sim_idx=round(Bottom_sim/dR-(double((data.pings(n).samplerange(1)-1))));
         
-        gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time,'NMEA','GPGGA');
+        gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time,'NMEA',data.gps.type);
         transceiver=transceiver_cl();
         
         freq=nan(1,header.transceivercount);
         
         fileID = unidrnd(2^64);
+        while fileID==0
+            fileID = unidrnd(2^64);
+        end
+        
         for i =1:header.transceivercount
             
-            curr_data.power=10.^(double(data.pings(i).power/10));
-            curr_data.sp=data.pings(i).Sp;
-            curr_data.sv=data.pings(i).Sv;
-            curr_data.acrossphi=data.pings(i).athwartship_e;
-            curr_data.alongphi=data.pings(i).alongship_e;
-            curr_data.acrossangle=data.pings(i).athwartship;
-            curr_data.alongangle=data.pings(i).alongship;
+            curr_data.power=single(10.^(double(data.pings(i).power/10)));
+            curr_data.sp=single(data.pings(i).Sp);
+            curr_data.sv=single(data.pings(i).Sv);
+            curr_data.acrossphi=single(data.pings(i).athwartship_e);
+            curr_data.alongphi=single(data.pings(i).alongship_e);
+            curr_data.acrossangle=single(data.pings(i).athwartship);
+            curr_data.alongangle=single(data.pings(i).alongship);
             %
             if ~isdir(fullfile(PathToFile,'echoanalysis'))
                 mkdir(fullfile(PathToFile,'echoanalysis'));
@@ -164,13 +175,22 @@ if ~isequal(Filename_cell, 0)
             
             
             if iscell(Filename)
-                name_mat=Filename{1}(1:end-5);
+                name_mat=Filename{1}(1:end-4);
             else
-                name_mat=Filename(1:end-5);
+                name_mat=Filename(1:end-4);
             end
             
-            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(fileID) '_' num2str(i) '.mat']);
+            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(fileID,'%bX') '_' num2str(i) '.mat']);
+            file_list=ls(fullfile(PathToFile,'echoanalysis',[name_mat '_*_' num2str(i) '.mat']));
             
+            if ~isempty(file_list)
+                for jjjj=1:size(file_list,1)
+                    if nansum(strcmpi(fullfile(PathToFile,'echoanalysis',file_list(jjjj,:)),matfiles_list))==0
+                        delete(fullfile(PathToFile,'echoanalysis',file_list(jjjj,:)));
+                    end
+                end
+            end
+     
             save(MatFileNames{i},'-struct','curr_data','-v7.3');
             
             sub_ac_data_temp=[];
@@ -208,6 +228,8 @@ if ~isequal(Filename_cell, 0)
                 'Number',double(data.pings(i).number),...
                 'MatfileData',curr_matfile);
             
+            
+            
             if length(Bottom_sim(i,:))~=size(data.pings(i).power,2);
                 Bottom=nan(1,size(data.pings(i).power,2));
                 Bottom_idx=nan(1,size(data.pings(i).power,2));
@@ -231,20 +253,15 @@ if ~isequal(Filename_cell, 0)
             [transceiver(i).Config,transceiver(i).Params]=config_from_ek60(data.config(i),calParms(i));
         end
         
-        layer_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
+        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
         
     end
+    
+    layers=layers_temp;
     if exist('opening_file','var')
         close(opening_file);
     end
-    layer=layer_temp(1);
+    clear data transceiver
     
-    for kk=1:length(layer_temp)-1
-        if layer.Transceivers(1).Data.Time(end)<=layer_temp(kk+1).Transceivers(1).Data.Time(end)
-            layer=concatenate_Layer(layer,layer_temp(kk+1));
-        else
-            layer=concatenate_Layer(layer_temp(kk+1),layer);
-        end
-    end
-    
+
 end

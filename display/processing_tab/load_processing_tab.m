@@ -153,18 +153,18 @@ for ii=1:length(Filename)
             
             layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
             
-            layer.Transceivers(idx_freq).Data.MatfileData.PowerDenoised=power_unoised;
-            layer.Transceivers(idx_freq).Data.MatfileData.SpDenoised=Sp_unoised;
-            layer.Transceivers(idx_freq).Data.MatfileData.SvDenoised=Sv_unoised;
-            layer.Transceivers(idx_freq).Data.MatfileData.SNR=SNR;
+            layer.Transceivers(idx_freq).Data.MatfileData.powerdenoised=power_unoised;
+            layer.Transceivers(idx_freq).Data.MatfileData.spdenoised=Sp_unoised;
+            layer.Transceivers(idx_freq).Data.MatfileData.svdenoised=Sv_unoised;
+            layer.Transceivers(idx_freq).Data.MatfileData.snr=SNR;
             
-            curr_disp.Fieldname='Sv Denoised';
+            curr_disp.Fieldname='svdenoised';
         end
         
         denoised=noise_rem_algo;
         
         if denoised>0
-            Sv=layer.Transceivers(idx_freq).Data.get_datamat('SvDenoised');
+            Sv=layer.Transceivers(idx_freq).Data.get_datamat('svdenoised');
             if isempty(Sv)
                 Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
             end

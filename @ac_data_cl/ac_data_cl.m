@@ -47,15 +47,18 @@ classdef ac_data_cl < handle
             obj.Type=type;
         end
         
-        function data_out=concatenate_Data(data_1,data_2)
-            
+        function data_out=concatenate_Data(data_1,data_2,new_file_name)           
             if length(data_2.Fieldname)==length(data_1.Fieldname)
                 ff_1=who(data_1.MatfileData);
+                
                 for uuu=1:length(ff_1)
                     curr_data.(ff_1{uuu})=[data_1.MatfileData.(ff_1{uuu}) data_2.MatfileData.(ff_1{uuu})];
                 end
-                save(data_1.MatfileData.Properties.Source,'-struct','curr_data','-v7.3');
-                curr_matfile=matfile(data_1.MatfileData.Properties.Source,'writable',true);
+ 
+                delete(data_2.MatfileData.Properties.Source);
+                delete(data_1.MatfileData.Properties.Source);
+                save(new_file_name,'-struct','curr_data','-v7.3');
+                curr_matfile=matfile(new_file_name,'writable',true);
                 clear curr_data;
                 
                 data_out=ac_data_cl('SubData',concatenate_SubData(data_1.SubData,data_2.SubData),...

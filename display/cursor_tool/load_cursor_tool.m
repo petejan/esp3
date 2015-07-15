@@ -10,7 +10,28 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');  
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+layers=getappdata(main_figure,'Layers');
+%idx_freq=find_freq_idx(layer,curr_disp.Freq);
+nb_layers=length(layers);
+
+
+layers_Str=cell(1,nb_layers);
+for i=nb_layers:-1:1
+    if iscell(layers(i).Filename)
+        new_name=layers(i).Filename{1};
+    else
+        new_name=layers(i).Filename;
+    end
+    u=1;
+    new_name_ori=new_name;
+    while nansum(strcmp(new_name,layers_Str))>=1
+        new_name=[new_name_ori num2str(u)];
+        u=u+1;
+    end
+    layers_Str{i}=new_name;
+end
+
+
 
 cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure);
 
@@ -37,12 +58,51 @@ cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_t
 childs=findall(main_figure,'type','uitoggletool');
 set(childs,...
      'ClickedCallback',{@toggle_func,main_figure});
+ 
+ [idx,~]=find_layer_idx(layers,layer.ID_num);
+
+ %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer');
+ jToolbar = findjobj(gcf,'-nomenu','class','mjtoolbar');
+ if ~isempty(jToolbar)
+     cursor_mode_tool_comp.jCombo = javax.swing.JComboBox(layers_Str);
+     cursor_mode_tool_comp.jCombo = handle(cursor_mode_tool_comp.jCombo,'callbackproperties');
+     set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
+     set(cursor_mode_tool_comp.jCombo, 'ActionPerformedCallback', {@change_layer,main_figure});
+     set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(250,250));
+     set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
+     set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0))
+     jToolbar(1).add(cursor_mode_tool_comp.jCombo,6); 
+     jToolbar(1).repaint;
+     jToolbar(1).revalidate;
+ end
+ 
 
 % set(main_figure,'KeyPressFcn',{@key_switch,main_figure});
 % set(main_figure,'KeyReleaseFcn',{@key_switch,main_figure});
 
 setappdata(main_figure,'Cursor_mode_tool',cursor_mode_tool_comp);
 end
+
+function change_layer(hCombo, ~,main_figure)
+
+layers=getappdata(main_figure,'Layers');
+layer=getappdata(main_figure,'Layer');
+itemIndex = get(hCombo,'SelectedIndex');  % 0=topmost item
+% itemName  = get(hCombo,'SelectedItem');
+new_layer=layers(itemIndex+1);
+
+if new_layer.ID_num==layer.ID_num
+    return;
+else
+    layer=new_layer;
+end
+
+setappdata(main_figure,'Layer',layer);
+update_display(main_figure,1);
+% user processing needs to be placed here
+
+end
+
 
 function toggle_func(src, ~,main_figure)
 %cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');

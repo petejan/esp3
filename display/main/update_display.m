@@ -20,7 +20,6 @@ if new==1
     load_calibration_tab(main_figure,main_childs(idx_opt));
     
 else
-   
     selected_opt_tab=get(main_childs(idx_opt),'SelectedTab');
     active_opt_tab=selected_opt_tab.Title;
     

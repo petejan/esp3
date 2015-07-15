@@ -6,20 +6,22 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 main_axes=axes_panel_comp.main_axes;
-x=double(get(main_axes,'xlim'));
-y=double(get(main_axes,'ylim'));
 
-if new==0
-    if isfield(axes_panel_comp,'main_echo')
-        xdata_old=double(get(axes_panel_comp.main_echo,'XData'));
-        [~,idx_xlim_min]= nanmin(abs(xdata_old-x(1)));
-        [~,idx_xlim_max]= nanmin(abs(xdata_old-x(2)));
-    else
-        idx_xlim_min=1;
-        idx_xlim_max=2;
+try
+    x=double(get(main_axes,'xlim'));
+    y=double(get(main_axes,'ylim'));
+    
+    if new==0
+        if isfield(axes_panel_comp,'main_echo')
+            xdata_old=double(get(axes_panel_comp.main_echo,'XData'));
+            [~,idx_xlim_min]= nanmin(abs(xdata_old-x(1)));
+            [~,idx_xlim_max]= nanmin(abs(xdata_old-x(2)));
+        else
+            idx_xlim_min=1;
+            idx_xlim_max=2;
+        end
     end
 end
-
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
