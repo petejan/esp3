@@ -1,23 +1,21 @@
 
-function delete_layer(~,~,main_figure)
+function delete_layer_callback(~,~,main_figure)
     layers=getappdata(main_figure,'Layers');
     layer=getappdata(main_figure,'Layer');
-    
+    %cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool'); 
     if length(layers)==1
         warning('You cannot delete the last layer standing');
         return;
     end
     
+
     [idx,~]=find_layer_idx(layers,layer.ID_num);
+%     cursor_mode_tool_comp.jCombo.removeItemAt(idx-1);
+%     cursor_mode_tool_comp.jCombo.addItem(layers_Str);
     
-    for kk=1:length(layers(idx).Transceivers)
-                if exist(layers(uu).Transceivers(kk).MatfileName,'file')>0
-                    delete(layers(uu).Transceivers(kk).MatfileName);
-                end
-            end
-    layers(idx)=[];
-    layer=layers(nanmin(idx,length(layer)));
-    
+    layers=layers.delete_layer(layer.ID_num);
+    layer=layers(nanmin(idx,length(layers)));
+   
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);
     

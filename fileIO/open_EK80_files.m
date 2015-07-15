@@ -1,7 +1,7 @@
 function open_EK80_files(main_figure,PathToFile,Filename,read_all)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
-matfiles_list=list_matfiles(layers);
+matfiles_list=layers.list_matfiles();
 
 ite=1;
 multi_layers=0;

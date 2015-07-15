@@ -1,5 +1,5 @@
 
-function delete_layer(~,~,main_figure)
+function delete_layer_callback(~,~,main_figure)
     layers=getappdata(main_figure,'Layers');
     layer=getappdata(main_figure,'Layer');
     
@@ -10,15 +10,9 @@ function delete_layer(~,~,main_figure)
     
     [idx,~]=find_layer_idx(layers,layer.ID_num);
     
-    for kk=1:length(layers(idx).Transceivers)
-        if exist(layers(idx).Transceivers(kk).MatfileName,'file')>0
-            delete(layers(idx).Transceivers(kk).MatfileName);
-        end
-    end
-    
-    layers(idx)=[];
-    layer=layers(nanmin(idx,length(layer)));
-    
+    layers=layers.delete_layer(layer.ID_num);
+    layer=layers(nanmin(idx,length(layers)));
+   
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);
     

@@ -10,9 +10,9 @@ nb_layers=length(layers);
 layers_Str=cell(1,nb_layers);
 for i=nb_layers:-1:1
     if iscell(layers(i).Filename)
-        new_name=[layers(i).Filename{1} ' ' num2str(layers(i).ID_num,'%bX')];
+        new_name=layers(i).Filename{1};
     else
-        new_name=[layers(i).Filename  ' ' num2str(layers(i).ID_num,'%bX')];
+        new_name=layers(i).Filename;
     end
     u=1;
     new_name_ori=new_name;
@@ -26,10 +26,8 @@ end
 if isappdata(main_figure,'Cursor_mode_tool')
     cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');  
     [idx,~]=find_layer_idx(layers,layer.ID_num);
-    cursor_mode_tool_comp.jCombo.removeAllItems();
-    for i=1:nb_layers
-         cursor_mode_tool_comp.jCombo.addItem(layers_Str{i});
-    end
+    cursor_mode_tool_comp.jCombo.removeAll();
+    
     set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
 else
     

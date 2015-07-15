@@ -7,14 +7,11 @@ selection = questdlg('Close The Programm?',...
 switch selection,
     case 'Yes'
         layers=getappdata(src,'Layers');
-        for uu=1:length(layers)
-            for kk=1:length(layers(uu).Transceivers)
-                if exist(layers(uu).Transceivers(kk).MatfileName,'file')>0
-                    delete(layers(uu).Transceivers(kk).MatfileName);
-                end
-            end
+        
+        while length(layers)>=1
+            layers=layers.delete_layer(layers(1).ID_num);
         end
-           
+                 
         appdata = get(src,'ApplicationData');
         fns = fieldnames(appdata);
         for ii = 1:numel(fns)

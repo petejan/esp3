@@ -3,7 +3,7 @@ function  layers=open_EK60_file_stdalone(main_figure,PathToFile,Filename_cell,ve
 
 layers=getappdata(main_figure,'Layers');
 
-matfiles_list=list_matfiles(layers);
+matfiles_list=layers.list_matfiles();
 
 if ~isequal(Filename_cell, 0)
     
