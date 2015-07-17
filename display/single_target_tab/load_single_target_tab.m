@@ -109,7 +109,7 @@ layer.Transceivers(idx_freq).Data.add_sub_data(subdata);
 layer.Transceivers(idx_freq).ST=ST;
 layer.Transceivers(idx_freq).Data.MatfileData.singletarget=dataMat;
 layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
-curr_disp.Fieldname='SingleTargetCompTS';
+curr_disp.setField('singletargetcompts');
 setappdata(main_figure,'Layer',layer);
     
 update_display(main_figure,0);

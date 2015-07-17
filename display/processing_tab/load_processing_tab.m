@@ -96,7 +96,7 @@ for ii=1:length(Filename)
         curr_disp.Freq=process_list(kk).Freq;
         idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-        curr_disp.Fieldname='Sv';
+        curr_disp.setField('sv');
         setappdata(main_figure,'Curr_disp',curr_disp);
         load_axis_panel(main_figure,0);
         
@@ -105,7 +105,7 @@ for ii=1:length(Filename)
         [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
         [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
         
-        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
         
         if noise_rem_algo
             Transceiver=layer.Transceivers(idx_freq);
@@ -158,7 +158,7 @@ for ii=1:length(Filename)
             layer.Transceivers(idx_freq).Data.MatfileData.svdenoised=Sv_unoised;
             layer.Transceivers(idx_freq).Data.MatfileData.snr=SNR;
             
-            curr_disp.Fieldname='svdenoised';
+            curr_disp.setField('svdenoised');
         end
         
         denoised=noise_rem_algo;

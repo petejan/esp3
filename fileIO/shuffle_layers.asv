@@ -107,7 +107,7 @@ for uui=1:length(idx_to_concatenate)
                         new_chains{i}=[];
                     else
                        idx_not_to_concatenate{uui}={idx_not_to_concatenate{uui}{:} setdiff(new_chains{j},new_chains{i})};
-                       new_chains{j}=[];
+                       new_chains{i}=[];
                     end
                     
                 end
@@ -128,11 +128,11 @@ for uui=1:length(idx_to_concatenate)
                     end
                     
                 end
-                new_layers=[layer_conc new_layers ];
+                new_layers=[new_layers layer_conc];
             end
         end
         for kkj=1:length(idx_not_to_concatenate{uui})
-            new_layers=[layers_temp(idx_not_to_concatenate{uui}{kkj}) new_layers ];
+            new_layers=[new_layers layers_temp(idx_not_to_concatenate{uui}{kkj})];
         end
     end
     
@@ -147,7 +147,7 @@ for uui=1:length(idx_to_concatenate)
         if found==1
             warning('Who, that''s extremely unlikely!')
         end
-        layers=[layers layer];
+        layers=[layer layers];
     end
     
 end

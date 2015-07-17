@@ -14,8 +14,7 @@ classdef sub_ac_data_cl < handle
             
             obj.Fieldname=lower(deblank(field));
             %obj.DataMat=data_mat;
-            
-            
+                     
             switch obj.Fieldname
                 case  'sv'
                     obj.CaxisDisplay=[-80 -35];

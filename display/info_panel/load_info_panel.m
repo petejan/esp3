@@ -8,8 +8,6 @@ if isappdata(main_figure,'Info_panel')
     rmappdata(main_figure,'Info_panel');
 end
 
-
-
 if ~isempty(info_panel_comp)
     layer=getappdata(main_figure,'Layer');
     display_tab_comp=getappdata(main_figure,'Display_tab');

@@ -77,7 +77,7 @@ if ~isequal(Filename, 0)
         data_ori=computesPhasesAngles(data_ori);
         
         if isfield(data,'gps')
-            gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time);
+            gps_data=gps_data_cl('Lat',data.gps.lat','Long',data.gps.lon','Time',data.gps.time');
         else
             gps_data=gps_data_cl();
         end
@@ -238,10 +238,7 @@ if ~isequal(Filename, 0)
         
         idx_freq=find_freq_idx(layer_new,curr_disp.Freq);
         curr_disp.Freq=layer_new.Frequencies(idx_freq);
-        
-        idx_field=find_field_idx(layer_new.Transceivers(idx_freq).Data,'sv');
-        curr_disp.Fieldname=layer_new.Transceivers(idx_freq).Data.SubData(idx_field).Fieldname;
-        
+        curr_disp.setField('sv');
         if ite==1
             layers_temp(uuu)=layer_new;
         end
@@ -252,9 +249,7 @@ if ~isequal(Filename, 0)
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);
     
-    idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
-    curr_disp.Fieldname=layer.Transceivers(idx_freq).Data.SubData(idx_field).Fieldname;
-    
+    curr_disp.setField('sv');
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Curr_disp',curr_disp);

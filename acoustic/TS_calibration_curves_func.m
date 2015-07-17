@@ -167,7 +167,7 @@ for uui=1:length(layer.Frequencies)
         if idx_freq==uui
             axes(ah);
             hold on;
-            plot(idx_pings,range_sph,'.r','markersize',5);
+            plot(idx_pings,range(idx_peak),'.r','markersize',5);        
             drawnow;
         end
         

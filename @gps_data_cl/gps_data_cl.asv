@@ -22,7 +22,7 @@ classdef gps_data_cl <handle
             props=fieldnames(results);
             
             for i=1:length(props)  
-                if size(results.(props{i}),2)==1
+                if size(results.(props{i}),1)==1
                     obj.(props{i})=results.(props{i});
                 else
                     obj.(props{i})=results.(props{i})';
@@ -35,19 +35,20 @@ classdef gps_data_cl <handle
             else
                 obj.Dist=[];
             end
-            
-            if size(obj.Dist,2)>1
-                obj.Dist=obj.Dist';
-            end
-            
+                    
         end
         
         
         function gps_data_out=concatenate_GPSData(gps_data_1,gps_data_2)
+            
+            
+                      
+            if size(gps_data_1.Long,2)>1
                 gps_data_out=gps_data_cl('Lat',[gps_data_1.Lat; gps_data_2.Lat],...
                     'Long',[gps_data_1.Long; gps_data_2.Long],...
                     'Time',[gps_data_1.Time; gps_data_2.Time],...
                     'NMEA',gps_data_1.NMEA);
+            end
         end
         
         

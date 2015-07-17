@@ -65,8 +65,17 @@ for uui=1:length(layer.Frequencies)
     compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
     
     %[phi, theta] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
-    
     idx_low=(Sp_sph<=-65)|compensation>12|bad_trans|(Sp_sph>-30);
+    
+    AlongAngle_sph(idx_low)=[];
+    AcrossAngle_sph(idx_low)=[];
+    Sp_sph(idx_low)=[];
+    idx_peak(idx_low)=[];
+    idx_pings(idx_low)=[];
+    compensation(idx_low)=[];
+    bad_trans(idx_low)=[];
+    
+    idx_low=(Sp_sph<=-65)|compensation>18|bad_trans|abs(Sp_sph-nanmax(Sp_sph(:))+compensation)>2;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];

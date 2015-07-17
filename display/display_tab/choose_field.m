@@ -6,7 +6,7 @@ idx_freq=find(layer.Frequencies==curr_disp.Freq,1);
 
 field=layer.Transceivers(idx_freq).Data.Fieldname;
 
-curr_disp.Fieldname=field{get(obj,'value')};
+curr_disp.setField(field{get(obj,'value')});
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,0);

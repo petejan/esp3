@@ -31,7 +31,7 @@ set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_f
 
 if found==0
     [idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
-    curr_disp.Fieldname='sv';
+    curr_disp.setField('sv');
 end
 
 set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field);

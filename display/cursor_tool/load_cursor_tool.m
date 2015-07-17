@@ -145,7 +145,7 @@ if strcmp(src.State,'on')
         case 'fd'
             set(h,'Enable','off');
             switch(curr_disp.Fieldname)
-                case {'Sv','Sp'}
+                case {'sp','sv'}
                     set(main_figure,'WindowButtonDownFcn',{@freq_response,main_figure});
                 otherwise
                     set(main_figure,'WindowButtonDownFcn','');
@@ -155,7 +155,7 @@ if strcmp(src.State,'on')
             set(h,'Enable','off');
             set(h_pan,'Enable','off');
             switch(curr_disp.Fieldname)
-                case {'Sp','Sv'}
+                case {'sp','sv'}
                     set(main_figure,'WindowButtonDownFcn',{@TS_calibration_curves,main_figure});
                 otherwise
                     set(main_figure,'WindowButtonDownFcn','');
@@ -164,7 +164,7 @@ if strcmp(src.State,'on')
             set(h,'Enable','off');
             set(h_pan,'Enable','off');
             switch(curr_disp.Fieldname)
-                case {'Sp','Sv'}
+                case {'sp','sv'}
                     set(main_figure,'WindowButtonDownFcn',{@beamwidth_calibration_curves,main_figure});
                 otherwise
                     set(main_figure,'WindowButtonDownFcn','');
