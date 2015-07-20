@@ -97,52 +97,48 @@ else
 end
 
 setappdata(main_figure,'Layer',layer);
+
+multi_layers=0;
+
+choice = questdlg('Do you want to open files as separate layers?', ...
+	'Yes', ...
+	'No');
+% Handle response
+switch choice
+    case 'Yes'
+      multi_layers=1;
+      accolate=0;
+    case 'No'
+       multi_layers=0;
+end
+
+
+
+choice = questdlg('Do you want to open files as separate layers?', ...
+	'Yes', ...
+	'No');
+% Handle response
+switch choice
+    case 'Yes'
+      multi_layers=1;
+      accolate=0;
+    case 'No'
+       multi_layers=0;
+end
+
 read_all=0;
 
-
 if ~isequal(Filename, 0)
-    choice = questdlg('Do you want to open files as separate layers?', ...
-        'File opening mode',...
-        'Yes','No', ...
-        'No');
-    % Handle response
-    switch choice
-        case 'Yes'
-            multi_layer=1;
-            accolate=0;
-        case 'No'
-            multi_layer=0;
-            read_all=1;
-    end
-    
-    if isempty(choice)
-        return;
-    end
-    
-    if multi_layer==0
-        choice = questdlg('Do you want to accolate those new layers to existing ones?', ...
-            'File opening mode',...
-            'Yes','No', ...
-            'No');
-        % Handle response
-        switch choice
-            case 'Yes'
-                accolate=1;
-            case 'No'
-                accolate=0;
-        end
-    end
-    
-    if read_all==0&&multi_layer==1
+    if read_all==0&&multi_layers==1
         prompt={'First ping:',...
             'Last Ping:'};
-        name='Pings to load from each files';
+        name='Pings to load';
         numlines=1;
         defaultanswer={'1','Inf'};
         answer=inputdlg(prompt,name,numlines,defaultanswer);
         
         if isempty(answer)
-            return;
+            return
         end
         
         ping_start= str2double(answer{1});
@@ -152,12 +148,12 @@ if ~isequal(Filename, 0)
         ping_end=Inf;
     end
     
-    
+   
     switch ftype
         case 'EK60'
-            open_EK60_file(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
+            open_EK60_file(main_figure,PathToFile,Filename,ping_start,ping_end)
         case 'EK80'
-            open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
+            open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end)
     end
     
 end

@@ -1,32 +1,12 @@
-function open_EK80_files(main_figure,PathToFile,Filename,read_all)
+function open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
 matfiles_list=layers.list_matfiles();
 
 ite=1;
-multi_layers=0;
 
 if ~isequal(Filename, 0)
     
-    %s=warning('error','readEKRaw:Datagram');
-    
-    if read_all==0&&multi_layers==1
-        prompt={'First ping:',...
-            'Last Ping:'};
-        name='Pings to load';
-        numlines=1;
-        defaultanswer={'1','Inf'};
-        answer=inputdlg(prompt,name,numlines,defaultanswer);
-        if isempty(answer)
-            return
-        end
-
-        ping_start= str2double(answer{1});
-        ping_end= str2double(answer{2});
-    else
-        ping_start=1;
-        ping_end=Inf;
-    end
     
     opening_file=msgbox(['Opening file ' Filename '. This box will close when finished...'],'Opening File');
     hlppos=get(opening_file,'position');
@@ -170,7 +150,7 @@ if ~isequal(Filename, 0)
                 'Number',data.pings(i).number,...
                 'MatfileData',curr_matfile);
             
-            if multi_layers==0
+            if multi_layer==0
                 prev_ping_start=ping_start;
                 prev_ping_end=data.pings(i).number(end);
             else
@@ -244,7 +224,7 @@ if ~isequal(Filename, 0)
         end
     end
     
-    [layers,layer]=shuffle_layers(layers,layers_temp);
+    [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,accolate);
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);

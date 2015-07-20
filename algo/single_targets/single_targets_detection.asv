@@ -84,8 +84,7 @@ switch p.Results.DataType
     case 'CW'
         simu_pulse=ones(1,Np);
     case 'FM'
-        [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));   
-        Np=4;
+        [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));    
 end
 
 
@@ -138,9 +137,13 @@ switch p.Results.DataType
         diff_idx_peaks=[zeros(1,nb_pings);diff(idx_peaks)];
         idx_peaks=(diff_idx_peaks==1);
         
-    case 'FM'        
+    case 'FM'
+        
+      
         corr=correlogramm_v2(10.^(TSun/10),abs(simu_pulse));
         idx_peaks=corr>0.6;
+        
+    
 end
 
 
@@ -221,7 +224,7 @@ switch Transceiver.Mode
     case 'CW'
         target_range=nansum(samples_targets_power.*samples_targets_range)./nansum(samples_targets_power)-double(c*T/4);
     otherwise
-        [~,target_range_idx]=nanmin(samples_targets_power);
+        [~,target_range_idx]=nanmax(samples_targets_power);
         target_range=samples_targets_range(target_range_idx+size(samples_targets_range,1)*(0:size(samples_targets_range,2)-1));
 end
 target_range(target_range<0)=0;

@@ -99,7 +99,8 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
     'MaxNormPL',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxNormPL,...
     'MaxBeamComp',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxBeamComp,...
     'MaxStdMinAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
-    'MaxStdMajAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle);
+    'MaxStdMajAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle,...
+    'DataType',layer.Transceivers(idx_freq).Mode);
 dataMat=nan(size(Sv));
 dataMat(ST.idx_target_lin)=ST.TS_comp;
 
@@ -109,7 +110,7 @@ layer.Transceivers(idx_freq).Data.add_sub_data(subdata);
 layer.Transceivers(idx_freq).ST=ST;
 layer.Transceivers(idx_freq).Data.MatfileData.singletarget=dataMat;
 layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
-curr_disp.setField('singletargetcompts');
+curr_disp.setField('singletarget');
 setappdata(main_figure,'Layer',layer);
     
 update_display(main_figure,0);
