@@ -83,10 +83,9 @@ classdef transceiver_cl < handle
          function trans_out=concatenate_Transceivers(trans_1,trans_2)
             if length(trans_1)==length(trans_2)
              for i=1:length(trans_1)
- 
-                 idx=strfind(trans_1(i).MatfileName,'.mat');
-                 new_file_name=trans_1(i).MatfileName;
-                 new_file_name=[new_file_name(1:idx-1) 'c' '.mat'];
+
+                 new_file_name =fullfile([tempname '_echo_analysis.mat']);                 
+                 
                  trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_1(i).Data,trans_2(i).Data,new_file_name),...
                      'Bottom',concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom),...
                      'IdxBad',[trans_1(i).IdxBad; trans_2(i).IdxBad],...

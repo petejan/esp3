@@ -24,6 +24,5 @@ if exist('opening_file','var')
     close(opening_file);
 end
 
-update_display(hObject,1);
 
 end

@@ -159,6 +159,6 @@ if ~isequal(Filename, 0)
         case 'EK80'
             open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
     end
-    
+        update_display(main_figure,1);
 end
 end

@@ -169,29 +169,16 @@ if ~isequal(Filename_cell, 0)
             curr_data.acrossangle=single(data.pings(i).athwartship);
             curr_data.alongangle=single(data.pings(i).alongship);
             %
-            if ~isdir(fullfile(PathToFile,'echoanalysis'))
-                mkdir(fullfile(PathToFile,'echoanalysis'));
-            end
-            
-            
+             
             if iscell(Filename)
                 name_mat=Filename{1}(1:end-4);
             else
                 name_mat=Filename(1:end-4);
             end
             
-            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(fileID,'%bX') '_' num2str(i) '.mat']);
-            file_list=ls(fullfile(PathToFile,'echoanalysis',[name_mat '_*_' num2str(i) '.mat']));
-            
-            if ~isempty(file_list)
-                for jjjj=1:size(file_list,1)
-                    if nansum(strcmpi(fullfile(PathToFile,'echoanalysis',file_list(jjjj,:)),matfiles_list))==0
-                        delete(fullfile(PathToFile,'echoanalysis',file_list(jjjj,:)));
-                    end
-                end
-            end
-     
-            save(MatFileNames{i},'-struct','curr_data','-v7.3');
+             MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);          
+             save(MatFileNames{i},'-struct','curr_data','-v7.3');
+
             
             sub_ac_data_temp=[];
             ff=fields(curr_data);

@@ -10,9 +10,9 @@ nb_layers=length(layers);
 layers_Str=cell(1,nb_layers);
 for i=nb_layers:-1:1
     if iscell(layers(i).Filename)
-        new_name=[layers(i).Filename{1} ' ' num2str(layers(i).ID_num,'%bX')];
+        new_name=[layers(i).Filename{1}];
     else
-        new_name=[layers(i).Filename  ' ' num2str(layers(i).ID_num,'%bX')];
+        new_name=[layers(i).Filename];
     end
     u=1;
     new_name_ori=new_name;

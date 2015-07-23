@@ -88,10 +88,7 @@ switch p.Results.DataType
         Np=4;
 end
 
-
-
 Pulse_length_sample=Np*ones(size(TS));
-
 
 BW_athwart=Transceiver.Config.BeamWidthAthwartship;
 BW_along=Transceiver.Config.BeamWidthAlongship;

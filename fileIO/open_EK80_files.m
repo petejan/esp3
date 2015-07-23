@@ -80,9 +80,7 @@ if ~isequal(Filename, 0)
             
             %
             
-            if ~isdir(fullfile(PathToFile,'echoanalysis'))
-                mkdir(fullfile(PathToFile,'echoanalysis'));
-            end
+
             fileID = unidrnd(2^64);
             [~,found]=find_layer_idx(layers,fileID);
             
@@ -99,16 +97,7 @@ if ~isequal(Filename, 0)
                 name_mat=curr_Filename(1:end-4);
             end
             
-            MatFileNames{i}=fullfile(PathToFile,'echoanalysis',[name_mat '_' num2str(fileID,'%bX') '_' num2str(i) '.mat']);          
-            file_list=ls(fullfile(PathToFile,'echoanalysis',[name_mat '_*_' num2str(i) '.mat']));
-            
-            if ~isempty(file_list)
-                for jjjj=1:size(file_list,1)
-                    if nansum(strcmpi(fullfile(PathToFile,'echoanalysis',file_list(jjjj,:)),matfiles_list))==0
-                        delete(fullfile(PathToFile,'echoanalysis',file_list(jjjj,:)));
-                    end
-                end
-            end
+           MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);      
             
             save(MatFileNames{i},'-struct','curr_data','-v7.3');
             
@@ -238,6 +227,5 @@ if ~isequal(Filename, 0)
     end
     
     clear data transceiver
-    update_display(main_figure,1);
     
 end
