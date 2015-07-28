@@ -146,17 +146,15 @@ for ii=1:length(Filename)
                 'VertFilt',process_list(kk).Algo(idx_algo_denoise).Varargin.VertFilt,...
                 'NoiseThr',process_list(kk).Algo(idx_algo_denoise).Varargin.NoiseThr);
             
-            sub_ac_data_temp=[sub_ac_data_cl('powerdenoised') ...
-                sub_ac_data_cl('spdenoised') ...
-                sub_ac_data_cl('svdenoised') ...
-                sub_ac_data_cl('snr')];
+            memapname=layer.Transceivers(idx_freq).Data.MemapName;
+            
+            sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
+                sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...
+                sub_ac_data_cl('svdenoised',memapname,Sv_unoised) ...
+                sub_ac_data_cl('snr',memapname,SNR)];
             
             layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
             
-            layer.Transceivers(idx_freq).Data.MatfileData.powerdenoised=power_unoised;
-            layer.Transceivers(idx_freq).Data.MatfileData.spdenoised=Sp_unoised;
-            layer.Transceivers(idx_freq).Data.MatfileData.svdenoised=Sv_unoised;
-            layer.Transceivers(idx_freq).Data.MatfileData.snr=SNR;
             
             curr_disp.setField('svdenoised');
         end

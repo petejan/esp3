@@ -121,17 +121,7 @@ sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
 
 layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
 
-
-switch curr_disp.Fieldname
-    case 'sv'
-        curr_disp.Fieldname='svdenoised';
-    case 'sp'
-        curr_disp.Fieldname='spdenoised';
-    case 'power'
-        curr_disp.Fieldname='powerdenoised';
-    otherwise
-        curr_disp.Fieldname='svdenoised';     
-end
+curr_disp.setField('svdenoised');
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
