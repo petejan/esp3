@@ -8,8 +8,14 @@ if found==0
 end
 
 for kk=1:length(layers(idx).Transceivers)
-    if exist(layers(idx).Transceivers(kk).MatfileName,'file')>0
-        delete(layers(idx).Transceivers(kk).MatfileName);
+    for uu=1:length(layers(idx).Transceivers(kk).Data.SubData)       
+        if isa(layers(idx).Transceivers(kk).Data.SubData(uu).Memap,'memmapfile')
+            if exist(layers(idx).Transceivers(kk).Data.SubData(uu).Memap.Filename,'file')>0
+                layers(idx).Transceivers(kk).Data.SubData(uu).Memap.Writable=false;
+                %clear layers(idx).Transceivers(kk).Data.SubData(uu).Memap.Data
+                delete(layers(idx).Transceivers(kk).Data.SubData(uu).Memap.Filename);
+            end
+        end
     end
 end
 

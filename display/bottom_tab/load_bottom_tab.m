@@ -74,7 +74,7 @@ idx_algo_bot=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
 
 if isfield(bottom_tab_comp,'denoised')
     if get(bottom_tab_comp.denoised,'Value')>0
-        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv Denoised');
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('svdenoised');
         if isempty(Sv)
             Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
         end

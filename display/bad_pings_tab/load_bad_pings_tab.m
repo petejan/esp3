@@ -92,12 +92,12 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 idx_algo_bp=find_algo_idx(layer.Transceivers(idx_freq),'BadPings');
 
 if layer.Transceivers(idx_freq).Algo(idx_algo_bp).Varargin.denoised>0
-    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv Denoised');
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('svdenoised');
     if isempty(Sv)
-        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+        Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
     end
 else
-    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+    Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
 end
 
 

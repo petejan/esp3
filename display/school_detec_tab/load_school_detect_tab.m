@@ -103,12 +103,12 @@ idx_school_detect=find_algo_idx(layer.Transceivers(idx_freq),'SchoolDetection');
 
 if isfield(bottom_tab_comp,'denoised')
     if get(bottom_tab_comp.denoised,'Value')>0
-        Type='Sv Denoised';
+        Type='svdenoised';
     else
-      Type='Sv';
+      Type='sv';
     end
 else
-    Type='Sv';
+    Type='sv';
 end
 
 

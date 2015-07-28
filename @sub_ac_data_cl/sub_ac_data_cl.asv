@@ -94,14 +94,19 @@ classdef sub_ac_data_cl < handle
             data_2=sub_2.Memap.Data.(sub_2.Fieldname);
             new_data=[data_1 data_2];
             
-            sub_1.Memap.Writable=false;
-            sub_2.Memap.Writable=false;
+            set(sub_1.Memap, 'Writable', 0); 
+            S = recycle;
+            recycle('off')
+            delete(nomFic);
+            recycle(S)
             
-            %clear sub_1.Memap sub_2.Memap data1 data2
+            clear sub_1.Memap sub_2.Memap data1 data2
             delete(sub_1.Memap.Filename);
-            delete(sub_2.Memap.Filename);
+            delete(sub_1.Memap.Filename);
             
-            sub_out=sub_ac_data_cl(sub_1.Fieldname,new_name,new_data);
+            memapname=[new_name sub_1.Fieldname '.bin'];
+            
+            sub_out=sub_ac_data_cl(sub_1.Fieldname,memapname,new_data);
 
         end
         

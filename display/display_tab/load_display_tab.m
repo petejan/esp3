@@ -10,6 +10,11 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+if isempty(layer.Transceivers(idx_freq).Data.SubData)
+    return;
+end
+
+
 [idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 
 display_tab_comp.display_tab=uitab(option_tab_panel,'Title','Display Option');

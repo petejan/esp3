@@ -104,11 +104,14 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
 dataMat=nan(size(Sv));
 dataMat(ST.idx_target_lin)=ST.TS_comp;
 
-subdata=sub_ac_data_cl('singletarget',[layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold+20]);
+memapname=layer.Transceivers(idx_freq).Data.MemapName;
 
-layer.Transceivers(idx_freq).Data.add_sub_data(subdata);
+sub_ac_data_temp=sub_ac_data_cl('singletarget',memapname,dataMat);
+
+layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
+
 layer.Transceivers(idx_freq).ST=ST;
-layer.Transceivers(idx_freq).Data.MatfileData.singletarget=dataMat;
+
 layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
 curr_disp.setField('singletarget');
 setappdata(main_figure,'Layer',layer);

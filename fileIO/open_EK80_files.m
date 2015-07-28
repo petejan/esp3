@@ -1,13 +1,11 @@
 function open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
-matfiles_list=layers.list_matfiles();
 
 ite=1;
 
 if ~isequal(Filename, 0)
-    
-    
+   
     opening_file=msgbox(['Opening file ' Filename '. This box will close when finished...'],'Opening File');
     hlppos=get(opening_file,'position');
     set(opening_file,'position',[100 hlppos(2:4)])
@@ -91,22 +89,21 @@ if ~isequal(Filename, 0)
             end
             
             
-            if iscell(curr_Filename)
-                name_mat=curr_Filename{1}(1:end-4);
-            else
-                name_mat=curr_Filename(1:end-4);
-            end
-            
-           MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);      
-            
-            save(MatFileNames{i},'-struct','curr_data','-v7.3');
-            
-                      
-            sub_ac_data_temp=[];
+            curr_name=tempname;
             ff=fields(curr_data);
-            for uuuu=1:length(ff)
-                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuuu},[nanmin(nanmin(curr_data.(ff{uuuu}))) nanmax(nanmax(curr_data.(ff{uuuu})))])];
+            sub_ac_data_temp=[];
+            
+            for uuuk=1:length(ff)
+                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuuk},curr_name,curr_data.(ff{uuuk}))];
             end
+            
+            ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
+                'Range',double(data.pings(i).range),...
+                'Time',double(data.pings(i).time),...
+                'Number',double(data.pings(i).number),...
+                'MemapName',curr_name);
+            
+            
             clear curr_data;
             
             if isfield(data,'gps')
@@ -132,12 +129,6 @@ if ~isequal(Filename, 0)
             
             algo_vec=init_algos(r);
             
-            curr_matfile=matfile(MatFileNames{i},'writable',true);
-            ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
-                'Range',data.pings(i).range,...
-                'Time',data.pings(i).time,...
-                'Number',data.pings(i).number,...
-                'MatfileData',curr_matfile);
             
             if multi_layer==0
                 prev_ping_start=ping_start;
@@ -156,8 +147,7 @@ if ~isequal(Filename, 0)
                 'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...
                 'Mode',mode{i},...
-                'AttitudeNavPing',attitude,...
-                'MatFileName',MatFileNames{i});
+                'AttitudeNavPing',attitude);
             
             freq(i)=data.config(i).Frequency(1);
             

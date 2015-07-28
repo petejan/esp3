@@ -112,17 +112,15 @@ power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
     'VertFilt',round(get(denoise_tab_comp.VertFilt_sl,'Value')*2/c*f_s_sig),...
     'NoiseThr',round(get(denoise_tab_comp.NoiseThr_sl,'Value')));
 
-sub_ac_data_temp=[sub_ac_data_cl('PowerDenoised') ...
-    sub_ac_data_cl('SpDenoised') ...
-    sub_ac_data_cl('SvDenoised') ...
-    sub_ac_data_cl('SNR')];
+memapname=layer.Transceivers(idx_freq).Data.MemapName;
 
+sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
+    sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...
+    sub_ac_data_cl('svdenoised',memapname,Sv_unoised) ...
+    sub_ac_data_cl('snr',memapname,SNR)];
 
 layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
-layer.Transceivers(idx_freq).Data.MatfileData.powerdenoised=power_unoised;
-layer.Transceivers(idx_freq).Data.MatfileData.spdenoised=Sp_unoised;
-layer.Transceivers(idx_freq).Data.MatfileData.svdenoised=Sv_unoised;
-layer.Transceivers(idx_freq).Data.MatfileData.snr=SNR;
+
 
 switch curr_disp.Fieldname
     case 'sv'

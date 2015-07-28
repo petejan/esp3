@@ -2,6 +2,7 @@ function load_axis_panel(main_figure,new)
 
 layer=getappdata(main_figure,'Layer');
 display_tab_comp=getappdata(main_figure,'Display_tab');
+
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
@@ -25,7 +26,6 @@ end
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
-
 
 [idx_field,found]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 

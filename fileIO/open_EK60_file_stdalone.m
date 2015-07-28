@@ -1,9 +1,7 @@
 
 function  layers=open_EK60_file_stdalone(main_figure,PathToFile,Filename_cell,vec_freq,ping_start,ping_end)
 
-layers=getappdata(main_figure,'Layers');
 
-matfiles_list=layers.list_matfiles();
 
 if ~isequal(Filename_cell, 0)
     
@@ -58,9 +56,9 @@ if ~isequal(Filename_cell, 0)
             switch nmea_type
                 case 'gps'
                     if curr_gps==1
-                       data.gps.type=nmea.type;
+                        data.gps.type=nmea.type;
                     end
-                    if strcmp(nmea.type,data.gps.type) 
+                    if strcmp(nmea.type,data.gps.type)
                         data.gps.time(curr_gps) = data.NMEA.time(iiii);
                         %  set lat/lon signs and store values
                         if (nmea.lat_hem == 'S');
@@ -75,10 +73,10 @@ if ~isequal(Filename_cell, 0)
                         end
                         curr_gps=curr_gps+1;
                     end
-                %             case 'speed'
-                %                 data.vspeed.time(curr_speed) = dgTime;
-                %                 data.vspeed.speed(curr_speed) = nmea.sog_knts;
-                %                 curr_speed = curr_speed + 1;
+                    %             case 'speed'
+                    %                 data.vspeed.time(curr_speed) = dgTime;
+                    %                 data.vspeed.speed(curr_speed) = nmea.sog_knts;
+                    %                 curr_speed = curr_speed + 1;
                 case 'dist'
                     data.dist.time(curr_dist) = data.NMEA.time(iiii);
                     data.dist.vlog(curr_dist) = nmea.total_cum_dist;
@@ -150,8 +148,7 @@ if ~isequal(Filename_cell, 0)
         Bottom_sim_idx=round(Bottom_sim/dR-(double((data.pings(n).samplerange(1)-1))));
         
         gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time,'NMEA',data.gps.type);
-        transceiver=transceiver_cl();
-        
+
         freq=nan(1,header.transceivercount);
         
         fileID = unidrnd(2^64);
@@ -168,24 +165,30 @@ if ~isequal(Filename_cell, 0)
             curr_data.alongphi=single(data.pings(i).alongship_e);
             curr_data.acrossangle=single(data.pings(i).athwartship);
             curr_data.alongangle=single(data.pings(i).alongship);
-            %
-             
-            if iscell(Filename)
-                name_mat=Filename{1}(1:end-4);
-            else
-                name_mat=Filename(1:end-4);
-            end
             
-             MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);          
-             save(MatFileNames{i},'-struct','curr_data','-v7.3');
-
+            %             tic
+            %             MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);
+            %             save(MatFileNames{i},'-struct','curr_data','-v7.3');
+            %             curr_matfile=matfile(MatFileNames{i},'writable',true);
+            %              toc
+            %             for uuu=1:length(ff)
+            %                 sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},[nanmin(nanmin(curr_data.(ff{uuu}))) nanmax(nanmax(curr_data.(ff{uuu})))])];
+            %             end
             
-            sub_ac_data_temp=[];
+            curr_name=tempname;
             ff=fields(curr_data);
+            sub_ac_data_temp=[];
+            
             for uuu=1:length(ff)
-                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},[nanmin(nanmin(curr_data.(ff{uuu}))) nanmax(nanmax(curr_data.(ff{uuu})))])];
+                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},curr_name,curr_data.(ff{uuu}))];
             end
             
+            ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
+                'Range',double(data.pings(i).range),...
+                'Time',double(data.pings(i).time),...
+                'Number',double(data.pings(i).number),...
+                'MemapName',curr_name);
+
             clear curr_data;
             
             r=data.pings(i).range;
@@ -208,12 +211,7 @@ if ~isequal(Filename_cell, 0)
             
             algo_vec=init_algos(r);
             
-            curr_matfile=matfile(MatFileNames{i},'writable',true);
-            ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
-                'Range',double(data.pings(i).range),...
-                'Time',double(data.pings(i).time),...
-                'Number',double(data.pings(i).number),...
-                'MatfileData',curr_matfile);
+            
             
             
             
@@ -230,8 +228,7 @@ if ~isequal(Filename_cell, 0)
                 'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...
                 'Mode','CW',...
-                'AttitudeNavPing',attitude,...
-                'MatFileName',MatFileNames{i});
+                'AttitudeNavPing',attitude);
             
             
             
@@ -250,5 +247,5 @@ if ~isequal(Filename_cell, 0)
     end
     clear data transceiver
     
-
+    
 end

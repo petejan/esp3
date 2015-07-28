@@ -7,7 +7,7 @@ classdef ac_data_cl < handle
         Range
         Time
         Number
-        MatfileData
+        MemapName
     end
     
     
@@ -16,18 +16,15 @@ classdef ac_data_cl < handle
             p = inputParser;
             
             check_sub_ac_data_class=@(sub_ac_data_obj) isa(sub_ac_data_obj,'sub_ac_data_cl');
-            check_data_class=@(obj) isa(obj,'matlab.io.MatFile');
+         
+            power=10.^(-100/10)*ones(100,100);
+            def_name=fullfile(tempdir,'init');
+            addParameter(p,'SubData',sub_ac_data_cl('power',def_name,power),check_sub_ac_data_class);
+            addParameter(p,'Range',(1:100)/10,@isnumeric);
+            addParameter(p,'Time',(1:100)/10,@isnumeric);
+            addParameter(p,'Number',1:100,@isnumeric);
+            addParameter(p,'MemapName',def_name,@ischar);
             
-            def_data.power=10.^(-100/10)*ones(1000,1000);
-            save([pwd '/data.mat'],'-struct','def_data','-v7.3');
-            daf_matfile_data=matfile([pwd '/data.mat'],'writable',true);
-            
-            addParameter(p,'MatfileData',daf_matfile_data,check_data_class);
-            addParameter(p,'SubData',sub_ac_data_cl('power'),check_sub_ac_data_class);
-            addParameter(p,'Range',(1:1000)/10,@isnumeric);
-            addParameter(p,'Time',(1:1000)/10,@isnumeric);
-            addParameter(p,'Number',1:1000,@isnumeric);
-                     
             parse(p,varargin{:});
             
             results=p.Results;
@@ -47,29 +44,32 @@ classdef ac_data_cl < handle
             obj.Type=type;
         end
         
-        function data_out=concatenate_Data(data_1,data_2,new_file_name)           
-            if length(data_2.Fieldname)==length(data_1.Fieldname)
-                ff_1=who(data_1.MatfileData);
-                
-                for uuu=1:length(ff_1)
-                    curr_data.(ff_1{uuu})=[data_1.MatfileData.(ff_1{uuu}) data_2.MatfileData.(ff_1{uuu})];
+        function data_out=concatenate_Data(data_1,data_2)
+            
+            ff_1=data_1.Fieldname;
+            ff_2=data_1.Fieldname;
+            
+            fieldnames={};
+            new_sub_data=[];
+            new_name=tempname;
+            for uuu=1:length(ff_1)
+                [idx,found]=find_field_idx(data_2,ff_1{uuu});
+                if found
+                    new_sub_data=[new_sub_data; concatenate_SubData(data_1.SubData(uuu),data_2.SubData(idx),new_name)];
+                else
+                    warning('Cannot find field');
                 end
- 
-                delete(data_2.MatfileData.Properties.Source);
-                delete(data_1.MatfileData.Properties.Source);
-                save(new_file_name,'-struct','curr_data','-v7.3');
-                curr_matfile=matfile(new_file_name,'writable',true);
-                clear curr_data;
-                
-                data_out=ac_data_cl('SubData',concatenate_SubData(data_1.SubData,data_2.SubData),...
-                    'Range',data_1.Range,...
-                    'Time',[data_1.Time data_2.Time],...
-                    'Number',[data_1.Number data_1.Number(end)+data_2.Number],...
-                    'MatfileData',curr_matfile);
-            else
-                error('Cannot concatenate two dataset having different subdatasets')
             end
+            
+           
+            data_out=ac_data_cl('SubData',new_sub_data,...
+                'Range',data_1.Range,...
+                'Time',[data_1.Time data_2.Time],...
+                'Number',[data_1.Number data_1.Number(end)+data_2.Number],...
+                'MemapName',new_name);
+            
         end
+        
         
         function add_sub_data(data,subdata)
             subdata_temp=data.SubData;
@@ -79,9 +79,11 @@ classdef ac_data_cl < handle
                 [idx,found]=find_field_idx(data,fieldname);
                 if found==0
                     subdata_temp=[subdata_temp subdata(i)];
-                    data.Fieldname=[data.Fieldname {subdata.Fieldname}];
-                    data.Type=[data.Type {subdata.Type}];
+                    data.Fieldname=[data.Fieldname subdata(i).Fieldname];
+                    data.Type=[data.Type subdata(i).Type];
                 else
+                    clear subdata_temp(idx).Memap.Data;                    
+                    delete(subdata_temp(idx).Memap.Filename);
                     subdata_temp(idx)=subdata(i);
                 end
             end

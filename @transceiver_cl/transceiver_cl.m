@@ -34,7 +34,6 @@ classdef transceiver_cl < handle
         AttitudeNavPing
         Algo
         Mode
-        MatfileName
     end
     
     
@@ -67,7 +66,6 @@ classdef transceiver_cl < handle
             addParameter(p,'AttitudeNavPing',attitude_nav_cl.empty(),check_att_class);
             addParameter(p,'Algo',[],check_algo_class);
             addParameter(p,'Mode','CW',@ischar); 
-            addParameter(p,'MatfileName',[pwd '\data.mat'],@ischar);
             parse(p,varargin{:});
             
             
@@ -84,9 +82,7 @@ classdef transceiver_cl < handle
             if length(trans_1)==length(trans_2)
              for i=1:length(trans_1)
 
-                 new_file_name =fullfile([tempname '_echo_analysis.mat']);                 
-                 
-                 trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_1(i).Data,trans_2(i).Data,new_file_name),...
+                 trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_1(i).Data,trans_2(i).Data),...
                      'Bottom',concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom),...
                      'IdxBad',[trans_1(i).IdxBad; trans_2(i).IdxBad],...
                      'Algo',trans_1(i).Algo,...
@@ -95,8 +91,7 @@ classdef transceiver_cl < handle
                      'AttitudeNavPing',concatenate_AttitudeNavPing(trans_1(i).AttitudeNavPing,trans_2(i).AttitudeNavPing),...
                      'Params',trans_1(i).Params,...
                      'Config',trans_1(i).Config,...
-                     'Filters',trans_1(i).Filters,...
-                     'MatfileName',new_file_name);
+                     'Filters',trans_1(i).Filters);
              end
             else
                 error('Cannot concatenate two files with diff frequencies')

@@ -62,7 +62,6 @@ movegui(main_figure,'center')
 initialize_display(main_figure);
 update_display(main_figure,1);
 
-
 end
 
 
