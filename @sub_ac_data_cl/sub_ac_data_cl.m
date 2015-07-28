@@ -19,8 +19,8 @@ classdef sub_ac_data_cl < handle
             if fileID==-1
                 return;
             end
-            format={'single',size(data),field};
-            fwrite(fileID,data,'single');
+            format={'double',size(data),field};
+            fwrite(fileID,data,'double');
             fclose(fileID);
             
             obj.Memap = memmapfile(curr_name,...

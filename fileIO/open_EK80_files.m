@@ -66,15 +66,16 @@ if ~isequal(Filename, 0)
         for i =1:header.transceivercount
             
             
-            curr_data.spunmatched=single(data_ori.pings(i).Sp);
-            curr_data.sp=single(data.pings(i).Sp);
-            curr_data.sv=single(data.pings(i).Sv);
-            curr_data.power=single(data.pings(i).power);
-            curr_data.y=single(data.pings(i).y);
-            curr_data.acrossphi=single(data.pings(i).AcrossPhi);
-            curr_data.alongphi=single(data.pings(i).AlongPhi);
-            curr_data.acrossangle=single(data.pings(i).AcrossAngle);
-            curr_data.alongangle=single(data.pings(i).AlongAngle);
+            curr_data.spunmatched=double(data_ori.pings(i).Sp);
+            curr_data.sp=double(data.pings(i).Sp);
+            curr_data.sv=double(data.pings(i).Sv);
+            curr_data.power=double(data.pings(i).power);
+            curr_data.y_real=real(data.pings(i).y);
+            curr_data.y_imag=imag(data.pings(i).y);
+            curr_data.acrossphi=double(data.pings(i).AcrossPhi);
+            curr_data.alongphi=double(data.pings(i).AlongPhi);
+            curr_data.acrossangle=double(data.pings(i).AcrossAngle);
+            curr_data.alongangle=double(data.pings(i).AlongAngle);
             
             %
             

@@ -158,13 +158,13 @@ if ~isequal(Filename_cell, 0)
         
         for i =1:header.transceivercount
             
-            curr_data.power=single(10.^(double(data.pings(i).power/10)));
-            curr_data.sp=single(data.pings(i).Sp);
-            curr_data.sv=single(data.pings(i).Sv);
-            curr_data.acrossphi=single(data.pings(i).athwartship_e);
-            curr_data.alongphi=single(data.pings(i).alongship_e);
-            curr_data.acrossangle=single(data.pings(i).athwartship);
-            curr_data.alongangle=single(data.pings(i).alongship);
+            curr_data.power=(10.^(double(data.pings(i).power/10)));
+            curr_data.sp=double(data.pings(i).Sp);
+            curr_data.sv=double(data.pings(i).Sv);
+            curr_data.acrossphi=double(data.pings(i).athwartship_e);
+            curr_data.alongphi=double(data.pings(i).alongship_e);
+            curr_data.acrossangle=double(data.pings(i).athwartship);
+            curr_data.alongangle=double(data.pings(i).alongship);
             
             %             tic
             %             MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);

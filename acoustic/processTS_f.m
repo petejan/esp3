@@ -25,7 +25,7 @@ if strcmp(Transceiver.Mode,'FM')
     [~,idx_peak]=nanmin(abs(range-r));
     
    
-    y_c_ts=Transceiver.Data.get_subdatamat('y',idx_ts,iPing);
+    y_c_ts=Transceiver.Data.get_subdatamat('y_real',idx_ts,iPing)+1i*Transceiver.Data.get_subdatamat('y_imag',idx_ts,iPing);
 	AlongAngle_val=Transceiver.Data.get_subdatamat('AlongAngle',idx_peak,iPing);
 	AcrossAngle_val=Transceiver.Data.get_subdatamat('AcrossAngle',idx_peak,iPing);
     
@@ -40,6 +40,7 @@ if strcmp(Transceiver.Mode,'FM')
     y_tx_auto_red=y_tx_auto(ceil(length(y_tx_auto)/2)-idx_max+1:ceil(length(y_tx_auto)/2)+length(y_c_ts)-idx_max);
     
     nfft=(2.^(nextpow2(length(y_c_ts)+2)));
+
     fft_target=(fft(y_c_ts,nfft))/nfft;
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;
     fft_target_norm=(fft_target./fft_pulse);
