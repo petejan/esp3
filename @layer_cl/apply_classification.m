@@ -33,6 +33,8 @@ if nansum(~isnan(delta_120_38(:)))>50
     ylabel('Depth(m)')
     hold on;
     axis ij;
+    caxis([-10 10]);
+    colorbar;
     title(sprintf('\\Delta 120-38 dB difference of school %.0f',idx_school_38));
     
     
@@ -45,6 +47,8 @@ if nansum(~isnan(delta_120_38(:)))>50
     hold on;
     axis ij;
     title(sprintf('\\Delta 120-18 dB difference of school %.0f',idx_school_38));
+    caxis([-10 10]);
+    colorbar;
     
     linkaxes([ax1 ax2],'xy')
     

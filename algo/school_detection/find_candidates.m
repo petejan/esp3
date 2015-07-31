@@ -13,7 +13,7 @@ candidates=zeros(size(Mask));
 [nb_row,nb_col]=size(Mask);
 K=find(Mask);
 k=1;
-h=waitbar(k/length(I),sprintf('Processing Segmentation %i/%i',k,length(I)),'Name','Processing Segmentation');
+h=waitbar(k/length(I),sprintf('Processing Segmentation %.0f/%i',k/length(I)*100,100),'Name','Processing Segmentation');
 region_number=1;
 K_rem=sort(K);
 I_rem=I;
@@ -62,9 +62,9 @@ if ~isempty(K_rem)
             region_number=region_number+1;
             
             try
-                waitbar(k/length(I),h,sprintf('Processing Segmentation %i/%i',k,length(I)));
+                waitbar(k/length(I),h,sprintf('Processing Segmentation %.0f/%i',k/length(I)*100,100));
             catch
-                h=waitbar(k/length(I),sprintf('Processing Segmentation %i/%i',k,length(I)),'Name','Processing Segmentation');
+                h=waitbar(k/length(I),sprintf('Processing Segmentation %.0f/%i',k/length(I)*100,100),'Name','Processing Segmentation');
             end
         end
         

@@ -144,6 +144,8 @@ if ~isequal(Filename_cell, 0)
         Filename_bot=[Filename(1:end-4) '.bot'];
         if exist([PathToFile Filename_bot],'file')
             [~,temp, ~] = readEKBot([PathToFile Filename_bot], calParms,'Frequencies',vec_freq);
+
+                ping_end=nanmin(size(temp.pings.bottomdepth,2),ping_end);
             if ping_end==Inf
                 Bottom_sim=double(temp.pings.bottomdepth(:,ping_start:end));
             else

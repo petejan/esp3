@@ -39,7 +39,18 @@ end
 
 layer.prepare_classification(idx_to_process,reprocess);
 idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+id_to_remove=[];
+for ii=1:length(idx_school_38)
+    if length(layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Output.Sv_mean(:))<50
+        id_to_remove=[id_to_remove layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Unique_ID];
+    end
+end
 
+for uuu=id_to_remove
+    layer.Transceivers(idx_38).rm_region_id(uuu);
+end
+
+idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
 for ii=1:length(idx_school_38)
     layer.apply_classification(idx_38,idx_school_38(ii));
 end

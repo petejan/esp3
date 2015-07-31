@@ -12,9 +12,13 @@ if ~isempty(gps_obj.Lat)
     if nansum((size(time_gps)==size(time)))<2
         time=time';
     end
-    
-    if nanmean(time_gps-time)<=10*nanmean(diff(time))
-        obj=gps_data_cl('Lat',lat,'Long',long,'Time',time_gps,'NMEA',nmea);
+    if ~isempty(time_gps)
+        if nanmean(time_gps-time)<=10*nanmean(diff(time))
+            obj=gps_data_cl('Lat',lat,'Long',long,'Time',time_gps,'NMEA',nmea);
+        else
+            warning('Issue with navigation data...')
+            obj=gps_data_cl();
+        end
     else
         warning('Issue with navigation data...')
         obj=gps_data_cl();
