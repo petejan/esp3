@@ -1,9 +1,13 @@
-function integrate_region(region,Transceiver,idx_pings,idx_r)
+function integrate_region(region,Transceiver)
 
 Sv=Transceiver.Data.get_datamat('Sv');
 
+idx_pings=region.Idx_pings;
+idx_r=region.Idx_r;
+
 if isempty(Sv)
-    error('No Sv, cannot integrate');
+    warning('No Sv, cannot integrate');
+    return;
 end
     
 range=double(Transceiver.Data.Range);
@@ -26,9 +30,8 @@ idx=list_regions_type(Transceiver,'Bad Data');
 
 for i=idx
     curr_reg=Transceiver.Regions(i);
-
-    idx_r_curr=curr_reg.Sample_ori:curr_reg.Sample_ori+curr_reg.BBox_h-1;
-    idx_pings_curr=curr_reg.Ping_ori-Transceiver.Data.Number(1)+1:curr_reg.Ping_ori+curr_reg.BBox_w-Transceiver.Data.Number(1);
+    idx_r_curr=curr_reg.Idx_r;
+    idx_pings_curr=curr_reg.Idx_pings;
     switch curr_reg.Shape
         case 'Rectangular'
             Sv(idx_r_curr,idx_pings_curr)=NaN;
@@ -40,6 +43,11 @@ end
 Sv(:,Transceiver.IdxBad)=NaN;
 bot_r=Transceiver.Bottom.Range;
 bot_sple=Transceiver.Bottom.Sample_idx;
+if isempty(bot_r)
+    bot_r=ones(size(pings))*range(end)+1;
+    bot_sple=ones(size(pings))*samples(end)+1;
+end
+
 bot_r(bot_r==0)=range(end);
 bot_sple(bot_sple==0)=samples(end);
 bot_r(isnan(bot_r))=range(end);
@@ -250,9 +258,9 @@ end
 
 switch region.Cell_h_unit
     case 'samples'
-        region.Output.Range_mean=range(round(region.Output.y_mean));
-        region.Output.Layer_depth_min=range(round(region.Output.y_min));
-        region.Output.Layer_depth_max=range(round(region.Output.y_max));
+        region.Output.Range_mean(~isnan(region.Output.y_mean))=range(round(region.Output.y_mean(~isnan(region.Output.y_mean))));
+        region.Output.Layer_depth_min(~isnan(region.Output.y_min))=range(round(region.Output.y_min(~isnan(region.Output.y_min))));
+        region.Output.Layer_depth_max(~isnan(region.Output.y_max))=range(round(region.Output.y_max(~isnan(region.Output.y_max))));
     case 'meters'
         region.Output.Range_mean=region.Output.y_mean;
         region.Output.Layer_depth_min=region.Output.y_min;

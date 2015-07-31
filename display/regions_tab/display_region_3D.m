@@ -12,8 +12,8 @@ if ~isempty(list_reg)
     
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
     %active_reg=Transceiver.Regions(ii);
-    idx_pings=active_reg.Ping_ori:active_reg.Ping_ori+active_reg.BBox_w-1;
-    idx_r=active_reg.Sample_ori:active_reg.Sample_ori+active_reg.BBox_h-1;
+    idx_pings=active_reg.Idx_pings;
+    idx_r=active_reg.Idx_r;
     nb_samples=length(idx_r);
     nb_pings=length(idx_pings);
     

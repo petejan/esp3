@@ -8,7 +8,7 @@ layers=getappdata(main_figure,'Layers');
 nb_layers=length(layers);
 
 layers_Str=cell(1,nb_layers);
-for i=nb_layers:-1:1
+for i=1:nb_layers
     if iscell(layers(i).Filename)
         new_name=[layers(i).Filename{1}];
     else
@@ -67,6 +67,7 @@ else
     
     %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer');
     jToolbar = findjobj(gcf,'-nomenu','class','mjtoolbar');
+    
     if ~isempty(jToolbar)
         cursor_mode_tool_comp.jCombo = javax.swing.JComboBox(layers_Str);
         cursor_mode_tool_comp.jCombo = handle(cursor_mode_tool_comp.jCombo,'callbackproperties');

@@ -103,6 +103,9 @@ track_target_tab_comp.Max_Gap_Track=uicontrol(accept,'Style','Edit','units','nor
 
 uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.15 0.1 0.1],'callback',{@validate,main_figure});
 uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.8 0.05 0.1 0.1],'callback',{@copy_across,main_figure,'TrackTarget'});
+uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.8 0.25 0.1 0.1],'callback',{@save_algos,main_figure});
+
+
 
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
 end

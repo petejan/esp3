@@ -4,7 +4,10 @@ main_childs=get(main_figure,'children');
 tags=get(main_childs,'Tag');
 idx_opt=strcmp(tags,'option_tab_panel');
 idx_algo=strcmp(tags,'algo_tab_panel');
-
+layer=getappdata(main_figure,'Layer');
+if layer.ID_num==0
+    return;
+end
 
 if new==1
     load_display_tab(main_figure,main_childs(idx_opt));
@@ -32,9 +35,9 @@ else
     update_school_detect_tab(main_figure);
     update_single_target_tab(main_figure);
     update_track_target_tab(main_figure);
+    update_processing_tab(main_figure);
     
     update_display_tab(main_figure);
-    
     load_regions_tab(main_figure,main_childs(idx_opt));
     load_calibration_tab(main_figure,main_childs(idx_opt));
     
@@ -55,10 +58,9 @@ else
     
 end
 
-layer=getappdata(main_figure,'Layer');
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-
 
 load_info_panel(main_figure);
 load_axis_panel(main_figure,new);

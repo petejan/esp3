@@ -1,7 +1,7 @@
 function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
 
-read_all=0;
+
 if ~isempty(layer)
     if ~isempty(layer.PathToFile)
         path=layer.PathToFile;
@@ -17,7 +17,6 @@ Filename=layer.Filename;
 if ~iscell(Filename)
     Filename={Filename};
 end
-
 
 if file_id==0
     [Filename,PathToFile]= uigetfile([path '/*.raw'], 'Pick a raw file','MultiSelect','on');
@@ -60,17 +59,10 @@ elseif file_id==2
     end
     
 elseif ischar(file_id)
-    idx_slash=strfind(file_id,'\');
-    if isempty(idx_slash)
-        idx_slash=strfind(file_id,'/');
-    end
-    
-    if isempty(idx_slash)
+    [PathToFile,Filename,~]=fileparts(fileID);
+    if isempty(Filename)
         return;
     end
-    Filename=file_id(idx_slash(end)+1:end);
-    PathToFile=file_id(1:idx_slash(end));
-    read_all=1;
 end
 
 if iscell(Filename)
@@ -97,43 +89,53 @@ else
 end
 
 setappdata(main_figure,'Layer',layer);
-read_all=0;
 
+read_all=0;
+multi_layer=1;
+join=0;
 
 if ~isequal(Filename, 0)
-    choice = questdlg('Do you want to open files as separate layers?', ...
-        'File opening mode',...
-        'Yes','No', ...
-        'No');
-    % Handle response
-    switch choice
-        case 'Yes'
-            multi_layer=1;
-            accolate=0;
-        case 'No'
-            multi_layer=0;
-            read_all=1;
-    end
     
-    if isempty(choice)
-        return;
-    end
-    
-    if multi_layer==0
-        choice = questdlg('Do you want to accolate those new layers to existing ones?', ...
+    if iscell(Filename)
+        choice = questdlg('Do you want to open files as separate layers?', ...
             'File opening mode',...
             'Yes','No', ...
             'No');
         % Handle response
         switch choice
             case 'Yes'
-                accolate=1;
+                multi_layer=1;
+                read_all=0;
             case 'No'
-                accolate=0;
+                multi_layer=0;
+                read_all=1;
         end
+        
+        if isempty(choice)
+            return;
+        end
+    else
+        multi_layer=0;
     end
     
-    if read_all==0&&multi_layer==1
+    
+    if multi_layer==0&&layer.ID_num~=0
+        choice = questdlg('Do you want to join those new layers to existing ones?', ...
+            'File opening mode',...
+            'Yes','No', ...
+            'No');
+        % Handle response
+        switch choice
+            case 'Yes'
+                join=1;
+            case 'No'
+                join=0;
+        end
+    else
+        join=0;
+    end
+    
+    if read_all==0&&join==0
         prompt={'First ping:',...
             'Last Ping:'};
         name='Pings to load from each files';
@@ -152,12 +154,11 @@ if ~isequal(Filename, 0)
         ping_end=Inf;
     end
     
-    
     switch ftype
         case 'EK60'
-            open_EK60_file(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
+            open_EK60_file(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
         case 'EK80'
-            open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
+            open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
     end
         update_display(main_figure,1);
 end

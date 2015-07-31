@@ -44,22 +44,32 @@ end
         
         switch reg_curr.Shape
             case 'Rectangular'
-                x_reg=[x(reg_curr.Ping_ori-idx_x0) x(reg_curr.Ping_ori-idx_x0+reg_curr.BBox_w-1) x(reg_curr.Ping_ori-idx_x0+reg_curr.BBox_w-1) x(reg_curr.Ping_ori-idx_x0) x(reg_curr.Ping_ori-idx_x0)];
-                y_reg=[y(reg_curr.Sample_ori) y(reg_curr.Sample_ori) y(reg_curr.Sample_ori+reg_curr.BBox_h-1) y(reg_curr.Sample_ori+reg_curr.BBox_h-1) y(reg_curr.Sample_ori)];
+                x_reg=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
+                y_reg=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
                 plot(x_reg,y_reg,col,'linewidth',1,'tag','region','visible',vis);
+                text(nanmean(x_reg(:)),nanmean(y_reg(:)),reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',16,'tag','region')
             case 'Polygon'
                 idx_x=reg_curr.X_cont;
                 idx_y=reg_curr.Y_cont;
                 x_reg=cell(1,length(idx_x));
                 y_reg=cell(1,length(idx_x));
+                
+                len=0;
                 for jj=1:length(idx_x)
-                    idx_x{jj}=idx_x{jj}+reg_curr.Ping_ori-idx_x0-1;
-                    idx_y{jj}=idx_y{jj}+reg_curr.Sample_ori-1;
+                    idx_x{jj}=idx_x{jj}+reg_curr.Idx_pings(1);
+                    idx_y{jj}=idx_y{jj}+reg_curr.Idx_r(1);
 
                     x_reg{jj}=x(idx_x{jj});
                     y_reg{jj}=y(idx_y{jj});
+                    
+                    if length(idx_x)>len
+                        x_text=nanmean(x_reg{jj});
+                        y_text=nanmean(y_reg{jj});
+                    end
+                    
                     plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','visible',vis);
                 end
+                 text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',16,'tag','region')
         end
     end
 

@@ -50,18 +50,23 @@ set([processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_
 
 uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','File Selection','units','normalized','Position',[0.6 0.85 0.2 0.1]);
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.3 0.15],'callback',{@process,main_figure,0});
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Choose files manually','units','normalized','pos',[0.6 0.50 0.3 0.15],'callback',{@process,main_figure,1});
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Select Trawl Files from Voyage','units','normalized','pos',[0.6 0.3 0.3 0.15],'callback',{@process,main_figure,2});
+%uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all current layers','units','normalized','pos',[0.6 0.50 0.3 0.15],'callback',{@process,main_figure,3});
+%uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Choose files manually','units','normalized','pos',[0.6 0.50 0.3 0.15],'callback',{@process,main_figure,1});
+%uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Select Trawl Files from Voyage','units','normalized','pos',[0.6 0.3 0.3 0.15],'callback',{@process,main_figure,2});
 
 
 setappdata(main_figure,'Processing_tab',processing_tab_comp);
-
+setappdata(main_figure,'Process',process_list);
 end
 
 function process(~,~,main_figure,mode)
+update_algos(main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 process_list=getappdata(main_figure,'Process');
+if layer.ID_num==0
+    return;
+end
 
 if mode==1
     if ~isempty(layer.PathToFile)
@@ -76,7 +81,7 @@ if mode==1
         Filename={Filename};
     end
     
-elseif mode ==0
+elseif mode ==0||mode==3
     Filename=1;
 elseif mode==2
    [PathToFile,Filename,~]=getrawfiles(); 
@@ -85,13 +90,17 @@ end
 
 for ii=1:length(Filename)
 %for ii=1:3
-    if mode>0
+    if mode==1||mode==2
         open_file([],[],fullfile(PathToFile,Filename{ii}),main_figure);
         update_algos(main_figure);
         layer=getappdata(main_figure,'Layer');
     end
    
     for kk=1:length(process_list)
+        
+        if isempty(process_list(kk).Algo)
+            continue;
+        end
         
         curr_disp.Freq=process_list(kk).Freq;
         idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -148,6 +157,11 @@ for ii=1:length(Filename)
             
             memapname=layer.Transceivers(idx_freq).Data.MemapName;
             
+            layer.Transceivers(uu).Data.remove_sub_data('powerdenoised');
+            layer.Transceivers(uu).Data.remove_sub_data('spdenoised');
+            layer.Transceivers(uu).Data.remove_sub_data('svdenoised');
+            layer.Transceivers(uu).Data.remove_sub_data('snr');
+            
             sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
                 sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...
                 sub_ac_data_cl('svdenoised',memapname,Sv_unoised) ...
@@ -164,14 +178,13 @@ for ii=1:length(Filename)
         if denoised>0
             Sv=layer.Transceivers(idx_freq).Data.get_datamat('svdenoised');
             if isempty(Sv)
-                Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+                Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
             end
         else
-            Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+            Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
         end
     
-        
-        
+      
         if bot_algo&&~bad_trans_algo
             [Bottom,Double_bottom_region,~,~,~]=feval(process_list(kk).Algo(idx_algo_bot).Function,Sv,...
                 layer.Transceivers(idx_freq).Data.Range,...
@@ -214,7 +227,7 @@ for ii=1:length(Filename)
             bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
             
             layer.Transceivers(idx_freq).IdxBad=find(idx_noise_sector);
-            layer.Transceivers(idx_freq).Bottom=bottom_cl('Origin','Algo_v2',...
+            layer.Transceivers(idx_freq).Bottom=bottom_cl('Origin','Algo_v2_bp',...
                 'Range', bottom_range,...
                 'Sample_idx',Bottom,...
                 'Double_bot_mask',Double_bottom_region);
@@ -249,12 +262,7 @@ for ii=1:length(Filename)
                 'l_min_tot',process_list(kk).Algo(idx_school_detect).Varargin.l_min_tot,...
                 'nb_min_sples',process_list(kk).Algo(idx_school_detect).Varargin.nb_min_sples,...
                 'horz_link_max',process_list(kk).Algo(idx_school_detect).Varargin.horz_link_max,...
-                'vert_link_max',process_list(kk).Algo(idx_school_detect).Varargin.vert_link_max);
-            
-            [nb_samples,nb_pings]=size(linked_candidates);
-            
-            y=layer.Transceivers(idx_freq).Data.Range;
-            x=double(layer.Transceivers(idx_freq).Data.Number);
+                'vert_link_max',process_list(kk).Algo(idx_school_detect).Varargin.vert_link_max);;
             
             layer.Transceivers(idx_freq).rm_region('School');
             
@@ -272,49 +280,14 @@ for ii=1:length(Filename)
             cell_w=str2double(get(region_tab_comp.cell_w,'string'));
             
             
-            for j=1:nanmax(linked_candidates(:))
-                curr_reg=(linked_candidates==j);
-                curr_Sv=Sv;
-                curr_Sv(~curr_reg)=nan;
-                [J,I]=find(curr_reg);
-                if ~isempty(J)
-                    
-                    
-                    reg_temp=region_cl(...
-                        'ID',new_id(layer.Transceivers(idx_freq),'Data'),...
-                        'Name','School',...
-                        'Type','Data',...
-                        'Ping_ori',nanmax(nanmin(I)-1,1)+x(1)-1,...
-                        'Sample_ori',nanmax(nanmin(J)-1,1),...
-                        'BBox_w',(nanmax(I)-nanmin(I)),...
-                        'BBox_h',(nanmax(J)-nanmin(J)),...
-                        'Shape','Polygon',...
-                        'Sv_reg',(curr_Sv(nanmax(nanmin(J)-1,1):nanmin(nanmax(J)+1,nb_samples),nanmax(nanmin(I)-1,1):nanmin(nanmax(I)+1,nb_pings))),...
-                        'Reference','Surface',...
-                        'Cell_w',cell_w,...
-                        'Cell_w_unit',w_unit,...
-                        'Cell_h',cell_h,...
-                        'Cell_h_unit',h_unit,...
-                        'Output',[]);
-                    
-                    idx_pings=nanmax(nanmin(I)-1,1):nanmin(nanmax(I)+1,nb_pings);
-                    idx_r=nanmax(nanmin(J)-1,1):nanmin(nanmax(J)+1,nb_samples);
+        layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,w_unit,h_unit,cell_w,cell_h);
 
-                    reg_temp.integrate_region(layer.Transceivers(idx_freq),idx_pings,idx_r);
-                    
-                    layer.Transceivers(idx_freq).add_region(reg_temp);
-                    
-                end
-            end
         end
-        
-        main_childs=get(main_figure,'children');
-        tags=get(main_childs,'Tag');
-        idx_opt=strcmp(tags,'option_tab_panel');
-        load_regions_tab(main_figure,main_childs(idx_opt));
+        	
+        setappdata(main_figure,'Curr_disp',curr_disp); 
         setappdata(main_figure,'Layer',layer);
-        setappdata(main_figure,'Curr_disp',curr_disp);
-        load_axis_panel(main_figure,0);
+        update_display(main_figure,0);
+        
     end
     
 end
@@ -323,10 +296,15 @@ end
 end
 
 function update_process_list(~,~,main_figure)
+update_algos(main_figure)
 layer=getappdata(main_figure,'Layer');
 process_list=getappdata(main_figure,'Process');
 processing_tab_comp=getappdata(main_figure,'Processing_tab');
 idx_freq=get(processing_tab_comp.tog_freq, 'value');
+
+if isempty(layer.Transceivers(idx_freq).Algo)
+   return; 
+end
 
 add=get(processing_tab_comp.noise_removal,'value')==get(processing_tab_comp.noise_removal,'max');
 idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
@@ -348,7 +326,8 @@ process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Tra
 setappdata(main_figure,'Process',process_list);
 end
 
-function tog_freq(~,~,main_figure)
+function tog_freq(src,~,main_figure)
+choose_freq(src,[],main_figure);
 
 process_list=getappdata(main_figure,'Process');
 processing_tab_comp=getappdata(main_figure,'Processing_tab');

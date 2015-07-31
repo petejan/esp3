@@ -14,9 +14,9 @@ classdef bottom_cl
             p = inputParser;
             
             addParameter(p,'Origin','',@ischar);
-            addParameter(p,'Range',nan,@isnumeric);
-            addParameter(p,'Sample_idx',nan,@isnumeric);
-            addParameter(p,'Double_bot_mask',true,@islogical);
+            addParameter(p,'Range',[],@isnumeric);
+            addParameter(p,'Sample_idx',[],@isnumeric);
+            addParameter(p,'Double_bot_mask',[],@islogical);
           
             parse(p,varargin{:});
             

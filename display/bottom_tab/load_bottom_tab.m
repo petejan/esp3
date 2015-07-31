@@ -55,7 +55,8 @@ set(bottom_tab_comp.Thr_echo_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_echo
 bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,'Style','checkbox','Value',algo_bottom.denoised,'String','Compute on Denoised data','units','normalized','Position',[0.5 0.3 0.3 0.1]);
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
-uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@copy_across,main_figure,'BottomDetection'});
+uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across,main_figure,'BottomDetection'});
+uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
 
 setappdata(main_figure,'Bottom_tab',bottom_tab_comp);

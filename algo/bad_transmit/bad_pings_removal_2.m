@@ -311,23 +311,21 @@ try
     close(noisy_pings)
 end
 
-bad_trans=figure('Position',[260,300,900,500]);
-set(bad_trans,'Name','Bad Transmit','NumberTitle','off');
-clf;
-plot((1:nb_pings),~idx_bottom_bs_eval,'-r+','linewidth',2);
-hold on;
-plot((1:nb_pings),~idx_ringdown,'-go','linewidth',2,'linewidth',2);
-plot((1:nb_pings),~idx_spikes_Above,'-cx','linewidth',2);
-plot((1:nb_pings),~idx_spikes_Below,'-kv','linewidth',2);
-plot((1:nb_pings),idx_noise_burst,'-bs','linewidth',2);
-grid on;
-set (gca,'fontsize',14);
-xlabel('Ping Number');
-legend('From BS','From RD zone','From WaterColumn Level Above','From WaterColumn Level Below','Noise burst','Location', 'SouthEast');
-ylim([-0.2 1.2])
-title('Press any key to close figure')
-pause(2);
-    close(bad_trans);
+% bad_trans=figure('Position',[260,300,900,500]);
+% set(bad_trans,'Name','Bad Transmit','NumberTitle','off');
+% clf;
+% plot((1:nb_pings),~idx_bottom_bs_eval,'-r+','linewidth',2);
+% hold on;
+% plot((1:nb_pings),~idx_ringdown,'-go','linewidth',2,'linewidth',2);
+% plot((1:nb_pings),~idx_spikes_Above,'-cx','linewidth',2);
+% plot((1:nb_pings),~idx_spikes_Below,'-kv','linewidth',2);
+% plot((1:nb_pings),idx_noise_burst,'-bs','linewidth',2);
+% grid on;
+% set (gca,'fontsize',14);
+% xlabel('Ping Number');
+% legend('From BS','From RD zone','From WaterColumn Level Above','From WaterColumn Level Below','Noise burst','Location', 'SouthEast');
+% ylim([-0.2 1.2])
+% close(bad_trans);
 
 end
 

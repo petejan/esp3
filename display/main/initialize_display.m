@@ -4,7 +4,7 @@ mh = uimenu(main_figure,'Label','File','Tag','menufile');
 uimenu(mh,'Label','Open file','Callback',{@open_file,0,main_figure});
 uimenu(mh,'Label','Open next file','Callback',{@open_file,1,main_figure});
 uimenu(mh,'Label','Open previous file','Callback',{@open_file,2,main_figure});
-uimenu(mh,'Label','Save as default config','Callback',{@save_default,main_figure});
+%uimenu(mh,'Label','Save as default config','Callback',{@save_default,main_figure});
 
 mhh = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
@@ -18,6 +18,7 @@ reg_tools=uimenu(mhhh,'Label','Regions');
 
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
+uimenu(reg_tools,'Label','Classify schools (Gauthier,2014 )','Callback',{@classify_regions,main_figure});
 
 
 uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');

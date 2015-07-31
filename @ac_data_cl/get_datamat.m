@@ -1,4 +1,4 @@
-function datamat=get_datamat(data,field)
+function [datamat,idx]=get_datamat(data,field)
 
 
 [idx,found]=find_field_idx(data,(deblank(field)));

@@ -3,11 +3,11 @@ classdef region_cl < handle
     properties 
         Name
         ID
+        Tag
+        Unique_ID
         Type
-        Ping_ori
-        Sample_ori
-        BBox_w
-        BBox_h
+        Idx_pings
+        Idx_r
         Shape
         Sv_reg
         X_cont
@@ -34,12 +34,12 @@ classdef region_cl < handle
             check_output=@(output) isempty(output)||isstruct(output);
             
             addParameter(p,'Name','',@ischar);
-            addParameter(p,'ID',1,@isnumeric);
+            addParameter(p,'ID',0,@isnumeric);
+            addParameter(p,'Unique_ID',unidrnd(2^64),@isnumeric);
+            addParameter(p,'Tag','UNC',@ischar);
             addParameter(p,'Type','Data',check_type);
-            addParameter(p,'Ping_ori',1,@isnumeric);
-            addParameter(p,'Sample_ori',1,@isnumeric);
-            addParameter(p,'BBox_w',0,@isnumeric);
-            addParameter(p,'BBox_h',0,@isnumeric);
+            addParameter(p,'Idx_pings',[],@isnumeric);
+            addParameter(p,'Idx_r',[],@isnumeric);
             addParameter(p,'Shape','Rectangular',check_shape);
             addParameter(p,'Sv_reg',[],@isnumeric);
             addParameter(p,'Reference','Surface',check_reference);
@@ -88,13 +88,12 @@ classdef region_cl < handle
         
         function mask=create_mask(obj,nb_samples,nb_pings)
             mask=zeros(nb_samples,nb_pings);
-            idx_r=obj.Sample_ori:obj.Sample_ori+obj.BBox_h-1;
-            idx_pings=obj.Ping_ori:obj.Ping_ori+obj.BBox_w-1;
+
              switch obj.Shape
                 case 'Rectangular'
-                    mask(idx_r,idx_pings)=1;
+                    mask(obj.Idx_r,obj.Idx_pings)=1;
                 case 'Polygon'
-                    mask(idx_r,idx_pings)=~isnan(obj.Sv_reg);
+                   ask(obj.Idx_r,obj.Idx_pings)=~isnan(obj.Sv_reg);
              end
                      
             

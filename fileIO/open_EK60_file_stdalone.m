@@ -1,22 +1,29 @@
 
 function  layers=open_EK60_file_stdalone(main_figure,PathToFile,Filename_cell,vec_freq,ping_start,ping_end)
 
-
+app_path=getappdata(main_figure,'App_path');
 
 if ~isequal(Filename_cell, 0)
     
     if ~iscell(Filename_cell)
         Filename_cell={Filename_cell};
     end
+       
     
-    opening_file=msgbox(['Opening file ' Filename_cell '. This box will close when finished...'],'Opening File');
-    hlppos=get(opening_file,'position');
-    set(opening_file,'position',[100 hlppos(2:4)])
+    opening_file=waitbar(1/length(Filename_cell),sprintf('Opening file: %s',Filename_cell{1}),'Name','Opening files');
     
     prev_ping_end=0;
     prev_ping_start=1;
     
     for uu=1:length(Filename_cell)
+        
+        try
+            waitbar(uu/length(Filename_cell),opening_file,sprintf('Opening file: %s',Filename_cell{uu}));
+        catch
+            opening_file=waitbar(uu/length(Filename_cell),sprintf('Opening file: %s',Filename_cell{uu}),'Name','Opening files');
+        end
+        
+        
         
         Filename=Filename_cell{uu};
         
@@ -148,7 +155,7 @@ if ~isequal(Filename_cell, 0)
         Bottom_sim_idx=round(Bottom_sim/dR-(double((data.pings(n).samplerange(1)-1))));
         
         gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time,'NMEA',data.gps.type);
-
+        
         freq=nan(1,header.transceivercount);
         
         fileID = unidrnd(2^64);
@@ -158,24 +165,31 @@ if ~isequal(Filename_cell, 0)
         
         for i =1:header.transceivercount
             
-            curr_data.power=(10.^(double(data.pings(i).power/10)));
-            curr_data.sp=double(data.pings(i).Sp);
-            curr_data.sv=double(data.pings(i).Sv);
-            curr_data.acrossphi=double(data.pings(i).athwartship_e);
-            curr_data.alongphi=double(data.pings(i).alongship_e);
-            curr_data.acrossangle=double(data.pings(i).athwartship);
-            curr_data.alongangle=double(data.pings(i).alongship);
+            curr_data.power=single(10.^(double(data.pings(i).power/10)));
+            curr_data.sp=single(data.pings(i).Sp);
+            curr_data.sv=single(data.pings(i).Sv);
+            curr_data.acrossphi=single(data.pings(i).athwartship_e);
+            curr_data.alongphi=single(data.pings(i).alongship_e);
+            curr_data.acrossangle=single(data.pings(i).athwartship);
+            curr_data.alongangle=single(data.pings(i).alongship);
             
+            %
+            %             ff=fields(curr_data);
             %             tic
-            %             MatFileNames{i}=fullfile([tempname '_echo_analysis.mat']);
-            %             save(MatFileNames{i},'-struct','curr_data','-v7.3');
-            %             curr_matfile=matfile(MatFileNames{i},'writable',true);
-            %              toc
             %             for uuu=1:length(ff)
-            %                 sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},[nanmin(nanmin(curr_data.(ff{uuu}))) nanmax(nanmax(curr_data.(ff{uuu})))])];
+            %                 MatFileNames=fullfile([tempname '_echo_analysis.mat']);
+            %                 data_temp=curr_data.(ff{uu});
+            %                 save(MatFileNames,'data_temp','-v7.3');
+            %                 curr_matfile=matfile(MatFileNames,'writable',true);
             %             end
+            %             toc
             
-            curr_name=tempname;
+            
+            
+            dir_data=app_path.data;
+            [~,curr_filename,~]=fileparts(tempname);
+            curr_name=fullfile(dir_data,curr_filename);
+            
             ff=fields(curr_data);
             sub_ac_data_temp=[];
             
@@ -188,7 +202,7 @@ if ~isequal(Filename_cell, 0)
                 'Time',double(data.pings(i).time),...
                 'Number',double(data.pings(i).number),...
                 'MemapName',curr_name);
-
+            
             clear curr_data;
             
             r=data.pings(i).range;
@@ -240,7 +254,7 @@ if ~isequal(Filename_cell, 0)
         layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
         
     end
-    
+
     layers=layers_temp;
     if exist('opening_file','var')
         close(opening_file);

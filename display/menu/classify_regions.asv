@@ -1,0 +1,122 @@
+function classify_regions(~,~,main_figure)
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+
+idx_38=find_freq_idx(layer,38000);
+idx_18=find_freq_idx(layer,18000);
+idx_120=find_freq_idx(layer,120000);
+
+idx_to_process=[idx_18 idx_38 idx_120];
+
+choice = questdlg('Do you want to reprocess schools using Gauthier/Oeffner parameters?', ...
+    'Reprocess',...
+    'Yes','No', ...
+    'No');
+% Handle response
+switch choice
+    case 'Yes'
+        reprocess=1;
+    case 'No'
+        reprocess=0;
+end
+
+layer.prepare_classification(idx_to_process,reprocess);
+
+layer.apply_classification(idx_region,reprocess);
+
+
+idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+for ii=1:length(idx_school_38)
+
+    layer.apply_classification(idx_38,idx_school_38(ii));
+    
+    idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+
+for i=1:length(layer.Transceivers)
+    if i==idx_38
+        continue;
+    end
+    layer.Transceivers(i).rm_region('School');
+end
+
+for ii=1:length(idx_school_38)
+    active_reg=layer.Transceivers(idx_38).Regions(idx_school_38(ii));
+    layer.copy_region_across(idx_38,active_reg);
+end
+    
+    
+    school_38_reg=layer.Transceivers(idx_38).Regions(idx_school_38(ii));
+    [idx_school_18,found_18]=layer.Transceivers(idx_18).find_reg_idx(school_38_reg.Unique_ID);
+    [idx_school_120,found_120]=layer.Transceivers(idx_120).find_reg_idx(school_38_reg.Unique_ID);
+    
+    if ~found_18||~found_120
+        warning('Cannot find school on every frequency!Pass...');
+        continue;
+    end
+    
+    school_18_reg=layer.Transceivers(idx_18).Regions(idx_school_18);
+    school_120_reg=layer.Transceivers(idx_120).Regions(idx_school_120);
+    
+    delta_120_18=school_120_reg.Output.Sv_mean-school_18_reg.Output.Sv_mean;
+    delta_120_38=school_120_reg.Output.Sv_mean-school_38_reg.Output.Sv_mean;
+    if length(school_38_reg.Output.Sv_mean(:))>50
+        figure();
+        ax1=subplot(2,1,1);
+        pcolor(school_120_reg.Output.x_node,school_120_reg.Output.Range_mean,delta_120_38);
+        colormap(jet);
+        grid on;
+        xlabel(school_38_reg.Cell_w_unit)
+        ylabel('Depth(m)')
+        hold on;
+        axis ij;
+        title(sprintf('\\Delta 120-38 dB difference of school %.0f',idx_school_38(ii)));
+        
+        
+        ax2=subplot(2,1,2);
+        pcolor(school_120_reg.Output.x_node,school_120_reg.Output.Range_mean,delta_120_18);
+        xlabel(school_38_reg.Cell_w_unit)
+        ylabel('Depth(m)')
+        colormap(jet)
+        grid on;
+        hold on;
+        axis ij;
+        title(sprintf('\\Delta 120-18 dB difference of school %.0f',idx_school_38(ii)));
+        
+        linkaxes([ax1 ax2],'xy')
+    end
+    
+    aggregation_depth=nanmean(school_38_reg.Output.Range_mean(:));
+    upper_range=nanmax(school_38_reg.Output.Range_mean(:));
+    lat_mean=nanmax(school_38_reg.Output.Lat_M(:));
+    bot_depth=nanmean(layer.Transceivers(idx_18).Bottom.Range);
+    
+    if nanmean(delta_120_18(:))>8&&nanmean(delta_120_38(:))>5
+        layer.Transceivers(idx_18).Regions(idx_school_18).Tag='EUP';
+        layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Tag='EUP';
+        layer.Transceivers(idx_18).Regions(idx_school_120).Tag='EUP';
+    elseif aggregation_depth>400
+        layer.Transceivers(idx_18).Regions(idx_school_18).Tag='DIA';
+        layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Tag='DIA';
+        layer.Transceivers(idx_18).Regions(idx_school_120).Tag='DIA';
+    elseif upper_range<200
+        layer.Transceivers(idx_18).Regions(idx_school_18).Tag='MMU';
+        layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Tag='MMU';
+        layer.Transceivers(idx_18).Regions(idx_school_120).Tag='MMU';
+    elseif bot_depth>400&&lat_mean<-44
+        layer.Transceivers(idx_18).Regions(idx_school_18).Tag='ELC';
+        layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Tag='ELC';
+        layer.Transceivers(idx_18).Regions(idx_school_120).Tag='ELC';
+    else
+        layer.Transceivers(idx_18).Regions(idx_school_18).Tag='LHE';
+        layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Tag='LHE';
+        layer.Transceivers(idx_18).Regions(idx_school_120).Tag='LHE';
+        
+    end
+      
+end
+
+setappdata(main_figure,'Layer',layer);
+setappdata(main_figure,'Curr_disp',curr_disp);
+update_display(main_figure,0);
+end

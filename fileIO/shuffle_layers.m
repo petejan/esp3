@@ -1,4 +1,4 @@
-function [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,accolate)
+function [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join)
 
 [~,found]=find_layer_idx(layers,0);
 
@@ -8,7 +8,7 @@ end
 
 if multi_layer==0   
     
-    if accolate==1
+    if join==1
         layers_temp=[layers layers_temp];
         old_layers=layers;
         layers=[];
@@ -41,9 +41,10 @@ if multi_layer==0
         
         samples_nb=unique(layers_grp(uu).nb_samples_range','rows')';
         idx_to_concatenate{uu}=cell(1,size(samples_nb,2));
+        idx_not_to_concatenate{uu}=[];
         for kk=1:size(samples_nb,2)
             idx_to_concatenate{uu}{kk}=[];
-            idx_not_to_concatenate{uu}{kk}=[];
+            
             idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)))==trans_nb(uu));
             
             for kki=idx_same_samples
@@ -66,9 +67,9 @@ if multi_layer==0
             end
             %idx_to_concatenate{uu}{kk}=unique(idx_to_concatenate{uu}{kk}(:));%not good but will have to wait a bit!
             if ~isempty(idx_to_concatenate{uu}{kk})
-                idx_not_to_concatenate{uu}{kk}=setxor(idx,unique(idx_to_concatenate{uu}{kk}(:)));
+                idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu} setxor(idx,unique(idx_to_concatenate{uu}{kk}(:)))]);
             else
-                idx_not_to_concatenate{uu}{kk}=idx;
+                idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu} idx]);
             end
         end
     end
@@ -103,13 +104,13 @@ if multi_layer==0
                         time_j=layers_temp(new_chains{j}(end)).Transceivers(1).Data.Time(end)-layers_temp(new_chains{j}(1)).Transceivers(1).Data.Time(1);
                         
                         if time_j>=time_i
-                            idx_not_to_concatenate{uui}={idx_not_to_concatenate{uui}{:} setdiff(new_chains{i},new_chains{j})};
+                            temp_u=setdiff(new_chains{i},new_chains{j});                        
                             new_chains{i}=[];
                         else
-                            idx_not_to_concatenate{uui}={idx_not_to_concatenate{uui}{:} setdiff(new_chains{j},new_chains{i})};
+                            temp_u=setdiff(new_chains{j},new_chains{i});
                             new_chains{j}=[];
                         end
-                        
+                        idx_not_to_concatenate{uui}=unique([idx_not_to_concatenate{uui}(:); temp_u(:)]);
                     end
                 end
             end
@@ -132,7 +133,7 @@ if multi_layer==0
                 end
             end
             for kkj=1:length(idx_not_to_concatenate{uui})
-                new_layers=[layers_temp(idx_not_to_concatenate{uui}{kkj}) new_layers ];
+                new_layers=[layers_temp(idx_not_to_concatenate{uui}(kkj)) new_layers ];
             end
         end
     end
@@ -141,17 +142,19 @@ else
     new_layers=layers_temp;
 end
 
-for u=1:length(new_layers)
+for u=length(new_layers):-1:1
     layer=new_layers(u);
     if ~isempty(layers)
         [~,found]=find_layer_idx(layers,layer.ID_num);
     else
         found=0;
     end
+    
     if found==1
         warning('Who, that''s extremely unlikely!')
+    else
+        layers=[layer layers];
     end
-    layers=[layers layer];
 end
 
 end

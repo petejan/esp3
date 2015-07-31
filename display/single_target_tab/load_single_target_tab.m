@@ -70,6 +70,7 @@ set(single_target_tab_comp.MaxStdMajAxisAngle_ed,'callback',{@sync_Sl_ed,single_
 
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.05 0.1 0.1],'callback',{@validate,main_figure});
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across,main_figure,'SingleTarget'});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.4 0.05 0.1 0.1],'callback',{@save_algos,main_figure});
 
 
 setappdata(main_figure,'Single_target_tab',single_target_tab_comp);
@@ -104,8 +105,10 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
 dataMat=nan(size(Sv));
 dataMat(ST.idx_target_lin)=ST.TS_comp;
 
+
 memapname=layer.Transceivers(idx_freq).Data.MemapName;
 
+layer.Transceivers(idx_freq).Data.remove_sub_data('singletarget');
 sub_ac_data_temp=sub_ac_data_cl('singletarget',memapname,dataMat);
 
 layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);

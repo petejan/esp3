@@ -70,8 +70,9 @@ bad_ping_tab_comp.BS_std_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','ed
 set(bad_ping_tab_comp.BS_std_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.BS_std_ed,'%.0f'});
 set(bad_ping_tab_comp.BS_std_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.BS_std_sl,'%.0f'});
 
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@copy_across,main_figure,'BadPings'});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across,main_figure,'BadPings'});
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
 setappdata(main_figure,'Bad_ping_tab',bad_ping_tab_comp);
 end
@@ -121,7 +122,7 @@ bottom_range=nan(size(Bottom));
 bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
 
 layer.Transceivers(idx_freq).IdxBad=find(idx_noise_sector);
-layer.Transceivers(idx_freq).Bottom=bottom_cl('Origin','Algo_v2',...
+layer.Transceivers(idx_freq).Bottom=bottom_cl('Origin','Algo_v2_bp',...
     'Range', bottom_range,...
     'Sample_idx',Bottom,...
     'Double_bot_mask',Double_bottom_region);

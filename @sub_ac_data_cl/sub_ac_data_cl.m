@@ -16,15 +16,17 @@ classdef sub_ac_data_cl < handle
             
             curr_name=[memapname field '.bin'];
             fileID = fopen(curr_name,'w+');
-            if fileID==-1
+            
+            while fileID==-1
                 return;
             end
-            format={'double',size(data),field};
-            fwrite(fileID,data,'double');
+            
+            format={'single',size(data),field};
+            fwrite(fileID,single(data),'single');
             fclose(fileID);
             
             obj.Memap = memmapfile(curr_name,...
-                'Format',format,'repeat',1,'writable',true);
+                'Format',format,'repeat',1,'writable',false);
                      
             switch obj.Fieldname
                 case  'sv'
@@ -92,12 +94,14 @@ classdef sub_ac_data_cl < handle
             
             data_1=sub_1.Memap.Data.(sub_1.Fieldname);
             data_2=sub_2.Memap.Data.(sub_2.Fieldname);
+            
             new_data=[data_1 data_2];
             
             sub_1.Memap.Writable=false;
             sub_2.Memap.Writable=false;
             
             %clear sub_1.Memap sub_2.Memap data1 data2
+            
             delete(sub_1.Memap.Filename);
             delete(sub_2.Memap.Filename);
             
@@ -105,6 +109,6 @@ classdef sub_ac_data_cl < handle
 
         end
         
-        
+       
     end
 end

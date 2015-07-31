@@ -32,7 +32,7 @@ end
 
 idx_temp=strfind(temp_path,'\');
 app_path.main=temp_path(1:idx_temp(end));
-app_path.data=[app_path.main 'data\'];
+app_path.data=fullfile(tempdir,'data_echo');
 app_path.cal=[];
 app_path.cal_eba=[];
 
@@ -49,6 +49,8 @@ if ~isdeployed
 %         %curr_disp_obj=curr_disp;
 %     end
 end
+
+
 
 layers=layer_obj;
 setappdata(main_figure,'Layers',layers);

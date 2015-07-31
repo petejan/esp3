@@ -12,7 +12,7 @@ cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
     
-    [mean_depth,Sa]=Transceiver.get_mean_depth_from_region(active_reg.Unique_ID);
+    mean_depth=Transceiver.get_mean_depth_from_region(active_reg.Unique_ID);
     
     Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
 
@@ -21,9 +21,9 @@ if ~isempty(list_reg)
     bot_r(isnan(bot_r))=layer.Transceivers(idx_freq).Data.Range(end);
     
    idx_pings=active_reg.Idx_pings;
-   idx_r=active_reg.Idx_r;
+   idx
     time=datetime(datestr(layer.Transceivers(idx_freq).Data.Time(idx_pings)));
-    range=layer.Transceivers(idx_freq).Data.Range(idx_r);
+    
     figure();
     ax1=subplot(2,1,1);
     u=imagesc(layer.Transceivers(idx_freq).Data.Time(idx_pings),range,Sv(idx_r,idx_pings));

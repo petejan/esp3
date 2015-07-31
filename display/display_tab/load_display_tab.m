@@ -60,11 +60,11 @@ display_tab_comp.disp_bad_trans=uicontrol(display_tab_comp.display_tab,'Style','
 display_tab_comp.disp_reg=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Regions','units','normalized','Position',[0.3 0.2 0.25 0.1]);
 display_tab_comp.disp_tracks=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Tracks','units','normalized','Position',[0.3 0.1 0.25 0.1]);
 display_tab_comp.disp_under_bot=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Remove Under Bottom data','units','normalized','Position',[0.6 0.4 0.3 0.1]);
-display_tab_comp.switch_bottom=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Switch Under Bottom data','units','normalized','Position',[0.6 0.3 0.3 0.1]);
+%display_tab_comp.switch_bottom=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Switch Under Bottom data','units','normalized','Position',[0.6 0.3 0.3 0.1]);
 
 
 
-set([display_tab_comp.disp_tracks display_tab_comp.disp_bad_trans display_tab_comp.disp_bottom display_tab_comp.disp_reg display_tab_comp.disp_under_bot display_tab_comp.switch_bottom],'callback',{@set_disp,main_figure});
+set([display_tab_comp.disp_tracks display_tab_comp.disp_bad_trans display_tab_comp.disp_bottom display_tab_comp.disp_reg display_tab_comp.disp_under_bot],'callback',{@set_disp,main_figure});
 
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Attitude','units','normalized','pos',[0.6 0.1 0.15 0.15],'callback',{@display_attitude,main_figure});
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav. Data','units','normalized','pos',[0.75 0.1 0.15 0.15],'callback',{@display_navigation,main_figure});

@@ -77,6 +77,7 @@ set(school_detect_tab_comp.sv_thr_ed,'callback',{@sync_Sl_ed,school_detect_tab_c
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.05 0.1 0.1],'callback',{@validate,main_figure});
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.4 0.05 0.1 0.1],'callback',{@save_algos,main_figure});
 
 
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
@@ -123,11 +124,6 @@ linked_candidates=feval(layer.Transceivers(idx_freq).Algo(idx_school_detect).Fun
     'horz_link_max',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.horz_link_max,...
     'vert_link_max',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.vert_link_max);
 
-
-
-y=layer.Transceivers(idx_freq).Data.Range;
-x=double(layer.Transceivers(idx_freq).Data.Number);
-
 layer.Transceivers(idx_freq).rm_region('School');
 
 w_units=get(region_tab_comp.cell_w_unit,'string');
@@ -141,61 +137,8 @@ h_unit=h_units{h_unit_idx};
 cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
-Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
-if isempty(Sv)
-    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
-end
+layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,w_unit,h_unit,cell_w,cell_h);
 
-
-for j=1:nanmax(linked_candidates(:))
-    curr_reg=(linked_candidates==j);
-    curr_Sv=Sv;
-    curr_Sv(~curr_reg)=nan;
-    [J,I]=find(curr_reg);
-    if ~isempty(J)
-
-        ping_ori=nanmax(nanmin(I)-1,1)+x(1)-1;
-        sample_ori=nanmax(nanmin(J)-1,1);
-        Bbox_w=(nanmax(I)-nanmin(I));
-        Bbox_h=(nanmax(J)-nanmin(J));
-        
-        idx_pings=ping_ori:ping_ori+Bbox_w-1;
-        idx_r=sample_ori:sample_ori+Bbox_h-1;
-        
-        reg_temp=region_cl(...
-            'ID',new_id(layer.Transceivers(idx_freq),'School'),...
-            'Name','School',...
-            'Type','Data',...
-            'Ping_ori',ping_ori,...
-            'Sample_ori',sample_ori,...
-            'BBox_w',Bbox_w,...
-            'BBox_h',Bbox_h,...
-            'Shape','Polygon',...
-            'Sv_reg',curr_Sv(idx_r,idx_pings),...
-            'Reference','Surface',...
-            'Cell_w',cell_w,...
-            'Cell_w_unit',w_unit,...
-            'Cell_h',cell_h,...
-            'Cell_h_unit',h_unit,...
-            'Output',[]);
-
-
-%         X=sub_x(1):reg_temp.Cell_w:sub_x(end);
-%         Y=sub_y(1):reg_temp.Cell_h:sub_y(end);
-%         Output_old=integrate_data(sub_x,sub_y,reg_temp.Sv_reg,X,Y,layer.Transceivers(idx_freq).Bottom.Range(idx_pings));
-%         
-          reg_temp.integrate_region(layer.Transceivers(idx_freq),idx_pings,idx_r);
-
-%         figure();
-%         hold on;
-%         plot(nanmean(reg_temp.Output.y_node'),10*log10(nanmean(10.^(reg_temp.Output.Sv_mean'/10))));
-%         plot(nanmean(Output_old.y_node'),10*log10(nanmean(10.^(Output_old.Sv_mean'/10))));
-%         grid on;
-        
-        layer.Transceivers(idx_freq).add_region(reg_temp);
-        
-    end
-end
 setappdata(main_figure,'Layer',layer);
 
 update_display(main_figure,0);

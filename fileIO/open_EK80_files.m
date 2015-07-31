@@ -1,6 +1,7 @@
-function open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,accolate)
+function open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
+app_path=getappdata(main_figure,'App_path');
 
 ite=1;
 
@@ -66,16 +67,16 @@ if ~isequal(Filename, 0)
         for i =1:header.transceivercount
             
             
-            curr_data.spunmatched=double(data_ori.pings(i).Sp);
-            curr_data.sp=double(data.pings(i).Sp);
-            curr_data.sv=double(data.pings(i).Sv);
-            curr_data.power=double(data.pings(i).power);
-            curr_data.y_real=real(data.pings(i).y);
-            curr_data.y_imag=imag(data.pings(i).y);
-            curr_data.acrossphi=double(data.pings(i).AcrossPhi);
-            curr_data.alongphi=double(data.pings(i).AlongPhi);
-            curr_data.acrossangle=double(data.pings(i).AcrossAngle);
-            curr_data.alongangle=double(data.pings(i).AlongAngle);
+            curr_data.spunmatched=single(data_ori.pings(i).Sp);
+            curr_data.sp=single(data.pings(i).Sp);
+            curr_data.sv=single(data.pings(i).Sv);
+            curr_data.power=single(data.pings(i).power);
+            curr_data.y_real=single(real(data.pings(i).y));
+            curr_data.y_imag=single(imag(data.pings(i).y));
+            curr_data.acrossphi=single(data.pings(i).AcrossPhi);
+            curr_data.alongphi=single(data.pings(i).AlongPhi);
+            curr_data.acrossangle=single(data.pings(i).AcrossAngle);
+            curr_data.alongangle=single(data.pings(i).AlongAngle);
             
             %
             
@@ -89,8 +90,10 @@ if ~isequal(Filename, 0)
                 [~,found]=find_layer_idx(layers,fileID);
             end
             
+            dir_data=app_path.data;
+            [~,curr_filename,~]=fileparts(tempname);
+            curr_name=fullfile(dir_data,curr_filename);
             
-            curr_name=tempname;
             ff=fields(curr_data);
             sub_ac_data_temp=[];
             
@@ -204,7 +207,7 @@ if ~isequal(Filename, 0)
         end
     end
     
-    [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,accolate);
+    [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join);
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);

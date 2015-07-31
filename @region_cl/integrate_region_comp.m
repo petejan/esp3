@@ -1,5 +1,7 @@
-function int_result=integrate_region_comp(region,Transceiver,idx_pings,idx_r)
+function int_result=integrate_region_comp(region,Transceiver)
 
+idx_pings=region.Idx_pings;
+idx_r=region.Idx_r;
 Sv=Transceiver.Data.get_datamat('Sv');
 
 if isempty(Sv)

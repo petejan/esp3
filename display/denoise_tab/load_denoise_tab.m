@@ -52,8 +52,11 @@ denoise_tab_comp.SNRThr_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit'
 set(denoise_tab_comp.SNRThr_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.SNRThr_ed,'%.0f'});
 set(denoise_tab_comp.SNRThr_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.SNRThr_sl,'%.0f'});
 
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@copy_across,main_figure,'Denoise'});
 uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
+uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across,main_figure,'Denoise'});
+uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
+
+
 
 setappdata(main_figure,'Denoise_tab',denoise_tab_comp);
 
@@ -113,6 +116,11 @@ power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
     'NoiseThr',round(get(denoise_tab_comp.NoiseThr_sl,'Value')));
 
 memapname=layer.Transceivers(idx_freq).Data.MemapName;
+
+layer.Transceivers(idx_freq).Data.remove_sub_data('powerdenoised');
+layer.Transceivers(idx_freq).Data.remove_sub_data('spdenoised');
+layer.Transceivers(idx_freq).Data.remove_sub_data('svdenoised');
+layer.Transceivers(idx_freq).Data.remove_sub_data('snr');
 
 sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
     sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...

@@ -23,7 +23,7 @@ if isempty(list_reg)
 end
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Regions','units','normalized','Position',[0.5 0.8 0.1 0.1]);
-region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',length(list_reg),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg,main_figure});
+region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',1,'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg,main_figure});
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Mode','units','normalized','Position',[0.5 0.6 0.1 0.1]);
 region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',{'rectangular' 'vertical' 'horizontal'},'Value',1,'units','normalized','Position', [0.6 0.6 0.3 0.1]);
@@ -66,15 +66,15 @@ uicontrol(region_tab_comp.region_tab,'Style','Text','String','Reference','units'
 region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',1,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
 
 %uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg 3D','units','normalized','pos',[0.425 0.1 0.15 0.15],'callback',{@display_region_3D,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.45 0.1 0.1 0.15],'callback',{@copy_to_other_freq,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy to freqs','units','normalized','pos',[0.45 0.1 0.1 0.15],'callback',{@copy_to_other_freq,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg','units','normalized','pos',[0.55 0.1 0.1 0.15],'callback',{@display_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Freq Resp.','units','normalized','pos',[0.65 0.1 0.1 0.15],'callback',{@freq_response_reg,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Freq Resp.','units','normalized','pos',[0.60 0.1 0.1 0.15],'callback',{@freq_response_reg,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','units','normalized','pos',[0.75 0.1 0.1 0.15],'callback',{@classify_reg_callback,main_figure});
 
 
-region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Create','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@create_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@delete_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.65 0.3 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
+region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Create Region','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@create_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete Region','units','normalized','pos',[0. 0.3 0.1 0.15],'callback',{@delete_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute Region','units','normalized','pos',[0.7 0.3 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
 
 
 setappdata(main_figure,'Region_tab',region_tab_comp);
@@ -104,15 +104,16 @@ if ~isempty(list_reg)
         if i==idx_freq
             continue;
         end
-        layer.Transceivers(i).rm_region_id(active_reg.Unique_ID)    
+        layer.Transceivers(i).rm_region_id(active_reg.Unique_ID)
+        
     end    
     layer.prepare_classification(idx_to_process,0);  
-    layer.apply_classification(idx_freq,idx_reg);  
+    layer.apply_classification(idx_freq,idx_reg);
+   
 end
 
 setappdata(main_figure,'Layer',layer);
 display_regions(main_figure);
-update_display(main_figure,0)
 end
 
 

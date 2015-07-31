@@ -19,9 +19,12 @@ try
             [~,idx_xlim_max]= nanmin(abs(xdata_old-x(2)));
         else
             idx_xlim_min=1;
-            idx_xlim_max=2;
+            idx_xlim_max=1;
         end
     end
+catch
+    idx_xlim_min=1;
+    idx_xlim_max=1;
 end
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 

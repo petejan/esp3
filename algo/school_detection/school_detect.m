@@ -70,6 +70,7 @@ horz_link_max=p.Results.horz_link_max;
 vert_link_max=p.Results.vert_link_max;
 nb_min_sples=p.Results.nb_min_sples;
 
+sample_mat=repmat((1:nb_samples)',1,nb_pings);
 range_mat=repmat(range,1,nb_pings);
 dist_pings_mat=repmat(dist_pings',nb_samples,1);
 % 
@@ -87,10 +88,10 @@ end
 
 
 if nansum(~isnan(Bottom))==0
-    Sv_mask_ori=double(Sv_mat>=Sv_thr&range_mat>5&(mask<1));
+    Sv_mask_ori=double(Sv_mat>=Sv_thr&sample_mat>3*Np&(mask<1));
 else
     Bottom(isnan(Bottom))=nb_samples;
-    Sv_mask_ori=double(Sv_mat>=Sv_thr&range_mat<repmat(Bottom,nb_samples,1)&range_mat&(mask<1));
+    Sv_mask_ori=double(Sv_mat>=Sv_thr&range_mat<repmat(Bottom,nb_samples,1)&sample_mat>3*Np&(mask<1));
 end
 
 h_filter=2*Np;
