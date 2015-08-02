@@ -96,7 +96,7 @@ switch region.Shape
     case 'Polygon'
         if ~isempty(region.Sv_reg)
             Sv_reg=region.Sv_reg;
-            Sv_reg(:,intersect(idx_pings,IdxBad)-idx_pings(1)+1)=nan;
+            IdxBad()
         else
             region.Shape='Rectangular';
             Sv_reg=Sv(idx_r,idx_pings);

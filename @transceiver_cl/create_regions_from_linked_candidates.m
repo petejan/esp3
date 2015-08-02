@@ -1,9 +1,9 @@
 function create_regions_from_linked_candidates(trans,linked_candidates,w_unit,h_unit,cell_w,cell_h)
 
-y=trans.Data.Range;
-x=double(trans.Data.Number);
-
-Sv=trans.Data.get_datamat('sv');
+Sv=Transceiver.Data.get_datamat('svdenoised');
+if isempty(Sv)
+    Sv=Transceiver.Data.get_datamat('sv');
+end
 
 for j=1:nanmax(linked_candidates(:))
     curr_reg=(linked_candidates==j);

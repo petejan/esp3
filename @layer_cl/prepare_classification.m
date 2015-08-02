@@ -2,10 +2,10 @@
 function prepare_classification(layer,idx_to_process,reprocess)
 
 idx_38=find_freq_idx(layer,38000);
+idx_120=find_freq_idx(layer,120000);
 
 for uu=idx_to_process
-    
-  
+ 
     idx_school_detect=find_algo_idx(layer.Transceivers(uu),'SchoolDetection');
     idx_algo_bp=find_algo_idx(layer.Transceivers(uu),'BadPings');
     idx_algo_denoise=find_algo_idx(layer.Transceivers(uu),'Denoise');

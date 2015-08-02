@@ -86,7 +86,12 @@ classdef layer_cl < handle
                 Transceiver_2=layer.Transceivers(i);
                 new_range=Transceiver_2.Data.Range;
                 new_time=Transceiver_2.Data.Time;
+
+                Sv=layer.Transceivers(i).Data.get_datamat('svdenoised');
+
+                if isempty(Sv)
                 Sv=layer.Transceivers(i).Data.get_datamat('sv');
+                end
                 
                 dr=nanmean(diff(new_range));
                 dt=nanmean(diff(new_time));

@@ -2,7 +2,11 @@ function int_result=integrate_region_comp(region,Transceiver)
 
 idx_pings=region.Idx_pings;
 idx_r=region.Idx_r;
-Sv=Transceiver.Data.get_datamat('Sv');
+
+Sv=Transceiver.Data.get_datamat('svdenoised');
+if isempty(Sv)
+    Sv=Transceiver.Data.get_datamat('sv');
+end
 
 if isempty(Sv)
     error('No Sv, cannot integrate');
