@@ -97,7 +97,7 @@ else
     return;
 end
 
-[Filename,PathToFile]= uigetfile({'*.evl;*.dat;*.txt'}, 'Pick a line file','MultiSelect','off');
+[Filename,PathToFile]= uigetfile({'*.evl;*.dat;*.txt;*.mat'}, 'Pick a line file','MultiSelect','off');
 if Filename==0
     return;
 end
@@ -109,7 +109,9 @@ switch(ext)
         line=create_line_from_evl(fullfile(PathToFile,Filename));
     case {'.txt'; '.dat'}
         line=create_line_from_rbr(fullfile(PathToFile,Filename));
-        
+    case {'.mat'}
+        line=create_line_from_rbr_mat(fullfile(PathToFile,Filename));
+
 end
 
 
