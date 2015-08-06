@@ -21,7 +21,7 @@ x=double(get(main_echo,'xdata'));
 y=double(get(main_echo,'ydata'));
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
+%idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
 
 list_reg = list_regions(layer.Transceivers(idx_freq));
 axes(main_axes)

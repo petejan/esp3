@@ -1,6 +1,6 @@
 function create_regions_from_linked_candidates(trans,linked_candidates,w_unit,h_unit,cell_w,cell_h)
 
-Sv=Transceiver.Data.get_datamat('svdenoised');
+Sv=trans.Data.get_datamat('svdenoised');
 if isempty(Sv)
     Sv=Transceiver.Data.get_datamat('sv');
 end

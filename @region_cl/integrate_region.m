@@ -40,8 +40,17 @@ for i=idx
         case 'Rectangular'
             Sv(idx_r_curr,idx_pings_curr)=NaN;
         case 'Polygon'
-            Sv(idx_r_curr,idx_pings_curr)=curr_reg.Sv_reg;
+            Sv_temp=Sv(idx_r_curr,idx_pings_curr);
+            Sv_temp(~isnan(curr_reg.Sv_reg))=NaN;
+            Sv(idx_r_curr,idx_pings_curr)= Sv_temp;
     end
+end
+
+switch region.Type
+    case 'Bad Data'
+        region.Tag='';
+    otherwise 
+        region.Tag='UNC';
 end
 
 
@@ -95,8 +104,9 @@ end
 switch region.Shape
     case 'Polygon'
         if ~isempty(region.Sv_reg)
-            Sv_reg=region.Sv_reg;
-            Sv_reg(:,intersect(idx_pings,IdxBad)-idx_pings(1)+1)=nan;
+            Sv_temp=Sv(idx_r,idx_pings);
+            Sv_temp(isnan(region.Sv_reg))=NaN;   
+            Sv_reg=Sv_temp;
         else
             region.Shape='Rectangular';
             Sv_reg=Sv(idx_r,idx_pings);

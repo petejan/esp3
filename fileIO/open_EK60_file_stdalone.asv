@@ -2,8 +2,8 @@
 function  layers=open_EK60_file_stdalone(main_figure,PathToFile,Filename_cell,vec_freq,ping_start,ping_end)
 
 app_path=getappdata(main_figure,'App_path');
-if exist(fullfile(PathToFile,'cal_echo.csv'),'file')>0
-    cal=csv2struct(fullfile(PathToFile,'cal_echo.csv'));
+if exist(fullfile(PathToFile,'cal.csv'),'file')>0
+    cal=csv2struct(fullfile(PathToFile,'cal.csv'));
 else
     cal=[];
 end
@@ -117,27 +117,28 @@ if ~isequal(Filename_cell, 0)
             return;
         end
         
-        
+        calParms = readEKRaw_GetCalParms(header,data);        
         if ~isempty(cal)
             for n=1:header.transceivercount
-                idx_cal=find(data.pings(n).frequency(1)==cal.F);
-                if ~isempty(idx_cal)
-                    
-                    tau = data.pings(n).pulselength(1);
-                    idx = find(data.config(n).pulselengthtable == tau);
+                idx_cal=find(calParms(n).frequency==cal.F);               
+                if ~isempty(idx_cal)  
+                    calParms(n).gain=cal.G0(idx_cal);
+                    tau = data(n).config.pulselength;
+                    idx = find(data(n).config.pulselengthtable == tau);
                     
                     if (~isempty(idx))
-                        data.config(n).sacorrectiontable(idx)=cal.SACORRECT(idx_cal);
-                        data.config(n).gaintable(idx)=cal.G0(idx_cal);
+                        data(n).config.sacorrectiontable(idx)=cal.SACORRECT(idx_cal);
+                        data(n).config.gaintable(idx)=cal.G0(idx_cal);
                     else
-                        data.config(n).sacorrectiontable=cal.SACORRECT(idx_cal).*ones(size(calParms(n).pulselengthtable));
-                        data.config(n).gaintable=cal.G0(idx_cal).*ones(size(calParms(n).pulselengthtable));
+                        calParms(n).sacorrectiontable=cal.SACORRECT(idx_cal).*ones(size(calParms(n).pulselengthtable));
+                        data(n).config.sacorrectiontable=cal.SACORRECT(idx_cal).*ones(size(calParms(n).pulselengthtable));
+                        
+                         data(n).config.gaintable(idx)=cal.G0(idx_cal);
                     end
                 end
             end
         end
         
-        calParms = readEKRaw_GetCalParms(header,data); 
         data = readEKRaw_ConvertAngles(data,calParms,'KeepElecAngles',true);
         
         for n=1:header.transceivercount

@@ -1,10 +1,7 @@
 
 function pos=create_pos_2(m,n,x_ini,y_ini,x_sep,y_sep)
-
-
 x_w=(1-x_ini)/(n+1);
 y_h=(y_ini)/m;
-
 
 for i=1:n
     for j=1:m

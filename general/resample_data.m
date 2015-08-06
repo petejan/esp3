@@ -1,4 +1,4 @@
-function [data_new,t_new]=resample_data(data,t_old,t)
+function [data_new,t_new,idx_choice]=resample_data(data,t_old,t)
 idx_choice=nan(length(t),1);
 for jj=1:length(t)
     [~,idx_choice(jj)]=nanmin(abs(t_old-t(jj)));

@@ -16,4 +16,5 @@ switch shape
         inter_region_create(src,main_figure,mode,@create_region_func)
 end
 reset_mode(0,0,main_figure);
+
 end

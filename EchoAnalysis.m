@@ -8,7 +8,7 @@ main_figure=figure('Visible','off',...
     'Units','pixels','Position',[100 100 1280 720],...       %Position and size normalized to the screen size ([left, bottom, width, height])
     'Color','White',...                                         %Background color
     'Name','Echo Analysis','NumberTitle','off',...    %GUI Name
-    'Resize','on',...        
+    'Resize','on',...
     'MenuBar','none',...'%No Matlab Menu
     'visible','off',...
     'CloseRequestFcn',@closefcn_clean,...
@@ -19,10 +19,6 @@ set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
 
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 
-
-layer_obj=layer_cl();
-curr_disp_obj=curr_state_disp_cl();
-process_obj=process_cl.empty;
 
 if isdeployed
     temp_path=ctfroot;
@@ -37,20 +33,53 @@ app_path.cal=[];
 app_path.cal_eba=[];
 
 if ~isdeployed
-    if ~isdir(app_path.data)
-        mkdir(app_path.data);
-        disp('Data Folder Created')
-        disp(app_path.data)
+    update_path(app_path.main);
+end
+
+if ~isdir(app_path.data)
+    mkdir(app_path.data);
+    disp('Data Folder Created')
+    disp(app_path.data)
+end
+
+files_in_temp=dir(fullfile(app_path.data,'*.bin'));
+
+idx_old=[];
+for uu=1:length(files_in_temp)
+    if (now-files_in_temp(uu).datenum)>10
+        idx_old=[idx_old uu];
+    end
+end
+
+if ~isempty(idx_old)
+    delete_files=0;
+    choice = questdlg('There is files older than 10 days in your EchoAnalysis temp folder, do you want to delete them?', ...
+        'Delete files?',...
+        'Yes','No', ...
+        'No');
+    
+    switch choice
+        case 'Yes'
+            delete_files=1;
+        case 'No'
+            delete_files=0;
     end
     
-%     if exist([app_path.data 'data_default.mat'],'file')>0
-%         load([app_path.data 'data_default.mat']);
-%         layer_obj=layer;
-%         %curr_disp_obj=curr_disp;
-%     end
+    if isempty(choice)
+        return;
+    end
+    
+    if delete_files==1
+        for i=1:length(idx_old)
+            delete(fullfile(app_path.data,files_in_temp(idx_old(i)).name));
+        end
+    end
 end
 
 
+layer_obj=layer_cl();
+curr_disp_obj=curr_state_disp_cl();
+process_obj=process_cl.empty;
 
 layers=layer_obj;
 setappdata(main_figure,'Layers',layers);
@@ -79,5 +108,19 @@ if figheight<720
 end
 %movegui(main_figure,'center');
 
+end
+
+function update_path(path)
+addpath(genpath(fullfile([path 'acoustic'])));
+addpath(genpath(fullfile([path 'algo'])));
+addpath(genpath(fullfile([path 'display'])));
+addpath(genpath(fullfile([path 'esp2'])));
+addpath(genpath(fullfile([path 'export'])));
+addpath(genpath(fullfile([path 'fileIO'])));
+addpath(genpath(fullfile([path 'icons'])));
+addpath(genpath(fullfile([path 'general'])));
+addpath(genpath(fullfile([path 'mapping'])));
+addpath(genpath(fullfile([path 'mbs'])));
+addpath(genpath(fullfile([path 'signal_processing'])));
 end
 

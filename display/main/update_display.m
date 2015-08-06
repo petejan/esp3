@@ -10,18 +10,21 @@ if layer.ID_num==0
 end
 
 if new==1
-    load_display_tab(main_figure,main_childs(idx_opt));
     load_cursor_tool(main_figure);
+    load_display_tab(main_figure,main_childs(idx_opt)); 
+    load_regions_tab(main_figure,main_childs(idx_opt));
+    load_lines_tab(main_figure,main_childs(idx_opt));
+    load_calibration_tab(main_figure,main_childs(idx_opt));
     load_processing_tab(main_figure,main_childs(idx_opt));
+    
     load_bottom_tab(main_figure,main_childs(idx_algo));
     load_bad_pings_tab(main_figure,main_childs(idx_algo));
     load_denoise_tab(main_figure,main_childs(idx_algo));
     load_school_detect_tab(main_figure,main_childs(idx_algo));
     load_single_target_tab(main_figure,main_childs(idx_algo));
     load_track_target_tab(main_figure,main_childs(idx_algo));
-    load_regions_tab(main_figure,main_childs(idx_opt));
-    load_calibration_tab(main_figure,main_childs(idx_opt));
-    
+   
+ 
 else
     selected_opt_tab=get(main_childs(idx_opt),'SelectedTab');
     active_opt_tab=selected_opt_tab.Title;
@@ -38,6 +41,7 @@ else
     update_processing_tab(main_figure);
     
     update_display_tab(main_figure);
+    
     load_regions_tab(main_figure,main_childs(idx_opt));
     load_calibration_tab(main_figure,main_childs(idx_opt));
     

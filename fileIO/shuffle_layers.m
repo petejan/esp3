@@ -132,10 +132,11 @@ if multi_layer==0
                     new_layers=[layer_conc new_layers ];
                 end
             end
-            for kkj=1:length(idx_not_to_concatenate{uui})
-                new_layers=[layers_temp(idx_not_to_concatenate{uui}(kkj)) new_layers ];
-            end
         end
+        for kkkj=1:length(idx_not_to_concatenate{uui})
+            new_layers=[layers_temp(idx_not_to_concatenate{uui}(kkkj)) new_layers ];
+        end
+        
     end
      
 else

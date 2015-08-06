@@ -10,6 +10,7 @@ classdef curr_state_disp_cl <handle
         DispTracks
         DispBadTrans
         DispReg
+        DispLines
     end
     
     methods
@@ -23,6 +24,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispTracks','on',@ischar);
             addParameter(p,'DispBadTrans',true,@islogical);
             addParameter(p,'DispReg',true,@islogical);
+            addParameter(p,'DispLines',true,@islogical);
             addParameter(p,'Xaxes','Number',@ischar);
             parse(p,varargin{:});
             results=p.Results;

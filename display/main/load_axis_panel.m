@@ -143,6 +143,10 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     display_regions(main_figure)
 end
 
+if ~isempty(layer.Lines)
+    display_lines(main_figure)
+end
+
 if ~isempty(cax)
     set_alpha_map(main_figure);
 end

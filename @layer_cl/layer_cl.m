@@ -6,6 +6,7 @@ classdef layer_cl < handle
         Filetype='';
         PathToFile='';
         Transceivers
+        Lines
         Frequencies
         GPSData
         EnvData
@@ -20,12 +21,14 @@ classdef layer_cl < handle
             check_gps_class=@(gps_data_obj) isa(gps_data_obj,'gps_data_cl');
             check_env_class=@(env_data_obj) isa(env_data_obj,'env_data_cl');
             check_transceiver_class=@(transceiver_obj) isa(transceiver_obj,'transceiver_cl')|isempty(transceiver_obj);
+            check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
             
             addParameter(p,'ID_num',0,@isnumeric);
             addParameter(p,'Filename','Dummy Data',@(fname)(ischar(fname)||iscell(fname)));
             addParameter(p,'Filetype','EK60',@(ftype)(ischar(ftype)));
             addParameter(p,'PathToFile',pwd,@(fname)(ischar(fname)||iscell(fname)));
             addParameter(p,'Transceivers',[],check_transceiver_class);
+            addParameter(p,'Lines',[],check_line_class);
             addParameter(p,'Frequencies',38000,@isnumeric);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
@@ -86,11 +89,11 @@ classdef layer_cl < handle
                 Transceiver_2=layer.Transceivers(i);
                 new_range=Transceiver_2.Data.Range;
                 new_time=Transceiver_2.Data.Time;
-
+                
                 Sv=layer.Transceivers(i).Data.get_datamat('svdenoised');
-
+                
                 if isempty(Sv)
-                Sv=layer.Transceivers(i).Data.get_datamat('sv');
+                    Sv=layer.Transceivers(i).Data.get_datamat('sv');
                 end
                 
                 dr=nanmean(diff(new_range));
@@ -154,7 +157,40 @@ classdef layer_cl < handle
             end
             
         end
+        
+        function list=list_lines(obj)
+            if isempty(obj.Lines)
+                list={};
+            else
+                list=cell(1,length(obj.Lines));
+                for i=1:length(obj.Lines)
+                    [~,name,ext]=fileparts(obj.Lines(i).File_origin);
+                    list{i}=sprintf('%s %s',obj.Lines(i).Name,[name ext]);
+                end
+            end
+        end
+        
+        function rm_line_id(obj,unique_ID)
+            lines_curr=obj.Lines;
+            lines_new=[];
+            for i=1:length(lines_curr)
+                if lines_curr(i).ID~=unique_ID;
+                    lines_new=[lines_new lines_curr(i)];
+                end
+            end
+            obj.Lines=lines_new;
+        end
+        
+        function add_lines(obj,lines)
+            for i=1:length(lines)
+                obj.rm_line_id(lines(i).ID);
+                obj.Lines=[obj.Lines lines(i)];
+            end
+        end
+        
     end
+    
 end
-    
-    
+
+
+

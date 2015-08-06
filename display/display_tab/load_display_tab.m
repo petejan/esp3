@@ -59,12 +59,13 @@ display_tab_comp.disp_bottom=uicontrol(display_tab_comp.display_tab,'Style','che
 display_tab_comp.disp_bad_trans=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Bad transmits','units','normalized','Position',[0.3 0.3 0.25 0.1]);
 display_tab_comp.disp_reg=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Regions','units','normalized','Position',[0.3 0.2 0.25 0.1]);
 display_tab_comp.disp_tracks=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Tracks','units','normalized','Position',[0.3 0.1 0.25 0.1]);
+display_tab_comp.disp_lines=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Lines','units','normalized','Position',[0.6 0.3 0.3 0.1]);
 display_tab_comp.disp_under_bot=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Remove Under Bottom data','units','normalized','Position',[0.6 0.4 0.3 0.1]);
 %display_tab_comp.switch_bottom=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Switch Under Bottom data','units','normalized','Position',[0.6 0.3 0.3 0.1]);
 
 
 
-set([display_tab_comp.disp_tracks display_tab_comp.disp_bad_trans display_tab_comp.disp_bottom display_tab_comp.disp_reg display_tab_comp.disp_under_bot],'callback',{@set_disp,main_figure});
+set([display_tab_comp.disp_tracks display_tab_comp.disp_lines display_tab_comp.disp_bad_trans display_tab_comp.disp_bottom display_tab_comp.disp_reg display_tab_comp.disp_under_bot],'callback',{@set_disp,main_figure});
 
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Attitude','units','normalized','pos',[0.6 0.1 0.15 0.15],'callback',{@display_attitude,main_figure});
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav. Data','units','normalized','pos',[0.75 0.1 0.15 0.15],'callback',{@display_navigation,main_figure});
@@ -160,6 +161,8 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 curr_disp.DispBadTrans=get(display_tab_comp.disp_bad_trans ,'value')==1;
 curr_disp.DispReg=get(display_tab_comp.disp_reg ,'value')==1;
+curr_disp.DispLines=get(display_tab_comp.disp_lines ,'value')==1;
+
 
 
 if get(display_tab_comp.disp_bottom ,'value')
@@ -191,6 +194,7 @@ if isfield(axes_panel_comp,'track_plot')
 end
 
 toggle_disp_regions(main_figure);
+toggle_disp_lines(main_figure);
 setappdata(main_figure,'Curr_disp',curr_disp);
 set_alpha_map(main_figure);
 end

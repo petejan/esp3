@@ -15,6 +15,8 @@ if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
 else
     dist=[];
 end
+
+
 list_reg = list_regions(layer.Transceivers(idx_freq));
 region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 

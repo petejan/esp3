@@ -13,7 +13,6 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 calibration_tab_comp.calibration_tab=uitab(option_tab_panel,'Title','Calibration');
 
 
-
 if strcmp(layer.Transceivers(idx_freq).Mode,'CW')   
     cal_cw=get_cal(layer.Transceivers(idx_freq));
     
@@ -25,7 +24,8 @@ if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Sa Corr (dB)','units','normalized','Position',[0.1 0.55 0.2 0.1]);
     calibration_tab_comp.SaCorr=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.55 0.1 0.1],'string',num2str(cal_cw.SaCorr,'%.2f'),'callback',{@apply_calibration,main_figure});
     
-    %uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Apply','callback',{@apply_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
+    
+    uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Save','callback',{@save_CW_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
     uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Reprocess','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
 else
     uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Display Calibration Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.1 0.7 0.2 0.2]);
@@ -95,5 +95,18 @@ end
 
 setappdata(main_figure,'Layer',layer);
 update_display(main_figure,0);
+
+end
+
+function save_CW_calibration(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+
+fid=fopen(fullfile(layer.PathToFile,'cal_echo.csv'),'w+');
+fprintf(fid,'%s,%s,%s\n', 'F', 'G0', 'SACORRECT');
+for i=1:length(layer.Transceivers)
+    cal_cw=get_cal(layer.Transceivers(i));
+    fprintf(fid,'%.0f,%.2f,%.2f\n',layer.Frequencies(i),cal_cw.Gain,cal_cw.SaCorr);
+end
+fclose(fid);
 
 end

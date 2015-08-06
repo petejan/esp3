@@ -28,7 +28,26 @@ if isempty(dist)
     lon=nan(size(time));
 end
 
-Sv(:,Transceiver.IdxBad)=NaN;
+idx=list_regions_type(Transceiver,'Bad Data');
+
+for i=idx
+    curr_reg=Transceiver.Regions(i);
+    idx_r_curr=curr_reg.Idx_r;
+    idx_pings_curr=curr_reg.Idx_pings;
+    switch curr_reg.Shape
+        case 'Rectangular'
+            Sv(idx_r_curr,idx_pings_curr)=NaN;
+        case 'Polygon'
+            Sv_temp=Sv(idx_r_curr,idx_pings_curr);
+            Sv_temp(~isnan(curr_reg.Sv_reg))=NaN;
+            Sv(idx_r_curr,idx_pings_curr)= Sv_temp;
+    end
+end
+
+
+IdxBad=Transceiver.IdxBad;
+Sv(:,IdxBad)=NaN;
+
 bot_r=Transceiver.Bottom.Range;
 bot_sple=Transceiver.Bottom.Sample_idx;
 bot_r(bot_r==0)=range(end);
