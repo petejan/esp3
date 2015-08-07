@@ -1,8 +1,7 @@
 
-function prepare_classification(layer,idx_to_process,reprocess)
+function prepare_classification(layer,idx_to_process,reprocess,own)
 
 idx_38=find_freq_idx(layer,38000);
-idx_120=find_freq_idx(layer,120000);
 
 for uu=idx_to_process
  
@@ -11,6 +10,7 @@ for uu=idx_to_process
     idx_algo_denoise=find_algo_idx(layer.Transceivers(uu),'Denoise');
     
     if reprocess==1||isempty(get_datamat(layer.Transceivers(uu).Data,'svdenoised'))
+        
         Transceiver=layer.Transceivers(uu);
         f_s_sig=round(1/(Transceiver.Params.SampleInterval(1)));
         c=(layer.EnvData.SoundSpeed);
@@ -95,7 +95,9 @@ for uu=idx_to_process
     end
     if uu==idx_38
         if reprocess==1
+            
             layer.Transceivers(uu).rm_region('School');
+            if own==0
             linked_candidates=feval(layer.Transceivers(uu).Algo(idx_school_detect).Function,layer.Transceivers(uu),...
                 'Type','svdenoised',...
                 'Sv_thr',-70,...
@@ -106,6 +108,18 @@ for uu=idx_to_process
                 'nb_min_sples',100,...
                 'horz_link_max',55,...
                 'vert_link_max',5);
+            else
+                 linked_candidates=feval(layer.Transceivers(uu).Algo(idx_school_detect).Function,layer.Transceivers(uu),...
+                'Type','svdenoised',...
+                'Sv_thr',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.Sv_thr,...
+                'l_min_can',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.l_min_can,...
+                'h_min_tot',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.h_min_tot,...
+                'h_min_can',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.h_min_tot,...
+                'l_min_tot',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.l_min_tot,...
+                'nb_min_sples',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.nb_min_sples,...
+                'horz_link_max',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.horz_link_max,...
+                'vert_link_max',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.vert_link_max);
+            end
             
             layer.Transceivers(uu).create_regions_from_linked_candidates(linked_candidates,'pings','meters',5,5);
         end

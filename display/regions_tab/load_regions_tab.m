@@ -108,7 +108,7 @@ if ~isempty(list_reg)
         end
         layer.Transceivers(i).rm_region_id(active_reg.Unique_ID)    
     end    
-    layer.prepare_classification(idx_to_process,0);  
+    layer.prepare_classification(idx_to_process,0,0);  
     layer.apply_classification(idx_freq,idx_reg);  
 end
 

@@ -18,7 +18,7 @@ reg_tools=uimenu(mhhh,'Label','Regions');
 
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
-uimenu(reg_tools,'Label','Classify schools (Gauthier,2014 )','Callback',{@classify_regions,main_figure});
+uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions,main_figure});
 
 
 uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');

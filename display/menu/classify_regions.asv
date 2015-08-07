@@ -12,33 +12,29 @@ idx_to_process=[idx_18 idx_38 idx_120];
 idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
 
 if ~isempty(idx_school_38)
-         choice = questdlg('Do you want to detect schools using Gauthier/Oeffner parameters (1) your own (2), or those already detected (3)?', ...
-        'Parameters',...
-        '(1)','(2)','(3)', ...
-        '(1)');
+    choice = questdlg('Do you want to detect schools using Gauthier/Oeffner parameters?', ...
+        'Reprocess',...
+        'Yes','No', ...
+        'No');
     % Handle response
     switch choice
-        case '(1)'
+        case 'Yes'
+            reprocess=1;
             own=0;
-            reprocess=1;
-        case '(2)'
-            own=1;
-            reprocess=1;
-        case '(3)'
-            own=1;
+        case 'No'
             reprocess=0;
-            
+            own=0;
     end
 else
-     choice = questdlg('Do you want to detect schools using Gauthier/Oeffner parameters (1) or your own (2)', ...
+     choice = questdlg('Do you want to detect schools using Gauthier/Oeffner parameters (1) your own (2), or those already detected?', ...
         'Parameters',...
-        '(1)','(2)', ...
-        '(1)');
+        '(1)','No', ...
+        'No');
     % Handle response
     switch choice
         case '(1)'
-            own=0;    
-        case '(2)'
+            own=0;            
+        case 'No'
             own=1;
     end
     reprocess=1;
