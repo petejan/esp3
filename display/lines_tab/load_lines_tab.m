@@ -97,7 +97,7 @@ else
     return;
 end
 
-[Filename,PathToFile]= uigetfile({'*.evl;*.dat;*.txt;*.mat'}, 'Pick a line file','MultiSelect','off');
+[Filename,PathToFile]= uigetfile({fullfile(path,'*.evl;*.dat;*.txt;*.mat')}, 'Pick a line file','MultiSelect','off');
 if Filename==0
     return;
 end
@@ -111,13 +111,13 @@ switch(ext)
         line=create_line_from_rbr(fullfile(PathToFile,Filename));
     case {'.mat'}
         line=create_line_from_rbr_mat(fullfile(PathToFile,Filename));
-
 end
 
 
 curr_time=layer.Transceivers(1).Data.Time;
 
 [y_line,~,~]=resample_data(line.Range,line.Time,curr_time);
+
 if isempty(y_line)
     warning('Line time does not match the current layer.');
 end
