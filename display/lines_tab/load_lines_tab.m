@@ -23,6 +23,9 @@ lines_tab_comp.tog_line=uicontrol(lines_tab_comp.lines_tab,'Style','popupmenu','
 uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Diff with UTC(h)','units','normalized','Position',[0.5 0.6 0.2 0.1]);
 lines_tab_comp.UTC_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.7 0.6 0.1 0.1],'string',0,'callback',{@change_time_callback,main_figure});
 
+uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Distance from vessel (m)','units','normalized','Position',[0.1 0.6 0.3 0.1]);
+lines_tab_comp.Dist_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.4 0.6 0.1 0.1],'string',0,'callback',{@change_dist_callback,main_figure});
+
 
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
@@ -64,6 +67,25 @@ else
 end
 end
 
+function change_dist_callback(src,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+
+lines_tab_comp=getappdata(main_figure,'Lines_tab');
+
+if ~isempty(layer.Lines)
+    if isnumeric(str2double(get(src,'string')))
+        if ~isnan(str2double(get(src,'string')))
+            layer.Lines(get(lines_tab_comp.tog_line,'value')).Dist_diff=str2double(get(src,'string'));
+        end
+    end
+    setappdata(main_figure,'Layer',layer);
+    update_lines_tab(main_figure)
+    display_lines(main_figure);
+else
+    return
+end
+end
+
 function change_time_callback(src,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
@@ -71,7 +93,9 @@ lines_tab_comp=getappdata(main_figure,'Lines_tab');
 
 if ~isempty(layer.Lines)
     if isnumeric(str2double(get(src,'string')))
+        if ~isnan(get(src,'string'))
         layer.Lines(get(lines_tab_comp.tog_line,'value')).change_time(str2double(get(src,'string')))
+        end
     end
     setappdata(main_figure,'Layer',layer);
     update_lines_tab(main_figure)
@@ -97,7 +121,7 @@ else
     return;
 end
 
-[Filename,PathToFile]= uigetfile({fullfile(path,'*.evl;*.dat;*.txt;*.mat')}, 'Pick a line file','MultiSelect','off');
+[Filename,PathToFile]= uigetfile({fullfile(path,'*.evl;*.dat;*.txt;*.mat;*converted.cnv')}, 'Pick a line file','MultiSelect','off');
 if Filename==0
     return;
 end
@@ -111,8 +135,13 @@ switch(ext)
         line=create_line_from_rbr(fullfile(PathToFile,Filename));
     case {'.mat'}
         line=create_line_from_rbr_mat(fullfile(PathToFile,Filename));
+    case {'.cnv'}
+        line=create_line_from_seabird(fullfile(PathToFile,Filename));
 end
 
+if isempty(line)
+    return;
+end
 
 curr_time=layer.Transceivers(1).Data.Time;
 

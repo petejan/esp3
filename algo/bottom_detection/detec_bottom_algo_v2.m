@@ -10,7 +10,6 @@ check_idx_r_min=@(x)(x>=Range(1)&&x<=Range(end));
 default_idx_r_max=Range(end);
 check_idx_r_max=@(x)(x>0&&x<=Range(end));
 
-
 default_thr_bottom=-30;
 check_thr_bottom=@(x)(x>=-120&&x<=-10);
 
@@ -139,11 +138,11 @@ Bottom_region(:,nansum(Bottom_region)<=Np)=0;
 Bottom_region=ceil(filter2_perso(ones(1,b_filter),Bottom_region));
 Bottom_region=floor(filter2_perso(ones(1,b_filter),Bottom_region));
 
-n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
-Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
-
-Bottom_region=Bottom_region(Permut,:);
-Bottom_region(1:n_permut,:)=0;
+% n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
+% Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
+% 
+% Bottom_region=Bottom_region(Permut,:);
+% Bottom_region(1:n_permut,:)=0;
 
 idx_bottom=repmat((1:nb_samples)',1,nb_pings);
 idx_bottom(~Bottom_region)=nan;

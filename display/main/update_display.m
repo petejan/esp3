@@ -39,10 +39,9 @@ else
     update_single_target_tab(main_figure);
     update_track_target_tab(main_figure);
     update_processing_tab(main_figure);
+    update_display_tab(main_figure); 
+    update_regions_tab(main_figure);
     
-    update_display_tab(main_figure);
-    
-    load_regions_tab(main_figure,main_childs(idx_opt));
     load_calibration_tab(main_figure,main_childs(idx_opt));
     
     opt_tabs=get(main_childs(idx_opt),'children');

@@ -1,8 +1,13 @@
 function apply_classification(layer,idx_freq,idx_school)
 
-idx_38=find_freq_idx(layer,38000);
-idx_18=find_freq_idx(layer,18000);
-idx_120=find_freq_idx(layer,120000);
+[idx_38,found_38]=find_freq_idx(layer,38000);
+[idx_18,found_18]=find_freq_idx(layer,18000);
+[idx_120,found_120]=find_freq_idx(layer,120000);
+
+if ~found_18||~found_120||~found_38
+    warning('Cannot every frequency!Pass...');
+    return;
+end
 
 school_reg=layer.Transceivers(idx_freq).Regions(idx_school);
 layer.copy_region_across(idx_freq,school_reg);

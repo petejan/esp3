@@ -1,0 +1,162 @@
+%-
+%  readEKRaw EK/ES60 ME/MS70 MATLAB toolkit
+%
+%  release 4/16/10
+%
+%  The readEKRaw library enables reading and writing Simrad EK60, ES60, ME70,
+%  MS70, and EA400 .raw data files from within MATLAB.
+%
+%  No formal documentation exists, but each function is fully documented in the
+%  program header.  The examples (available separately) provide insight in using
+%  some of the basic functions of the library.
+%
+%  Development of this library continues.  Bugs will be squashed and features
+%  added.
+%
+%  PLEASE NOTE THE FOLLOWING EXTERNAL DEPENDENCIES:
+%
+%  readEKRaw_ReadXMLParms.m and readEKRaw_SaveXMLParms.m require "XML Parser" by
+%  Guillaume Flandin available from MATLAB Central file exchange:
+%  http://www.mathworks.com/matlabcentral/
+%  
+%  Direct Link:
+%  http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=1757&objectType=file
+%
+%
+%  Rick Towler
+%  Midwater Assesment and Conservation Engineering
+%  NOAA Alaska Fisheries Science Center
+%  rick.towler@noaa.gov
+%
+%
+%  CHANGELOG
+%  04/16/10 - National Eggs Benedict day version.
+%
+%       Fixed a bug in readEKRaw where data from files containing power data
+%       only (beam mode 1) was not being returned to the user.
+%
+%       Fixed a bug in writeEKRaw where angle data only inputs (beam mode 2)
+%       would cause an error and fail hard.
+%
+%       Added the "AllowModeChange" keyword to readEKRaw and changed the
+%       default behavior to now issue an error if the beam mode changes in the
+%       middle of a file. ReadEKRaw now assumes that the beam mode will not
+%       change allowing it to more efficiently read mode 1 (power only) and
+%       mode 2 (angles only) data files. Setting this parameter to true will
+%       force readEKRaw to allocate arrays for both power and data so in cases
+%       where the mode changes and power or angle data "appear" later in the
+%       file the data can be properly stored and returned to the user.
+%
+%       Changed writeEKRaw so it now writes the ME/MS70 CON1 configuration
+%       datagram. This should allow it to write fully compliant ME/MS70 data
+%       files.
+%
+%  12/23/09 - Happy Festivus version.
+%
+%       Fixed a small bug in readEKRaw_ConvertPower where the number of
+%       samples in a ping were incorrectly calculated for data sets where
+%       the first sample did not start at 1.
+%
+%       Changed writeEKRaw so it now correctly writes files where the
+%       sample count changes in the file. The first version "bottom padded"
+%       pings with fewer samples resulting in files that were larger than
+%       their source file for source files that had changing sample numbers.
+%       This version will produce files that are the same size.
+%
+%
+%  12/09/09 - Added the writeEKRaw function and all supporting functions.
+%       This addition forced a few changes in the readEKRaw code:
+%
+%           The structure tags for the alongship and athwartship angles have
+%           changed to provide a distiction between electrical and physical
+%           angles.  The structure tags for the electrical angles now have an
+%           "_e" appended to the name.  So the alongship electrical angle structure
+%           tag is now "alongship_e", the athwartship tag is "athwartship_e".
+%           The readEKRaw_ConvertAngles function has been modified to work with
+%           the new structure format. When you convert from electrical to
+%           physical angles new structure tags will be created using the old
+%           "alongship" and "athwartship" names which will ensure compatibility
+%           with (most) existing code.
+%
+%           readEKRaw_ConvertAngles has been modified to work with the new angle
+%           structure tags. It also will now convert from electrical to physical
+%           and from physical to electrical.  See the file header for details.
+%
+%           A new field, "mode" has been added to the readEKRaw "pings" structure.
+%           This field contains a Nx1 array specifying the sample data mode for
+%           each ping.  Values are 1:Power samples only, 2:Angle samples only,
+%           3:Power+Angle sample data.
+%
+%           readEKRaw_ConvertPower has been changed to convert from power to Sv/sv
+%           and Sp/sp and back to power.  As part of this change, ReadEKRaw_ConvertPower
+%           is now a private function and can no longer be called directly. Instead
+%           you must call one of the wrapper functions:
+%               readEKRaw_Power2Sv
+%               readEKRaw_Sv2Power
+%               readEKRaw_Power2Sp
+%               readEKRaw_Sp2Power
+%           readEKRaw_Power2Sp has been changed such that by default TVG range
+%           correction is NOT applied. I believe that this is correct but am
+%           seeking clarification from Simrad. See the headers of these functions
+%           for information on optional keyword changes.
+%
+%       At this time writeEKRaw function should be considered beta quality code.
+%       It has received extensive testing only for specific usage scenarios.
+%       ASSUME NOTHING.
+%
+%       A bug in readEKRaw_ReadXMLParms that caused the function to fail when
+%       reading XML files with cal parms for only a single channel was fixed.
+%
+%       readEKRaw_ReadSampleData was altered and should now properly read mode
+%       2 "Angle data only" files. This is untested at this time.
+%
+%       New test routines are being developed to ensure that readEKRaw and
+%       writeEKRaw and working properly. There are currently only a few simple
+%       tests but these will hopefully be extended as time allows. The test
+%       code can be found in the "test" directory.
+%
+%  12/30/08 - Fixed a bug in readEKOut where multichannel files were not read
+%       correctly.
+%
+%       Fixed a limitation in readEKOut and readEKRaw where when correcting for
+%       sound speed changes the new sound speed value was taken from the first
+%       channel in the calibration parameters struct instead of from the channel
+%       corresponding to the depth being corrected.
+%
+%       Changed readEKRaw_readXMLParms so that the parameter structure is sorted
+%       by frequency regardless of how it is laid out in the xml file.  Now
+%       calParms(1) will correspond to the lowest frequency in your cal file
+%       and calParms(end) will correspond to the highest frequency.
+%
+%
+%  07/07/08 - Reworked NMEA ID handling to allow for user specified
+%       talker and sentence IDs.  For example you can specify a 'INGGA' as
+%       the GPS source to store GPS data contained in the GGA datagram of
+%       the POS-MV.  This is handled differently for parsed (GPS, speed, and
+%       vessel log) and non-parsed (everything else) data.  Read the readEKRaw.m
+%       header for more information.
+% 
+%
+%  01/31/08 - Fixed bug in readEKRaw_ConvertAngles identified by Geir Pedersen
+%       from IMR where the offset angles were being added to the physical angles
+%       instead of subtracted.
+%
+%       Generalized lat/lon string format in readEKRaw_parseNMEAString as
+%       suggested by Bjarte Berntsen from Kongsberg.  Also added error handling
+%       to catch malformed NMEA data strings.
+%
+%	    Added stub for handling sound velocity profile datagrams (SVP0) as
+%       suggested by Bjarte Berntsen from Kongsberg..  Bjarte has provided
+%       information on the format or contents of this datagram but I have not
+%       implemented processing or returning of this data at this time.
+%
+%
+%  12/10/07 - Fixed bug in readEKRaw_ConvertPower where if TVG Range correction
+%       was enabled, negative TVG was applied to the first few samples
+%       resulting in values significantly lower than they should be.  Also
+%       fixed a bug where actual range was used to calculate absorbtion
+%       loss instead of the corrected range.  Errors occurred only in the
+%       first meter or so in the water column and would not have impacted
+%       most applications.
+
+%-

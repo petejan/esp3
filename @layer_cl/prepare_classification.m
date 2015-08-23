@@ -1,7 +1,14 @@
 
 function prepare_classification(layer,idx_to_process,reprocess,own)
 
-idx_38=find_freq_idx(layer,38000);
+
+[idx_38,found_38]=find_freq_idx(layer,38000);
+
+if ~found_38
+    warning('Cannot find 38 kHz!Pass...');
+    return;
+end
+
 
 for uu=idx_to_process
  

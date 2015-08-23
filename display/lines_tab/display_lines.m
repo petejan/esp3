@@ -7,6 +7,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 curr_time=layer.Transceivers(idx_freq).Data.Time;
+curr_dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
 main_axes=axes_panel_comp.main_axes;
 main_echo=axes_panel_comp.main_echo;
@@ -38,7 +39,17 @@ end
 for i=1:length(list_line)
     active_line=layer.Lines(i);
     
-    [y_line,~,~]=resample_data(active_line.Range,active_line.Time,curr_time);
+    if active_line.Dist_diff>= 0
+        [~,idx_t]=nanmin(abs((curr_dist-active_line.Dist_diff)));
+        dt_trawl=curr_time(idx_t)-curr_time(1);
+    else
+        [~,idx_t]=nanmin(abs(curr_dist+active_line.Dist_diff));
+         dt_trawl=-curr_time(idx_t)+curr_time(1);
+    end
+    
+    
+    
+    [y_line,~,~]=resample_data(active_line.Range,active_line.Time+dt_trawl,curr_time);
     
     if isempty(y_line)
         continue;

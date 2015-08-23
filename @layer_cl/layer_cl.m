@@ -9,6 +9,7 @@ classdef layer_cl < handle
         Lines
         Frequencies
         GPSData
+        AttitudeNav
         EnvData
     end
     
@@ -18,6 +19,7 @@ classdef layer_cl < handle
             p = inputParser;
             
             
+            check_att_class=@(obj) isa(obj,'attitude_nav_cl');
             check_gps_class=@(gps_data_obj) isa(gps_data_obj,'gps_data_cl');
             check_env_class=@(env_data_obj) isa(env_data_obj,'env_data_cl');
             check_transceiver_class=@(transceiver_obj) isa(transceiver_obj,'transceiver_cl')|isempty(transceiver_obj);
@@ -31,6 +33,7 @@ classdef layer_cl < handle
             addParameter(p,'Lines',[],check_line_class);
             addParameter(p,'Frequencies',38000,@isnumeric);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
+            addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
             
             parse(p,varargin{:});
@@ -64,6 +67,12 @@ classdef layer_cl < handle
                 'GPSData',concatenate_GPSData(layer_1.GPSData,layer_2.GPSData),...
                 'Frequencies',layer_1.Frequencies);
             
+        end
+        
+        function rm_region_across_id(layer,ID)                                
+            for i=1:length(layer.Transceivers)
+                layer.Transceivers(i).rm_region_id(ID);
+            end           
         end
         
         function copy_region_across(layer,idx_freq,active_reg)
@@ -109,14 +118,14 @@ classdef layer_cl < handle
                 
                 switch active_reg.Cell_w_unit
                     case 'pings'
-                        cell_w=ceil(active_reg.Cell_w*dt_ori/dt);
+                        cell_w=nanmax(round(active_reg.Cell_w*dt_ori/dt),1);
                     case 'meters'
                         cell_w=active_reg.Cell_w;
                 end
                 
                 switch active_reg.Cell_h_unit
                     case 'samples'
-                        cell_h=ceil(active_reg.Cell_h*dr_ori/dr);
+                        cell_h=nanmax(round(active_reg.Cell_h*dr_ori/dr),1);
                     case 'meters'
                         cell_h=active_reg.Cell_h;
                         

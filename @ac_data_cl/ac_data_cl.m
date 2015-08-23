@@ -99,7 +99,11 @@ classdef ac_data_cl < handle
                 fieldname=subdata(i).Fieldname;
                 [idx,found]=find_field_idx(data,fieldname);
                 if found==0
-                    subdata_temp=[subdata_temp subdata(i)];
+                    if size(subdata_temp,1)==1
+                        subdata_temp=[subdata_temp subdata(i)];
+                    else
+                        subdata_temp=[subdata_temp; subdata(i)];
+                    end
                     data.Fieldname=[data.Fieldname subdata(i).Fieldname];
                     data.Type=[data.Type subdata(i).Type];
                 else 

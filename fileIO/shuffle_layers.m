@@ -32,6 +32,7 @@ if multi_layer==0
             curr_layer=layers_temp(idx(jj));
             for ii=1:trans_nb(uu)
                 curr_trans=curr_layer.Transceivers(ii);
+                layers_grp(uu).freqs(ii,jj)=curr_trans.Config.Frequency;
                 layers_grp(uu).time_start(ii,jj)=curr_trans.Data.Time(1);
                 layers_grp(uu).time_end(ii,jj)=curr_trans.Data.Time(end);
                 layers_grp(uu).dt(ii,jj)=(curr_trans.Data.Time(end)-curr_trans.Data.Time(1))/length(curr_trans.Data.Time);
@@ -45,7 +46,7 @@ if multi_layer==0
         for kk=1:size(samples_nb,2)
             idx_to_concatenate{uu}{kk}=[];
             
-            idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)))==trans_nb(uu));
+            idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1)==trans_nb(uu));
             
             for kki=idx_same_samples
                 for kkj=idx_same_samples
@@ -55,7 +56,8 @@ if multi_layer==0
                             layers_grp(uu).time_start(:,kki)<=layers_grp(uu).time_end(:,kkj))|...
                             (layers_grp(uu).time_end(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
                             layers_grp(uu).time_end(:,kki)<=layers_grp(uu).time_end(:,kkj)))...
-                            ==trans_nb(uu)
+                            ==trans_nb(uu)||...
+                            length(intersect(layers_grp(uu).freqs(:,kki),layers_grp(uu).freqs(:,kkj)))~=trans_nb(uu);
                         continue;
                     end
                     
@@ -129,12 +131,12 @@ if multi_layer==0
                         end
                         
                     end
-                    new_layers=[layer_conc new_layers ];
+                    new_layers=[new_layers layer_conc];
                 end
             end
         end
         for kkkj=1:length(idx_not_to_concatenate{uui})
-            new_layers=[layers_temp(idx_not_to_concatenate{uui}(kkkj)) new_layers ];
+            new_layers=[new_layers layers_temp(idx_not_to_concatenate{uui}(kkkj))];
         end
         
     end

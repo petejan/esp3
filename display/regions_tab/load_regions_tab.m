@@ -25,7 +25,7 @@ if isempty(list_reg)
 end
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Regions','units','normalized','Position',[0.5 0.8 0.1 0.1]);
-region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',length(list_reg),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg,main_figure});
+region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',length(list_reg),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg_callback,main_figure});
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Mode','units','normalized','Position',[0.5 0.6 0.1 0.1]);
 region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',{'rectangular' 'vertical' 'horizontal'},'Value',1,'units','normalized','Position', [0.6 0.6 0.3 0.1]);
@@ -75,9 +75,9 @@ uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','u
 
 
 region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Create','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@create_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@delete_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.65 0.3 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
-
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Del. Across Freq','TooltipString','Delete Across Frequencies','units','normalized','pos',[0.75 0.3 0.1 0.15],'callback',{@rm_over_freq_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.65 0.3 0.1 0.15],'callback',{@delete_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
 
 setappdata(main_figure,'Region_tab',region_tab_comp);
 end
@@ -94,20 +94,30 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 list_reg = list_regions(layer.Transceivers(idx_freq));
-idx_38=find_freq_idx(layer,38000);
-idx_18=find_freq_idx(layer,18000);
-idx_120=find_freq_idx(layer,120000);
+
+[idx_38,found_38]=find_freq_idx(layer,38000);
+[idx_18,found_18]=find_freq_idx(layer,18000);
+[idx_120,found_120]=find_freq_idx(layer,120000);
+
+if ~found_18||~found_120||~found_38
+    warning('Cannot every frequency!Pass...');
+    return;
+end
+
+
 idx_to_process=[idx_18 idx_38 idx_120];
 
 if ~isempty(list_reg)
     idx_reg=get(region_tab_comp.tog_reg,'value');
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    
     for i=1:length(layer.Transceivers)
         if i==idx_freq
             continue;
         end
         layer.Transceivers(i).rm_region_id(active_reg.Unique_ID)    
     end    
+    
     layer.prepare_classification(idx_to_process,0,0);  
     layer.apply_classification(idx_freq,idx_reg);  
 end
@@ -145,106 +155,7 @@ else
 end
 end
 
-function tog_reg(~,~,main_figure)
-layer=getappdata(main_figure,'Layer');
-region_tab_comp=getappdata(main_figure,'Region_tab');
-curr_disp=getappdata(main_figure,'Curr_disp');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-
-active_reg=get(region_tab_comp.tog_reg,'value');
-list_name=get(region_tab_comp.tog_reg,'string');
-
-switch list_name{active_reg}
-    case '--'
-        return
-    otherwise
-        reg_curr=layer.Transceivers(idx_freq).Regions(active_reg);
-end
-shape_types=get(region_tab_comp.shape_type,'string');
-shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
-set(region_tab_comp.shape_type,'value',shape_type_idx);
-
-data_types=get(region_tab_comp.data_type,'string');
-data_type_idx=find(strcmp(reg_curr.Type,data_types));
-set(region_tab_comp.data_type,'value',data_type_idx);
-
-refs=get(region_tab_comp.tog_ref,'string');
-ref_idx=find(strcmp(reg_curr.Reference,refs));
-set(region_tab_comp.tog_ref,'value',ref_idx);
-
-w_units=get(region_tab_comp.cell_w_unit,'string');
-w_unit_idx=find(strcmp(reg_curr.Cell_w_unit,w_units));
-set(region_tab_comp.cell_w_unit,'value',w_unit_idx);
-
-h_units=get(region_tab_comp.cell_h_unit,'string');
-h_unit_idx=find(strcmp(reg_curr.Cell_h_unit,h_units));
-set(region_tab_comp.cell_h_unit,'value',h_unit_idx);
-
-cell_w=reg_curr.Cell_w;
-set(region_tab_comp.cell_w,'string',cell_w);
-
-cell_h=reg_curr.Cell_h;
-set(region_tab_comp.cell_h,'string',cell_h);
-
-display_regions(main_figure)
-end
-
-function check_cell(src,~,main_figure)
-curr_disp=getappdata(main_figure,'Curr_disp');
-layer=getappdata(main_figure,'Layer');
-region_tab_comp=getappdata(main_figure,'Region_tab');
-
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
-
-nb_pings=length(layer.Transceivers(idx_freq).Data.Number);
-nb_samples=length(layer.Transceivers(idx_freq).Data.Range);
-
-w_units=get(region_tab_comp.cell_w_unit,'string');
-w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
-w_unit=w_units{w_unit_idx};
-
-h_units=get(region_tab_comp.cell_h_unit,'string');
-h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
-h_unit=h_units{h_unit_idx};
-
-
-val=str2double(get(src,'string'));
-if ~isnan(val)&&val>0
-    
-    switch get(src,'tag')
-        case 'w'
-            switch w_unit
-                case 'pings'
-                    if val>nb_pings/2
-                        val=floor(nb_pings/2);
-                    end
-                case 'meters'
-                    if val>dist(end)/2
-                        val=floor(dist(end)/2);
-                    end
-            end
-        case 'h'
-            switch h_unit
-                case 'samples'
-                    if val>nb_samples/2
-                        val=floor(nb_samples);
-                    end
-                    
-                case 'meters'
-                    if val>layer.Transceivers(idx_freq).Data.Range(end)/2
-                        val=layer.Transceivers(idx_freq).Data.Range(end)/2;
-                    end
-            end
-    end
-    set(src,'string',num2str(val,'%.0f'));
-else
-    set(src,'string',5);
-end
-
-
-end
 
 function tog_units(src,~,main_figure)
 
@@ -342,6 +253,27 @@ end
 setappdata(main_figure,'Layer',layer);
 
 end
+
+function rm_over_freq_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+Transceiver=layer.Transceivers(idx_freq);
+list_reg = list_regions(layer.Transceivers(idx_freq));
+
+
+if ~isempty(list_reg)
+    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    layer.rm_region_across_id(active_reg.Unique_ID);
+end
+
+setappdata(main_figure,'Layer',layer);
+display_regions(main_figure);
+update_regions_tab(main_figure)
+end
+
+
 
 
 

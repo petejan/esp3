@@ -3,9 +3,15 @@ function classify_regions(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-idx_38=find_freq_idx(layer,38000);
-idx_18=find_freq_idx(layer,18000);
-idx_120=find_freq_idx(layer,120000);
+[idx_38,found_38]=find_freq_idx(layer,38000);
+[idx_18,found_18]=find_freq_idx(layer,18000);
+[idx_120,found_120]=find_freq_idx(layer,120000);
+
+if ~found_18||~found_120||~found_38
+    warning('Cannot every frequency!Pass...');
+    return;
+end
+
 
 idx_to_process=[idx_18 idx_38 idx_120];
 

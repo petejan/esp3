@@ -7,6 +7,9 @@ switch callbackdata.Key
         
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
+        if ~isfield(axes_panel_comp,'main_echo')
+            return;
+        end
         main_echo=axes_panel_comp.main_echo;
         x=double(get(main_axes,'xlim'));
         y=double(get(main_axes,'ylim'));

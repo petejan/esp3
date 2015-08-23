@@ -1,10 +1,18 @@
 
-function  open_EK60_file(hObject,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
+function  open_EK60_file(hObject,PathToFile,Filename,vec_freq,ping_start,ping_end,multi_layer,join)
 curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
 
+app_path=getappdata(hObject,'App_path');
+
+if exist(fullfile(PathToFile,'cal_echo.csv'),'file')>0
+    cal=csv2struct(fullfile(PathToFile,'cal_echo.csv'));
+else
+    cal=[];
+end
+
 %     profile on;
-layers_temp=open_EK60_file_stdalone(hObject,PathToFile,Filename,[],ping_start,ping_end);
+layers_temp=open_EK60_file_stdalone(cal,app_path.data,PathToFile,Filename,vec_freq,ping_start,ping_end);
 %     profile off;
 %     profile viewer
 %

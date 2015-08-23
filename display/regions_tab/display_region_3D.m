@@ -59,6 +59,7 @@ if ~isempty(list_reg)
     [x_geo,y_geo,Zone]=deg2utm(lat,long);
     
     heading_geo=layer.Transceivers(idx_freq).AttitudeNavPing.Heading(idx_pings);%TOFIX when there is no attitude data...
+    
     pitch_geo=layer.Transceivers(idx_freq).AttitudeNavPing.Pitch(idx_pings);
     roll_geo=layer.Transceivers(idx_freq).AttitudeNavPing.Roll(idx_pings);
     heave_geo=layer.Transceivers(idx_freq).AttitudeNavPing.Heave(idx_pings);

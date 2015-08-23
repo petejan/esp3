@@ -95,6 +95,7 @@ multi_layer=1;
 join=0;
 
 if ~isequal(Filename, 0)
+     
     
     if iscell(Filename)
         choice = questdlg('Do you want to open files as separate layers?', ...
@@ -131,6 +132,9 @@ if ~isequal(Filename, 0)
             case 'No'
                 join=0;
         end
+         if isempty(choice)
+            return;
+        end
     else
         join=0;
     end
@@ -156,9 +160,9 @@ if ~isequal(Filename, 0)
     
     switch ftype
         case 'EK60'
-            open_EK60_file(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
+            open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'EK80'
-            open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
+            open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
     end
         update_display(main_figure,1);
 end

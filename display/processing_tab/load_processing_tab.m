@@ -157,10 +157,10 @@ for ii=1:length(Filename)
             
             memapname=layer.Transceivers(idx_freq).Data.MemapName;
             
-            layer.Transceivers(uu).Data.remove_sub_data('powerdenoised');
-            layer.Transceivers(uu).Data.remove_sub_data('spdenoised');
-            layer.Transceivers(uu).Data.remove_sub_data('svdenoised');
-            layer.Transceivers(uu).Data.remove_sub_data('snr');
+            layer.Transceivers(idx_freq).Data.remove_sub_data('powerdenoised');
+            layer.Transceivers(idx_freq).Data.remove_sub_data('spdenoised');
+            layer.Transceivers(idx_freq).Data.remove_sub_data('svdenoised');
+            layer.Transceivers(idx_freq).Data.remove_sub_data('snr');
             
             sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
                 sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...

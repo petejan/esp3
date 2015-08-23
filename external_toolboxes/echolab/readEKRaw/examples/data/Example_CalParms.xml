@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<!--
+    This file is an example readEKRaw XML parameter file.
+
+    The file follows the format required by readEKRaw_ReadXMLParms().
+-->
+<calParms>
+   <soundername>
+      ES60
+   </soundername>
+   <frequency>
+      38000
+   </frequency>
+   <soundvelocity>
+      1470
+   </soundvelocity>
+   <sampleinterval>
+      0.000256
+   </sampleinterval>
+   <absorptioncoefficient>
+      0.009978
+   </absorptioncoefficient>
+   <gain>
+      26.16
+   </gain>
+   <equivalentbeamangle>
+      -20.6
+   </equivalentbeamangle>
+   <pulselengthtable>
+      [0.000512;0.001024;0.002048;0.004096;0.008192]
+   </pulselengthtable>
+   <gaintable>
+      [26.50;26.16;26.50;26.50;26.50]
+   </gaintable>
+   <sacorrectiontable>
+      [0;-0.68;0;0;0]
+   </sacorrectiontable>
+   <transmitpower>
+      2000
+   </transmitpower>
+   <pulselength>
+      0.001024
+   </pulselength>
+   <anglesensitivityalongship>
+      21.9
+   </anglesensitivityalongship>
+   <anglesensitivityathwartship>
+      21.9
+   </anglesensitivityathwartship>
+   <anglesoffsetalongship>
+      0
+   </anglesoffsetalongship>
+   <angleoffsetathwartship>
+      0
+   </angleoffsetathwartship>
+   <transducerdepth>
+      4
+   </transducerdepth>
+</calParms>

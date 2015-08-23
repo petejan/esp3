@@ -203,58 +203,14 @@ function display_attitude(~,~,main_figure)
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-if isempty(layer.Transceivers(idx_freq).AttitudeNavPing)
+if isempty(layer.AttitudeNav)
     warning('No attitude');
     return;
 end
 
-heading=layer.Transceivers(idx_freq).AttitudeNavPing.Heading;
-pitch=layer.Transceivers(idx_freq).AttitudeNavPing.Pitch;
-roll=layer.Transceivers(idx_freq).AttitudeNavPing.Roll;
-heave=layer.Transceivers(idx_freq).AttitudeNavPing.Heave;
-ping_num=layer.Transceivers(idx_freq).Data.Number;
+layer.AttitudeNav.display_att();
 
-
-if ~isempty(roll)
-    figure()
-    ax(1)= axes();
-    axes(ax(1));
-    hold on;
-    plot(ping_num,heave,'r');
-    ax(1).XColor = 'r';
-    ax(1).YColor = 'r';
-    ax1_pos = ax(1).Position; % position of first axes
-    xlabel('Ping Number');
-    ylabel('Heave (m)');
-    legend('Heave','Location','northwest')
-    legend('boxoff')
-    
-    ax(2)= axes();
-    axes(ax(2));
-    plot(ping_num,pitch,'k');
-    hold on;
-    plot(ping_num,roll,'g');
-    legend('Pitch','Roll','Location','northeast')
-    legend('boxoff')
-    ylabel('Attitude (deg)');
-    set(ax(2),'Position',ax1_pos,...
-        'XAxisLocation','top',...
-        'YAxisLocation','right',...
-        'Color','none')
-    grid on;
-    linkaxes(ax,'x');
-end
-if ~isempty(heading)
-    figure();
-    ax(3)=axes();
-    plot(ping_num,heading,'k');
-    xlabel('Ping Number');
-    ylabel('Heading (deg)');
-    grid on;
-    linkaxes(ax,'x');
-end
 end
 
 function display_navigation(~,~,main_figure)

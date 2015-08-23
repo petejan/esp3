@@ -1,14 +1,8 @@
 
-function  layers=open_EK60_file_stdalone(main_figure,PathToFile,Filename_cell,vec_freq,ping_start,ping_end)
+function  layers=open_EK60_file_stdalone(cal,dir_data,PathToFile,Filename_cell,vec_freq_init,ping_start,ping_end)
 
-app_path=getappdata(main_figure,'App_path');
-if exist(fullfile(PathToFile,'cal_echo.csv'),'file')>0
-    cal=csv2struct(fullfile(PathToFile,'cal_echo.csv'));
-else
-    cal=[];
-end
-
-
+vec_freq_tot=[];
+list_freq_str={};
 if ~isequal(Filename_cell, 0)
     
     if ~iscell(Filename_cell)
@@ -22,30 +16,58 @@ if ~isequal(Filename_cell, 0)
     prev_ping_start=1;
     
     for uu=1:length(Filename_cell)
+        vec_freq_temp=[];
+        Filename=Filename_cell{uu};
+        
+        if isempty(vec_freq_init)
+            [header_temp,data_temp, ~]=readEKRaw(fullfile(PathToFile,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0);
+            
+            for ki=1:header_temp.transceivercount
+                vec_freq_temp=[vec_freq_temp data_temp.config(ki).frequency];
+                list_freq_str=[list_freq_str num2str(data_temp.config(ki).frequency,'%.0f')];
+            end
+            
+            if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
+                vec_freq_tot=vec_freq_temp;
+                [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load');    
+            end
+               
+            if val==0||isempty(select)
+                continue;
+            else
+                vec_freq=vec_freq_tot(select);
+            end
+        else
+            vec_freq=vec_freq_init;
+        end
+        
+        if isempty(vec_freq)
+            vec_freq=-1;
+        end
+  
         
         try
             waitbar(uu/length(Filename_cell),opening_file,sprintf('Opening file: %s',Filename_cell{uu}));
         catch
             opening_file=waitbar(uu/length(Filename_cell),sprintf('Opening file: %s',Filename_cell{uu}),'Name','Opening files');
         end
+
         
-        
-        
-        Filename=Filename_cell{uu};
-        
-        %s=warning('error','readEKRaw:Datagram');
-        if isempty(vec_freq)
-            vec_freq=-1;
-        end
-        
+       
         if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
             break;
         end
         
         try
-            [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq);
+            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq);
         catch err2
-            [header,data, ~]=readEKRaw([PathToFile Filename],'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq);
+            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq);
+        end
+        
+        if isnumeric(header)
+            disp('Could not read file.')
+            layers_temp(uu)=layer_cl();
+            break;
         end
         
         if strcmp(header.soundername(1:4),'ES70') || strcmp(header.soundername(1:4),'ES60')
@@ -169,8 +191,8 @@ if ~isequal(Filename_cell, 0)
         end
         
         Filename_bot=[Filename(1:end-4) '.bot'];
-        if exist([PathToFile Filename_bot],'file')
-            [~,temp, ~] = readEKBot([PathToFile Filename_bot], calParms,'Frequencies',vec_freq);
+        if exist(fullfile(PathToFile,Filename_bot),'file')
+            [~,temp, ~] = readEKBot(fullfile(PathToFile,Filename_bot), calParms,'Frequencies',vec_freq);
 
              ping_end_bot=nanmin(size(temp.pings.bottomdepth,2),ping_end);
                 
@@ -189,6 +211,18 @@ if ~isequal(Filename_cell, 0)
         else
             gps_data=gps_data_cl();
         end
+        
+        if isfield(data, 'attitude')
+            attitude_full=attitude_nav_cl('Heading',data.attitude.heading,'Pitch',data.attitude.pitch,'Roll',data.attitude.roll,'Heave',data.attitude.heave,'Time',data.attitude.time);
+        elseif isfield(data,'heading')
+            attitude_full=attitude_nav_cl('Heading',data.attitude.heading,'Time',data.attitude.time);
+        else
+            attitude_full=attitude_nav_cl();
+        end
+        
+        
+        
+        
         
         freq=nan(1,header.transceivercount);
         
@@ -219,8 +253,6 @@ if ~isequal(Filename_cell, 0)
             %             toc
             
             
-            
-            dir_data=app_path.data;
             [~,curr_filename,~]=fileparts(tempname);
             curr_name=fullfile(dir_data,curr_filename);
             
@@ -240,29 +272,13 @@ if ~isequal(Filename_cell, 0)
             clear curr_data;
             
             r=data.pings(i).range;
-            gps_data_ping=resample_gps_data(gps_data,data.pings(i).time);
-            
-            
-            if isfield(data, 'attitude')
-                [heading_pings,~]=resample_data(data.attitude.heading,data.attitude.time,data.pings(i).time);
-                [pitch_pings,~]=resample_data(data.attitude.pitch,data.attitude.time,data.pings(i).time);
-                [roll_pings,~]=resample_data(data.attitude.roll,data.attitude.time,data.pings(i).time);
-                [heave_pings,~]=resample_data(data.attitude.heave,data.attitude.time,data.pings(i).time);
-                attitude=attitude_nav_cl('Heading',heading_pings,'Pitch',pitch_pings,'Roll',roll_pings,'Heave',heave_pings,'Time',data.pings(i).time);
-            elseif isfield(data,'heading')
-                [heading_pings,~]=resample_data(data.heading.heading,data.heading.time,data.pings(i).time);
-                attitude=attitude_nav_cl('Heading',heading_pings,'Time',data.pings(i).time);
-            else
-                attitude=attitude_nav_cl();
-            end
-            
-            
+            gps_data_ping=gps_data.resample_gps_data(data.pings(i).time);
+            attitude=attitude_full.resample_attitude_nav_data(data.pings(i).time);
+              
             algo_vec=init_algos(r);
             
             
-            
-            
-            
+
             if length(Bottom_sim(i,:))~=size(data.pings(i).power,2);
                 Bottom=nan(1,size(data.pings(i).power,2));
                 Bottom_idx=nan(1,size(data.pings(i).power,2));
@@ -285,7 +301,7 @@ if ~isequal(Filename_cell, 0)
             [transceiver(i).Config,transceiver(i).Params]=config_from_ek60(data.config(i),calParms(i));
         end
         
-        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
+        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq);
         
     end
 

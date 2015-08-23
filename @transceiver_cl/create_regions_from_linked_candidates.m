@@ -2,7 +2,7 @@ function create_regions_from_linked_candidates(trans,linked_candidates,w_unit,h_
 
 Sv=trans.Data.get_datamat('svdenoised');
 if isempty(Sv)
-    Sv=Transceiver.Data.get_datamat('sv');
+    Sv=trans.Data.get_datamat('sv');
 end
 
 for j=1:nanmax(linked_candidates(:))

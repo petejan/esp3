@@ -1,12 +1,13 @@
-function open_EK80_files(main_figure,PathToFile,Filename,ping_start,ping_end,multi_layer,join)
+function open_EK80_files(main_figure,PathToFile,Filename,vec_freq_init,ping_start,ping_end,multi_layer,join)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
 app_path=getappdata(main_figure,'App_path');
 
 ite=1;
+vec_freq_tot=[];
+list_freq_str={};
 
 if ~isequal(Filename, 0)
-   
     opening_file=msgbox(['Opening file ' Filename '. This box will close when finished...'],'Opening File');
     hlppos=get(opening_file,'position');
     set(opening_file,'position',[100 hlppos(2:4)])
@@ -21,6 +22,8 @@ if ~isequal(Filename, 0)
     prev_ping_start=1;
     
     for uuu=1:nb_layers
+        vec_freq_temp=[];
+        
         if ite==1&&iscell(Filename)
             curr_Filename=Filename{uuu};
         else
@@ -31,9 +34,37 @@ if ~isequal(Filename, 0)
             break;
         end
         
-        [header,data]=readEK80(PathToFile,curr_Filename,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end]);
+      
+        if isempty(vec_freq_init)
+            [header_temp,data_temp]=readEK80(PathToFile,curr_Filename,'PingRange',[1 1]);
+            
+            for ki=1:header_temp.transceivercount
+                vec_freq_temp=[vec_freq_temp data_temp.config(ki).Frequency];
+                list_freq_str=[list_freq_str num2str(data_temp.config(ki).Frequency,'%.0f')];
+            end
+            
+            if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
+                vec_freq_tot=vec_freq_temp;
+                [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load');
+            end
+            
+            if val==0||isempty(select)
+                continue;
+            else
+                vec_freq=vec_freq_tot(select);
+            end
+        else
+            vec_freq=vec_freq_init;
+        end
+        
+        if isempty(vec_freq)
+            vec_freq=-1;
+        end
+        
 
-
+        [header,data]=readEK80(PathToFile,curr_Filename,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'Frequencies',vec_freq);
+        
+        
         if ~isstruct(header)
             if exist('opening_file','var')
                 close(opening_file);
@@ -61,6 +92,15 @@ if ~isequal(Filename, 0)
             gps_data=gps_data_cl();
         end
         
+        if isfield(data, 'attitude')
+            attitude_full=attitude_nav_cl('Heading',data.attitude.heading,'Pitch',data.attitude.pitch,'Roll',data.attitude.roll,'Heave',data.attitude.heave,'Time',data.attitude.time);
+        elseif isfield(data,'heading')
+            attitude_full=attitude_nav_cl('Heading',data.attitude.heading,'Time',data.attitude.time);
+        else
+            attitude_full=attitude_nav_cl();
+        end
+        
+        
         freq=nan(1,header.transceivercount);
         
         
@@ -80,7 +120,7 @@ if ~isequal(Filename, 0)
             
             %
             
-
+            
             fileID = unidrnd(2^64);
             [~,found]=find_layer_idx(layers,fileID);
             
@@ -110,24 +150,10 @@ if ~isequal(Filename, 0)
             
             clear curr_data;
             
-            if isfield(data,'gps')
-                gps_data_ping=resample_gps_data(gps_data,data.pings(i).time);
-            else
-                gps_data_ping=gps_data_cl();
-            end
             
-            if isfield(data, 'attitude')
-                [heading_pings,~]=resample_data(data.attitude.heading,data.attitude.time,data.pings(i).time);
-                [pitch_pings,~]=resample_data(data.attitude.pitch,data.attitude.time,data.pings(i).time);
-                [roll_pings,~]=resample_data(data.attitude.roll,data.attitude.time,data.pings(i).time);
-                [heave_pings,~]=resample_data(data.attitude.heave,data.attitude.time,data.pings(i).time);
-                attitude=attitude_nav_cl('Heading',heading_pings,'Pitch',pitch_pings,'Roll',roll_pings,'Heave',heave_pings,'Time',data.pings(i).time);
-            elseif isfield(data,'heading')
-                [heading_pings,~]=resample_data(data.heading.heading,data.heading.time,data.pings(i).time);
-                attitude=attitude_nav_cl('Heading',heading_pings,'Time',data.pings(i).time);
-            else
-                attitude=attitude_nav_cl();
-            end
+            gps_data_ping=gps_data.resample_gps_data(data.pings(i).time);
+            
+            attitude=attitude_full.resample_attitude_nav_data(data.pings(i).time);
             
             r=data.pings(i).range;
             
@@ -187,7 +213,7 @@ if ~isequal(Filename, 0)
             
         end
         
-        layer_new=layer_cl('ID_num',fileID,'Filename',curr_Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'Frequencies',freq);
+        layer_new=layer_cl('ID_num',fileID,'Filename',curr_Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq);
         
         props=fieldnames(data.env);
         

@@ -8,6 +8,7 @@ classdef line_cl < handle
         Range
         Time
         UTC_diff
+        Dist_diff
         File_origin
     end
     
@@ -24,6 +25,7 @@ classdef line_cl < handle
             addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'Time',[],@isnumeric);
             addParameter(p,'UTC_diff',0,@isnumeric);
+            addParameter(p,'Dist_diff',0,@isnumeric);
             addParameter(p,'File_origin',[],@ischar);
             
             parse(p,varargin{:});
@@ -41,7 +43,6 @@ classdef line_cl < handle
             obj.Time=obj.Time+dt/24-obj.UTC_diff/24;
             obj.UTC_diff=dt;
         end
-
-                
+                      
     end
 end

@@ -111,6 +111,7 @@ end
 end
 
 function update_path(path)
+addpath(path);
 addpath(genpath(fullfile([path 'acoustic'])));
 addpath(genpath(fullfile([path 'algo'])));
 addpath(genpath(fullfile([path 'display'])));
