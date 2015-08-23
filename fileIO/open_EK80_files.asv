@@ -21,7 +21,7 @@ if ~isequal(Filename, 0)
     
     prev_ping_end=0;
     prev_ping_start=1;
-    opening_file=waitbar(1/nb_layers,sprintf('Opening file: %s',Filename{1}),'Name','Opening files');
+    opening_file=waitbar(1/nb_layers,sprintf('Opening file: %s',Filename{1}),'Name','Opening files'));
     
     for uuu=1:nb_layers
         vec_freq_temp=[];
@@ -47,7 +47,7 @@ if ~isequal(Filename, 0)
             
             if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
                 vec_freq_tot=vec_freq_temp;
-                [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load','InitialValue',1:length(vec_freq_tot));
+                [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load');
             end
             
             if val==0||isempty(select)

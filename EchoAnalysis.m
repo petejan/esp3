@@ -46,14 +46,14 @@ files_in_temp=dir(fullfile(app_path.data,'*.bin'));
 
 idx_old=[];
 for uu=1:length(files_in_temp)
-    if (now-files_in_temp(uu).datenum)>10
+    if (now-files_in_temp(uu).datenum)>1
         idx_old=[idx_old uu];
     end
 end
 
 if ~isempty(idx_old)
     delete_files=0;
-    choice = questdlg('There is files older than 10 days in your EchoAnalysis temp folder, do you want to delete them?', ...
+    choice = questdlg('There is files older than 1 day in your EchoAnalysis temp folder, do you want to delete them?', ...
         'Delete files?',...
         'Yes','No', ...
         'No');

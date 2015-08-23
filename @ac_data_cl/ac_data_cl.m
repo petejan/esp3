@@ -17,7 +17,7 @@ classdef ac_data_cl < handle
             
             check_sub_ac_data_class=@(sub_ac_data_obj) isa(sub_ac_data_obj,'sub_ac_data_cl')||isempty(sub_ac_data_obj);
                
-            def_name=fullfile(tempdir,'init_0');
+            def_name=fullfile(tempdir,'data_echo','init_0');
             i=0;
             while exist([def_name 'sv.bin'],'file')>0
                 i=i+1;
