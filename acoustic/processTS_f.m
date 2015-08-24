@@ -72,7 +72,7 @@ if strcmp(Transceiver.Mode,'FM')
     
     if ~isempty(cal)
         Gf_corr=interp1(cal.freq_vec,cal.Gf,f_vec);
-        idx_null=(cal.th_ts)<nanmax(cal.th_ts)-5;
+        idx_null=abs((cal.th_ts)-10*log10(nanmean(10.^(cal.th_ts/10))))>5;
         cal.Gf(idx_null)=nan;
     else
         Gf_corr=0;
@@ -85,7 +85,7 @@ if strcmp(Transceiver.Mode,'FM')
     
     Prx_fft_target=4*(abs(fft_target_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
     
-    Sp_f=10*log10(Prx_fft_target)+40*log10(r_ts(idx_max))+2*alpha_f.*r_ts(idx_max)-10*log10(ptx*lambda.^2/(16*pi^2))-2*gain_f-2*Gf_corr;
+    Sp_f=10*log10(Prx_fft_target)+40*log10(r_ts(idx_max))+2*alpha_f.*r_ts(idx_max)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr);
 
 else
     Sp_f=[];

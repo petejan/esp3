@@ -81,7 +81,7 @@ if strcmp(Transceiver.Mode,'FM')
     
     if ~isempty(cal)
         Gf_corr=interp1(cal.freq_vec,cal.Gf,f_vec);
-        idx_null=(cal.th_ts)<nanmax(cal.th_ts)-5;
+         idx_null=abs((cal.th_ts)-10*log10(nanmean(10.^(cal.th_ts/10))))>5;
         cal.Gf(idx_null)=nan;
     else
         Gf_corr=0;
