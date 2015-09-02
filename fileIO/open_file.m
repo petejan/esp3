@@ -157,7 +157,7 @@ if ~isequal(Filename, 0)
         ping_start=1;
         ping_end=Inf;
     end
-    
+
     switch ftype
         case 'EK60'
             open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
@@ -165,5 +165,6 @@ if ~isequal(Filename, 0)
             open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
     end
         update_display(main_figure,1);
+
 end
 end

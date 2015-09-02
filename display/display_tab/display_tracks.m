@@ -1,7 +1,7 @@
 function axes_panel_comp=display_tracks(xdata,ST,tracks,axes_panel_comp,vis)
 
 X_st=xdata(ST.Ping_number);
-Z_st=ST.Target_range_min;
+Z_st=ST.Target_range;
 
 uu=0;
 if isfield(axes_panel_comp,'track_plot')

@@ -69,10 +69,10 @@ if multi_layer==0
             end
             %idx_to_concatenate{uu}{kk}=unique(idx_to_concatenate{uu}{kk}(:));%not good but will have to wait a bit!
             if ~isempty(idx_to_concatenate{uu}{kk})
-                new_not_to=setdiff(idx(idx_same_samples),unique(idx_to_concatenate{uu}{kk}(:)));
+                new_not_to=setdiff(idx_same_samples,unique(idx_to_concatenate{uu}{kk}(:)));
                 idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu}(:);new_not_to(:)]);
             else
-                idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu}(:) ;idx(idx_same_samples(:))]);
+                idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu}(:);idx_same_samples(:)]);
             end
         end
     end

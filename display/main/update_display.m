@@ -43,7 +43,7 @@ else
     update_regions_tab(main_figure);
     
     load_calibration_tab(main_figure,main_childs(idx_opt));
-    
+   
     opt_tabs=get(main_childs(idx_opt),'children');
     %algo_tab=get(main_childs(idx_opt),'children');
     
@@ -61,13 +61,13 @@ else
     
 end
 
-
-curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-
+% profile on;
 load_info_panel(main_figure);
 load_axis_panel(main_figure,new);
-set(main_figure,'WindowButtonMotionFcn',{@display_info,main_figure,layer.Transceivers(idx_freq)});
+set(main_figure,'WindowButtonMotionFcn',{@display_info,main_figure});
+% 
+% profile off;
+% profile viewer;
 
 % disp('Done!')
 

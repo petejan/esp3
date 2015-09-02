@@ -56,8 +56,7 @@ switch callbackdata.Key
                 set(cursor_mode_tool_comp.zoom_in,'state','off');
         end
         toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
-    case '2'
-        
+    case '2'       
         switch get(cursor_mode_tool_comp.zoom_out,'state');
             case 'off'
                 set(cursor_mode_tool_comp.zoom_out,'state','on');

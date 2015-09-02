@@ -116,7 +116,8 @@ if strcmp(Transceiver.Mode,'FM')
     Prx_fft_vol=4*(abs(fft_vol_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
     
     Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr)-eq_beam_angle_f;
-    
+    %Sp_f=10*log10(Prx_fft_target)+40*log10(r_ts(idx_max))+2*alpha_f.*r_ts(idx_max)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr);
+
 else
     Sv_f=[];
     f_vec=[];

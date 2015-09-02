@@ -204,7 +204,7 @@ end
 close(h);
 [target_peak_power,idx_peak_power]=nanmax(samples_targets_power);
 target_comp=samples_targets_comp(idx_peak_power+(0:nb_targets-1)*max_pulse_length);
-
+samples_targets_idx_r=nanmin(samples_targets_sample)+idx_peak_power-1;
 
 std_along=nanstd(samples_targets_along);
 std_athwart=nanstd(samples_targets_athwart);
@@ -213,6 +213,7 @@ phi_athwart=nanmean(samples_targets_athwart);
 
 samples_targets_power(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
 samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
+
 
 switch Transceiver.Mode
     case 'CW'
@@ -243,6 +244,7 @@ target_TS_uncomp=target_TS_uncomp(idx_keep);
 target_range=target_range(idx_keep);
 target_range_min=target_range_min(idx_keep);
 target_range_max=target_range_max(idx_keep);
+target_idx_r=samples_targets_idx_r(idx_keep);
 std_along=std_along(idx_keep);
 std_athwart=std_athwart(idx_keep);
 phi_along=phi_along(idx_keep);
@@ -293,6 +295,7 @@ idx_keep_final= ~isnan(target_TS_comp);
 single_targets.TS_comp=target_TS_comp(idx_keep_final);
 single_targets.TS_uncomp=target_TS_uncomp(idx_keep_final);
 single_targets.Target_range=target_range(idx_keep_final);
+single_targets.idx_r=target_idx_r(idx_keep_final);
 single_targets.Target_range_min=target_range_min(idx_keep_final);
 single_targets.Target_range_max=target_range_max(idx_keep_final);
 single_targets.StandDev_Angles_Minor_Axis=std_along(idx_keep_final);

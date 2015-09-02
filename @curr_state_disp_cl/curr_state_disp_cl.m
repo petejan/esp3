@@ -11,6 +11,8 @@ classdef curr_state_disp_cl <handle
         DispBadTrans
         DispReg
         DispLines
+        Grid_x
+        Grid_y
     end
     
     methods
@@ -26,6 +28,8 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispReg',true,@islogical);
             addParameter(p,'DispLines',true,@islogical);
             addParameter(p,'Xaxes','Number',@ischar);
+            addParameter(p,'Grid_x',100,@isnumeric);
+            addParameter(p,'Grid_y',100,@isnumeric);
             parse(p,varargin{:});
             results=p.Results;
             props=fieldnames(results);

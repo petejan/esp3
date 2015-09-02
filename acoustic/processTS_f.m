@@ -57,9 +57,8 @@ if strcmp(Transceiver.Mode,'FM')
     compensation_f=nan(size(f_vec));
     eq_beam_angle_f=eq_beam_angle-20*log10(f_vec/Freq);
     
-    BeamWidthAlongship_f=Transceiver.Config.BeamWidthAlongship*acos(1-(10.^(eq_beam_angle_f/10))/(2*pi))/acos(1-(10.^(eq_beam_angle/10))/(2*pi));
-    
-    BeamWidthAthwartship_f=Transceiver.Config.BeamWidthAthwartship*acos(1-(10.^(eq_beam_angle_f/10))/(2*pi))/acos(1-(10.^(eq_beam_angle/10))/(2*pi));
+    BeamWidthAlongship_f=Transceiver.Config.BeamWidthAlongship*acos(1-(10.^(eq_beam_angle_f/10))/(2*pi))/acos(1-(10.^(eq_beam_angle/20))/(2*pi));   
+    BeamWidthAthwartship_f=Transceiver.Config.BeamWidthAthwartship*acos(1-(10.^(eq_beam_angle_f/10))/(2*pi))/acos(1-(10.^(eq_beam_angle/20))/(2*pi));
     
     
     for jj=1:length(f_vec)

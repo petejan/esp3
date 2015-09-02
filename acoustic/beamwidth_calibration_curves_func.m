@@ -152,7 +152,7 @@ for uui=1:length(layer.Frequencies)
         
         for tt=1:size(f_vec,1)
             [offset_Alongship(tt), BeamWidthAlongship_f_fit(tt), offset_Athwartship(tt), BeamWidthAthwartship_f_fit(tt), ~, peak(tt), exitflag(tt)]...
-                =fit_beampattern(Sp_f(tt,:), AcrossAngle_sph, AlongAngle_sph,3/4*mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]), mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]));
+                =fit_beampattern(Sp_f(tt,:), AcrossAngle_sph, AlongAngle_sph,mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]), mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]));
             try
                 waitbar(tt/size(f_vec,1),h,sprintf('Processing Beamwidth Estimation %i/%i',tt,size(f_vec,1)));
             catch

@@ -38,7 +38,7 @@ classdef sub_ac_data_cl < handle
                 case 'sp'
                     obj.CaxisDisplay=[-60 -30];
                     obj.Type='Sp';
-                case    'spdenoised'
+                case  'spdenoised'
                     obj.CaxisDisplay=[-60 -30];
                     obj.Type='Denoised Sp';
                 case    'spunmatched'

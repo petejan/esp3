@@ -11,6 +11,7 @@ classdef layer_cl < handle
         GPSData
         AttitudeNav
         EnvData
+        Curves
     end
     
     
@@ -21,6 +22,7 @@ classdef layer_cl < handle
             
             check_att_class=@(obj) isa(obj,'attitude_nav_cl');
             check_gps_class=@(gps_data_obj) isa(gps_data_obj,'gps_data_cl');
+            check_curve_cl=@(curve_obj) isempty(curve_obj)|isa(curve_obj,'curve_cl');
             check_env_class=@(env_data_obj) isa(env_data_obj,'env_data_cl');
             check_transceiver_class=@(transceiver_obj) isa(transceiver_obj,'transceiver_cl')|isempty(transceiver_obj);
             check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
@@ -33,6 +35,7 @@ classdef layer_cl < handle
             addParameter(p,'Lines',[],check_line_class);
             addParameter(p,'Frequencies',38000,@isnumeric);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
+            addParameter(p,'Curves',[],check_curve_cl);
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
             
@@ -64,6 +67,7 @@ classdef layer_cl < handle
                 ,'Filetype',layer_1.Filetype,...
                 'PathToFile',layer_1.PathToFile,...
                 'Transceivers',concatenate_Transceivers(layer_1.Transceivers,layer_2.Transceivers),...
+                'AttitudeNav',concatenate_AttitudeNavPing(layer_1.AttitudeNav,layer_2.AttitudeNav),...
                 'GPSData',concatenate_GPSData(layer_1.GPSData,layer_2.GPSData),...
                 'Frequencies',layer_1.Frequencies);
             
@@ -195,6 +199,33 @@ classdef layer_cl < handle
                 obj.rm_line_id(lines(i).ID);
                 obj.Lines=[obj.Lines lines(i)];
             end
+        end
+        
+        function add_curves(obj,curves)
+            for i=1:length(curves)
+               obj.Curves=[obj.Curves curves(i)]; 
+            end
+        end
+        
+        function tags=get_curves_tag(obj)
+            tags=cell(1,length(obj.Curves));
+            for i=1:length(obj.Curves)
+                tags{i}=obj.Curves(i).Tag;
+            end
+            tags=unique(tags);
+        end
+        
+        function idx=get_curves_per_tag(obj,tag)
+            idx=[];
+            for i=1:length(obj.Curves)
+                if strcmp(obj.Curves(i).Tag,tag);
+                    idx=[idx i];
+                end
+            end
+        end
+        
+        function clear_curves(obj)
+            obj.Curves=[];
         end
         
     end

@@ -7,16 +7,8 @@ ah=axes_panel_comp.main_axes;
 
 if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
     
-    u=get(ah,'children');
-    
-    for ii=1:length(u)
-        if (isa(u(ii),'matlab.graphics.primitive.Line')||isa(u(ii),'matlab.graphics.chart.primitive.Line'))...
-                &&~strcmp(get(u(ii),'tag'),'track')...
-                &&~strcmp(get(u(ii),'tag'),'bottom')...
-                &&~strcmp(get(u(ii),'tag'),'region')
-            delete(u(ii));
-        end
-    end
+    clear_lines(ah)
+
     drawnow;
     xdata=get(axes_panel_comp.main_echo,'XData');
     ydata=get(axes_panel_comp.main_echo,'YData');
@@ -122,7 +114,9 @@ end
         idx_pings=find(xdata<=x_max&xdata>=x_min);
         idx_r=find(ydata<=y_max&ydata>=y_min);
         reset_disp_info(main_figure);
+        clear_lines(ah)
         feval(func,main_figure,idx_r,idx_pings);
+        
 
     end
 

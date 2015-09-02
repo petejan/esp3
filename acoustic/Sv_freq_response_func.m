@@ -83,7 +83,7 @@ hold on;
 %plot(f_vec/1e3,Sv_f,'b','linewidth',0.2);
 hold on;
 plot(f_vec/1e3,Sv_f_mean,'r','linewidth',2)
-plot(f_vec_save/1e3,10*log10(filter2_perso(ones(1,nanmin(10,length(f_vec_save))),10.^(Sv_f_mean/10))),'k','linewidth',2)
+plot(f_vec/1e3,10*log10(filter2_perso(ones(1,nanmin(10,length(f_vec))),10.^(Sv_f_mean/10))),'k','linewidth',2)
 grid on;
 xlabel('kHz')
 ylabel('Sv(dB)')

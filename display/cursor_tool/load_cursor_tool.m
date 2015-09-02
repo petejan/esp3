@@ -190,8 +190,8 @@ if strcmp(src.State,'on')
             set(main_figure,'WindowButtonDownFcn',@(src,envdata)disp_loc(src,envdata,main_figure));
     end
 else
-    set(h_pan,'Enable','off');
     set(h,'Enable','off');
+    set(h_pan,'Enable','off');
     set(main_figure,'WindowButtonDownFcn','');
 end
 

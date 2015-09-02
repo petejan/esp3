@@ -1,5 +1,3 @@
-
-
 function axes_panel_comp=display_bottom(xdata,Range_bottom,axes_panel_comp,vis)
 
 if~isempty(Range_bottom)&&~isempty(xdata)
@@ -12,8 +10,7 @@ if~isempty(Range_bottom)&&~isempty(xdata)
             axes_panel_comp.bottom_plot=plot(xdata,Range_bottom,'k','linewidth',2,'tag','bottom','visible',vis);
         end
     else
-        axes_panel_comp.bottom_plot=plot(xdata,Range_bottom,'k','linewidth',2,'tag','bottom','visible',vis);
-        
+        axes_panel_comp.bottom_plot=plot(xdata,Range_bottom,'k','linewidth',2,'tag','bottom','visible',vis);      
     end
 end
 

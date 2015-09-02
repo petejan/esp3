@@ -15,8 +15,15 @@ end
 layers_temp=open_EK60_file_stdalone(cal,app_path.data,PathToFile,Filename,vec_freq,ping_start,ping_end);
 %     profile off;
 %     profile viewer
-%
+if exist('opening_file','var')
+    close(opening_file);
+end
 
+if isempty(layers_temp)
+    return;
+end
+
+disp('Shuffling layers');
 [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join);
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -28,9 +35,8 @@ curr_disp.Fieldname=layer.Transceivers(idx_freq).Data.SubData(idx_field).Fieldna
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);
 setappdata(hObject,'Curr_disp',curr_disp);
-if exist('opening_file','var')
-    close(opening_file);
-end
+
+
 
 
 end

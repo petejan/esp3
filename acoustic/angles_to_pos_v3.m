@@ -15,7 +15,7 @@ for i=1:length(Pitch)
     attitude_mat=create_attitude_matrix(along_corr,across_corr);
     attitude_mat_ori=create_attitude_matrix(Pitch(i),Roll(i));
     
-    pos_mat(:,i)=attitude_mat*[0;0;Range(i)]+attitude_mat_ori*[AcrossOffset;AlongOffset;Zoffset]-[0;0;Heave(i)];
+    pos_mat(:,i)=attitude_mat*[0;0;Range(i)]+attitude_mat_ori*[AlongOffset;AcrossOffset;Zoffset]-[0;0;Heave(i)];
 end
 
 

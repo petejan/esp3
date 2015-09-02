@@ -70,7 +70,7 @@ region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu'
 %uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg 3D','units','normalized','pos',[0.425 0.1 0.15 0.15],'callback',{@display_region_3D,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.45 0.1 0.1 0.15],'callback',{@copy_to_other_freq,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg','units','normalized','pos',[0.55 0.1 0.1 0.15],'callback',{@display_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Freq Resp.','units','normalized','pos',[0.65 0.1 0.1 0.15],'callback',{@freq_response_reg,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Freq Resp.','TooltipString','Frequency Response (TS(f) of Sv(f))','units','normalized','pos',[0.65 0.1 0.1 0.15],'callback',{@freq_response_reg_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','units','normalized','pos',[0.75 0.1 0.1 0.15],'callback',{@classify_reg_callback,main_figure});
 
 
@@ -135,6 +135,11 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 list_reg = list_regions(layer.Transceivers(idx_freq));
+
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+ah=axes_panel_comp.main_axes;
+clear_lines(ah);
+
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
@@ -209,7 +214,7 @@ end
 setappdata(main_figure,'Region_tab',region_tab_comp);
 end
 
-function freq_response_reg(~,~,main_figure)
+function freq_response_reg_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -220,13 +225,13 @@ list_reg = list_regions(layer.Transceivers(idx_freq));
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
+    %idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
     
     idx_pings=active_reg.Idx_pings;
     idx_r=active_reg.Idx_r;
     
     switch(curr_disp.Fieldname)
-        case 'sp'
+        case {'sp','spunmatched'}
             TS_freq_response_func(main_figure,idx_r,idx_pings)
         case 'sv'
             Sv_freq_response_func(main_figure,idx_r,idx_pings)

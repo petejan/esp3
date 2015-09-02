@@ -21,8 +21,7 @@ if ~isequal(Filename, 0)
     
     prev_ping_end=0;
     prev_ping_start=1;
-    opening_file=waitbar(1/nb_layers,sprintf('Opening file: %s',Filename{1}),'Name','Opening files');
-    
+
     for uuu=1:nb_layers
         vec_freq_temp=[];
         
@@ -75,9 +74,9 @@ if ~isequal(Filename, 0)
         end
         
         try
-            waitbar(uuu/nb_layers,opening_file,sprintf('Opening file: %s',curr_Filename));
+            waitbar(uuu/nb_layers,opening_file,sprintf('Opening file: %s',curr_Filename),'WindowStyle','Modal');
         catch
-            opening_file=waitbar(uuu/nb_layers,sprintf('Opening file: %s',curr_Filename),'Name','Opening files');
+            opening_file=waitbar(uuu/nb_layers,sprintf('Opening file: %s',curr_Filename),'Name','Opening files','WindowStyle','Modal');
         end
         
         

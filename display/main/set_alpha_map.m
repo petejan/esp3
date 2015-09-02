@@ -16,7 +16,6 @@ min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(1);
 data=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Fieldname);
 alpha_map=double(data>=min_axis);
 
-
 if curr_disp.DispBadTrans
     alpha_map(:,layer.Transceivers(idx_freq).IdxBad)=0.5;
 end
