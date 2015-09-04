@@ -9,7 +9,7 @@ switch selection,
         layers=getappdata(src,'Layers');
         
         while length(layers)>=1
-            layers=layers.delete_layer(layers(1).ID_num);
+            layers=layers.delete_layers(layers(1).ID_num);
         end
                  
         appdata = get(src,'ApplicationData');

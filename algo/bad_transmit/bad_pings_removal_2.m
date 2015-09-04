@@ -8,7 +8,7 @@ check_BS_std=@(x)(x>=3)&&(x<=20);
 
 
 default_thr_bottom=-56;
-check_thr_bottom=@(x)(x>=-120&&x<=-30);
+check_thr_bottom=@(x)(x>=-120&&x<=-10);
 
 default_thr_echo=-12;
 check_thr_echo=@(x)(x>=-20&&x<=-3);

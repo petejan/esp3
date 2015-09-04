@@ -30,6 +30,7 @@
                     fd = ones(size(mat(:,:,11)));
                 end
             end
+            
             if ~isnan(reg.startSlice(j));
                 ss = mat(:,:,1) >= reg.startSlice(j);
             else
@@ -40,6 +41,7 @@
             else
                 fs = ones(size(mat(:,:,1)));
             end
+            
             ix = sd == 1 & fd == 1 & ss == 1 & fs == 1;
             matSubSet = [];
             for i = 1:size(mat,3)

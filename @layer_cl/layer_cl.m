@@ -56,6 +56,22 @@ classdef layer_cl < handle
             end
         end
         
+        function delete(layer)
+            
+            for kk=1:length(layer.Transceivers)
+                for uu=1:length(layer.Transceivers(kk).Data.SubData)
+                    if isa(layer.Transceivers(kk).Data.SubData(uu).Memap,'memmapfile')
+                        if exist(layer.Transceivers(kk).Data.SubData(uu).Memap.Filename,'file')>0
+                            layer.Transceivers(kk).Data.SubData(uu).Memap.Writable=false;
+                            %clear layer.Transceivers(kk).Data.SubData(uu).Memap.Data
+                            delete(layer.Transceivers(kk).Data.SubData(uu).Memap.Filename);
+                        end
+                    end
+                end
+                
+            end
+        end
+        
         function layer_out=concatenate_Layer(layer_1,layer_2)
             if iscell(layer_1.Filename)||iscell(layer_2.Filename)
                 newname=[layer_1.Filename layer_2.Filename];

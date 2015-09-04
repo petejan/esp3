@@ -27,7 +27,7 @@ bottom_tab_comp.bottom_tab=uitab(algo_tab_panel,'Title','Bottom Detect Option');
 pos=create_pos_algo();
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','BS Thr(dB)','units','normalized','Position',pos{1,1});
-bottom_tab_comp.Thr_bottom_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-70,'Max',-30,'Value',algo_bottom.thr_bottom,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
+bottom_tab_comp.Thr_bottom_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-50,'Max',-10,'Value',algo_bottom.thr_bottom,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
 bottom_tab_comp.Thr_bottom_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(bottom_tab_comp.Thr_bottom_sl,'Value'),'%.0f'));
 set(bottom_tab_comp.Thr_bottom_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_bottom_ed,'%.0f'});
 set(bottom_tab_comp.Thr_bottom_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_bottom_sl,'%.0f'});

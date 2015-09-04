@@ -48,6 +48,7 @@ if ~isequal(Filename_cell, 0)
                 vec_freq=vec_freq_tot(select);
             end
         else
+            AllowModeChange=false;
             vec_freq=vec_freq_init;
         end
         
@@ -71,8 +72,9 @@ if ~isequal(Filename_cell, 0)
         try
             [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
         catch err2
-            disp(err2.Message);
-            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
+            disp(err2.message);
+            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
+            AllowModeChange=true;
         end
         
         if isnumeric(header)

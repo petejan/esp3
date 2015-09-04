@@ -1,5 +1,5 @@
 
-function regionSummary(mbs,varargin) % Calculate
+function regionSummary_new(mbs,varargin) % Calculate
 
 transects=mbs.input.data.transect;
 transects(abs([1;diff(mbs.input.data.transect)])==0)=[];
@@ -26,7 +26,7 @@ for ii=1:length(idx_transects)
     idx_transect_files=find(mbs.input.data.transect==curr_transect);
     
     end_num(1)=0;
-    rsa_temp={};
+	rsa_temp={};
     eint=0;
     for i=1:length(idx_transect_files)
         
@@ -83,9 +83,6 @@ for ii=1:length(idx_transects)
             
             reg_curr=mbs.input.data.regions{idx_transect_files(i)}(regx);
             
-            idx_r=reg_curr.Idx_r;
-            idx_pings=reg_curr.Idx_pings;
-            
             reg_curr.integrate_region(Transceiver);
             
             regCellInt = reg_curr.Output;
@@ -96,10 +93,8 @@ for ii=1:length(idx_transects)
             ix = (startPing:stopPing);
             % all pings for this region
             horzSlice = reg_curr.Cell_h;
-            vertSlice = reg_curr.Cell_w;
+            %vertSlice = reg_curr.Cell_w;
             
-            %         vertSlice = reg_curr.Cell_h;
-            %         horzSlice = reg_curr.Cell_w;
             
             switch reg_curr.Reference
                 case 'Surface';
@@ -108,14 +103,15 @@ for ii=1:length(idx_transects)
                     refType = 'b';
             end
             
-            dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;                       % get distance
+            %dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;                       % get distance
+            dist = m_lldist([regCellInt.Lon_S(1) regCellInt.Lon_E(end)],[regCellInt.Lat_S(1) regCellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
+   
             time_s = regCellInt.Time_S(1);
             time_e = regCellInt.Time_E(end);
             
-            timediff = etime(datevec(time_e),datevec(time_s))/3600;
+            timediff = (time_e-time_s)*24;
+            regCellIntSub = getCellIntSubSet(regCellInt, reg, j, refType);
             
-            regCellMat = getCellMatrix(regCellInt, horzSlice, vertSlice);       % put data in matrix
-            regCellMatSub = getCellMatrixSubSet(regCellMat, reg, j, refType);   % get valid cells according to ping stats
             
             %% Region Summary (4th Mbs output Block)
             rs{j,1} = mbs.input.data.snapshot(idx_transect_files(i));
@@ -134,8 +130,8 @@ for ii=1:length(idx_transects)
             if isnan(reg.finishDepth); finish = Transceiver.Data.Range(reg_curr.Idx_r(end)); else finish = reg.finishDepth; end
             rs{j,11} = finish;
             rs{j,12} = dist/timediff;
-            rs{j,13} = nansum(nansum(regCellMatSub(:,:,13)))./nansum(nansum(regCellMatSub(:,:,14).*(regCellMatSub(:,:,11)-regCellMatSub(:,:,10))));%Vbsc
-            rs{j,14} = nansum(nansum(regCellMatSub(:,:,13)))./nansum(nanmean(regCellMatSub(:,:,14)));%Abscf
+            rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*(regCellIntSub.Layer_depth_max-regCellIntSub.Layer_depth_min)));%Vbsc
+            rs{j,14} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nanmean(regCellIntSub.Nb_good_pings));%Abscf
             
             
             %% Region Summary (abscf by vertical slice) (5th Mbs output Block)
@@ -144,31 +140,33 @@ for ii=1:length(idx_transects)
             rsa{j,3} = mbs.input.data.transect(idx_transect_files(i));
             rsa{j,4} = [mbs.input.data.dfileDir{idx_transect_files(i)} '/' sprintf('d%07.f',mbs.input.data.dfile(idx_transect_files(i)))];
             rsa{j,5} = reg.id(j);
-            rsa{j,6} = length(regCellMatSub(1,:,8));  % num_v_slices
-            rsa{j,7} = nanmax(regCellMatSub(:,:,5))-1+end_num(i);         % transmit Start vertical slice
-            rsa{j,8} = nanmax(regCellMatSub(:,:,8)); % lat vertical slice
-            rsa{j,9} = nanmax(regCellMatSub(:,:,9)); % lon vertical slice
-            rsa{j,10} = nansum(regCellMatSub(:,:,13))./nanmean(regCellMatSub(:,:,14));%sum up all abcsf per vertical slice
-            rsa{j,11} = nanmax(regCellMatSub(:,:,6))-1+end_num(i);
+            rsa{j,6} = size(regCellIntSub.Lat_S,2);  % num_v_slices
+            rsa{j,7} = nanmax(regCellIntSub.Ping_S); % transmit Start vertical slice
+            rsa{j,8} = nanmax(regCellIntSub.Lat_S); % lat vertical slice
+            rsa{j,9} = nanmax(regCellIntSub.Lon_S); % lon vertical slice
+            rsa{j,10} = nansum(regCellIntSub.Sa_lin)./nanmean(regCellIntSub.Nb_good_pings);%sum up all abcsf per vertical slice
+            rsa{j,11} = nanmax(regCellIntSub.Ping_E)-1+end_num(i);
             
             %% Region vbscf (6th Mbs output Block)
-            rsv{j,1} = mbs.input.data.snapshot(idx_transect_files(i));
+            rsv{j,1}= mbs.input.data.snapshot(idx_transect_files(i));
             rsv{j,2} = mbs.input.data.stratum{idx_transect_files(i)};
             rsv{j,3} = mbs.input.data.transect(idx_transect_files(i));
             rsv{j,4} = [mbs.input.data.dfileDir{idx_transect_files(i)} '/' sprintf('d%07.f',mbs.input.data.dfile(idx_transect_files(i)))];
             rsv{j,5} = reg.id(j);
-            rsv{j,6} = nanmax(cell2mat(arrayfun(@(x) length(find(~isnan(regCellMatSub(:,x,3))==1)),1:size(regCellMatSub,2), 'uni', 0))); % num_h_slices, get max value of cells for each collum
-            rsv{j,7} = length(regCellMatSub(1,:,8)); % num_v_slices
+            rsv{j,6} = nanmax(nansum(~isnan(regCellIntSub.Sv_mean))); % num_h_slices, get max value of cells for each collum
+            rsv{j,7} = size(regCellIntSub.Lat_S,2); % num_v_slices
             rsv{j,8} = rs{j,13}; % region_vbscf
-            idx_first=nanmin(cell2mat(arrayfun(@(x) (find(~isnan(regCellMatSub(:,x,3))==1,1)),1:size(regCellMatSub,2), 'uni', 0)));
-            tmp = regCellMatSub(idx_first:idx_first+rsv{j,6}-1,:,3); tmp(isnan(tmp))=0;
+            [I,~]=find(isnan(regCellIntSub.Sv_mean'));
+            idx_first=nanmin(I);
+            tmp = 10.^(regCellIntSub.Sv_mean(idx_first:(idx_first+rsv{j,6})-1,:)/10);
+            tmp(isnan(tmp))=0;
             tmp=tmp';
             tmp=tmp(:);
             rsv{j,9} = tmp; % vbscf_values (Sv_mean), reshape vbscf to output horizontal slice by vertical slice like Esp2
             
             %% Region echo integral for File Summary
             %eint(j,1) = nansum(nansum(regCellMatSub(:,:,3).*(regCellMatSub(:,:,7).*vertSlice)));
-            eint(i) = nansum(nansum(regCellMatSub(:,:,13)));
+            eint(i) = nansum(nansum(regCellIntSub.Sa_lin));
             
             
         end
@@ -192,7 +190,7 @@ for ii=1:length(idx_transects)
     range=double(Transceiver.Data.Range);
     samples=(1:length(range))';
     pings=double(Transceiver.Data.Number);
-    startPing=pings(1);
+    
     idx_pings=1:length(pings);
     idx_r=samples;
     
@@ -213,29 +211,33 @@ for ii=1:length(idx_transects)
         'Output',[]);
     
     reg_temp.integrate_region(Transceiver);
-    layer_tot.delete();
-    clear layer_tot;
+   
     
     CellInt = reg_temp.Output;
-    time_s = CellInt.Time_S(1);
-    time_e = CellInt.Time_E(end);
     
-    timediff = etime(datevec(time_e),datevec(time_s))/3600;                 % get time difference
+    %dist = (CellInt.VL_E(end)-CellInt.VL_S(1))/1e3; 
+    dist_tot = m_lldist([CellInt.Lon_S(1) CellInt.Lon_S(1)],[CellInt.Lat_S(1) CellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
+    time_s_tot = CellInt.Time_S(1);
+    time_e_tot = CellInt.Time_E(end);
+    
+    timediff_tot = (time_e_tot-time_s_tot)*24;  
+    
+    % get time difference
     fs{ii,1} = mbs.input.data.snapshot(idx_transect_files(i));
     fs{ii,2} = mbs.input.data.stratum{idx_transect_files(i)};
     fs{ii,3} = mbs.input.data.transect(idx_transect_files(i));
-    fs{ii,4} = (CellInt.VL_E(end)-CellInt.VL_S(1))/1e3; % dist
+    fs{ii,4} = dist; % dist
     fs{ii,7} = nanmean(Transceiver.Bottom.Range(Transceiver.IdxBad==0)); % mean_d
-    fs{ii,8} = length(find((Transceiver.IdxBad==0))); % pings %
-    fs{ii,9} = fs{ii,4}/timediff; % av_speed
+    fs{ii,8}= length(find((Transceiver.IdxBad==0))); % pings %
+    fs{ii,9} = dist_tot/timediff_tot; % av_speed
     fs{ii,10} = CellInt.Lat_S(1); % start_lat
     fs{ii,11} = CellInt.Lon_S(1); % start_lon
     fs{ii,12} = CellInt.Lat_E(end); % finish_lat
     fs{ii,13} = CellInt.Lon_E(end); % finish_lon
     fs{ii,14} = nansum(eint); % Echo Integral
-    fs{ii,15} = nansum((fs{ii,8}.*fs{ii,7})); % mean bottom depth * pings
+    fs{ii,15} = nansum(fs{ii,8}.*fs{ii,7}); % mean bottom depth * pings
     fs{ii,5} = fs{ii,14}/fs{ii,15}; % vbscf according to Esp2 formula
-    fs{ii,6} = fs{ii,14}/(fs{ii,8}); % abscf according to Esp2 formula
+    fs{ii,6} = fs{ii,14}/fs{ii,8}; % abscf according to Esp2 formula
     
     %% Sliced File Summary
     % Export Integration by Cell for the whole Echogram gridded
@@ -246,6 +248,7 @@ for ii=1:length(idx_transects)
     numSlices = length(CellInt.Ping_S); % num_slices
     binStart = CellInt.Ping_S';
     binEnd = CellInt.Ping_E';
+    
     slice_abscf=zeros(1,length(binStart));
     
     for i=1:length(idx_transect_files)
@@ -259,6 +262,7 @@ for ii=1:length(idx_transects)
         end
     end
     
+    
     sfs{ii,1} = mbs.input.data.snapshot(idx_transect_files(i));
     sfs{ii,2} = mbs.input.data.stratum{idx_transect_files(i)};
     sfs{ii,3} = mbs.input.data.transect(idx_transect_files(i));
@@ -267,7 +271,11 @@ for ii=1:length(idx_transects)
     sfs{ii,6} = CellInt.Lat_S'; % latitude
     sfs{ii,7} = CellInt.Lon_S'; % longitude
     sfs{ii,8} = slice_abscf; % slice_abscf
+    
+    
     clear slice_abscf;
+    layer_tot.delete();
+    clear layer_tot;
     
 end
 mbs.output.temp.fileSum.data =  fs;

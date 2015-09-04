@@ -28,7 +28,7 @@ bad_ping_tab_comp.bad_ping_tab=uitab(algo_tab_panel,'Title','Bad Transmit');
 pos=create_pos_algo();
 
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','BS Thr(dB)','units','normalized','Position',pos{1,1});
-bad_ping_tab_comp.Thr_bottom_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',-70,'Max',-30,'Value',algo_bad_pings.thr_bottom,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
+bad_ping_tab_comp.Thr_bottom_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',-50,'Max',-10,'Value',algo_bad_pings.thr_bottom,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
 bad_ping_tab_comp.Thr_bottom_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(bad_ping_tab_comp.Thr_bottom_sl,'Value'),'%.0f'));
 set(bad_ping_tab_comp.Thr_bottom_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_bottom_ed,'%.0f'});
 set(bad_ping_tab_comp.Thr_bottom_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_bottom_sl,'%.0f'});

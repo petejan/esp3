@@ -3,7 +3,7 @@ function [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join)
 [~,found]=find_layer_idx(layers,0);
 
 if  found==1
-    layers=layers.delete_layer(0);
+    layers=layers.delete_layers(0);
 end
 
 if multi_layer==0   

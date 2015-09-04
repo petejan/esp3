@@ -93,7 +93,7 @@ classdef region_cl < handle
                 case 'Rectangular'
                     mask(obj.Idx_r,obj.Idx_pings)=1;
                 case 'Polygon'
-                   ask(obj.Idx_r,obj.Idx_pings)=~isnan(obj.Sv_reg);
+                   mask(obj.Idx_r,obj.Idx_pings)=~isnan(obj.Sv_reg);
              end
                      
             

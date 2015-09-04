@@ -53,7 +53,7 @@ Samples_mat=repmat((1:nb_samples)',1,nb_pings);
 
 
 %First let's find the bottom...
-heigh_b_filter=30*Np+1;
+heigh_b_filter=20*Np+1;
 
 idx_ringdown=analyse_ringdown(RingDown);
 
@@ -70,7 +70,7 @@ BS_lin=10.^(BS/10);
 BS_lin(isnan(BS_lin))=0;
 
 
-b_filter=nanmin(ceil(nb_pings/10),20);
+b_filter=nanmin(ceil(nb_pings/10),15);
 B_filter=gausswin(heigh_b_filter)*gausswin(b_filter)';
 BS_filtered_bot_lin=(abs(filter2_perso(B_filter,BS_lin)));
 BS_filtered_bot_lin(1:idx_r_min,:)=nan;
@@ -138,11 +138,11 @@ Bottom_region(:,nansum(Bottom_region)<=Np)=0;
 Bottom_region=ceil(filter2_perso(ones(1,b_filter),Bottom_region));
 Bottom_region=floor(filter2_perso(ones(1,b_filter),Bottom_region));
 
-% n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
-% Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
-% 
-% Bottom_region=Bottom_region(Permut,:);
-% Bottom_region(1:n_permut,:)=0;
+n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
+Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
+
+Bottom_region=Bottom_region(Permut,:);
+Bottom_region(1:n_permut,:)=0;
 
 idx_bottom=repmat((1:nb_samples)',1,nb_pings);
 idx_bottom(~Bottom_region)=nan;

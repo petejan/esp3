@@ -13,7 +13,7 @@ function delete_layer_callback(~,~,main_figure)
 %     cursor_mode_tool_comp.jCombo.removeItemAt(idx-1);
 %     cursor_mode_tool_comp.jCombo.addItem(layers_Str);
     
-    layers=layers.delete_layer(layer.ID_num);
+    layers=layers.delete_layers(layer.ID_num);
     layer=layers(nanmin(idx,length(layers)));
    
     setappdata(main_figure,'Layers',layers);

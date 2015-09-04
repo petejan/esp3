@@ -21,8 +21,7 @@ Samples_mat=repmat((1:nb_samples)',1,nb_pings);
 
 
 %First let's find the bottom...
-heigh_b_filter=30*Np+1;
-
+heigh_b_filter=20*Np+1;
 
 BS=Sv+10*log10(Range_mat);
 BS(isnan(BS))=-999;

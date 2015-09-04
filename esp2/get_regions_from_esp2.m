@@ -130,8 +130,8 @@ while 1
         Ping_ori=nanmin(x1,x2)+pingOffset;
         Sample_ori=nanmin(y1,y2)+1;
         
-        Bbox_w=nanmax(x1,x2)-Ping_ori-1;
-        Bbox_h=nanmax(y1,y2)-Sample_ori-1;
+        idx_pings=(nanmin(x1,x2):nanmax(x1,x2))+pingOffset;
+        idx_r=(nanmin(y1,y2):nanmax(y1,y2))+1;
         
         
         if strcmp(Shape,'Polygon');  % get Region Polygon Points: 1st dim ping no, 2nd dim sample no

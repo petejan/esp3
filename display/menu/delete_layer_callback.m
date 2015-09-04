@@ -10,7 +10,7 @@ function delete_layer_callback(~,~,main_figure)
     
     [idx,~]=find_layer_idx(layers,layer.ID_num);
     
-    layers=layers.delete_layer(layer.ID_num);
+    layers=layers.delete_layers(layer.ID_num);
     layer=layers(nanmin(idx,length(layers)));
    
     setappdata(main_figure,'Layers',layers);

@@ -211,12 +211,30 @@ classdef transceiver_cl < handle
             end
         end
         
-        function [idx,found]=find_reg_idx(trans,id)
+        function [idx,found]=find_reg_idx(trans,unique_id)
             
             idx=[];
             for ii=1:length(trans.Regions)
                 if id==trans.Regions(ii).Unique_ID
                     idx=ii;
+                    found=1;
+                end
+            end
+            
+            if isempty(idx)
+                idx=1;
+                found=0;
+            end
+            
+        end
+        
+        
+        function [idx,found]=find_reg_idx_id(trans,id)
+            
+            idx=[];
+            for ii=1:length(trans.Regions)
+                if id==trans.Regions(ii).ID
+                    idx=[idx ii];
                     found=1;
                 end
             end

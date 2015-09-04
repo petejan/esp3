@@ -8,6 +8,7 @@
             mbs.output.stratumSum.data = [];
             mbs.output.slicedTransectSum.data = [];
             mbs.output.transectSum.data = [];
+            
             for ii = 1:size(mbs.output.temp.fileSum.data,1)
                 % this for loop fills all empty cells with NaNs
                 for jj = 1:size(mbs.output.temp.fileSum.data,2)

@@ -64,13 +64,13 @@ classdef mbs_cl < handle
                 %% Stratum Summary
                 fprintf(fid,'\n# Stratum Summary\n#snapshot stratum no_transects abscf_mean abscf_sd abscf_wmean abscf_var\n');
                 for k = 1:size(mbs.output.stratumSum.data,1)
-                    fprintf(fid,'%0.f,%s,%0.f,%e,%e,%e,%e\n', mbs.output.stratumSum.data{k,:});
+                    fprintf(fid,'%0.f,%s,%0.f,%.5e,%.5e,%.5e,%.5e\n', mbs.output.stratumSum.data{k,:});
                 end
                 
                 %% Transect summary
                 fprintf(fid,'\n# Transect Summary\n#snapshot stratum transect dist vbscf abscf mean_d pings av_speed start_lat start_lon finish_lat finish_lon\n');
                 for k = 1:size(mbs.output.transectSum.data,1)
-                    fprintf(fid,'%0.f,%s,%0.f,%0.4f,%e,%e,%0.3f,%0.f,%0.5f,%0.4f,%0.4f,%0.4f,%0.4f\n', mbs.output.transectSum.data{k,:});
+                    fprintf(fid,'%0.f,%s,%0.f,%0.4f,%.5e,%.5e,%0.3f,%0.f,%0.5f,%0.4f,%0.4f,%0.4f,%0.4f\n', mbs.output.transectSum.data{k,:});
                 end
                 
                 %% Sliced Transect Summary
@@ -84,21 +84,21 @@ classdef mbs_cl < handle
                 %% Region Summary
                 fprintf(fid,'\n# Region Summary\n#snapshot stratum transect file region_id ref slice_size good_pings start_d mean_d finish_d av_speed vbscf abscf\n');
                 for k = 1:size(mbs.output.regionSum.data,1)
-                    fprintf(fid,'%0.f,%s,%0.f,%s,%0.f,%s,%0.f,%0.f,%0.3f,%0.3f,%0.3f,%0.5f,%e,%e\n', mbs.output.regionSum.data{k,:});
+                    fprintf(fid,'%0.f,%s,%0.f,%s,%0.f,%s,%0.f,%0.f,%0.3f,%0.3f,%0.3f,%0.5f,%.5e,%.5e\n', mbs.output.regionSum.data{k,:});
                 end
                 
                 %% Region Summary (abscf by vertical slice)
                 fprintf(fid,'\n# Region Summary (abscf by vertical slice)\n#snapshot stratum transect file region_id num_v_slices {transmit_start latitude longitude column_abscf}\n');
                 for k = 1:size(mbs.output.regionSum.data,1)
                     tmp = arrayfun(@(x)  cell2mat(arrayfun(@(y)mbs.output.regionSumAbscf.data{k,end-y-1:end-y-1}(x),linspace(3,0,4), 'uni', 0)),1:length(mbs.output.regionSumAbscf.data{k,end-1}), 'uni', 0);  %rearange abscf data to print vertical by vertical cell
-                    fprintf(fid,['%0.f,%s,%0.f,%s,%0.f,%0.f,'  repmat('%0.f,%0.4f,%0.4f,%e,', 1,size(mbs.output.regionSumAbscf.data{k,end},2)-1) '%0.f,%0.4f,%0.4f,%e\n'], mbs.output.regionSumAbscf.data{k,1:end-5},tmp{:});
+                    fprintf(fid,['%0.f,%s,%0.f,%s,%0.f,%0.f,'  repmat('%0.f,%0.4f,%0.4f,%.5e,', 1,size(mbs.output.regionSumAbscf.data{k,end},2)-1) '%0.f,%0.4f,%0.4f,%.5e\n'], mbs.output.regionSumAbscf.data{k,1:end-5},tmp{:});
                 end
                 
                 %% Region vbscf
                 fprintf(fid,'\n# Region vbscf\n#snapshot stratum transect file region_id num_h_slices num_v_slices region_vbscf vbscf_values\n');
                 for k = 1:size(mbs.output.regionSum.data,1)
                     efstring = mbs.getStringEorF(mbs.output.regionSumVbscf.data{k,9});
-                    fprintf(fid,['%0.f,%s,%0.f,%s,%0.f,%0.f,%0.f,%e', efstring, '\n'], mbs.output.regionSumVbscf.data{k,:});
+                    fprintf(fid,['%0.f,%s,%0.f,%s,%0.f,%0.f,%0.f,%.5e', efstring, '\n'], mbs.output.regionSumVbscf.data{k,:});
                 end
                 
                 if fid ~= 1;
@@ -109,7 +109,7 @@ classdef mbs_cl < handle
         end
         
          function string = getStringEorF(mbs, input, varargin) % returns a
-            % formatted string as fprintf input with %e for exponential
+            % formatted string as fprintf input with %.5e for exponential
             % number and %f for 0.
             if nargin ==4;
                 if varargin{2} == 'before'
@@ -127,7 +127,7 @@ classdef mbs_cl < handle
             a = find(input~=0);
             b = find(input==0);
             for i = 1:length(a)
-                string{a(i)}= [pre ',%e' post];
+                string{a(i)}= [pre ',%.5e' post];
             end
             for i = 1:length(b)
                 string{b(i)}= [pre ',%.f' post];

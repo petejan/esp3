@@ -6,6 +6,16 @@ if found==0
     return;
 end
 
+if isempty(axes_type)
+    axes_type='Number';
+    x=layer.Transceivers(idx_freq).Data.Time;
+    y=layer.Transceivers(idx_freq).Data.Range;
+    dx=(x(2)-x(1))/10;
+    dy=(y(2)-y(1))/10;
+    new=1;
+end
+
+
 
 switch axes_type
     case 'Time'

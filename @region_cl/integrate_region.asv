@@ -221,25 +221,24 @@ for i=1:N_x
     idx_red=(((x_mat-x_c(i)))<x_res(i))&(((x_mat-x_c(i)))>=-x_res(i))&Mask;
 %     idx_red_cell=(((x_mat-x_c(i)))<=x_res(i))&(((x_mat-x_c(i)))>=-x_res(i));
 %     
-    idx_bin_x=((((x-x_c(i)))<x_res(i))&(((x-x_c(i)))>=-x_res(i)));
-    region.Output.Nb_good_pings(:,i)=nansum(idx_bin_x&(IdxBad_reg==0));
-    idx_bin_x=find(idx_bin_x);
+    idx_bin_x=find((((x-x_c(i)))<x_res(i))&(((x-x_c(i)))>=-x_res(i)));
+    region.Output.Nb_good_pings(:,i)=nansum(idx_bin_x&IdxBad_reg==0));
     if~isempty((idx_bin_x))
         region.Output.Interval(:,i)=i;
-        region.Output.Dist_M(:,i)=nanmean(sub_dist(idx_bin_x));
-        region.Output.Time_M(:,i)=nanmean(sub_time(idx_bin_x));
-        region.Output.Time_S(:,i)=(sub_time(idx_bin_x(1)));
-        region.Output.Time_E(:,i)=(sub_time(idx_bin_x(end)));
-        region.Output.Lat_M(:,i)=nanmean(sub_lat(idx_bin_x));
-        region.Output.Lon_M(:,i)=nanmean(sub_lon(idx_bin_x));
-        region.Output.Lat_S(:,i)=(sub_lat(idx_bin_x(1)));
-        region.Output.Lon_S(:,i)=(sub_lon(idx_bin_x(1)));
-        region.Output.Lat_E(:,i)=(sub_lat(idx_bin_x(end)));
-        region.Output.Lon_E(:,i)=(sub_lon(idx_bin_x(end)));
-        region.Output.Ping_S(:,i)=(sub_x(idx_bin_x(1)));
-        region.Output.Ping_E(:,i)=(sub_x(idx_bin_x(end)));
-        region.Output.VL_S(:,i)=(sub_dist(idx_bin_x(1)));
-        region.Output.VL_E(:,i)=(sub_dist(idx_bin_x(end)));
+        region.Output.Dist_M(:,i)=nanmean(sub_dist(idx_bin));
+        region.Output.Time_M(:,i)=nanmean(sub_time(idx_bin));
+        region.Output.Time_S(:,i)=(sub_time(idx_bin(1)));
+        region.Output.Time_E(:,i)=(sub_time(idx_bin(end)));
+        region.Output.Lat_M(:,i)=nanmean(sub_lat(idx_bin));
+        region.Output.Lon_M(:,i)=nanmean(sub_lon(idx_bin));
+        region.Output.Lat_S(:,i)=(sub_lat(idx_bin(1)));
+        region.Output.Lon_S(:,i)=(sub_lon(idx_bin(1)));
+        region.Output.Lat_E(:,i)=(sub_lat(idx_bin(end)));
+        region.Output.Lon_E(:,i)=(sub_lon(idx_bin(end)));
+        region.Output.Ping_S(:,i)=(sub_x(idx_bin(1)));
+        region.Output.Ping_E(:,i)=(sub_x(idx_bin(end)));
+        region.Output.VL_S(:,i)=(sub_dist(idx_bin(1)));
+        region.Output.VL_E(:,i)=(sub_dist(idx_bin(end)));
     else
         break;
     end
@@ -252,8 +251,7 @@ for i=1:N_x
    %Sv_red=10*log10(70/100*10.^(Sv_red/10));
             
     for j=1:N_y   
-        idx_bin=(((y_mat_red-y_c(j)))<y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j)); 
-        
+        idx_bin=(((y_mat_red-y_c(j)))<y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j));       
         region.Output.Sv_mean(j,i)=10*log10(nanmean(10.^(Sv_red(idx_bin)/10)));        
         region.Output.Sa(j,i)=10*log10(nansum(10.^(Sv_red(idx_bin)/10)*dr));
         if~isempty(Sv_red(idx_bin))

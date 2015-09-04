@@ -1,14 +1,17 @@
 function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
 
-
-if ~isempty(layer)
-    if ~isempty(layer.PathToFile)
-        path=layer.PathToFile;
+if isvalid(layer)
+    if ~isempty(layer)
+        if ~isempty(layer.PathToFile)
+            path=layer.PathToFile;
+        else
+            path=pwd;
+        end
+        
     else
         path=pwd;
     end
-    
 else
     path=pwd;
 end
@@ -95,7 +98,7 @@ multi_layer=1;
 join=0;
 
 if ~isequal(Filename, 0)
-     
+    
     
     if iscell(Filename)
         choice = questdlg('Do you want to open files as separate layers?', ...
@@ -132,7 +135,7 @@ if ~isequal(Filename, 0)
             case 'No'
                 join=0;
         end
-         if isempty(choice)
+        if isempty(choice)
             return;
         end
     else
@@ -157,14 +160,14 @@ if ~isequal(Filename, 0)
         ping_start=1;
         ping_end=Inf;
     end
-
+    
     switch ftype
         case 'EK60'
             open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'EK80'
             open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
     end
-        update_display(main_figure,1);
-
+    update_display(main_figure,1);
+    
 end
 end

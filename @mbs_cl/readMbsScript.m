@@ -1,12 +1,9 @@
  function readMbsScript(mbs,varargin)  % Reads an MBS script (either
             workingPath = pwd;           
             if nargin == 2
-                if exist(varargin{1}) == 2;  % check file with this name exists
-                    fileName = varargin{1};
-                else                         % if not it must be mbs id
                     mbsId = varargin{1};
                     rev = [];
-                end
+
             elseif nargin == 3
                 if  ischar(varargin{1})      % get the right one for mbs id and revision number
                     mbsId = varargin{1};
