@@ -55,9 +55,14 @@ end
 
 
 IdxBad=Transceiver.IdxBad;
+if length(IdxBad)==size(Sv,2)
+    Sv(:,IdxBad)=NaN;
+    IdxBad_reg=IdxBad(idx_pings)';
+else
+    IdxBad_reg=zeros(size(idx_pings));
+end
 
-Sv(:,IdxBad)=NaN;
-IdxBad_reg=IdxBad(idx_pings)';
+
 bot_r=Transceiver.Bottom.Range;
 bot_sple=Transceiver.Bottom.Sample_idx;
 if isempty(bot_r)
