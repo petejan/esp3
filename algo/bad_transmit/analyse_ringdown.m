@@ -13,12 +13,18 @@ else
 end
 Ring_down_thr=2*nanstd(RingDown);
 
+if Ring_down_thr==0
+    idx_ringdown=ones(size(RingDownMean));
+    return;
+end;
+
 
 [pdf_RD,x_RD]=pdf_perso(RingDownMean,'bin',2*bin);
 [~,idx_max]=nanmax(pdf_RD);
 idx_ringdown_1=abs(RingDownMean-x_RD(idx_max))<=(Ring_down_thr+Ring_down_thr*5);
 RingDownMean(~idx_ringdown_1)=nan;
 RingDown(~idx_ringdown_1,:)=nan;
+
 Ring_down_thr=2*nanstd(RingDown);
 if Ring_down_thr==0
     idx_ringdown=ones(size(RingDownMean));

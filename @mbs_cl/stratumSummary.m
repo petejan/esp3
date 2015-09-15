@@ -55,14 +55,25 @@
                     ss{j,1} = mbs.output.transectSum.data{jx(1),1}; % snapshot
                     ss{j,2} = mbs.output.transectSum.data{jx(1),2}; % stratum
                     ss{j,3} = length(mbs.output.transectSum.data(jx,6)); % % no_transects
-                    ss{j,4} = nanmean(cell2mat(mbs.output.transectSum.data(jx,6))); % abscf_mean
-                    ss{j,5} = nanstd(cell2mat(mbs.output.transectSum.data(jx,6))); % abscf_sd
+                    sum_abscf=nansum(cell2mat(mbs.output.transectSum.data(jx,6)));                 
+                    ss{j,4} =sum_abscf/ss{j,3} ; % abscf_mean
+                    sum_sq_abscf=nansum(cell2mat(mbs.output.transectSum.data(jx,6)).^2);
+                    if ss{j,3}>1
+                        ss{j,5} = sqrt((sum_sq_abscf-ss{j,4}.^2.*ss{j,3})/(ss{j,3}-1)); % abscf_sd
+                    else
+                        ss{j,5}=0;
+                    end
+                    
                     ss{j,6} = nansum(cell2mat(mbs.output.transectSum.data(jx,4)).*cell2mat(mbs.output.transectSum.data(jx,6)))/...
                         nansum(cell2mat(mbs.output.transectSum.data(jx,4))); % abscf_wmean according to esp2 formula
+                    if ss{j,3}>1
                     ss{j,7} = (nansum((cell2mat(mbs.output.transectSum.data(jx,4)).^2).*(cell2mat(mbs.output.transectSum.data(jx,6)).^2))-2*ss{j,6}*...
                         nansum((cell2mat(mbs.output.transectSum.data(jx,4)).^2).*(cell2mat(mbs.output.transectSum.data(jx,6))))+...
                         ss{j,6}^2*nansum(cell2mat(mbs.output.transectSum.data(jx,4)).^2))*...
                         ss{j,3}/((ss{j,3}-1)*nansum(cell2mat(mbs.output.transectSum.data(jx,4)))^2); % abscf_var according to esp2 formula
+                    else
+                        ss{j,7}=0;
+                    end
                 end
                 mbs.output.stratumSum.data = [mbs.output.stratumSum.data ; ss];
             end

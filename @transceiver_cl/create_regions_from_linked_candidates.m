@@ -35,7 +35,6 @@ for j=1:nanmax(linked_candidates(:))
             'Cell_h_unit',h_unit,...
             'Output',[]);
 
-        reg_temp.integrate_region(trans);
         trans.add_region(reg_temp);
         
     end

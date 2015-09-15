@@ -58,7 +58,7 @@ for idx_freq=1:length(data.config)
     sacorr=0;
     
     [data.pings(idx_freq).Sp,data.pings(idx_freq).Sv]=...
-        convert_power(data.pings(idx_freq).power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr);
+        convert_power(data.pings(idx_freq).power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle_curr,sacorr);
     
 
 end

@@ -69,9 +69,6 @@ reg_temp=region_cl(...
     'Cell_h_unit',h_unit,...
     'Output',[]);
 
-reg_temp.integrate_region(layer.Transceivers(idx_freq));
-
-
 %         figure();
 %         hold on;
 %         plot(10*log10(nanmean(10.^(reg_temp.Output.Sv_mean'/10))),nanmean(reg_temp.Output.y_node'));

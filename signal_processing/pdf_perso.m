@@ -25,6 +25,7 @@ for n = 1:2:length(varargin)
     end
 end
 
+X(X==Inf|X==-Inf)=nan;
 w_tot=nansum(weight_idx(~isnan(X)));
 
 if length(bin)==1
@@ -41,7 +42,7 @@ if length(bin)==1
             pdf(i)=sum(weight_idx(idx_bin))/(dx(i)*w_tot);
         elseif strcmp(win_type,'gauss')
             parz_win=1/(dx(i)*sqrt(2*pi))*exp(-(vec_X-x(i)).^2/(2*dx(i)^2));
-            pdf(i)=sum(weight_idx(~isnan(X)).*parz_win)/(w_tot);
+            pdf(i)=nansum(weight_idx(~isnan(X)).*parz_win)/(w_tot);
         end
         
     end

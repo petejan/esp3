@@ -12,9 +12,8 @@ else
 end
 
 for i=idx
-    layers(idx(i)).delete();
+    layers(i).delete();
 end
-
 
 layers(idx)=[];
 

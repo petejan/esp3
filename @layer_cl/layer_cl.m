@@ -6,6 +6,7 @@ classdef layer_cl < handle
         Filetype='';
         PathToFile='';
         Transceivers
+        OriginCrest
         Lines
         Frequencies
         GPSData
@@ -38,6 +39,7 @@ classdef layer_cl < handle
             addParameter(p,'Curves',[],check_curve_cl);
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
+            addParameter(p,'OriginCrest','');
             
             parse(p,varargin{:});
             

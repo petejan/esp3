@@ -1,7 +1,7 @@
 function load_cursor_tool(main_figure)
 
 app_path=getappdata(main_figure,'App_path');
-curr_disp=getappdata(main_figure,'Curr_disp');
+%curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
 
@@ -17,7 +17,7 @@ for i=1:nb_layers
     u=1;
     new_name_ori=new_name;
     while nansum(strcmp(new_name,layers_Str))>=1
-        new_name=[new_name_ori num2str(u)];
+        new_name=[new_name_ori '_' num2str(u)];
         u=u+1;
     end
     layers_Str{i}=new_name;

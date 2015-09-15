@@ -41,6 +41,7 @@ if ~isempty(strfind(computer, 'WIN')) %convert linux file path to
 else
     fid=fopen([iFilePath '/' iFileName],'r');
 end
+
 while 1
     tline = fgetl(fid);
     if ~ischar(tline), 
@@ -67,17 +68,23 @@ end
 %run command - export bottom from cvs
 cd(outDir);
 
-[~, b] = system(command,'-echo');
+[~,output] = system(command,'-echo');
 
-if ~isempty(strfind(b, 'cannot find module'));
+
+if ~isempty(strfind(output, 'cannot find module'));
     cd(workingPath);
     if ~isempty(strfind(computer, 'WIN')) %cygwin cvs uses linux paths
         [~, result]=system(['cygpath -u ' outDir]); %so convert outDir
         outDir = result;
     end
     system(['rm -Rf ' outDir]);
+    bad=[];
+    bottom=[];   
     return;
 end
+
+
+
 bFilePath = [outDir voyage '/hull'];
 bFileName = ['b' iFileName(2:end)];
 
@@ -87,7 +94,7 @@ bottom = sample_idx/depthFactor;
 bottom = bottom-(1/depthFactor); 
 bottom(end) = bottom(end)-2*(1/depthFactor); 
 bad = load_bad_transmits([bFilePath '/' bFileName])';
-bad=[1;bad];
+bad=find([1;bad]);
 
 bottom=bottom_cl(...
 'Origin','Esp2',...

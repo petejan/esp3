@@ -1,5 +1,27 @@
 
-function  layers=open_EK60_file_stdalone(cal,dir_data,PathToFile,Filename_cell,vec_freq_init,ping_start,ping_end)
+function  layers=open_EK60_file_stdalone(PathToFile,Filename_cell,varargin)
+
+p = inputParser;
+
+
+addRequired(p,'PathToFile',@ischar);
+addRequired(p,'Filename_cell');
+addParameter(p,'PathToMemmap',PathToFile);
+addParameter(p,'Calibration',[]);
+addParameter(p,'Frequencies',[]);
+addParameter(p,'PingRange',[1 inf]);
+addParameter(p,'SampleRange',[1 inf]);
+addParameter(p,'FieldNames',{});
+addParameter(p,'EsOffset',[]);
+
+parse(p,PathToFile,Filename_cell,varargin{:});
+
+
+dir_data=p.Results.PathToMemmap;
+cal=p.Results.Calibration;
+vec_freq_init=p.Results.Frequencies;
+pings_range=p.Results.PingRange;
+sample_range=p.Results.SampleRange;
 
 vec_freq_tot=[];
 list_freq_str={};
@@ -63,17 +85,21 @@ if ~isequal(Filename_cell, 0)
             opening_file=waitbar(uu/length(Filename_cell),sprintf('Opening file: %s',Filename_cell{uu}),'Name','Opening files', 'WindowStyle', 'modal');
         end
         
+        pings_range(1)=pings_range(1)-prev_ping_start+1;
+        if pings_range(2)~=Inf
+            pings_range(2)=pings_range(2)-prev_ping_end;
+        end
         
         
-        if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
+        if pings_range(2)-prev_ping_end<=pings_range(1)-prev_ping_start+1
             break;
         end
         
         try
-            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
+            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
         catch err2
             disp(err2.message);
-            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
+            [header,data, ~]=readEKRaw(fullfile(PathToFile,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
             AllowModeChange=true;
         end
         
@@ -85,11 +111,12 @@ if ~isequal(Filename_cell, 0)
         
         if strcmp(header.soundername(1:4),'ES70') || strcmp(header.soundername(1:4),'ES60')
             for ki=1:header.transceivercount
-                data.pings(ki).power=correctES60(data.pings(ki).power,[]);
+                p.Results.EsOffset
+                data.pings(ki).power=correctES60(data.pings(ki).power,p.Results.EsOffset);
             end
         end
         
-        prev_ping_start=ping_start;
+        prev_ping_start=pings_range(1);
         prev_ping_end=data.pings(1).number(end);
         
         
@@ -98,9 +125,14 @@ if ~isequal(Filename_cell, 0)
         curr_att=1;
         curr_heading=1;
         
+
         
-        for iiii=1:length(data.NMEA.string)
+        idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(data.NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));
+
+        for iiii=idx_NMEA'
+        %for iiii=1:length(data.NMEA.string)
             [nmea,nmea_type]=parseNMEA(data.NMEA.string{iiii});
+            
             switch nmea_type
                 case 'gps'
                     if curr_gps==1
@@ -142,7 +174,9 @@ if ~isequal(Filename_cell, 0)
                     curr_heading=curr_heading+1;
             end
         end
+
         
+       
         
         
         if  ~isstruct(header)
@@ -207,17 +241,17 @@ if ~isequal(Filename_cell, 0)
         if exist(fullfile(PathToFile,Filename_bot),'file')
             [~,temp, ~] = readEKBot(fullfile(PathToFile,Filename_bot), calParms,'Frequencies',vec_freq);
             
-            ping_end_bot=nanmin(size(temp.pings.bottomdepth,2),ping_end);
             
-            if ping_end==Inf
-                Bottom_sim=double(temp.pings.bottomdepth(:,ping_start:end));
+            if pings_range(2)==Inf
+                Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):end));
             else
-                Bottom_sim=double(temp.pings.bottomdepth(:,ping_start:ping_end));
+                Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):pings_range(2)));
             end
         else
             Bottom_sim=nan(header.transceivercount,size(power,1));
         end
-        Bottom_sim_idx=round(Bottom_sim/dR-(double((data.pings(n).samplerange(1)-1))));
+        Bottom_sim_idx=round(Bottom_sim/dR-(double((data.pings(n).samplerange(1)-1))))+1;
+        Bottom_sim_idx(Bottom_sim_idx<=1)=nan;
         
         if isfield(data, 'gps')
             gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time,'NMEA',data.gps.type);
@@ -269,7 +303,11 @@ if ~isequal(Filename_cell, 0)
             [~,curr_filename,~]=fileparts(tempname);
             curr_name=fullfile(dir_data,curr_filename);
             
-            ff=fields(curr_data);
+            if isempty(p.Results.FieldNames)
+                ff=fields(curr_data);
+            else
+                ff=p.Results.FieldNames;
+            end
             sub_ac_data_temp=[];
             
             for uuu=1:length(ff)
@@ -302,12 +340,11 @@ if ~isequal(Filename_cell, 0)
             end
             
             transceiver(i)=transceiver_cl('Data',ac_data_temp,...
-                'Bottom',bot,...
                 'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...
                 'Mode','CW',...
                 'AttitudeNavPing',attitude);
-            
+            transceiver(i).setBottom(bot);
             
             
             freq(i)=data.config(i).frequency(1);

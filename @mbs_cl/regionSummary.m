@@ -29,9 +29,8 @@ for ii=1:length(idx_transects)
     rsa_temp={};
     eint=0;
     for i=1:length(idx_transect_files)
-        
-        layer(i)=open_EK60_file_stdalone([],pwd,mbs.rawDir,mbs.input.data.rawFileName{idx_transect_files(i)},38000,1,Inf);
-        
+        layer(i)=open_EK60_file_stdalone(mbs.rawDir,mbs.input.data.rawFileName{idx_transect_files(i)},'PathToMemmap',pwd,'Frequencies',38000);
+
         idx_freq=find_freq_idx(layer(i),38000);
         
         layer(i).Transceivers(idx_freq).Bottom=mbs.input.data.bottom{idx_transect_files(i)};
@@ -46,8 +45,8 @@ for ii=1:length(idx_transects)
             end_num(i+1)=end_num(i)+Transceiver.Data.Number(end);
         end
         
-        new_cal.SaCorr = -0.55;
-        new_cal.Gain= 25.42;
+        new_cal.SACORRECT = -0.55;
+        new_cal.G0= 25.42;
         Transceiver.apply_cw_cal(new_cal);
         
         new_absorption=8/1000;
@@ -131,7 +130,7 @@ for ii=1:length(idx_transects)
             good_bot=Transceiver.Bottom.Range(ix);
             good_bot(Transceiver.IdxBad(ix)==0);
             rs{j,10} = nanmean(good_bot);% find bottom pings in good pings and only take mean from good ones
-            if isnan(reg.finishDepth); finish = Transceiver.Data.Range(reg_curr.Idx_r(end)); else finish = reg.finishDepth; end
+            if isnan(reg.finishDepth); finish = Transceiver.Data.Range(reg_curr.Idx_r(1)); else finish = reg.finishDepth; end
             rs{j,11} = finish;
             rs{j,12} = dist/timediff;
             rs{j,13} = nansum(nansum(regCellMatSub(:,:,13)))./nansum(nansum(regCellMatSub(:,:,14).*(regCellMatSub(:,:,11)-regCellMatSub(:,:,10))));%Vbsc
@@ -254,7 +253,7 @@ for ii=1:length(idx_transects)
         for j = 1:length(reg.id);
             for k = 1:length(binStart); % sum up abscf data according to bins
                 ix =  rsa{j,11}>=binStart(k) &  rsa{j,11}<=binEnd(k);
-                    slice_abscf(k) = slice_abscf(k)+nansum(rsa{j,10}(ix));
+                slice_abscf(k) = slice_abscf(k)+nansum(rsa{j,10}(ix));
             end
         end
     end

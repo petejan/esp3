@@ -1,4 +1,4 @@
-function convertBRfromMbs(mbs,varargin)
+function idx_trans=convertBRfromMbs(mbs,varargin)
 workingPath = pwd;
 outDir = [get_tempname '/']; %Make temp directory for calibration rev
 %run command - make output directory for cvs
@@ -37,19 +37,31 @@ system(['rm -Rf ' outDir]); %Remove temp CVS dir
 
 
 transects=mbs.input.data.transect;
-transects(abs([1;diff(mbs.input.data.transect)])==0)=[];
 
 if nargin == 2;
-    uu = varargin{1};
-    if length(uu) > length(transects)
+    idx_trans = varargin{1};
+    if length(idx_trans) > length(transects)||isempty(idx_trans)
         warning('Requested index > num transects, using num transects');
-        uu=1:length(transects);
+        idx_trans=1:length(transects);
+    end
+    
+    if nanmax(idx_trans) > length(transects)        
+       idx_trans(idx_trans>length(transects))=[];
+       if isempty(idx_trans)
+           warning('Could not find those transect, processing the last one available');
+           idx_trans=length(transects);
+       else
+          warning('Some transects cannot be found,removing them...'); 
+       end
     end
 else
-    uu = 1:length(transects);
+    idx_trans = 1:length(transects);
 end
 
-idx_transects = transects(uu);
+transects=transects(idx_trans);
+transects(abs([1;diff(transects)])==0)=[];
+
+idx_transects = transects;
 
 
 for i = idx_transects';
@@ -58,7 +70,7 @@ for i = idx_transects';
         linuxFilePath = ['/data/ac1/' mbs.input.data.voyage '/' mbs.input.data.transducer{j}];
         display(['converting bottom and bad pings for dfile ' num2str(mbs.input.data.dfile(j))]);
         [bad,mbs.input.data.bottom{j},mbs.input.data.rawFileName{j}]= get_bottom_from_esp2(linuxFilePath, mbs.input.data.dfile(j), mbs.input.data.voyage, mbs.input.data.BotRev(j));
-        mbs.input.data.bad{j}=(bad==1);
+        mbs.input.data.bad{j}=bad;
         display(['converting regions for dfile ' num2str(mbs.input.data.dfile(j))]);
         mbs.input.data.regions{j} = get_regions_from_esp2(linuxFilePath, mbs.input.data.dfile(j), mbs.input.data.voyage, mbs.input.data.RegRev(j));
     end

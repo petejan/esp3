@@ -31,11 +31,12 @@ addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
 addParameter(p,'r_min',default_idx_r_min,check_idx_r);
 addParameter(p,'r_max',default_idx_r_max,check_idx_r);
 addParameter(p,'BS_std',default_BS_std,check_BS_std);
+addParameter(p,'BS_std_bool',true,@islogical);
 addParameter(p,'thr_spikes_Above',default_spikes,check_spikes);
 addParameter(p,'thr_spikes_Below',default_spikes,check_spikes);
 addParameter(p,'Above',true,@islogical);
 addParameter(p,'Below',true,@islogical);
-addParameter(p,'burst_removal',true,@islogical);
+addParameter(p,'burst_removal',false,@islogical);
 
 parse(p,Sv,Range,Fs,PulseLength,varargin{:});
 
@@ -45,6 +46,7 @@ thr_echo=p.Results.thr_echo;
 r_min=p.Results.r_min;
 r_max=p.Results.r_max;
 BS_std=p.Results.BS_std;
+BS_std_bool=p.Results.BS_std_bool;
 thr_spikes_Above=p.Results.thr_spikes_Above;
 thr_spikes_Below=p.Results.thr_spikes_Below;
 Above=p.Results.Above;
@@ -72,47 +74,56 @@ Np=round(PulseLength*Fs);
 start_sample=nanmin([50 nb_samples]);
 Sv(1:start_sample,:)=nan;
 
-BS_bottom(Bottom<start_sample)=nan;
-
-BS_bottom_analysis=BS_bottom;
-BS_bottom_analysis(isnan(Bottom))=nan;
-%
-% BS_std_up=-20*log10((sqrt(4/pi-1)));
-% BS_std_dw=20*log10((sqrt(4/pi-1)));
-
-BS_std_up=BS_std;
-BS_std_dw=-BS_std;
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Quick BS Analysis if asked%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 b_filter=3:2:7;
-Mean_BS=nan(length(b_filter),nb_pings);
-
-for j=1:length(b_filter)
-    Mean_BS(j,:)=20*log10(filter_nan(ones(1,b_filter(j)),10.^(BS_bottom_analysis/20))./filter_nan(ones(1,b_filter(j)),ones(1,length(BS_bottom))));
-    idx_temp=((BS_bottom_analysis-Mean_BS(j,:))<=BS_std_up&(BS_bottom_analysis-Mean_BS(j,:))>=BS_std_dw);
-    BS_bottom_analysis(~idx_temp)=nan;
+if BS_std_bool
     
-    if DEBUG
-        figure();
-        clf;
-        plot(BS_bottom-Mean_BS(j,:),'r');
-        hold on;
-        plot(BS_bottom_analysis-Mean_BS(j,:));
-        plot(BS_std_up*ones(1,nb_pings),'k','linewidth',2)
-        plot(BS_std_dw*ones(1,nb_pings),'k','linewidth',2)
-        grid on;
-        set(gca,'fontsize',16);
-        xlabel('Ping Number');
-        ylabel('BS(dB)');
-        ylim([-20 20])
-        title(['Filter size ' num2str(b_filter(j))])
-        pause;
-        close gcf;
+    BS_bottom(Bottom<start_sample)=nan;
+    
+    BS_bottom_analysis=BS_bottom;
+    BS_bottom_analysis(isnan(Bottom))=nan;
+    %
+    % BS_std_up=-20*log10((sqrt(4/pi-1)));
+    % BS_std_dw=20*log10((sqrt(4/pi-1)));
+    
+    BS_std_up=BS_std;
+    BS_std_dw=-BS_std;
+    
+    Mean_BS=nan(length(b_filter),nb_pings);
+    
+    for j=1:length(b_filter)
+        Mean_BS(j,:)=20*log10(filter_nan(ones(1,b_filter(j)),10.^(BS_bottom_analysis/20))./filter_nan(ones(1,b_filter(j)),ones(1,length(BS_bottom))));
+        idx_temp=((BS_bottom_analysis-Mean_BS(j,:))<=BS_std_up&(BS_bottom_analysis-Mean_BS(j,:))>=BS_std_dw);
+        BS_bottom_analysis(~idx_temp)=nan;
+        
+        if DEBUG
+            figure();
+            clf;
+            plot(BS_bottom-Mean_BS(j,:),'r');
+            hold on;
+            plot(BS_bottom_analysis-Mean_BS(j,:));
+            plot(BS_std_up*ones(1,nb_pings),'k','linewidth',2)
+            plot(BS_std_dw*ones(1,nb_pings),'k','linewidth',2)
+            grid on;
+            set(gca,'fontsize',16);
+            xlabel('Ping Number');
+            ylabel('BS(dB)');
+            ylim([-20 20])
+            title(['Filter size ' num2str(b_filter(j))])
+            pause;
+            close gcf;
+        end
     end
+    
+    idx_bottom_bs_eval=~isnan(BS_bottom_analysis);
+    idx_bottom_bs_eval(nansum(Double_bottom_region)==0)=1;
+    idx_bottom_bs_eval(isnan(Bottom))=1;
+    idx_bottom_bs_eval(isnan(BS_bottom))=1;
+else
+    idx_bottom_bs_eval=ones(1,nb_pings);
 end
-
-idx_bottom_bs_eval=~isnan(BS_bottom_analysis);
-idx_bottom_bs_eval(nansum(Double_bottom_region)==0)=1;
-idx_bottom_bs_eval(isnan(Bottom))=1;
-idx_bottom_bs_eval(isnan(BS_bottom))=1;
 
 Bottom(nansum(Double_bottom_region)==0)=nan;
 idx_bottom(nansum(Double_bottom_region)==0)=nan;
@@ -121,137 +132,159 @@ noisy_pings=msgbox('Removal of noisy pings. This box will close when finished...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Removal of noisy pings%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-[I_bottom,J_bottom]=find(~isnan(idx_bottom));
-I_bottom(I_bottom>nb_samples)=nb_samples;
-J_double_bottom=[J_bottom ; J_bottom ; J_bottom];
-I_double_bottom=[I_bottom ; 2*I_bottom ; 2*I_bottom+1];
-I_double_bottom(I_double_bottom > nb_samples)=nan;
-idx_double_temp=I_double_bottom(~isnan(I_double_bottom))+nb_samples*(J_double_bottom(~isnan(I_double_bottom))-1);
 
-idx_double_bottom=repmat((1:nb_samples)',1,nb_pings);
-idx_samples=nan(nb_samples,nb_pings);
-
-idx_samples(idx_double_temp)=1;
-
-idx_double_bottom=idx_samples.*idx_double_bottom;
-
-idx_noise_analysis_above=double(repmat((1:nb_samples)',1,nb_pings)<repmat(nanmin(idx_bottom),nb_samples,1));
-idx_noise_analysis_above(~idx_noise_analysis_above)=nan;
-idx_noise_analysis_above(1:start_sample,:)=nan;
-
-idx_noise_analysis_below=double(repmat((1:nb_samples)',1,nb_pings)>repmat(nanmax(idx_bottom),nb_samples,1)&isnan(idx_double_bottom));
-idx_noise_analysis_below(~idx_noise_analysis_below)=nan;
-idx_noise_analysis_below(1:start_sample,:)=nan;
-
-idx_bottom_temp=double(~isnan(idx_bottom));
-idx_bottom_temp(idx_bottom_temp==0)=nan;
-
-Sv_lin=10.^(Sv/20);
-Sv_bottom_max=nanmax(20*log10(filter2(ones(2*Np,b_filter(end)),Sv_lin,'same').*idx_bottom_temp/(3*Np*b_filter(end))));
-Norm_Val=Sv-repmat(Sv_bottom_max,nb_samples,1);
+idx_spikes_Below=ones(1,nb_pings);
+idx_spikes_Above=ones(1,nb_pings);
 
 
-Norm_Val(Norm_Val==Inf)=nan;
 
-
-%%%%%%%%Version with sliding pdf%%%%%
-win=nanmin(300,nb_pings);
-bins=120;
-spc=round(win/2);
-x_data=(1:nb_pings);
-
-[pdf_above,x_above,y_above,~]= sliding_pdf(x_data,Norm_Val.*idx_noise_analysis_above,win,bins,spc,0);
-[pdf_below,~,y_below,~]= sliding_pdf(x_data,Norm_Val.*idx_noise_analysis_below,win,bins,spc,0);
-
-if min(size(y_above))>1
-    [~,grad_y_above]=gradient(y_above);
-    [~,grad_y_below]=gradient(y_below);
-else
-    grad_y_above=gradient(y_above);
-    grad_y_below=gradient(y_below);
-end
-
-[~,idx_min_above]=(nanmin(abs(cumsum(pdf_above.*grad_y_above)-thr_spikes_Above/100)));
-[~,idx_max_above]=(nanmin(abs(cumsum(pdf_above.*grad_y_above)-(1-thr_spikes_Above/100))));
-[~,idx_min_below]=(nanmin(abs(cumsum(pdf_below.*grad_y_below)-thr_spikes_Below/100)));
-[~,idx_max_below]=(nanmin(abs(cumsum(pdf_below.*grad_y_below)-(1-thr_spikes_Below/100))));
-
-thr_min_above=nan(1,nb_pings);
-thr_max_above=nan(1,nb_pings);
-thr_min_below=nan(1,nb_pings);
-thr_max_below=nan(1,nb_pings);
-
-for i=1:nb_pings
-    [~,idx_x]=nanmin(abs(i-x_above(1,:)));
-    thr_min_above(i)=y_above(idx_min_above(idx_x),idx_x);
-    thr_max_above(i)=y_above(idx_max_above(idx_x),idx_x);
-    thr_min_below(i)=y_below(idx_min_below(idx_x),idx_x);
-    thr_max_below(i)=y_below(idx_max_below(idx_x),idx_x);
-end
-
-if Above==0
+if Above||Below
+    
     idx_noise_analysis_above=nan(nb_samples,nb_pings);
-end
-if Below==0
     idx_noise_analysis_below=nan(nb_samples,nb_pings);
+    [I_bottom,J_bottom]=find(~isnan(idx_bottom));
+    I_bottom(I_bottom>nb_samples)=nb_samples;
+    J_double_bottom=[J_bottom ; J_bottom ; J_bottom];
+    I_double_bottom=[I_bottom ; 2*I_bottom ; 2*I_bottom+1];
+    I_double_bottom(I_double_bottom > nb_samples)=nan;
+    idx_double_temp=I_double_bottom(~isnan(I_double_bottom))+nb_samples*(J_double_bottom(~isnan(I_double_bottom))-1);
+    
+    idx_double_bottom=repmat((1:nb_samples)',1,nb_pings);
+    idx_samples=nan(nb_samples,nb_pings);
+    
+    idx_samples(idx_double_temp)=1;
+    
+    idx_double_bottom=idx_samples.*idx_double_bottom;
+    
+    if Above
+        idx_noise_analysis_above=double(repmat((1:nb_samples)',1,nb_pings)<repmat(nanmin(idx_bottom),nb_samples,1));
+        idx_noise_analysis_above(~idx_noise_analysis_above)=nan;
+        idx_noise_analysis_above(1:start_sample,:)=nan;
+    end
+    
+    if Below
+        idx_noise_analysis_below=double(repmat((1:nb_samples)',1,nb_pings)>repmat(nanmax(idx_bottom),nb_samples,1)&isnan(idx_double_bottom));
+        idx_noise_analysis_below(~idx_noise_analysis_below)=nan;
+        idx_noise_analysis_below(1:start_sample,:)=nan;
+    end
+    
+    idx_bottom_temp=double(~isnan(idx_bottom));
+    idx_bottom_temp(idx_bottom_temp==0)=nan;
+    
+    Sv_lin=10.^(Sv/20);
+    Sv_bottom_max=nanmax(20*log10(filter2(ones(2*Np,b_filter(end)),Sv_lin,'same').*idx_bottom_temp/(3*Np*b_filter(end))));
+    Norm_Val=Sv-repmat(Sv_bottom_max,nb_samples,1);
+    
+    
+    Norm_Val(Norm_Val==Inf)=nan;
+    
+    
+    %%%%%%%%Version with sliding pdf%%%%%
+    win=nanmin(300,nb_pings);
+    bins=120;
+    spc=round(win/2);
+    x_data=(1:nb_pings);
+    
+    
+    
+    thr_min_above=nan(1,nb_pings);
+    thr_max_above=nan(1,nb_pings);
+    thr_min_below=nan(1,nb_pings);
+    thr_max_below=nan(1,nb_pings);
+    
+    
+    if Above
+        [pdf_above,x_above,y_above,~]= sliding_pdf(x_data,Norm_Val.*idx_noise_analysis_above,win,bins,spc,0);
+        if min(size(y_above))>1
+            [~,grad_y_above]=gradient(y_above);
+        else
+            grad_y_above=gradient(y_above);
+        end
+        [~,idx_min_above]=(nanmin(abs(cumsum(pdf_above.*grad_y_above)-thr_spikes_Above/100)));
+        [~,idx_max_above]=(nanmin(abs(cumsum(pdf_above.*grad_y_above)-(1-thr_spikes_Above/100))));
+        for i=1:nb_pings
+            [~,idx_x]=nanmin(abs(i-x_above(1,:)));
+            thr_min_above(i)=y_above(idx_min_above(idx_x),idx_x);
+            thr_max_above(i)=y_above(idx_max_above(idx_x),idx_x);
+        end
+    end
+    
+    if Below
+        [pdf_below,x_below,y_below,~]= sliding_pdf(x_data,Norm_Val.*idx_noise_analysis_below,win,bins,spc,0);
+        if min(size(y_above))>1
+            [~,grad_y_below]=gradient(y_below);
+        else
+            grad_y_below=gradient(y_below);
+        end
+        [~,idx_min_below]=(nanmin(abs(cumsum(pdf_below.*grad_y_below)-thr_spikes_Below/100)));
+        [~,idx_max_below]=(nanmin(abs(cumsum(pdf_below.*grad_y_below)-(1-thr_spikes_Below/100))));
+        
+        for i=1:nb_pings
+            [~,idx_x]=nanmin(abs(i-x_below(1,:)));
+            thr_min_below(i)=y_below(idx_min_below(idx_x),idx_x);
+            thr_max_below(i)=y_below(idx_max_below(idx_x),idx_x);
+        end
+    end
+    
+    
+    
+    thr_spikes=0.1;
+    
+    idx_below_max=(Norm_Val.*idx_noise_analysis_below)>=repmat(thr_max_below,nb_samples,1);
+    idx_below_min=(Norm_Val.*idx_noise_analysis_below)<=repmat(thr_min_below,nb_samples,1);
+    thr_spikes_Below_vec=nansum(idx_noise_analysis_below).*(thr_spikes_Below/100+thr_spikes);
+    
+    idx_above_max=(Norm_Val.*idx_noise_analysis_above)>=repmat(thr_max_above,nb_samples,1);
+    idx_above_min=(Norm_Val.*idx_noise_analysis_above)<=repmat(thr_min_above,nb_samples,1);
+    thr_spikes_Above_vec=nansum(idx_noise_analysis_above).*(thr_spikes_Above/100+thr_spikes);
+    
+    idx_spikes_Below=nansum(idx_below_max)<thr_spikes_Below_vec&nansum(idx_below_min)<thr_spikes_Below_vec;
+    idx_spikes_Above=nansum(idx_above_max)<thr_spikes_Above_vec&nansum(idx_above_min)<thr_spikes_Above_vec;
+    
+    idx_spikes_Below(nansum(idx_noise_analysis_below)==0)=1;
+    idx_spikes_Above(nansum(idx_noise_analysis_above)==0)=1;
+    idx_spikes_Above(Bottom<=start_sample)=1;
+    
+    if DEBUG
+        figure()
+        subplot(2,1,1)
+        imagesc(idx_below_max|idx_above_max);
+        subplot(2,1,2)
+        imagesc(idx_below_min|idx_above_min);
+        
+        figure();
+        subplot(2,1,1)
+        plot(thr_min_above);
+        hold on;
+        plot(thr_max_above,'r')
+        grid on;
+        subplot(2,1,2)
+        plot(thr_min_below);
+        hold on;
+        plot(thr_max_below,'r')
+        grid on;
+        
+        
+        figure()
+        subplot(2,1,1)
+        plot(nansum(idx_above_max),'r');
+        hold on;
+        plot(nansum(idx_above_min));
+        plot(thr_spikes_Above_vec,'k');
+        plot(nansum(idx_noise_analysis_above).*(thr_spikes_Above/100),'--k')
+        subplot(2,1,2)
+        plot(nansum(idx_below_max),'r');
+        hold on;
+        plot(nansum(idx_below_min));
+        plot(thr_spikes_Below_vec,'k');
+        plot(nansum(idx_noise_analysis_below).*(thr_spikes_Below/100),'--k')
+    end
+    
 end
-
-
-thr_spikes=0.1;
-
-idx_below_max=(Norm_Val.*idx_noise_analysis_below)>=repmat(thr_max_below,nb_samples,1);
-idx_below_min=(Norm_Val.*idx_noise_analysis_below)<=repmat(thr_min_below,nb_samples,1);
-thr_spikes_Below_vec=nansum(idx_noise_analysis_below).*(thr_spikes_Below/100+thr_spikes);
-
-idx_above_max=(Norm_Val.*idx_noise_analysis_above)>=repmat(thr_max_above,nb_samples,1);
-idx_above_min=(Norm_Val.*idx_noise_analysis_above)<=repmat(thr_min_above,nb_samples,1);
-thr_spikes_Above_vec=nansum(idx_noise_analysis_above).*(thr_spikes_Above/100+thr_spikes);
-
-idx_spikes_Below=nansum(idx_below_max)<thr_spikes_Below_vec&nansum(idx_below_min)<thr_spikes_Below_vec;
-idx_spikes_Above=nansum(idx_above_max)<thr_spikes_Above_vec&nansum(idx_above_min)<thr_spikes_Above_vec;
-
-idx_spikes_Below(nansum(idx_noise_analysis_below)==0)=1;
-idx_spikes_Above(nansum(idx_noise_analysis_above)==0)=1;
-idx_spikes_Above(Bottom<=start_sample)=1;
-
-if DEBUG
-    figure()
-    subplot(2,1,1)
-    imagesc(idx_below_max|idx_above_max);
-    subplot(2,1,2)
-    imagesc(idx_below_min|idx_above_min);
-    
-    figure();
-    subplot(2,1,1)
-    plot(thr_min_above);
-    hold on;
-    plot(thr_max_above,'r')
-    grid on;
-    subplot(2,1,2)
-    plot(thr_min_below);
-    hold on;
-    plot(thr_max_below,'r')
-    grid on;
-    
-    
-    figure()
-    subplot(2,1,1)
-    plot(nansum(idx_above_max),'r');
-    hold on;
-    plot(nansum(idx_above_min));
-    plot(thr_spikes_Above_vec,'k');
-    plot(nansum(idx_noise_analysis_above).*(thr_spikes_Above/100),'--k')
-    subplot(2,1,2)
-    plot(nansum(idx_below_max),'r');
-    hold on;
-    plot(nansum(idx_below_min));
-    plot(thr_spikes_Below_vec,'k');
-    plot(nansum(idx_noise_analysis_below).*(thr_spikes_Below/100),'--k')
-end
-
 
 %%%%%%%% Morpho Analysis for removal of short burst of noise%%%%%%%%%%%%%
 idx_noise_burst=zeros(1,nb_pings);
+
 if burst_removal
     heigh_burst=10*Np;
     B_filter_2=ones(heigh_burst,1);
@@ -274,7 +307,7 @@ if burst_removal
         mask_sv_dilate=ceil(filter2(ones(2,3),mask_sv_erode,'same')./filter2(ones(2,3),ones(size(Sv)),'same'));
         mask_sv_f=mask_sv_ori&~mask_sv_dilate;
         %mask_sv_f=floor(filter2(ones(heigh_burst,1),mask_sv_f,'same')./filter2(ones(heigh_burst,1),ones(size(Sv)),'same'));
-        idx_noise_burst=nansum(mask_sv_f)>=thr_rem|idx_noise_burst;
+        idx_noise_burst=nansum(mask_sv_f)<thr_rem&idx_noise_burst;
         
         if DEBUG
             figure();
@@ -292,12 +325,12 @@ if burst_removal
         end
     end
 else
-    idx_noise_burst=zeros(1,nb_pings);
+    idx_noise_burst=ones(1,nb_pings);
 end
 
 
 %%%%%%And compile the final vector designing the bad pings%%%%%%%%%%%%%%%%
-idx_noise_sector=~(idx_spikes_Below&idx_spikes_Above&idx_bottom_bs_eval&idx_ringdown&~idx_noise_burst);
+idx_noise_sector=~(idx_spikes_Below&idx_spikes_Above&idx_bottom_bs_eval&idx_ringdown&idx_noise_burst);
 %%%%%%%%%%%%%Remove isolated "good" pings%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 idx_noise_sector_filter=filter2(ones(1,9),idx_noise_sector)./filter2(ones(1,9),ones(size(idx_noise_sector)));
 idx_noise_sector(idx_noise_sector_filter>=7/9)=1;

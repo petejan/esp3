@@ -39,6 +39,7 @@ set(bad_ping_tab_comp.Below,'value',algo.Below);
 set(bad_ping_tab_comp.thr_spikes_Below_sl,'value',algo.thr_spikes_Below);
 set(bad_ping_tab_comp.thr_spikes_Below_ed,'string',num2str(get(bad_ping_tab_comp.thr_spikes_Below_sl,'Value'),'%.0f'));
 
+set(bad_ping_tab_comp.BS_std_bool,'value',algo.BS_std_bool);
 set(bad_ping_tab_comp.BS_std_sl,'value',algo.BS_std);
 set(bad_ping_tab_comp.BS_std_ed,'string',num2str(get(bad_ping_tab_comp.BS_std_sl,'Value'),'%.0f'));
 

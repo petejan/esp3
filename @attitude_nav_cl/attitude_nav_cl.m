@@ -5,6 +5,7 @@ classdef attitude_nav_cl < handle
         Pitch
         Roll
         Time
+        SOG
     end
     
     methods
@@ -17,6 +18,7 @@ classdef attitude_nav_cl < handle
             addParameter(p,'Heave',[],@isnumeric);
             addParameter(p,'Pitch',[],@isnumeric);
             addParameter(p,'Time',[],@isnumeric);
+            addParameter(p,'SOG',[],@isnumeric);
                       
             parse(p,varargin{:});
            
@@ -30,29 +32,13 @@ classdef attitude_nav_cl < handle
         
         function attitude_out=concatenate_AttitudeNavPing(attitude_1,attitude_2)
             
-            if size(attitude_2.Roll,1)~=1
-                attitude_2.Heading=attitude_2.Heading';
-                attitude_2.Roll=attitude_2.Roll';
-                attitude_2.Heave=attitude_2.Heave';
-                attitude_2.Pitch=attitude_2.Pitch';
-                attitude_2.Time=attitude_2.Time';
-            end
-            
-            
-            if size(attitude_1.Roll,1)==1
-                heading=[attitude_1.Heading attitude_2.Heading];
-                roll=[attitude_1.Roll attitude_2.Roll];
-                heave=[attitude_1.Heave attitude_2.Heave];
-                pitch=[attitude_1.Pitch attitude_2.Pitch];
-                time=[attitude_1.Time attitude_2.Time];
-            else
-                heading=[attitude_1.Heading' attitude_2.Heading];
-                roll=[attitude_1.Roll' attitude_2.Roll];
-                heave=[attitude_1.Heave' attitude_2.Heave];
-                pitch=[attitude_1.Pitch' attitude_2.Pitch];
-                time=[attitude_1.Time' attitude_2.Time];
-            end
-            
+
+                heading=[attitude_1.Heading(:); attitude_2.Heading(:)];
+                roll=[attitude_1.Roll(:); attitude_2.Roll(:)];
+                heave=[attitude_1.Heave(:); attitude_2.Heave(:)];
+                pitch=[attitude_1.Pitch(:); attitude_2.Pitch(:)];
+                time=[attitude_1.Time(:); attitude_2.Time(:)];
+         
             
         attitude_out=attitude_nav_cl('Heading',heading,...
             'Roll',roll,...

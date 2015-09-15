@@ -30,6 +30,7 @@ track_tools=uimenu(mhhh,'Label','Track');
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions,main_figure});
+uimenu(reg_tools,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
 
 uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
 uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});

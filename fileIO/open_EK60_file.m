@@ -10,9 +10,28 @@ if exist(fullfile(PathToFile,'cal_echo.csv'),'file')>0
 else
     cal=[];
 end
+% sple_start=1;
+% sple_end=inf;
+
+prompt={'First Sample:',...
+    'Last Sample:'};
+name='Nb_samples to load from each files';
+numlines=1;
+defaultanswer={'1','Inf'};
+answer=inputdlg(prompt,name,numlines,defaultanswer);
+
+if isempty(answer)
+    return;
+end
+
+sple_start= str2double(answer{1});
+sple_end= str2double(answer{2});
+
 
 %     profile on;
-layers_temp=open_EK60_file_stdalone(cal,app_path.data,PathToFile,Filename,vec_freq,ping_start,ping_end);
+
+layers_temp=open_EK60_file_stdalone(PathToFile,Filename,...
+    'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'Calibration',cal);
 %     profile off;
 %     profile viewer
 if exist('opening_file','var')
@@ -28,15 +47,11 @@ disp('Shuffling layers');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 curr_disp.Freq=layer.Frequencies(idx_freq);
-
-idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
-curr_disp.Fieldname=layer.Transceivers(idx_freq).Data.SubData(idx_field).Fieldname;
+curr_disp.setField('sv');
 
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);
 setappdata(hObject,'Curr_disp',curr_disp);
-
-
 
 
 end

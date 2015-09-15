@@ -21,10 +21,12 @@ if ~iscell(Filename)
     Filename={Filename};
 end
 
-if file_id==0
-    [Filename,PathToFile]= uigetfile([path '/*.raw'], 'Pick a raw file','MultiSelect','on');
+if file_id==0    
+    [Filename,PathToFile]= uigetfile( {fullfile(path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
 elseif file_id==1
-    file_list=ls([path '/*.raw']);
+
+    f = dir(path);
+    file_list=cell2mat({f(~cellfun(@isempty,regexpi({f.name},'(raw$|^d)'))).name}');
     if ~isempty(file_list)
         i=1;
         file_diff=0;
@@ -44,7 +46,8 @@ elseif file_id==1
         return;
     end
 elseif file_id==2
-    file_list=ls([path '/*.raw']);
+    f = dir(path);
+    file_list=cell2mat({f(~cellfun(@isempty,regexpi({f.name},'(raw$|^d)'))).name}');
     if ~isempty(file_list)
         i=size(file_list,1);
         file_diff=0;
@@ -75,7 +78,7 @@ else
 end
 
 if ~isequal(Filename, 0)
-    fid = fopen([PathToFile Filename_tmp], 'r');
+    fid = fopen(fullfile(PathToFile,Filename_tmp), 'r');
     fread(fid,1, 'int32', 'l');
     [dgType, ~] =read_dgHeader(fid,0);
     fclose(fid);
@@ -85,7 +88,7 @@ if ~isequal(Filename, 0)
         case 'CON0'
             ftype='EK60';
         otherwise
-            return;
+            ftype='dfile';
     end
 else
     return
@@ -99,66 +102,67 @@ join=0;
 
 if ~isequal(Filename, 0)
     
-    
-    if iscell(Filename)
-        choice = questdlg('Do you want to open files as separate layers?', ...
-            'File opening mode',...
-            'Yes','No', ...
-            'No');
-        % Handle response
-        switch choice
-            case 'Yes'
-                multi_layer=1;
-                read_all=0;
-            case 'No'
-                multi_layer=0;
-                read_all=1;
+    if ~strcmp(ftype,'dfile')
+        if iscell(Filename)
+            choice = questdlg('Do you want to open files as separate layers?', ...
+                'File opening mode',...
+                'Yes','No', ...
+                'No');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    multi_layer=1;
+                    read_all=0;
+                case 'No'
+                    multi_layer=0;
+                    read_all=1;
+            end
+            
+            if isempty(choice)
+                return;
+            end
+        else
+            multi_layer=0;
         end
         
-        if isempty(choice)
-            return;
-        end
-    else
-        multi_layer=0;
-    end
-    
-    
-    if multi_layer==0&&layer.ID_num~=0
-        choice = questdlg('Do you want to join those new layers to existing ones?', ...
-            'File opening mode',...
-            'Yes','No', ...
-            'No');
-        % Handle response
-        switch choice
-            case 'Yes'
-                join=1;
-            case 'No'
-                join=0;
-        end
-        if isempty(choice)
-            return;
-        end
-    else
-        join=0;
-    end
-    
-    if read_all==0&&join==0
-        prompt={'First ping:',...
-            'Last Ping:'};
-        name='Pings to load from each files';
-        numlines=1;
-        defaultanswer={'1','Inf'};
-        answer=inputdlg(prompt,name,numlines,defaultanswer);
         
-        if isempty(answer)
-            return;
+        if multi_layer==0&&layer.ID_num~=0
+            choice = questdlg('Do you want to join those new layers to existing ones?', ...
+                'File opening mode',...
+                'Yes','No', ...
+                'No');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    join=1;
+                case 'No'
+                    join=0;
+            end
+            if isempty(choice)
+                return;
+            end
+        else
+            join=0;
         end
         
-        ping_start= str2double(answer{1});
-        ping_end= str2double(answer{2});
-    else
-        ping_start=1;
-        ping_end=Inf;
+        if read_all==0&&join==0
+            prompt={'First ping:',...
+                'Last Ping:'};
+            name='Pings to load from each files';
+            numlines=1;
+            defaultanswer={'1','Inf'};
+            answer=inputdlg(prompt,name,numlines,defaultanswer);
+            
+            if isempty(answer)
+                return;
+            end
+            
+            ping_start= str2double(answer{1});
+            ping_end= str2double(answer{2});
+        else
+            ping_start=1;
+            ping_end=Inf;
+        end
     end
     
     switch ftype
@@ -166,7 +170,51 @@ if ~isequal(Filename, 0)
             open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'EK80'
             open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
+        case 'dfile'
+            choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
+                'd-file/raw_file',...
+                'd-file','raw file', ...
+                'd-file');
+            % Handle response
+            switch choice
+                case 'raw file'
+                    dfile=0;
+                    
+                case 'd-file'
+                    dfile=1;
+                    
+            end
+            
+            if isempty(choice)
+                dfile=1;
+            end
+
+            choice = questdlg('Do you want to load associated Bottom and Region?', ...
+                'Bottom/Region',...
+                'Yes','No', ...
+                'No');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    CVSCheck=1;
+                    
+                case 'No'
+                    CVSCheck=0;
+                    
+            end
+            
+            if isempty(choice)
+                CVSCheck=0;
+            end
+            
+            switch dfile
+                case 1
+                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck);
+                case 0
+                    open_dfile(main_figure,PathToFile,Filename,CVSCheck);
+            end
     end
+    
     update_display(main_figure,1);
     
 end

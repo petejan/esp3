@@ -42,10 +42,6 @@ idx_pings=active_reg.Idx_pings;
 active_reg.Cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 active_reg.Cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
-
-active_reg.integrate_region(layer.Transceivers(idx_freq));
-
-
 layer.Transceivers(idx_freq).rm_region_name_id(active_reg.Name,active_reg.ID)
 layer.Transceivers(idx_freq).add_region(active_reg);
 

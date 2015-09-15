@@ -7,6 +7,9 @@ classdef mbs_cl < handle
         brDir
         fileDir
         rawDir
+        crestDir
+        cal
+        absorbtion
     end
     
     methods
@@ -21,9 +24,9 @@ classdef mbs_cl < handle
             ifileInfo = get_ifile_info(mbs.input.data.dfilePath{i}, mbs.input.data.dfile(i));    % extract rawfilename from ifile
             if isfield(ifileInfo,'rawFileName')
                 rawFile = ifileInfo.rawFileName;
-            elseif ~exist('rawFileList')
+            elseif exist('rawFiles','var')==0
                 warning('No rawfilename specified in Ifile, please provide rawFileList!');
-                return
+                return;
             else                                                            % get rawfilename from list specified
                 rawFile = rawFiles.rawfile{rawFiles.dfile==mbs.input.data.dfile(i)};
             end
@@ -123,17 +126,22 @@ classdef mbs_cl < handle
                 pre = '';
                 post = '';
             end
+            if~isempty(input)
             
             a = find(input~=0);
             b = find(input==0);
             for i = 1:length(a)
                 string{a(i)}= [pre ',%.5e' post];
             end
+            
             for i = 1:length(b)
                 string{b(i)}= [pre ',%.f' post];
             end
-            string = cell2mat(string);
             
+            string = cell2mat(string);
+            else
+               string=''; 
+            end
         end
         
         

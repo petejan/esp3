@@ -1,0 +1,308 @@
+function load_regions_tab(main_figure,option_tab_panel)
+
+if isappdata(main_figure,'Region_tab')
+    region_tab_comp=getappdata(main_figure,'Region_tab');
+    delete(region_tab_comp.region_tab);
+    rmappdata(main_figure,'Region_tab');
+end
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
+    dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+else
+    dist=[];
+end
+
+
+list_reg = list_regions(layer.Transceivers(idx_freq));
+region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
+
+if isempty(list_reg)
+    list_reg={'--'};
+    reg_curr=region_cl();
+else
+    reg_curr=layer.Transceivers(idx_freq).Regions(1);
+end
+
+
+
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Regions','units','normalized','Position',[0.5 0.8 0.1 0.1]);
+region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',length(list_reg),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg_callback,main_figure});
+
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Mode','units','normalized','Position',[0.5 0.6 0.1 0.1]);
+region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',{'rectangular' 'vertical' 'horizontal'},'Value',1,'units','normalized','Position', [0.6 0.6 0.3 0.1]);
+
+
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Cell Width','units','normalized','Position',[0 0.3 0.2 0.1]);
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Cell Height','units','normalized','Position',[0 0.1 0.2 0.1]);
+
+region_tab_comp.cell_w=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.3 0.05 0.1],'string',reg_curr.Cell_w,'Tag','w');
+region_tab_comp.cell_h=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',reg_curr.Cell_h,'Tag','h');
+
+set([region_tab_comp.cell_w region_tab_comp.cell_h],'callback',{@check_cell,main_figure})
+
+
+if ~isempty(dist)
+    units_w= {'pings','meters'};
+else
+    units_w= {'pings'};
+end
+        Name
+        ID
+        Tag
+        Unique_ID
+        Type
+        Idx_pings
+        Idx_r
+        Shape
+        Sv_reg
+        X_cont
+        Y_cont
+        Reference
+        Cell_w
+        Cell_w_unit
+        Cell_h
+        Cell_h_unit
+        Output
+
+region_tab_comp.cell_w_unit=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',units_w,'Value',1,'units','normalized','Position', [0.3 0.3 0.1 0.1],'Tag','w');
+region_tab_comp.cell_h_unit=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',{'meters','samples'},'Value',1,'units','normalized','Position', [0.3 0.1 0.1 0.1],'Tag','h');
+region_tab_comp.cell_w_unit_curr=get(region_tab_comp.cell_w_unit,'value');
+region_tab_comp.cell_h_unit_curr=get(region_tab_comp.cell_w_unit,'value');
+set(region_tab_comp.cell_w_unit ,'callback',{@tog_units,main_figure});
+set(region_tab_comp.cell_h_unit ,'callback',{@tog_units,main_figure});
+
+%shape_type={'Vertical' 'Horizontal' 'Rectangular' 'Polygon'};
+shape_type={'Rectangular' 'Polygon'};
+%shape_type={'Rectangular'};
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Shape','units','normalized','Position',[0 0.85 0.2 0.1]);
+region_tab_comp.shape_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',shape_type,'Value',1,'units','normalized','Position', [0.2 0.85 0.2 0.1]);
+
+
+data_type={'Data' 'Bad Data'};
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Data Type','units','normalized','Position',[0 0.65 0.2 0.1]);
+region_tab_comp.data_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',data_type,'Value',1,'units','normalized','Position', [0.2 0.65 0.2 0.1]);
+
+
+ref={'Surface','Bottom'};
+uicontrol(region_tab_comp.region_tab,'Style','Text','String','Reference','units','normalized','Position',[0 0.45 0.2 0.1]);
+region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',1,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
+
+%uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg 3D','units','normalized','pos',[0.425 0.1 0.15 0.15],'callback',{@display_region_3D,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.45 0.1 0.1 0.15],'callback',{@copy_to_other_freq,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg','units','normalized','pos',[0.55 0.1 0.1 0.15],'callback',{@display_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Freq Resp.','TooltipString','Frequency Response (TS(f) of Sv(f))','units','normalized','pos',[0.65 0.1 0.1 0.15],'callback',{@freq_response_reg_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','units','normalized','pos',[0.75 0.1 0.1 0.15],'callback',{@classify_reg_callback,main_figure});
+
+
+region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Create','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@create_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Del. Across Freq','TooltipString','Delete Across Frequencies','units','normalized','pos',[0.75 0.3 0.1 0.15],'callback',{@rm_over_freq_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.65 0.3 0.1 0.15],'callback',{@delete_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
+
+setappdata(main_figure,'Region_tab',region_tab_comp);
+end
+
+function create_region_callback(~,~,main_figure)
+reset_mode(0,0,main_figure);
+set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
+end
+
+function classify_reg_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+Transceiver=layer.Transceivers(idx_freq);
+list_reg = list_regions(layer.Transceivers(idx_freq));
+
+[idx_38,found_38]=find_freq_idx(layer,38000);
+[idx_18,found_18]=find_freq_idx(layer,18000);
+[idx_120,found_120]=find_freq_idx(layer,120000);
+
+if ~found_18||~found_120||~found_38
+    warning('Cannot every frequency!Pass...');
+    return;
+end
+
+
+idx_to_process=[idx_18 idx_38 idx_120];
+
+if ~isempty(list_reg)
+    idx_reg=get(region_tab_comp.tog_reg,'value');
+    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    
+    for i=1:length(layer.Transceivers)
+        if i==idx_freq
+            continue;
+        end
+        layer.Transceivers(i).rm_region_id(active_reg.Unique_ID)    
+    end    
+    
+    layer.prepare_classification(idx_to_process,0,0);  
+    layer.apply_classification(idx_freq,idx_reg);  
+end
+
+setappdata(main_figure,'Layer',layer);
+display_regions(main_figure);
+update_display(main_figure,0)
+end
+
+
+function delete_region_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+Transceiver=layer.Transceivers(idx_freq);
+list_reg = list_regions(layer.Transceivers(idx_freq));
+
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+ah=axes_panel_comp.main_axes;
+clear_lines(ah);
+
+
+if ~isempty(list_reg)
+    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    layer.Transceivers(idx_freq).rm_region_id(active_reg.Unique_ID);
+    list_reg = list_regions(layer.Transceivers(idx_freq));
+    
+    if ~isempty(list_reg)
+        set(region_tab_comp.tog_reg,'value',1)
+        set(region_tab_comp.tog_reg,'string',list_reg);
+    else
+        set(region_tab_comp.tog_reg,'value',1)
+        set(region_tab_comp.tog_reg,'string',{'--'});
+    end
+    setappdata(main_figure,'Layer',layer);
+    display_regions(main_figure);
+else
+    return
+end
+end
+
+
+
+function tog_units(src,~,main_figure)
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+dx=nanmean(diff(dist));
+%pings=length(layer.Transceivers(idx_freq).Data.Number);
+range=layer.Transceivers(idx_freq).Data.Range;
+dr=nanmean(diff(range));
+w_units=get(region_tab_comp.cell_w_unit,'string');
+w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
+w_unit=w_units{w_unit_idx};
+
+h_units=get(region_tab_comp.cell_h_unit,'string');
+h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
+h_unit=h_units{h_unit_idx};
+
+switch get(src,'tag')
+    case 'w'
+        if region_tab_comp.cell_w_unit_curr==w_unit_idx
+            return;
+        end
+        val=str2double(get(region_tab_comp.cell_w,'string'));
+        switch w_unit
+            case 'pings'
+                val=val/dx;
+            case 'meters'
+                val=val*dx;
+                
+        end
+        region_tab_comp.cell_w_unit_curr=w_unit_idx;
+        set(region_tab_comp.cell_w,'string',num2str(val,'%.0f'));
+    case 'h'
+        if region_tab_comp.cell_h_unit_curr==h_unit_idx
+            return;
+        end
+        val=str2double(get(region_tab_comp.cell_h,'string'));
+        switch h_unit
+            case 'samples'
+                val=val/dr;
+            case 'meters'
+                val=val*dr;
+        end
+        region_tab_comp.cell_h_unit_curr=h_unit_idx;
+        set(region_tab_comp.cell_h,'string',num2str(val,'%.0f'));
+end
+setappdata(main_figure,'Region_tab',region_tab_comp);
+end
+
+function freq_response_reg_callback(~,~,main_figure)
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+Transceiver=layer.Transceivers(idx_freq);
+list_reg = list_regions(layer.Transceivers(idx_freq));
+
+if ~isempty(list_reg)
+    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    %idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
+    
+    idx_pings=active_reg.Idx_pings;
+    idx_r=active_reg.Idx_r;
+    
+    switch(curr_disp.Fieldname)
+        case {'sp','spunmatched'}
+            TS_freq_response_func(main_figure,idx_r,idx_pings)
+        case 'sv'
+            Sv_freq_response_func(main_figure,idx_r,idx_pings)
+    end
+end
+
+
+end
+
+function copy_to_other_freq(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+Transceiver=layer.Transceivers(idx_freq);
+list_reg = list_regions(layer.Transceivers(idx_freq));
+
+
+if ~isempty(list_reg)
+    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    layer.copy_region_across(idx_freq,active_reg);
+end
+
+setappdata(main_figure,'Layer',layer);
+
+end
+
+function rm_over_freq_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+region_tab_comp=getappdata(main_figure,'Region_tab');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+Transceiver=layer.Transceivers(idx_freq);
+list_reg = list_regions(layer.Transceivers(idx_freq));
+
+
+if ~isempty(list_reg)
+    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    layer.rm_region_across_id(active_reg.Unique_ID);
+end
+
+setappdata(main_figure,'Layer',layer);
+display_regions(main_figure);
+update_regions_tab(main_figure)
+end
+
+
+
+
+

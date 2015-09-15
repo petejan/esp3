@@ -36,12 +36,12 @@ classdef region_cl < handle
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);
             addParameter(p,'Unique_ID',unidrnd(2^64),@isnumeric);
-            addParameter(p,'Tag','UNC',@ischar);
+            addParameter(p,'Tag','',@ischar);
             addParameter(p,'Type','Data',check_type);
             addParameter(p,'Idx_pings',[],@isnumeric);
             addParameter(p,'Idx_r',[],@isnumeric);
             addParameter(p,'Shape','Rectangular',check_shape);
-            addParameter(p,'Sv_reg',[],@isnumeric);
+            addParameter(p,'Sv_reg',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Reference','Surface',check_reference);
             addParameter(p,'Cell_w',5,@isnumeric);
             addParameter(p,'Cell_h',5,@isnumeric);
@@ -71,6 +71,7 @@ classdef region_cl < handle
                     C=contourc(double(Mask),[1 1]);
                     if ~isempty(C)
                         [x,y,~]=C2xyz(C);
+
                         obj.X_cont=x;
                         obj.Y_cont=y;
                     else

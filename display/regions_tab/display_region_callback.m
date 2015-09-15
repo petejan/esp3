@@ -25,27 +25,21 @@ if ~isempty(list_reg)
         axis ij
         hold on;
         subplot(2,1,2)
-        plot(10*log10(nanmean(10.^(active_reg.Output.Sv_mean/10),2)),nanmean(active_reg.Output.y_node,2));
+        plot(nanmean(active_reg.Output.Sv_mean_lin),nanmean(active_reg.Output.y_node,2),'r',nanmean(active_reg.Output.Sv_mean_lin_esp2),nanmean(active_reg.Output.y_node,2));
         grid on;
         xlabel('Sv mean')
         ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
-        axis ij;
+        legend('Standard','Esp2')
+        %axis ij;
         grid on;
     else
         figure();
-        subplot(2,1,1)
-        plot(active_reg.Output.x_node,sv_disp)
-        xlabel(sprintf('%s',active_reg.Cell_w_unit))
-        ylabel('Sv mean')
-        
-        axis ij
-        hold on;
-        subplot(2,1,2)
-        plot(sv_disp,active_reg.Output.y_node)
+        plot(active_reg.Output.y_node,active_reg.Output.Sv_mean_lin,'r',active_reg.Output.y_node,active_reg.Output.Sv_mean_lin_esp2);
         grid on;
-        xlabel('Sv mean')
-        ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
-        axis ij;
+        ylabel('Sv mean')
+        xlabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
+       %axis ij;
+       legend('Standard','Esp2')
         grid on;
     end
 else

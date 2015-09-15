@@ -22,10 +22,15 @@ region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 
 if isempty(list_reg)
     list_reg={'--'};
+    reg_curr=region_cl();
+else
+    reg_curr=layer.Transceivers(idx_freq).Regions(1);
 end
 
+
+
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Regions','units','normalized','Position',[0.5 0.8 0.1 0.1]);
-region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',length(list_reg),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg_callback,main_figure});
+region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',1,'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_reg_callback,main_figure});
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Mode','units','normalized','Position',[0.5 0.6 0.1 0.1]);
 region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',{'rectangular' 'vertical' 'horizontal'},'Value',1,'units','normalized','Position', [0.6 0.6 0.3 0.1]);
@@ -34,18 +39,23 @@ region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','S
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Cell Width','units','normalized','Position',[0 0.3 0.2 0.1]);
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Cell Height','units','normalized','Position',[0 0.1 0.2 0.1]);
 
-region_tab_comp.cell_w=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.3 0.05 0.1],'string',5,'Tag','w');
-region_tab_comp.cell_h=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',5,'Tag','h');
+region_tab_comp.cell_w=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.3 0.05 0.1],'string',reg_curr.Cell_w,'Tag','w');
+region_tab_comp.cell_h=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',reg_curr.Cell_h,'Tag','h');
 
 set([region_tab_comp.cell_w region_tab_comp.cell_h],'callback',{@check_cell,main_figure})
+
+
 if ~isempty(dist)
     units_w= {'pings','meters'};
 else
     units_w= {'pings'};
 end
+units_h={'meters','samples'};
+h_unit_idx=find(strcmp(reg_curr.Cell_h_unit,units_h));
+w_unit_idx=find(strcmp(reg_curr.Cell_w_unit,units_w));
 
-region_tab_comp.cell_w_unit=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',units_w,'Value',1,'units','normalized','Position', [0.3 0.3 0.1 0.1],'Tag','w');
-region_tab_comp.cell_h_unit=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',{'meters','samples'},'Value',1,'units','normalized','Position', [0.3 0.1 0.1 0.1],'Tag','h');
+region_tab_comp.cell_w_unit=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',units_w,'Value',w_unit_idx,'units','normalized','Position', [0.3 0.3 0.1 0.1],'Tag','w');
+region_tab_comp.cell_h_unit=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',units_h,'Value',h_unit_idx,'units','normalized','Position', [0.3 0.1 0.1 0.1],'Tag','h');
 region_tab_comp.cell_w_unit_curr=get(region_tab_comp.cell_w_unit,'value');
 region_tab_comp.cell_h_unit_curr=get(region_tab_comp.cell_w_unit,'value');
 set(region_tab_comp.cell_w_unit ,'callback',{@tog_units,main_figure});
@@ -53,19 +63,22 @@ set(region_tab_comp.cell_h_unit ,'callback',{@tog_units,main_figure});
 
 %shape_type={'Vertical' 'Horizontal' 'Rectangular' 'Polygon'};
 shape_type={'Rectangular' 'Polygon'};
+shape_idx=find(strcmp(shape_type,reg_curr.Shape));
 %shape_type={'Rectangular'};
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Shape','units','normalized','Position',[0 0.85 0.2 0.1]);
-region_tab_comp.shape_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',shape_type,'Value',1,'units','normalized','Position', [0.2 0.85 0.2 0.1]);
+region_tab_comp.shape_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',shape_type,'Value',shape_idx,'units','normalized','Position', [0.2 0.85 0.2 0.1]);
 
 
 data_type={'Data' 'Bad Data'};
+data_idx=find(strcmp(data_type,reg_curr.Type));
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Data Type','units','normalized','Position',[0 0.65 0.2 0.1]);
-region_tab_comp.data_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',data_type,'Value',1,'units','normalized','Position', [0.2 0.65 0.2 0.1]);
+region_tab_comp.data_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',data_type,'Value',data_idx,'units','normalized','Position', [0.2 0.65 0.2 0.1]);
 
 
 ref={'Surface','Bottom'};
+ref_idx=find(strcmp(reg_curr.Reference,ref));
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Reference','units','normalized','Position',[0 0.45 0.2 0.1]);
-region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',1,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
+region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',ref_idx,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
 
 %uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg 3D','units','normalized','pos',[0.425 0.1 0.15 0.15],'callback',{@display_region_3D,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.45 0.1 0.1 0.15],'callback',{@copy_to_other_freq,main_figure});

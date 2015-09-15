@@ -29,6 +29,8 @@ classdef gps_data_cl <handle
                 end
             end
             
+            obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
+            
             if length(obj.Long)>=2
                 dist_disp=[0;cumsum(m_lldist(obj.Long,obj.Lat))]*1000/1.852;
                 obj.Dist=dist_disp;
@@ -44,9 +46,9 @@ classdef gps_data_cl <handle
         
         
         function gps_data_out=concatenate_GPSData(gps_data_1,gps_data_2)
-                gps_data_out=gps_data_cl('Lat',[gps_data_1.Lat; gps_data_2.Lat],...
-                    'Long',[gps_data_1.Long; gps_data_2.Long],...
-                    'Time',[gps_data_1.Time; gps_data_2.Time],...
+                gps_data_out=gps_data_cl('Lat',[gps_data_1.Lat(:); gps_data_2.Lat(:)],...
+                    'Long',[gps_data_1.Long(:); gps_data_2.Long(:)],...
+                    'Time',[gps_data_1.Time(:); gps_data_2.Time(:)],...
                     'NMEA',gps_data_1.NMEA);
         end
         

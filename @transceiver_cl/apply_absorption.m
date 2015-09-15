@@ -5,20 +5,26 @@ alpha_ori=trans.Params.Absorbtion;
 Sv=trans.Data.get_datamat('sv');
 Sp=trans.Data.get_datamat('sp');
 
-if isempty(Sp)||isempty(Sv)
-    warning('Could not apply new absorption, no Sv/Sp datagrams');
-    return;
+name=trans.Data.MemapName;
+
+
+if ~isempty(Sv)
+    Sv_new=apply_new_absorption(Sv,...
+        trans.Data.Range,alpha_ori,alpha);
+    trans.Params.Absorbtion=alpha;
+    trans.Data.remove_sub_data('sv');trans.Data.add_sub_data(sub_ac_data_cl('sv',name,Sv_new));
 end
 
-name=trans.Data.MemapName;
-trans.Data.remove_sub_data('sv');
-trans.Data.remove_sub_data('sp');
-[Sp_new,Sv_new]=apply_new_absorption(Sp,Sv,...
-    trans.Data.Range,alpha_ori,alpha);
-trans.Params.Absorbtion=alpha;
+if ~isempty(Sp)
+    Sp_new=apply_new_absorption(Sp,...
+        trans.Data.Range,alpha_ori,alpha);
+    trans.Params.Absorbtion=alpha;
+    trans.Data.remove_sub_data('sp');
+    trans.Data.add_sub_data(sub_ac_data_cl('sp',name,Sp_new));
+end
 
-trans.Data.add_sub_data(sub_ac_data_cl('sv',name,Sv_new));
-trans.Data.add_sub_data(sub_ac_data_cl('sp',name,Sp_new));
+
+
 
 
 end

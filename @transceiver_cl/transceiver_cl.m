@@ -87,7 +87,6 @@ classdef transceiver_cl < handle
                 for i=1:length(trans_1)
                     
                     trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_1(i).Data,trans_2(i).Data),...
-                        'Bottom',concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom),...
                         'IdxBad',[trans_1(i).IdxBad; trans_2(i).IdxBad],...
                         'Algo',trans_1(i).Algo,...
                         'GPSDataPing',concatenate_GPSData(trans_1(i).GPSDataPing,trans_2(i).GPSDataPing),...
@@ -96,6 +95,25 @@ classdef transceiver_cl < handle
                         'Params',trans_1(i).Params,...
                         'Config',trans_1(i).Config,...
                         'Filters',trans_1(i).Filters);
+                    
+                    new_bot=concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom);
+                    trans_out(i).setBottom(new_bot);
+                    
+                    if trans_1(i).Data.Time(1)>=trans_2(i).Data.Time(end)
+                        regions_2=trans_1(i).Regions;
+                        regions_1=trans_2(i).Regions;
+                    else
+                        regions_1=trans_1(i).Regions;
+                        regions_2=trans_2(i).Regions;
+                    end
+                      
+                    trans_out(i).add_region(regions_1);
+                    
+                    for ir2=1:length(regions_2)
+                        regions_2.Idx_pings(ir2)=regions_2.Idx_pings(ir2)+trans_1(i).Data.Number(end);           
+                    end
+                     trans_out(i).add_region(regions_2);
+                    
                 end
             else
                 error('Cannot concatenate two files with diff frequencies')
@@ -189,13 +207,16 @@ classdef transceiver_cl < handle
         function add_region(obj,regions)
             for i=1:length(regions)
                 obj.rm_region_id(regions(i).Unique_ID);
+                obj.rm_region_name_id(regions(i).Name,regions(i).ID);
+                regions(i).integrate_region(obj);
+                regions(i).Unique_ID=new_unique_id(obj);
                 obj.Regions=[obj.Regions regions(i)];
             end
         end
         
+       
         
-        function id=new_id(obj,name)
-            
+        function id=new_id(obj,name)           
             reg_curr=obj.Regions;
             reg_new=[];
             id_list=[];
@@ -211,7 +232,19 @@ classdef transceiver_cl < handle
             end
         end
         
-        function [idx,found]=find_reg_idx(trans,unique_id)
+        function unique_id=new_unique_id(obj)           
+            reg_curr=obj.Regions;
+            id_list=nan(size(reg_curr));
+            for i=1:length(reg_curr)
+                id_list(i)=reg_curr(i).Unique_ID;
+            end
+            unique_id=unidrnd(2^64);          
+            while ~isempty(find(unique_id==id_list,1))
+                unique_id=unidrnd(2^64);
+            end
+        end
+        
+        function [idx,found]=find_reg_idx(trans,id)
             
             idx=[];
             for ii=1:length(trans.Regions)
@@ -229,16 +262,14 @@ classdef transceiver_cl < handle
         end
         
         
-        function [idx,found]=find_reg_idx_id(trans,id)
-            
+        function [idx,found]=find_reg_idx_id(trans,id)          
             idx=[];
             for ii=1:length(trans.Regions)
                 if id==trans.Regions(ii).ID
                     idx=[idx ii];
                     found=1;
                 end
-            end
-            
+            end           
             if isempty(idx)
                 idx=1;
                 found=0;

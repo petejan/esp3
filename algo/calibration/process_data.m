@@ -300,7 +300,7 @@ for k=1:length(p.onAxisMethod)
     elseif strcmp(p.onAxisMethod{k}, 'mean')
         outby(k) = data.cal.sphere_ts - mean_ts_on_axis;
         old_cal=transceiver.get_cal();
-        new_cal.Gain=old_cal.Gain-outby(k)/2;
+        new_cal.G0=old_cal.G0-outby(k)/2;
     elseif strcmp(p.onAxisMethod{k}, 'beam fitting')
         outby(k) = data.cal.sphere_ts - peak_ts;
     end
@@ -315,7 +315,7 @@ for k=1:length(p.onAxisMethod)
     
     disp(['G_o from .raw file is ' num2str(gain) ' dB'])
     disp(' ')
-    disp(['So the calibrated G_o = ' num2str(old_cal.Gain-outby(k)/2) ' dB (' p.onAxisMethod{k} ' method)'])
+    disp(['So the calibrated G_o = ' num2str(old_cal.G0-outby(k)/2) ' dB (' p.onAxisMethod{k} ' method)'])
     disp(' ')
 end
 
@@ -442,7 +442,7 @@ rms_fit = sqrt( mean( ( (sphere(i,1) - beam_model(i))/2 ).^2 ) );
 disp(['RMS of fit to beam model out to ' num2str(fit_out_to) ' degrees = ' num2str(rms_fit) ' dB.'])
 
 
-new_cal.SaCorr=sa_correction;
+new_cal.SACORRECT=sa_correction;
 
 transceiver.apply_cw_cal(new_cal);
 

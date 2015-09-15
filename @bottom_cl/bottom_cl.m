@@ -16,7 +16,7 @@ classdef bottom_cl
             addParameter(p,'Origin','',@ischar);
             addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'Sample_idx',[],@isnumeric);
-            addParameter(p,'Double_bot_mask',[],@islogical);
+            addParameter(p,'Double_bot_mask',[],@(x) isempty(x)||islogical(x));
           
             parse(p,varargin{:});
             
@@ -31,25 +31,10 @@ classdef bottom_cl
         end
         
         function bot_out=concatenate_Bottom(bot_1,bot_2)
-            if size(bot_2.Range,1)~=1
-                bot_2.Range=bot_2.Range';
-            end
-            
-            if size(bot_2.Sample_idx,1)~=1
-                bot_2.Sample_idx=bot_2.Sample_idx';
-            end
-            
-            if size(bot_1.Range,1)==1
-                n_r=[bot_1.Range bot_2.Range];
-            else
-                n_r=[bot_1.Range' bot_2.Range];
-            end
-            
-            if size(bot_1.Sample_idx,1)==1
-                n_s=[bot_1.Sample_idx bot_2.Sample_idx];
-            else
-                n_s=[bot_1.Sample_idx' bot_2.Sample_idx];
-            end
+
+            n_r=[bot_1.Range(:); bot_2.Range(:)];
+            n_s=[bot_1.Sample_idx(:); bot_2.Sample_idx(:)];
+
             
             bot_out=bottom_cl('Origin',bot_1.Origin,...
                 'Range',n_r,...

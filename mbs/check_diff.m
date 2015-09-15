@@ -5,6 +5,39 @@ function check_diff(evm_file,esp2_file)
 [~,evmbsdata]  = read_mbs(evm_file);
 [~,esp2mbsdata]  = read_mbs(esp2_file);
 
+% 
+%% Stratum Summary
+fn = fieldnames(esp2mbsdata.stratum(1,1));
+for i = 2:length(fn);
+    for j = 1:length(evmbsdata.stratum)
+        strat_num=[];
+        for k=1:length(esp2mbsdata.stratum)
+            if  strcmp(esp2mbsdata.stratum(1,k).stratum,evmbsdata.stratum(1,j).stratum)&&...
+                    esp2mbsdata.stratum(1,k).snapshot==evmbsdata.stratum(1,j).snapshot
+                strat_num=k;
+            end
+        end
+        if isempty(strat_num)
+            continue;
+        end
+        
+        a = evmbsdata.stratum(1,j).(fn{i});
+        b = esp2mbsdata.stratum(1,strat_num).(fn{i});
+        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
+    end
+    c = nanmean((c));
+    if abs(c) < 0.001
+        fprintf(1, 'Stratum Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
+    else
+        if c > 0
+            fprintf(1, 'Stratum Summary %s : matlabmbs is on average %2.4f%% more than esp2mbs\n', fn{i}, abs(c));
+        else
+            fprintf(1, 'Stratum Summary %s : matlabmbs is on average %2.4f%% less than esp2mbs\n', fn{i}, abs(c));
+        end
+    end
+    clear a b c
+end
+fprintf(1,'\n');
 
 
 %% Transect Summary
@@ -25,19 +58,19 @@ for i = 4:length(fn);
         
         a = evmbsdata.transect_summary(1,j).(fn{i});
         b = esp2mbsdata.transect_summary(1,trans_num).(fn{i});
-       c(j) = nanmean((a(:)-b(:))./a(:)*100);
+        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
     end
     c = nanmean((c));
-    if abs(c) < 0.0001
+    if abs(c) < 0.001
         fprintf(1, 'Transect Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
     else
-        if c  < 0
+        if c > 0
             fprintf(1, 'Transect Summary %s : matlabmbs is on average %2.4f%% more than esp2mbs\n', fn{i}, abs(c));
         else
             fprintf(1, 'Transect Summary %s : matlabmbs is on average %2.4f%% less than esp2mbs\n', fn{i}, abs(c));
         end
     end
-    clear c
+    clear a b c
 end
 fprintf(1,'\n');
 %% transect
@@ -58,22 +91,28 @@ for i = 3:length(fn);
         
         a = evmbsdata.transect(1,j).(fn{i});
         b = esp2mbsdata.transect(1,trans_num).(fn{i});
-        c(j) = nanmean((a(:)-b(:))./a(:)*100);
+        
+        if length(a)~=length(b)
+            c(j)=nan;
+            continue;
+        end
+        
+        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
     end
     c = nanmean((c));
-    if abs(c) < 0.0001
+    if abs(c) < 0.001
         fprintf(1, 'Sliced Transect Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
     else
-        if c  < 0
+        if c > 0
             fprintf(1, 'Sliced Transect Summary %s : matlabmbs is on average %2.4f%% more than esp2mbs\n', fn{i}, abs(c));
         else
             fprintf(1, 'Sliced Transect Summary %s : matlabmbs is on average %2.4f%% less than esp2mbs\n', fn{i}, abs(c));
         end
     end
-    clear c
+    clear a b c
 end
 fprintf(1,'\n');
-%% region  summary
+%% Region Summary
 fn = fieldnames(evmbsdata.region_summary(1,1));
 for i = 7:length(fn);
     for j = 1:length(evmbsdata.region_summary)
@@ -92,25 +131,26 @@ for i = 7:length(fn);
         
         a = evmbsdata.region_summary(1,j).(fn{i});
         b = esp2mbsdata.region_summary(1,trans_num).(fn{i});
-        c(j) = nanmean((a(:)-b(:))./a(:)*100);
+        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
     end
+    
     c = nanmean(c(:));
     if isnan(c); c=0; end
-    if abs(c) < 0.0001
+    if abs(c) < 0.001
         fprintf(1, 'Region Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
     else
-        if c  < 0
+        if c > 0
             fprintf(1, 'Region Summary %s : matlabmbs is on average %2.4f%% more than esp2mbs\n', fn{i}, abs(c));
         else
             fprintf(1, 'Region Summary %s : matlabmbs is on average %2.4f%% less than esp2mbs\n', fn{i}, abs(c));
         end
     end
-    clear c
+    clear a b c
 end
 fprintf(1,'\n');
-%% Details region  summary
+%% Region vbscf
 fn = fieldnames(evmbsdata.region_detail(1,1));
-for i = 8:length(fn);
+for i = 6:length(fn);
     for j = 1:length(evmbsdata.region_detail)
         trans_num=[];
         for k=1:length(esp2mbsdata.region_detail)
@@ -127,27 +167,51 @@ for i = 8:length(fn);
         end
         a = evmbsdata.region_detail(1,j).(fn{i});
         b = esp2mbsdata.region_detail(1,trans_num).(fn{i});
-        c(j) = nanmean((a(:)-b(:))./a(:)*100);
-%         figure();
-%         imagesc(a-b)
+        if length(a)~=length(b)
+            a(a==0)=[];
+            b(b==0)=[];
+        end
+        
+%         if i==9
+%             figure(41564);
+%             title(fn{i})
+%             plot(a);hold on;
+%             plot(b);
+%             grid on;
+%             legend('Matlab','Esp2')
+%             title(sprintf('Transect: %0.f File: %s',evmbsdata.region_detail(1,j).transect,evmbsdata.region_detail(1,j).filename));
+%             %pause(1);
+%             hold off;
+%         end
+        
+        if length(a(:))~=length(b(:))
+            diff(j)=nan;
+            esp2(j) = nan;    
+            continue;
+        end
+        diff(j)=nansum(a(:)-b(:));
+        esp2(j) = nansum(b(:));
+        
+                     
     end
-    c = nanmean(c(:));
+    
+    c =nansum(diff)/nansum(esp2)*100;
     if isnan(c); c=0; end
-    if abs(c) < 0.0001
+    if abs(c) < 0.001
         fprintf(1, 'Region vbscf %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
     else
-        if c  < 0
+        if c  > 0
             fprintf(1, 'Region vbscf %s : matlabmbs is on average %2.4f%% more than esp2mbs\n', fn{i}, abs(c));
         else
             fprintf(1, 'Region vbscf %s : matlabmbs is on average %2.4f%% less than esp2mbs\n', fn{i}, abs(c));
         end
     end
-    clear c
+    clear a b c diff esp2
 end
 
 fprintf(1,'\n');
 
-%% Sliced region  summary
+%% Region Summary (abscf by vertical slice)
 fn = fieldnames(evmbsdata.region(1,1));
 for i = 7:length(fn);
     for j = 1:length(evmbsdata.region)
@@ -166,22 +230,24 @@ for i = 7:length(fn);
         end
         a = evmbsdata.region(1,j).(fn{i});
         b = esp2mbsdata.region(1,trans_num).(fn{i});
-        c(j) = nanmean((a(:)-b(:))./a(:)*100);
-%         figure();
-%         imagesc(a-b)
+        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
+        %         figure();
+        %         imagesc(a-b)
+        
     end
     c = nanmean(c(:));
     if isnan(c); c=0; end
-    if abs(c) < 0.0001
+    if abs(c) < 0.001
         fprintf(1, 'Region Summary (abscf by vertical slice) %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
     else
-        if c  < 0
+        if c > 0
             fprintf(1, 'Region Summary (abscf by vertical slice) %s : matlabmbs is on average %2.4f%% more than esp2mbs\n', fn{i}, abs(c));
         else
             fprintf(1, 'Region Summary (abscf by vertical slice) %s : matlabmbs is on average %2.4f%% less than esp2mbs\n', fn{i}, abs(c));
         end
     end
-    clear c
+    
+    clear a b c
 end
 
 

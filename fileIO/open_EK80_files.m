@@ -74,9 +74,9 @@ if ~isequal(Filename, 0)
         end
         
         try
-            waitbar(uuu/nb_layers,opening_file,sprintf('Opening file: %s',curr_Filename),'WindowStyle','Modal');
+            waitbar(uuu/nb_layers,opening_file,['Opening file: ',curr_Filename],'WindowStyle','Modal');
         catch
-            opening_file=waitbar(uuu/nb_layers,sprintf('Opening file: %s',curr_Filename),'Name','Opening files','WindowStyle','Modal');
+            opening_file=waitbar(uuu/nb_layers,['Opening file: ',curr_Filename],'Name','Opening files','WindowStyle','Modal');
         end
         
         
@@ -233,9 +233,6 @@ if ~isequal(Filename, 0)
         %layer.EnvData=
         
         
-        idx_freq=find_freq_idx(layer_new,curr_disp.Freq);
-        curr_disp.Freq=layer_new.Frequencies(idx_freq);
-        curr_disp.setField('sv');
         if ite==1
             layers_temp(uuu)=layer_new;
         end
@@ -245,7 +242,6 @@ if ~isequal(Filename, 0)
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);
-    
     curr_disp.setField('sv');
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Layers',layers);

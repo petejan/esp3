@@ -10,7 +10,7 @@ if multi_layer==0
     
     if join==1
         layers_temp=[layers layers_temp];
-        old_layers=layers;
+        %old_layers=layers;
         layers=[];
     end
     
@@ -72,7 +72,8 @@ if multi_layer==0
                 new_not_to=setdiff(idx(idx_same_samples),unique(idx_to_concatenate{uu}{kk}(:)));
                 idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu}(:);new_not_to(:)]);
             else
-                idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu}(:) ;idx(idx_same_samples(:))]);
+                new_to=idx(idx_same_samples(:));
+                idx_not_to_concatenate{uu}=unique([idx_not_to_concatenate{uu}(:) ; new_to(:)]);
             end
         end
     end
@@ -146,18 +147,18 @@ else
     new_layers=layers_temp;
 end
 
-for u=length(new_layers):-1:1
+for u=1:length(new_layers)
     layer=new_layers(u);
     if ~isempty(layers)
-        [idx,found]=find_layer_idx(layers,layer.ID_num);
+        [~,found]=find_layer_idx(layers,layer.ID_num);
     else
         found=0;
     end
     
     if found==1
-        warning('Who, that''s extremely unlikely!')
+        warning('Who, that''s extremely unlikely! There has been a problem in the shuffling process. This programm will crash very soon.');
     else
-        layers=[layer layers];
+        layers=[layers layer];
     end
 end
 

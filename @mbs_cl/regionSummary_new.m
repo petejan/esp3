@@ -1,20 +1,21 @@
 
-function regionSummary_new(mbs,varargin) % Calculate
+function regionSummary_new(mbs,idx_trans,type) % Calculate
 
 transects=mbs.input.data.transect;
-transects(abs([1;diff(mbs.input.data.transect)])==0)=[];
 
-if nargin == 2;
-    uu = varargin{1};
-    if length(uu) > length(transects)
-        warning('Requested index > num transects, using num transects');
-        uu=1:length(transects);
-    end
-else
-    uu = 1:length(transects);
+
+
+if length(idx_trans) > length(transects)
+    warning('Requested index > num transects, using num transects');
+    idx_trans=1:length(transects);
 end
 
-idx_transects = transects(uu);
+
+transects=transects(idx_trans);
+transects(abs([1;diff(transects)])==0)=[];
+
+idx_transects =transects;
+
 mbs.output.regionSum.data = [] ;
 mbs.output.regionSumAbscf.data = [];
 mbs.output.regionSumVbscf.data = [];
@@ -30,32 +31,28 @@ for ii=1:length(idx_transects)
     eint=0;
     for i=1:length(idx_transect_files)
         
-        layer(i)=open_EK60_file_stdalone([],pwd,mbs.rawDir,mbs.input.data.rawFileName{idx_transect_files(i)},38000,1,Inf);
-        
-        idx_freq=find_freq_idx(layer(i),38000);
-        
+        disp(sprintf('Opening file %s',mbs.input.data.rawFileName{idx_transect_files(i)}));
+
+        switch type
+            case 'raw'
+                layer(i)=open_EK60_file_stdalone(mbs.rawDir,mbs.input.data.rawFileName{idx_transect_files(i)},'PathToMemmap',pwd,'Frequencies',38000,'FieldNames',{'sv'});        
+                idx_freq=find_freq_idx(layer(i),38000);
+                layer(i).Transceivers(idx_freq).apply_cw_cal(mbs.cal);               
+            case 'crest'          
+                layer(i)=read_crest(mbs.crestDir,sprintf('d%07d',mbs.input.data.dfile(idx_transect_files(i))),'PathToMemmap',pwd,'CVSCheck',0);
+                idx_freq=find_freq_idx(layer(i),38000);
+        end
+        layer(i).Transceivers(idx_freq).apply_absorption(mbs.absorbtion);
         layer(i).Transceivers(idx_freq).Bottom=mbs.input.data.bottom{idx_transect_files(i)};
         layer(i).Transceivers(idx_freq).IdxBad=mbs.input.data.bad{idx_transect_files(i)};
         
         Transceiver =layer(i).Transceivers(idx_freq);
+           
+        end_num(i+1)=end_num(i)+Transceiver.Data.Number(end);
+       
+        Transceiver.setBottomIdxBad(mbs.input.data.bottom{idx_transect_files(i)},mbs.input.data.bad{idx_transect_files(i)});       
+  
         
-        if i==1
-            end_num(i+1)=Transceiver.Data.Number(end);
-        else
-            Transceiver.Data.Number=Transceiver.Data.Number;
-            end_num(i+1)=end_num(i)+Transceiver.Data.Number(end);
-        end
-        
-        new_cal.SaCorr = -0.55;
-        new_cal.Gain= 25.42;
-        Transceiver.apply_cw_cal(new_cal);
-        
-        new_absorption=8/1000;
-        Transceiver.apply_absorption(new_absorption);
-        
-        Transceiver.add_region(mbs.input.data.regions{idx_transect_files(i)});
-        Transceiver.Bottom=mbs.input.data.bottom{idx_transect_files(i)};
-        Transceiver.IdxBad=mbs.input.data.bad{idx_transect_files(i)};
         
         % export boolean for goodping
         % read reg string
@@ -79,32 +76,48 @@ for ii=1:length(idx_transects)
             % Echogram will only consists out of this region. Then
             % the Cell grid will be changed according to the region
             % notes (written in there by createEVfromMbs).
+            
+            idx_reg=[];
+            for iik=1:length(mbs.input.data.regions{idx_transect_files(i)})
+                if reg.id==mbs.input.data.regions{idx_transect_files(i)}(iik).ID
+                    idx_reg=iik;
+                end
+            end
+            if isempty(idx_reg)
+                idx_reg=1;
+            end
+                
+            Transceiver.add_region(mbs.input.data.regions{idx_transect_files(i)}(idx_reg));
+            
             [regx,~] = Transceiver.find_reg_idx_id(reg.id); % find according region
             
-            reg_curr=mbs.input.data.regions{idx_transect_files(i)}(regx);
-            
-            reg_curr.integrate_region(Transceiver);
-            
+            reg_curr=Transceiver.Regions(regx);
+                       
             regCellInt = reg_curr.Output;
             
             startPing = regCellInt.Ping_S(1);
             stopPing = regCellInt.Ping_E(end);
             
             ix = (startPing:stopPing);
+            ix_good=setdiff(ix,Transceiver.IdxBad);
             % all pings for this region
             horzSlice = reg_curr.Cell_h;
-            %vertSlice = reg_curr.Cell_w;
+            vertSlice = reg_curr.Cell_w;
             
             
             switch reg_curr.Reference
                 case 'Surface';
                     refType = 's';
+                     if isnan(reg.startDepth); start_d = Transceiver.Data.Range(reg_curr.Idx_r(1)); else start_d = reg.startDepth; end
+                     if isnan(reg.finishDepth); finish_d = Transceiver.Data.Range(reg_curr.Idx_r(1)); else finish_d = reg.finishDepth; end
                 case 'Bottom';
                     refType = 'b';
+                    if isnan(reg.startDepth); start_d = 0; else start_d = reg.startDepth; end
+                    if isnan(reg.finishDepth); finish_d = 0; else finish_d = reg.finishDepth; end
             end
             
-            %dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;                       % get distance
-            dist = m_lldist([regCellInt.Lon_S(1) regCellInt.Lon_E(end)],[regCellInt.Lat_S(1) regCellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
+            dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;                       % get distance
+            %dist = m_lldist([regCellInt.Lon_S(1) regCellInt.Lon_E(end)],[regCellInt.Lat_S(1) regCellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
    
             time_s = regCellInt.Time_S(1);
             time_e = regCellInt.Time_E(end);
@@ -121,16 +134,14 @@ for ii=1:length(idx_transects)
             rs{j,5} = reg.id(j);
             rs{j,6} = refType;
             rs{j,7} = horzSlice;
-            rs{j,8} = length(find((Transceiver.IdxBad(ix)==0))); % filter for only good pings
-            if isnan(reg.startDepth); start = Transceiver.Data.Range(reg_curr.Idx_r(1)); else start = reg.startDepth; end
-            rs{j,9} = start;
-            good_bot=Transceiver.Bottom.Range(ix);
-            good_bot(Transceiver.IdxBad(ix)==0);
+            rs{j,8} = length(ix_good); % filter for only good pings
+            rs{j,9} = start_d;
+            good_bot=Transceiver.Bottom.Range(ix_good);
             rs{j,10} = nanmean(good_bot);% find bottom pings in good pings and only take mean from good ones
-            if isnan(reg.finishDepth); finish = Transceiver.Data.Range(reg_curr.Idx_r(end)); else finish = reg.finishDepth; end
-            rs{j,11} = finish;
+            rs{j,11} = finish_d;
             rs{j,12} = dist/timediff;
-            rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*(regCellIntSub.Layer_depth_max-regCellIntSub.Layer_depth_min)));%Vbsc
+            rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*~isnan(regCellIntSub.Thickness_esp2)*reg_curr.Cell_h));%Vbsc    
+            %rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*abs(regCellIntSub.Layer_depth_max-regCellIntSub.Layer_depth_max)));%Vbsc    
             rs{j,14} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nanmean(regCellIntSub.Nb_good_pings));%Abscf
             
             
@@ -145,7 +156,9 @@ for ii=1:length(idx_transects)
             rsa{j,8} = nanmax(regCellIntSub.Lat_S); % lat vertical slice
             rsa{j,9} = nanmax(regCellIntSub.Lon_S); % lon vertical slice
             rsa{j,10} = nansum(regCellIntSub.Sa_lin)./nanmean(regCellIntSub.Nb_good_pings);%sum up all abcsf per vertical slice
-            rsa{j,11} = nanmax(regCellIntSub.Ping_E)-1+end_num(i);
+            rsa{j,11} = nanmax(regCellIntSub.Ping_E);
+            nb_good_pings_reg{i,j} = nanmean(regCellIntSub.Nb_good_pings);
+            end_num_regs(i)=end_num(i)+rsa{j,11}(end);
             
             %% Region vbscf (6th Mbs output Block)
             rsv{j,1}= mbs.input.data.snapshot(idx_transect_files(i));
@@ -153,12 +166,13 @@ for ii=1:length(idx_transects)
             rsv{j,3} = mbs.input.data.transect(idx_transect_files(i));
             rsv{j,4} = [mbs.input.data.dfileDir{idx_transect_files(i)} '/' sprintf('d%07.f',mbs.input.data.dfile(idx_transect_files(i)))];
             rsv{j,5} = reg.id(j);
-            rsv{j,6} = nanmax(nansum(~isnan(regCellIntSub.Sv_mean))); % num_h_slices, get max value of cells for each collum
+            rsv{j,6} = nanmax(nansum(~isnan(regCellIntSub.Sa_lin))); % num_h_slices, get max value of cells for each collum
             rsv{j,7} = size(regCellIntSub.Lat_S,2); % num_v_slices
             rsv{j,8} = rs{j,13}; % region_vbscf
-            [I,~]=find(isnan(regCellIntSub.Sv_mean'));
+            [I,~]=find(~isnan(regCellIntSub.Sa_lin'));
             idx_first=nanmin(I);
-            tmp = 10.^(regCellIntSub.Sv_mean(idx_first:(idx_first+rsv{j,6})-1,:)/10);
+            
+            tmp = regCellIntSub.Sv_mean_lin_esp2(idx_first:(idx_first+rsv{j,6})-1,:);
             tmp(isnan(tmp))=0;
             tmp=tmp';
             tmp=tmp(:);
@@ -180,6 +194,21 @@ for ii=1:length(idx_transects)
     layer_tot=shuffle_layers(layer_cl,layer,0,1);
     clear layer;
     
+
+    
+    if length(layer_tot)>1
+        layer_tmp=layer_tot(1);
+        for ik=1:length(layer_tot)-1
+            if layer_tmp.Transceivers(1).Data.Time(end)<=layer_tot(ik+1).Transceivers(1).Data.Time(1)
+               layer_tmp=concatenate_Layer(layer_tmp,layer_tot(ik+1));
+            else
+                 layer_tmp=concatenate_Layer(layer_tot(ik+1),layer_tmp);
+            end
+        end
+        delete_layers(layer_tot,[]);
+        layer_tot=layer_tmp;
+    end
+    
     
     Transceiver =layer_tot.Transceivers(idx_freq);
     %% File Summary (part of 2nd Mbs output Block)
@@ -192,6 +221,7 @@ for ii=1:length(idx_transects)
     pings=double(Transceiver.Data.Number);
     
     idx_pings=1:length(pings);
+    idx_good_pings=setdiff(idx_pings,Transceiver.IdxBad);
     idx_r=samples;
     
     mbsVS = str2double(mbs.input.data.vertical_slice_size);
@@ -200,7 +230,7 @@ for ii=1:length(idx_transects)
         'ID',999,...
         'Name','All Echogramm',...
         'Type','Data',...
-        'Idx_pings',idx_pings,...
+        'Idx_pings',1:end_num_regs(end),...
         'Idx_r',idx_r,...
         'Shape','Rectangular',...
         'Reference','Surface',...
@@ -210,26 +240,31 @@ for ii=1:length(idx_transects)
         'Cell_h_unit','meters',...
         'Output',[]);
     
-    reg_temp.integrate_region(Transceiver);
-   
+
+   Transceiver.add_region(reg_temp);
+   [regx,~] = Transceiver.find_reg_idx_id(999); % find according region   
+   reg_curr=Transceiver.Regions(regx(1));
     
-    CellInt = reg_temp.Output;
+    CellInt = reg_curr.Output;
     
     %dist = (CellInt.VL_E(end)-CellInt.VL_S(1))/1e3; 
-    dist_tot = m_lldist([CellInt.Lon_S(1) CellInt.Lon_S(1)],[CellInt.Lat_S(1) CellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
+    dist_tot = m_lldist([CellInt.Lon_S(1) CellInt.Lon_E(end)],[CellInt.Lat_S(1) CellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
     time_s_tot = CellInt.Time_S(1);
-    time_e_tot = CellInt.Time_E(end);
-    
+    time_e_tot = CellInt.Time_E(end); 
     timediff_tot = (time_e_tot-time_s_tot)*24;  
+    av_speed_tot=dist_tot/timediff_tot;
     
-    % get time difference
+    good_bot_tot=nanmean(Transceiver.Bottom.Range(idx_good_pings));
+
+    
+    %Will be used for Transect Summary
     fs{ii,1} = mbs.input.data.snapshot(idx_transect_files(i));
     fs{ii,2} = mbs.input.data.stratum{idx_transect_files(i)};
     fs{ii,3} = mbs.input.data.transect(idx_transect_files(i));
-    fs{ii,4} = dist; % dist
-    fs{ii,7} = nanmean(Transceiver.Bottom.Range(Transceiver.IdxBad==0)); % mean_d
-    fs{ii,8}= length(find((Transceiver.IdxBad==0))); % pings %
-    fs{ii,9} = dist_tot/timediff_tot; % av_speed
+    fs{ii,4} = dist_tot; % dist
+    fs{ii,7} = nanmean(good_bot_tot); % mean_d
+    fs{ii,8}= length(idx_good_pings); % pings %
+    fs{ii,9} = av_speed_tot; % av_speed
     fs{ii,10} = CellInt.Lat_S(1); % start_lat
     fs{ii,11} = CellInt.Lon_S(1); % start_lon
     fs{ii,12} = CellInt.Lat_E(end); % finish_lat
@@ -250,19 +285,32 @@ for ii=1:length(idx_transects)
     binEnd = CellInt.Ping_E';
     
     slice_abscf=zeros(1,length(binStart));
-    
+    slice_abscf_ori=zeros(1,length(binStart));
+    nb_good_pings=zeros(1,length(binStart));
+t_start={};
+t_end={};
     for i=1:length(idx_transect_files)
         reg = getRegSpecFromRegString(mbs.input.data.Reg{idx_transect_files(i)});
         rsa=rsa_temp{i};
+
         for j = 1:length(reg.id);
             for k = 1:length(binStart); % sum up abscf data according to bins
-                ix =  rsa{j,11}>=binStart(k) &  rsa{j,11}<=binEnd(k);
-                    slice_abscf(k) = slice_abscf(k)+nansum(rsa{j,10}(ix));
+                t_start{i,j}=rsa{j,7}+end_num(i);
+                t_end{i,j}=rsa{j,11}+end_num(i);
+                ix = (t_start{i,j}>=binStart(k) &  t_start{i,j}<=binEnd(k));
+                find(ix);
+                nb_good_pings(k)=nb_good_pings(k)+nansum(nb_good_pings_reg{i,j}(ix));
+                slice_abscf(k) = slice_abscf(k)+ nansum(nb_good_pings_reg{i,j}(ix).*rsa{j,10}(ix));
+                slice_abscf_ori(k) = slice_abscf_ori(k)+ nansum(rsa{j,10}(ix));
             end
         end
     end
     
+    %slice_abscf=slice_abscf./nb_good_pings;
+    slice_abscf=slice_abscf_ori;
     
+    
+   %will be used for Sliced Transect Summary
     sfs{ii,1} = mbs.input.data.snapshot(idx_transect_files(i));
     sfs{ii,2} = mbs.input.data.stratum{idx_transect_files(i)};
     sfs{ii,3} = mbs.input.data.transect(idx_transect_files(i));

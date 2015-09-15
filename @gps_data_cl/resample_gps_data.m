@@ -6,7 +6,6 @@ if ~isempty(gps_obj.Lat)
     end
     [lat,~]=resample_data(gps_obj.Lat,gps_obj.Time,time);
     [long,time_gps]=resample_data(gps_obj.Long,gps_obj.Time,time);
-    
     nmea=gps_obj.NMEA;
     
     if nansum((size(time_gps)==size(time)))<2
