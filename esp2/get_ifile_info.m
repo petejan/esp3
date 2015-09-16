@@ -27,7 +27,7 @@ if  ischar(fileNumber)
         %if a d-,n- or t- file was specified instead of an i-file use the corresponding i-file
         tok = fileNumber(end-7);
         num = fileNumber((end-6):end);
-        if (tok == 'd' | tok == 'n' | tok == 't') & ~isempty(str2num(num))
+        if (tok == 'd' || tok == 'n' || tok == 't') && ~isempty(str2double(num))
             fileNumber(end-7) = 'i';
         end
 else
@@ -36,14 +36,9 @@ else
 end
     
     
-    
-    
-file = [filePath fileNumber];
-%If OS is windows, assume /data/ac1 is a mapped drive
-if ~isempty(strfind(computer, 'WIN'))              %so find
-    [~, result]=system(['cygpath -w ' file]); %windows
-    file = strtrim(result);                        %equivalent
-end
+        
+file = fullfile(filePath,fileNumber);
+
 
 fid = fopen(file);
 if fid == -1

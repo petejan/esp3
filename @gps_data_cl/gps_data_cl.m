@@ -21,7 +21,7 @@ classdef gps_data_cl <handle
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)  
+            for i=1:length(props)
                 if size(results.(props{i}),2)==1
                     obj.(props{i})=results.(props{i});
                 else
@@ -46,10 +46,17 @@ classdef gps_data_cl <handle
         
         
         function gps_data_out=concatenate_GPSData(gps_data_1,gps_data_2)
-                gps_data_out=gps_data_cl('Lat',[gps_data_1.Lat(:); gps_data_2.Lat(:)],...
-                    'Long',[gps_data_1.Long(:); gps_data_2.Long(:)],...
-                    'Time',[gps_data_1.Time(:); gps_data_2.Time(:)],...
-                    'NMEA',gps_data_1.NMEA);
+            Long_tot=[gps_data_1.Long(:); gps_data_2.Long(:)];
+            Lat_tot=[gps_data_1.Lat(:); gps_data_2.Lat(:)];
+            Time_tot=[gps_data_1.Time(:); gps_data_2.Time(:)];
+            [Time_tot_s,idx_sort]=sort(Time_tot);
+            Lat_tot_s=Lat_tot(idx_sort);
+            Long_tot_s=Long_tot(idx_sort);
+            
+            gps_data_out=gps_data_cl('Lat',Lat_tot_s,...
+                'Long',Long_tot_s,...
+                'Time',Time_tot_s,...
+                'NMEA',gps_data_1.NMEA);
         end
         
         

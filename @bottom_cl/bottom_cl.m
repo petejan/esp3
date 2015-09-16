@@ -34,7 +34,6 @@ classdef bottom_cl
 
             n_r=[bot_1.Range(:); bot_2.Range(:)];
             n_s=[bot_1.Sample_idx(:); bot_2.Sample_idx(:)];
-
             
             bot_out=bottom_cl('Origin',bot_1.Origin,...
                 'Range',n_r,...

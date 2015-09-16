@@ -31,7 +31,7 @@ while 1
         %Ping_ori=nanmin(x1,x2)+pingOffset;
         %Sample_ori=nanmin(y1,y2);
         
-        idx_pings=(nanmin(x1,x2):nanmax(x1,x2))+pingOffset+1;
+        idx_pings=(nanmin(x1,x2):nanmax(x1,x2))+pingOffset;
         idx_pings(idx_pings>PingCount)=[];
         idx_r=(nanmin(y1,y2):nanmax(y1,y2))+1;
         

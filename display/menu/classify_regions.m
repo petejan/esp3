@@ -8,7 +8,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_120,found_120]=find_freq_idx(layer,120000);
 
 if ~found_18||~found_120||~found_38
-    warning('Cannot every frequency!Pass...');
+    warning('Cannot find every frequency!Pass...');
     return;
 end
 

@@ -68,14 +68,16 @@ if ~isequal(Filename_cell, 0)
         fclose(fid);
         
         pings=unique(ping_num);
-        samples_val_real=nan(size(sample_real,1)+1,nanmax(pings)+1);
-        samples_val_imag=nan(size(sample_real,1)+1,nanmax(pings)+1);
+        samples_val_real=nan(size(sample_real,1),nanmax(pings));
+        samples_val_imag=nan(size(sample_real,1),nanmax(pings));
         
         for j=1:nanmax(pings)
             idx=(pings(j)==ping_num);
-            samples_val_real(2:end,j+1)=nansum(sample_real(:,idx),2)/nansum(idx);
-            samples_val_imag(2:end,j+1)=nansum(sample_imag(:,idx),2)/nansum(idx);
+            samples_val_real(1:end,j)=nansum(sample_real(:,idx),2)/nansum(idx);
+            samples_val_imag(1:end,j)=nansum(sample_imag(:,idx),2)/nansum(idx);
         end
+        clear sample_real sample_imag ping_num;
+        
         
         [gps_data,attitude_data]= read_n_file(fullfile(PathToFile,FileName));
         depth_factor = get_ifile_parameter(fullfile(PathToFile,FileName),'depth_factor');
@@ -110,6 +112,7 @@ if ~isequal(Filename_cell, 0)
                 'Time',Time,...
                 'Number',number,...
                 'MemapName',curr_name);
+            
 
          
          transceiver=transceiver_cl('Data',ac_data_temp,...

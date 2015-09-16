@@ -8,10 +8,12 @@ list_reg = list_regions(layer.Transceivers(idx_freq));
 idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
 cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 
+
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
     sv_disp=active_reg.Output.Sv_mean;
     %sv_disp(sv_disp<cax(1))=nan;
+    tt=sprintf('File: %s Region: %.0f',layer.Filename,active_reg.ID);
     if size(sv_disp,1)>1&&size(sv_disp,2)>1
         figure();
         subplot(2,1,1)
@@ -24,23 +26,22 @@ if ~isempty(list_reg)
         colormap jet;
         axis ij
         hold on;
+        title(tt);
         subplot(2,1,2)
-        plot(nanmean(active_reg.Output.Sv_mean_lin),nanmean(active_reg.Output.y_node,2),'r',nanmean(active_reg.Output.Sv_mean_lin_esp2),nanmean(active_reg.Output.y_node,2));
+        plot(nanmean(active_reg.Output.Sv_mean_esp2,2),nanmean(active_reg.Output.y_node,2),'r');
         grid on;
         xlabel('Sv mean')
         ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
-        legend('Standard','Esp2')
-        %axis ij;
+        axis ij;
         grid on;
     else
         figure();
-        plot(active_reg.Output.y_node,active_reg.Output.Sv_mean_lin,'r',active_reg.Output.y_node,active_reg.Output.Sv_mean_lin_esp2);
+        plot(active_reg.Output.y_node,active_reg.Output.Sv_mean_lin_esp2,'r');
         grid on;
         ylabel('Sv mean')
         xlabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
-       %axis ij;
-       legend('Standard','Esp2')
         grid on;
+        title(tt);
     end
 else
     return

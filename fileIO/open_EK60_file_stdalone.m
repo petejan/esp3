@@ -59,16 +59,20 @@ if ~isequal(Filename_cell, 0)
                 list_freq_str=[list_freq_str num2str(data_temp.config(ki).frequency,'%.0f')];
             end
             
-            if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
-                vec_freq_tot=vec_freq_temp;
-                [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load','InitialValue',1:length(vec_freq_tot));
-            end
-            
-            if val==0||isempty(select)
-                continue;
+            if header_temp.transceivercount>1
+                if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
+                    vec_freq_tot=vec_freq_temp;
+                    [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load','InitialValue',1:length(vec_freq_tot));
+                end
+                if val==0||isempty(select)
+                    continue;
+                else
+                    vec_freq=vec_freq_tot(select);
+                end
             else
-                vec_freq=vec_freq_tot(select);
+                vec_freq=[];
             end
+
         else
             AllowModeChange=false;
             vec_freq=vec_freq_init;

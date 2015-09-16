@@ -110,7 +110,7 @@ classdef transceiver_cl < handle
                     trans_out(i).add_region(regions_1);
                     
                     for ir2=1:length(regions_2)
-                        regions_2.Idx_pings(ir2)=regions_2.Idx_pings(ir2)+trans_1(i).Data.Number(end);           
+                        regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+trans_1(i).Data.Number(end);           
                     end
                      trans_out(i).add_region(regions_2);
                     
@@ -157,6 +157,10 @@ classdef transceiver_cl < handle
                     end
                 end
             end
+        end
+        
+        function rm_all_region(obj)
+            obj.Regions=[];
         end
         
         function rm_region(obj,name)

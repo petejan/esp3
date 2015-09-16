@@ -71,13 +71,19 @@ params_obj.FrequencyEnd=38000;
 params_obj.FrequencyStart=38000;
 params_obj.PulseForm=[];
 
-if isempty(get_ifile_parameter(ifile,'transmit_pulse_length'))
-params_obj.PulseLength=get_ifile_parameter(ifile,'depth_factor')/get_ifile_parameter(ifile,'sound_speed')*4;
+if isempty(get_ifile_parameter(ifile,'sound_speed'))
+    soundspeed=1500;
 else
-    params_obj.PulseLength=get_ifile_parameter(ifile,'depth_factor')/get_ifile_parameter(ifile,'sound_speed')*get_ifile_parameter(ifile,'transmit_pulse_length');
+    soundspeed=get_ifile_parameter(ifile,'sound_speed');
 end
 
-params_obj.SampleInterval=get_ifile_parameter(ifile,'depth_factor')/get_ifile_parameter(ifile,'sound_speed');
+if isempty(get_ifile_parameter(ifile,'transmit_pulse_length'))
+    params_obj.PulseLength=1/get_ifile_parameter(ifile,'depth_factor')/soundspeed*4;
+else
+    params_obj.PulseLength=1/get_ifile_parameter(ifile,'depth_factor')/soundspeed*get_ifile_parameter(ifile,'transmit_pulse_length'); 
+end
+
+params_obj.SampleInterval=1/get_ifile_parameter(ifile,'depth_factor')/soundspeed;
 params_obj.Slope=[];
 params_obj.TransducerDepth=0;
 params_obj.TransmitPower=[];

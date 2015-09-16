@@ -28,13 +28,13 @@ denoise_tab_comp.denoise_tab=uitab(algo_tab_panel,'Title','Denoise');
 pos=create_pos_algo();
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','Horizontal Filter (nb pings)','units','normalized','Position',pos{1,1});
-denoise_tab_comp.HorzFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',1,'Max',nanmin(nb_pings/2,100),'Value',nanmin(algo_denoise_var.HorzFilt,nb_pings/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
+denoise_tab_comp.HorzFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',1,'Max',ceil(nb_pings/2),'Value',nanmin(algo_denoise_var.HorzFilt,nb_pings/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
 denoise_tab_comp.HorzFilt_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(denoise_tab_comp.HorzFilt_sl,'Value'),'%.0f'));
 set(denoise_tab_comp.HorzFilt_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.HorzFilt_ed,'%.0f'});
 set(denoise_tab_comp.HorzFilt_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.HorzFilt_sl,'%.0f'});
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','Vertical Filter (m)','units','normalized','Position',pos{2,1});
-denoise_tab_comp.VertFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',0,'Max',nanmin(range(end)/2,100),'Value',nanmin(algo_denoise_var.VertFilt/f_s_sig*c/2,range(end)/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
+denoise_tab_comp.VertFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',0,'Max',range(end)/2,'Value',nanmin(algo_denoise_var.VertFilt/f_s_sig*c/2,range(end)/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
 denoise_tab_comp.VertFilt_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(denoise_tab_comp.VertFilt_sl,'Value'),'%.1f'));
 set(denoise_tab_comp.VertFilt_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.VertFilt_ed,'%.0f'});
 set(denoise_tab_comp.VertFilt_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.VertFilt_sl,'%.0f'});

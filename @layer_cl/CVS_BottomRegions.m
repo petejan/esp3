@@ -24,6 +24,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
     [idx_freq,found]=find_freq_idx(layer,38000);
     if found>0
         layer.Transceivers(idx_freq).setBottomIdxBad(bot,IdxBad);
+        layer.Transceivers(idx_freq).Regions=[];
         layer.Transceivers(idx_freq).add_region(regions);
     end
 end

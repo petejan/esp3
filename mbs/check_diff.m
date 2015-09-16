@@ -56,10 +56,23 @@ for i = 4:length(fn);
             continue;
         end
         
-        a = evmbsdata.transect_summary(1,j).(fn{i});
-        b = esp2mbsdata.transect_summary(1,trans_num).(fn{i});
-        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
+        a(j) = evmbsdata.transect_summary(1,j).(fn{i});
+        b(j) = esp2mbsdata.transect_summary(1,trans_num).(fn{i});
+
+        c(j) = nansum((a(j)-b(j)))./nansum(b(j))*100;
     end
+    
+    if strcmp(fn{i},'vbscf')
+        figure(415564);
+        title(fn{i})
+        plot(a);hold on;
+        plot(b);
+        grid on;
+        legend('Matlab','Esp2');
+        pause(0.5);
+        hold off;
+    end
+    
     c = nanmean((c));
     if abs(c) < 0.001
         fprintf(1, 'Transect Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});

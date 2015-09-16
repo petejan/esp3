@@ -1,11 +1,11 @@
- function readMbsScript(mbs,varargin)  % Reads an MBS script (either
+ function readMbsScript(mbs,varargin) 
             workingPath = pwd;           
             if nargin == 2
                     mbsId = varargin{1};
                     rev = [];
 
             elseif nargin == 3
-                if  ischar(varargin{1})      % get the right one for mbs id and revision number
+                if  ischar(varargin{1})      
                     mbsId = varargin{1};
                     rev = varargin{2};
                 else
@@ -15,17 +15,16 @@
             end
             
             %% checkout mbs script from CVS
-            if exist('mbsId')
                 if min([isstrprop(mbsId(1:end-14) , 'alpha'), isstrprop(mbsId(end-13:end) , 'digit')]) ~= 1;  % check if string is of MBS ID type
                     mbsId = [];
                     error('MbsID is of the wrong format');
                 else     % checkout mbs spec
-                    outDir = [get_tempname '/'];
+                    outDir = tempname;
                     %run command - make output directory for cvs
                     if ~mkdir(outDir)
                         error('Unable to create temporary cvs directory');
                     end
-                    fileName = [outDir '/mbs/' mbsId];
+                    fileName = fullfile(outDir,'mbs',mbsId);
   
                     if isempty(rev); % Get latest revision
                         command = ['cvs -d ' getCVSRepository ' checkout mbs/' mbsId]; 
@@ -41,8 +40,7 @@
                     end
                     cd(workingPath);
                 end
-            end
-            
+
             
             %% Read mbs file
             mbs.input.Script = fileName;
@@ -85,23 +83,21 @@
                                             if isempty(tline); tline = fgetl(fid); continue; end    % skip empty rows
                                             if strncmp(tline,'#',1); tline = fgetl(fid); continue; end;     % ignore commented lines
                                             if  ~isempty(strfind(tline,'snapshot')) || ~isempty(strfind(tline,'stratum')) || ~isempty(strfind(tline,'transect')); break; end
-                                            mbs.input.data.snapshot(i,1) = sn;
-                                            mbs.input.data.stratum{i,1} = st;
-                                            mbs.input.data.transect(i,1) = t;
-                                            [tok,tline] = strtok(tline,' ');
-                                            [mbs.input.data.dfileDir{i,1},tmp] = fileparts(tok);
-                                            mbs.input.data.transducer{i,1} = mbs.input.data.dfileDir{i}(9:end);
-                                            mbs.input.data.dfile(i,1) = str2double(tmp(2:end));
-                                            [tok,tline] = strtok(tline, ' ');
-                                            mbs.input.data.channel(i,1) = str2double(tok);
-                                            [tok,tline] = strtok(tline, ' ');
-                                            mbs.input.data.calRev(i,1) = str2double(tok);
-                                            [tok,tline] = strtok(tline, ' ');
-                                            mbs.input.data.BotRev(i,1) = str2double(tok);
-                                            [tok,tline] = strtok(tline, ' ');
-                                            mbs.input.data.RegRev(i,1) = str2double(tok);
-                                            [tok,~] = strtok(tline, ' ');
-                                            mbs.input.data.Reg{i,1} = tok;
+                                            mbs.input.data.snapshot(i) = sn;
+                                            mbs.input.data.stratum{i} = st;
+                                            mbs.input.data.transect(i) = t;
+
+                                            out=textscan(tline,'%s %.0f %s %s %s %s');
+                                            
+                                            [mbs.input.data.dfileDir{i},tmp] = fileparts(out{1}{1});
+                                            idx_slash=strfind(mbs.input.data.dfileDir{i},'/');
+                                            mbs.input.data.transducer{i} = mbs.input.data.dfileDir{i}(idx_slash(end)+1:end);
+                                            mbs.input.data.dfile(i) = str2double(tmp(2:end));
+                                            mbs.input.data.channel(i) = out{2};
+                                            mbs.input.data.calRev{i} = out{3}{1};
+                                            mbs.input.data.BotRev{i} = out{4}{1};
+                                            mbs.input.data.RegRev{i} = out{5}{1};
+                                            mbs.input.data.Reg{i} = out{6}{1};
                                             tline = fgetl(fid);
                                             i = i+1;
                                         end

@@ -11,10 +11,9 @@ if length(idx_trans) > length(transects)
 end
 
 
-transects=transects(idx_trans);
-transects(abs([1;diff(transects)])==0)=[];
+idx_transects=transects(idx_trans);
+idx_transects(abs([1 diff(idx_transects)])==0)=[];
 
-idx_transects =transects;
 
 mbs.output.regionSum.data = [] ;
 mbs.output.regionSumAbscf.data = [];
@@ -86,8 +85,15 @@ for ii=1:length(idx_transects)
             if isempty(idx_reg)
                 idx_reg=1;
             end
-                
-            Transceiver.add_region(mbs.input.data.regions{idx_transect_files(i)}(idx_reg));
+            reg_curr=mbs.input.data.regions{idx_transect_files(i)}(idx_reg);
+            switch type
+                case 'raw'
+                    reg_curr.Idx_pings=reg_curr.Idx_pings+1;
+                    reg_curr.Idx_r=reg_curr.Idx_r+1;
+                case 'crest'
+            end
+            Transceiver.add_region(reg_curr);
+            gps=Transceiver.GPSDataPing;
             
             [regx,~] = Transceiver.find_reg_idx_id(reg.id); % find according region
             
@@ -116,16 +122,19 @@ for ii=1:length(idx_transects)
                     if isnan(reg.finishDepth); finish_d = 0; else finish_d = reg.finishDepth; end
             end
             
-            dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;                       % get distance
-            %dist = m_lldist([regCellInt.Lon_S(1) regCellInt.Lon_E(end)],[regCellInt.Lat_S(1) regCellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
-   
+            %dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;    
+            %dist=nansum(m_lldist(gps.Long(reg_curr.Idx_pings),gps.Lat(reg_curr.Idx_pings))/1.852);% get distance
+            %av_speed=nanmean(m_lldist(gps.Long(reg_curr.Idx_pings),gps.Lat(reg_curr.Idx_pings))./diff(gps.Time(reg_curr.Idx_pings)*24)/1.852);
+            
+            dist = m_lldist([gps.Long(reg_curr.Idx_pings(1)) gps.Long(reg_curr.Idx_pings(end))],[gps.Lat(reg_curr.Idx_pings(1)) gps.Lat(reg_curr.Idx_pings(end))])/1.852;% get distance as esp2 does... Straigth line estimate 
             time_s = regCellInt.Time_S(1);
-            time_e = regCellInt.Time_E(end);
+            time_e = regCellInt.Time_E(end);            
+            timediff = (time_e-time_s)*24;        
+            av_speed=dist/timediff;
             
-            timediff = (time_e-time_s)*24;
             regCellIntSub = getCellIntSubSet(regCellInt, reg, j, refType);
-            
-            
+            regCellIntSub.Lon_S(regCellIntSub.Lon_S>180)=regCellIntSub.Lon_S(regCellIntSub.Lon_S>180)-360;
+           
             %% Region Summary (4th Mbs output Block)
             rs{j,1} = mbs.input.data.snapshot(idx_transect_files(i));
             rs{j,2} = mbs.input.data.stratum{idx_transect_files(i)};
@@ -139,7 +148,7 @@ for ii=1:length(idx_transects)
             good_bot=Transceiver.Bottom.Range(ix_good);
             rs{j,10} = nanmean(good_bot);% find bottom pings in good pings and only take mean from good ones
             rs{j,11} = finish_d;
-            rs{j,12} = dist/timediff;
+            rs{j,12} = av_speed;
             rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*~isnan(regCellIntSub.Thickness_esp2)*reg_curr.Cell_h));%Vbsc    
             %rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*abs(regCellIntSub.Layer_depth_max-regCellIntSub.Layer_depth_max)));%Vbsc    
             rs{j,14} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nanmean(regCellIntSub.Nb_good_pings));%Abscf
@@ -191,70 +200,49 @@ for ii=1:length(idx_transects)
         mbs.output.regionSumVbscf.data =  [mbs.output.regionSumVbscf.data  ; rsv];
         
     end
-    layer_tot=shuffle_layers(layer_cl,layer,0,1);
+    
+    idx_freq=find_freq_idx(layer(1),38000);
+    gps_tot=layer(1).Transceivers(idx_freq).GPSDataPing;
+    bot_tot=layer(1).Transceivers(idx_freq).Bottom;
+    IdxBad_tot=layer(1).Transceivers(idx_freq).IdxBad;
+    if length(layer)>1
+        for i=2:length(layer)
+            idx_freq=find_freq_idx(layer(i),38000);           
+            if layer(i).Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
+                bot_tot=concatenate_Bottom(bot_tot,layer(i).Transceivers(idx_freq).Bottom);
+                IdxBad_tot=[IdxBad_tot(:) ; layer(i).Transceivers(idx_freq).IdxBad(:)];
+            else
+                bot_tot=concatenate_Bottom(layer(i).Transceivers(idx_freq).Bottom,bot_tot);
+                IdxBad_tot=[ layer(i).Transceivers(idx_freq).IdxBad(:) ; IdxBad_tot(:)];
+            end
+            gps_tot=concatenate_GPSData(gps_tot,layer(i).Transceivers(idx_freq).GPSDataPing);
+        end
+    end
+    layer.delete_layers([]);
     clear layer;
     
-
+    gps_tot.Long(gps_tot.Long>180)=gps_tot.Long(gps_tot.Long>180)-360;
     
-    if length(layer_tot)>1
-        layer_tmp=layer_tot(1);
-        for ik=1:length(layer_tot)-1
-            if layer_tmp.Transceivers(1).Data.Time(end)<=layer_tot(ik+1).Transceivers(1).Data.Time(1)
-               layer_tmp=concatenate_Layer(layer_tmp,layer_tot(ik+1));
-            else
-                 layer_tmp=concatenate_Layer(layer_tot(ik+1),layer_tmp);
-            end
-        end
-        delete_layers(layer_tot,[]);
-        layer_tot=layer_tmp;
-    end
-    
-    
-    Transceiver =layer_tot.Transceivers(idx_freq);
     %% File Summary (part of 2nd Mbs output Block)
     % We need to export the Integration by Cell for the whole
     % Echogram to get the spatial information. Abscf and Vbscf
     % are calculated by taking sum of the region Echo Integral
-    
-    range=double(Transceiver.Data.Range);
-    samples=(1:length(range))';
-    pings=double(Transceiver.Data.Number);
-    
-    idx_pings=1:length(pings);
-    idx_good_pings=setdiff(idx_pings,Transceiver.IdxBad);
-    idx_r=samples;
-    
+  
+    idx_pings=1:length(gps_tot.Time);
+    idx_good_pings=setdiff(idx_pings,IdxBad_tot);
     mbsVS = str2double(mbs.input.data.vertical_slice_size);
-    
-    reg_temp=region_cl(...
-        'ID',999,...
-        'Name','All Echogramm',...
-        'Type','Data',...
-        'Idx_pings',1:end_num_regs(end),...
-        'Idx_r',idx_r,...
-        'Shape','Rectangular',...
-        'Reference','Surface',...
-        'Cell_w',mbsVS,...
-        'Cell_w_unit','pings',...
-        'Cell_h',9999,...
-        'Cell_h_unit','meters',...
-        'Output',[]);
-    
-
-   Transceiver.add_region(reg_temp);
-   [regx,~] = Transceiver.find_reg_idx_id(999); % find according region   
-   reg_curr=Transceiver.Regions(regx(1));
-    
-    CellInt = reg_curr.Output;
-    
-    %dist = (CellInt.VL_E(end)-CellInt.VL_S(1))/1e3; 
-    dist_tot = m_lldist([CellInt.Lon_S(1) CellInt.Lon_E(end)],[CellInt.Lat_S(1) CellInt.Lat_E(end)])/1.852;% get distance as esp2 does... Straigth line estimate
-    time_s_tot = CellInt.Time_S(1);
-    time_e_tot = CellInt.Time_E(end); 
-    timediff_tot = (time_e_tot-time_s_tot)*24;  
+       
+    dist_tot = m_lldist([gps_tot.Long(1) gps_tot.Long(end)],[gps_tot.Lat(1) gps_tot.Lat(end)])/1.852;% get distance as esp2 does... Straigth line estimate 
+    time_s_tot = gps_tot.Time(1);
+    time_e_tot = gps_tot.Time(end); 
+    timediff_tot = (time_e_tot-time_s_tot)*24; 
     av_speed_tot=dist_tot/timediff_tot;
     
-    good_bot_tot=nanmean(Transceiver.Bottom.Range(idx_good_pings));
+%     dist_tot=nansum(m_lldist(gps_tot.Long,gps_tot.Lat)/1.852);
+%     av_speed_tot=nanmean(m_lldist(gps_tot.Long,gps_tot.Lat)./diff(gps_tot.Time*24)/1.852);
+%     
+    
+    good_bot_tot=nanmean(bot_tot.Range(idx_good_pings));
 
     
     %Will be used for Transect Summary
@@ -265,10 +253,10 @@ for ii=1:length(idx_transects)
     fs{ii,7} = nanmean(good_bot_tot); % mean_d
     fs{ii,8}= length(idx_good_pings); % pings %
     fs{ii,9} = av_speed_tot; % av_speed
-    fs{ii,10} = CellInt.Lat_S(1); % start_lat
-    fs{ii,11} = CellInt.Lon_S(1); % start_lon
-    fs{ii,12} = CellInt.Lat_E(end); % finish_lat
-    fs{ii,13} = CellInt.Lon_E(end); % finish_lon
+    fs{ii,10} = gps_tot.Lat(1); % start_lat
+    fs{ii,11} = gps_tot.Long(1); % start_lon
+    fs{ii,12} = gps_tot.Lat(end); % finish_lat
+    fs{ii,13} = gps_tot.Long(end); % finish_lon
     fs{ii,14} = nansum(eint); % Echo Integral
     fs{ii,15} = nansum(fs{ii,8}.*fs{ii,7}); % mean bottom depth * pings
     fs{ii,5} = fs{ii,14}/fs{ii,15}; % vbscf according to Esp2 formula
@@ -280,15 +268,18 @@ for ii=1:length(idx_transects)
     % get spatial information. The calculation of abscf is done
     % by summing all region abscf (rsa) for each slice (bin)
     
-    numSlices = length(CellInt.Ping_S); % num_slices
-    binStart = CellInt.Ping_S';
-    binEnd = CellInt.Ping_E';
+    
+    bins=unique([1:mbsVS:idx_pings(end) idx_pings(end)]);
+%     bins=unique([1:mbsVS:end_num_regs(end) end_num_regs(end)]);
+    binStart = [1 bins(2:end-1)-1];
+    binEnd = bins(2:end);
+    numSlices = length(binStart); % num_slices
     
     slice_abscf=zeros(1,length(binStart));
     slice_abscf_ori=zeros(1,length(binStart));
     nb_good_pings=zeros(1,length(binStart));
-t_start={};
-t_end={};
+    t_start={};
+    t_end={};
     for i=1:length(idx_transect_files)
         reg = getRegSpecFromRegString(mbs.input.data.Reg{idx_transect_files(i)});
         rsa=rsa_temp{i};
@@ -316,14 +307,11 @@ t_end={};
     sfs{ii,3} = mbs.input.data.transect(idx_transect_files(i));
     sfs{ii,4} = mbsVS; % slice_size
     sfs{ii,5} = numSlices; % num_slices
-    sfs{ii,6} = CellInt.Lat_S'; % latitude
-    sfs{ii,7} = CellInt.Lon_S'; % longitude
+    sfs{ii,6} = gps_tot.Lat(binStart); % latitude
+    sfs{ii,7} = gps_tot.Long(binStart); % longitude
     sfs{ii,8} = slice_abscf; % slice_abscf
     
-    
     clear slice_abscf;
-    layer_tot.delete();
-    clear layer_tot;
     
 end
 mbs.output.temp.fileSum.data =  fs;
