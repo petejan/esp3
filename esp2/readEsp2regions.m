@@ -5,9 +5,9 @@ if fid==-1
     Regions=[];
     return;
 end
-fgetl(fid);
-fgetl(fid)
-fgetl(fid);
+u=fgetl(fid);
+uu=fgetl(fid);
+uuu=fgetl(fid);
 PingCount = str2double(fgetl(fid));
 RegionCount = str2double(fgetl(fid));
 i =0;

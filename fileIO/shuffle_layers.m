@@ -127,9 +127,9 @@ if multi_layer==0
                     layer_conc=curr_layers(1);
                     for kk=1:length(curr_layers)-1
                         if layer_conc.Transceivers(1).Data.Time(end)<=curr_layers(kk+1).Transceivers(1).Data.Time(end)
-                            layer_conc=concatenate_Layer(layer_conc,curr_layers(kk+1));
+                            layer_conc=concatenate_layers(layer_conc,curr_layers(kk+1));
                         else
-                            layer_conc=concatenate_Layer(curr_layers(kk+1),layer_conc);
+                            layer_conc=concatenate_layers(curr_layers(kk+1),layer_conc);
                         end
                         
                     end

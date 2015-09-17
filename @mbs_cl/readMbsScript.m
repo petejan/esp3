@@ -21,7 +21,10 @@ else
     else
         i = 1;
         while 1
-           
+            tline = fgetl(fid);
+            if ~ischar(tline)
+                break;
+            end              % end of file
             if strncmp(strrep(tline,' ',''),'#',1); continue; end;     % ignore commented lines
             if strfind(tline,'snapshot')
                 sn = str2double(tline(strfind(tline,':')+2:end));
@@ -78,7 +81,7 @@ else
                 if  ~isnan(str2double(value))
                     value=str2double(value);
                 end
-                if  ~isempty(value); 
+                if  ~isempty(value);
                     mbs.input.data.(name) =value;  % save mbs overall specifications
                 else
                     mbs.input.data.(name) ='';  % save mbs overall specifications
