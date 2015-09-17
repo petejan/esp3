@@ -118,11 +118,9 @@
                     end
                     disp('read mbs Script and saved in mbs.input.data')
                     fclose(fid);
-                    if ~isempty(strfind(computer, 'WIN')) %cygwin cvs uses linux paths
-                        [~, result]=system(['cygpath -u ' outDir]); %so convert outDir
-                        outDir = result;
-                    end
-                    system(['rm -Rf ' outDir]); %Remove temp CVS dir
+
+                   rmdir(outDir,'s'); %Remove temp CVS dir
+
                 end
             end
         end

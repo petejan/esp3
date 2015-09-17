@@ -249,6 +249,3 @@ classdef layer_cl < handle
     end
     
 end
-
-
-

@@ -7,8 +7,9 @@ function repositoryName = getCVSRepository
 if ~isempty(strfind(computer, 'LNX'))          %Linux
     repositoryName = '/home/acdc/esp2files';
 elseif ~isempty(strfind(computer, 'WIN'))      %Windows
-    s=license('inuse','MATLAB');
-    repositoryName = [':ext:' s.user '@wellacoustic:/home/acdc/esp2files'];
+%     s=license('inuse','MATLAB');
+%     repositoryName = [':ext:' s.user '@wellacoustic:/home/acdc/esp2files'];
+    repositoryName = ':local:Z:\';
 else
     error('Unable to determine cvs repository');
 end

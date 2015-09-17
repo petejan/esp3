@@ -1,7 +1,13 @@
 function Regions = readEsp2regions(rfile,pingOffset)
 
 fid = fopen(rfile, 'r');
-eval(repmat('fgetl(fid);',1,3));
+if fid==-1
+    Regions=[];
+    return;
+end
+fgetl(fid);
+fgetl(fid)
+fgetl(fid);
 PingCount = str2double(fgetl(fid));
 RegionCount = str2double(fgetl(fid));
 i =0;

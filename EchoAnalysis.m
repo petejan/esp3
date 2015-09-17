@@ -123,5 +123,6 @@ addpath(genpath(fullfile([path 'general'])));
 addpath(genpath(fullfile([path 'mapping'])));
 addpath(genpath(fullfile([path 'mbs'])));
 addpath(genpath(fullfile([path 'signal_processing'])));
+addpath(genpath(fullfile([path 'external_toolboxes'])));
 end
 

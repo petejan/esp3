@@ -9,17 +9,29 @@ end
 
 if ~isempty(PathToFile)&&~isempty(FileName)
     
-    idx_str=strfind(PathToFile,':');
-    linuxFilePath=fullfile('/data/ac1/',PathToFile(idx_str(1)+1:end));
-    linuxFilePath=strrep(linuxFilePath, '\', '/');
+%     idx_str=strfind(PathToFile,':');
+%     linuxFilePath=fullfile('/data/ac1/',PathToFile(idx_str(1)+1:end));
+%     linuxFilePath=strrep(linuxFilePath, '\', '/');
     ifileInfo = get_ifile_info(PathToFile,str2double(FileName(2:end)));
     RawFilename=ifileInfo.rawFileName;
-    voyage=RawFilename(1:7);
+    if ~isempty(RawFilename)
+        voyage=RawFilename(1:7);
+    else
+        idx_slash=findstr(PathToFile,'\');
+        if length(idx_slash)>=2
+        voyage=PathToFile(idx_slash(1)+1:idx_slash(2)-1);
+        else
+           warning('cannot find voyage name here...');
+           return;
+        end
+    end
+    
     display(['converting bottom and bad pings for dfile ' FileName]);
-    [IdxBad,bot,~]= get_bottom_from_esp2(linuxFilePath,FileName,voyage);
- 
+    [IdxBad,bot,~]= get_bottom_from_esp2(PathToFile,FileName,voyage);
+
     display(['converting regions for dfile ' FileName]);
-    regions = get_regions_from_esp2(linuxFilePath,FileName,voyage);
+    regions = get_regions_from_esp2(PathToFile,FileName,voyage);
+
  
     [idx_freq,found]=find_freq_idx(layer,38000);
     if found>0
