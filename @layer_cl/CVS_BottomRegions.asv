@@ -10,8 +10,8 @@ addParameter(p,'RegCVS',1);
 
 parse(p,layer,varargin{:});
 
-bot_cvs=p.Results.BotCVS;
-reg_cvs=p.Results.RegCVS;
+bot_cvs
+reg_cvs=
 
 
 if strcmp(layer.Filetype,'CREST')

@@ -1,17 +1,8 @@
 function readMbsScript(mbs,fileName)
 
+
 %% Read mbs file
 mbs.input.Script = fileName;
-[~,MbsId]=fileparts(fileName);
-
-mbs.input.data.MbsId=MbsId;
-mbs.input.data.title='';
-mbs.input.data.main_species='';
-mbs.input.data.voyage='';
-mbs.input.data.areas='';
-mbs.input.data.author='';
-mbs.input.data.created='';
-
 if ~exist(fileName,'file');
     error([fileName ' does not exist']);
 else
@@ -78,7 +69,7 @@ else
                 if  ~isnan(str2double(value))
                     value=str2double(value);
                 end
-                if  ~isempty(value); 
+                if  ~isempty(value); %value = str2double(value); % convert to number if it's one
                     mbs.input.data.(name) =value;  % save mbs overall specifications
                 else
                     mbs.input.data.(name) ='';  % save mbs overall specifications

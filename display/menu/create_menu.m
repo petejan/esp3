@@ -23,14 +23,23 @@ main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@s
 
 mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
 reg_tools=uimenu(mhhh,'Label','Regions');
+
 curves_tools=uimenu(mhhh,'Label','Curves');
 track_tools=uimenu(mhhh,'Label','Track');
-
 
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions,main_figure});
-uimenu(reg_tools,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
+
+
+mcvs = uimenu(main_figure,'Label','CVS','Tag','menucvs');
+uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
+uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_callback,main_figure});
+uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
+uimenu(mcvs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
+
+
+
 
 uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
 uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});

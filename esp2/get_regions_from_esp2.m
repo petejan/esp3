@@ -55,10 +55,7 @@ if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot
     return;
 end
 
-
-
 rFilePath = fullfile(outDir,remain_str);
-
 
 %% Read rFile and save region information in Regions
 regions = readEsp2regions(fullfile(rFilePath,rFileName),1);
