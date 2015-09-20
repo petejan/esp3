@@ -29,8 +29,10 @@ end
 idx_temp=strfind(temp_path,'\');
 app_path.main=temp_path(1:idx_temp(end));
 app_path.data=fullfile(tempdir,'data_echo');
-app_path.cal=[];
-app_path.cal_eba=[];
+app_path.cvs_root=':local:Z:\';
+app_path.data_root='X:\';
+app_path.cal='';
+app_path.cal_eba='';
 
 if ~isdeployed
     update_path(app_path.main);

@@ -17,8 +17,8 @@ i0=abs(length(bot_sple)-length(pings));
 if length(bot_sple)>length(pings)
     new_bot_sple=bot_sple(1:end-i0);
 elseif length(bot_sple)<length(pings)
-    new_bot_sple(1:end-i0)=bot_sple;
-    IdxBad=IdxBad+i0;
+    new_bot_sple(2:length(bot_sple)+1)=bot_sple;
+    IdxBad=IdxBad+1;
 else
     new_bot_sple=bot_sple;
 end

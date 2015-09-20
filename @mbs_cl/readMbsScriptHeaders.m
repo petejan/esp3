@@ -12,7 +12,7 @@ mbs.input.data.voyage='';
 mbs.input.data.areas='';
 mbs.input.data.author='';
 mbs.input.data.created='';
-
+mbs.input.data.vertical_slice_size=500;
 
 
 if ~exist(fileName,'file');

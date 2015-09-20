@@ -1,0 +1,36 @@
+function svCorr=CVS_CalRevs(cvsroot,varargin)
+
+p = inputParser;
+
+addRequired(p,'cvsroot',@ischar);
+addParameter(p,'CalRev',1);
+
+parse(p,cvsroot,varargin{:});
+
+CalRev=p.Results.CalRev;
+
+workingPath = pwd;
+outDir = tempname; %Make temp directory for calibration rev
+%run command - make output directory for cvs
+if ~mkdir(outDir)
+    error('Unable to create temporary cvs directory');
+end
+%% get calibration rev - allowing for different revs in mbs script
+display(['Extracting calibration revision ' CalRev]);
+command = ['cvs -d ' getCVSRepository ' checkout -r ' CalRev ' system'];
+[~ , output] = system(command,'-echo');
+
+if  ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))
+    svCorr = NaN;
+else
+    cd('system');
+    fid = fopen('calibration', 'r+');
+    tline = fgetl(fid);
+    ind = strfind(tline, ' ');
+    svCorr = str2double(tline(ind(3)+1:end));  % read sv correction
+    fclose(fid);
+end
+
+cd(workingPath)
+
+rmdir(outDir,'s'); %Remove temp CVS dir

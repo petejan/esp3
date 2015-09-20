@@ -1,10 +1,10 @@
-function [regions,rawFileName] = get_regions_from_esp2(iFilePath, iFileName, voyage,varargin)
+function [regions,rawFileName] = get_regions_from_esp2(iFilePath,iFileName,voyage,cvsroot,varargin)
 
 
 switch nargin
-    case 3                
+    case 4                
         rev = [];
-    case 4       
+    case 5       
         rev = varargin{1};
 end
 
@@ -39,9 +39,9 @@ work_path=pwd;
 
 
 if isempty(rev)
-    command = ['cvs -q -d ' getCVSRepository ' checkout ' strrep(fullfile(remain_str,rFileName),'\','/')];
+    command = ['cvs -q -d ' cvsroot ' checkout ' strrep(fullfile(remain_str,rFileName),'\','/')];
 else
-    command = ['cvs -q -d ' getCVSRepository ' checkout ' '-r ' rev ' ' strrep(fullfile(remain_str,rFileName),'\','/')];
+    command = ['cvs -q -d ' cvsroot ' checkout ' '-r ' rev ' ' strrep(fullfile(remain_str,rFileName),'\','/')];
 end
 
 %run command - export bottom from cvs

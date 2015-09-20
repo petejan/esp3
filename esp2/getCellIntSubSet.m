@@ -1,37 +1,37 @@
-function regCellInSubSet = getCellIntSubSet(regCellInt, reg, j, refType)
+function regCellInSubSet = getCellIntSubSet(regCellInt, reg, refType)
 
 sd = ones(size(regCellInt.Layer_depth_min));
 fd = ones(size(regCellInt.Layer_depth_max));
 if refType == 'b'
     for i = 1:size(regCellInt.Sv_mean,2)
-        startBorder = nanmax(regCellInt.y_node(:,i)-regCellInt.height(:,i)/2)-reg.startDepth(j);
-        finishBorder = nanmax(regCellInt.y_node(:,i)+regCellInt.height(:,i)/2)-reg.finishDepth(j);
-        if ~isnan(reg.startDepth(j));
+        startBorder = nanmax(regCellInt.y_node(:,i)-regCellInt.height(:,i)/2)-reg.startDepth;
+        finishBorder = nanmax(regCellInt.y_node(:,i)+regCellInt.height(:,i)/2)-reg.finishDepth;
+        if ~isnan(reg.startDepth);
             sd(:,i) = regCellInt.y_node(:,i)-regCellInt.height(:,i)/2 <= startBorder;
         end
-        if ~isnan(reg.finishDepth(j));
+        if ~isnan(reg.finishDepth);
             fd(:,i) = regCellInt.y_node(:,i)+regCellInt.height(:,i)/2 > finishBorder;
         end
     end
 else
     for i = 1:size(regCellInt.Sv_mean,2)
-        if ~isnan(reg.startDepth(j));
-            sd(:,i) = regCellInt.y_node(:,i)-regCellInt.height(:,i)/2 >= reg.startDepth(j);
+        if ~isnan(reg.startDepth);
+            sd(:,i) = regCellInt.y_node(:,i)-regCellInt.height(:,i)/2 >= reg.startDepth;
         end
-        if ~isnan(reg.finishDepth(j));
-            sd(:,i) = regCellInt.y_node(:,i)+regCellInt.height(:,i)/2 < reg.finishDepth(j);
+        if ~isnan(reg.finishDepth);
+            sd(:,i) = regCellInt.y_node(:,i)+regCellInt.height(:,i)/2 < reg.finishDepth;
         end
     end
 end
 
 ss = ones(size(regCellInt.Interval));
-if ~isnan(reg.startSlice(j));
-    ss = regCellInt.Interval >= reg.startSlice(j);
+if ~isnan(reg.startSlice);
+    ss = regCellInt.Interval >= reg.startSlice;
 end
 
 fs = ones(size(regCellInt.Interval));
-if ~isnan(reg.finishSlice(j));
-    fs = regCellInt.Interval <= reg.finishSlice(j);   
+if ~isnan(reg.finishSlice);
+    fs = regCellInt.Interval <= reg.finishSlice;   
 end
 ix = sd == 1 & fd == 1 & ss == 1 & fs == 1;
 

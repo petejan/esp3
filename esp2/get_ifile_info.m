@@ -101,9 +101,56 @@ while 1
     
     
     if strfind(tline,'# convertEk60ToCrest')
-        e = strfind(tline,'raw');
-        ifileInfo.rawFileName = tline(e-26:e+2);
-    end
+
+        expr='(-r).*(\w+).*(raw)';
+        subline=regexp(tline,expr,'match');
+        subline=subline{1};
+        idx_str=strfind(subline,' ');        
+        idx_str_2=union(strfind(subline,'\'),strfind(subline,'/'));   
+        
+        if ~isempty(idx_str)
+            ifileInfo.rawFileName = subline(idx_str_2(end)+1:end);
+        end
+        if ~isempty(idx_str_2)
+            ifileInfo.rawSubDir = subline(idx_str(end)+1:idx_str_2(end));
+        end
+        
+        idx_go=strfind(tline,'-g ');
+        subline_go=tline(idx_go:end);
+        idx_go=strfind(subline_go,' ');
+        if length(idx_go)>=2
+            ifileInfo.G0=str2double(subline_go(idx_go(1):idx_go(2)));
+        elseif length(idx_go)==1
+            ifileInfo.G0=str2double(subline_go(idx_go(1):end));
+        else
+            ifileInfo.G0=[];
+        end
+        
+        
+        idx_sacorr=strfind(tline,'-s ');
+        subline_sacorr=tline(idx_sacorr:end);
+        idx_sacorr=strfind(subline_sacorr,' ');
+        if length(idx_sacorr)>=2
+            ifileInfo.SACORRECT=str2double(subline_sacorr(idx_sacorr(1):idx_sacorr(2)));
+        elseif length(idx_sacorr)==1
+            ifileInfo.SACORRECT=str2double(subline_sacorr(idx_sacorr(1):end));
+        else
+            ifileInfo.SACORRECT=[];
+        end
+        
+        idx_cal_crest=strfind(tline,'-c ');
+        subline_cal_crest=tline(idx_cal_crest:end);
+        idx_cal_crest=strfind(subline_cal_crest,' ');
+        if length(idx_cal_crest)>=2
+            ifileInfo.Cal_crest=str2double(subline_cal_crest(idx_cal_crest(1):idx_cal_crest(2)));
+        elseif length(idx_cal_crest)==1
+            ifileInfo.Cal_crest=str2double(subline_cal_crest(idx_cal_crest(1):end));
+        else
+            ifileInfo.Cal_crest=[];
+        end
+
+        
+   end
     
     if strfind(tline,'towbody')
         ifileInfo.towbody =  str2num(tline(11:end));
@@ -112,6 +159,7 @@ while 1
 end
 
 if ~isfield(ifileInfo, 'rawFileName');
-    ifileInfo.rawFileName = 'rawfile not in Ifile';
+    ifileInfo.rawFileName = '';
+    ifileInfo.rawSubDir = '';
 end
 fclose(fid);

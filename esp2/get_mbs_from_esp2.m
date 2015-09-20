@@ -1,11 +1,13 @@
-function [filenames,outDir]=get_mbs_from_esp2(varargin)
+function [filenames,outDir]=get_mbs_from_esp2(cvsroot,varargin)
 
 p = inputParser;
 
-addParameter(p,'MbsId',[]);
+addRequired(p,'cvsroot',@ischar);
 addParameter(p,'Rev',[]);
+addParameter(p,'MbsId',[]);
 
-parse(p,varargin{:});
+
+parse(p,cvsroot,varargin{:});
 
 MbsId=p.Results.MbsId;
 Rev=p.Results.Rev;
@@ -25,13 +27,13 @@ if ~mkdir(outDir)
 end
 
 if isempty(MbsId)
-    command = ['cvs -d ' getCVSRepository ' checkout mbs'];
+    command = ['cvs -d ' cvsroot ' checkout mbs'];
 else
     
     if isempty(Rev); % Get latest revision
-        command = ['cvs -d ' getCVSRepository ' checkout mbs/' MbsId];
+        command = ['cvs -d ' cvsroot ' checkout mbs/' MbsId];
     else             % Get specified revision
-        command = ['cvs -d ' getCVSRepository ' checkout -r ' Rev ' mbs/' MbsId];
+        command = ['cvs -d ' cvsroot ' checkout -r ' Rev ' mbs/' MbsId];
     end
     
 end

@@ -126,6 +126,25 @@ for i = 3:length(fn);
 end
 fprintf(1,'\n');
 %% Region Summary
+
+figure(415647);
+plot([evmbsdata.region_summary(:).transect],[evmbsdata.region_summary(:).good_pings]);hold on;
+plot([esp2mbsdata.region_summary(:).transect],[esp2mbsdata.region_summary(:).good_pings]);
+grid on;
+legend('Matlab','Esp2')
+title('Good Pings');
+%pause(1);
+hold off;
+
+
+figure(415648);
+plot([evmbsdata.region_summary(:).transect],[evmbsdata.region_summary(:).start_d]);hold on;
+plot([esp2mbsdata.region_summary(:).transect],[esp2mbsdata.region_summary(:).start_d]);
+grid on;
+legend('Matlab','Esp2')
+title('Start_d');
+hold off;
+
 fn = fieldnames(evmbsdata.region_summary(1,1));
 for i = 7:length(fn);
     for j = 1:length(evmbsdata.region_summary)
@@ -144,9 +163,11 @@ for i = 7:length(fn);
         
         a = evmbsdata.region_summary(1,j).(fn{i});
         b = esp2mbsdata.region_summary(1,trans_num).(fn{i});
-        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
+        c(j) = (a-b)./b*100;
     end
     
+
+  
     c = nanmean(c(:));
     if isnan(c); c=0; end
     if abs(c) < 0.001

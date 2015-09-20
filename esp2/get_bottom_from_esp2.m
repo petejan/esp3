@@ -1,9 +1,9 @@
-function [bad,bottom,rawFileName]=get_bottom_from_esp2(iFilePath,iFileName,voyage,varargin)
+function [bad,bottom,rawFileName]=get_bottom_from_esp2(iFilePath,iFileName,voyage,cvsroot,varargin)
 
 switch nargin
-    case 3
-        rev = [];
     case 4
+        rev = [];
+    case 5
         rev = varargin{1};
 end
 
@@ -38,9 +38,9 @@ bFileName = ['b' iFileName(2:end)];
 % command='cvs -d :local:Z:\ checkout -d C:\Users\ladroity\AppData\Local\Temp\tpfcb5ff88_244e_4f0c_a7f1_f89606dc1a2b tan1301/hull'
 
 if isempty(rev)
-    command = ['cvs -q -d ' getCVSRepository ' checkout ' strrep(fullfile(remain_str,bFileName),'\','/')];
+    command = ['cvs -q -d ' cvsroot ' checkout ' strrep(fullfile(remain_str,bFileName),'\','/')];
 else
-    command = ['cvs -q -d ' getCVSRepository ' checkout ' '-r ' rev ' ' strrep(fullfile(remain_str,bFileName),'\','/')];
+    command = ['cvs -q -d ' cvsroot ' checkout ' '-r ' rev ' ' strrep(fullfile(remain_str,bFileName),'\','/')];
 end
 
 
