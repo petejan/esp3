@@ -71,7 +71,7 @@ display_tab_comp.disp_under_bot=uicontrol(display_tab_comp.display_tab,'Style','
 set([display_tab_comp.disp_tracks display_tab_comp.disp_lines display_tab_comp.disp_bad_trans display_tab_comp.disp_bottom display_tab_comp.disp_reg display_tab_comp.disp_under_bot],'callback',{@set_disp,main_figure});
 
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Attitude','units','normalized','pos',[0.6 0.1 0.15 0.15],'callback',{@display_attitude,main_figure});
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav. Data','units','normalized','pos',[0.75 0.1 0.15 0.15],'callback',{@display_navigation,main_figure});
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav. Data','units','normalized','pos',[0.75 0.1 0.15 0.15],'callback',{@display_navigation_callback,main_figure});
 
 setappdata(main_figure,'Display_tab',display_tab_comp);
 end
@@ -215,22 +215,24 @@ layer.AttitudeNav.display_att();
 
 end
 
-function display_navigation(~,~,main_figure)
+function display_navigation_callback(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-lat=layer.Transceivers(idx_freq).GPSDataPing.Lat;
-long=layer.Transceivers(idx_freq).GPSDataPing.Long;
+hfig=figure();
+
+lat=layer.GPSData.Lat;
+long=layer.GPSData.Long;
 
 if ~isempty(long)
-    m_proj('UTM','long',[nanmin(long)-0.01 nanmax(long)+0.01],'lat',[nanmin(lat)-0.01 nanmax(lat)+0.01]);
-    figure();
+    figure(hfig);
+    m_proj('UTM','long',[nanmin(long)-0.01 nanmax(long)+0.01],'lat',[nanmin(lat)-0.01 nanmax(lat)+0.01]);   
     hold on;
     m_grid('box','fancy','tickdir','in');
     m_plot(long,lat,'color','r');
     %m_gshhs_h('color','k')
 else
+    close(hfig);
    warning('No navigation data'); 
 end
 

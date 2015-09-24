@@ -6,8 +6,7 @@ if  found==1
     layers=layers.delete_layers(0);
 end
 
-if multi_layer==0   
-    
+if multi_layer<=0
     if join==1
         layers_temp=[layers layers_temp];
         %old_layers=layers;
@@ -48,22 +47,32 @@ if multi_layer==0
             
             idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1)==trans_nb(uu));
             
-            for kki=idx_same_samples
-                for kkj=idx_same_samples
-                    if nansum(layers_grp(uu).time_end(:,kki)==layers_grp(uu).time_end(:,kkj)|...
-                            layers_grp(uu).time_start(:,kki)==layers_grp(uu).time_start(:,kkj)|...
-                            (layers_grp(uu).time_start(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
-                            layers_grp(uu).time_start(:,kki)<=layers_grp(uu).time_end(:,kkj))|...
-                            (layers_grp(uu).time_end(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
-                            layers_grp(uu).time_end(:,kki)<=layers_grp(uu).time_end(:,kkj)))...
-                            ==trans_nb(uu)||...
-                            length(intersect(layers_grp(uu).freqs(:,kki),layers_grp(uu).freqs(:,kkj)))~=trans_nb(uu);
-                        continue;
+            if multi_layer==0
+                for kki=idx_same_samples
+                    for kkj=idx_same_samples
+                        if nansum(layers_grp(uu).time_end(:,kki)==layers_grp(uu).time_end(:,kkj)|...
+                                layers_grp(uu).time_start(:,kki)==layers_grp(uu).time_start(:,kkj)|...
+                                (layers_grp(uu).time_start(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
+                                layers_grp(uu).time_start(:,kki)<=layers_grp(uu).time_end(:,kkj))|...
+                                (layers_grp(uu).time_end(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
+                                layers_grp(uu).time_end(:,kki)<=layers_grp(uu).time_end(:,kkj)))...
+                                ==trans_nb(uu)||...
+                                length(intersect(layers_grp(uu).freqs(:,kki),layers_grp(uu).freqs(:,kkj)))~=trans_nb(uu);
+                            continue;
+                        end
+                        
+                        if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
+                                layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
+                            idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
+                        end
                     end
-                    
-                    if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
-                            layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
-                        idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
+                end
+            elseif multi_layer==-1
+                for kki=idx_same_samples
+                    for kkj=idx_same_samples
+                        if nansum(layers_grp(uu).time_start(:,kki)>=layers_grp(uu).time_end(:,kkj))==trans_nb(uu)
+                            idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
+                        end
                     end
                 end
             end
@@ -108,7 +117,7 @@ if multi_layer==0
                         time_j=layers_temp(new_chains{j}(end)).Transceivers(1).Data.Time(end)-layers_temp(new_chains{j}(1)).Transceivers(1).Data.Time(1);
                         
                         if time_j>=time_i
-                            temp_u=setdiff(new_chains{i},new_chains{j});                        
+                            temp_u=setdiff(new_chains{i},new_chains{j});
                             new_chains{i}=[];
                         else
                             temp_u=setdiff(new_chains{j},new_chains{i});
@@ -142,7 +151,7 @@ if multi_layer==0
         end
         
     end
-     
+    
 else
     new_layers=layers_temp;
 end

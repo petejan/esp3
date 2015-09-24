@@ -13,10 +13,12 @@ classdef config_cl
         HWChannelConfiguration
         MaxTxPowerTransceiver
         PulseLength=0.001;
-        AngleOffsetAlongship=0;
-        AngleOffsetAthwartship=0;
+        AngleOffsetAlongship
+        AngleOffsetAthwartship
         AngleSensitivityAlongship
         AngleSensitivityAthwartship
+        Position=[0 0 0];%along across depth
+        Angles=[0 0];%pitch roll
         BeamType
         BeamWidthAlongship=7;
         BeamWidthAthwartship=7;

@@ -183,6 +183,10 @@ end
 N_y=length(Y)-1;
 
 region.Output.Sv_mean=nan(N_y,N_x);
+region.Output.Sv_mean_lin_esp2=nan(N_y,N_x);
+region.Output.Sv_mean_lin=nan(N_y,N_x);
+region.Output.Sv_mean_esp2=nan(N_y,N_x);
+region.Output.Sa_lin=nan(N_y,N_x);
 region.Output.Sa=nan(N_y,N_x);
 region.Output.Sv_max=nan(N_y,N_x);
 region.Output.Sv_min=nan(N_y,N_x);
@@ -328,8 +332,9 @@ for i=1:N_x
         
     end
 end
-
-
+idx_nan=(region.Output.Sv_mean_lin_esp2==0);
+region.Output.Sv_mean_esp2(idx_nan)=nan;
+region.Output.Sv_mean_lin_esp2(idx_nan)=nan;
 
 region.Output.ABC=region.Output.Thickness_mean.*10.^(region.Output.Sv_mean/10);
 region.Output.NASC=4*pi*1852^2*region.Output.ABC;

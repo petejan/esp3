@@ -45,8 +45,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
         if bot_cvs==1
             display(['converting bottom and bad pings for dfile ' FileName]);
             [IdxBad,bot,~]= get_bottom_from_esp2(PathToFile,FileName,voyage,cvsroot,bot_rev);  
-              
-            
+                    
             layer.Transceivers(idx_freq).setBottomIdxBad(bot,IdxBad); 
         end
               

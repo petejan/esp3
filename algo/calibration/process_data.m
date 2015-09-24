@@ -64,10 +64,11 @@ p.onAxisMethod = {'mean','max','beam fitting'}; % choices of 'max', 'mean', or '
 
 Sp=transceiver.Data.get_datamat('sp');
 AlongAngle=transceiver.Data.get_datamat('alongangle');
-AcrossPhi=transceiver.Data.get_datamat('acrossphi');
-Power=transceiver.Data.get_datamat('power');
-AlongPhi=transceiver.Data.get_datamat('alongphi');
 AcrossAngle=transceiver.Data.get_datamat('acrossangle');
+
+Power=transceiver.Data.get_datamat('power');
+
+[AcrossPhi,AlongPhi]=transceiver.get_phase();
 
 
 Freq=(transceiver.Config.Frequency);

@@ -4,6 +4,8 @@ DEBUG=1;
 
 [nb_samples,nb_pings]=size(Sv);
 
+AcrossPhi=AcrossPhi/180*pi;
+AlongPhi=AlongPhi/180*pi;
 
 Np=round(PulseLength*Fs);
 bs_bottom=nan(2*Np+1,nb_pings);
@@ -13,7 +15,7 @@ idx_r_max=nb_samples;
 idx_r_min=nanmax(idx_r_min,10);
 idx_r_min=nanmin(idx_r_min,nb_samples);
 
-RingDown=Sv(3,:);
+%RingDown=Sv(3,:);
 Sv(1:idx_r_min,:)=nan;
 
 Range_mat=repmat(Range,1,nb_pings);
@@ -37,7 +39,6 @@ BS_lin_ori=10.^(BS/10);
 BS_lin=10.^(BS/10);
 BS_lin(isnan(BS_lin))=0;
 
-
 b_filter=1;
 
 B_filter=gausswin(heigh_b_filter)*gausswin(b_filter)';
@@ -58,7 +59,7 @@ diff_cum_BS(isnan(diff_cum_BS))=0;
 [~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS);
 
 idx_start=nanmax(idx_max_diff_cum_BS,idx_r_min);
-idx_end=nanmin(idx_max_diff_cum_BS+3*heigh_b_filter,idx_r_max);
+idx_end=nanmin(idx_max_diff_cum_BS+10*heigh_b_filter,idx_r_max);
 
 Bottom_region=Samples_mat>=repmat(idx_start,nb_samples,1)&Samples_mat<=repmat(idx_end,nb_samples,1);
 
@@ -66,9 +67,9 @@ Max_BS=repmat(nanmax(BS_filtered_bot),size(BS_filtered_bot,1),1);
 
 Bottom_region=find_cluster(Bottom_region&(BS_filtered_bot>thr_bottom&BS_filtered_bot>Max_BS+thr_echo),round(heigh_b_filter/2));
 
-Bottom_mask=((BS_filtered_bot>thr_bottom&BS_filtered_bot>Max_BS+thr_echo)&~Bottom_region);
+Bottom_reg_ext=((BS_filtered_bot>thr_bottom&BS_filtered_bot>Max_BS+thr_echo));
 
-if nansum(Bottom_mask(:))>=0
+if nansum(Bottom_reg_ext(:))>=0
     
     temp_bs=BS_filtered_bot;
     temp_bs(~Bottom_region)=nan;
@@ -76,29 +77,31 @@ if nansum(Bottom_mask(:))>=0
     
     loop_idx=[idx_ping+1:nb_pings idx_ping:-1:1];
     for i=2:nb_pings
-        if nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping && nansum(Bottom_mask(:,loop_idx(i)))>0
-            idx_reg_com=find(Bottom_region(:,loop_idx(i-1)).*Bottom_mask(:,loop_idx(i)));
+        if nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping && nansum(Bottom_reg_ext(:,loop_idx(i)))>heigh_b_filter
+            idx_reg_com=find(Bottom_region(:,loop_idx(i-1)).*Bottom_reg_ext(:,loop_idx(i)));
             if isempty(idx_reg_com)
-                idx_reg_com=floor(nanmin(abs(find(Bottom_mask(:,loop_idx(i)))-nanmean(find(Bottom_region(:,loop_idx(i-1)))))));
+                idx_reg_com=floor(nanmin(abs(find(Bottom_reg_ext(:,loop_idx(i)))-nanmean(find(Bottom_region(:,loop_idx(i-1)))))));
             end
             if isempty(idx_reg_com)||nansum(isnan(idx_reg_com))==length(idx_reg_com)
-                idx_reg_com=find(find_cluster(Bottom_mask(:,loop_idx(i)),1));
+                idx_reg_com=find(find_cluster(Bottom_reg_ext(:,loop_idx(i))+Bottom_region(:,loop_idx(i-1)),1));
             end
             if isempty(idx_reg_com)
-                continue;
+               Bottom_region(:,loop_idx(i))=Bottom_region(:,loop_idx(i-1));
             end
             start_up=nanmin(idx_reg_com);
             start_down=nanmax(idx_reg_com);
             Bottom_region(:,loop_idx(i))=0;
             Bottom_region(idx_reg_com,loop_idx(i))=1;
-            while start_up>1 && Bottom_mask(start_up,loop_idx(i))==1
+            while start_up>1 && Bottom_reg_ext(start_up,loop_idx(i))==1
                 Bottom_region(start_up-1,loop_idx(i))=1;
                 start_up=start_up-1;
             end
-            while start_down<nb_samples && Bottom_mask(start_down,loop_idx(i))==1
+            while start_down<nb_samples && Bottom_reg_ext(start_down,loop_idx(i))==1
                 Bottom_region(start_down+1,loop_idx(i))=1;
                 start_down=start_down+1;
             end
+        elseif nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping
+            Bottom_region(:,loop_idx(i))=Bottom_region(:,loop_idx(i-1));
         end
     end
 end
@@ -237,6 +240,9 @@ n_eval_along(isnan(n_eval_along))=1;
 n_eval_across((n_eval_across)>nb_samples|(n_eval_across)<=0)=1;
 n_eval_along((n_eval_along)>nb_samples|(n_eval_along)<=0)=1;
 
+dr=nanmean(diff(Range));
+phi_slope_across=phi_slope_across/dr;
+phi_slope_along=phi_slope_across/dr;
 
 amp_est=struct('idx',n_eval_amp,'range',Range(round(n_eval_amp)));
 

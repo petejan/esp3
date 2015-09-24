@@ -38,7 +38,7 @@ if ~isequal(Filename_cell, 0)
         layer_temp(uu).OriginCrest=origin;
         
         if CVScheck>0
-            layer_temp(uu).CVS_BottomRegions()
+            layer_temp(uu).CVS_BottomRegions(app_path.cvs_root)
         end
     end
     

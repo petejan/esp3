@@ -7,6 +7,11 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 Transceiver=layer.Transceivers(idx_freq);
 tracks = Transceiver.Tracks;
+
+if isempty(tracks)
+    return;
+end
+
 ST = Transceiver.ST;
 X_st=ST.Ping_number;
 %R_st=ST.Target_range;
@@ -14,6 +19,7 @@ X_st=ST.Ping_number;
 % R_st_max=ST.Target_range_max;
 f_vec=layer.Frequencies;
 [~,idx_sort]=sort(f_vec);
+
 if isempty(tracks.target_id)
     return;
 end

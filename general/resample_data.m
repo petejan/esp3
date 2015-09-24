@@ -11,8 +11,8 @@ t_new=1/3*(t_old(idx_choice)+t_old(idx_choice_plus)+t_old(idx_choice_minus));
 if nansum((size(t_new)==size(t)))<2
     t=t';
 end
-
 data_new=1/3*(data(idx_choice)+data(idx_choice_plus)+data(idx_choice_minus));
+
 data_new((abs(t_new-t))>10*nanmean(abs(diff(t))))=nan;
 
 end

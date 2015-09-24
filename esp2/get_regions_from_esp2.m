@@ -49,7 +49,7 @@ cd(outDir);
 [~,output] = system(command,'-echo');
 cd(work_path);
 
-if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))
+if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))||~isempty(strfind(output,'Unknown command'))
     rmdir(outDir,'s');
     regions=[];
     return;

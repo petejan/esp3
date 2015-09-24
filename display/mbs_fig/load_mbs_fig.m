@@ -66,7 +66,7 @@ function edit_mbs_callback(~,~,hObject,hObject_main)
 app_path=getappdata(hObject_main,'App_path');
 selected_mbs=getappdata(hObject,'SelectedMbs');
 if~strcmp(selected_mbs,'')
-    [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',selected_mbs,'Rev',[]);
+    [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',selected_mbs{1},'Rev',[]);
     edit(fileNames{1});
     rmdir(outDir,'s');
 end

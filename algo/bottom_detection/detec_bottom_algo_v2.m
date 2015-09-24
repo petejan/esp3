@@ -106,16 +106,16 @@ if nansum(Bottom_mask(:))>=0
     
     loop_idx=[idx_ping+1:nb_pings idx_ping:-1:1];
     for i=2:nb_pings
-        if nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping && nansum(Bottom_mask(:,loop_idx(i)))>0
+        if nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping && nansum(Bottom_mask(:,loop_idx(i)))>heigh_b_filter
             idx_reg_com=find(Bottom_region(:,loop_idx(i-1)).*Bottom_mask(:,loop_idx(i)));
             if isempty(idx_reg_com)
                 idx_reg_com=floor(nanmin(abs(find(Bottom_mask(:,loop_idx(i)))-nanmean(find(Bottom_region(:,loop_idx(i-1)))))));
             end
             if isempty(idx_reg_com)||nansum(isnan(idx_reg_com))==length(idx_reg_com)
-                idx_reg_com=find(find_cluster(Bottom_mask(:,loop_idx(i)),1));
+               idx_reg_com=find(find_cluster(Bottom_mask(:,loop_idx(i))+Bottom_region(:,loop_idx(i-1)),1));
             end
             if isempty(idx_reg_com)
-                continue;
+                Bottom_region(:,loop_idx(i))=Bottom_region(:,loop_idx(i-1));
             end
             start_up=nanmin(idx_reg_com);
             start_down=nanmax(idx_reg_com);
@@ -129,6 +129,9 @@ if nansum(Bottom_mask(:))>=0
                 Bottom_region(start_down+1,loop_idx(i))=1;
                 start_down=start_down+1;
             end
+            
+        elseif nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping
+            Bottom_region(:,loop_idx(i))=Bottom_region(:,loop_idx(i-1));
         end
     end
 end

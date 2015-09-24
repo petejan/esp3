@@ -26,7 +26,7 @@ if file_id==0
 elseif file_id==1
 
     f = dir(path);
-    file_list=cell2mat({f(~cellfun(@isempty,regexpi({f.name},'(raw$|^d)'))).name}');
+    file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
     if ~isempty(file_list)
         i=1;
         file_diff=0;
@@ -110,8 +110,8 @@ if ~isequal(Filename, 0)
         if iscell(Filename)
             choice = questdlg('Do you want to open files as separate layers?', ...
                 'File opening mode',...
-                'Yes','No', ...
-                'No');
+                'Yes','No','No, and force concatenation', ...
+                'Yes');
             % Handle response
             switch choice
                 case 'Yes'
@@ -120,6 +120,11 @@ if ~isequal(Filename, 0)
                 case 'No'
                     multi_layer=0;
                     read_all=1;
+                case 'No, and force concatenation'
+                    multi_layer=-1;
+                    read_all=1;
+                otherwise
+                    return;
             end
             
             if isempty(choice)

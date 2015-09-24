@@ -24,8 +24,9 @@ for idx_freq=1:length(data.config)
     
     data.pings(idx_freq).AlongPhi=angle(fore.*conj(aft))/pi*180;
     data.pings(idx_freq).AcrossPhi=angle((stbd).*conj(port))/pi*180;
-    data.pings(idx_freq).AlongAngle=(data.pings(idx_freq).AlongPhi)*k_angle/angleSensitivityAlongship;
-    data.pings(idx_freq).AcrossAngle=(data.pings(idx_freq).AcrossPhi)*k_angle/angleSensitivityAthwartship;
+    
+    data.pings(idx_freq).AlongAngle=(data.pings(idx_freq).AlongPhi)*k_angle/angleSensitivityAlongship-data.config(idx_freq).AngleOffsetAthwartship;
+    data.pings(idx_freq).AcrossAngle=(data.pings(idx_freq).AcrossPhi)*k_angle/angleSensitivityAthwartship-data.config(idx_freq).AngleOffsetAthwartship;
     
 end
 data.pings=rmfield(data.pings,{'comp_sig_1','comp_sig_2','comp_sig_3','comp_sig_4'});

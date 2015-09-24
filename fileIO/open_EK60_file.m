@@ -13,19 +13,20 @@ end
 sple_start=1;
 sple_end=inf;
 
-% prompt={'First Sample:',...
-%     'Last Sample:'};
-% name='Nb_samples to load from each files';
-% numlines=1;
-% defaultanswer={'1','Inf'};
-% answer=inputdlg(prompt,name,numlines,defaultanswer);
-% 
-% if isempty(answer)
-%     return;
-% end
-
-% sple_start= str2double(answer{1});
-% sple_end= str2double(answer{2});
+if multi_layer==-1
+    prompt={'First Sample:',...
+        'Last Sample:'};
+    name='Nb_samples to load from each files';
+    numlines=1;
+    defaultanswer={'1','Inf'};
+    answer=inputdlg(prompt,name,numlines,defaultanswer);
+    
+    if isempty(answer)
+        return;
+    end
+    sple_start= str2double(answer{1});
+    sple_end= str2double(answer{2});
+end
 
 
 %     profile on;

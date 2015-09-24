@@ -3,6 +3,9 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
 app_path=getappdata(main_figure,'App_path');
 
+if multi_layer<0
+    multi_layer=0;
+end
 ite=1;
 vec_freq_tot=[];
 list_freq_str={};
@@ -21,7 +24,7 @@ if ~isequal(Filename, 0)
     
     prev_ping_end=0;
     prev_ping_start=1;
-
+    
     for uuu=1:nb_layers
         vec_freq_temp=[];
         
@@ -35,7 +38,7 @@ if ~isequal(Filename, 0)
             break;
         end
         
-      
+        
         if isempty(vec_freq_init)
             [header_temp,data_temp]=readEK80(PathToFile,curr_Filename,'PingRange',[1 1]);
             
@@ -62,10 +65,10 @@ if ~isequal(Filename, 0)
             vec_freq=-1;
         end
         
-
+        
         [header,data]=readEK80(PathToFile,curr_Filename,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'Frequencies',vec_freq);
         
-
+        
         if ~isstruct(header)
             if exist('opening_file','var')
                 close(opening_file);
@@ -121,8 +124,8 @@ if ~isequal(Filename, 0)
             curr_data.power=single(data.pings(i).power);
             curr_data.y_real=single(real(data.pings(i).y));
             curr_data.y_imag=single(imag(data.pings(i).y));
-            curr_data.acrossphi=single(data.pings(i).AcrossPhi);
-            curr_data.alongphi=single(data.pings(i).AlongPhi);
+            %             curr_data.acrossphi=single(data.pings(i).AcrossPhi);
+            %             curr_data.alongphi=single(data.pings(i).AlongPhi);
             curr_data.acrossangle=single(data.pings(i).AcrossAngle);
             curr_data.alongangle=single(data.pings(i).AlongAngle);
             

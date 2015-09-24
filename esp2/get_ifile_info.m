@@ -47,24 +47,32 @@ if fid == -1
     return
 end
 
+ifileInfo.snapshot=[];
+ifileInfo.stratum='';
+ifileInfo.transect=[];
+
 while 1
     tline = fgetl(fid);
     if ~ischar(tline), break, end
-    if strfind(tline,'snapshot')
-        ifileInfo.snapshot =  str2num(tline(11:end));
+    if strfind(tline(1:nanmin(10,length(tline))),'snapshot')
+        ifileInfo.snapshot =  tline(11:end);
+        if ~isnan(str2double(ifileInfo.snapshot))
+            ifileInfo.snapshot = str2double(ifileInfo.snapshot);
+        end
     end
-    if strfind(tline,'stratum')
+    if strfind(tline(1:nanmin(10,length(tline))),'stratum')
         ifileInfo.stratum = tline(10:end);
-        if ~isempty(str2num(ifileInfo.stratum))
-            ifileInfo.stratum = str2num(ifileInfo.stratum);
+        if ~isnan(str2double(ifileInfo.stratum))
+            ifileInfo.stratum = str2double(ifileInfo.stratum);
         end
     end
-    if strfind(tline,'transect:')
+    if strfind(tline(1:nanmin(10,length(tline))),'transect:')
         ifileInfo.transect = tline(11:end);
-        if ~isempty(str2num(ifileInfo.transect))
-            ifileInfo.transect = str2num(ifileInfo.transect);
+        if ~isnan(str2double(ifileInfo.transect))
+            ifileInfo.transect = str2double(ifileInfo.transect);
         end
     end
+    
     if strfind(tline,'start_date')
         ifileInfo.start_date = datenum(tline(17:end));
     end

@@ -46,7 +46,7 @@ cd(outDir)
 cd(work_path)
 
 if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))
-    rmdir(outDir,'s');
+    disp(output);
     filenames={};
     return;
 end

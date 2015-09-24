@@ -23,6 +23,7 @@ if ~isempty(list_reg)
         shading interp
         caxis(cax);
         colorbar;
+        grid on;
         colormap jet;
         axis ij
         hold on;

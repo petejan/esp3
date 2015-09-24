@@ -17,13 +17,26 @@ if ~isempty(info_panel_comp)
     types=layer.Transceivers(idx_freq).Data.Type;
     type=types{get(display_tab_comp.tog_type,'value')};
     
+    if ~isempty(layer.SurveyData)
+        if ischar(layer.SurveyData.Stratum)
+            i_str=sprintf('Snapshot %s, Strat. %d, Trans. %d',...
+                layer.SurveyData.Snapshot,layer.SurveyData.Stratum,layer.SurveyData.Transect);
+        else
+            i_str=sprintf('Snapshot %d, Strat. %d, Trans. %d',...
+                layer.SurveyData.Snapshot,layer.SurveyData.Stratum,layer.SurveyData.Transect);
+        end
+    else
+        i_str='';
+    end
+    
     if iscell(layer.Filename)
         summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',type,layer.Filename{1},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
     else
         summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',type,layer.Filename,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
     end
     
-    info_panel_comp.summary=uicontrol(info_panel_comp.info_panel,'Style','Text','String',summary_str,'units','normalized','Position',[0.7 0 0.3 1],'BackgroundColor',[1 1 1]);
+    info_panel_comp.summary=uicontrol(info_panel_comp.info_panel,'Style','Text','String',summary_str,'units','normalized','Position',[0.7 0.5 0.3 0.5],'BackgroundColor',[1 1 1]);
+    info_panel_comp.i_str=uicontrol(info_panel_comp.info_panel,'Style','Text','String',i_str,'units','normalized','Position',[0.7 0 0.3 0.5],'BackgroundColor',[1 1 1]);
     info_panel_comp.xy_disp=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0 0 0.2 1],'BackgroundColor',[1 1 1]);
     info_panel_comp.pos_disp=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0.2 0 0.2 1],'BackgroundColor',[1 1 1]);
     info_panel_comp.time_disp=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0.4 0 0.1 1],'BackgroundColor',[1 1 1]);

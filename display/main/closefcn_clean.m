@@ -7,9 +7,12 @@ selection = questdlg('Close The Programm?',...
 switch selection,
     case 'Yes'
         layers=getappdata(src,'Layers');
-        
-        while length(layers)>=1
-            layers=layers.delete_layers(layers(1).ID_num);
+        i=length(layers);
+        while i>=1
+            try
+            layers=layers.delete_layers(layers(i).ID_num);
+            end
+            i=i-1;
         end
                  
         appdata = get(src,'ApplicationData');
@@ -19,5 +22,7 @@ switch selection,
         end
         delete(src);
     case 'No'
+        return;
+end
 
 end

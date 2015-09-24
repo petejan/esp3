@@ -106,13 +106,13 @@ classdef transceiver_cl < handle
                         regions_1=trans_1(i).Regions;
                         regions_2=trans_2(i).Regions;
                     end
-                      
+                    
                     trans_out(i).add_region(regions_1);
                     
                     for ir2=1:length(regions_2)
-                        regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+trans_1(i).Data.Number(end);           
+                        regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+trans_1(i).Data.Number(end);
                     end
-                     trans_out(i).add_region(regions_2);
+                    trans_out(i).add_region(regions_2);
                     
                 end
             else
@@ -218,9 +218,9 @@ classdef transceiver_cl < handle
             end
         end
         
-       
         
-        function id=new_id(obj,name)           
+        
+        function id=new_id(obj,name)
             reg_curr=obj.Regions;
             reg_new=[];
             id_list=[];
@@ -236,13 +236,13 @@ classdef transceiver_cl < handle
             end
         end
         
-        function unique_id=new_unique_id(obj)           
+        function unique_id=new_unique_id(obj)
             reg_curr=obj.Regions;
             id_list=nan(size(reg_curr));
             for i=1:length(reg_curr)
                 id_list(i)=reg_curr(i).Unique_ID;
             end
-            unique_id=unidrnd(2^64);          
+            unique_id=unidrnd(2^64);
             while ~isempty(find(unique_id==id_list,1))
                 unique_id=unidrnd(2^64);
             end
@@ -266,14 +266,14 @@ classdef transceiver_cl < handle
         end
         
         
-        function [idx,found]=find_reg_idx_id(trans,id)          
+        function [idx,found]=find_reg_idx_id(trans,id)
             idx=[];
             for ii=1:length(trans.Regions)
                 if id==trans.Regions(ii).ID
                     idx=[idx ii];
                     found=1;
                 end
-            end           
+            end
             if isempty(idx)
                 idx=1;
                 found=0;
@@ -312,7 +312,7 @@ classdef transceiver_cl < handle
             bot_r(isnan(bot_r))=obj.Data.Range(end);
             
             Sv(repmat(bot_r,size(Sv,1),1)<=repmat(obj.Data.Range,1,size(Sv,2)))=NaN;
-
+            
             idx_r=active_reg.Idx_r;
             idx_pings=active_reg.Idx_pings;
             bot_r_pings=bot_r(idx_pings);
@@ -326,7 +326,7 @@ classdef transceiver_cl < handle
             Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(obj.Data.Range(idx_r),1,size(Sv_reg,2)))=NaN;
             idx_field=find_field_idx(obj.Data,'sv');
             cax=obj.Data.SubData(idx_field).CaxisDisplay;
-
+            
             Sv_reg(Sv_reg<cax(1))=nan;
             range=double(obj.Data.Range(idx_r));
             Sa=10*log10(nansum(10.^(Sv_reg/10).*nanmean(diff(range))));
@@ -335,6 +335,13 @@ classdef transceiver_cl < handle
             mean_depth(Sa<-70)=NaN;
             
         end
+        
+        function set_position(obj,pos_trans,trans_angle)
+            obj.Config.Position=pos_trans;
+            obj.Config.Angles=trans_angle;
+        end
+        
+        
         
     end
     

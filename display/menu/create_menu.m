@@ -11,6 +11,7 @@ uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_f
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
+uimenu(mhhhh,'Label','Display opened Layer Navigation','Callback',{@display_layers_nav_callback,main_figure});
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 
 m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
@@ -25,11 +26,17 @@ mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
 reg_tools=uimenu(mhhh,'Label','Regions');
 
 curves_tools=uimenu(mhhh,'Label','Curves');
-track_tools=uimenu(mhhh,'Label','Track');
+
 
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions,main_figure});
+
+bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
+
+uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
+uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
+
 
 
 mcvs = uimenu(main_figure,'Label','CVS','Tag','menucvs');
@@ -40,7 +47,7 @@ uimenu(mcvs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_fi
 
 
 
-
+track_tools=uimenu(mhhh,'Label','Track');
 uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
 uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});
 

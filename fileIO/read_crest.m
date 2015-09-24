@@ -9,6 +9,7 @@ addParameter(p,'PathToMemmap',PathToFile);
 addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'CVSCheck',true);
+addParameter(p,'CVSroot','');
 
 parse(p,PathToFile,Filename_cell,varargin{:});
 
@@ -19,7 +20,7 @@ dir_data=p.Results.PathToMemmap;
 machineformat = 'ieee-le'; %IEEE floating point with little-endian byte ordering
 precision = 'uint16'; %2-byte
 
-
+cvs_root=p.Results.CVSroot;
 
 if ~isequal(Filename_cell, 0)
     
@@ -84,8 +85,13 @@ if ~isequal(Filename_cell, 0)
         system_calibration=get_ifile_parameter(fullfile(PathToFile,FileName),'system_calibration');
         
         ifileInfo = get_ifile_info(PathToFile, FileName);
+        
         start_time=ifileInfo.start_date;
         end_time=ifileInfo.finish_date;
+        
+        survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
+        
+
         
         gps_data.Time=linspace(start_time,end_time,length(gps_data.Time));
         attitude_data.Time=linspace(start_time,end_time,length(attitude_data.Time));
@@ -128,11 +134,11 @@ if ~isequal(Filename_cell, 0)
                 fileID = unidrnd(2^64);
             end
             
-            layers(uu)=layer_cl('ID_num',fileID,'Filename',FileName,'Filetype','CREST','PathToFile',PathToFile,...
+            layers(uu)=layer_cl('ID_num',fileID,'Filename',FileName,'Filetype','CREST','PathToFile',PathToFile,'SurveyData',survey_data,...
                 'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(PathToFile,FileName));
          
-            if p.Results.CVSCheck
-                layers(uu).CVS_BottomRegions();      
+            if p.Results.CVSCheck&&~strcmp(cvs_root,'')
+                layers(uu).CVS_BottomRegions(cvs_root);      
             end
             
     end

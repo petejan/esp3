@@ -6,6 +6,7 @@ classdef env_data_cl
         Salinity
         SoundSpeed
         Temperature
+        SVP
     end
     methods
         function obj = env_data_cl(varargin)
@@ -15,7 +16,8 @@ classdef env_data_cl
             addParameter(p,'Depth',100,@isnumeric);
             addParameter(p,'Salinity',35,@isnumeric);
             addParameter(p,'Temperature',18,@isnumeric);
-            addParameter(p,'SoundSpeed',1490,@isnumeric);
+            addParameter(p,'SoundSpeed',1490,@isnumeric)
+            addParameter(p,'SVP',struct('depth',[],'soundspeed',[]),@isnumeric);
             
             parse(p,varargin{:});
             
@@ -31,5 +33,10 @@ classdef env_data_cl
             
         end
         
+         
+        function  obj=set_svp(obj,depth,soundspeed)
+            obj.SVP.depth=depth;
+            obj.SVP.soundspeed=soundspeed;      
+        end
     end
 end
