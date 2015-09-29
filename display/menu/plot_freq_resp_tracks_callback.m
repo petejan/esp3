@@ -3,7 +3,10 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 tag=sprintf('Track from %.0f kHz',curr_disp.Freq);
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
+if found==0
+    return;
+end
 
 Transceiver=layer.Transceivers(idx_freq);
 tracks = Transceiver.Tracks;
@@ -82,8 +85,13 @@ for k=1:length(tracks.target_id)
     layer.add_curves(curve);
 end
 
+hfigs=getappdata(main_figure,'ExternalFigures');
 
-layer.disp_curves(tag);
+new_fig=layer.disp_curves(tag);
+
+
+hfigs=[hfigs new_fig];
+setappdata(main_figure,'ExternalFigures',hfigs);
 
 setappdata(main_figure,'Layer',layer);
 

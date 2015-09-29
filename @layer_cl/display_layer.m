@@ -35,7 +35,16 @@ end
 
 ydata=layer.Transceivers(idx_freq).Data.Range;
 data=layer.Transceivers(idx_freq).Data.get_datamat(fieldname);
+if isempty(data)
+   fieldname= layer.Transceivers(idx_freq).Data.Fieldname{1};
+   data=layer.Transceivers(idx_freq).Data.get_datamat(fieldname);
+end
 
+if isempty(data)
+    axes(ax);
+    main_echo=imagesc(ones(1,1));
+return;
+end
 
 if new==0
     [~,idx_xlim_min]= nanmin(abs(xdata-x(1)));
@@ -56,14 +65,12 @@ idx_ylim=[idx_ylim_min idx_ylim_max];
 
 
 
-if isempty(data)
-   return; 
-end
+
 
 switch lower(deblank(fieldname))
-    case 'y'
+    case {'y','y_imag','y_real'}
         data_mat=10*log10(abs(data));
-    case {'power','powerdenoised'}
+    case {'power','powerdenoised','powerunmatched'}
         data_mat_lin=data;
         data_mat_lin(data_mat_lin<=0)=nan;
         data_mat=10*log10(data_mat_lin);

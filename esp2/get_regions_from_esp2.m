@@ -21,7 +21,7 @@ else
 end
 
 
-ifile_info=get_ifile_info(iFilePath,str2double(iFileName(end-6:end)));
+ifile_info=parse_ifile(iFilePath,str2double(iFileName(end-6:end)));
 rawFileName=ifile_info.rawFileName;
 
 %% Checkout rFile

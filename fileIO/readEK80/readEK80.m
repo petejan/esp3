@@ -115,8 +115,10 @@ for ii=1:length(filenames)
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_4=(nan(nb_samples(i),nb_pings(i)));
+            data.pings(i).samples=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).number=nan(1,nb_pings(i));
             data.pings(i).time=nan(1,nb_pings(i));
+            data.pings(i).samples=(1:nb_samples(i))';
         end
         curr_ping = ones(length(data.config),1);
         curr_gps=1;

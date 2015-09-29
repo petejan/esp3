@@ -1,3 +1,4 @@
+
 function load_display_tab(main_figure,option_tab_panel)
 
 if isappdata(main_figure,'Display_tab')
@@ -205,21 +206,25 @@ end
 function display_attitude(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
+hfigs=getappdata(main_figure,'ExternalFigures');
 
 if isempty(layer.AttitudeNav)
     warning('No attitude');
     return;
 end
 
-layer.AttitudeNav.display_att();
+new_figs=layer.AttitudeNav.display_att();
+
+hfigs=[hfigs new_figs];
+setappdata(main_figure,'ExternalFigures',hfigs);
 
 end
 
 function display_navigation_callback(~,~,main_figure)
-curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
+hfigs=getappdata(main_figure,'ExternalFigures');
 
-hfig=figure();
+hfig=figure('Name','Navigation','NumberTitle','off','tag','nav');
 
 lat=layer.GPSData.Lat;
 long=layer.GPSData.Long;
@@ -235,5 +240,7 @@ else
     close(hfig);
    warning('No navigation data'); 
 end
+hfigs=[hfigs hfig];
+setappdata(main_figure,'ExternalFigures',hfigs);
 
 end

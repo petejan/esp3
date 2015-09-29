@@ -69,7 +69,11 @@ for rr = 1:t
             else
                 if isnumeric(c)
                     for kk = 1:sz(jj,2)
-                        str = [str,num2str(c(ii,kk)),','];
+                            if c(ii,kk)==round(c(ii,kk))
+                                str = [str,sprintf('%d,',c(ii,kk))];
+                            else
+                                str = [str,sprintf('%f,',c(ii,kk))];
+                            end
                     end
                 elseif islogical(c)
                     for kk = 1:sz(jj,2)
@@ -80,7 +84,11 @@ for rr = 1:t
                 elseif iscell(c)
                     if isnumeric(c{1,1})
                         for kk = 1:sz(jj,2)
-                            str = [str,num2str(c{ii,kk}),','];
+                            if c{ii,kk}==round(c{ii,kk})
+                                str = [str,sprintf('%d,',c{ii,kk})];
+                            else
+                                str = [str,sprintf('%f,',c{ii,kk})];
+                            end
                         end
                     elseif islogical(c{1,1})
                         for kk = 1:sz(jj,2)

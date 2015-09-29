@@ -102,8 +102,8 @@ Pitch_r= att_recept.Pitch+pitch_cal;
 Roll_r= att_recept.Roll+roll_cal;
 Heave_r= att_recept.Heave;
 
-d_pitch=Pitch_r-Pitch;
-d_roll=Roll_r-Roll;
+% d_pitch=Pitch_r-Pitch;
+% d_roll=Roll_r-Roll;
 
 % figure();
 % plot((Roll_r-nanmean(Roll_r))/nanmax(abs(Roll_r-nanmean(Roll_r))));
@@ -150,11 +150,13 @@ for i=1:nb_pings
     end
 end
 
+extended_along_angle=zeros(2*ext_len+1,nb_pings);
+
 BW_across=trans.Config.BeamWidthAthwartship;
 BW_along=trans.Config.BeamWidthAlongship;
 
 
-compensationAtt = simradBeamCompensation(BW_along, BW_across, d_pitch, d_roll);
+compensationAtt =  attCompensation(BW_along, BW_across, Roll, Pitch,Roll_r,Pitch_r);
 
 compensation = simradBeamCompensation(BW_along, BW_across, extended_along_angle, extended_across_angle);
 
@@ -377,7 +379,7 @@ dz=z_d(2:end,:)-z_d(1:end-1,:);
 dr(dr==0)=nan;
 
 
-incident_angles_estimation=transmit_angles/pi*180-atan(nanmean(dz)./nanmean(dr))/pi*180;
+incident_angles_estimation=90-(transmit_angles/pi*180-atan(nanmean(dz)./nanmean(dr))/pi*180);
 
 figure();
 plot(incident_angles_estimation)

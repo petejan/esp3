@@ -91,8 +91,9 @@ if ~isequal(Filename, 0)
         data_ori=data;
         [data,mode]=match_filter_data(data);
         
-        data=compute_PwSpSv(data);
-        data_ori=compute_PwSpSv(data_ori);
+        
+        data=compute_PwEK80(data);
+        data_ori=compute_PwEK80(data_ori);
         
         data=computesPhasesAngles(data);
         data_ori=computesPhasesAngles(data_ori);
@@ -118,20 +119,14 @@ if ~isequal(Filename, 0)
         for i =1:header.transceivercount
             
             
-            curr_data.spunmatched=single(data_ori.pings(i).Sp);
-            curr_data.sp=single(data.pings(i).Sp);
-            curr_data.sv=single(data.pings(i).Sv);
+            curr_data.powerunmatched=single(data_ori.pings(i).power);
             curr_data.power=single(data.pings(i).power);
             curr_data.y_real=single(real(data.pings(i).y));
             curr_data.y_imag=single(imag(data.pings(i).y));
-            %             curr_data.acrossphi=single(data.pings(i).AcrossPhi);
-            %             curr_data.alongphi=single(data.pings(i).AlongPhi);
             curr_data.acrossangle=single(data.pings(i).AcrossAngle);
             curr_data.alongangle=single(data.pings(i).AlongAngle);
             
-            %
-            
-            
+
             fileID = unidrnd(2^64);
             [~,found]=find_layer_idx(layers,fileID);
             
@@ -154,6 +149,7 @@ if ~isequal(Filename, 0)
             
             ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
                 'Range',double(data.pings(i).range),...
+                'Samples',double(data.pings(i).samples),...
                 'Time',double(data.pings(i).time),...
                 'Number',double(data.pings(i).number),...
                 'MemapName',curr_name);
@@ -203,6 +199,14 @@ if ~isequal(Filename, 0)
             
             transceiver(i).Params.Time=data.params(i).time;
             
+            props=fieldnames(data.env);
+            envdata=env_data_cl();
+            for iii=1:length(props)
+                if  isprop(envdata, (props{iii}))
+                    envdata.(props{iii})=data.env.(props{iii});
+                end
+            end
+            
             
             transceiver(i).Filters=[filter_cl filter_cl];
             for ii=1:2
@@ -222,18 +226,12 @@ if ~isequal(Filename, 0)
                 end
             end
             
+            computeSpSv(transceiver(i),envdata)
         end
         
-        layer_new=layer_cl('ID_num',fileID,'Filename',curr_Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq);
+        layer_new=layer_cl('ID_num',fileID,'Filename',curr_Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
-        props=fieldnames(data.env);
         
-        for iii=1:length(props)
-            if  isprop(layer_new.EnvData, (props{iii}))
-                layer_new.EnvData.(props{iii})=data.env.(props{iii});
-            end
-        end
-        %layer.EnvData=
         
         
         if ite==1

@@ -30,12 +30,12 @@ classdef layer_cl < handle
             check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
             
             addParameter(p,'ID_num',0,@isnumeric);
-            addParameter(p,'Filename','Dummy Data',@(fname)(ischar(fname)||iscell(fname)));
-            addParameter(p,'Filetype','EK60',@(ftype)(ischar(ftype)));
-            addParameter(p,'PathToFile',pwd,@(fname)(ischar(fname)||iscell(fname)));
+            addParameter(p,'Filename','No Data',@(fname)(ischar(fname)||iscell(fname)));
+            addParameter(p,'Filetype','',@(ftype)(ischar(ftype)));
+            addParameter(p,'PathToFile','',@(fname)(ischar(fname)||iscell(fname)));
             addParameter(p,'Transceivers',[],check_transceiver_class);
             addParameter(p,'Lines',[],check_line_class);
-            addParameter(p,'Frequencies',38000,@isnumeric);
+            addParameter(p,'Frequencies',[],@isnumeric);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
             addParameter(p,'Curves',[],check_curve_cl);
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
@@ -49,15 +49,11 @@ classdef layer_cl < handle
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)
-                
-                obj.(props{i})=results.(props{i});
-                
+            for i=1:length(props)               
+                obj.(props{i})=results.(props{i});               
             end
             
-            if isempty(p.Results.Transceivers)
-                obj.Transceivers=transceiver_cl();
-            end
+
         end
         
         function delete(layer)
@@ -84,7 +80,11 @@ classdef layer_cl < handle
             end           
         end
         
-        function copy_region_across(layer,idx_freq,active_reg)
+        function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
+            
+            if isempty(idx_freq_end)
+                idx_freq_end=1:length(layer.Transceivers);
+            end
             
             Transceiver=layer.Transceivers(idx_freq);
             range_ori=Transceiver.Data.Range;
@@ -100,7 +100,7 @@ classdef layer_cl < handle
             
             
             for i=1:length(layer.Transceivers)
-                if i==idx_freq
+                if i==idx_freq||nansum(i==idx_freq_end)==0
                     continue;
                 end
                 

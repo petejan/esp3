@@ -380,7 +380,7 @@ tmpfold = dir(fullfile(voyage_path(1:end-5), 'i*')); % Assume i-files will be
 
 for i = 1:length(tmpfold);                          % in parent directory for raw files    
     tmpfile = tmpfold(i).name;
-    ifileInfo = get_ifile_info(voyage_path(1:end-5),tmpfile);
+    ifileInfo = parse_ifile(voyage_path(1:end-5),tmpfile);
     if strcmp(ifileInfo.stratum, 'trawl')
         j=j+1;
         rawFiles{j} = ifileInfo.rawFileName;

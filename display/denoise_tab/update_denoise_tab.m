@@ -20,7 +20,7 @@ algo_denoise_var=algo_obj.Varargin;
 set(denoise_tab_comp.HorzFilt_sl,'value',algo_denoise_var.HorzFilt);
 set(denoise_tab_comp.HorzFilt_ed,'string',num2str(get(denoise_tab_comp.HorzFilt_sl,'Value'),'%.0f'));
 
-set(denoise_tab_comp.VertFilt_sl,'value',algo_denoise_var.VertFilt/f_s_sig*c/2);
+set(denoise_tab_comp.VertFilt_sl,'value',algo_denoise_var.VertFilt);
 set(denoise_tab_comp.VertFilt_ed,'string',num2str(get(denoise_tab_comp.VertFilt_sl,'Value'),'%.1f'));
 
 set(denoise_tab_comp.NoiseThr_sl,'value',algo_denoise_var.NoiseThr);

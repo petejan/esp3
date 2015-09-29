@@ -267,7 +267,9 @@ else
     % read in and parse the data
     for i = 1: header.num_regions
         line = fgetl(fid);
+
         all_words = words(line,',');
+        
         data(i).snapshot   = str2double(all_words(1,:));
         data(i).stratum    = strcat(all_words(2,:)); % strcat removes trailing spaces
         data(i).transect   = str2double(all_words(3,:));

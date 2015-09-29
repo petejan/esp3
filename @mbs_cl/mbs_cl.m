@@ -4,12 +4,6 @@ classdef mbs_cl < handle
         input
         output
         outputFile
-        brDir
-        fileDir
-        rawDir
-        crestDir
-        cal
-        absorbtion
     end
     
     methods
@@ -20,8 +14,8 @@ classdef mbs_cl < handle
             if nargin == 3;
                 rawFiles = csv2struct(varargin{1});
             end
-            mbs.input.data.dfilePath{i,1} = [mbs.rawDir mbs.input.data.dfileDir{i}];
-            ifileInfo = get_ifile_info(mbs.input.data.dfilePath{i}, mbs.input.data.dfile(i));    % extract rawfilename from ifile
+            mbs.input.data.dfilePath{i,1} = [mbs.data.rawDir{i} mbs.input.data.dfileDir{i}];
+            ifileInfo=parse_ifile(mbs.input.data.dfilePath{i}, mbs.input.data.dfile(i));
             if isfield(ifileInfo,'rawFileName')
                 rawFile = ifileInfo.rawFileName;
             elseif exist('rawFiles','var')==0
@@ -43,26 +37,26 @@ classdef mbs_cl < handle
                 fid = fids{i};
                 
                 %% Header
-                fprintf(fid,'title: %s\n', mbs.input.data.title);
-                fprintf(fid,'main_species: %s\n', mbs.input.data.main_species);
-                fprintf(fid,'voyage: %s\n', mbs.input.data.voyage);
-                fprintf(fid,'areas: %s\n', mbs.input.data.areas);
-                fprintf(fid,'author: %s\n', mbs.input.data.author);
-                fprintf(fid,'created: %s\n', mbs.input.data.created);
-                fprintf(fid,'comments: %s\n', mbs.input.data.comments);
-                fprintf(fid,'MBS_revision: %s\n', '?');
-                fprintf(fid,'MBS_filename: %s\n', '?');
+                fprintf(fid,'title: %s\n', mbs.input.header.title);
+                fprintf(fid,'main_species: %s\n', mbs.input.header.main_species);
+                fprintf(fid,'voyage: %s\n', mbs.input.header.voyage);
+                fprintf(fid,'areas: %s\n', mbs.input.header.areas);
+                fprintf(fid,'author: %s\n', mbs.input.header.author);
+                fprintf(fid,'created: %s\n', mbs.input.header.created);
+                fprintf(fid,'comments: %s\n', mbs.input.header.comments);
+                fprintf(fid,'MBS_revision: %s\n', '');
+                fprintf(fid,'MBS_filename: %s\n', '');
                 
-                fprintf(fid,'\nnumber_of_strata: %0.f\n', length(unique(mbs.output.regionSum.data(:,2))));
-                fprintf(fid,'number_of_transects: %0.f\n', length(unique(cell2mat(mbs.output.regionSum.data(:,3)))));
-                fprintf(fid,'number_of_regions: %0.f\n', length(mbs.output.regionSum.data(:,5)));
+                fprintf(fid,'\nnumber_of_strata: %0.f\n', size(mbs.output.stratumSum.data,1));
+                fprintf(fid,'number_of_transects: %0.f\n', size(mbs.output.transectSum.data,1));
+                fprintf(fid,'number_of_regions: %0.f\n', size(mbs.output.regionSum.data,1));
                 
                 %% Usage summary
                 fprintf(fid,'\n# Usage summary\n');
                 fprintf(fid,'processing_completed: %s\n', datestr(now, 'yyyy-mm-ddTHH:MM:SS'));
                 fprintf(fid,'computer: %s\n', '?');
                 fprintf(fid,'user: %s\n', '?');
-                fprintf(fid,'EchoviewMBS_version: %s\n', '?');
+                fprintf(fid,'MBS_version: %s\n', '?');
                 
                 %% Stratum Summary
                 fprintf(fid,'\n# Stratum Summary\n#snapshot stratum no_transects abscf_mean abscf_sd abscf_wmean abscf_var\n');

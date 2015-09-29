@@ -1,11 +1,17 @@
 function plot_curves_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
+hfigs=getappdata(main_figure,'ExternalFigures');
+
 
 tags=layer.get_curves_tag();
 
-
 for i=1:length(tags)
-    layer.disp_curves(tags{i});
+    new_fig(i)=layer.disp_curves(tags{i});
 end
 
+
+hfigs=[hfigs new_fig];
+setappdata(main_figure,'ExternalFigures',hfigs);
+
 end
+

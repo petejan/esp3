@@ -1,19 +1,19 @@
 
 
-function check_diff(evm_file,esp2_file)
+function check_diff(echo_file,esp2_file)
 
-[~,evmbsdata]  = read_mbs(evm_file);
+[~,echobsdata]  = read_mbs(echo_file);
 [~,esp2mbsdata]  = read_mbs(esp2_file);
 
-% 
+%
 %% Stratum Summary
 fn = fieldnames(esp2mbsdata.stratum(1,1));
 for i = 2:length(fn);
-    for j = 1:length(evmbsdata.stratum)
+    for j = 1:length(echobsdata.stratum)
         strat_num=[];
         for k=1:length(esp2mbsdata.stratum)
-            if  strcmp(esp2mbsdata.stratum(1,k).stratum,evmbsdata.stratum(1,j).stratum)&&...
-                    esp2mbsdata.stratum(1,k).snapshot==evmbsdata.stratum(1,j).snapshot
+            if  strcmp(esp2mbsdata.stratum(1,k).stratum,echobsdata.stratum(1,j).stratum)&&...
+                    esp2mbsdata.stratum(1,k).snapshot==echobsdata.stratum(1,j).snapshot
                 strat_num=k;
             end
         end
@@ -21,7 +21,7 @@ for i = 2:length(fn);
             continue;
         end
         
-        a = evmbsdata.stratum(1,j).(fn{i});
+        a = echobsdata.stratum(1,j).(fn{i});
         b = esp2mbsdata.stratum(1,strat_num).(fn{i});
         c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
     end
@@ -43,12 +43,12 @@ fprintf(1,'\n');
 %% Transect Summary
 fn = fieldnames(esp2mbsdata.transect_summary(1,1));
 for i = 4:length(fn);
-    for j = 1:length(evmbsdata.transect_summary)
+    for j = 1:length(echobsdata.transect_summary)
         trans_num=[];
         for k=1:length(esp2mbsdata.transect_summary)
-            if  strcmp(esp2mbsdata.transect_summary(1,k).stratum,evmbsdata.transect_summary(1,j).stratum)&&...
-                    esp2mbsdata.transect_summary(1,k).snapshot==evmbsdata.transect_summary(1,j).snapshot&&...
-                    esp2mbsdata.transect_summary(1,k).transect==evmbsdata.transect_summary(1,j).transect
+            if  strcmp(esp2mbsdata.transect_summary(1,k).stratum,echobsdata.transect_summary(1,j).stratum)&&...
+                    esp2mbsdata.transect_summary(1,k).snapshot==echobsdata.transect_summary(1,j).snapshot&&...
+                    esp2mbsdata.transect_summary(1,k).transect==echobsdata.transect_summary(1,j).transect
                 trans_num=k;
             end
         end
@@ -56,23 +56,22 @@ for i = 4:length(fn);
             continue;
         end
         
-        a(j) = evmbsdata.transect_summary(1,j).(fn{i});
-        b(j) = esp2mbsdata.transect_summary(1,trans_num).(fn{i});
-
+        a(j) = echobsdata.transect_summary(1,j).(fn{i});
+        b(j) = esp2mbsdata.transect_summary(1,trans_num).(fn{i});        
         c(j) = nansum((a(j)-b(j)))./nansum(b(j))*100;
     end
     
-    if strcmp(fn{i},'vbscf')
-        figure(415564);
-        title(fn{i})
-        plot(a);hold on;
-        plot(b);
-        grid on;
-        legend('Matlab','Esp2');
-        pause(0.5);
-        hold off;
-    end
-    
+%     if strcmp(fn{i},'vbscf')
+%         figure(415564);hold on;
+%         title(fn{i})
+%         plot(a(:));
+%         plot(b(:));
+%         grid on;
+%         legend('Matlab','Esp2');
+%         drawnow;
+%         hold off;
+%     end
+%     
     c = nanmean((c));
     if abs(c) < 0.001
         fprintf(1, 'Transect Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
@@ -86,15 +85,15 @@ for i = 4:length(fn);
     clear a b c
 end
 fprintf(1,'\n');
-%% transect
-fn = fieldnames(evmbsdata.transect(1,1));
+%% Sliced transect
+fn = fieldnames(echobsdata.transect(1,1));
 for i = 3:length(fn);
-    for j = 1:length(evmbsdata.transect)
+    for j = 1:length(echobsdata.transect)
         trans_num=[];
         for k=1:length(esp2mbsdata.transect)
-            if  strcmp(esp2mbsdata.transect(1,k).stratum,evmbsdata.transect(1,j).stratum)&&...
-                    esp2mbsdata.transect(1,k).snapshot==evmbsdata.transect(1,j).snapshot&&...
-                    esp2mbsdata.transect(1,k).transect==evmbsdata.transect(1,j).transect
+            if  strcmp(esp2mbsdata.transect(1,k).stratum,echobsdata.transect(1,j).stratum)&&...
+                    esp2mbsdata.transect(1,k).snapshot==echobsdata.transect(1,j).snapshot&&...
+                    esp2mbsdata.transect(1,k).transect==echobsdata.transect(1,j).transect
                 trans_num=k;
             end
         end
@@ -102,15 +101,29 @@ for i = 3:length(fn);
             continue;
         end
         
-        a = evmbsdata.transect(1,j).(fn{i});
+        a = echobsdata.transect(1,j).(fn{i});
         b = esp2mbsdata.transect(1,trans_num).(fn{i});
         
+        a(isnan(a)|a==0)=[];
+        b(isnan(b)|b==0)=[];
         if length(a)~=length(b)
-            c(j)=nan;
-            continue;
+            a(a==0)=[];
+            b(b==0)=[];
         end
         
-        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
+        if i==8
+            figure(41564);
+            title(fn{i})
+            plot(a(:));hold on;
+            plot(b(:));
+            grid on;
+            legend('Matlab','Esp2')
+            title(sprintf('Sliced Transect: %0.f Stratum: %s',echobsdata.transect(1,j).transect,echobsdata.transect(1,j).stratum));
+            hold off;
+        end
+        
+        ln=nanmin(length(a),length(b));
+        c(j) = nansum((a(1:ln)-b(1:ln)))./nansum(b(1:ln))*100;
     end
     c = nanmean((c));
     if abs(c) < 0.001
@@ -124,50 +137,43 @@ for i = 3:length(fn);
     end
     clear a b c
 end
+
 fprintf(1,'\n');
 %% Region Summary
 
-figure(415647);
-plot([evmbsdata.region_summary(:).transect],[evmbsdata.region_summary(:).good_pings]);hold on;
-plot([esp2mbsdata.region_summary(:).transect],[esp2mbsdata.region_summary(:).good_pings]);
-grid on;
-legend('Matlab','Esp2')
-title('Good Pings');
-%pause(1);
-hold off;
-
-
-figure(415648);
-plot([evmbsdata.region_summary(:).transect],[evmbsdata.region_summary(:).start_d]);hold on;
-plot([esp2mbsdata.region_summary(:).transect],[esp2mbsdata.region_summary(:).start_d]);
-grid on;
-legend('Matlab','Esp2')
-title('Start_d');
-hold off;
-
-fn = fieldnames(evmbsdata.region_summary(1,1));
+fn = fieldnames(echobsdata.region_summary(1,1));
 for i = 7:length(fn);
-    for j = 1:length(evmbsdata.region_summary)
+    c=zeros(1,length(echobsdata.region_summary));
+    for j = 1:length(echobsdata.region_summary)
         trans_num=[];
         for k=1:length(esp2mbsdata.region_summary)
-            if  strcmp(esp2mbsdata.region_summary(1,k).stratum,evmbsdata.region_summary(1,j).stratum)&&...
-                    esp2mbsdata.region_summary(1,k).snapshot==evmbsdata.region_summary(1,j).snapshot&&...
-                    esp2mbsdata.region_summary(1,k).transect==evmbsdata.region_summary(1,j).transect&&...
-                    strcmp(esp2mbsdata.region_summary(1,k).file,evmbsdata.region_summary(1,j).file)
+            if  strcmp(esp2mbsdata.region_summary(1,k).stratum,echobsdata.region_summary(1,j).stratum)&&...
+                    esp2mbsdata.region_summary(1,k).snapshot==echobsdata.region_summary(1,j).snapshot&&...
+                    esp2mbsdata.region_summary(1,k).transect==echobsdata.region_summary(1,j).transect&&...
+                    strcmp(esp2mbsdata.region_summary(1,k).file,echobsdata.region_summary(1,j).file)&&...
+                    esp2mbsdata.region_summary(1,k).region_id==echobsdata.region_summary(1,j).region_id
                 trans_num=k;
             end
         end
+        
+        
         if isempty(trans_num)
             continue;
         end
         
-        a = evmbsdata.region_summary(1,j).(fn{i});
+        a = echobsdata.region_summary(1,j).(fn{i});
         b = esp2mbsdata.region_summary(1,trans_num).(fn{i});
-        c(j) = (a-b)./b*100;
+        if b==0 && a==0
+            c(j) =0;
+        elseif b==0
+            c(j) =nan;
+        else
+            c(j)= c(j)+(a-b)./b*100;
+        end
     end
     
-
-  
+    
+    
     c = nanmean(c(:));
     if isnan(c); c=0; end
     if abs(c) < 0.001
@@ -182,51 +188,53 @@ for i = 7:length(fn);
     clear a b c
 end
 fprintf(1,'\n');
+
 %% Region vbscf
-fn = fieldnames(evmbsdata.region_detail(1,1));
+fn = fieldnames(echobsdata.region_detail(1,1));
 for i = 6:length(fn);
-    for j = 1:length(evmbsdata.region_detail)
+    for j = 1:length(echobsdata.region_detail)
         trans_num=[];
         for k=1:length(esp2mbsdata.region_detail)
-            if  strcmp(esp2mbsdata.region_detail(1,k).stratum,evmbsdata.region_detail(1,j).stratum)&&...
-                    esp2mbsdata.region_detail(1,k).snapshot==evmbsdata.region_detail(1,j).snapshot&&...
-                    esp2mbsdata.region_detail(1,k).transect==evmbsdata.region_detail(1,j).transect&&...
-                    strcmp(esp2mbsdata.region_detail(1,k).filename,evmbsdata.region_detail(1,j).filename)&&...
-                    esp2mbsdata.region_detail(1,k).region_id==evmbsdata.region_detail(1,j).region_id
+            if  strcmp(esp2mbsdata.region_detail(1,k).stratum,echobsdata.region_detail(1,j).stratum)&&...
+                    esp2mbsdata.region_detail(1,k).snapshot==echobsdata.region_detail(1,j).snapshot&&...
+                    esp2mbsdata.region_detail(1,k).transect==echobsdata.region_detail(1,j).transect&&...
+                    strcmp(esp2mbsdata.region_detail(1,k).filename,echobsdata.region_detail(1,j).filename)&&...
+                    esp2mbsdata.region_detail(1,k).region_id==echobsdata.region_detail(1,j).region_id
                 trans_num=k;
             end
         end
         if isempty(trans_num)
             continue;
         end
-        a = evmbsdata.region_detail(1,j).(fn{i});
+        a = echobsdata.region_detail(1,j).(fn{i});
         b = esp2mbsdata.region_detail(1,trans_num).(fn{i});
+        a(isnan(a)|a==0)=[];
+        b(isnan(b)|b==0)=[];
         if length(a)~=length(b)
             a(a==0)=[];
             b(b==0)=[];
         end
         
-%         if i==9
-%             figure(41564);
-%             title(fn{i})
-%             plot(a);hold on;
-%             plot(b);
-%             grid on;
-%             legend('Matlab','Esp2')
-%             title(sprintf('Transect: %0.f File: %s',evmbsdata.region_detail(1,j).transect,evmbsdata.region_detail(1,j).filename));
-%             %pause(1);
-%             hold off;
-%         end
+        if i==9
+            figure(41564);
+            title(fn{i})
+            plot(a(:));hold on;
+            plot(b(:));
+            grid on;
+            legend('Matlab','Esp2')
+            title(sprintf('Region vbscf\n Transect: %0.f File: %s',echobsdata.region_detail(1,j).transect,echobsdata.region_detail(1,j).filename));
+            hold off;
+        end
         
         if length(a(:))~=length(b(:))
             diff(j)=nan;
-            esp2(j) = nan;    
+            esp2(j) = nan;
             continue;
         end
         diff(j)=nansum(a(:)-b(:));
         esp2(j) = nansum(b(:));
         
-                     
+        
     end
     
     c =nansum(diff)/nansum(esp2)*100;
@@ -246,27 +254,35 @@ end
 fprintf(1,'\n');
 
 %% Region Summary (abscf by vertical slice)
-fn = fieldnames(evmbsdata.region(1,1));
+fn = fieldnames(echobsdata.region(1,1));
 for i = 7:length(fn);
-    for j = 1:length(evmbsdata.region)
+    for j = 1:length(echobsdata.region)
         trans_num=[];
         for k=1:length(esp2mbsdata.region)
-            if  strcmp(esp2mbsdata.region(1,k).stratum,evmbsdata.region(1,j).stratum)&&...
-                    esp2mbsdata.region(1,k).snapshot==evmbsdata.region(1,j).snapshot&&...
-                    esp2mbsdata.region(1,k).transect==evmbsdata.region(1,j).transect&&...
-                    strcmp(esp2mbsdata.region(1,k).filename,evmbsdata.region(1,j).filename)&&...
-                    esp2mbsdata.region(1,k).region_id==evmbsdata.region(1,j).region_id
+            if  strcmp(esp2mbsdata.region(1,k).stratum,echobsdata.region(1,j).stratum)&&...
+                    esp2mbsdata.region(1,k).snapshot==echobsdata.region(1,j).snapshot&&...
+                    esp2mbsdata.region(1,k).transect==echobsdata.region(1,j).transect&&...
+                    strcmp(esp2mbsdata.region(1,k).filename,echobsdata.region(1,j).filename)&&...
+                    esp2mbsdata.region(1,k).region_id==echobsdata.region(1,j).region_id
                 trans_num=k;
             end
         end
         if isempty(trans_num)
             continue;
         end
-        a = evmbsdata.region(1,j).(fn{i});
+        a = echobsdata.region(1,j).(fn{i});
         b = esp2mbsdata.region(1,trans_num).(fn{i});
-        c(j) = nansum((a(:)-b(:)))./nansum(b(:))*100;
-        %         figure();
-        %         imagesc(a-b)
+        
+        a(isnan(a)|a==0)=[];
+        b(isnan(b)|b==0)=[];
+        if length(a)~=length(b)
+            a(a==0)=[];
+            b(b==0)=[];
+        end
+        
+        ln=nanmin(length(a),length(b));
+        c(j) = nansum((a(1:ln)-b(1:ln)))./nansum(b(1:ln))*100;
+
         
     end
     c = nanmean(c(:));

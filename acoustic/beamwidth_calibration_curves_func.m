@@ -190,6 +190,8 @@ for uui=1:length(layer.Frequencies)
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
     end
 end
+
+set(main_figure,'WindowButtonDownFcn','');
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'App_path',app_path);
 end

@@ -2,6 +2,7 @@ function classify_regions(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
+hfigs=getappdata(main_figure,'ExternalFigures');
 
 [idx_38,found_38]=find_freq_idx(layer,38000);
 [idx_18,found_18]=find_freq_idx(layer,18000);
@@ -63,6 +64,13 @@ end
 
 layer.prepare_classification(idx_to_process,reprocess,own);
 idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+
+if isempty(idx_school_38)
+    warning('Cannot find 38 kHz Schools...Pass...');
+    setappdata(main_figure,'Layer',layer);
+    return;
+end
+    
 id_to_remove=[];
 for ii=1:length(idx_school_38)
     if length(layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Output.Sv_mean(:))<50
@@ -76,8 +84,11 @@ end
 
 idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
 for ii=1:length(idx_school_38)
-    layer.apply_classification(idx_38,idx_school_38(ii));
+    new_fig=layer.apply_classification(idx_38,idx_school_38(ii));
 end
+
+hfigs=[hfigs new_fig];
+setappdata(main_figure,'ExternalFigures',hfigs);
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);

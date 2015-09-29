@@ -230,6 +230,8 @@ if ~isempty(f_vec_save)
     plot(f_vec_2/1e3,ts,'k','linewidth',2)
 end
 
+set(main_figure,'WindowButtonDownFcn','');
+
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'App_path',app_path);
 end

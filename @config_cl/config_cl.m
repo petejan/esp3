@@ -24,12 +24,12 @@ classdef config_cl
         BeamWidthAthwartship=7;
         DirectivityDropAt2XBeamWidth
         EquivalentBeamAngle
-        Frequency=38000;
-        FrequencyMaximum=38000;
-        FrequencyMinimum=38000;
-        Gain=-26;
-        MaxTxPowerTransducer=1000;
-        SaCorrection=0;
+        Frequency;
+        FrequencyMaximum;
+        FrequencyMinimum;
+        Gain;
+        MaxTxPowerTransducer;
+        SaCorrection;
         TransducerName='Dummy Transducer'
     end
      

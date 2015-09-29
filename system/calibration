@@ -1,3 +1,2 @@
-sv_correction_factor = 57 1.00 
-comments = Do nothing value for San Waitaki. Channel 57
-
+sv_correction_factor = 56 1.0
+comments = Do nothing calibration for Thomas Harrison ES60

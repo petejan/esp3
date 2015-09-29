@@ -15,7 +15,7 @@ if ~isequal(Filename_cell, 0)
         
         FileName=Filename_cell{uu};
         
-        ifileInfo = get_ifile_info(PathToFile, str2double(FileName(2:end)));
+        ifileInfo = parse_ifile(PathToFile, str2double(FileName(2:end)));
         RawFilename=ifileInfo.rawFileName;
         
         origin=fullfile(PathToFile,FileName);

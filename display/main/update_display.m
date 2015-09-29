@@ -64,7 +64,9 @@ end
 % profile on;
 load_info_panel(main_figure);
 load_axis_panel(main_figure,new);
-set(main_figure,'WindowButtonMotionFcn',{@display_info,main_figure});
+
+
+set(main_figure,'WindowButtonMotionFcn',{@display_info,main_figure,0});
 % 
 % profile off;
 % profile viewer;

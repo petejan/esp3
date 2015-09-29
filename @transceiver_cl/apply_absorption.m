@@ -12,7 +12,8 @@ if ~isempty(Sv)
     Sv_new=apply_new_absorption(Sv,...
         trans.Data.Range,alpha_ori,alpha);
     trans.Params.Absorbtion=alpha;
-    trans.Data.remove_sub_data('sv');trans.Data.add_sub_data(sub_ac_data_cl('sv',name,Sv_new));
+    trans.Data.remove_sub_data('sv');
+    trans.Data.add_sub_data(sub_ac_data_cl('sv',name,Sv_new));
 end
 
 if ~isempty(Sp)

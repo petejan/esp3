@@ -76,9 +76,9 @@ classdef transceiver_cl < handle
                 obj.(props{i})=results.(props{i});
             end
             
-            if isempty(p.Results.Data)
-                obj.Data=ac_data_cl();
-            end
+%             if isempty(p.Results.Data)
+%                 obj.Data=ac_data_cl();
+%             end
             
         end
         
@@ -265,6 +265,24 @@ classdef transceiver_cl < handle
             
         end
         
+        function [idx,found]=find_reg_name_id(obj,name,ID)
+            reg_curr=obj.Regions;
+            idx=[];
+            found=0;
+            for i=1:length(reg_curr)
+                if (strcmpi((reg_curr(i).Name),(name))&&((reg_curr(i).ID)==ID))
+                    idx=i;
+                    found=found+1;
+                end
+            end
+            
+            if isempty(idx)
+                idx=1;
+                found=0;
+            end
+
+        end
+        
         
         function [idx,found]=find_reg_idx_id(trans,id)
             idx=[];
@@ -282,9 +300,11 @@ classdef transceiver_cl < handle
         end
         
         
-        function [mean_depth,Sa]=get_mean_depth_from_region(obj,id)
+        
+        
+        function [mean_depth,Sa]=get_mean_depth_from_region(obj,unique_id)
             
-            [reg_idx,found]=obj.find_reg_idx(id);
+            [reg_idx,found]=obj.find_reg_idx(unique_id);
             
             if found==0
                 mean_depth=[];

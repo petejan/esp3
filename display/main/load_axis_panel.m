@@ -109,8 +109,9 @@ hold(axes_panel_comp.haxes,'on');
 hold(axes_panel_comp.vaxes,'on');
 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
+setappdata(main_figure,'Layer',layer);
 set_axes_position(main_figure);
-display_info([],[],main_figure)
+display_info([],[],main_figure,1);
 
 if ~isempty(layer.Transceivers(idx_freq).Regions)
     display_regions(main_figure)

@@ -20,9 +20,9 @@ else
 end
 
 
-ifile_info=get_ifile_info(iFilePath,str2double(iFileName(end-6:end)));
+ifile_info=parse_ifile(iFilePath,str2double(iFileName(end-6:end)));
 rawFileName=ifile_info.rawFileName;
-depthFactor = get_ifile_parameter(fullfile(iFilePath,iFileName),'depth_factor');
+depthFactor = ifile_info.depth_factor;
 
 %% Checkout bFile
 outDir = tempname();
@@ -35,7 +35,6 @@ idx_str=strfind(iFilePath,voyage);
 remain_str=iFilePath(idx_str:end);
 bFileName = ['b' iFileName(2:end)];
 
-% command='cvs -d :local:Z:\ checkout -d C:\Users\ladroity\AppData\Local\Temp\tpfcb5ff88_244e_4f0c_a7f1_f89606dc1a2b tan1301/hull'
 
 if isempty(rev)
     command = ['cvs -q -d ' cvsroot ' checkout ' strrep(fullfile(remain_str,bFileName),'\','/')];
@@ -53,14 +52,25 @@ cd(work_path)
 if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))||~isempty(strfind(output,'Unknown command'))
     rmdir(outDir,'s');
     bad=[];
-    bottom=[];
+    bottom=bottom_cl(...
+        'Origin','Esp2',...
+        'Range',[],...
+        'Sample_idx',[]);
     return;
 end
-
 
 bFilePath = fullfile(outDir,remain_str);
 
 sample_idx = load_bottom_file(fullfile(bFilePath,bFileName));
+if isempty(sample_idx)
+    bad=[];
+    bottom=bottom_cl(...
+        'Origin','Esp2',...
+        'Range',[],...
+        'Sample_idx',[]);
+    return;
+end
+
 bottom = sample_idx/depthFactor;
 bottom = bottom-(1/depthFactor);
 bottom(end) = bottom(end)-2*(1/depthFactor);

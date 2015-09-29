@@ -30,7 +30,7 @@ fid = fopen(filename);
 if fid == -1
    disp(['Error: File not found or permission denied for ' filename]);
    bottom = [];
-   return
+   return;
 end
 
 %Read in file, skipping lines until 'EndAlgorithm' is found

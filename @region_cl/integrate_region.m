@@ -271,12 +271,6 @@ for i=1:N_x
     sub_samples_mat_red=sub_samples_mat(idx_red);
     %Sv_red=10*log10(70/100*10.^(Sv_red/10));
     
-    switch region.Cell_h_unit
-        case 'samples'
-            sple_num_max=nanmax(region.Output.Nb_good_pings(:,i).*cell_h);
-        case 'meters'
-            sple_num_max=nanmax(region.Output.Nb_good_pings(:,i).*round(cell_h/dr));
-    end
     
 
     for j=1:N_y
@@ -289,20 +283,26 @@ for i=1:N_x
             idx_bin_2=(((y_mat_red-y_c(j)))<y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j));
         end
         
-        switch region.Reference
-            case 'Surface'
-                switch region.Cell_h_unit
-                    case 'samples'
-                        sple_num=(region.Output.Nb_good_pings(j,i).*round(2*(y_res(j))));
-                    case 'meters'
-                        sple_num=(region.Output.Nb_good_pings(j,i).*round(2*(y_res(j)/dr)));
-                end              
-            otherwise
-                sple_num=sple_num_max;
+        %height=abs(nanmax(y_mat_red(idx_bin))-nanmin(y_mat_red(idx_bin)));
+  
+        switch region.Cell_h_unit
+            case 'samples'   
+                sple_num=(region.Output.Nb_good_pings(j,i).*floor(2*(y_res(j))));
+                %height=2*y_res(j)*dr-2*dr;
+                %sple_num=(region.Output.Nb_good_pings(j,i).*height);
+            case 'meters'
+                sple_num=(region.Output.Nb_good_pings(j,i).*floor(2*(y_res(j)/dr)));
+                %height=2*y_res(j)-2*dr;
+                %sple_num=(region.Output.Nb_good_pings(j,i).*round(height/dr));
         end
         
-        region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin))/sple_num;
-         
+        if isempty(sple_num)
+            sple_num=1;
+        elseif sple_num==0;
+            sple_num=1;
+        end
+        
+        region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin))/sple_num;         
         region.Output.Sv_mean_lin(j,i)=nanmean(Sv_lin_red(idx_bin));
         
         region.Output.Sv_mean_esp2(j,i)=10*log10(region.Output.Sv_mean_lin_esp2(j,i));
@@ -323,6 +323,7 @@ for i=1:N_x
             region.Output.Layer_depth_max(j,i)=nanmax(sub_r_mat_red(idx_bin));
             region.Output.Thickness_mean(j,i)=dr*nansum(idx_bin)/(region.Output.Nb_good_pings(j,i));
             region.Output.Thickness_esp2(j,i)=abs(nanmax(rel_range_mat_red(idx_bin))-nanmin(rel_range_mat_red(idx_bin)));
+            %region.Output.Thickness_esp2(j,i)=height;
         end
         if nansum(idx_bin_2)>0
             region.Output.Sample_S(j,i)=nanmin(sub_samples_mat_red(idx_bin_2));

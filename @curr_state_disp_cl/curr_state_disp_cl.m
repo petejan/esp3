@@ -64,12 +64,18 @@ classdef curr_state_disp_cl <handle
                 case 'power'
                     obj.Cax=[-200 0];
                     obj.Type='Power';
+                case 'powerunmatched'
+                    obj.Cax=[-200 0];
+                    obj.Type='Power Before match Filtering';
                 case 'powerdenoised'
                     obj.Cax=[-200 0];
                     obj.Type='Denoised Power';
-                case'y'
+                case'y_real'
                     obj.Cax=[-200 0];
-                    obj.Type='y';
+                    obj.Type='Y_real';
+                case'y_imag'
+                    obj.Cax=[-200 0];
+                    obj.Type='Y_imag';
                 case 'singletarget'
                     obj.Cax=[];
                     obj.Type='Single Targets compensated TS';

@@ -1,13 +1,12 @@
 
-function disp_curves(layer,tag)
+function hfig=disp_curves(layer,tag)
 
 idx=layer.get_curves_per_tag(tag);
 X_cumul=[];
 Y_cumul=[];
 if~isempty(idx);
     
-    figure();
-    clf;
+    hfig=figure('Name','Curves','NumberTitle','off','tag','curves');
     hold on;
     grid on;
     

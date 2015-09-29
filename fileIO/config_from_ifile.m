@@ -33,6 +33,8 @@ params_obj=params_cl();
 % # Run by user aca on computer esp2vm, started at Fri Jan  4 00:18:21 2013
 % 
 
+ifileInfo=parse_ifile('',ifile);
+
 config_obj.EthernetAddress='';
 config_obj.IPAddress='';
 config_obj.SerialNumber='';
@@ -40,7 +42,7 @@ config_obj.TransceiverName='CREST';
 config_obj.TransceiverNumber=[];
 config_obj.TransceiverSoftwareVersion='';
 config_obj.TransceiverType='';
-config_obj.ChannelID=get_ifile_parameter(ifile,'transducer_id');
+config_obj.ChannelID=ifileInfo.transducer_id;
 config_obj.ChannelIdShort='';
 config_obj.ChannelNumber=[];
 config_obj.HWChannelConfiguration=[];
@@ -48,8 +50,8 @@ config_obj.MaxTxPowerTransceiver=[];
 config_obj.PulseLength=[];
 config_obj.AngleOffsetAlongship=0;
 config_obj.AngleOffsetAthwartship=0;
-config_obj.AngleSensitivityAlongship=get_ifile_parameter(ifile,'angle_factor_alongship');
-config_obj.AngleSensitivityAthwartship=get_ifile_parameter(ifile,'angle_factor_alongship');
+config_obj.AngleSensitivityAlongship=ifileInfo.angle_factor_alongship;
+config_obj.AngleSensitivityAthwartship=ifileInfo.angle_factor_alongship;
 config_obj.BeamType='singlebeam';
 config_obj.BeamWidthAlongship=7;
 config_obj.BeamWidthAthwartship=7;
@@ -65,28 +67,28 @@ config_obj.TransducerName='';
 
 params_obj.Time=[];
 params_obj.BandWidth=[];
-params_obj.ChannelID={get_ifile_parameter(ifile,'transducer_id')};
+params_obj.ChannelID={ifileInfo.transducer_id};
 params_obj.ChannelMode={};
 params_obj.FrequencyEnd=38000;
 params_obj.FrequencyStart=38000;
 params_obj.PulseForm=[];
 
-if isempty(get_ifile_parameter(ifile,'sound_speed'))
+if isnan(ifileInfo.sound_speed)
     soundspeed=1500;
 else
-    soundspeed=get_ifile_parameter(ifile,'sound_speed');
+    soundspeed=ifileInfo.sound_speed;
 end
 
-if isempty(get_ifile_parameter(ifile,'transmit_pulse_length'))
-    params_obj.PulseLength=1/get_ifile_parameter(ifile,'depth_factor')/soundspeed*4;
+if isnan(ifileInfo.transmit_pulse_length)
+    params_obj.PulseLength=1/ifileInfo.depth_factor/soundspeed*4;
 else
-    params_obj.PulseLength=1/get_ifile_parameter(ifile,'depth_factor')/soundspeed*get_ifile_parameter(ifile,'transmit_pulse_length'); 
+    params_obj.PulseLength=1/ifileInfodepth_factor/soundspeed*ifileInfo.transmit_pulse_length; 
 end
 
-params_obj.SampleInterval=1/get_ifile_parameter(ifile,'depth_factor')/soundspeed;
+params_obj.SampleInterval=1/ifileInfo.depth_factor/soundspeed;
 params_obj.Slope=[];
 params_obj.TransducerDepth=0;
 params_obj.TransmitPower=[];
-params_obj.Absorbtion=get_ifile_parameter(ifile,'absorption_coefficient')/1000;
+params_obj.Absorbtion=ifileInfo.absorption_coefficient/1000;
 
 end

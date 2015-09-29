@@ -17,7 +17,7 @@ if ~mkdir(outDir)
 end
 %% get calibration rev - allowing for different revs in mbs script
 display(['Extracting calibration revision ' CalRev]);
-command = ['cvs -d ' getCVSRepository ' checkout -r ' CalRev ' system'];
+command = ['cvs -d ' cvsroot ' checkout -r ' CalRev ' system'];
 [~ , output] = system(command,'-echo');
 
 if  ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))

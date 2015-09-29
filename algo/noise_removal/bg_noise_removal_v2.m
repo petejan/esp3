@@ -3,7 +3,7 @@ removing_noise=msgbox('Removing Noise. This box will close when finished...','Re
 p = inputParser;
 
 defaultVertFilt=5;
-checkVertFilt=@(VertFilt)(VertFilt>0&&VertFilt<=1000);
+checkVertFilt=@(VertFilt)(VertFilt>0&&VertFilt<=range(end));
 defaultHorzFilt=20;
 checkHorzFilt=@(HorzFilt)(HorzFilt>0&&HorzFilt<=1000);
 defaultNoiseThr=-125;
@@ -30,7 +30,7 @@ addParameter(p,'SNRThr',defaultSNRThr,checkSNRThr);
 parse(p,power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr,varargin{:});
 
 
-h_filt=nanmin(p.Results.VertFilt,size(power,1));
+h_filt=ceil(nanmin(p.Results.VertFilt,size(power,1))/nanmean(diff(range)));
 w_filt=nanmin(p.Results.HorzFilt,size(power,2));
 noise_thr=p.Results.NoiseThr;
 SNR_thr=p.Results.SNRThr;

@@ -1,4 +1,4 @@
-function display_info(~,~,main_figure)
+function display_info(~,~,main_figure,force_update)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -33,6 +33,10 @@ cp = ax_main.CurrentPoint;
 x=cp(1,1);
 y=cp(1,2);
 
+if (x>x_lim(2)||x<x_lim(1)|| y>y_lim(2)||y<y_lim(1)||gcf~=main_figure)&&force_update==0
+    return;
+end
+    
 x=nanmax(x,x_lim(1));
 x=nanmin(x,x_lim(2));
 
@@ -52,7 +56,7 @@ if ~isempty(cdata)
     
     switch lower(deblank(curr_disp.Fieldname))
         case{'alongangle','acrossangle'}
-            val_str=sprintf('Angle: %.2f deg.',cdata(idx_r,idx_ping));
+            val_str=sprintf('Angle: %.2f deg.',cdata(idx_r,idx_ping));  
         case{'alongphi','acrossphi'}
             val_str=sprintf('Phase: %.2f deg.(phase)',cdata(idx_r,idx_ping));
         otherwise

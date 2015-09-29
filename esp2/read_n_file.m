@@ -10,7 +10,7 @@ if fid == -1
     return;
 end
 
-'4 LAT: 43 18.2600 S    LONG: 174 7.4600 E HDG: 164 SOG: 7.3 HDT: Depth: No HPR';
+%'4 LAT: 43 18.2600 S    LONG: 174 7.4600 E HDG: 164 SOG: 7.3 HDT: Depth: No HPR';
 formatSpec='%f LAT: %f %f %s    LONG: %f %f %s HDG: %f SOG: %f HDT: %f Depth: %f ';
 
 i=0;
@@ -20,6 +20,7 @@ while (true)
     end
     i=i+1;
     tline=fgetl(fid);
+       
     l_old=length(tline);
     tline = strrep(tline, ' ', ',');
     l_new=0;
@@ -46,7 +47,7 @@ while (true)
     sog(out{1}+1)=out{9};
     heading(out{1}+1)=out{8};    
 end
-%close(fid)
+fclose(fid);
 time=nan(size(lat));
 
 gps_data=gps_data_cl('Lat',lat,'Long',lon,'Time',time,'NMEA','Esp2');

@@ -22,6 +22,8 @@
             % calculate transect and sliced transect summary
             tmp = cell2mat(mbs.output.temp.fileSum.data(:,1));
             snaps = unique(tmp(~isnan(tmp)));
+            mbs.output.transectSum.data=[];
+            mbs.output.slicedTransectSum.data=[];
             for i = 1:length(snaps)
                 % loop over all snapshots and get data subset
                 ix = find(cell2mat(mbs.output.temp.fileSum.data(:,1))==snaps(i));
@@ -35,11 +37,14 @@
                     trans = unique(cell2mat(tmpSn(jx,3)));
                     subtmpSn=tmpSn(jx,:);
                     subtmpSnSl=tmpSnSl(jx,:);
-                    for k = 1:length(trans)
+                    
+                    ln=size(mbs.output.transectSum.data,1);
+                    for k = 1:length(trans)        
                         mbs.output.transectSum.data = [mbs.output.transectSum.data ; subtmpSn(k,1:13)];
-                        mbs.output.transectSum.data{idx(k),5} =  nansum(cell2mat(subtmpSn(k,14)))/nansum(cell2mat(subtmpSn(k,15))); % vbscf according to Esp2 formula
-                        mbs.output.transectSum.data{idx(k),6} =  nansum(cell2mat(subtmpSn(k,14)))/nansum(cell2mat(subtmpSn(k,8))); % abscf according to Esp2 formula
-                        mbs.output.slicedTransectSum.data = [mbs.output.slicedTransectSum.data ; subtmpSnSl(k(1),:)];
+                        mbs.output.slicedTransectSum.data = [mbs.output.slicedTransectSum.data ; subtmpSnSl(k,:)];
+                        mbs.output.transectSum.data{ln+k,5} =  nansum(cell2mat(subtmpSn(k,14)))/nansum(cell2mat(subtmpSn(k,15))); % vbscf according to Esp2 formula
+                        mbs.output.transectSum.data{ln+k,6} =  nansum(cell2mat(subtmpSn(k,14)))/nansum(cell2mat(subtmpSn(k,8))); % abscf according to Esp2 formula
+                        
                     end
                 end
                 

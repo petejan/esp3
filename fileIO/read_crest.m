@@ -62,6 +62,7 @@ if ~isequal(Filename_cell, 0)
                     samples=fread(fid,2*nb_samples,precision);
                     sample_real(first_sample:first_sample+nb_samples-1,idx_mess)=samples(1:2:end);              %real part of sample
                     sample_imag(first_sample:first_sample+nb_samples-1,idx_mess)=samples(2:2:end);
+                    %sample_num(first_sample:first_sample+nb_samples-1,idx_mess)=(first_sample:first_sample+nb_samples-1)';
                 end
                 idx_mess=idx_mess+1;
             end
@@ -81,10 +82,12 @@ if ~isequal(Filename_cell, 0)
         
         
         [gps_data,attitude_data]= read_n_file(fullfile(PathToFile,FileName));
-        depth_factor = get_ifile_parameter(fullfile(PathToFile,FileName),'depth_factor');
-        system_calibration=get_ifile_parameter(fullfile(PathToFile,FileName),'system_calibration');
+
+        ifileInfo=parse_ifile(PathToFile,FileName);
+
+        system_calibration=ifileInfo.system_calibration;
+        depth_factor=ifileInfo.depth_factor;
         
-        ifileInfo = get_ifile_info(PathToFile, FileName);
         
         start_time=ifileInfo.start_date;
         end_time=ifileInfo.finish_date;
@@ -96,8 +99,8 @@ if ~isequal(Filename_cell, 0)
         gps_data.Time=linspace(start_time,end_time,length(gps_data.Time));
         attitude_data.Time=linspace(start_time,end_time,length(attitude_data.Time));
         
-        
-        range=((1:size(samples_val_imag,1))'-1)/depth_factor;
+        samples_num=(1:size(samples_val_imag,1))';
+        range=(samples_num-1)/depth_factor;
         number=(1:size(samples_val_imag,2));
         Time=linspace(start_time,end_time,length(number));
         
@@ -106,6 +109,12 @@ if ~isequal(Filename_cell, 0)
         
         
         power=sqrt(samples_val_real.^2+samples_val_imag.^2);
+        
+        
+        if strcmp(ifileInfo.sounder_type,'ES70')||strcmp(ifileInfo.sounder_type,'ES60')
+        power=power-repmat(es60_error((1:size(power,2))+ifileInfo.es60_zero_error_ping_num),size(power,1),1);
+        end
+        
         sv=20*log10(power/system_calibration)+10*log10(depth_factor);
             
         [~,curr_filename,~]=fileparts(tempname);
@@ -115,6 +124,7 @@ if ~isequal(Filename_cell, 0)
                 
           ac_data_temp=ac_data_cl('SubData',sub_ac_data,...
                 'Range',range,...
+                'Samples',samples_num,...
                 'Time',Time,...
                 'Number',number,...
                 'MemapName',curr_name);

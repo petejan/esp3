@@ -5,14 +5,15 @@ classdef params_cl
         BandWidth
         ChannelID
         ChannelMode
-        FrequencyEnd=38000;
-        FrequencyStart=38000;
+        FrequencyEnd
+        FrequencyStart
         PulseForm
-        PulseLength=0.001;
-        SampleInterval=0.001/4;
+        PulseLength
+        PulseLengthEff
+        SampleInterval
         Slope
         TransducerDepth=0;
-        TransmitPower=1000;
+        TransmitPower
         Absorbtion
     end
        

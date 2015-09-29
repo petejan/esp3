@@ -212,35 +212,7 @@ if ~isequal(Filename_cell, 0)
         
         calParms = readEKRaw_GetCalParms(header,data);
         data = readEKRaw_ConvertAngles(data,calParms,'KeepElecAngles',true);
-        
-        for n=1:header.transceivercount
-            f = calParms(n).frequency;
-            c = calParms(n).soundvelocity;
-            t = calParms(n).sampleinterval;
-            alpha = double(calParms(n).absorptioncoefficient);
-            G = calParms(n).gain;
-            phi = calParms(n).equivalentbeamangle;
-            pt = calParms(n).transmitpower;
-            tau = calParms(n).pulselength;
-            idx = find(calParms(n).pulselengthtable == tau);
-            
-            if (~isempty(idx))
-                Sac = calParms(n).sacorrectiontable(idx);
-            else
-                warning('readEKRaw:ParameterError', ...
-                    'Sa correction table empty - Sa correction not applied.');
-                Sac = 0;
-            end
-            dR = double(c * t / 2);
-            pSize = size(data.pings(n).power);
-            %  create range vector (in m)
-            data.pings(n).range = double(((0:pSize(1) - 1) + ...
-                double(data.pings(n).samplerange(1)) - 1) * dR)';
-            
-            power=double(10.^(data.pings(n).power/10));
-            [data.pings(n).Sp,data.pings(n).Sv]=convert_power(power,double(data.pings(n).range),double(c),double(alpha),double(tau),double(pt),double(c/f),double(G),double(phi),double(Sac));
-        end
-        
+                
         Filename_bot=[Filename(1:end-4) '.bot'];
         if exist(fullfile(PathToFile,Filename_bot),'file')
             [~,temp, ~] = readEKBot(fullfile(PathToFile,Filename_bot), calParms,'Frequencies',vec_freq);
@@ -254,7 +226,17 @@ if ~isequal(Filename_cell, 0)
         else
             Bottom_sim=nan(header.transceivercount,size(power,1));
         end
-        Bottom_sim_idx=round(Bottom_sim/dR-(double((data.pings(n).samplerange(1)-1))))+1;
+        
+        c = [calParms.soundvelocity];
+        t = [calParms.sampleinterval];
+        temp= double([data.pings.samplerange]');
+        sample_start=temp(1:2:end);
+        sample_end=temp(2:2:end);
+        dR = double(c .* t / 2)';
+        
+        
+        
+        Bottom_sim_idx=round(Bottom_sim./repmat(dR,1,size(Bottom_sim,2))-repmat(sample_start,1,size(Bottom_sim,2)))+1;
         Bottom_sim_idx(Bottom_sim_idx<=1)=nan;
         
         if isfield(data, 'gps')
@@ -271,10 +253,7 @@ if ~isequal(Filename_cell, 0)
             attitude_full=attitude_nav_cl();
         end
         
-        
-        
-        
-        
+  
         freq=nan(1,header.transceivercount);
         
         fileID = unidrnd(2^64);
@@ -285,24 +264,10 @@ if ~isequal(Filename_cell, 0)
         for i =1:header.transceivercount
             
             curr_data.power=single(10.^(double(data.pings(i).power/10)));
-            curr_data.sp=single(data.pings(i).Sp);
-            curr_data.sv=single(data.pings(i).Sv);
-%             curr_data.acrossphi=single(data.pings(i).athwartship_e);
-%             curr_data.alongphi=single(data.pings(i).alongship_e);
             curr_data.acrossangle=single(data.pings(i).athwartship);
             curr_data.alongangle=single(data.pings(i).alongship);
             
-            
-            %                         ff=fields(curr_data);
-            %                         tic
-            %                         for uuu=1:length(ff)
-            %                             MatFileNames=fullfile([tempname '_echo_analysis.mat']);
-            %                             data_temp=curr_data.(ff{uu});
-            %                             save(MatFileNames,'data_temp','-v7.3');
-            %                             curr_matfile=matfile(MatFileNames,'writable',true);
-            %                         end
-            %                         toc
-            
+                      
             
             [~,curr_filename,~]=fileparts(tempname);
             curr_name=fullfile(dir_data,curr_filename);
@@ -318,20 +283,21 @@ if ~isequal(Filename_cell, 0)
                 sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},curr_name,curr_data.(ff{uuu}))];
             end
             
-            
+            samples=double((sample_start(i):sample_end(i)))';
+            range=double(samples-1)*dR(i);
             ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
-                'Range',double(data.pings(i).range),...
+                'Range',range,...
+                'Samples',samples,...
                 'Time',double(data.pings(i).time),...
                 'Number',double(data.pings(i).number),...
                 'MemapName',curr_name);
             
             clear curr_data;
-            
-            r=data.pings(i).range;
+
             gps_data_ping=gps_data.resample_gps_data(data.pings(i).time);
             attitude=attitude_full.resample_attitude_nav_data(data.pings(i).time);
             
-            algo_vec=init_algos(r);
+            algo_vec=init_algos(range);
             
             
             
@@ -354,9 +320,13 @@ if ~isequal(Filename_cell, 0)
             freq(i)=data.config(i).frequency(1);
             
             [transceiver(i).Config,transceiver(i).Params]=config_from_ek60(data.config(i),calParms(i));
+            envdata=env_data_cl('SoundSpeed',calParms(i).soundvelocity);
+            
+            transceiver(i).computeSpSv(envdata);
+            
         end
         
-        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq);
+        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
     end
     

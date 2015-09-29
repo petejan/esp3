@@ -104,6 +104,7 @@ function classify_reg_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
+hfigs=getappdata(main_figure,'ExternalFigures');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 list_reg = list_regions(layer.Transceivers(idx_freq));
@@ -132,9 +133,12 @@ if ~isempty(list_reg)
     end    
     
     layer.prepare_classification(idx_to_process,0,0);  
-    layer.apply_classification(idx_freq,idx_reg);  
+    new_fig=layer.apply_classification(idx_freq,idx_reg);  
 end
 
+
+hfigs=[hfigs new_fig];
+setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);
 display_regions(main_figure);
 update_display(main_figure,0)
@@ -265,7 +269,7 @@ list_reg = list_regions(layer.Transceivers(idx_freq));
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    layer.copy_region_across(idx_freq,active_reg);
+    layer.copy_region_across(idx_freq,active_reg,[]);
 end
 
 setappdata(main_figure,'Layer',layer);

@@ -1,8 +1,11 @@
-function display_att(obj)
+function h_fig=display_att(obj)
 
 if isempty(obj.Time)
+    h_fig=[];
     return;
 end
+
+
 heading=obj.Heading;
 pitch=obj.Pitch;
 roll=obj.Roll;
@@ -10,7 +13,7 @@ heave=obj.Heave;
 time=(obj.Time-obj.Time(1))*24*60*60;
 
 if ~isempty(roll)
-    figure()
+    h_fig(1)=figure('Name','Attitude','NumberTitle','off','tag','attitude');
     ax(1)= axes();
     axes(ax(1));
     hold on;
@@ -39,11 +42,13 @@ if ~isempty(roll)
     linkaxes(ax,'x');
 end
 if ~isempty(heading)
-    figure();
+    h_fig(2)=figure('Name','Heading','NumberTitle','off','tag','attitude');
     ax(3)=axes();
     plot(time,heading,'k');
     xlabel('Time');
     ylabel('Heading (deg)');
     grid on;
     linkaxes(ax,'x');
+end
+
 end
