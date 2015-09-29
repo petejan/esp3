@@ -119,7 +119,7 @@ else
         out_species=regexpi(species,text_search);
         idx_species=cellfun(@(x) ~isempty(x),out_species);
     else
-        idx_species=zeros(size(data_ori,2),1);
+        idx_species=zeros(size(data_ori,1),1);
     end
     
     if title_search>0
@@ -127,7 +127,7 @@ else
         out_title=regexpi(titles,text_search);
         idx_title=cellfun(@(x) ~isempty(x),out_title);
     else
-        idx_title=zeros(size(data_ori,3),1);
+        idx_title=zeros(size(data_ori,1),1);
     end
     
 

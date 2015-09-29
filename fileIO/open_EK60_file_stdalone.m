@@ -229,7 +229,13 @@ if ~isequal(Filename_cell, 0)
         
         c = [calParms.soundvelocity];
         t = [calParms.sampleinterval];
-        temp= double([data.pings.samplerange]');
+        
+        if sample_range(2)==Inf
+            temp= double([data.pings.samplerange]');
+        else
+            temp=sample_range;
+        end
+        
         sample_start=temp(1:2:end);
         sample_end=temp(2:2:end);
         dR = double(c .* t / 2)';
@@ -266,9 +272,7 @@ if ~isequal(Filename_cell, 0)
             curr_data.power=single(10.^(double(data.pings(i).power/10)));
             curr_data.acrossangle=single(data.pings(i).athwartship);
             curr_data.alongangle=single(data.pings(i).alongship);
-            
-                      
-            
+             
             [~,curr_filename,~]=fileparts(tempname);
             curr_name=fullfile(dir_data,curr_filename);
             
@@ -285,6 +289,7 @@ if ~isequal(Filename_cell, 0)
             
             samples=double((sample_start(i):sample_end(i)))';
             range=double(samples-1)*dR(i);
+            
             ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
                 'Range',range,...
                 'Samples',samples,...
