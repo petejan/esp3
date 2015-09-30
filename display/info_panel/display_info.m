@@ -11,6 +11,7 @@ trans=layer.Transceivers(idx_freq);
 Range=trans.Data.Range;
 Time=trans.Data.Time;
 Number=trans.Data.Number;
+Samples=trans.Data.Samples;
 Lat=trans.GPSDataPing.Lat;
 Long=trans.GPSDataPing.Long;
 %Dist=trans.GPSDataPing.Dist;
@@ -46,7 +47,7 @@ y=nanmin(y,y_lim(2));
 if ~isempty(cdata)
     [~,idx_ping]=nanmin(abs(xdata-x));
     [~,idx_r]=nanmin(abs(ydata-y));
-    xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),idx_r,Number(idx_ping),Number(end));
+    xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
     if ~isempty(Lat)
         pos_string=sprintf('Lat: %.6f \n Long:%.6f',Lat(idx_ping),Long(idx_ping));
     else

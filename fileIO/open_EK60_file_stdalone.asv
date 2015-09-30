@@ -232,7 +232,7 @@ if ~isequal(Filename_cell, 0)
         if sample_range(2)==Inf
             temp= double([data.pings.samplerange]');
         else
-            temp=repmat(sample_range,1,header.transceivercount)';
+            temp=repmat(sample_range,1,header.transceivercount);
         end
         
         sample_start=temp(1:2:end);

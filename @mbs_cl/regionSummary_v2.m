@@ -165,9 +165,8 @@ for ii=1:length(idx_transects)
             rs{j,10} = nanmean(good_bot);% find bottom pings in good pings and only take mean from good ones
             rs{j,11} = finish_d;
             rs{j,12} = av_speed;
-            %rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*~isnan(regCellIntSub.Thickness_mean)*reg_curr.Cell_h));%Vbscv Region%Vbsc
-            rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*~isnan(regCellIntSub.Thickness_mean).*regCellIntSub.Thickness_esp2));
-            rs{j,14} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nanmean(regCellIntSub.Nb_good_pings));%Abscf Region
+            rs{j,13} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nansum(regCellIntSub.Nb_good_pings.*regCellIntSub.Thickness_esp2));
+            rs{j,14} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nanmax(regCellIntSub.Nb_good_pings));%Abscf Region
             
             
             %% Region Summary (abscf by vertical slice) (5th Mbs output Block)
@@ -180,7 +179,7 @@ for ii=1:length(idx_transects)
             rsa{j,7} = nanmax(regCellIntSub.Ping_S); % transmit Start vertical slice
             rsa{j,8} = nanmax(regCellIntSub.Lat_S); % lat vertical slice
             rsa{j,9} = nanmax(regCellIntSub.Lon_S); % lon vertical slice
-            rsa{j,10} = nansum(regCellIntSub.Sa_lin)./nanmean(regCellIntSub.Nb_good_pings);%sum up all abcsf per vertical slice
+            rsa{j,10} = nansum(regCellIntSub.Sa_lin)./nanmax(regCellIntSub.Nb_good_pings);%sum up all abcsf per vertical slice
             rsa{j,11} = nanmax(regCellIntSub.Ping_E);
             nb_good_pings_reg{i,j} = nanmean(regCellIntSub.Nb_good_pings);
             end_num_regs(i)=end_num(i)+rsa{j,11}(end);
@@ -191,12 +190,11 @@ for ii=1:length(idx_transects)
             rsv{j,3} = mbs.input.data.transect(idx_transect_files(i));
             rsv{j,4} = [mbs.input.data.dfileDir{idx_transect_files(i)} '/' sprintf('d%07.f',mbs.input.data.dfile(idx_transect_files(i)))];
             rsv{j,5} = reg(j).id;
-            rsv{j,6} = nanmax(nansum(~isnan(regCellIntSub.Sa_lin))); % num_h_slices, get max value of cells for each collum
+            rsv{j,6} = size(regCellIntSub.Sa_lin,1);% num_h_slices
             rsv{j,7} = size(regCellIntSub.Lat_S,2); % num_v_slices
             rsv{j,8} = rs{j,13}; % Vbscf Region
             [I,~]=find(~isnan(regCellIntSub.Sa_lin'));
-            idx_first=nanmin(I);
-            
+            idx_first=nanmin(I); 
             tmp = regCellIntSub.Sv_mean_lin_esp2(idx_first:(idx_first+rsv{j,6})-1,:);
             tmp(isnan(tmp))=0;
             tmp=tmp';
@@ -204,13 +202,11 @@ for ii=1:length(idx_transects)
             rsv{j,9} = tmp; % vbscf_values (Sv_mean), reshape vbscf to output horizontal slice by vertical slice like Esp2
             
             %% Region echo integral for File Summary
-            %eint(j,1) = nansum(nansum(regCellMatSub(:,:,3).*(regCellMatSub(:,:,7).*vertSlice)));
             eint(i,j) = nansum(nansum(regCellIntSub.Sa_lin));
-            
-            
+       
         end
         
-        if length(Transceiver.Regions)>0
+        if ~isempty(Transceiver.Regions)
             mbs.output.regionSum.data =  [mbs.output.regionSum.data  ; rs];
             mbs.output.regionSumAbscf.data =  [mbs.output.regionSumAbscf.data  ; rsa];
             rsa_temp{i}=rsa;
@@ -304,17 +300,17 @@ for ii=1:length(idx_transects)
             for k = 1:length(binStart); % sum up abscf data according to bins
                 t_start{iuu,j}=rsa_new{j,7}+end_num(iuu);
                 t_end{iuu,j}=rsa_new{j,11}+end_num(iuu);
-                ix = (t_start{iuu,j}>=binStart(k) &  t_start{iuu,j}<=binEnd(k));
+                ix = (t_start{iuu,j}>=binStart(k) &  t_start{iuu,j}<binEnd(k));
                 find(ix);
-                nb_good_pings(k)=nb_good_pings(k)+nansum(nb_good_pings_reg{iuu,j}(ix));
+                nb_good_pings(k)=nanmax(nansum(nb_good_pings_reg{iuu,j}(ix)),nb_good_pings(k));
                 slice_abscf(k) = slice_abscf(k)+ nansum(nb_good_pings_reg{iuu,j}(ix).*rsa_new{j,10}(ix));
-                slice_abscf_ori(k) = slice_abscf_ori(k)+ nansum(rsa_new{j,10}(ix));
+                slice_abscf_ori(k) = (slice_abscf_ori(k)+nansum(rsa_new{j,10}(ix)));
             end
         end
     end
     
-    slice_abscf=slice_abscf./nb_good_pings;
-    %slice_abscf=slice_abscf_ori;
+    %slice_abscf=slice_abscf./nb_good_pings;
+    slice_abscf=slice_abscf_ori;
     
     
     %will be used for Sliced Transect Summary

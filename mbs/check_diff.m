@@ -216,14 +216,16 @@ for i = 6:length(fn);
         end
         
         if i==9
-            figure(41564);
+            figure(415664);
             title(fn{i})
             plot(a(:));hold on;
             plot(b(:));
+            %plot((a(:)./b(:)));
             grid on;
             legend('Matlab','Esp2')
-            title(sprintf('Region vbscf\n Transect: %0.f File: %s',echobsdata.region_detail(1,j).transect,echobsdata.region_detail(1,j).filename));
+            title(sprintf('Region vbscf values \n Region: %0.f File: %s',echobsdata.region_detail(1,j).region_id,echobsdata.region_detail(1,j).filename));
             hold off;
+            pause();
         end
         
         if length(a(:))~=length(b(:))

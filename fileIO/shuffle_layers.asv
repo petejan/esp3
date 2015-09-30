@@ -112,11 +112,9 @@ if multi_layer<=0
             new_chains_start=[];
             new_chains_end=[];
             kkki=1;
-            if length(unique(couples(:,2)))<length(couples(:,2))||length(unique(couples(:,1)))<length(couples(:,1))
-               warning('There has been a problem in the shuffling process. We won''t concatenate those layers....');
-               idx_lays=idx_to_concatenate{uui}{kki};
-               new_layers=[new_layers layers_temp(unique(idx_lays(:)))];
-               break;
+            if size(unique(couples(:,2)))<size(couples(:,2))||size(unique(couples(:,1)))<size(couples(:,1))
+               warning('There has been a problem in the shuffling process. We''ll just display the separate layers....');
+                new_layers=layers_temp;
             end
             
             while length(idx_looked)<size(couples,1)
@@ -163,7 +161,6 @@ if multi_layer<=0
                 end
             end
         end
-        
         for kkkj=1:length(idx_not_to_concatenate{uui})
             new_layers=[new_layers layers_temp(idx_not_to_concatenate{uui}(kkkj))];
         end

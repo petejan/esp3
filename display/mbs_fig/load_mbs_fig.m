@@ -48,7 +48,7 @@ selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(hObject_main,'App_path');
 
 for i=1:length(selected_mbs)
-    try
+%     try
         curr_mbs=selected_mbs{i};
         if~strcmp(curr_mbs,'')
             [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
@@ -59,16 +59,16 @@ for i=1:length(selected_mbs)
         rmdir(outDir,'s');
         output_filename=sprintf('mbs_output_%s_%s.txt',regexprep(mbs.input.header.voyage,'[^\w'']',''),regexprep(mbs.input.header.title,'[^\w'']',''));
         mbs.outputFile=fullfile(mbs.input.data.crestDir{1},output_filename);
-        idx_trans=[];
+        idx_trans=1;
         
         mbs.regionSummary_v2(app_path.cvs_root,app_path.data,idx_trans,'crest');
         mbs.stratumSummary;
         mbs.printOutput;
         fprintf(1,'Results save to %s \n',mbs.outputFile);
-    catch ME
-        disp(ME.identifier);
-        continue;
-    end
+%     catch ME
+%         disp(ME.identifier);
+%         continue;
+%     end
     
 end
 

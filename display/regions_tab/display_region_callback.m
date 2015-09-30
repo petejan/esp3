@@ -15,7 +15,12 @@ if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
     sv_disp=active_reg.Output.Sv_mean;
     %sv_disp(sv_disp<cax(1))=nan;
-    tt=sprintf('File: %s Region: %.0f',layer.Filename,active_reg.ID);
+    if iscell(layer.Filename)
+        filedisp=layer.Filename{1};
+    else
+        filedisp=layer.Filename;
+    end
+    tt=sprintf('File: %s Region: %.0f',filedisp,active_reg.ID);
     if size(sv_disp,1)>1&&size(sv_disp,2)>1
         new_fig=figure('Name',tt,'NumberTitle','off','tag','regions');
         subplot(2,1,1)
@@ -39,12 +44,15 @@ if ~isempty(list_reg)
         grid on;
     else
       new_fig=figure('Name',tt,'NumberTitle','off','tag','regions');
-        plot(active_reg.Output.y_node,active_reg.Output.Sv_mean_lin_esp2,'r');
+        plot(active_reg.Output.Sv_mean_lin_esp2,active_reg.Output.y_node,'r');
+        hold on
+        plot(active_reg.Output.Sv_mean_lin,active_reg.Output.y_node,'k');
         grid on;
-        ylabel('Sv mean')
-        xlabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
+        xlabel('Sv mean')
+        ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
         grid on;
         title(tt);
+        axis ij;
     end
 else
     return;

@@ -10,13 +10,15 @@ parse(p,cvsroot,varargin{:});
 CalRev=p.Results.CalRev;
 
 workingPath = pwd;
-outDir = tempname; %Make temp directory for calibration rev
+outDir = fullfile(tempname); %Make temp directory for calibration rev
 %run command - make output directory for cvs
 if ~mkdir(outDir)
     error('Unable to create temporary cvs directory');
 end
 %% get calibration rev - allowing for different revs in mbs script
 display(['Extracting calibration revision ' CalRev]);
+
+cd(outDir);
 command = ['cvs -d ' cvsroot ' checkout -r ' CalRev ' system'];
 [~ , output] = system(command,'-echo');
 
