@@ -61,7 +61,8 @@ for i=1:length(selected_mbs)
         mbs.outputFile=fullfile(mbs.input.data.crestDir{1},output_filename);
         idx_trans=1;
         
-        mbs.regionSummary_v2(app_path.cvs_root,app_path.data,idx_trans,'crest');
+        %mbs.regionSummary_v2(app_path.cvs_root,app_path.data,idx_trans,'crest');
+        mbs.regionSummary_v2(app_path.cvs_root,app_path.data,idx_trans,'raw');
         mbs.stratumSummary;
         mbs.printOutput;
         fprintf(1,'Results save to %s \n',mbs.outputFile);

@@ -286,8 +286,8 @@ for ii=1:length(idx_transects)
     bins=unique([1:mbsVS:idx_pings(end) idx_pings(end)]);
     %     bins=unique([1:mbsVS:end_num_regs(end) end_num_regs(end)]);
     binStart = [1 bins(2:end-1)-1];
-    binEnd = bins(2:end);  
-    binEnd(end) = binEnd(end)+1; 
+    binEnd = bins(2:end)+1;
+    
     numSlices = length(binStart); % num_slices
     
     slice_abscf=zeros(1,length(binStart));

@@ -235,7 +235,7 @@ if ~isequal(Filename_cell, 0)
         for i =1:header.transceivercount
             sample_start(i)=sample_range(1);    
             if sample_range(2)==Inf
-                sample_end(i) = size(data.pings(i).power,1)+1;
+                sample_end(i) =size(data.pings(i).power,1)+sample_start(i)-1;
             else
                 sample_end(i)=sample_range(2);
             end

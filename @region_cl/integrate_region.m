@@ -220,6 +220,8 @@ region.Output.NASC=nan(N_y,N_x);
 region.Output.Thickness_esp2=nan(N_y,N_x);
 region.Output.Thickness_mean=nan(N_y,N_x);
 region.Output.Nb_good_pings=nan(N_y,N_x);
+region.Output.Nb_good_pings_esp2=nan(N_y,N_x);
+region.Output.PRC=nan(N_y,N_x);
 
 Sv_reg_lin=10.^(Sv_reg/10);
 Sv_reg_lin(y_mat_ori>=bot_mat)=nan;
@@ -232,6 +234,11 @@ for i=1:N_x
         idx_red=(((x_mat-x_c(i)))<x_res(i))&(((x_mat-x_c(i)))>=-x_res(i))&Mask;
         idx_bin_x=((((x-x_c(i)))<x_res(i))&(((x-x_c(i)))>=-x_res(i)));
     end
+     idx_bin_good_x=idx_bin_x;
+    
+    idx_bin_good_x(IdxBad_reg)=0;
+    
+    region.Output.Nb_good_pings(:,i)=nansum(idx_bin_good_x);
 
     idx_bin_x=find(idx_bin_x);
     
@@ -294,7 +301,7 @@ for i=1:N_x
         if nansum(idx_bin)>0
             height_se=abs(nanmax(y_mat_red(idx_bin_2))-nanmin(y_mat_red(idx_bin_2)));
             ping_cell=setdiff(x_mat_red(idx_bin),IdxBad_reg);
-            region.Output.Nb_good_pings(j,i)=length(ping_cell);
+            region.Output.Nb_good_pings_esp2(j,i)=length(ping_cell);
   
             region.Output.nb_samples(j,i)=nansum(idx_bin);
             region.Output.Range_mean(j,i)=nanmean(sub_r_mat_red(idx_bin));
@@ -309,10 +316,12 @@ for i=1:N_x
                     region.Output.Thickness_esp2(j,i)=height_se+dr;
             end
             
+            region.Output.PRC(j,i)=nansum(idx_bin)*dr/(region.Output.Nb_good_pings(j,i)*region.Output.Thickness_esp2(j,i))*100;
+            
             region.Output.Thickness_mean(j,i)=nansum(idx_bin*dr)/(region.Output.Nb_good_pings(j,i));
 
                 
-            region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin)*dr)/(region.Output.Nb_good_pings(j,i)*region.Output.Thickness_esp2(j,i)); 
+            region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin)*dr)/(region.Output.Nb_good_pings_esp2(j,i)*region.Output.Thickness_esp2(j,i)); 
             region.Output.Sv_mean_lin(j,i)=nanmean(Sv_lin_red(idx_bin));
             
             region.Output.Sv_mean_esp2(j,i)=10*log10(region.Output.Sv_mean_lin_esp2(j,i));

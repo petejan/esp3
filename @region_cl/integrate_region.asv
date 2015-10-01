@@ -220,6 +220,8 @@ region.Output.NASC=nan(N_y,N_x);
 region.Output.Thickness_esp2=nan(N_y,N_x);
 region.Output.Thickness_mean=nan(N_y,N_x);
 region.Output.Nb_good_pings=nan(N_y,N_x);
+region.Output.Nb_good_pings_esp2=nan(N_y,N_x);
+region.Output.PRC=zeros(N_y,N_x);
 
 Sv_reg_lin=10.^(Sv_reg/10);
 Sv_reg_lin(y_mat_ori>=bot_mat)=nan;
@@ -232,6 +234,11 @@ for i=1:N_x
         idx_red=(((x_mat-x_c(i)))<x_res(i))&(((x_mat-x_c(i)))>=-x_res(i))&Mask;
         idx_bin_x=((((x-x_c(i)))<x_res(i))&(((x-x_c(i)))>=-x_res(i)));
     end
+     idx_bin_good_x=idx_bin_x;
+    
+    idx_bin_good_x(IdxBad_reg)=0;
+    
+    region.Output.Nb_good_pings(:,i)=nansum(idx_bin_good_x);
 
     idx_bin_x=find(idx_bin_x);
     
@@ -293,42 +300,26 @@ for i=1:N_x
         
         if nansum(idx_bin)>0
             height_se=abs(nanmax(y_mat_red(idx_bin_2))-nanmin(y_mat_red(idx_bin_2)));
-
-            
-%             x_mat_cell=x_mat_red(idx_bin);
-%             r_mat_cell=sub_r_mat_red(idx_bin);
-             ping_cell=setdiff(x_mat_red(idx_bin),IdxBad_reg);
-             region.Output.Nb_good_pings_esp2(j,i)=length(ping_cell);
-%             height=nan(size(pings_cell));
-%             Sa_lin_ping_cell=nan(size(pings_cell));
-%             Sv_lin_cell=Sv_lin_red(idx_bin);
-%             for uiu=1:length(pings_cell)
-%                 idx_sples=x_mat_cell==pings_cell(uiu);
-%                 if nansum(idx_sples)>0
-%                     range_ping_cell=r_mat_cell(idx_sples);
-%                     height(uiu)=abs(nanmax(range_ping_cell)-nanmin(range_ping_cell));
-%                     Sa_lin_ping_cell(uiu)=nansum(Sv_lin_cell(idx_sples))*dr;
-%                 end
-%             end
-%             
-             
+            ping_cell=setdiff(x_mat_red(idx_bin),IdxBad_reg);
+            region.Output.Nb_good_pings_esp2(j,i)=length(ping_cell);
+  
             region.Output.nb_samples(j,i)=nansum(idx_bin);
             region.Output.Range_mean(j,i)=nanmean(sub_r_mat_red(idx_bin));
             region.Output.Layer(j,i)=j;
             region.Output.Layer_depth_min(j,i)=nanmin(sub_r_mat_red(idx_bin));
             region.Output.Layer_depth_max(j,i)=nanmax(sub_r_mat_red(idx_bin));
+            
+            switch region.Cell_h_unit
+                case 'samples'
+                    region.Output.Thickness_esp2(j,i)=height_se*dr+dr;
+                case 'meters'
+                    region.Output.Thickness_esp2(j,i)=height_se+dr;
+            end
+            
             region.Output.Thickness_mean(j,i)=nansum(idx_bin*dr)/(region.Output.Nb_good_pings(j,i));
-            region.Output.Thickness_esp2(j,i)=nansum(idx_bin_2*dr)/region.Output.Nb_good_pings(j,i);
+
                 
-            region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin)*dr)/(region.Output.Nb_good_pings(j,i)*height_se);
-            %region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin)*dr)/(region.Output.Nb_good_pings(j,i)*height_se);
-            %region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin_2))/nansum(idx_bin_2);%1
-            %equivalent of mean over the whole cell
-            %region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin))/nansum(idx_bin);%2 echoview like
-            %equivalent ot nanmean
-            %region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sa_lin_ping_cell)./nansum(height);%3 equivalent to 2
-            %region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin))/(region.Output.Nb_good_pings(j,i)*sple_num);%4
-             
+            region.Output.Sv_mean_lin_esp2(j,i)=nansum(Sv_lin_red(idx_bin)*dr)/(region.Output.Nb_good_pings_esp2(j,i)*region.Output.Thickness_esp2(j,i)); 
             region.Output.Sv_mean_lin(j,i)=nanmean(Sv_lin_red(idx_bin));
             
             region.Output.Sv_mean_esp2(j,i)=10*log10(region.Output.Sv_mean_lin_esp2(j,i));
