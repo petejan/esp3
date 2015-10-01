@@ -5,6 +5,12 @@ function [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join)
 if  found==1
     layers=layers.delete_layers(0);
 end
+[~,found]=find_layer_idx(layers_temp,0);
+
+if  found==1
+    layers_temp=layers_temp.delete_layers(0);
+end
+
 
 if multi_layer<=0
     if join==1
@@ -46,8 +52,7 @@ if multi_layer<=0
             idx_to_concatenate{uu}{kk}=[];
             
             idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1)==trans_nb(uu));
-            idx_done_start=[];
-            idx_done_end=[];
+
             if multi_layer==0
                 for kki=idx_same_samples
                     for kkj=idx_same_samples
@@ -63,24 +68,18 @@ if multi_layer<=0
                         end
                         
                         if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&&...
-                                layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)&&...
-                            nansum(idx(kki)==idx_done_start+idx(kkj)==idx_done_end)==0
+                                layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
                             idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
-                            idx_done_start=[idx_done idx(kki)];
-                            idx_done_end=[idx_done idx(kkj)];
+
                         end
                     end
                 end
             elseif multi_layer==-1
-                for kki=idx_same_samples
-                    for kkj=idx_same_samples
-                        if (nansum(layers_grp(uu).time_end(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu))...
-                                &&nansum(idx(kki)==idx_done_start|idx(kkj)==idx_done_end)==0
-                            idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
-                            idx_done_start=[idx_done_start idx(kki)];
-                            idx_done_end=[idx_done_end idx(kkj)];
-                        end
-                    end
+                [~,idx_sort]=sort(layers_grp(uu).time_start(1,idx_same_samples));
+                if length(idx_sort)>=2
+                    idx_to_concatenate{uu}{kk}=[idx_same_samples(idx_sort(1:end-1));idx_same_samples(idx_sort(2:end))]';
+                else
+                    idx_to_concatenate{uu}{kk}=[];
                 end
             end
             %idx_to_concatenate{uu}{kk}=unique(idx_to_concatenate{uu}{kk}(:));%not good but will have to wait a bit!
@@ -94,29 +93,28 @@ if multi_layer<=0
         end
     end
     
-    [~,found]=find_layer_idx(layers,0);
-    
-    if  found==1
-        layers=layers.delete_layers(0);
-    end
     
     
-   
+    
     new_layers=[];
     
-    for uui=1:length(idx_to_concatenate)      
+    for uui=1:length(idx_to_concatenate)
         for kki=1:length(idx_to_concatenate{uui})
             couples=idx_to_concatenate{uui}{kki};
+            
             idx_looked=[];
             new_chains={};
             new_chains_start=[];
             new_chains_end=[];
             kkki=1;
-            if size(unique(couples(:,2)))<size(couples(:,2))||size(unique(couples(:,1)))<size(couples(:,1))
-               warning('There has been a problem in the shuffling process. We''ll just display the separate layers....');
-                new_layers=layers_temp;
+            if ~isempty(couples)
+                if length(unique(couples(:,2)))<length(couples(:,2))||length(unique(couples(:,1)))<length(couples(:,1))
+                    warning('There has been a problem in the shuffling process. We won''t concatenate those layers....');
+                    idx_lays=idx_to_concatenate{uui}{kki};
+                    new_layers=[new_layers layers_temp(unique(idx_lays(:)))];
+                    break;
+                end
             end
-            
             while length(idx_looked)<size(couples,1)
                 [chains_start,chains_end,chains,idx_looked]=get_chains(couples,[],[],{},idx_looked);
                 new_chains={new_chains{:} chains{:}};
@@ -161,6 +159,7 @@ if multi_layer<=0
                 end
             end
         end
+        
         for kkkj=1:length(idx_not_to_concatenate{uui})
             new_layers=[new_layers layers_temp(idx_not_to_concatenate{uui}(kkkj))];
         end

@@ -229,18 +229,21 @@ if ~isequal(Filename_cell, 0)
         c = [calParms.soundvelocity];
         t = [calParms.sampleinterval];
         
-        if sample_range(2)==Inf
-            temp= double([data.pings.samplerange]');
-        else
-            temp=repmat(sample_range,1,header.transceivercount)';
+        sample_start=nan(header.transceivercount,1);
+        sample_end=nan(header.transceivercount,1);
+        
+        for i =1:header.transceivercount
+            sample_start(i)=sample_range(1);    
+            if sample_range(2)==Inf
+                sample_end(i) = size(data.pings(i).power,1)+1;
+            else
+                sample_end(i)=sample_range(2);
+            end
         end
         
-        sample_start=temp(1:2:end);
-        sample_end=temp(2:2:end);
+
         dR = double(c .* t / 2)';
-        
-        
-        
+
         Bottom_sim_idx=round(Bottom_sim./repmat(dR,1,size(Bottom_sim,2))-repmat(sample_start,1,size(Bottom_sim,2)))+1;
         Bottom_sim_idx(Bottom_sim_idx<=1)=nan;
         

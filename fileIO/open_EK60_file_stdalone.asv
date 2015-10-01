@@ -229,14 +229,18 @@ if ~isequal(Filename_cell, 0)
         c = [calParms.soundvelocity];
         t = [calParms.sampleinterval];
         
-        if sample_range(2)==Inf
-            temp= double([data.pings.samplerange]');
-        else
-            temp=repmat(sample_range,1,header.transceivercount);
-        end
+         for i =1:header.transceivercount
+             sample_start(i)=sample_range(1);
+             
+             if sample_range(2)==Inf
+                 sample_end(2) = repmat(size(data.pings(i).power,1),1,header.transceivercount)'+;
+             else
+                 sample_start(i)=repmat(sample_range(2),1,header.transceivercount)';
+             end
+         end
+             
         
-        sample_start=temp(1:2:end);
-        sample_end=temp(2:2:end);
+ 
         dR = double(c .* t / 2)';
         
         
