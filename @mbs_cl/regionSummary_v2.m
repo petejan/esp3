@@ -1,5 +1,25 @@
 
-function regionSummary_v2(mbs,cvsroot,datapath,idx_trans,type) % Calculate
+function regionSummary_v2(mbs,cvsroot,varargin) % Calculate
+
+p = inputParser;
+
+addRequired(p,'mbs',@(obj) isa(obj,'mbs_cl'));
+addRequired(p,'cvsroot',@ischar);
+addParameter(p,'datapath',pwd);
+addParameter(p,'idx_trans',[]);
+addParameter(p,'type','crest');
+addParameter(p,'mode','normal');
+
+
+
+parse(p,mbs,cvsroot,varargin{:});
+
+cvsroot=p.Results.cvsroot;
+datapath=p.Results.datapath;
+idx_trans=p.Results.idx_trans;
+type=p.Results.type;
+mode=p.Results.mode;
+
 
 transects=mbs.input.data.transect;
 snapshot=mbs.input.data.snapshot;
@@ -37,17 +57,31 @@ for ii=1:length(idx_transects)
     if isempty(idx_transect_files)
         continue;
     end
-    end_num(1)=0;
+
     rsa_temp={};
     eint=[];
+    end_num=zeros(1,length(idx_transect_files));
+    %reg_files=struct('name','','id',[],'unique_id',[],'startDepth',nan,'finishDepth',nan,'startSlice',nan,'finishSlice',nan,'spec','');
+
     for i=1:length(idx_transect_files)
-        
+     
         fprintf(1,'Opening file d%07d, (%s)\n',mbs.input.data.dfile(idx_transect_files(i)),mbs.input.data.rawFileName{idx_transect_files(i)});
         
         switch type
             case 'raw'
-                layer(i)=open_EK60_file_stdalone(mbs.input.data.rawDir{idx_transect_files(i)},mbs.input.data.rawFileName{idx_transect_files(i)},'PathToMemmap',datapath,'Frequencies',38000);
-                idx_freq=find_freq_idx(layer(i),38000);
+                if exist(fullfile(mbs.input.data.rawDir{idx_transect_files(i)},mbs.input.data.rawFileName{idx_transect_files(i)}),'file')==2                    
+                    ifileInfo=parse_ifile(mbs.input.data.crestDir{idx_transect_files(i)},mbs.input.data.dfile(idx_transect_files(i)));
+                    layer(i)=open_EK60_file_stdalone(mbs.input.data.rawDir{idx_transect_files(i)},mbs.input.data.rawFileName{idx_transect_files(i)},...
+                        'PathToMemmap',datapath,'Frequencies',38000,'EsOffset',ifileInfo.es60error_offset);
+                else
+                    continue;
+                end
+                
+                [idx_freq,found]=layer(i).find_freq_idx(38000);
+                if found==0
+                    continue;
+                end
+                
                 origin=fullfile(mbs.input.data.crestDir{idx_transect_files(i)},sprintf('d%07d',mbs.input.data.dfile(idx_transect_files(i))));
                 layer(i).OriginCrest=origin;
                 layer(i).Transceivers(idx_freq).apply_cw_cal(mbs.input.data.CalRaw{idx_transect_files(i)});
@@ -69,21 +103,56 @@ for ii=1:length(idx_transects)
         else
             layer(i).Transceivers(idx_freq).apply_absorption(mbs.input.data.absorbtion(i)/1e3);
         end
+          
+        Transceiver =layer(i).Transceivers(idx_freq);
         
-        %         layer(i).Transceivers(idx_freq).apply_soundspeed(layer(i).EnvData.SoundSpeed,1490);
-        %         layer(i).EnvData.SoundSpeed=1490;
-        
-        RegCVS=mbs.input.data.Reg{idx_transect_files(i)};
-        
-        
-        for uuk=1:length(RegCVS)
-            reg(uuk) = getRegSpecFromRegString(RegCVS{uuk});
-        end
-        
-        if length(RegCVS)>0
-            layer(i).CVS_BottomRegions(cvsroot,'BotRev',mbs.input.data.BotRev{idx_transect_files(i)},'RegRev',mbs.input.data.RegRev{idx_transect_files(i)},'RegId',[reg(:).id]);
-        else
-            layer(i).CVS_BottomRegions(cvsroot,'BotRev',mbs.input.data.BotRev{idx_transect_files(i)},'RegCVS',0);
+        switch mode
+            case 'normal'
+                RegCVS=mbs.input.data.Reg{idx_transect_files(i)};
+                for uuk=1:length(RegCVS)
+                    reg(uuk) = getRegSpecFromRegString(RegCVS{uuk});
+                end
+                if ~isempty(RegCVS)>0
+                    layer(i).CVS_BottomRegions(cvsroot,'BotRev',mbs.input.data.BotRev{idx_transect_files(i)},'RegRev',mbs.input.data.RegRev{idx_transect_files(i)},'RegId',[reg(:).id]);
+                else
+                    layer(i).CVS_BottomRegions(cvsroot,'BotRev',mbs.input.data.BotRev{idx_transect_files(i)},'RegCVS',0);
+                end   
+                layer(i).save_regs();
+
+            case 'sch'
+                layer(i).CVS_BottomRegions(cvsroot,'BotRev',mbs.input.data.BotRev{idx_transect_files(i)},'RegCVS',0);
+                layer(i).Transceivers(idx_freq).Algo=init_algos(layer(i).Transceivers(idx_freq).Data.Range);
+                [idx_school_detect,~]=find_algo_idx(Transceiver,'SchoolDetection');
+                linked_candidates=feval(layer(i).Transceivers(idx_freq).Algo(idx_school_detect).Function,layer(i).Transceivers(idx_freq),...
+                    'Type','sv',...
+                    'Sv_thr',-62,...
+                    'h_min_can',5,...
+                    'h_min_tot',10,...                   
+                    'l_min_can',15,...
+                    'l_min_tot',30,...
+                    'nb_min_sples',100,...
+                    'horz_link_max',5,...
+                    'vert_link_max',5);
+                
+                layer(i).Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit','pings','h_unit','meters','cell_w',10,'cell_h',5,'bbox_only',0);
+                
+                rm_id=nan(1,length(layer(i).Transceivers(idx_freq).Regions));
+                for uuk=1:length(layer(i).Transceivers(idx_freq).Regions)
+                    [mean_depth,~]=layer(i).Transceivers(idx_freq).get_mean_depth_from_region(layer(i).Transceivers(idx_freq).Regions(uuk).Unique_ID);
+                    if nanmin(mean_depth)<200
+                        rm_id(uuk)=layer(i).Transceivers(idx_freq).Regions(uuk).Unique_ID;
+                    end
+                end
+                rm_id(isnan(rm_id))=[];
+                for uik=1:length(rm_id)
+                    layer(i).Transceivers(idx_freq).rm_region_id(rm_id(uik));
+                end
+
+                for uuk=1:length(layer(i).Transceivers(idx_freq).Regions)
+                    RegCVS{uuk}=[num2str(layer(i).Transceivers(idx_freq).Regions(uuk).ID,'%.0f'),'()'];
+                    reg(uuk) = getRegSpecFromRegString(RegCVS{uuk});
+                end
+                layer(i).save_regs();
         end
         
         Transceiver =layer(i).Transceivers(idx_freq);
@@ -137,9 +206,6 @@ for ii=1:length(idx_transects)
                     if isnan(reg(j).finishDepth); finish_d = 0; else finish_d = reg(j).finishDepth; end
             end
             
-            %dist = (regCellInt.VL_E(end)-regCellInt.VL_S(1))/1e3;
-            %dist=nansum(m_lldist(gps.Long(reg_curr.Idx_pings),gps.Lat(reg_curr.Idx_pings))/1.852);% get distance
-            %av_speed=nanmean(m_lldist(gps.Long(reg_curr.Idx_pings),gps.Lat(reg_curr.Idx_pings))./diff(gps.Time(reg_curr.Idx_pings)*24)/1.852);
             
             dist = m_lldist([gps.Long(reg_curr.Idx_pings(1)) gps.Long(reg_curr.Idx_pings(end))],[gps.Lat(reg_curr.Idx_pings(1)) gps.Lat(reg_curr.Idx_pings(end))])/1.852;% get distance as esp2 does... Straigth line estimate
             time_s = regCellInt.Time_S(1);
@@ -194,7 +260,7 @@ for ii=1:length(idx_transects)
             rsv{j,7} = size(regCellIntSub.Lat_S,2); % num_v_slices
             rsv{j,8} = rs{j,13}; % Vbscf Region
             [I,~]=find(~isnan(regCellIntSub.Sa_lin'));
-            idx_first=nanmin(I); 
+            idx_first=nanmin(I);
             tmp = regCellIntSub.Sv_mean_lin_esp2(idx_first:(idx_first+rsv{j,6})-1,:);
             tmp(isnan(tmp))=0;
             tmp=tmp';
@@ -203,7 +269,7 @@ for ii=1:length(idx_transects)
             
             %% Region echo integral for File Summary
             eint(i,j) = nansum(nansum(regCellIntSub.Sa_lin));
-       
+            
         end
         
         if ~isempty(Transceiver.Regions)
@@ -214,11 +280,14 @@ for ii=1:length(idx_transects)
         end
         clear reg;
     end
-    
+
     idx_freq=find_freq_idx(layer(1),38000);
+
+
     gps_tot=layer(1).Transceivers(idx_freq).GPSDataPing;
     bot_tot=layer(1).Transceivers(idx_freq).Bottom;
     IdxBad_tot=layer(1).Transceivers(idx_freq).IdxBad;
+
     if length(layer)>1
         for i=2:length(layer)
             idx_freq=find_freq_idx(layer(i),38000);
@@ -252,9 +321,6 @@ for ii=1:length(idx_transects)
     timediff_tot = (time_e_tot-time_s_tot)*24;
     av_speed_tot=dist_tot/timediff_tot;
     
-    %     dist_tot=nansum(m_lldist(gps_tot.Long,gps_tot.Lat)/1.852);
-    %     av_speed_tot=nanmean(m_lldist(gps_tot.Long,gps_tot.Lat)./diff(gps_tot.Time*24)/1.852);
-    %
     
     good_bot_tot=nanmean(bot_tot.Range(idx_good_pings));
     
@@ -281,38 +347,36 @@ for ii=1:length(idx_transects)
     % to the defined vertical slice size from the mbs script to
     % get spatial information. The calculation of abscf is done
     % by summing all region abscf (rsa) for each slice (bin)
-    
-    
-    bins=unique([1:mbsVS:idx_pings(end) idx_pings(end)]);
+
+
+    bins=unique([idx_pings(1):mbsVS:idx_pings(end) idx_pings(end)]);
     %     bins=unique([1:mbsVS:end_num_regs(end) end_num_regs(end)]);
-    binStart = [1 bins(2:end-1)-1];
-    binEnd = bins(2:end);  
-    binEnd(end) = binEnd(end)+1; 
+    binStart = [idx_pings(1) bins(2:end-1)];
+    binEnd = bins(2:end);
     numSlices = length(binStart); % num_slices
     
-    slice_abscf=zeros(1,length(binStart));
+
     slice_abscf_ori=zeros(1,length(binStart));
     nb_good_pings=zeros(1,length(binStart));
-    t_start={};
-    t_end={};
+    
     for iuu=1:length(rsa_temp)
         rsa_new=rsa_temp{iuu};
         for j = 1:size(rsa_new,1)
+            att=zeros(1,length(rsa_new{j,11}));
             for k = 1:length(binStart); % sum up abscf data according to bins
-                t_start{iuu,j}=rsa_new{j,7}+end_num(iuu);
-                t_end{iuu,j}=rsa_new{j,11}+end_num(iuu);
+                t_start=rsa_new{j,7}+end_num(iuu);
+                %t_end=rsa_new{j,11}+end_num(iuu);
                 
-                ix = (t_start{iuu,j}>=binStart(k) &  t_start{iuu,j}<binEnd(k));
-                find(ix);
+                ix = (t_start>=binStart(k) &  t_start<binEnd(k))& ~att;
+                att(ix)=1;
                 nb_good_pings(k)=nanmax(nansum(nb_good_pings_reg{iuu,j}(ix)),nb_good_pings(k));
-                slice_abscf(k) = slice_abscf(k)+ nansum(nb_good_pings_reg{iuu,j}(ix).*rsa_new{j,10}(ix));
+                %slice_abscf(k) = slice_abscf(k)+ nansum(nb_good_pings_reg{iuu,j}(ix).*rsa_new{j,10}(ix));
                 slice_abscf_ori(k) = (slice_abscf_ori(k)+nansum(rsa_new{j,10}(ix)));
             end
         end
     end
     
-    %slice_abscf=slice_abscf./nb_good_pings;
-    slice_abscf=slice_abscf_ori;
+
     
     
     %will be used for Sliced Transect Summary
@@ -323,9 +387,9 @@ for ii=1:length(idx_transects)
     sfs{ii,5} = numSlices; % num_slices
     sfs{ii,6} = gps_tot.Lat(binStart); % latitude
     sfs{ii,7} = gps_tot.Long(binStart); % longitude
-    sfs{ii,8} = slice_abscf; % slice_abscf
+    sfs{ii,8} = slice_abscf_ori; % slice_abscf
     
-    clear slice_abscf;
+    clear slice_abscf_ori;
     
 end
 mbs.output.temp.fileSum.data =  fs;

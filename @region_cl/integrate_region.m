@@ -164,14 +164,13 @@ switch region.Reference
         Y0=nanmin(y_mat(Mask));
         Y1=nanmax(y_mat(Mask));
         Y=Y0:cell_h:Y1;
-        Y=[Y nanmax(y_mat(Mask))];                
+        Y=[Y Y1];                
         y_c=(Y(2:end)+Y(1:end-1))/2;
         y_res=abs(Y(2:end)-Y(1:end-1))/2;
     otherwise
         Y1=nanmin(y_mat(Mask));
-        Y0=0;
-        Y=Y0:-cell_h:Y1;
-        Y=[nanmin(y_mat(Mask)) Y];
+        Y=0:-cell_h:Y1;
+        Y=[Y Y1];
         Y=unique(Y);
         Y=flip(Y);
         y_res=abs(((Y(2:end)-Y(1:end-1))/2));
@@ -203,6 +202,8 @@ region.Output.Range_mean=nan(N_y,N_x);
 region.Output.Layer_depth_min=nan(N_y,N_x);
 region.Output.Layer_depth_max=nan(N_y,N_x);
 region.Output.Layer=nan(N_y,N_x);
+region.Output.Dist_E=nan(N_y,N_x);
+region.Output.Dist_S=nan(N_y,N_x);
 region.Output.Dist_M=nan(N_y,N_x);
 region.Output.VL_E=nan(N_y,N_x);
 region.Output.VL_S=nan(N_y,N_x);
@@ -244,6 +245,8 @@ for i=1:N_x
     
     if~isempty((idx_bin_x))
         region.Output.Interval(:,i)=i;
+        region.Output.Dist_E(:,i)=nanmin(sub_dist(idx_bin_x));
+        region.Output.Dist_S(:,i)=nanmax(sub_dist(idx_bin_x));
         region.Output.Dist_M(:,i)=nanmean(sub_dist(idx_bin_x));
         region.Output.Time_M(:,i)=nanmean(sub_time(idx_bin_x));
         region.Output.Time_S(:,i)=sub_time(idx_bin_x(1));
@@ -273,17 +276,17 @@ for i=1:N_x
     
 
     for j=1:N_y
-        
+    
         if j==N_y
             idx_bin=(((y_mat_red-y_c(j)))<=y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j))&Sv_lin_red>0;
-            idx_bin_2=(((y_mat_red-y_c(j)))<=y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j));  
+            idx_bin_2=(((y_mat_red-y_c(j)))<=y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j));
         else
             idx_bin=(((y_mat_red-y_c(j)))<y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j))&Sv_lin_red>0;
             idx_bin_2=(((y_mat_red-y_c(j)))<y_res(j))&(((y_mat_red-y_c(j)))>=-y_res(j));
         end
         
         
-  
+       
         switch region.Cell_h_unit
             case 'samples'   
                 sple_num=floor(2*(y_res(j)));

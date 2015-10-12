@@ -1,28 +1,47 @@
-function [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join)
+function [layers,layer]=shuffle_layers(layers,new_layers_in,varargin)
 
-[~,found]=find_layer_idx(layers,0);
+p = inputParser;
+
+addRequired(p,'layers',@(obj) isa(obj,'layer_cl')||isempty(obj));
+addRequired(p,'new_layers_in',@(obj) isa(obj,'layer_cl')||isempty(obj));
+addParameter(p,'multi_layer',1);
+addParameter(p,'join',0);
+addParameter(p,'load_reg',0);
+
+parse(p,layers,new_layers_in,varargin{:});
+
+multi_layer=p.Results.multi_layer;
+join=p.Results.join;
+load_reg=p.Results.load_reg;
+
+if ~isempty(layers)
+    [~,found]=find_layer_idx(layers,0);
+else
+    found=0;
+end
 
 if  found==1
     layers=layers.delete_layers(0);
 end
-[~,found]=find_layer_idx(layers_temp,0);
+[~,found]=find_layer_idx(new_layers_in,0);
 
 if  found==1
-    layers_temp=layers_temp.delete_layers(0);
+    new_layers_in=new_layers_in.delete_layers(0);
 end
 
 
 if multi_layer<=0
+    
     if join==1
-        layers_temp=[layers layers_temp];
+        new_layers_in=[layers new_layers_in];
         %old_layers=layers;
         layers=[];
     end
     
-    nb_transceivers=nan(1,length(layers_temp));
-    filetype=cell(1,length(layers_temp));
-    for i=1:length(layers_temp)
-        curr_layer=layers_temp(i);
+    nb_transceivers=nan(1,length(new_layers_in));
+    filetype=cell(1,length(new_layers_in));
+    for i=1:length(new_layers_in)
+        curr_layer=new_layers_in(i);
         nb_transceivers(i)=length(curr_layer.Transceivers);
         filetype{i}=curr_layer.Filetype;
     end
@@ -34,7 +53,7 @@ if multi_layer<=0
     for uu=1:length(trans_nb)
         idx=find(nb_transceivers==trans_nb(uu));
         for jj=1:length(idx)
-            curr_layer=layers_temp(idx(jj));
+            curr_layer=new_layers_in(idx(jj));
             for ii=1:trans_nb(uu)
                 curr_trans=curr_layer.Transceivers(ii);
                 layers_grp(uu).freqs(ii,jj)=curr_trans.Config.Frequency;
@@ -52,7 +71,7 @@ if multi_layer<=0
             idx_to_concatenate{uu}{kk}=[];
             
             idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1)==trans_nb(uu));
-
+            
             if multi_layer==0
                 for kki=idx_same_samples
                     for kkj=idx_same_samples
@@ -67,10 +86,10 @@ if multi_layer<=0
                             continue;
                         end
                         
-                        if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&&...
+                        if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
                                 layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
                             idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
-
+                            
                         end
                     end
                 end
@@ -96,7 +115,7 @@ if multi_layer<=0
     
     
     
-    new_layers=[];
+    new_layers_out=[];
     
     for uui=1:length(idx_to_concatenate)
         for kki=1:length(idx_to_concatenate{uui})
@@ -107,14 +126,7 @@ if multi_layer<=0
             new_chains_start=[];
             new_chains_end=[];
             kkki=1;
-            if ~isempty(couples)
-                if length(unique(couples(:,2)))<length(couples(:,2))||length(unique(couples(:,1)))<length(couples(:,1))
-                    warning('There has been a problem in the shuffling process. We won''t concatenate those layers....');
-                    idx_lays=idx_to_concatenate{uui}{kki};
-                    new_layers=[new_layers layers_temp(unique(idx_lays(:)))];
-                    break;
-                end
-            end
+            
             while length(idx_looked)<size(couples,1)
                 [chains_start,chains_end,chains,idx_looked]=get_chains(couples,[],[],{},idx_looked);
                 new_chains={new_chains{:} chains{:}};
@@ -126,8 +138,8 @@ if multi_layer<=0
             for i=1:length(new_chains)
                 for j=1:length(new_chains)
                     if ~isempty(intersect(new_chains{i},new_chains{j}))&&(j~=i)
-                        time_i=layers_temp(new_chains{i}(end)).Transceivers(1).Data.Time(end)-layers_temp(new_chains{i}(1)).Transceivers(1).Data.Time(1);
-                        time_j=layers_temp(new_chains{j}(end)).Transceivers(1).Data.Time(end)-layers_temp(new_chains{j}(1)).Transceivers(1).Data.Time(1);
+                        time_i=new_layers_in(new_chains{i}(end)).Transceivers(1).Data.Time(end)-new_layers_in(new_chains{i}(1)).Transceivers(1).Data.Time(1);
+                        time_j=new_layers_in(new_chains{j}(end)).Transceivers(1).Data.Time(end)-new_layers_in(new_chains{j}(1)).Transceivers(1).Data.Time(1);
                         
                         if time_j>=time_i
                             temp_u=setdiff(new_chains{i},new_chains{j});
@@ -143,7 +155,7 @@ if multi_layer<=0
             
             
             for iik=1:length(new_chains)
-                curr_layers=layers_temp(new_chains{iik});
+                curr_layers=new_layers_in(new_chains{iik});
                 
                 if length(curr_layers)>1
                     layer_conc=curr_layers(1);
@@ -155,23 +167,23 @@ if multi_layer<=0
                         end
                         
                     end
-                    new_layers=[new_layers layer_conc];
+                    new_layers_out=[new_layers_out layer_conc];
                 end
             end
         end
         
         for kkkj=1:length(idx_not_to_concatenate{uui})
-            new_layers=[new_layers layers_temp(idx_not_to_concatenate{uui}(kkkj))];
+            new_layers_out=[new_layers_out new_layers_in(idx_not_to_concatenate{uui}(kkkj))];
         end
         
     end
     
 else
-    new_layers=layers_temp;
+    new_layers_out=new_layers_in;
 end
 
-for u=1:length(new_layers)
-    layer=new_layers(u);
+for u=1:length(new_layers_out)
+    layer=new_layers_out(u);
     if ~isempty(layers)
         [~,found]=find_layer_idx(layers,layer.ID_num);
     else
@@ -181,6 +193,9 @@ for u=1:length(new_layers)
     if found==1
         warning('Who, that''s extremely unlikely! There has been a problem in the shuffling process. This programm will crash very soon.');
     else
+        if load_reg>0
+            layer.load_regs();
+        end
         layers=[layers layer];
     end
 end

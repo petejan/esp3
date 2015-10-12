@@ -12,7 +12,7 @@ if isempty(Regions)
 end
 
 Freq=layer.Frequencies(idx_freq);
-Filename=layer.Filename;
+Filename=layer.Filename{1};
 
 if iscell(Filename)
     Filename=Filename{1};

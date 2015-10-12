@@ -72,8 +72,7 @@ if isempty(sample_idx)
 end
 
 bottom = sample_idx/depthFactor;
-bottom = bottom-(1/depthFactor);
-bottom(end) = bottom(end)-2*(1/depthFactor);
+
 bad = load_bad_transmits(fullfile(bFilePath,bFileName))';
 bad=find(bad);
 

@@ -1,8 +1,12 @@
 function plot_profiles_callback(src,~,main_figure)
-
+layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans=layer.Transceivers(idx_freq);
 
+
+Bottom=trans.Bottom;
 
 ax_main=axes_panel_comp.main_axes;
 axh=axes_panel_comp.haxes;
@@ -49,12 +53,22 @@ end
 if ~isempty(cdata)
     [~,idx_ping]=nanmin(abs(xdata-x));
     [~,idx_r]=nanmin(abs(ydata-y));
+    if ~isnan(Bottom.Sample_idx(idx_ping))
+        bot_val=ydata(Bottom.Sample_idx(idx_ping));
+    else
+        bot_val=nan;
+    end
+    vert_val=cdata(:,idx_ping);
+    bot_x_val=[nanmin(vert_val(~(vert_val==-Inf))) nanmax(vert_val)];
+    horz_val=cdata(idx_r,:);
     
     figure();
     axv=axes();
     hold on;
     title(sprintf('Vertical Profile for Ping: %.0f',idx_ping))
-    plot(cdata(:,idx_ping),ydata,'k');
+    plot(vert_val,ydata,'k');
+    hold on;
+    plot(bot_x_val,[bot_val bot_val],'r');
     grid on;
     ylabel('Range(m)')
     xlabel(ylab_str);
@@ -65,7 +79,7 @@ if ~isempty(cdata)
     axh=axes();
     hold on;
     title(sprintf('Horizontal Profile for sample: %.0f, Range: %.2fm',idx_r,y))
-    plot(xdata,cdata(idx_r,:),'r');
+    plot(xdata,horz_val,'r');
     grid on;
     xlabel(xlab_str);
     ylabel(ylab_str);

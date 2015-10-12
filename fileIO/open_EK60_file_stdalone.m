@@ -115,7 +115,6 @@ if ~isequal(Filename_cell, 0)
         
         if strcmp(header.soundername(1:4),'ES70') || strcmp(header.soundername(1:4),'ES60')
             for ki=1:header.transceivercount
-                p.Results.EsOffset
                 data.pings(ki).power=correctES60(data.pings(ki).power,p.Results.EsOffset);
             end
         end
@@ -223,7 +222,7 @@ if ~isequal(Filename_cell, 0)
                 Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):pings_range(2)));
             end
         else
-            Bottom_sim=nan(header.transceivercount,size(power,1));
+            Bottom_sim=nan(header.transceivercount,size( data.pings(1).power,1));
         end
         
         c = [calParms.soundvelocity];
@@ -334,7 +333,7 @@ if ~isequal(Filename_cell, 0)
             
         end
         
-        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',Filename,'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',{Filename},'Filetype','EK60','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
     end
     

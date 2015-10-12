@@ -8,22 +8,21 @@
 
 function [pdf,x]=pdf_perso(X,varargin)
 
-bin=10;
-weight_idx=ones(size(X));
-win_type='box';
 
-for n = 1:2:length(varargin)
-    switch lower(varargin{n})
-        case 'bin'
-            bin = varargin{n + 1};
-        case 'weight'
-            weight_idx=varargin{n + 1};
-        case 'win_type'
-            win_type=varargin{n + 1};
-        otherwise
-            warning('pdf_perso:ParameterError', ['Unknown property name: ' varargin{n}]);
-    end
-end
+p = inputParser;
+
+addRequired(p,'X',@isnumeric);
+addParameter(p,'bin',ceil(length(X(~isnan(X)))/100),@isnumeric);
+addParameter(p,'weight',ones(size(X)),@isnumeric);
+addParameter(p,'win_type','box',@(str) ischar(str)&(nansum(strcmpi({'box','gauss'},str)>0)));
+
+
+parse(p,X,varargin{:});
+
+bin=p.Results.bin;
+weight_idx=p.Results.weight;
+win_type=p.Results.win_type;
+
 
 X(X==Inf|X==-Inf)=nan;
 w_tot=nansum(weight_idx(~isnan(X)));

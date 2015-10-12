@@ -512,7 +512,7 @@ shading interp
 set(h1,'alphadata',mask_bs,'FaceAlpha','interp','AlphaDataMapping','scaled')
 shading interp
 
-file_outputs_def=[layer.PathToFile '\' layer.Filename(1:end-4) '_BS.csv'];
+file_outputs_def=[layer.PathToFile '\' layer.Filename{1}(1:end-4) '_BS.csv'];
 [file_outputs,path_out] = uiputfile('*.csv','Select Filename for saving output',file_outputs_def);
 
 if ~isequal(file_outputs,0)&&~isequal(path_out,0)

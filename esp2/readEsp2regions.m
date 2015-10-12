@@ -37,7 +37,7 @@ while 1
         %Ping_ori=nanmin(x1,x2)+pingOffset;
         %Sample_ori=nanmin(y1,y2);
         
-        idx_pings=(nanmin(x1,x2):nanmax(x1,x2))+pingOffset;
+        idx_pings=(nanmin(x1,x2):nanmax(x1,x2))+1;
         idx_pings(idx_pings>PingCount)=[];
         idx_r=(nanmin(y1,y2):nanmax(y1,y2))+1;
         
@@ -52,9 +52,9 @@ while 1
             for j = 1:length(sp);
                 X_cont(j) = str2double(tmp(sp(j)+1:cm(j)-1))+1;
                 if j==length(sp);
-                    Y_cont(j) = round(str2double(tmp(cm(j)+1:end-1)));
+                    Y_cont(j) = floor(str2double(tmp(cm(j)+1:end-1)))+1;
                 else
-                    Y_cont(j) =round(str2double(tmp(cm(j)+1:sp(j+1)-1)));
+                    Y_cont(j) =floor(str2double(tmp(cm(j)+1:sp(j+1)-1)))+1;
                 end               
             end
         end
@@ -104,6 +104,7 @@ while 1
          Regions(i)=region_cl(...
             'ID',str2double(ID),...
             'Name',Class,...
+            'Tag',Class,...
             'Type',Type,...
             'Idx_pings',idx_pings,...
             'Idx_r',idx_r,...

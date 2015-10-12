@@ -2,7 +2,7 @@
 classdef layer_cl < handle
     properties
         ID_num=0;
-        Filename='';
+        Filename={''};
         Filetype='';
         PathToFile='';
         Transceivers
@@ -30,7 +30,7 @@ classdef layer_cl < handle
             check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
             
             addParameter(p,'ID_num',0,@isnumeric);
-            addParameter(p,'Filename','No Data',@(fname)(ischar(fname)||iscell(fname)));
+            addParameter(p,'Filename',{'No Data'},@(fname)(iscell(fname)));
             addParameter(p,'Filetype','',@(ftype)(ischar(ftype)));
             addParameter(p,'PathToFile','',@(fname)(ischar(fname)||iscell(fname)));
             addParameter(p,'Transceivers',[],check_transceiver_class);
@@ -52,7 +52,7 @@ classdef layer_cl < handle
             for i=1:length(props)               
                 obj.(props{i})=results.(props{i});               
             end
-            
+            obj.(props{i})=results.(props{i});          
 
         end
         

@@ -4,6 +4,9 @@ app_path=getappdata(hObject,'App_path');
 
 [mbs_files,outDir]=get_mbs_from_esp2(app_path.cvs_root);
 
+if isempty(mbs_files)
+    return;
+end
 k=0;
 for i=1:length(mbs_files)
     mbs(i)=mbs_cl();
@@ -23,8 +26,6 @@ end
 rmdir(outDir,'s');
 
 load_mbs_fig(hObject,mbsSummary)
-
-       
 
 
 end

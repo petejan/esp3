@@ -27,54 +27,8 @@ classdef sub_ac_data_cl < handle
             
             obj.Memap = memmapfile(curr_name,...
                 'Format',format,'repeat',1,'writable',false);
-                     
-            switch obj.Fieldname
-                case  'sv'
-                    obj.CaxisDisplay=[-80 -35];
-                    obj.Type='Sv';
-                case 'svdenoised'
-                    obj.CaxisDisplay=[-80 -35];
-                    obj.Type='Denoised Sv';
-                case 'sp'
-                    obj.CaxisDisplay=[-60 -30];
-                    obj.Type='Sp';
-                case  'spdenoised'
-                    obj.CaxisDisplay=[-60 -30];
-                    obj.Type='Denoised Sp';
-                case    'spunmatched'
-                    obj.CaxisDisplay=[-60 -30];
-                    obj.Type='Sp before match filtering';
-                case 'power'
-                    obj.CaxisDisplay=[-200 0];
-                    obj.Type='Power';
-                case 'powerdenoised'
-                    obj.CaxisDisplay=[-200 0];
-                    obj.Type='Denoised Power';
-                case'y'
-                    obj.CaxisDisplay=[-200 0];
-                    obj.Type='y';
-                case 'singletarget'
-                    obj.CaxisDisplay=[];
-                    obj.Type='Single Targets compensated TS';
-                case 'snr'
-                    obj.CaxisDisplay=[0 30];
-                    obj.Type='SNR';
-                case 'acrossphi'
-                    obj.CaxisDisplay=[-180 180];
-                    obj.Type='Phase Across';
-                case 'alongphi'
-                    obj.CaxisDisplay=[-180 180];
-                    obj.Type='Phase Along';
-                case 'alongangle'
-                    obj.CaxisDisplay=[];
-                    obj.Type='Angle Along';
-                case 'acrossangle'
-                    obj.CaxisDisplay=[];
-                    obj.Type='Angle Across';
-                otherwise
-                    obj.CaxisDisplay=[];
-                    obj.Type=obj.Fieldname;
-            end
+            [obj.CaxisDisplay,obj.Type]=init_cax(obj.Fieldname);
+           
             
             if isempty(obj.CaxisDisplay);
                 obj.CaxisDisplay=[nanmin(real(data(:))) nanmax(real(data(:)))];

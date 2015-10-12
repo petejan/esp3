@@ -56,7 +56,7 @@ for i=1:length(layer.Transceivers)
     if i==idx_38
         continue;
     end
-    layer.Transceivers(i).rm_region('School');
+    layer.Transceivers(i).rm_region_name('School');
     for ii=1:length(idx_school_38)
         layer.Transceivers(i).rm_region_id(layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Unique_ID)
     end

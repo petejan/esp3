@@ -45,59 +45,7 @@ classdef curr_state_disp_cl <handle
     
     methods
         function setTypeCax(obj)
-            switch obj.Fieldname
-                case  'sv'
-                    obj.Cax=[-80 -35];
-                    obj.Type='Sv';
-                case 'svdenoised'
-                    obj.Cax=[-80 -35];
-                    obj.Type='Denoised Sv';
-                case 'sp'
-                    obj.Cax=[-60 -30];
-                    obj.Type='Sp';
-                case    'spdenoised'
-                    obj.Cax=[-60 -30];
-                    obj.Type='Denoised Sp';
-                case    'spunmatched'
-                    obj.Cax=[-60 -30];
-                    obj.Type='Sp before match filtering';
-                case 'power'
-                    obj.Cax=[-200 0];
-                    obj.Type='Power';
-                case 'powerunmatched'
-                    obj.Cax=[-200 0];
-                    obj.Type='Power Before match Filtering';
-                case 'powerdenoised'
-                    obj.Cax=[-200 0];
-                    obj.Type='Denoised Power';
-                case'y_real'
-                    obj.Cax=[-200 0];
-                    obj.Type='Y_real';
-                case'y_imag'
-                    obj.Cax=[-200 0];
-                    obj.Type='Y_imag';
-                case 'singletarget'
-                    obj.Cax=[];
-                    obj.Type='Single Targets compensated TS';
-                case 'snr'
-                    obj.Cax=[0 30];
-                    obj.Type='SNR';
-                case 'acrossphi'
-                    obj.Cax=[-180 180];
-                    obj.Type='Phase Across';
-                case 'alongphi'
-                    obj.Cax=[-180 180];
-                    obj.Type='Phase Along';
-                case 'alongangle'
-                    obj.Cax=[];
-                    obj.Type='Angle Along';
-                case 'acrossangle'
-                    obj.Cax=[];
-                    obj.Type='Angle Across';
-                otherwise
-                    obj.Cax=[];
-                    obj.Type=obj.Fieldname;
-            end
+            [obj.Cax,obj.Type]=init_cax(obj.Fieldname);  
         end
         
         function setField(obj,field)

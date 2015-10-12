@@ -64,12 +64,12 @@ case 'From_Left'
    %If the first element is -1 then the first defined element is
    %used for the bottom line value from the first element to that value
    f = find(bottom == -1);
-   if length(f) > 0
+   if ~isempty(f)
       if length(f) == length(bottom)
          disp('Error: the file has no bottom fitted');
       else
          if (f(1)) == 1 %the first non-zero element is the first element
-            bottom(1) = bottom(min(find(bottom ~= -1)));  %use the first non-'-1' element
+            bottom(1) = bottom((find(bottom ~= -1,1,'first')));  %use the first non-'-1' element
             for i = 2:length(f)
                bottom(f(i)) = bottom(f(i)-1);
             end

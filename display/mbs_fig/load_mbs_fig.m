@@ -32,7 +32,9 @@ set(mbs_table.table_main,'CellSelectionCallback',{@store_selected_mbs_callback,m
 
 rc_menu = uicontextmenu;
 mbs_table.table_main.UIContextMenu =rc_menu;
-uimenu(rc_menu,'Label','Run','Callback',{@run_mbs_callback,mbs_figure,hObject_main});
+uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','crest');
+uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','raw');
+uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','sch');
 uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,hObject_main});
 selected_mbs={''};
 
@@ -43,12 +45,12 @@ setappdata(mbs_figure,'DataOri',mbsSummary);
 end
 
 
-function run_mbs_callback(~,~,hObject,hObject_main)
+function run_mbs_callback(src,~,hObject,hObject_main)
 selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(hObject_main,'App_path');
 
 for i=1:length(selected_mbs)
-%     try
+%      try
         curr_mbs=selected_mbs{i};
         if~strcmp(curr_mbs,'')
             [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
@@ -57,12 +59,20 @@ for i=1:length(selected_mbs)
         mbs=mbs_cl();
         mbs.readMbsScript(app_path.data_root,fileNames{1});
         rmdir(outDir,'s');
-        output_filename=sprintf('mbs_output_%s_%s.txt',regexprep(mbs.input.header.voyage,'[^\w'']',''),regexprep(mbs.input.header.title,'[^\w'']',''));
+        output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.input.header.voyage,'[^\w'']',''),regexprep(mbs.input.header.title,'[^\w'']',''),src.Tag);
         mbs.outputFile=fullfile(mbs.input.data.crestDir{1},output_filename);
-        idx_trans=1;
+        idx_trans=[];
+        %idx_trans=find(mbs.input.data.transect==1&strcmpi(mbs.input.data.stratum,'6'));  
         
-        %mbs.regionSummary_v2(app_path.cvs_root,app_path.data,idx_trans,'crest');
-        mbs.regionSummary_v2(app_path.cvs_root,app_path.data,idx_trans,'raw');
+        switch src.Tag
+            case 'crest'
+                 mbs.regionSummary_v2(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans);
+            case 'raw'
+                 mbs.regionSummary_v2(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'type','raw');
+            case 'sch'
+                 mbs.regionSummary_v2(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'mode','sch');
+        end
+        
         mbs.stratumSummary;
         mbs.printOutput;
         fprintf(1,'Results save to %s \n',mbs.outputFile);

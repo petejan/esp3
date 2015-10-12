@@ -17,9 +17,6 @@ else
 end
 
 Filename=layer.Filename;
-if ~iscell(Filename)
-    Filename={Filename};
-end
 
 if file_id==0    
     [Filename,PathToFile]= uigetfile( {fullfile(path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
@@ -105,6 +102,22 @@ multi_layer=1;
 join=0;
 
 if ~isequal(Filename, 0)
+    choice = questdlg('Do you want to load previoulsy saved Bottom and Region?', ...
+                'Bottom/Region',...
+                'Yes','No', ...
+                'No');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    load_reg=1;
+                    
+                case 'No'
+                    load_reg=0;       
+            end
+            
+            if isempty(choice)
+                load_reg=0;
+            end
     
     if ~strcmp(ftype,'dfile')
         if iscell(Filename)
@@ -176,9 +189,9 @@ if ~isequal(Filename, 0)
     
     switch ftype
         case 'EK60'
-            open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
+            open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join,load_reg)
         case 'EK80'
-            open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
+            open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join,load_reg)
         case 'dfile'
             choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
                 'd-file/raw_file',...
@@ -190,15 +203,14 @@ if ~isequal(Filename, 0)
                     dfile=0;
                     
                 case 'd-file'
-                    dfile=1;
-                    
+                    dfile=1;            
             end
             
             if isempty(choice)
                 dfile=1;
             end
 
-            choice = questdlg('Do you want to load associated Bottom and Region?', ...
+            choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
                 'Bottom/Region',...
                 'Yes','No', ...
                 'No');
@@ -208,8 +220,7 @@ if ~isequal(Filename, 0)
                     CVSCheck=1;
                     
                 case 'No'
-                    CVSCheck=0;
-                    
+                    CVSCheck=0;       
             end
             
             if isempty(choice)
@@ -218,9 +229,9 @@ if ~isequal(Filename, 0)
             
             switch dfile
                 case 1
-                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck);
+                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck,load_reg);
                 case 0
-                    open_dfile(main_figure,PathToFile,Filename,CVSCheck);
+                    open_dfile(main_figure,PathToFile,Filename,CVSCheck,load_reg);
             end
     end
     

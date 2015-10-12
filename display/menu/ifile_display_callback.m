@@ -2,7 +2,7 @@ function ifile_display_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if strcmpi(layer.Filetype,'CREST')
-    file=layer.Filename;
+    file=layer.Filename{1};
     path=layer.PathToFile;
     
     tok = file(end-7);

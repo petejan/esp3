@@ -99,10 +99,11 @@ uimenu(context_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,
 set(display_tab_comp.caxis_up,'String',num2str(axes_panel_comp.main_axes.CLim(2),'%.0f'));
 set(display_tab_comp.caxis_down,'String',num2str(axes_panel_comp.main_axes.CLim(1),'%.0f'));
 
-Range_bottom=layer.Transceivers(idx_freq).Bottom.Range;
+idx_bottom=layer.Transceivers(idx_freq).Bottom.Sample_idx;
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
+ydata=double(get(axes_panel_comp.main_echo,'YData'));
 
-axes_panel_comp=display_bottom(xdata,Range_bottom,axes_panel_comp,curr_disp.DispBottom);
+axes_panel_comp=display_bottom(xdata,ydata,idx_bottom,axes_panel_comp,curr_disp.DispBottom);
 axes_panel_comp=display_tracks(xdata,layer.Transceivers(idx_freq).ST,layer.Transceivers(idx_freq).Tracks,axes_panel_comp,curr_disp.DispTracks);
 
 hold(axes_panel_comp.haxes,'on');
@@ -111,7 +112,7 @@ hold(axes_panel_comp.vaxes,'on');
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 setappdata(main_figure,'Layer',layer);
 set_axes_position(main_figure);
-display_info([],[],main_figure,1);
+
 
 if ~isempty(layer.Transceivers(idx_freq).Regions)
     display_regions(main_figure)
@@ -122,5 +123,5 @@ if ~isempty(layer.Lines)
 end
 
 set_alpha_map(main_figure);
-
+display_info([],[],main_figure,1);
 end

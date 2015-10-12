@@ -128,7 +128,7 @@ for uu=idx_to_process
                 'vert_link_max',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.vert_link_max);
             end
             
-            layer.Transceivers(uu).create_regions_from_linked_candidates(linked_candidates,'pings','meters',5,5);
+            layer.Transceivers(uu).create_regions_from_linked_candidates(linked_candidates,'w_unit','pings','h_unit','meters','cell_w',5,'cell_h',5);
         end
     end
 end

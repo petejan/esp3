@@ -17,14 +17,17 @@ for ii=1:length(u)
 end
     
 
-x=double(get(main_echo,'xdata'));
+xdata=double(get(main_echo,'xdata'));
+x=linspace(xdata(1),xdata(end),length(xdata));
 y=double(get(main_echo,'ydata'));
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 %idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
 
 list_reg = list_regions(layer.Transceivers(idx_freq));
-axes(main_axes)
+axes(main_axes);
+dr=nanmean(diff(layer.Transceivers(idx_freq).Data.Range));
+dp=nanmean(diff(layer.Transceivers(idx_freq).GPSDataPing.Dist));
 
 active_reg=get(region_tab_comp.tog_reg,'value');
 if curr_disp.DispReg>0
@@ -39,54 +42,93 @@ end
         if i==active_reg
             col='r';
         else
-            col='k';
+            col='b';
         end
         
+        x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
+        y_reg_rect=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
+        
+        switch reg_curr.Cell_h_unit
+            case 'meters'
+                dy=ceil(reg_curr.Cell_h/dr);
+            otherwise
+                dy=reg_curr.Cell_h;
+        end
+        
+        switch reg_curr.Cell_w_unit
+            case 'meters'
+                dx=ceil(reg_curr.Cell_w/dp);
+            otherwise
+                dx=reg_curr.Cell_w;
+        end
+        
+        
+        
+        x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
+        y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
+         
+        [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
+        
         switch reg_curr.Shape
-            case 'Rectangular'
-                x_reg=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
-                y_reg=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
+            case 'Rectangular'       
 
-                
-%                 x_grid_idx=round(reg_curr.Output.Ping_M);
-%                 y_grid_idx=round(reg_curr.Output.Sample_M);
-%                 idx_nan=isnan(x_grid_idx)|isnan(y_grid_idx);
-%                 x_grid_idx(idx_nan)=[];
-%                 y_grid_idx(idx_nan)=[];
-%                 
-%                 x_grid=x(x_grid_idx(:));
-%                 y_grid=y(y_grid_idx(:));
-%                 
-%                 plot(x_grid,y_grid,'k','linewidth',2,'tag','region','visible',vis);
-%                 
-                
-                plot(x_reg,y_reg,col,'linewidth',1,'tag','region','visible',vis);
-
-                
-                text(nanmean(x_reg(:)),nanmean(y_reg(:)),reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',12,'tag','region')
+                vis_grid=vis;
+                x_text=nanmean(x_reg_rect(:));
+                y_text=nanmean(y_reg_rect(:));
+                nb_cont=1;
+                reg_plot=gobjects(1,length(x_grid)+length(y_grid)+1);
+                reg_plot(1)=plot(x_reg_rect,y_reg_rect,col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid);
             case 'Polygon'
+                lst='-';
                 idx_x=reg_curr.X_cont;
                 idx_y=reg_curr.Y_cont;
                 x_reg=cell(1,length(idx_x));
                 y_reg=cell(1,length(idx_x));
-                
-                len=0;
+
+                nb_cont=length(idx_x);
+                reg_plot=gobjects(1,length(x_grid)+length(y_grid)+nb_cont);
+                len_max=0;
+                idx_len_max=[];
                 for jj=1:length(idx_x)
+                    if length(idx_x{jj})>len_max
+                        idx_len_max=jj;
+                        len_max=length(idx_x{jj});
+                    end
                     idx_x{jj}=idx_x{jj}+reg_curr.Idx_pings(1);
                     idx_y{jj}=idx_y{jj}+reg_curr.Idx_r(1);
 
                     x_reg{jj}=x(idx_x{jj});
                     y_reg{jj}=y(idx_y{jj});
                     
-                    if length(idx_x)>len
+                    if ~isempty(idx_x)>0
                         x_text=nanmean(x_reg{jj});
                         y_text=nanmean(y_reg{jj});
-                    end
+                    end   
+                   
+                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis);
                     
-                    plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','visible',vis);
                 end
-                 text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region')
+                grid_in = inpolygon(X_grid,Y_grid,x_reg{idx_len_max},y_reg{idx_len_max});
+          
+                X_grid(~grid_in)=nan;
+                Y_grid(~grid_in)=nan;
+                 
         end
+               
+
+        for uui=1:size(X_grid,1)
+            reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+        end
+        for uuj=1:size(X_grid,2)
+            reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+        end
+        
+        text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region');
+
+        create_region_context_menu(reg_plot,main_figure,reg_curr);
+       
+
+        
     end
 
 end

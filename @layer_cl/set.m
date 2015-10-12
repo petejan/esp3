@@ -9,7 +9,7 @@ check_layer_class=@(layer_obj) isa(layer_obj,'layer_cl');
 
 addRequired(p,'obj',check_layer_class);
 addParameter(p,'ID_num',obj.ID_num,@isnumeric);
-addParameter(p,'Filename',obj.Filename,@ischar);
+addParameter(p,'Filename',obj.Filename);
 addParameter(p,'PathToFile',obj.PathToFile,@ischar);
 addParameter(p,'AcData',ac_data_cl(),check_ac_data_class);
 addParameter(p,'Frequencies',obj.Frequencies,@isnumeric);
@@ -22,10 +22,8 @@ parse(p,obj,varargin{:});
 results=p.Results;
 props=fieldnames(results);
 
-for i=1:length(props)
-    
-    obj.(props{i})=results.(props{i});
-    
+for i=1:length(props)    
+    obj.(props{i})=results.(props{i});   
 end
 
 

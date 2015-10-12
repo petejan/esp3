@@ -1,4 +1,4 @@
-function open_EK80_files(main_figure,PathToFile,Filename,vec_freq_init,ping_start,ping_end,multi_layer,join)
+function open_EK80_files(main_figure,PathToFile,Filename,vec_freq_init,ping_start,ping_end,multi_layer,join,load_reg)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layers=getappdata(main_figure,'Layers');
 app_path=getappdata(main_figure,'App_path');
@@ -229,7 +229,7 @@ if ~isequal(Filename, 0)
             computeSpSv(transceiver(i),envdata)
         end
         
-        layer_new=layer_cl('ID_num',fileID,'Filename',curr_Filename,'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        layer_new=layer_cl('ID_num',fileID,'Filename',{curr_Filename},'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
         
         
@@ -239,7 +239,7 @@ if ~isequal(Filename, 0)
         end
     end
     
-    [layers,layer]=shuffle_layers(layers,layers_temp,multi_layer,join);
+    [layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join,'load_reg',load_reg);
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);
@@ -247,7 +247,8 @@ if ~isequal(Filename, 0)
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Curr_disp',curr_disp);
-    if exist('opening_file','var')
+
+    try
         close(opening_file);
     end
     

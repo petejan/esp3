@@ -108,8 +108,12 @@ Sv_mask=ceil(filter2(ones(h_filter,1),Sv_mask,'same')./filter2(ones(h_filter,1),
 % axis ij
 % xlabel('Distance (m)')
 % ylabel('Depth (m)')
+% 
+% tic
+% regs_cleaned=find_candidates(sparse(Sv_mask),range_mat,dist_pings_mat,l_min_can,h_min_can,nb_min_sples);
+% toc
 
-regs_cleaned=find_candidates(sparse(Sv_mask),range_mat,dist_pings_mat,l_min_can,h_min_can,nb_min_sples);
+regs_cleaned=find_candidates_v2(Sv_mask,range_mat,dist_pings_mat,l_min_can,h_min_can,nb_min_sples);
 
 
 candidates=regs_cleaned;

@@ -49,8 +49,13 @@ if ~isempty(K_rem)
             I_new=K_new-nb_row*(J_new-1);
             
         end
-        
-        if ((nanmax(dist_pings_mat(K_tot))-nanmin(dist_pings_mat(K_tot)))>=l_min_can )&&((nanmax(range_mat(K_tot))-nanmin(range_mat(K_tot)))>=h_min_can) && (length(K_tot)>min_nb_sples)
+ 
+        dist=dist_pings_mat(K_tot);
+        range=range_mat(K_tot);
+        if ((nanmax(dist)-nanmin(dist)>=l_min_can )...
+                &&(nanmax(range)-nanmin(range)>=h_min_can) ...
+                && (length(K_tot)>min_nb_sples))
+            
             reg_temp(K_tot)=1;
             
             %             reg_temp_filt=ceil(filter2(ones(h_filter,l_filter),double(reg_temp>0),'same')./filter2(ones(h_filter,l_filter),ones(size(reg_temp)),'same'));
@@ -73,7 +78,7 @@ if ~isempty(K_rem)
         I_rem=I(idx_rem);
         J_rem=J(idx_rem);
         k=length(K_proc);
- 
+        
     end
     
 end

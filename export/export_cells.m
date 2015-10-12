@@ -50,7 +50,7 @@ reg_temp=region_cl(...
 reg_temp.integrate_region(Transceiver);
 
 Freq=layer.Frequencies(idx_freq);
-Filename=layer.Filename;
+Filename=layer.Filename{1};
 
 if iscell(Filename)
     Filename=Filename{1};

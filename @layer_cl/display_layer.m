@@ -81,7 +81,7 @@ end
 axes(ax);
 switch axes_type
     case {'Time','Distance'}       
-        main_echo=surface(xdata,ydata,real(data_mat));
+        main_echo=imagesc(xdata,ydata,real(data_mat));
         view(2)
         shading(ax,'flat');
             case 'Number'

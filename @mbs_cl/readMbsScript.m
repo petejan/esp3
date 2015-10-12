@@ -28,6 +28,7 @@ mbs.input.data.calRev={};
 mbs.input.data.BotRev={};
 mbs.input.data.rawFileName={};
 mbs.input.data.rawSubDir={};
+mbs.input.data.Algo={};
 mbs.input.data.CalCrest=[];
 mbs.input.data.CalRaw={};
 mbs.input.data.absorbtion=[];
@@ -140,6 +141,8 @@ else
                     str_rem=strrep(str_rem,' ','');
                     expr='\d*\([\-]*\d*\)';
                     mbs.input.data.Reg{i} = regexp(str_rem,expr,'match');
+                    expr='alg';
+                    mbs.input.data.Algo{i} = regexp(str_rem,expr,'match');
                 end
                 
                 idx_slash=strfind(mbs.input.data.dfileDir{i},'/');

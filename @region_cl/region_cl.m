@@ -4,6 +4,7 @@ classdef region_cl < handle
         Name
         ID
         Tag
+        Origin
         Unique_ID
         Type
         Idx_pings
@@ -21,6 +22,7 @@ classdef region_cl < handle
         
     end
     
+
     
     methods
         function obj = region_cl(varargin)
@@ -37,6 +39,7 @@ classdef region_cl < handle
             addParameter(p,'ID',0,@isnumeric);
             addParameter(p,'Unique_ID',unidrnd(2^64),@isnumeric);
             addParameter(p,'Tag','',@ischar);
+            addParameter(p,'Origin','',@ischar);
             addParameter(p,'Type','Data',check_type);
             addParameter(p,'Idx_pings',[],@isnumeric);
             addParameter(p,'Idx_r',[],@isnumeric);
@@ -85,6 +88,10 @@ classdef region_cl < handle
                     obj.Y_cont=[];
             end
 
+        end
+        
+        function str=print(obj)
+            str=sprintf('Region %s %d Type: %s Reference: %s ',obj.Name,obj.ID,obj.Type,obj.Reference);
         end
         
         function mask=create_mask(obj,nb_samples,nb_pings)

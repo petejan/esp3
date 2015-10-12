@@ -131,6 +131,19 @@ classdef transceiver_cl < handle
                 end
             end
         end
+
+        function idx=list_regions_origin(obj,origin)
+            if isempty(obj.Regions)
+                idx=[];
+            else
+                idx=[];
+                for i=1:length(obj.Regions)
+                    if strcmpi(obj.Regions(i).Origin,origin)
+                        idx=[idx i];
+                    end
+                end
+            end
+        end
         
         
         function idx=list_regions_type(obj,type)
@@ -142,6 +155,28 @@ classdef transceiver_cl < handle
                     if strcmp(obj.Regions(i).Type,type)
                         idx=[idx i];
                     end
+                end
+            end
+        end
+
+        function idx=list_regions_ID(obj,ID)
+            if isempty(obj.Regions)
+                idx=[];
+            else
+              idx=[];
+                for i=1:length(ID)
+                    idx=union(idx,find([obj.Regions(:).ID]==ID(i)));
+                end
+            end
+        end
+
+        function idx=list_regions_Unique_ID(obj,ID)
+            if isempty(obj.Regions)
+                idx=[];
+            else
+                idx=[];
+                for i=1:length(ID)
+                    idx=union(idx,find([obj.Regions(:).Unique_ID]==ID(i)));
                 end
             end
         end
@@ -163,7 +198,7 @@ classdef transceiver_cl < handle
             obj.Regions=[];
         end
         
-        function rm_region(obj,name)
+        function rm_region_name(obj,name)
             reg_curr=obj.Regions;
             reg_new=[];
             for i=1:length(reg_curr)
@@ -207,30 +242,31 @@ classdef transceiver_cl < handle
             end
             obj.Regions=reg_new;
         end
-        
-        function add_region(obj,regions)
-            for i=1:length(regions)
-                obj.rm_region_id(regions(i).Unique_ID);
-                obj.rm_region_name_id(regions(i).Name,regions(i).ID);
-                regions(i).integrate_region(obj);
-                regions(i).Unique_ID=new_unique_id(obj);
-                obj.Regions=[obj.Regions regions(i)];
+      
+        function rm_region_origin(obj,origin)
+            reg_curr=obj.Regions;
+            reg_new=[];
+            for i=1:length(reg_curr)
+                if ~strcmpi(reg_curr(i).Origin,origin)
+                    reg_new=[reg_new reg_curr(i)];
+                end
             end
+            obj.Regions=reg_new;
         end
+      
         
         
         
         function id=new_id(obj,name)
             reg_curr=obj.Regions;
-            reg_new=[];
             id_list=[];
             for i=1:length(reg_curr)
-                if strcmpi((reg_curr(i).Name),(name))
+                if strcmpi((reg_curr(i).Name),name)
                     id_list=[reg_curr(i).ID id_list];
                 end
             end
             if~isempty(id_list)
-                id=nanmax(id_list+1);
+                id=nanmax(id_list)+1;
             else
                 id=1;
             end

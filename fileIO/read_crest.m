@@ -100,7 +100,7 @@ if ~isequal(Filename_cell, 0)
         attitude_data.Time=linspace(start_time,end_time,length(attitude_data.Time));
         
         samples_num=(1:size(samples_val_imag,1))';
-        range=(samples_num-1)/depth_factor;
+        range=samples_num/depth_factor;
         number=(1:size(samples_val_imag,2));
         Time=linspace(start_time,end_time,length(number));
         
@@ -112,10 +112,12 @@ if ~isequal(Filename_cell, 0)
         
         
         if strcmp(ifileInfo.sounder_type,'ES70')||strcmp(ifileInfo.sounder_type,'ES60')
-        power=power-repmat(es60_error((1:size(power,2))+ifileInfo.es60_zero_error_ping_num),size(power,1),1);
+            corr=-repmat(es60_error((1:size(power,2))-ifileInfo.es60_zero_error_ping_num),size(power,1),1);
+        else
+            corr=zeros(size(power));
         end
         
-        sv=20*log10(power/system_calibration)+10*log10(depth_factor);
+        sv=20*log10(power/system_calibration)+10*log10(depth_factor)+corr;
             
         [~,curr_filename,~]=fileparts(tempname);
         curr_name=fullfile(dir_data,curr_filename);
@@ -144,9 +146,10 @@ if ~isequal(Filename_cell, 0)
                 fileID = unidrnd(2^64);
             end
             
-            layers(uu)=layer_cl('ID_num',fileID,'Filename',FileName,'Filetype','CREST','PathToFile',PathToFile,'SurveyData',survey_data,...
+            layers(uu)=layer_cl('ID_num',fileID,'Filename',{FileName},'Filetype','CREST','PathToFile',PathToFile,'SurveyData',survey_data,...
                 'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(PathToFile,FileName));
-         
+          layers(uu).OriginCrest=origin;
+ 
             if p.Results.CVSCheck&&~strcmp(cvs_root,'')
                 layers(uu).CVS_BottomRegions(cvs_root);      
             end

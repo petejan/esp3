@@ -123,6 +123,7 @@ classdef ac_data_cl < handle
                 return;
             else
                 subdata_temp(idx).Memap.Writable=false;
+                delete(subdata_temp(idx).Memap.Filename);
                 subdata_temp(idx)=[];
                 data.Type(idx)=[];
                 data.Fieldname(idx)=[];

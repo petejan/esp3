@@ -58,7 +58,7 @@ end
 rFilePath = fullfile(outDir,remain_str);
 
 %% Read rFile and save region information in Regions
-regions = readEsp2regions(fullfile(rFilePath,rFileName),1);
+regions = readEsp2regions(fullfile(rFilePath,rFileName));
 
 rmdir(outDir,'s');
 

@@ -1,7 +1,7 @@
 function load_bot_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
-app_path=getappdata(hObject,'App_path');
+app_path=getappdata(main_figure,'App_path');
 
 
 if layer.ID_num==0

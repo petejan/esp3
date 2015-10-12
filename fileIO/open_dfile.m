@@ -1,7 +1,8 @@
-function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck)
+function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,load_reg)
 curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
 app_path=getappdata(hObject,'App_path');
+
 
 
 if ~isequal(Filename_cell, 0)
@@ -32,18 +33,18 @@ if ~isequal(Filename_cell, 0)
         else
             cal=[];
         end
- 
+        
         layer_temp(uu)=open_EK60_file_stdalone(PathToRawFile{1},RawFilename,...
             'PathToMemmap',app_path.data,'Frequencies',[],'Calibration',cal);
         layer_temp(uu).OriginCrest=origin;
-        
+
         if CVScheck>0
             layer_temp(uu).CVS_BottomRegions(app_path.cvs_root)
         end
     end
     
     disp('Shuffling layers');
-    [layers,layer]=shuffle_layers(layers,layer_temp,1,0);
+    [layers,layer]=shuffle_layers(layers,layer_temp,'load_reg',load_reg);
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);

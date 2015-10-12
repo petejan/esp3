@@ -48,14 +48,14 @@ files_in_temp=dir(fullfile(app_path.data,'*.bin'));
 
 idx_old=[];
 for uu=1:length(files_in_temp)
-    if (now-files_in_temp(uu).datenum)>1
+    if (now-files_in_temp(uu).datenum)>0
         idx_old=[idx_old uu];
     end
 end
 
 if ~isempty(idx_old)
     delete_files=0;
-    choice = questdlg('There is files older than 1 day in your EchoAnalysis temp folder, do you want to delete them?', ...
+    choice = questdlg('There is files your EchoAnalysis temp folder, do you want to delete them?', ...
         'Delete files?',...
         'Yes','No', ...
         'No');
@@ -124,7 +124,6 @@ addpath(genpath(fullfile([path 'fileIO'])));
 addpath(genpath(fullfile([path 'icons'])));
 addpath(genpath(fullfile([path 'general'])));
 addpath(genpath(fullfile([path 'mapping'])));
-addpath(genpath(fullfile([path 'mbs'])));
 addpath(genpath(fullfile([path 'signal_processing'])));
 addpath(genpath(fullfile([path 'external_toolboxes'])));
 end

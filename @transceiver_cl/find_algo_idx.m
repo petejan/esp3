@@ -2,7 +2,7 @@ function [idx,found]=find_algo_idx(trans,name)
 
 idx=[];
 for ii=1:length(trans.Algo)
-    if strcmp(name,trans.Algo(ii).Name)
+    if strcmpi(name,trans.Algo(ii).Name)
         idx=ii;
         found=1;
     end

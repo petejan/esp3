@@ -124,7 +124,7 @@ linked_candidates=feval(layer.Transceivers(idx_freq).Algo(idx_school_detect).Fun
     'horz_link_max',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.horz_link_max,...
     'vert_link_max',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.vert_link_max);
 
-layer.Transceivers(idx_freq).rm_region('School');
+layer.Transceivers(idx_freq).rm_region_name('School');
 
 w_units=get(region_tab_comp.cell_w_unit,'string');
 w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
@@ -137,7 +137,8 @@ h_unit=h_units{h_unit_idx};
 cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
-layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,w_unit,h_unit,cell_w,cell_h);
+layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
+
 
 setappdata(main_figure,'Layer',layer);
 

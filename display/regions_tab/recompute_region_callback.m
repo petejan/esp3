@@ -8,7 +8,11 @@ list_reg = list_regions(layer.Transceivers(idx_freq));
 region_tab_comp=getappdata(main_figure,'Region_tab');
 
 if ~isempty(list_reg)
-    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    idx_reg=get(region_tab_comp.tog_reg,'value');
+    if idx_reg>length(Transceiver.Regions)
+        return;
+    end
+    active_reg=Transceiver.Regions(idx_reg);
 else
     return
 end

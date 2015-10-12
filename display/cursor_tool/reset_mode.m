@@ -18,4 +18,8 @@ for i=1:length(childs)
     set(childs(i),'state','off');  
 end
 
+context_menu=uicontextmenu;
+axes_panel_comp.main_echo.UIContextMenu=context_menu;
+uimenu(context_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
+
 end

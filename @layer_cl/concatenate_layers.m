@@ -1,9 +1,7 @@
 function layer_out=concatenate_layers(layer_1,layer_2)
-if iscell(layer_1.Filename)||iscell(layer_2.Filename)
-    newname=[layer_1.Filename layer_2.Filename];
-else
-    newname={layer_1.Filename layer_2.Filename};
-end
+
+newname=[layer_1.Filename layer_2.Filename];
+
 layer_out=layer_cl('ID_num',layer_1.ID_num,...
     'Filename',newname...
     ,'Filetype',layer_1.Filetype,...

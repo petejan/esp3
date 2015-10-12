@@ -5,9 +5,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 Transceiver=layer.Transceivers(idx_freq);
-f_s_sig=round(1/(Transceiver.Params.SampleInterval(1)));
-c=(layer.EnvData.SoundSpeed);
-
 
 bottom_tab_comp=getappdata(main_figure,'Bottom_tab');
 bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
