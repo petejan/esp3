@@ -11,7 +11,7 @@ classdef survey_data_cl
     methods
         function obj = survey_data_cl(varargin)
             p = inputParser;
-    
+            
             ver_fmt=@(x) ischar(x)||isnumeric(x);
             
             addParameter(p,'SurveyName','',@ischar);
@@ -31,8 +31,18 @@ classdef survey_data_cl
                 obj.(props{i})=results.(props{i});
                 
             end
-   
+            
         end
-        
+        function i_str=print_survey_data(obj)
+
+            if ischar(obj.Stratum)
+                i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
+                    obj.SurveyName,obj.Snapshot,obj.Stratum,obj.Transect);
+            else
+                i_str=sprintf('%s Snapshot %d, Strat. %d, Trans. %d',...
+                   obj.SurveyName,obj.Snapshot,obj.Stratum,obj.Transect);
+            end
+
+        end
     end
 end

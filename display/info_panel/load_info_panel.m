@@ -18,18 +18,12 @@ if ~isempty(info_panel_comp)
     type=types{get(display_tab_comp.tog_type,'value')};
     
     if ~isempty(layer.SurveyData)
-        if ischar(layer.SurveyData.Stratum)
-            i_str=sprintf('Snapshot %d, Strat. %s, Trans. %d',...
-                layer.SurveyData.Snapshot,layer.SurveyData.Stratum,layer.SurveyData.Transect);
-        else
-            i_str=sprintf('Snapshot %d, Strat. %d, Trans. %d',...
-                layer.SurveyData.Snapshot,layer.SurveyData.Stratum,layer.SurveyData.Transect);
-        end
+        i_str=layer.SurveyData.print_survey_data();
     else
         i_str='';
     end
     
-
+    
     summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',type,layer.Filename{1},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
     
     

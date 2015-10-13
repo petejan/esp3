@@ -73,7 +73,9 @@ if ~isempty(idx_old)
     
     if delete_files==1
         for i=1:length(idx_old)
-            delete(fullfile(app_path.data,files_in_temp(idx_old(i)).name));
+            if exist(fullfile(app_path.data,files_in_temp(idx_old(i)).name),'file')==2
+                delete(fullfile(app_path.data,files_in_temp(idx_old(i)).name));
+            end
         end
     end
 end

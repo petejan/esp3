@@ -3,19 +3,18 @@ function layers=read_crest(PathToFile,Filename_cell,varargin)
 p = inputParser;
 
 
-addRequired(p,'PathToFile',@ischar);
-addRequired(p,'Filename_cell');
+addRequired(p,'PathToFile',@(x) ischar(x)||iscell(x));
+addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
 addParameter(p,'PathToMemmap',PathToFile);
 addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
-addParameter(p,'CVSCheck',true);
+addParameter(p,'CVSCheck',0);
 addParameter(p,'CVSroot','');
 
 parse(p,PathToFile,Filename_cell,varargin{:});
 
 
 dir_data=p.Results.PathToMemmap;
-
 
 machineformat = 'ieee-le'; %IEEE floating point with little-endian byte ordering
 precision = 'uint16'; %2-byte
@@ -30,10 +29,15 @@ if ~isequal(Filename_cell, 0)
     
     
     for uu=1:length(Filename_cell)
+        if iscell(PathToFile)
+            path=PathToFile{uu};
+        else
+            path=PathToFile;
+        end
         
         FileName=Filename_cell{uu};
         filenumber=str2double(FileName(end-7:end));
-        fid = fopen(fullfile(PathToFile,FileName),'r',machineformat);
+        fid = fopen(fullfile(path,FileName),'r',machineformat);
         
         
         if fid == -1
@@ -81,9 +85,9 @@ if ~isequal(Filename_cell, 0)
         clear sample_real sample_imag ping_num;
         
         
-        [gps_data,attitude_data]= read_n_file(fullfile(PathToFile,FileName));
+        [gps_data,attitude_data]= read_n_file(fullfile(path,FileName));
 
-        ifileInfo=parse_ifile(PathToFile,FileName);
+        ifileInfo=parse_ifile(path,FileName);
 
         system_calibration=ifileInfo.system_calibration;
         depth_factor=ifileInfo.depth_factor;
@@ -138,7 +142,7 @@ if ~isequal(Filename_cell, 0)
                 'GPSDataPing',gps_data_ping,...
                 'Mode','CW',...
                 'AttitudeNavPing',attitude_data_pings);
-        [transceiver.Config,transceiver.Params]=config_from_ifile(fullfile(PathToFile,FileName));
+        [transceiver.Config,transceiver.Params]=config_from_ifile(fullfile(path,FileName));
         
 
             fileID = unidrnd(2^64);
@@ -146,8 +150,8 @@ if ~isequal(Filename_cell, 0)
                 fileID = unidrnd(2^64);
             end
             
-            layers(uu)=layer_cl('ID_num',fileID,'Filename',{FileName},'Filetype','CREST','PathToFile',PathToFile,'SurveyData',survey_data,...
-                'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(PathToFile,FileName));
+            layers(uu)=layer_cl('ID_num',fileID,'Filename',{FileName},'Filetype','CREST','PathToFile',path,'SurveyData',survey_data,...
+                'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(path,FileName));
           layers(uu).OriginCrest=origin;
  
             if p.Results.CVSCheck&&~strcmp(cvs_root,'')

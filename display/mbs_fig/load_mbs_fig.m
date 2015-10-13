@@ -1,11 +1,14 @@
 function load_mbs_fig(hObject_main,mbsSummary)
-
+hfigs=getappdata(hObject_main,'ExternalFigures');
 % Column names and column format
 columnname = {'Title','Species','Voyage','Areas','Author','MbsId','Created'};
 columnformat = {'char','char','char','char','char','char','char'};
 
 mbs_figure = figure('Position',[100 100 800 600],'Resize','off',...
-    'Name','MBSing','NumberTitle','off');%,'WindowStyle','modal');
+    'Name','MBSing','NumberTitle','off',...
+    'MenuBar','none');%No Matlab Menu)
+hfigs_new=[hfigs mbs_figure];
+setappdata(hObject_main,'ExternalFigures',hfigs_new);
 
 uicontrol(mbs_figure,'style','text','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
 mbs_table.search_box=uicontrol(mbs_figure,'style','edit','units','normalized','position',[0.2 0.96 0.3 0.03],'HorizontalAlignment','left','Callback',{@search_callback,mbs_figure});
@@ -35,6 +38,7 @@ mbs_table.table_main.UIContextMenu =rc_menu;
 uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','crest');
 uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','raw');
 uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','sch');
+uimenu(rc_menu,'Label','Load Associated Files/Regions','Callback',{@open_mbs_callback,mbs_figure,hObject_main},'tag','open_files');
 uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,hObject_main});
 selected_mbs={''};
 
@@ -50,36 +54,35 @@ selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(hObject_main,'App_path');
 
 for i=1:length(selected_mbs)
-%      try
-        curr_mbs=selected_mbs{i};
-        if~strcmp(curr_mbs,'')
-            [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
-        end
-        
-        mbs=mbs_cl();
-        mbs.readMbsScript(app_path.data_root,fileNames{1});
-        rmdir(outDir,'s');
-        output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.input.header.voyage,'[^\w'']',''),regexprep(mbs.input.header.title,'[^\w'']',''),src.Tag);
-        mbs.outputFile=fullfile(mbs.input.data.crestDir{1},output_filename);
-        idx_trans=[];
-        %idx_trans=find(mbs.input.data.transect==1&strcmpi(mbs.input.data.stratum,'6'));  
-        
-        switch src.Tag
-            case 'crest'
-                 mbs.regionSummary_v2(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans);
-            case 'raw'
-                 mbs.regionSummary_v2(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'type','raw');
-            case 'sch'
-                 mbs.regionSummary_v2(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'mode','sch');
-        end
-        
-        mbs.stratumSummary;
-        mbs.printOutput;
-        fprintf(1,'Results save to %s \n',mbs.outputFile);
-%     catch ME
-%         disp(ME.identifier);
-%         continue;
-%     end
+    %      try
+    curr_mbs=selected_mbs{i};
+    if~strcmp(curr_mbs,'')
+        [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
+    end
+    
+    mbs=mbs_cl();
+    mbs.readMbsScript(app_path.data_root,fileNames{1});
+    rmdir(outDir,'s');
+    output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.input.header.voyage,'[^\w'']',''),regexprep(mbs.input.header.title,'[^\w'']',''),src.Tag);
+    mbs.outputFile=fullfile(mbs.input.data.crestDir{1},output_filename);
+    idx_trans=[];
+    
+    switch src.Tag
+        case 'crest'
+            mbs.regionSummary_v3(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans);
+        case 'raw'
+            mbs.regionSummary_v3(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'type','raw');
+        case 'sch'
+            mbs.regionSummary_v3(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'mode','sch');
+    end
+    
+    mbs.stratumSummary;
+    mbs.printOutput;
+    fprintf(1,'Results save to %s \n',mbs.outputFile);
+    %     catch ME
+    %         disp(ME.identifier);
+    %         continue;
+    %     end
     
 end
 
@@ -120,7 +123,7 @@ else
     if voyage_search>0
         voyages=regexprep(data_ori(:,3),'[^\w'']','');
         out_voyage=regexpi(voyages,text_search);
-        idx_voyage=cellfun(@(x) ~isempty(x),out_voyage); 
+        idx_voyage=cellfun(@(x) ~isempty(x),out_voyage);
     else
         idx_voyage=zeros(size(data_ori,1),1);
     end
@@ -141,7 +144,7 @@ else
         idx_title=zeros(size(data_ori,1),1);
     end
     
-
+    
     
     data=data_ori(idx_voyage|idx_title|idx_species,:);
 end
@@ -149,4 +152,80 @@ end
 set(table.table_main,'Data',data);
 setappdata(mb_fig,'MBS_table',table);
 end
+
+
+
+function open_mbs_callback(~,~,hObject,hObject_main)
+selected_mbs=getappdata(hObject,'SelectedMbs');
+app_path=getappdata(hObject_main,'App_path');
+curr_disp=getappdata(hObject_main,'Curr_disp');
+layers=getappdata(hObject_main,'Layers');
+
+for i=1:length(selected_mbs)
+    %      try
+    curr_mbs=selected_mbs{i};
+    if~strcmp(curr_mbs,'')
+        [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
+    end
+    
+    mbs=mbs_cl();
+    mbs.readMbsScript(app_path.data_root,fileNames{1});
+    rmdir(outDir,'s');
+    
+    idx_transect_files=mbs.input.data.transect;
+    Filename_cell=cell(1,length(idx_transect_files));
+    RegCVS=cell(1,length(idx_transect_files));
+    reg=cell(1,length(idx_transect_files));
+    
+    for ii=1:length(idx_transect_files)
+        Filename_cell{ii}=sprintf('d%07d',mbs.input.data.dfile(ii));
+        RegCVS{ii}=mbs.input.data.Reg{ii};
+        reg_tmp=[];
+        for iou=1:length(RegCVS{ii})
+            reg_tmp=[reg_tmp getRegSpecFromRegString(RegCVS{ii}{iou})];
+        end
+        reg{ii} = reg_tmp;
+    end
+
+    
+    layers_temp=read_crest(mbs.input.data.crestDir,Filename_cell,'PathToMemmap',app_path.data,'CVSCheck',0,'CVSroot',app_path.cvs_root);
+    
+    
+    for iii=1:length(layers_temp)
+        idx_freq=find_freq_idx(layers_temp(iii),38000);
+        if isnan(mbs.input.data.absorbtion(iii))
+            layers_temp(iii).Transceivers(idx_freq).apply_absorption(mbs.input.header.default_absorption/1e3);
+        else
+            layers_temp(iii).Transceivers(idx_freq).apply_absorption(mbs.input.data.absorbtion(iii)/1e3);
+        end
+        if ~isempty(reg{iii})
+            layers_temp(iii).CVS_BottomRegions(app_path.cvs_root,'RegId',[reg{iii}(:).id]);
+        else
+            layers_temp(iii).CVS_BottomRegions(app_path.cvs_root,'RegCVS',0);
+        end
+    end
+    
+    [layers,layer]=shuffle_layers(layers,layers_temp,'load_reg',0,'multi_layer',1);
+    
+    %layers=[layers layers_temp];
+    
+end
+
+
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+curr_disp.Freq=layer.Frequencies(idx_freq);
+curr_disp.setField('sv');
+
+setappdata(hObject_main,'Layer',layer);
+setappdata(hObject_main,'Layers',layers);
+setappdata(hObject_main,'Curr_disp',curr_disp);
+update_display(hObject_main,1);
+
+%     catch ME
+%         disp(ME.identifier);
+%         continue;
+%     end
+
+end
+
 

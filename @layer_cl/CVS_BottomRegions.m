@@ -44,8 +44,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
         
         if bot_cvs==1
             display(['converting bottom and bad pings for dfile ' FileName]);
-            [IdxBad,bot,~]= get_bottom_from_esp2(PathToFile,FileName,voyage,cvsroot,bot_rev);
-            
+            [IdxBad,bot,~]= get_bottom_from_esp2(PathToFile,FileName,voyage,cvsroot,bot_rev); 
             layer.Transceivers(idx_freq).setBottomIdxBad(bot,IdxBad);
         end
         
@@ -53,7 +52,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
             display(['converting regions for dfile ' FileName]);
             regions = get_regions_from_esp2(PathToFile,FileName,voyage,cvsroot,reg_rev);
             
-            if ~strcmp(layer.Filetype,'CREST')
+            if ~strcmpi(layer.Filetype,'CREST')
                 for ii=1:length(regions)
                     regions(ii).Idx_pings=regions(ii).Idx_pings+1;
                     regions(ii).Idx_r=regions(ii).Idx_r+1;

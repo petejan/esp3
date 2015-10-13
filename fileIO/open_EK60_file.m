@@ -5,11 +5,18 @@ layers=getappdata(hObject,'Layers');
 
 app_path=getappdata(hObject,'App_path');
 
-if exist(fullfile(PathToFile,'cal_echo.csv'),'file')>0
-    cal=csv2struct(fullfile(PathToFile,'cal_echo.csv'));
+if iscell(PathToFile)
+    path=PathToFile{1};
+else
+    path=PathToFile;
+end
+
+if exist(fullfile(path,'cal_echo.csv'),'file')>0
+    cal=csv2struct(fullfile(path,'cal_echo.csv'));
 else
     cal=[];
 end
+
 sple_start=1;
 sple_end=inf;
 

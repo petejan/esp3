@@ -1,4 +1,4 @@
-function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,load_reg)
+function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,load_reg,multi_layer)
 curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
 app_path=getappdata(hObject,'App_path');
@@ -13,15 +13,20 @@ if ~isequal(Filename_cell, 0)
     
     
     for uu=1:length(Filename_cell)
+        if iscell(PathToFile)
+            path=PathToFile{uu};
+        else
+            path=PathToFile;
+        end
         
         FileName=Filename_cell{uu};
         
-        ifileInfo = parse_ifile(PathToFile, str2double(FileName(2:end)));
+        ifileInfo = parse_ifile(path, str2double(FileName(2:end)));
         RawFilename=ifileInfo.rawFileName;
         
-        origin=fullfile(PathToFile,FileName);
+        origin=fullfile(path,FileName);
         
-        [~,PathToRawFile]=find_file_recursive(PathToFile,RawFilename);
+        [~,PathToRawFile]=find_file_recursive(path,RawFilename);
         
         if isempty(PathToRawFile)
             warning('Could not find associated .*raw file');
@@ -44,7 +49,7 @@ if ~isequal(Filename_cell, 0)
     end
     
     disp('Shuffling layers');
-    [layers,layer]=shuffle_layers(layers,layer_temp,'load_reg',load_reg);
+    [layers,layer]=shuffle_layers(layers,layer_temp,'load_reg',load_reg,'multi_layer',multi_layer);
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     curr_disp.Freq=layer.Frequencies(idx_freq);

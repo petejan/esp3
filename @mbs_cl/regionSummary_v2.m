@@ -351,7 +351,7 @@ for ii=1:length(idx_transects)
 
     bins=unique([idx_pings(1):mbsVS:idx_pings(end) idx_pings(end)]);
     %     bins=unique([1:mbsVS:end_num_regs(end) end_num_regs(end)]);
-    binStart = [idx_pings(1) bins(2:end-1)];
+    binStart = bins(1:end-1);
     binEnd = bins(2:end);
     numSlices = length(binStart); % num_slices
     
@@ -363,10 +363,9 @@ for ii=1:length(idx_transects)
         rsa_new=rsa_temp{iuu};
         for j = 1:size(rsa_new,1)
             att=zeros(1,length(rsa_new{j,11}));
-            for k = 1:length(binStart); % sum up abscf data according to bins
-                t_start=rsa_new{j,7}+end_num(iuu);
-                %t_end=rsa_new{j,11}+end_num(iuu);
-                
+            t_start=rsa_new{j,7}+end_num(iuu);
+            for k = 1:length(binStart); % sum up abscf data according to bins      
+                %t_end=rsa_new{j,11}+end_num(iuu);   
                 ix = (t_start>=binStart(k) &  t_start<binEnd(k))& ~att;
                 att(ix)=1;
                 nb_good_pings(k)=nanmax(nansum(nb_good_pings_reg{iuu,j}(ix)),nb_good_pings(k));

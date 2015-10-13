@@ -11,7 +11,7 @@ uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_f
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
-uimenu(mhhhh,'Label','Display opened Layers Navigation','Callback',{@display_layers_nav_callback,main_figure});
+uimenu(mhhhh,'Label','Display opened Layers Navigation and Integration','Callback',{@display_layers_nav_callback,main_figure});
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 uimenu(mhhhh,'Label','Reload opened Layers Previously Saved Bottom/Regions','Callback',{@reload_psr_callback,main_figure});
 uimenu(mhhhh,'Label','Remove opened Layers Previously Saved Bottom/Regions','Callback',{@remove_psr_callback,main_figure});

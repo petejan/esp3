@@ -17,55 +17,66 @@ else
 end
 
 Filename=layer.Filename;
-
-if file_id==0    
-    [Filename,PathToFile]= uigetfile( {fullfile(path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
-elseif file_id==1
-
-    f = dir(path);
-    file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
-    if ~isempty(file_list)
-        i=1;
-        file_diff=0;
-        while i< size(file_list,1)&& file_diff==0
-            file_diff=strcmp(file_list(i,:),Filename{end});
-            i=i+1;
+PathToFile=layer.PathToFile;
+if iscell(file_id)
+    Filename=cell(1,length(file_id));
+    PathToFile=cell(1,length(file_id));
+    for iui=1:length(file_id)
+        [path_temp,name_temp,ext_temp]=fileparts(file_id{iui});
+        Filename{iui}=[name_temp ext_temp];
+        PathToFile{iui}=path_temp;
+    end
+else
+    if file_id==0
+        [Filename,PathToFile]= uigetfile( {fullfile(path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
+    elseif file_id==1
+        
+        f = dir(path);
+        file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
+        if ~isempty(file_list)
+            i=1;
+            file_diff=0;
+            while i< size(file_list,1)&& file_diff==0
+                file_diff=strcmp(file_list(i,:),Filename{end});
+                i=i+1;
+            end
+            
+            if file_diff
+                Filename=file_list(i,:);
+                PathToFile=layer.PathToFile;
+            else
+                Filename=0;
+                PathToFile=layer.PathToFile;
+            end
+        else
+            return;
+        end
+    elseif file_id==2
+        f = dir(path);
+        file_list=cell2mat({f(~cellfun(@isempty,regexpi({f.name},'(raw$|^d)'))).name}');
+        if ~isempty(file_list)
+            i=size(file_list,1);
+            file_diff=0;
+            while i>1 && file_diff==0
+                file_diff=strcmp(file_list(i,:),Filename{1});
+                i=i-1;
+            end
+            if file_diff
+                Filename=file_list(i,:);
+                PathToFile=layer.PathToFile;
+            else
+                Filename=0;
+                PathToFile=layer.PathToFile;
+            end
         end
         
-        if file_diff
-            Filename=file_list(i,:);
-            PathToFile=layer.PathToFile;
-        else
-            Filename=0;
-            PathToFile=layer.PathToFile;
-        end
-    else
-        return;
-    end
-elseif file_id==2
-    f = dir(path);
-    file_list=cell2mat({f(~cellfun(@isempty,regexpi({f.name},'(raw$|^d)'))).name}');
-    if ~isempty(file_list)
-        i=size(file_list,1);
-        file_diff=0;
-        while i>1 && file_diff==0
-            file_diff=strcmp(file_list(i,:),Filename{1});
-            i=i-1;
-        end
-        if file_diff
-            Filename=file_list(i,:);
-            PathToFile=layer.PathToFile;
-        else
-            Filename=0;
-            PathToFile=layer.PathToFile;
+    elseif ischar(file_id)
+        [PathToFile,Filename,~]=fileparts(fileID);
+        if isempty(Filename)
+            return;
         end
     end
     
-elseif ischar(file_id)
-    [PathToFile,Filename,~]=fileparts(fileID);
-    if isempty(Filename)
-        return;
-    end
 end
 
 if iscell(Filename)
@@ -74,10 +85,16 @@ else
     Filename_tmp=Filename;
 end
 
+if iscell(PathToFile)
+    PathToFile_tmp=PathToFile{1};
+else
+    PathToFile_tmp=PathToFile;
+end
+
 if ~isequal(Filename, 0)
-    fid = fopen(fullfile(PathToFile,Filename_tmp), 'r');
+    fid = fopen(fullfile(PathToFile_tmp,Filename_tmp), 'r');
     if fid==-1
-       warning('Cannot open file'); 
+        warning('Cannot open file');
         return;
     end
     fread(fid,1, 'int32', 'l');
@@ -103,49 +120,50 @@ join=0;
 
 if ~isequal(Filename, 0)
     choice = questdlg('Do you want to load previoulsy saved Bottom and Region?', ...
-                'Bottom/Region',...
-                'Yes','No', ...
-                'No');
-            % Handle response
-            switch choice
-                case 'Yes'
-                    load_reg=1;
-                    
-                case 'No'
-                    load_reg=0;       
-            end
+        'Bottom/Region',...
+        'Yes','No', ...
+        'No');
+    % Handle response
+    switch choice
+        case 'Yes'
+            load_reg=1;
             
-            if isempty(choice)
-                load_reg=0;
-            end
+        case 'No'
+            load_reg=0;
+    end
+    
+    if isempty(choice)
+        load_reg=0;
+    end
+    if iscell(Filename)
+        choice = questdlg('Do you want to open files as separate layers?', ...
+            'File opening mode',...
+            'Yes','No','No, and force concatenation', ...
+            'Yes');
+        % Handle response
+        switch choice
+            case 'Yes'
+                multi_layer=1;
+                read_all=0;
+            case 'No'
+                multi_layer=0;
+                read_all=1;
+            case 'No, and force concatenation'
+                multi_layer=-1;
+                read_all=1;
+            otherwise
+                return;
+        end
+        
+        if isempty(choice)
+            return;
+        end
+    else
+        multi_layer=0;
+    end
     
     if ~strcmp(ftype,'dfile')
-        if iscell(Filename)
-            choice = questdlg('Do you want to open files as separate layers?', ...
-                'File opening mode',...
-                'Yes','No','No, and force concatenation', ...
-                'Yes');
-            % Handle response
-            switch choice
-                case 'Yes'
-                    multi_layer=1;
-                    read_all=0;
-                case 'No'
-                    multi_layer=0;
-                    read_all=1;
-                case 'No, and force concatenation'
-                    multi_layer=-1;
-                    read_all=1;
-                otherwise
-                    return;
-            end
-            
-            if isempty(choice)
-                return;
-            end
-        else
-            multi_layer=0;
-        end
+        
         
         
         if multi_layer==0&&layer.ID_num~=0
@@ -203,13 +221,13 @@ if ~isequal(Filename, 0)
                     dfile=0;
                     
                 case 'd-file'
-                    dfile=1;            
+                    dfile=1;
             end
             
             if isempty(choice)
                 dfile=1;
             end
-
+            
             choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
                 'Bottom/Region',...
                 'Yes','No', ...
@@ -220,7 +238,7 @@ if ~isequal(Filename, 0)
                     CVSCheck=1;
                     
                 case 'No'
-                    CVSCheck=0;       
+                    CVSCheck=0;
             end
             
             if isempty(choice)
@@ -229,10 +247,11 @@ if ~isequal(Filename, 0)
             
             switch dfile
                 case 1
-                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck,load_reg);
+                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck,load_reg,multi_layer);
                 case 0
-                    open_dfile(main_figure,PathToFile,Filename,CVSCheck,load_reg);
+                    open_dfile(main_figure,PathToFile,Filename,CVSCheck,load_reg,multi_layer);
             end
+            
     end
     
     update_display(main_figure,1);

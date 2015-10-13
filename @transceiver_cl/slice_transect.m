@@ -24,16 +24,15 @@ end
 
 switch Slice_units
     case 'pings'
-        idx_pings=trans_obj.Data.Number;
-        bins=unique([idx_pings(1):Slice_w:idx_pings(end) idx_pings(end)]);
-        binStart = [idx_pings(1) bins(2:end-1)];
-        binEnd = bins(2:end);
+        bin_ref=trans_obj.Data.Number;
+        
     case 'meters'
-        dist=trans_obj.GPSDataPing.Dist;
-        bins=unique([dist(1):Slice_w:dist(end) dist(end)]);
-        binStart = [dist(1) bins(2:end-1)];
-        binEnd = bins(2:end);
+        bin_ref=trans_obj.GPSDataPing.Dist;
 end
+
+bins=unique([bin_ref(1):Slice_w:bin_ref(end) bin_ref(end)]);
+binStart = bins(1:end-1);
+binEnd = bins(2:end);
 
 numSlices = length(binStart); % num_slices
 slice_abscf=zeros(1,length(binStart));
@@ -42,16 +41,9 @@ idx_bins_S=nan(1,length(binStart));
 idx_bins_E=nan(1,length(binStart));
 
 for k = 1:length(binStart); % sum up abscf data according to bins
-    switch Slice_units
-        case 'pings'
-            [~,idx_bins_S(k)]=nanmin(abs(trans_obj.Data.Number-binStart(k)));
-            [~,idx_bins_E(k)]=nanmin(abs(trans_obj.Data.Number-binEnd(k)));
-        case 'meters'
-            [~,idx_bins_S(k)]=nanmin(abs(trans_obj.GPSDataPing.Dist-binStart(k)));
-            [~,idx_bins_E(k)]=nanmin(abs(trans_obj.Data.Number-binEnd(k)));
-    end
+    [~,idx_bins_S(k)]=nanmin(abs(bin_ref-binStart(k)));
+    [~,idx_bins_E(k)]=nanmin(abs(bin_ref-binEnd(k)));
 end
-
 
 
 for iuu=1:length(idx_reg)
@@ -62,15 +54,16 @@ for iuu=1:length(idx_reg)
     else
         regCellIntSub=regCellInt;
     end
-    Sa_lin = nansum(regCellIntSub.Sa_lin)./nanmax(regCellIntSub.Nb_good_pings_esp2);%sum up all abcsf per vertical slice   
+    Sa_lin = nansum(regCellIntSub.Sa_lin)./nanmax(regCellIntSub.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
     att=zeros(1,length(Sa_lin));
+    switch Slice_units
+        case 'pings'
+            t_start=nanmax(regCellIntSub.Ping_S);
+        case 'meters'
+            t_start=nanmax(regCellIntSub.Dist_S);
+    end
+    
     for k = 1:length(binStart); % sum up abscf data according to bins
-        switch Slice_units
-            case 'pings'
-                t_start=nanmax(regCellIntSub.Ping_S);
-            case 'meters'
-                t_start=nanmax(regCellIntSub.Dist_S);
-        end
         ix = (t_start>=binStart(k) &  t_start<binEnd(k))& ~att;
         att(ix)=1;
         nb_good_pings(k)=nanmax(nansum(regCellIntSub.Nb_good_pings_esp2(ix)),nb_good_pings(k));

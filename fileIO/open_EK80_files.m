@@ -33,6 +33,12 @@ if ~isequal(Filename, 0)
         else
             curr_Filename=Filename;
         end
+
+        if iscell(PathToFile)
+            path=PathToFile{uu};
+        else
+            path=PathToFile;
+        end
         
         if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
             break;
@@ -40,7 +46,7 @@ if ~isequal(Filename, 0)
         
         
         if isempty(vec_freq_init)
-            [header_temp,data_temp]=readEK80(PathToFile,curr_Filename,'PingRange',[1 1]);
+            [header_temp,data_temp]=readEK80(path,curr_Filename,'PingRange',[1 1]);
             
             for ki=1:header_temp.transceivercount
                 vec_freq_temp=[vec_freq_temp data_temp.config(ki).Frequency];
@@ -66,7 +72,7 @@ if ~isequal(Filename, 0)
         end
         
         
-        [header,data]=readEK80(PathToFile,curr_Filename,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'Frequencies',vec_freq);
+        [header,data]=readEK80(path,curr_Filename,'PingRange',[ping_start-prev_ping_start+1 ping_end-prev_ping_end],'Frequencies',vec_freq);
         
         
         if ~isstruct(header)
@@ -229,7 +235,7 @@ if ~isequal(Filename, 0)
             computeSpSv(transceiver(i),envdata)
         end
         
-        layer_new=layer_cl('ID_num',fileID,'Filename',{curr_Filename},'Filetype','EK80','PathToFile',PathToFile,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        layer_new=layer_cl('ID_num',fileID,'Filename',{curr_Filename},'Filetype','EK80','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
         
         

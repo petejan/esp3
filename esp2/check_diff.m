@@ -256,8 +256,8 @@ for i = 6:length(fn);
         if i==9
             figure(24);
             title(fn{i})
-            plot(region_vbscf_echo{j},'r');hold on;
-            plot(region_vbscf_esp2{j},'b');
+            plot(region_vbscf_echo{j}(:),'r');hold on;
+            plot(region_vbscf_esp2{j}(:),'b');
             grid on;
             legend('Matlab','Esp2')
             title(sprintf('Region vbscf values \n Region: %0.f File: %s',echobsdata.region_detail(1,j).region_id,echobsdata.region_detail(1,j).filename));
@@ -320,8 +320,8 @@ for i = 7:length(fn);
 
        
         figure(24);
-        plot(region_sliced_echo{j});hold on;
-        plot(region_sliced_esp2{j});
+        plot(region_sliced_echo{j}(:));hold on;
+        plot(region_sliced_esp2{j}(:));
         grid on;
         legend('Matlab','Esp2')
         title(sprintf('Region abscf \n Region: %0.f File: %s',echobsdata.region(1,j).region_id,echobsdata.region(1,j).filename));

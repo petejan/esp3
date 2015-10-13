@@ -1,4 +1,4 @@
-function  open_dfile_crest(hObject,PathToFile,Filename_cell,CVSCheck,load_reg)
+function  open_dfile_crest(hObject,PathToFile,Filename_cell,CVSCheck,load_reg,multi_layer)
 
 curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
@@ -8,7 +8,7 @@ layers_temp=read_crest(PathToFile,Filename_cell,'PathToMemmap',app_path.data,'CV
 
 
 disp('Shuffling layers');
-[layers,layer]=shuffle_layers(layers,layers_temp,'load_reg',load_reg);
+[layers,layer]=shuffle_layers(layers,layers_temp,'load_reg',load_reg,'multi_layer',multi_layer);
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 curr_disp.Freq=layer.Frequencies(idx_freq);

@@ -4,7 +4,7 @@ sd = ones(size(regCellInt.Layer_depth_min));
 fd = ones(size(regCellInt.Layer_depth_max));
 
 switch refType
-    case {'b','bottom'}
+    case {'b','bottom','Bottom'}
         for i = 1:size(regCellInt.Sv_mean,2)
             startBorder = nanmax(regCellInt.y_node(:,i)-regCellInt.height(:,i)/2)-reg.startDepth;
             finishBorder = nanmax(regCellInt.y_node(:,i)+regCellInt.height(:,i)/2)-reg.finishDepth;

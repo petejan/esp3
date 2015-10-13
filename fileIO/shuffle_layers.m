@@ -14,21 +14,33 @@ multi_layer=p.Results.multi_layer;
 join=p.Results.join;
 load_reg=p.Results.load_reg;
 
+for i=1:length(layers)
+    if ~isvalid(layers(i))
+        layers(i)=[];
+    end
+end
+
+
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);
 else
     found=0;
+    if length(new_layers_in)==1
+        layers=new_layers_in;
+        layer=new_layers_in;
+        return;
+    end
 end
 
 if  found==1
     layers=layers.delete_layers(0);
 end
+
 [~,found]=find_layer_idx(new_layers_in,0);
 
 if  found==1
     new_layers_in=new_layers_in.delete_layers(0);
 end
-
 
 if multi_layer<=0
     

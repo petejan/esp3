@@ -9,8 +9,12 @@ nb_layers=length(layers);
 
 layers_Str=cell(1,nb_layers);
 for i=1:nb_layers
-    new_name=[layers(i).Filename{1}];
-
+if ~isempty(layers(i).SurveyData)
+    new_name=layers(i).SurveyData.print_survey_data();
+else
+    new_name=fullfile(layers(i).PathToFile,layers(i).Filename{1});
+end
+    
     u=1;
     new_name_ori=new_name;
     while nansum(strcmp(new_name,layers_Str))>=1
@@ -63,14 +67,14 @@ else
     [idx,~]=find_layer_idx(layers,layer.ID_num);
     
     %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer');
-    jToolbar = findjobj(gcf,'-nomenu','class','mjtoolbar');
+    jToolbar = findjobj(main_figure,'-nomenu','class','mjtoolbar');
     
     if ~isempty(jToolbar)
         cursor_mode_tool_comp.jCombo = javax.swing.JComboBox(layers_Str);
         cursor_mode_tool_comp.jCombo = handle(cursor_mode_tool_comp.jCombo,'callbackproperties');
         set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
         set(cursor_mode_tool_comp.jCombo, 'ActionPerformedCallback', {@change_layer,main_figure});
-        set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(250,250));
+        set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(500,500));
         set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
         set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0))
         jToolbar(1).add(cursor_mode_tool_comp.jCombo,6);
