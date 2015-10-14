@@ -1,38 +1,13 @@
 function readMbsScript(mbs,dataroot,fileName)
 
 %% Read mbs file
-mbs.input.Script = fileName;
+
 [~,MbsId]=fileparts(fileName);
 
-mbs.input.header.MbsId=MbsId;
-mbs.input.header.title='';
-mbs.input.header.main_species='';
-mbs.input.header.voyage='';
-mbs.input.header.areas='';
-mbs.input.header.author='';
-mbs.input.header.created='';
-mbs.input.header.vertical_slice_size=500;
-mbs.input.header.comments='';
-mbs.input.header.use_exclude_regions=true;
-mbs.input.header.default_absorption=8;
-mbs.input.header.es60_correction= false;
-
-mbs.input.data.snapshot=[];
-mbs.input.data.stratum={};
-mbs.input.data.transect=[];
-mbs.input.data.dfileDir={};
-mbs.input.data.crestDisr={};
-mbs.input.data.cawDir={};
-mbs.input.data.channel=[];
-mbs.input.data.calRev={};
-mbs.input.data.BotRev={};
-mbs.input.data.rawFileName={};
-mbs.input.data.rawSubDir={};
-mbs.input.data.Algo={};
-mbs.input.data.CalCrest=[];
-mbs.input.data.CalRaw={};
-mbs.input.data.absorbtion=[];
-mbs.input.data.length=[];
+mbs.Header=mbs_header_cl();
+mbs.Header.MbsId=MbsId;
+mbs.Header.Script = fileName;
+mbs.Input=mbs_input_cl();
 
 
 %key_fields={'snapshot','stratum','transect','length','absorbtion'};
@@ -103,9 +78,9 @@ else
                     value=str2double(value);
                 end
                 if  ~isempty(value);
-                    mbs.input.header.(name) =value;  % save mbs overall specifications
+                    mbs.Header.(name) =value;  % save mbs overall specifications
                 else
-                    mbs.input.header.(name) ='';  % save mbs overall specifications
+                    mbs.Header.(name) ='';  % save mbs overall specifications
                 end
                 tline = fgetl(fid);
                 continue;
@@ -113,22 +88,22 @@ else
             
             if ~isempty(sn)&&~isempty(tr)&&~strcmp(st,'');
                 
-                mbs.input.data.snapshot(i) = sn;
-                mbs.input.data.stratum{i} = st;
-                mbs.input.data.transect(i) = tr;
-                mbs.input.data.absorbtion(i) = ab;
-                mbs.input.data.length(i) = ln;
+                mbs.Input.snapshot(i) = sn;
+                mbs.Input.stratum{i} = st;
+                mbs.Input.transect(i) = tr;
+                mbs.Input.absorbtion(i) = ab;
+                mbs.Input.length(i) = ln;
                 
                 [out,pos]=textscan(tline,'%s %.0f %s %s %s',1);
                 
-                [mbs.input.data.dfileDir{i},tmp] = fileparts(out{1}{1});
-                mbs.input.data.channel(i) = out{2};
-                mbs.input.data.calRev{i} = out{3}{1};
-                mbs.input.data.BotRev{i} = out{4}{1};
+                [mbs.Input.dfileDir{i},tmp] = fileparts(out{1}{1});
+                mbs.Input.channel(i) = out{2};
+                mbs.Input.calRev{i} = out{3}{1};
+                mbs.Input.botRev{i} = out{4}{1};
                 if ~isempty(out{5})
-                    mbs.input.data.RegRev{i} = out{5}{1};
+                    mbs.Input.regRev{i} = out{5}{1};
                 else
-                    mbs.input.data.RegRev{i} = [];
+                    mbs.Input.regRev{i} = [];
                 end
                 
                 if pos<=length(tline)
@@ -136,28 +111,33 @@ else
                 end
                 
                 if isempty(str_rem)
-                    mbs.input.data.Reg{i} = [];
+                    mbs.Input.reg{i} = [];
+                    mbs.Input.algo{i}= [];
                 else
                     str_rem=strrep(str_rem,' ','');
                     expr='\d*\([\-]*\d*\)';
-                    mbs.input.data.Reg{i} = regexp(str_rem,expr,'match');
+                    RegCVS = regexp(str_rem,expr,'match');
+                    for uuk=1:length(RegCVS)
+                    mbs.Input.reg{i}(uuk) = getRegSpecFromRegString(RegCVS{uuk});
+                    end
+                    
                     expr='alg';
-                    mbs.input.data.Algo{i} = regexp(str_rem,expr,'match');
+                    mbs.Input.algo{i} = regexp(str_rem,expr,'match');
                 end
                 
-                idx_slash=strfind(mbs.input.data.dfileDir{i},'/');
+                idx_slash=strfind(mbs.Input.dfileDir{i},'/');
                 
-                mbs.input.data.transducer{i} = mbs.input.data.dfileDir{i}(idx_slash(end)+1:end);
-                mbs.input.data.dfile(i) = str2double(tmp(2:end));
+                mbs.Input.transducer{i} = mbs.Input.dfileDir{i}(idx_slash(end)+1:end);
+                mbs.Input.dfileNum(i) = str2double(tmp(2:end));
                 
-                mbs.input.data.crestDir{i}=fullfile(dataroot,mbs.input.data.dfileDir{i});
+                mbs.Input.crestDir{i}=fullfile(dataroot,mbs.Input.dfileDir{i});
                 
-                ifile_info=parse_ifile(mbs.input.data.crestDir{i},mbs.input.data.dfile(i));
-                mbs.input.data.rawDir{i}=fullfile(mbs.input.data.crestDir{i},ifile_info.rawSubDir);
-                mbs.input.data.rawFileName{i}=ifile_info.rawFileName;
-                mbs.input.data.rawSubDir{i}=ifile_info.rawSubDir;
-                mbs.input.data.CalCrest(i)=ifile_info.Cal_crest;
-                mbs.input.data.CalRaw{i}=struct('G0',ifile_info.G0,'SACORRECT',ifile_info.SACORRECT);
+                ifile_info=parse_ifile(mbs.Input.crestDir{i},mbs.Input.dfileNum(i));
+                mbs.Input.rawDir{i}=fullfile(mbs.Input.crestDir{i},ifile_info.rawSubDir);
+                mbs.Input.rawFileName{i}=ifile_info.rawFileName;
+                mbs.Input.rawSubDir{i}=ifile_info.rawSubDir;
+                mbs.Input.calCrest(i)=ifile_info.Cal_crest;
+                mbs.Input.calRaw{i}=struct('G0',ifile_info.G0,'SACORRECT',ifile_info.SACORRECT);
                                 
                 i = i+1;
                 
@@ -173,7 +153,7 @@ else
         
         
         
-        disp('read mbs Script and saved in mbs.input.data')
+        disp('read mbs Script and saved in mbs.Input')
         fclose(fid);
         
     end

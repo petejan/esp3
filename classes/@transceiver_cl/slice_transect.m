@@ -1,10 +1,10 @@
 function output=slice_transect(trans_obj,varargin)
 
 p = inputParser;
-init_reg=struct('name','','id',[],'unique_id',[],'startDepth',[],'finishDepth',[],'startSlice',[],'finishSlice',[]);
+init_reg=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth',nan,'startSlice',nan,'finishSlice',nan);
 
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
-addParameter(p,'reg',init_reg,@isstruct);
+addParameter(p,'reg',init_reg,@(x) isstruct(x)||isempty(x));
 addParameter(p,'Slice_w',100,@(x) x>0);
 addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 
@@ -14,9 +14,12 @@ reg=p.Results.reg;
 Slice_w=p.Results.Slice_w;
 Slice_units=p.Results.Slice_units;
 
+if isempty(reg)
+    reg=init_reg;
+end
 
-if ~isempty([reg(:).id])
-    idx_reg=trans_obj.list_regions_Unique_ID([reg(:).unique_id]);
+if ~isempty(~isnan([reg(:).id]))
+    idx_reg=trans_obj.list_regions_ID([reg(:).id]);
 else
     idx_reg=[];
 end
@@ -49,7 +52,7 @@ end
 for iuu=1:length(idx_reg)
     reg_curr=trans_obj.Regions(idx_reg(iuu));
     regCellInt=reg_curr.Output;
-    if ~isempty([reg(:).id])
+    if ~isempty(~isnan([reg(:).id]))
         regCellIntSub = getCellIntSubSet(regCellInt,reg(iuu),reg_curr.Reference);
     else
         regCellIntSub=regCellInt;

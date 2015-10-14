@@ -1,19 +1,11 @@
 function readMbsScriptHeaders(mbs,fileName)
 
-
-%% Read mbs file
-mbs.input.Script = fileName;
+%% Read mbs file header
 [~,MbsId]=fileparts(fileName);
 
-mbs.input.data.MbsId=MbsId;
-mbs.input.data.title='';
-mbs.input.data.main_species='';
-mbs.input.data.voyage='';
-mbs.input.data.areas='';
-mbs.input.data.author='';
-mbs.input.data.created='';
-mbs.input.data.vertical_slice_size=500;
-
+mbs_header=mbs_header_cl();
+mbs_header.MbsId=MbsId;
+mbs_header.Script=fileName;
 
 if ~exist(fileName,'file');
     error([fileName ' does not exist']);
@@ -51,9 +43,9 @@ else
                     value=str2double(value);
                 end
                 if  ~isempty(value);
-                    mbs.input.data.(name) =value;  % save mbs overall specifications
+                    mbs_header.(name) =value;  % save mbs overall specifications
                 else
-                    mbs.input.data.(name) ='';  % save mbs overall specifications
+                    mbs_header.(name) ='';  % save mbs overall specifications
                 end
             end
         end
@@ -62,4 +54,6 @@ else
     end
 end
 
+mbs.Header=mbs_header;
 end
+

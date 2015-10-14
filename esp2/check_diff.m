@@ -248,7 +248,7 @@ for i = 6:length(fn);
             end
         end
         if isempty(trans_num)
-            continue;
+              continue;
         end
         region_vbscf_echo{j} = echobsdata.region_detail(1,j).(fn{i});
         region_vbscf_esp2{j} = esp2mbsdata.region_detail(1,trans_num).(fn{i});

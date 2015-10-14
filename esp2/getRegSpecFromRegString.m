@@ -41,6 +41,7 @@ while 1
     regout(i) .startSlice= ss;
     regout(i).finishSlice = fs;
     regout(i).name = ['Region' num2str(regout(i).id)];
+	regout(i).unique_id=[];
     if re == ')' ; break; end
 end
 end

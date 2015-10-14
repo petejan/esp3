@@ -38,7 +38,6 @@ mbs_table.table_main.UIContextMenu =rc_menu;
 uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','crest');
 uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','raw');
 uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','sch');
-uimenu(rc_menu,'Label','Load Associated Files/Regions','Callback',{@open_mbs_callback,mbs_figure,hObject_main},'tag','open_files');
 uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,hObject_main});
 selected_mbs={''};
 
@@ -50,8 +49,13 @@ end
 
 
 function run_mbs_callback(src,~,hObject,hObject_main)
+
 selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(hObject_main,'App_path');
+curr_disp=getappdata(hObject_main,'Curr_disp');
+layers_old=getappdata(hObject_main,'Layers');
+
+
 
 for i=1:length(selected_mbs)
     %      try
@@ -63,22 +67,23 @@ for i=1:length(selected_mbs)
     mbs=mbs_cl();
     mbs.readMbsScript(app_path.data_root,fileNames{1});
     rmdir(outDir,'s');
-    output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.input.header.voyage,'[^\w'']',''),regexprep(mbs.input.header.title,'[^\w'']',''),src.Tag);
-    mbs.outputFile=fullfile(mbs.input.data.crestDir{1},output_filename);
     idx_trans=[];
     
     switch src.Tag
         case 'crest'
-            mbs.regionSummary_v3(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans);
+            layers=load_files_regions(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans);
         case 'raw'
-            mbs.regionSummary_v3(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'type','raw');
+            layers=load_files_regions(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'type','raw');
         case 'sch'
-            mbs.regionSummary_v3(app_path.cvs_root,'datapath',app_path.data,'idx_trans',idx_trans,'mode','sch');
+            layers=load_files_regions(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'mode','sch');
     end
     
-    mbs.stratumSummary;
+    mbs.generate_output(layers,'idx_trans',idx_trans);
+    output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.Header.voyage,'[^\w'']',''),regexprep(mbs.Header.title,'[^\w'']',''),src.Tag);
+    mbs.OutputFile=fullfile(mbs.Input.crestDir{1},output_filename);
+    
     mbs.printOutput;
-    fprintf(1,'Results save to %s \n',mbs.outputFile);
+    fprintf(1,'Results save to %s \n',mbs.OutputFile);
     %     catch ME
     %         disp(ME.identifier);
     %         continue;
@@ -86,6 +91,26 @@ for i=1:length(selected_mbs)
     
 end
 
+layers=[layers_old layers];
+if ~isempty(layers)
+    [~,found]=find_layer_idx(layers,0);
+else
+    found=0;
+end
+if  found==1
+    layers=layers.delete_layers(0);
+end
+
+layer=layers(end);
+
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+curr_disp.Freq=layer.Frequencies(idx_freq);
+curr_disp.setField('sv');
+
+setappdata(hObject_main,'Layer',layer);
+setappdata(hObject_main,'Layers',layers);
+setappdata(hObject_main,'Curr_disp',curr_disp);
+update_display(hObject_main,1);
 
 end
 
@@ -152,80 +177,4 @@ end
 set(table.table_main,'Data',data);
 setappdata(mb_fig,'MBS_table',table);
 end
-
-
-
-function open_mbs_callback(~,~,hObject,hObject_main)
-selected_mbs=getappdata(hObject,'SelectedMbs');
-app_path=getappdata(hObject_main,'App_path');
-curr_disp=getappdata(hObject_main,'Curr_disp');
-layers=getappdata(hObject_main,'Layers');
-
-for i=1:length(selected_mbs)
-    %      try
-    curr_mbs=selected_mbs{i};
-    if~strcmp(curr_mbs,'')
-        [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
-    end
-    
-    mbs=mbs_cl();
-    mbs.readMbsScript(app_path.data_root,fileNames{1});
-    rmdir(outDir,'s');
-    
-    idx_transect_files=mbs.input.data.transect;
-    Filename_cell=cell(1,length(idx_transect_files));
-    RegCVS=cell(1,length(idx_transect_files));
-    reg=cell(1,length(idx_transect_files));
-    
-    for ii=1:length(idx_transect_files)
-        Filename_cell{ii}=sprintf('d%07d',mbs.input.data.dfile(ii));
-        RegCVS{ii}=mbs.input.data.Reg{ii};
-        reg_tmp=[];
-        for iou=1:length(RegCVS{ii})
-            reg_tmp=[reg_tmp getRegSpecFromRegString(RegCVS{ii}{iou})];
-        end
-        reg{ii} = reg_tmp;
-    end
-
-    
-    layers_temp=read_crest(mbs.input.data.crestDir,Filename_cell,'PathToMemmap',app_path.data,'CVSCheck',0,'CVSroot',app_path.cvs_root);
-    
-    
-    for iii=1:length(layers_temp)
-        idx_freq=find_freq_idx(layers_temp(iii),38000);
-        if isnan(mbs.input.data.absorbtion(iii))
-            layers_temp(iii).Transceivers(idx_freq).apply_absorption(mbs.input.header.default_absorption/1e3);
-        else
-            layers_temp(iii).Transceivers(idx_freq).apply_absorption(mbs.input.data.absorbtion(iii)/1e3);
-        end
-        if ~isempty(reg{iii})
-            layers_temp(iii).CVS_BottomRegions(app_path.cvs_root,'RegId',[reg{iii}(:).id]);
-        else
-            layers_temp(iii).CVS_BottomRegions(app_path.cvs_root,'RegCVS',0);
-        end
-    end
-    
-    [layers,layer]=shuffle_layers(layers,layers_temp,'load_reg',0,'multi_layer',1);
-    
-    %layers=[layers layers_temp];
-    
-end
-
-
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-curr_disp.Freq=layer.Frequencies(idx_freq);
-curr_disp.setField('sv');
-
-setappdata(hObject_main,'Layer',layer);
-setappdata(hObject_main,'Layers',layers);
-setappdata(hObject_main,'Curr_disp',curr_disp);
-update_display(hObject_main,1);
-
-%     catch ME
-%         disp(ME.identifier);
-%         continue;
-%     end
-
-end
-
 

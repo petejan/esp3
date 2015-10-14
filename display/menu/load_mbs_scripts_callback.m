@@ -12,16 +12,15 @@ for i=1:length(mbs_files)
     mbs(i)=mbs_cl();
     fileName=mbs_files{i};
     mbs(i).readMbsScriptHeaders(fileName);
-    if isfield(mbs(i).input,'data')
-        k=k+1;
-        mbsSummary{k,1}=mbs(i).input.data.title;
-        mbsSummary{k,2}=mbs(i).input.data.main_species;
-        mbsSummary{k,3}=mbs(i).input.data.voyage;
-        mbsSummary{k,4}=mbs(i).input.data.areas;
-        mbsSummary{k,5}=mbs(i).input.data.author;
-        mbsSummary{k,6}=mbs(i).input.data.MbsId;
-        mbsSummary{k,7}=mbs(i).input.data.created;
-    end
+    k=k+1;
+    mbsSummary{k,1}=mbs(i).Header.title;
+    mbsSummary{k,2}=mbs(i).Header.main_species;
+    mbsSummary{k,3}=mbs(i).Header.voyage;
+    mbsSummary{k,4}=mbs(i).Header.areas;
+    mbsSummary{k,5}=mbs(i).Header.author;
+    mbsSummary{k,6}=mbs(i).Header.MbsId;
+    mbsSummary{k,7}=mbs(i).Header.created;
+
 end
 rmdir(outDir,'s');
 

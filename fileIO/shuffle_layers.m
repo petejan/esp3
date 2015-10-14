@@ -7,12 +7,14 @@ addRequired(p,'new_layers_in',@(obj) isa(obj,'layer_cl')||isempty(obj));
 addParameter(p,'multi_layer',1);
 addParameter(p,'join',0);
 addParameter(p,'load_reg',0);
+addParameter(p,'keep',0);
 
 parse(p,layers,new_layers_in,varargin{:});
 
 multi_layer=p.Results.multi_layer;
 join=p.Results.join;
 load_reg=p.Results.load_reg;
+keep=p.Results.keep;
 
 for i=1:length(layers)
     if ~isvalid(layers(i))
@@ -133,38 +135,41 @@ if multi_layer<=0
         for kki=1:length(idx_to_concatenate{uui})
             couples=idx_to_concatenate{uui}{kki};
             
-            idx_looked=[];
-            new_chains={};
-            new_chains_start=[];
-            new_chains_end=[];
-            kkki=1;
-            
-            while length(idx_looked)<size(couples,1)
-                [chains_start,chains_end,chains,idx_looked]=get_chains(couples,[],[],{},idx_looked);
-                new_chains={new_chains{:} chains{:}};
-                new_chains_start=[new_chains_start chains_start];
-                new_chains_end=[new_chains_end chains_end];
-                kkki=kkki+1;
-            end
-            
-            for i=1:length(new_chains)
-                for j=1:length(new_chains)
-                    if ~isempty(intersect(new_chains{i},new_chains{j}))&&(j~=i)
-                        time_i=new_layers_in(new_chains{i}(end)).Transceivers(1).Data.Time(end)-new_layers_in(new_chains{i}(1)).Transceivers(1).Data.Time(1);
-                        time_j=new_layers_in(new_chains{j}(end)).Transceivers(1).Data.Time(end)-new_layers_in(new_chains{j}(1)).Transceivers(1).Data.Time(1);
-                        
-                        if time_j>=time_i
-                            temp_u=setdiff(new_chains{i},new_chains{j});
-                            new_chains{i}=[];
-                        else
-                            temp_u=setdiff(new_chains{j},new_chains{i});
-                            new_chains{j}=[];
+            if multi_layer>-1
+                idx_looked=[];
+                new_chains={};
+                new_chains_start=[];
+                new_chains_end=[];
+                kkki=1;
+                
+                while length(idx_looked)<size(couples,1)
+                    [chains_start,chains_end,chains,idx_looked]=get_chains(couples,[],[],{},idx_looked);
+                    new_chains={new_chains{:} chains{:}};
+                    new_chains_start=[new_chains_start chains_start];
+                    new_chains_end=[new_chains_end chains_end];
+                    kkki=kkki+1;
+                end
+                
+                for i=1:length(new_chains)
+                    for j=1:length(new_chains)
+                        if ~isempty(intersect(new_chains{i},new_chains{j}))&&(j~=i)
+                            time_i=new_layers_in(new_chains{i}(end)).Transceivers(1).Data.Time(end)-new_layers_in(new_chains{i}(1)).Transceivers(1).Data.Time(1);
+                            time_j=new_layers_in(new_chains{j}(end)).Transceivers(1).Data.Time(end)-new_layers_in(new_chains{j}(1)).Transceivers(1).Data.Time(1);
+                            
+                            if time_j>=time_i
+                                temp_u=setdiff(new_chains{i},new_chains{j});
+                                new_chains{i}=[];
+                            else
+                                temp_u=setdiff(new_chains{j},new_chains{i});
+                                new_chains{j}=[];
+                            end
+                            idx_not_to_concatenate{uui}=unique([idx_not_to_concatenate{uui}(:); temp_u(:)]);
                         end
-                        idx_not_to_concatenate{uui}=unique([idx_not_to_concatenate{uui}(:); temp_u(:)]);
                     end
                 end
+            else
+                new_chains{1}=[couples(:,1) ;couples(end,end)];        
             end
-            
             
             for iik=1:length(new_chains)
                 curr_layers=new_layers_in(new_chains{iik});
@@ -177,8 +182,13 @@ if multi_layer<=0
                         else
                             layer_conc=concatenate_layers(curr_layers(kk+1),layer_conc);
                         end
-                        
+
                     end
+                    
+                    if keep==0
+                        delete_layers(curr_layers,[]);
+                    end
+                    
                     new_layers_out=[new_layers_out layer_conc];
                 end
             end

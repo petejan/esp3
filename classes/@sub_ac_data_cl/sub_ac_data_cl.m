@@ -39,26 +39,25 @@ classdef sub_ac_data_cl < handle
             end
         end
         
+        function delete(obj)
+            if isa(obj.Memap,'memmapfile')
+                if exist(obj.Memap.Filename,'file')>0
+                    obj.Memap.Writable=false;
+                    delete(obj.Memap.Filename);
+                end
+            end
+        end
+        
         function sub_out=concatenate_SubData(sub_1,sub_2,new_name)
             
             if ~strcmp(sub_1.Fieldname,sub_2.Fieldname)
-
                 warning('Concatenating two different subdataset'); 
             end
             
             data_1=sub_1.Memap.Data.(sub_1.Fieldname);
             data_2=sub_2.Memap.Data.(sub_2.Fieldname);
             
-            new_data=[data_1 data_2];
-            
-            sub_1.Memap.Writable=false;
-            sub_2.Memap.Writable=false;
-            
-            %clear sub_1.Memap sub_2.Memap data1 data2
-            
-            delete(sub_1.Memap.Filename);
-            delete(sub_2.Memap.Filename);
-            
+            new_data=[data_1 data_2];   
             sub_out=sub_ac_data_cl(sub_1.Fieldname,new_name,new_data);
 
         end

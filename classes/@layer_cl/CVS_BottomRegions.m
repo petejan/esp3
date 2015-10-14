@@ -8,7 +8,7 @@ addParameter(p,'BotCVS',1);
 addParameter(p,'RegCVS',1);
 addParameter(p,'BotRev',[]);
 addParameter(p,'RegRev',[]);
-addParameter(p,'RegId',[]);
+addParameter(p,'Reg',[]);
 addParameter(p,'Freq',38000);
 
 
@@ -18,7 +18,7 @@ bot_cvs=p.Results.BotCVS;
 reg_cvs=p.Results.RegCVS;
 bot_rev=p.Results.BotRev;
 reg_rev=p.Results.RegRev;
-reg_id=p.Results.RegId;
+reg=p.Results.Reg;
 
 if strcmp(layer.Filetype,'CREST')
     PathToFile=layer.PathToFile;
@@ -61,11 +61,13 @@ if ~isempty(PathToFile)&&~isempty(FileName)
             
             layer.Transceivers(idx_freq).Regions=[];
             layer.Transceivers(idx_freq).rm_region_origin('Esp2');
-
-            if~isempty(reg_id)
-                for iu=1:length(regions)
-                    if nansum(regions(iu).ID==reg_id)>0
-                        layer.Transceivers(idx_freq).add_region(regions(iu),'Origin','Esp2');
+            
+            if~isempty(reg)
+                for iu=1:length(regions)     
+                    idx_reg=find(regions(iu).ID==[reg(:).id]);
+                    if ~isempty(idx_reg)
+                        layer.Transceivers(idx_freq).add_region(regions(iu),'Origin','Esp2','Reg',reg(idx_reg));
+                        
                     end
                 end
             else
