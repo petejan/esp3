@@ -101,6 +101,10 @@ function data = read_region_sliced(header, fid)
 
 % skip the local header line
 line = fgetl(fid);
+if header.num_regions==0
+    data=[];
+    return;
+end
 
 if feof(fid)
     data = [];
@@ -174,6 +178,10 @@ function data = read_region_detail(header, fid)
 
 % skip the local header line
 line = fgetl(fid);
+if header.num_regions==0
+    data=[];
+    return;
+end
 
 if feof(fid)
     data = [];
@@ -260,6 +268,10 @@ function data = read_region_summary(header, fid)
 
 % skip the local header line
 line = fgetl(fid);
+if header.num_regions==0
+    data=[];
+    return;
+end
 
 if feof(fid)
     data = [];

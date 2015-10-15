@@ -111,7 +111,9 @@ end
         x_max=nanmax(x_box);
         x_max=nanmin(xdata(end),x_max);
         
-        idx_pings=find(xdata<=x_max&xdata>=x_min);
+        x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
+        
+        idx_pings=find(x_data_disp<=x_max&x_data_disp>=x_min);
         idx_r=find(ydata<=y_max&ydata>=y_min);
         reset_disp_info(main_figure);
         clear_lines(ah)

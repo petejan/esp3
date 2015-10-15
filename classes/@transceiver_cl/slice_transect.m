@@ -78,9 +78,9 @@ output.slice_abscf=slice_abscf;
 output.slice_size=Slice_w;
 output.num_slices=numSlices;
 output.nb_good_pings=nb_good_pings;
-output.slice_lat=trans_obj.GPSDataPing.Lat(round((idx_bins_S+idx_bins_E)/2));
-output.slice_lon=trans_obj.GPSDataPing.Long(round((idx_bins_S+idx_bins_E)/2));
-output.slice_lat_esp2=trans_obj.GPSDataPing.Lat(idx_bins_S);
-output.slice_lon_esp2=trans_obj.GPSDataPing.Long(idx_bins_S);
+output.slice_lat=trans_obj.GPSDataPing.Lat(round((idx_bins_S+idx_bins_E)/2))';
+output.slice_lon=trans_obj.GPSDataPing.Long(round((idx_bins_S+idx_bins_E)/2))';
+output.slice_lat_esp2=trans_obj.GPSDataPing.Lat(idx_bins_S)';
+output.slice_lon_esp2=trans_obj.GPSDataPing.Long(idx_bins_S)';
 
 end

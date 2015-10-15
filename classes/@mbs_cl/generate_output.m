@@ -45,9 +45,9 @@ for uit=idx_trans
     
     reg_tot=[];
     end_ping=zeros(1,length(idx_lay));
-    Output_echo={};
+    Output_echo=[];
     for ifi=idx_lay
-        dfile_Curr=fullfile(mbs.Input.dfileDir{ifi},sprintf('d%07d',mbs.Input.dfileNum(ifi)));
+        dfile_Curr=fullfile(mbs.Input.dfileDir{idx_trans(ifi)},sprintf('d%07d',mbs.Input.dfileNum(idx_trans(ifi))));
         dfile_Curr=strrep(dfile_Curr,'\','/');
         idx_freq=find_freq_idx(layers(ifi),38000);
         gps=layers(ifi).Transceivers(idx_freq).GPSDataPing;
@@ -62,15 +62,15 @@ for uit=idx_trans
         rs={};
         rsv={};
         rsa={};
-        reg_tot=mbs.Input.reg{ifi};
+        reg_tot=mbs.Input.reg{idx_trans(ifi)};
         mbsVS = (mbs.Header.vertical_slice_size);
         
-        Output_echo{ifi}=trans.slice_transect('reg',reg_tot,'Slice_w',mbsVS,'Slice_units','pings');
+        Output_echo=[Output_echo trans.slice_transect('reg',reg_tot,'Slice_w',mbsVS,'Slice_units','pings')];
         
         for j=idx_reg
             
             reg_curr=trans.Regions(j);
-            reg_tot=reg_tot(j);
+            reg=reg_tot(j);
             regCellInt = reg_curr.Output;
             startPing = regCellInt.Ping_S(1);
             stopPing = regCellInt.Ping_E(end);
@@ -103,9 +103,9 @@ for uit=idx_trans
             regCellIntSub.Lon_S(regCellIntSub.Lon_S>180)=regCellIntSub.Lon_S(regCellIntSub.Lon_S>180)-360;
             
             %% Region Summary (4th Mbs Output Block)
-            rs{j,1} = mbs.Input.snapshot(ifi);
-            rs{j,2} = mbs.Input.stratum{ifi};
-            rs{j,3} = mbs.Input.transect(ifi);
+            rs{j,1} = mbs.Input.snapshot(idx_trans(ifi));
+            rs{j,2} = mbs.Input.stratum{idx_trans(ifi)};
+            rs{j,3} = mbs.Input.transect(idx_trans(ifi));
             rs{j,4} = dfile_Curr;
             rs{j,5} = reg.id;
             rs{j,6} = refType;
@@ -120,9 +120,9 @@ for uit=idx_trans
             rs{j,14} = nansum(nansum(regCellIntSub.Sa_lin))./nansum(nanmax(regCellIntSub.Nb_good_pings_esp2));%Abscf Region
             
             %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
-            rsa{j,1} = mbs.Input.snapshot(ifi);
-            rsa{j,2} = mbs.Input.stratum{ifi};
-            rsa{j,3} = mbs.Input.transect(ifi);
+            rsa{j,1} = mbs.Input.snapshot(idx_trans(ifi));
+            rsa{j,2} = mbs.Input.stratum{idx_trans(ifi)};
+            rsa{j,3} = mbs.Input.transect(idx_trans(ifi));
             rsa{j,4} = dfile_Curr;
             rsa{j,5} = reg.id;
             rsa{j,6} = size(regCellIntSub.Lat_S,2);  % num_v_slices
@@ -134,9 +134,9 @@ for uit=idx_trans
             
             
             %% Region vbscf (6th Mbs Output Block)
-            rsv{j,1} = mbs.Input.snapshot(ifi);
-            rsv{j,2} = mbs.Input.stratum{ifi};
-            rsv{j,3} = mbs.Input.transect(ifi);
+            rsv{j,1} = mbs.Input.snapshot(idx_trans(ifi));
+            rsv{j,2} = mbs.Input.stratum{idx_trans(ifi)};
+            rsv{j,3} = mbs.Input.transect(idx_trans(ifi));
             rsv{j,4} = dfile_Curr;
             rsv{j,5} = reg.id;
             rsv{j,6} = size(regCellIntSub.Sa_lin,1);% num_h_slices
@@ -163,11 +163,11 @@ for uit=idx_trans
         
     end
     
-    gps_tot=layer(1).Transceivers(idx_freq).GPSDataPing;
-    bot_tot=layer(1).Transceivers(idx_freq).Bottom;
-    IdxBad_tot=layer(1).Transceivers(idx_freq).IdxBad;
+    gps_tot=layers(idx_lay(1)).Transceivers(idx_freq).GPSDataPing;
+    bot_tot=layers(idx_lay(1)).Transceivers(idx_freq).Bottom;
+    IdxBad_tot=layers(idx_lay(1)).Transceivers(idx_freq).IdxBad;
     
-    if length(layer)>1
+    if length(idx_lay)>1
         for i=2:length(idx_lay)
             idx_freq=find_freq_idx(layers(idx_lay(i)),38000);
             if layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
@@ -180,8 +180,6 @@ for uit=idx_trans
             gps_tot=concatenate_GPSData(gps_tot,layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing);
         end
     end
-    layer.delete_layers([]);
-    clear layer;
     
     gps_tot.Long(gps_tot.Long>180)=gps_tot.Long(gps_tot.Long>180)-360;
     
@@ -226,15 +224,13 @@ for uit=idx_trans
     sfs{ii,1} = mbs.Input.snapshot(uit);
     sfs{ii,2} = mbs.Input.stratum{uit};
     sfs{ii,3} = mbs.Input.transect(uit);
-    sfs{ii,4} = Output_echo(ii).slice_size; % slice_size
-    sfs{ii,5} = Output_echo(ii).num_slices; % num_slices
-    sfs{ii,6} = Output_echo(ii).slice_lat_esp2; % latitude
-    sfs{ii,7} = Output_echo(ii).slice_lon_esp2; % longitude
-    sfs{ii,8} = Output_echo(ii).slice_abscf; % slice_abscf
+    sfs{ii,4} = nanmean([Output_echo(:).slice_size]); % slice_size
+    sfs{ii,5} = nansum([Output_echo(:).num_slices]); % num_slices
+    sfs{ii,6} = [Output_echo(:).slice_lat_esp2]; % latitude
+    sfs{ii,7} = [Output_echo(:).slice_lon_esp2]; % longitude
+    sfs{ii,7}(sfs{ii,7}>180)=sfs{ii,7}(sfs{ii,7}>180)-360;
+    sfs{ii,8} = [Output_echo(:).slice_abscf]; % slice_abscf
     
-    if length(idx_lay)>1
-        layer_tot.delete_layers([]);
-    end
 end
 
 

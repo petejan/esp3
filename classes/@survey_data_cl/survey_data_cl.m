@@ -2,9 +2,11 @@
 classdef survey_data_cl
     properties
         SurveyName
+        Voyage
         Snapshot
         Stratum
         Transect
+        VerticalSlice
     end
     
     
@@ -18,7 +20,8 @@ classdef survey_data_cl
             addParameter(p,'Snapshot',[],@isnumeric);
             addParameter(p,'Stratum','',ver_fmt);
             addParameter(p,'Transect','',ver_fmt);
-            
+            addParameter(p,'Voyage','',@ischar);
+            addParameter(p,'VerticalSlice',500);
             
             parse(p,varargin{:});
             

@@ -64,9 +64,9 @@ if ~isempty(PathToFile)&&~isempty(FileName)
             
             if~isempty(reg)
                 for iu=1:length(regions)     
-                    idx_reg=find(regions(iu).ID==[reg(:).id]);
+                    idx_reg=find(regions(iu).ID==[reg(:).id],1);
                     if ~isempty(idx_reg)
-                        layer.Transceivers(idx_freq).add_region(regions(iu),'Origin','Esp2','Reg',reg(idx_reg));
+                        layer.Transceivers(idx_freq).add_region(regions(iu),'Origin','Esp2');
                         
                     end
                 end

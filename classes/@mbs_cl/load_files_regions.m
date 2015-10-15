@@ -29,6 +29,8 @@ calRev=mbs.Input.calRev;
 calRaw=mbs.Input.calRaw;
 absorbtion=mbs.Input.absorbtion;
 surveyname=mbs.Header.title;
+voyage=mbs.Header.voyage;
+vertslice=mbs.Header.vertical_slice_size;
 snapshot=mbs.Input.snapshot;
 stratum=mbs.Input.stratum;
 transect=mbs.Input.transect;
@@ -130,7 +132,7 @@ for i=idx_trans
             end
     end
     
-    layer(u).SurveyData=survey_data_cl('SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i));
+    layer(u).SurveyData=survey_data_cl('Voyage',voyage,'SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i),'VerticalSlice',vertslice);
     layer(u).save_regs();
     
 end

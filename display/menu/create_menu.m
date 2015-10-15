@@ -43,7 +43,11 @@ mcvs = uimenu(main_figure,'Label','CVS','Tag','menucvs');
 uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
 uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_callback,main_figure});
 uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
-uimenu(mcvs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
+
+mbs = uimenu(main_figure,'Label','MBSing','Tag','menumbs');
+uimenu(mbs,'Label','Display Saved MBS results','Callback',{@display_saved_mbs_callback,main_figure});
+uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
+uimenu(mbs,'Label','Map from MBS result file','Callback',{@map_mbs_scripts_callback,main_figure});
 
 fileinfo = uimenu(main_figure,'Label','Info','Tag','filinfo');
 uimenu(fileinfo,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});

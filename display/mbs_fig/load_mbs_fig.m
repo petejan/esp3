@@ -54,11 +54,16 @@ selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(hObject_main,'App_path');
 curr_disp=getappdata(hObject_main,'Curr_disp');
 layers_old=getappdata(hObject_main,'Layers');
+hfigs=getappdata(hObject_main,'ExternalFigures');
+mbs_vec=getappdata(hObject_main,'MBS');
 
-
+hfig=figure();
+hold on;
+nb_row=ceil(length(selected_mbs)/3);
+nb_col=nanmin(length(selected_mbs),3);
 
 for i=1:length(selected_mbs)
-    %      try
+    %try
     curr_mbs=selected_mbs{i};
     if~strcmp(curr_mbs,'')
         [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
@@ -82,16 +87,26 @@ for i=1:length(selected_mbs)
     output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.Header.voyage,'[^\w'']',''),regexprep(mbs.Header.title,'[^\w'']',''),src.Tag);
     mbs.OutputFile=fullfile(mbs.Input.crestDir{1},output_filename);
     
-    mbs.printOutput;
+    mbs.print_output;
     fprintf(1,'Results save to %s \n',mbs.OutputFile);
+    ax(i)= subplot(nb_row,nb_col,i);
+    mbs.display_mbs_results_map(ax(i));
+    
     %     catch ME
     %         disp(ME.identifier);
     %         continue;
     %     end
-    
+    layers_old=[layers_old layers];
+    if ~isempty(mbs_vec)
+        idx=find_mbs(mbs_vec,mbs.Header.MbsId);
+        if ~isempty(idx)
+            mbs_vec(idx)=[];
+        end
+    end
+    mbs_vec=[mbs_vec mbs];
 end
 
-layers=[layers_old layers];
+layers=layers_old;
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);
 else
@@ -107,6 +122,9 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 curr_disp.Freq=layer.Frequencies(idx_freq);
 curr_disp.setField('sv');
 
+hfigs_new=[hfigs hfig];
+setappdata(hObject_main,'MBS',mbs_vec);
+setappdata(hObject_main,'ExternalFigures',hfigs_new);
 setappdata(hObject_main,'Layer',layer);
 setappdata(hObject_main,'Layers',layers);
 setappdata(hObject_main,'Curr_disp',curr_disp);

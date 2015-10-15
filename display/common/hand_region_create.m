@@ -58,7 +58,7 @@ end
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
         delete(hp);
-               
+        x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(xinit>xdata(end))=xdata(end);
         xinit(xinit<xdata(1))=xdata(1);
         
@@ -68,7 +68,7 @@ end
         poly_r=nan(size(yinit));
         poly_pings=nan(size(xinit));
         for i=1:length(xinit)
-            [~,poly_pings(i)]=nanmin(abs(xinit(i)-double(xdata)));
+            [~,poly_pings(i)]=nanmin(abs(xinit(i)-double(x_data_disp)));
             [~,poly_r(i)]=nanmin(abs(yinit(i)-double(ydata)));
             
         end

@@ -37,7 +37,9 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
             set(region_tab_comp.tog_reg,'string',{'--'});
         end
         setappdata(main_figure,'Layer',layer);
+        update_regions_tab(main_figure);
         display_regions(main_figure);
+        display_info([],[],main_figure,1);
     else
         return
     end
