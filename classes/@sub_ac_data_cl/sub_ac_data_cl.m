@@ -64,4 +64,9 @@ classdef sub_ac_data_cl < handle
         
        
     end
+    
+    methods (Static)
+      [sub_ac_data_temp,curr_name]=sub_ac_data_from_struct(curr_data,dir_data,fieldnames);
+   end
+   ...
 end

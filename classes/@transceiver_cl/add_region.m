@@ -6,7 +6,7 @@ p = inputParser;
 
 addRequired(p,'obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'regions',@(obj) isa(obj,'region_cl')||isempty(obj));
-addParameter(p,'Tag','',@ischar);
+addParameter(p,'Tag','',@(x) ischar(x)||iscell(x));
 addParameter(p,'Origin','',@ischar);
 
 
@@ -20,7 +20,15 @@ for i=1:length(regions)
     regions(i).integrate_region(obj);
     regions(i).Unique_ID=regions(i).Unique_ID;
     regions(i).ID=regions(i).ID;
-    regions(i).Tag=Tag;
+    if ~strcmpi(Tag,'')
+        if iscell(Tag)
+            regions(i).Tag=Tag;
+        else
+            if length(Tag)>=i
+                regions(i).Tag=Tag{i};
+            end
+        end
+    end
     regions(i).Origin=Origin;
     obj.Regions=[obj.Regions regions(i)];
 end

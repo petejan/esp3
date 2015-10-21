@@ -1,4 +1,4 @@
-function h=m_line(long,lat,varargin);
+function h=m_line(long,lat,varargin)
 % M_LINE Create a line on a map
 %    M_LINE(LONG,LAT) adds the line in vectors LONG and LAT to the 
 %    current axes. If LONG and LAT are matrices the same size, one 

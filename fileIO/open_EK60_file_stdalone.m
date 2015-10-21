@@ -279,21 +279,10 @@ if ~isequal(Filename_cell, 0)
             curr_data.power=single(10.^(double(data.pings(i).power/10)));
             curr_data.acrossphi=single(data.pings(i).athwartship_e);
             curr_data.alongphi=single(data.pings(i).alongship_e);
-             
-            [~,curr_filename,~]=fileparts(tempname);
-            curr_name=fullfile(dir_data,curr_filename);
             
-            if isempty(p.Results.FieldNames)
-                ff=fields(curr_data);
-            else
-                ff=p.Results.FieldNames;
-            end
-            sub_ac_data_temp=[];
-            
-            for uuu=1:length(ff)
-                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuu},curr_name,curr_data.(ff{uuu}))];
-            end
-            
+            [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,dir_data,p.Results.FieldNames);
+                        
+ 
             samples=double((sample_start(i):sample_end(i)))';
             range=double(samples-1)*dR(i);
             
@@ -340,6 +329,8 @@ if ~isequal(Filename_cell, 0)
         end
         
         layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',{Filename},'Filetype','EK60','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        
+        %layers_temp(uu).create_motion_comp_subdata(3);
         
     end
     

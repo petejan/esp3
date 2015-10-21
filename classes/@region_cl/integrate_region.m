@@ -63,12 +63,6 @@ for i=idx
     end
 end
 
-switch region.Type
-    case 'Bad Data'
-        region.Tag='';
-    otherwise
-        region.Tag='';
-end
 
 IdxBad=Transceiver.IdxBad;
 bot_sple=Transceiver.Bottom.Sample_idx;

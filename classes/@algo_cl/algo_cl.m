@@ -1,5 +1,5 @@
 
-classdef algo_cl < handle
+classdef algo_cl
     properties
         Name
         Function

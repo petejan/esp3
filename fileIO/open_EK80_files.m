@@ -25,6 +25,8 @@ if ~isequal(Filename, 0)
     prev_ping_end=0;
     prev_ping_start=1;
     
+    opening_file=waitbar(1/nb_layers,['Opening file: ',Filename{1}],'Name','Opening files','WindowStyle','Modal');
+    
     for uuu=1:nb_layers
         vec_freq_temp=[];
         
