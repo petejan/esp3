@@ -90,7 +90,11 @@ layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 idx_single_target=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
 
-Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
+Sp=layer.Transceivers(idx_freq).Data.get_datamat('Sp');
+if isempty(Sp)
+    disp('Can''t find single targets with no Sp datagram...'); 
+    return;
+end
 
 ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
     'Type',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.Type,...
@@ -102,7 +106,7 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
     'MaxStdMinAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
     'MaxStdMajAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle,...
     'DataType',layer.Transceivers(idx_freq).Mode);
-dataMat=nan(size(Sv));
+dataMat=nan(size(Sp));
 dataMat(ST.idx_target_lin)=ST.TS_comp;
 
 

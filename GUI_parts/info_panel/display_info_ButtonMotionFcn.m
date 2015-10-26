@@ -101,7 +101,28 @@ if ~isempty(cdata)
     plot(xdata,horz_val,'r');
     set(axh,'xlim',x_lim)
     set(allchild(axh), 'visible',get(axh,'visible'))
+    
+
+    hfigs=getappdata(main_figure,'ExternalFigures');
+    for iu=1:length(hfigs)
+        if isvalid(hfigs(iu))
+            if strcmpi(hfigs(iu).Tag,'nav')
+                hAllAxes = findobj(hfigs(iu),'type','axes');
+                if isappdata(hfigs(iu),'Map_info')
+                    Map_info=getappdata(hfigs(iu),'Map_info');
+                    m_proj(Map_info.Proj,'long',Map_info.LonLim,'lat',Map_info.LatLim);
+                end
+                for iui=1:length(hAllAxes)
+                    delete(findobj(hAllAxes(iui),'tag','boat_pos'));
+                    m_plot(hAllAxes(iui),Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k','tag','boat_pos')
+                end
+            end
+        end
+    end
+
+    
 end
+
 
 update_xtick_labels([],[],axh,curr_disp.Xaxes);
 update_ytick_labels([],[],axv);

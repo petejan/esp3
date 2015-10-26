@@ -42,7 +42,12 @@ max_TS=-10;
 
 switch p.Results.DataType
     case 'CW'
-        TS=Transceiver.Data.get_datamat('sp');      
+        TS=Transceiver.Data.get_datamat('sp');
+        if isempty(TS)
+            disp('Can''t find single targets with no Sp datagram...');
+            single_targets=[];
+            return;
+        end
     case 'FM'
         TSun=Transceiver.Data.get_datamat('spunmatched');
         TS=Transceiver.Data.get_datamat('sp');
@@ -217,10 +222,12 @@ samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Res
 
 switch Transceiver.Mode
     case 'CW'
-        target_range=nansum(samples_targets_power.*samples_targets_range)./nansum(samples_targets_power)-double(c*T/4);
+        dr=double(c*T/4);
+        target_range=nansum(samples_targets_power.*samples_targets_range)./nansum(samples_targets_power)-dr;
     otherwise
         [~,target_range_idx]=nanmin(samples_targets_power);
         target_range=samples_targets_range(target_range_idx+size(samples_targets_range,1)*(0:size(samples_targets_range,2)-1));
+        dr=0;
 end
 target_range(target_range<0)=0;
 
@@ -295,6 +302,7 @@ idx_keep_final= ~isnan(target_TS_comp);
 single_targets.TS_comp=target_TS_comp(idx_keep_final);
 single_targets.TS_uncomp=target_TS_uncomp(idx_keep_final);
 single_targets.Target_range=target_range(idx_keep_final);
+single_targets.Target_range_disp=target_range(idx_keep_final)+dr;
 single_targets.idx_r=target_idx_r(idx_keep_final);
 single_targets.Target_range_min=target_range_min(idx_keep_final);
 single_targets.Target_range_max=target_range_max(idx_keep_final);

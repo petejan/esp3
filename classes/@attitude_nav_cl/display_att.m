@@ -11,9 +11,10 @@ pitch=obj.Pitch;
 roll=obj.Roll;
 heave=obj.Heave;
 time=(obj.Time-obj.Time(1))*24*60*60;
-
+u=0;
 if ~isempty(roll)
-    h_fig(1)=figure('Name','Attitude','NumberTitle','off','tag','attitude');
+    u=u+1;
+    h_fig(u)=figure('Name','Attitude','NumberTitle','off','tag','attitude');
     ax(1)= axes();
     axes(ax(1));
     hold on;
@@ -42,7 +43,8 @@ if ~isempty(roll)
     linkaxes(ax,'x');
 end
 if ~isempty(heading)
-    h_fig(2)=figure('Name','Heading','NumberTitle','off','tag','attitude');
+    u=u+1;
+    h_fig(u)=figure('Name','Heading','NumberTitle','off','tag','attitude');
     ax(3)=axes();
     plot(time,heading,'k');
     xlabel('Time');

@@ -32,7 +32,7 @@ main_menu.close_all_fig=uimenu(m_display,'Label','Close All External Figures','C
 mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
 reg_tools=uimenu(mhhh,'Label','Regions');
 
-uimenu(reg_tools,'Label','Save Current Regions','Callback',{@save_regions_callback,main_figure});
+uimenu(reg_tools,'Label','Save Current Bottom/Regions','Callback',{@save_regions_callback,main_figure});
 uimenu(reg_tools,'Label','Load Previously Saved Bottom/Regions','Callback',{@load_regions_callback,main_figure});
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});

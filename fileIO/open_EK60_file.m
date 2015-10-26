@@ -36,12 +36,10 @@ if multi_layer==-1
 end
 
 
-%     profile on;
 
 layers_temp=open_EK60_file_stdalone(PathToFile,Filename,...
     'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'Calibration',cal);
-%     profile off;
-%     profile viewer
+
 if exist('opening_file','var')
     close(opening_file);
 end

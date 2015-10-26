@@ -4,6 +4,7 @@ col_obj={'r','b','g','k','m'};
 
 LonLim=[nan nan];
 LatLim=[nan nan];
+
 for uuobj=1:length(obj_tot)
     obj=obj_tot(uuobj);
     snap=union(snap,unique(obj.Snapshot));
@@ -24,6 +25,7 @@ nb_col=nanmin(length(snap),3);
 % delete(ax);
 n_ax=gobjects(length(snap),1);
 figure(hfig);
+
 for usnap=1:length(snap)
     %     n_ax(usnap)=axes('parent',fig);
     %     idx_r=ceil(usnap/nb_col);
@@ -117,6 +119,11 @@ for uuobj=1:length(obj_tot)
         
     end
 end
+
+Map_info.Proj=obj.Proj;
+Map_info.LonLim=LonLim;
+Map_info.LatLim=LatLim;
+setappdata(hfig,'Map_info',Map_info);
 end
 
 

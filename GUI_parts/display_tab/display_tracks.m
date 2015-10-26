@@ -1,7 +1,7 @@
 function axes_panel_comp=display_tracks(xdata,ST,tracks,axes_panel_comp,vis)
 
 X_st=xdata(ST.Ping_number);
-Z_st=ST.Target_range;
+Z_st=ST.Target_range_disp;
 
 uu=0;
 if isfield(axes_panel_comp,'track_plot')
@@ -21,7 +21,7 @@ if ~isempty(tracks)
         [X_t,idx_sort]=sort(X_st(idx_targets));
         Z_t=Z_st(idx_targets);
         Z_t=Z_t(idx_sort);
-        plot_handle=plot(xdata(X_t),Z_t,'r','linewidth',2,'tag','track','visible',vis);
+        plot_handle=plot(X_t,Z_t,'r','linewidth',2,'tag','track','visible',vis);
         axes_panel_comp.track_plot=[axes_panel_comp.track_plot plot_handle];
     end
 else

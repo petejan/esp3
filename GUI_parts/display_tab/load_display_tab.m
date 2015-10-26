@@ -221,27 +221,3 @@ setappdata(main_figure,'ExternalFigures',hfigs);
 
 end
 
-function display_navigation_callback(~,~,main_figure)
-layer=getappdata(main_figure,'Layer');
-hfigs=getappdata(main_figure,'ExternalFigures');
-
-hfig=figure('Name','Navigation','NumberTitle','off','tag','nav');
-
-lat=layer.GPSData.Lat;
-long=layer.GPSData.Long;
-
-if ~isempty(long)
-    figure(hfig);
-    m_proj('UTM','long',[nanmin(long)-0.01 nanmax(long)+0.01],'lat',[nanmin(lat)-0.01 nanmax(lat)+0.01]);   
-    hold on;
-    m_grid('box','fancy','tickdir','in');
-    m_plot(long,lat,'color','r');
-    %m_gshhs_h('color','k')
-else
-    close(hfig);
-   warning('No navigation data'); 
-end
-hfigs=[hfigs hfig];
-setappdata(main_figure,'ExternalFigures',hfigs);
-
-end

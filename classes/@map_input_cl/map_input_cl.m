@@ -58,8 +58,7 @@ classdef map_input_cl
     end
     
     methods (Static)
-       obj=map_input_cl_from_layers(layers,varargin); 
-       obj=map_input_cl_from_mbs(mbs,varargin); 
+       obj=map_input_cl_from_obj(ext_obj,varargin); 
     end
     
 end

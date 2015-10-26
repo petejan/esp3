@@ -32,8 +32,6 @@ if ~isequal(Filename_cell, 0)
         Filename_cell={Filename_cell};
     end
 
-    
-    
     prev_ping_end=0;
     prev_ping_start=1;
     
@@ -147,20 +145,22 @@ if ~isequal(Filename_cell, 0)
                     if curr_gps==1
                         data.gps.type=nmea.type;
                     end
-                    if strcmp(nmea.type,data.gps.type)
-                        data.gps.time(curr_gps) = data.NMEA.time(iiii);
-                        %  set lat/lon signs and store values
-                        if (nmea.lat_hem == 'S');
-                            data.gps.lat(curr_gps) = -nmea.lat;
-                        else
-                            data.gps.lat(curr_gps) = nmea.lat;
+                    if ~isempty(nmea.lat)
+                        if strcmp(nmea.type,data.gps.type)
+                            data.gps.time(curr_gps) = data.NMEA.time(iiii);
+                            %  set lat/lon signs and store values
+                            if (nmea.lat_hem == 'S');
+                                data.gps.lat(curr_gps) = -nmea.lat;
+                            else
+                                data.gps.lat(curr_gps) = nmea.lat;
+                            end
+                            if (nmea.lon_hem == 'W');
+                                data.gps.lon(curr_gps) = -nmea.lon;
+                            else
+                                data.gps.lon(curr_gps) = nmea.lon;
+                            end
+                            curr_gps=curr_gps+1;
                         end
-                        if (nmea.lon_hem == 'W');
-                            data.gps.lon(curr_gps) = -nmea.lon;
-                        else
-                            data.gps.lon(curr_gps) = nmea.lon;
-                        end
-                        curr_gps=curr_gps+1;
                     end
                     %             case 'speed'
                     %                 data.vspeed.time(curr_speed) = dgTime;

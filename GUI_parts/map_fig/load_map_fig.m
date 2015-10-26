@@ -14,16 +14,11 @@ else
     [box.lat_box,box.lon_box,box.lat_lays,box.lon_lays]=get_lat_lon_lim(mbs_vec);
     list_Str=list_mbs(mbs_vec);
 end
+box.lat_lim=[nan nan];
+box.lon_lim=[nan nan];
 
-lon_box_w=diff(box.lon_box);
-lat_box_w=diff(box.lat_box);
-dlon=[-1 1]*lon_box_w*0.1;
-dlat=[-1 1]*lat_box_w*0.1;
 
-box.lon_box=[box.lon_box(1)+dlon(1) box.lon_box(2)+dlon(2)];
-box.lat_box=[box.lat_box(1)+dlat(1) box.lat_box(2)+dlat(2)];
-box.lon_lim=[box.lon_box(1)+dlon(1) box.lon_box(2)+dlon(2)];
-box.lat_lim=[box.lat_box(1)+dlat(1) box.lat_box(2)+dlat(2)];
+[box.lat_lim,box.lon_lim]=ext_lat_lon_lim(box.lat_box,box.lon_box,0.1);
 
 if nansum(isnan(box.lat_lim))==2
     return;
@@ -145,8 +140,6 @@ box=getappdata(map_fig,'Box');
 box.proj_idx=get(box.tog_proj,'value');
 box.proj=box.list_proj_str{box.proj_idx};
 cont=box.depth_contour_size;
-
-
 
 [lon,lat]=create_box(box.lon_box,box.lat_box,box.nb_pts);
 axes(box.lim_axes);
@@ -375,23 +368,27 @@ else
     cont=0;
 end
 
-
 if isempty(mbs_vec_tot)
     layers_tot=getappdata(main_fig,'Layers');
-    layers=layers_tot(index_selected);
-    map_input=map_input_cl.map_input_cl_from_layers(layers,'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
+    obj=layers_tot(index_selected);
+else
+    obj=mbs_vec_tot(index_selected);
+end
+
+if isempty(mbs_vec_tot)
+    map_input=map_input_cl.map_input_cl_from_obj(obj,'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
     map_input.LatLim=sort(box.lat_box);
     map_input.LonLim=sort(box.lon_box);
 else
-    mbs_vec=mbs_vec_tot(index_selected);
-    for ui=1:length(mbs_vec)
-        map_input(ui)=map_input_cl.map_input_cl_from_mbs(mbs_vec(ui),'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
+
+    for ui=1:length(obj)
+        map_input(ui)=map_input_cl.map_input_cl_from_obj(obj(ui),'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
         map_input(ui).LatLim=sort(box.lat_box);
         map_input(ui).LonLim=sort(box.lon_box);
     end
 end
 
-hfig=figure();
+hfig=figure('Name','Results','NumberTitle','off','tag','nav');
 map_input.display_map_input_cl(hfig);
 
 hfigs_new=[hfigs hfig];

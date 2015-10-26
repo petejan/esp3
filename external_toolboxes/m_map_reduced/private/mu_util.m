@@ -109,7 +109,8 @@ if ~strcmp(cliptype,'point'),
 end;
 
 switch cliptype,
-  case {'on','point'}
+
+    case {'on','point'}
     Xc(indx)=NaN;
     Yc(indx)=NaN;
   case 'patch',
