@@ -8,7 +8,7 @@ if multi_layer<0
 end
 
 layers_temp=open_EK80_file_stdalone(PathToFile,Filename,'Frequencies',vec_freq_init,'PingRange',[ping_start ping_end],'PathToMemmap',app_path.data);
-
+disp('Shuffling layers');
 [layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join,'load_reg',load_reg);
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);

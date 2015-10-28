@@ -1,7 +1,10 @@
 function idx_ringdown=analyse_ringdown(RingDown)
 global DEBUG;
 
-nb_pings=max(size(RingDown));
+[nb_pings,idx_size]=max(size(RingDown));
+if idx_size==1
+    RingDown=RingDown';
+end
 win=min(75,nb_pings);
 bin=min(11,round(nb_pings/5));
 spc=1;
@@ -11,6 +14,8 @@ if size(RingDown,1)>1&&size(RingDown,2)>1
 else
     RingDownMean=RingDown;
 end
+
+
 Ring_down_thr=2*nanstd(RingDown);
 
 if Ring_down_thr==0
@@ -18,12 +23,13 @@ if Ring_down_thr==0
     return;
 end;
 
-
 [pdf_RD,x_RD]=pdf_perso(RingDownMean,'bin',2*bin);
+
 [~,idx_max]=nanmax(pdf_RD);
+
 idx_ringdown_1=abs(RingDownMean-x_RD(idx_max))<=(Ring_down_thr+Ring_down_thr*5);
 RingDownMean(~idx_ringdown_1)=nan;
-RingDown(~idx_ringdown_1,:)=nan;
+RingDown(:,~idx_ringdown_1)=nan;
 
 Ring_down_thr=2*nanstd(RingDown);
 if Ring_down_thr==0
@@ -50,6 +56,7 @@ y_value_sorted=y_value(idx_sort);
 
 RingDownMPV=nanmean(y_value_sorted(1:3,:));
 idx_ringdown=(abs(RingDownMean-RingDownMPV)<Ring_down_thr)&idx_ringdown_1;
+
 
 
 if DEBUG

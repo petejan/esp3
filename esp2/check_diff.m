@@ -35,8 +35,8 @@ for i = 4:length(fn);
     figure(24);
     clf;
     ax=axes();
-    plot(strat_data_echo);hold on;
-    plot(strat_data_esp2);
+    plot(strat_data_echo,'-+r');hold on;
+    plot(strat_data_esp2,'-ok');
     grid on;
     legend('Matlab','Esp2')
     title(sprintf('Snapshot: %.0f : %s',echobsdata.stratum(1,j).snapshot,fn{i}));
@@ -88,8 +88,8 @@ for i = 4:length(fn);
     figure(24);
     clf;
     ax=axes();
-    plot(trans_data_echo);hold on;
-    plot(trans_data_esp2);
+    plot(trans_data_echo,'-+r');hold on;
+    plot(trans_data_esp2,'-ok');
     grid on;
     legend('Matlab','Esp2')
     title(sprintf('%s Snap: %.0f',fn{i},echobsdata.transect_summary(1,j).snapshot));
@@ -137,9 +137,9 @@ for i = 3:length(fn);
             figure(24);
             clf;
             title(fn{i})
-            plot(trans_sliced_data_echo{j});
+            plot(trans_sliced_data_echo{j},'-+r');
             hold on;
-            plot(trans_sliced_data_esp2{j});
+            plot(trans_sliced_data_esp2{j},'-ok');
             grid on;
             legend('Matlab','Esp2')
             title(sprintf('Sliced Transect: %0.f Stratum: %s',echobsdata.transect(1,j).transect,echobsdata.transect(1,j).stratum));
@@ -199,8 +199,8 @@ for i = 7:length(fn);
     figure(24);
     clf;
     ax=axes();
-    plot(region_data_echo);hold on;
-    plot(region_data_esp2);
+    plot(region_data_echo,'-+r');hold on;
+    plot(region_data_esp2,'-ok');
     grid on;
     legend('Matlab','Esp2')
     title(sprintf('Region summary: %s',fn{i}));
@@ -256,8 +256,8 @@ for i = 6:length(fn);
         if i==9
             figure(24);
             title(fn{i})
-            plot(region_vbscf_echo{j}(:),'r');hold on;
-            plot(region_vbscf_esp2{j}(:),'b');
+            plot(region_vbscf_echo{j}(:),'-+r');hold on;
+            plot(region_vbscf_esp2{j}(:),'-ok');
             grid on;
             legend('Matlab','Esp2')
             title(sprintf('Region vbscf values \n Region: %0.f File: %s',echobsdata.region_detail(1,j).region_id,echobsdata.region_detail(1,j).filename));
@@ -320,8 +320,8 @@ for i = 7:length(fn);
 
        
         figure(24);
-        plot(region_sliced_echo{j}(:));hold on;
-        plot(region_sliced_esp2{j}(:));
+        plot(region_sliced_echo{j}(:),'-+r');hold on;
+        plot(region_sliced_esp2{j}(:),'-ok');
         grid on;
         legend('Matlab','Esp2')
         title(sprintf('Region abscf \n Region: %0.f File: %s',echobsdata.region(1,j).region_id,echobsdata.region(1,j).filename));
