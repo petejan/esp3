@@ -12,7 +12,6 @@ if found==0
 end
 
 
-
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo=algo_obj.Varargin;
 
