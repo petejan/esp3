@@ -1,7 +1,5 @@
 function update_bad_pings_tab(main_figure)
 
-
-
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
