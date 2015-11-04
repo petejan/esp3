@@ -147,7 +147,7 @@ if ~isequal(Filename_cell, 0)
                         if curr_gps==1
                             data.gps.type=nmea.type;
                         end
-                        if ~isempty(nmea.lat)||~isempty(nmea.lon)
+                        if ~isempty(nmea.lat) && ~isempty(nmea.lon)
                             if strcmp(nmea.type,data.gps.type)
                                 data.gps.time(curr_gps) = data.NMEA.time(iiii);
                                 %  set lat/lon signs and store values
