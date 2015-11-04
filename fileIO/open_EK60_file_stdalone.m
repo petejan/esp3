@@ -138,8 +138,10 @@ if ~isequal(Filename_cell, 0)
 
         for iiii=idx_NMEA'
         %for iiii=1:length(data.NMEA.string)
-            [nmea,nmea_type]=parseNMEA(data.NMEA.string{iiii});
-            
+        curr_message=data.NMEA.string{iiii};
+        curr_message(isspace(curr_message))=' ';
+        [nmea,nmea_type]=parseNMEA(curr_message);
+        
             switch nmea_type
                 case 'gps'
                     if curr_gps==1
