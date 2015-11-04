@@ -137,57 +137,58 @@ if ~isequal(Filename_cell, 0)
         idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(data.NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));
 
         for iiii=idx_NMEA'
-        %for iiii=1:length(data.NMEA.string)
-        curr_message=data.NMEA.string{iiii};
-        curr_message(isspace(curr_message))=' ';
-        [nmea,nmea_type]=parseNMEA(curr_message);
-        
-            switch nmea_type
-                case 'gps'
-                    if curr_gps==1
-                        data.gps.type=nmea.type;
-                    end
-                    if ~isempty(nmea.lat)
-                        if strcmp(nmea.type,data.gps.type)
-                            data.gps.time(curr_gps) = data.NMEA.time(iiii);
-                            %  set lat/lon signs and store values
-                            if (nmea.lat_hem == 'S');
-                                data.gps.lat(curr_gps) = -nmea.lat;
-                            else
-                                data.gps.lat(curr_gps) = nmea.lat;
-                            end
-                            if (nmea.lon_hem == 'W');
-                                data.gps.lon(curr_gps) = -nmea.lon;
-                            else
-                                data.gps.lon(curr_gps) = nmea.lon;
-                            end
-                            curr_gps=curr_gps+1;
+            %for iiii=1:length(data.NMEA.string)
+            curr_message=data.NMEA.string{iiii};
+            curr_message(isspace(curr_message))=' ';
+            [nmea,nmea_type]=parseNMEA(curr_message);
+            try
+                switch nmea_type
+                    case 'gps'
+                        if curr_gps==1
+                            data.gps.type=nmea.type;
                         end
-                    end
-                    %             case 'speed'
-                    %                 data.vspeed.time(curr_speed) = dgTime;
-                    %                 data.vspeed.speed(curr_speed) = nmea.sog_knts;
-                    %                 curr_speed = curr_speed + 1;
-                case 'dist'
-                    data.dist.time(curr_dist) = data.NMEA.time(iiii);
-                    data.dist.vlog(curr_dist) = nmea.total_cum_dist;
-                    curr_dist=curr_dist+1;
-                case 'attitude'
-                    data.attitude.time(curr_att) = data.NMEA.time(iiii);
-                    data.attitude.heading(curr_att) = nmea.heading;
-                    data.attitude.pitch(curr_att) = nmea.pitch;
-                    data.attitude.roll(curr_att) = nmea.roll;
-                    data.attitude.heave(curr_att) = nmea.heave;
-                    curr_att=curr_att+1;
-                case 'heading'
-                    data.heading.time(curr_heading) = data.NMEA.time(iiii);
-                    data.heading.heading(curr_heading) = nmea.heading;
-                    curr_heading=curr_heading+1;
+                        if ~isempty(nmea.lat)
+                            if strcmp(nmea.type,data.gps.type)
+                                data.gps.time(curr_gps) = data.NMEA.time(iiii);
+                                %  set lat/lon signs and store values
+                                if (nmea.lat_hem == 'S');
+                                    data.gps.lat(curr_gps) = -nmea.lat;
+                                else
+                                    data.gps.lat(curr_gps) = nmea.lat;
+                                end
+                                if (nmea.lon_hem == 'W');
+                                    data.gps.lon(curr_gps) = -nmea.lon;
+                                else
+                                    data.gps.lon(curr_gps) = nmea.lon;
+                                end
+                                curr_gps=curr_gps+1;
+                            end
+                        end
+                        %             case 'speed'
+                        %                 data.vspeed.time(curr_speed) = dgTime;
+                        %                 data.vspeed.speed(curr_speed) = nmea.sog_knts;
+                        %                 curr_speed = curr_speed + 1;
+                    case 'dist'
+                        data.dist.time(curr_dist) = data.NMEA.time(iiii);
+                        data.dist.vlog(curr_dist) = nmea.total_cum_dist;
+                        curr_dist=curr_dist+1;
+                    case 'attitude'
+                        data.attitude.time(curr_att) = data.NMEA.time(iiii);
+                        data.attitude.heading(curr_att) = nmea.heading;
+                        data.attitude.pitch(curr_att) = nmea.pitch;
+                        data.attitude.roll(curr_att) = nmea.roll;
+                        data.attitude.heave(curr_att) = nmea.heave;
+                        curr_att=curr_att+1;
+                    case 'heading'
+                        data.heading.time(curr_heading) = data.NMEA.time(iiii);
+                        data.heading.heading(curr_heading) = nmea.heading;
+                        curr_heading=curr_heading+1;
+                end
+            catch
+                disp(['Invalid NMEA message: ',curr_message])
             end
         end
-
         
-       
         
         
         if  ~isstruct(header)
