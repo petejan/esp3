@@ -147,7 +147,7 @@ if ~isequal(Filename_cell, 0)
                         if curr_gps==1
                             data.gps.type=nmea.type;
                         end
-                        if ~isempty(nmea.lat)
+                        if ~isempty(nmea.lat)||~isempty(nmea.lon)
                             if strcmp(nmea.type,data.gps.type)
                                 data.gps.time(curr_gps) = data.NMEA.time(iiii);
                                 %  set lat/lon signs and store values
@@ -185,10 +185,10 @@ if ~isequal(Filename_cell, 0)
                         curr_heading=curr_heading+1;
                 end
             catch
-                disp(['Invalid NMEA message: ',curr_message])
+                fprintf('Invalid NMEA message: %s\n',curr_message);
             end
         end
-        
+
         
         
         if  ~isstruct(header)
