@@ -147,7 +147,15 @@ if ~isequal(Filename_cell, 0)
                         if curr_gps==1
                             data.gps.type=nmea.type;
                         end
-                        if ~isempty(nmea.lat) && ~isempty(nmea.lon)
+                        %Because gps messages can sometimes be corrupted
+                        %with spurious characters it is possible to parse
+                        %the NMEA message and still end up with invalid
+                        %lat/long values. The tests below are to ignore
+                        %such values
+                        if ~isempty(nmea.lat) && isreal(nmea.lat)       ...
+                        && ~isempty(nmea.lon) && isreal(nmea.lon)       ...
+                        && (nmea.lat_hem == 'S' || nmea.lat_hem == 'N') ...
+                        && (nmea.lon_hem == 'E' || nmea.lon_hem == 'W')
                             if strcmp(nmea.type,data.gps.type)
                                 data.gps.time(curr_gps) = data.NMEA.time(iiii);
                                 %  set lat/lon signs and store values
