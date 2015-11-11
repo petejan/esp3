@@ -87,6 +87,7 @@ if nansum(~isnan(delta_120_38(:)))>50
     end
     
 else
+    h_figs=[];
     layer.Transceivers(idx_18).Regions(idx_school_18).Tag='UNC';
     layer.Transceivers(idx_38).Regions(idx_school_38).Tag='UNC';
     layer.Transceivers(idx_120).Regions(idx_school_120).Tag='UNC';

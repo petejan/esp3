@@ -103,7 +103,7 @@ for uu=idx_to_process
     if uu==idx_38
         if reprocess==1
             
-            layer.Transceivers(uu).rm_region('School');
+            layer.Transceivers(uu).rm_region_name('School');
             if own==0
             linked_candidates=feval(layer.Transceivers(uu).Algo(idx_school_detect).Function,layer.Transceivers(uu),...
                 'Type','svdenoised',...

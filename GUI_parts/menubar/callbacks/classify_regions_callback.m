@@ -51,6 +51,10 @@ else
     reprocess=1;
 end
 
+if isempty(choice)
+    return;
+end
+
 
 for i=1:length(layer.Transceivers)
     if i==idx_38
