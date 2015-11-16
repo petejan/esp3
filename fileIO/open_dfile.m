@@ -33,8 +33,8 @@ if ~isequal(Filename_cell, 0)
             return;
         end
         
-        if exist(fullfile(PathToRawFile{1},'cal_echo.csv'),'file')>0
-            cal=csv2struct(fullfile(PathToRawFile{1},'cal_echo.csv'));
+        if exist(fullfile(PathToRawFile{end},'cal_echo.csv'),'file')>0
+            cal=csv2struct(fullfile(PathToRawFile{end},'cal_echo.csv'));
         else
             cal=[];
         end

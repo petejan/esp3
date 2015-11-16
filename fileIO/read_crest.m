@@ -152,7 +152,6 @@ if ~isequal(Filename_cell, 0)
             
             layers(uu)=layer_cl('ID_num',fileID,'Filename',{FileName},'Filetype','CREST','PathToFile',path,'SurveyData',survey_data,...
                 'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(path,FileName));
-          layers(uu).OriginCrest=origin;
  
             if p.Results.CVSCheck&&~strcmp(cvs_root,'')
                 layers(uu).CVS_BottomRegions(cvs_root);      

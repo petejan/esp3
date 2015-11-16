@@ -176,11 +176,20 @@ end
 
 box.plot=m_line(lon,lat,'Color','b ','linewidth',2,'tag','box');
 
+try
+
 if get(box.depth_box,'Value')>0
     [box.Cs,box.hs]=m_elev('contour',-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible','on');
 else
     [box.Cs,box.hs]=m_elev('contour',-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible','off');
 end
+    
+catch
+    box.Cs=[];
+    box.hs=[];
+    disp('No Geographical data available...');
+end
+
 index_selected = get(box.listbox,'Value');
 
 for i=1:length(box.lat_lays)

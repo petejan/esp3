@@ -1,0 +1,25 @@
+function compile_echo(root_folder,nomFunc)
+
+str={};
+
+switch computer
+    case 'PCWIN'
+        str{1} = sprintf('mcc  -M ''-win32'' -v -m %s ', nomFunc);
+    case 'PCWIN64'
+        str{1} = sprintf('mcc -v -m %s ', fullfile(root_folder,nomFunc));
+    case 'GLNX86'
+        str{1} = sprintf('mcc -v -m %s ', fullfile(root_folder,nomFunc));
+    case 'GLNXA64'
+        str{1} = sprintf('mcc -v -m %s ', fullfile(root_folder,nomFunc));
+    otherwise
+        str{1} = sprintf('mcc -v -m %s ', fullfile(root_folder,nomFunc));
+end
+
+str{2}=sprintf('-a %s\\*',root_folder);
+s
+
+str_mcc =[str{:}];
+disp(str_mcc);
+eval(str_mcc)
+
+end

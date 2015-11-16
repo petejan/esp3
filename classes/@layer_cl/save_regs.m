@@ -1,14 +1,10 @@
 function save_regs(layer)
 
-if ~strcmpi(layer.OriginCrest,'')&&~strcmpi(layer.Filetype,'CREST')
-    [path,file]=fileparts(layer.OriginCrest);
+path=layer.PathToFile;
+if length(layer.Filename)>1
+    file=[layer.Filename{1} '_' layer.Filename{end}];
 else
-    path=layer.PathToFile;
-    if length(layer.Filename)>1
-        file=[layer.Filename{1} '_' layer.Filename{end}];
-    else
-        file=layer.Filename{1};
-    end
+    file=layer.Filename{1};
 end
 
 if ~isdir(fullfile(path,'echoanalysisfiles'))

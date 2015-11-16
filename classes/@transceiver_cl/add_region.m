@@ -21,11 +21,13 @@ for i=1:length(regions)
     regions(i).Unique_ID=regions(i).Unique_ID;
     regions(i).ID=regions(i).ID;
     if ~strcmpi(Tag,'')
-        if iscell(Tag)
+        if ~iscell(Tag)
             regions(i).Tag=Tag;
         else
             if length(Tag)>=i
                 regions(i).Tag=Tag{i};
+            else
+                regions(i).Tag=Tag{length(Tag)};
             end
         end
     end

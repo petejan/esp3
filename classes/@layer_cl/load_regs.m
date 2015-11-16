@@ -1,15 +1,12 @@
 function load_regs(layer)
 
-if ~strcmpi(layer.OriginCrest,'')&&~strcmpi(layer.Filetype,'CREST')
-    [path,file]=fileparts(layer.OriginCrest);
+path=layer.PathToFile;
+if length(layer.Filename)>1
+    file=[layer.Filename{1} '_' layer.Filename{end}];
 else
-    path=layer.PathToFile;
-    if length(layer.Filename)>1
-        file=[layer.Filename{1} '_' layer.Filename{end}];
-    else
-        file=layer.Filename{1};
-    end
+    file=layer.Filename{1};
 end
+
 
 reg_filename=fullfile(path,'echoanalysisfiles',[file '.mat']);
 
@@ -23,6 +20,7 @@ freqs=regfile.frequency;
 
 for i=1:length(layer.Frequencies)
     idx_reg=find(layer.Frequencies(i)==freqs);
+    
     if isfield(regfile,'Bottom')
         layer.Transceivers(i).setBottom(regfile.Bottom(idx_reg));
     end

@@ -1,5 +1,8 @@
 function load_svp_callback(~,~,main_figure) 
 layer=getappdata(main_figure,'Layer');
+if layer.ID_num==0
+    return;
+end
 
 [svp_filename,svp_path]= uigetfile( {fullfile(layer.PathToFile,'*.asvp*')}, 'Pick a Svp file','MultiSelect','off');   
     if svp_filename~=0
