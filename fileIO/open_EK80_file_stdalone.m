@@ -127,19 +127,11 @@ if ~isequal(Filename_cell, 0)
         data=computesPhasesAngles(data);
         data_ori=computesPhasesAngles(data_ori);
         
-        if isfield(data,'gps')
-            gps_data=gps_data_cl('Lat',data.gps.lat','Long',data.gps.lon','Time',data.gps.time');
-        else
-            gps_data=gps_data_cl();
-        end
+        idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(data.NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));
         
-        if isfield(data, 'attitude')
-            attitude_full=attitude_nav_cl('Heading',data.attitude.heading,'Pitch',data.attitude.pitch,'Roll',data.attitude.roll,'Heave',data.attitude.heave,'Time',data.attitude.time);
-        elseif isfield(data,'heading')
-            attitude_full=attitude_nav_cl('Heading',data.heading.heading,'Time',data.heading.time);
-        else
-            attitude_full=attitude_nav_cl();
-        end
+        [gps_data,attitude_full]=nmea_to_attitude_gps(data.NMEA.string,data.NMEA.time,idx_NMEA);
+        
+       
         
         
         freq=nan(1,header.transceivercount);

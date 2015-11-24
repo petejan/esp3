@@ -44,10 +44,6 @@ for usnap=1:length(snap)
             i=i+1;
             fprintf(1,'Can''t use %s projection inside this area... Trying %s\n',obj.Proj,list_proj_str{i});
             obj.Proj=list_proj_str{i};
-            if i==length(list_proj_str)
-                fprintf(1,'Could not find any appropriate projection\n');
-                return
-            end
         end
     end
     
@@ -57,8 +53,7 @@ for usnap=1:length(snap)
     try
         m_grid('box','fancy','tickdir','in');
     catch
-       fprintf(1,'Area to small to display Navigation\n');
-       return;
+        [obj.LatLim,obj.LonLim]=ext_lat_lon_lim(obj.LatLim,obj.LonLim,0.2);
     end
     
     try

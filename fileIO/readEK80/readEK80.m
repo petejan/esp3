@@ -121,11 +121,8 @@ for ii=1:length(filenames)
             data.pings(i).samples=(1:nb_samples(i))';
         end
         curr_ping = ones(length(data.config),1);
-        curr_gps=1;
-        curr_dist=1;
-        curr_speed=1;
-        curr_heading=1;
-        curr_att=1;
+        curr_nmea=1;
+
     end
     
     
@@ -195,44 +192,11 @@ for ii=1:length(filenames)
                 
             case 'NME0'
                 %disp(dgType);
+                
                 text_nmea=(fread(fid,len-HEADER_LEN,'*char','l'))';
-                [nmea,nmea_type]=parseNMEA(text_nmea);
-                switch nmea_type
-                    case 'gps'
-                        data.gps.time(curr_gps) = dgTime;
-                        %data.gps.time_gps(curr_gps) = nmea.time;
-                        %  set lat/lon signs and store values
-                        if (nmea.lat_hem == 'S');
-                            data.gps.lat(curr_gps) = -nmea.lat;
-                        else
-                            data.gps.lat(curr_gps) = nmea.lat;
-                        end
-                        if (nmea.lon_hem == 'W');
-                            data.gps.lon(curr_gps) = -nmea.lon;
-                        else
-                            data.gps.lon(curr_gps) = nmea.lon;
-                        end
-                        curr_gps=curr_gps+1;
-                    case 'speed'
-                        data.vspeed.time(curr_speed) = dgTime;
-                        data.vspeed.speed(curr_speed) = nmea.sog_knts;
-                        curr_speed = curr_speed + 1;
-                    case 'dist'
-                        data.dist.time(curr_dist) = dgTime;
-                        data.dist.vlog(curr_dist) = nmea.total_cum_dist;
-                        curr_dist=curr_dist+1;
-                    case 'heading'
-                        data.heading.time(curr_heading) = dgTime;
-                        data.heading.heading(curr_heading) = nmea.heading;
-                        curr_heading=curr_heading+1;
-                    case 'attitude'
-                        data.attitude.time(curr_att) = dgTime;
-                        data.attitude.heading(curr_att) = nmea.heading;
-                        data.attitude.pitch(curr_att) = nmea.pitch;
-                        data.attitude.roll(curr_att) = nmea.roll;
-                        data.attitude.heave(curr_att) = nmea.heave;
-                        curr_att=curr_att+1;
-                end
+                data.NMEA.string{curr_nmea}=text_nmea;
+                data.NMEA.time(curr_nmea)=dgTime;
+                curr_nmea=curr_nmea+1;
                 
             case 'TAG0'
                 %disp(dgType);
