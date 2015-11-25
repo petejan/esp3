@@ -29,8 +29,6 @@ if ~isempty(bot_sple)
         IdxBad=IdxBad-1;
     end
     
-    new_bad=find(isnan(new_bot_sple));
-    IdxBad=union(IdxBad,new_bad);
     new_bot_sple(new_bot_sple>length(range))=length(range);
     
     new_bot_r(~isnan(new_bot_sple))=range(new_bot_sple(~isnan(new_bot_sple)));

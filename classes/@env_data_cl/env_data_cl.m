@@ -26,17 +26,20 @@ classdef env_data_cl
             props=fieldnames(results);
             
             for i=1:length(props)
-                
-                obj.(props{i})=results.(props{i});
+                if isnumeric(results.(props{i}))
+                    obj.(props{i})=double(results.(props{i}));
+                else
+                    obj.(props{i})=(results.(props{i}));
+                end
                 
             end
             
         end
         
-         
+        
         function  obj=set_svp(obj,depth,soundspeed)
-            obj.SVP.depth=depth;
-            obj.SVP.soundspeed=soundspeed;      
+            obj.SVP.depth=double(depth);
+            obj.SVP.soundspeed=double(soundspeed);
         end
     end
 end

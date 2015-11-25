@@ -71,8 +71,8 @@ Power=transceiver.Data.get_datamat('power');
 [AcrossPhi,AlongPhi]=transceiver.get_phase();
 
 
-Freq=(transceiver.Config.Frequency);
-pulselength=(transceiver.Params.PulseLength(1));
+Freq=double(transceiver.Config.Frequency);
+pulselength=double(transceiver.Params.PulseLength(1));
 gains=transceiver.Config.Gain;
 pulselengths=transceiver.Config.PulseLength;
 [~,idx_pulse]=nanmin(abs(pulselengths-pulselength));
@@ -214,7 +214,7 @@ if exitflag ~= 1
     disp(' ')
     disp('No further analysis will be done. The beam is odd.')
     disp(' ')
-    disp(['Produced using version ' scc_revision ' of this Matlab function'])
+    disp(['Produced using version ' 'nope version' ' of this Matlab function'])
     return
 end
 
@@ -261,15 +261,16 @@ else
     % Since we're using data from a much larger angle range, apply the beam
     % pattern compensation to avoid gross errors.
     i = find(phi < on_axis);
+    if isempty(i)
+        return;
+    end
     ts_values = sphere(i,1) + compensation(i);
     mean_ts_on_axis = 10*log10(mean(10.^(ts_values/10)));
     std_ts_on_axis = std(ts_values);
     max_ts_on_axis = max(ts_values);
 end
 
-if isempty(i)
-    return
-end
+
 
 % plot up the on-axis TS values
 figure('name', 'On-axis sphere TS')

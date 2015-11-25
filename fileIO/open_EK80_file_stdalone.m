@@ -236,7 +236,8 @@ if ~isequal(Filename_cell, 0)
                 end
             end
             
-            computeSpSv(transceiver(i),envdata)
+            transceiver(i).computeSpSv(envdata);
+            transceiver(i).computeSp_comp();
         end
         
         layers(uuu)=layer_cl('ID_num',fileID,'Filename',{curr_Filename},'Filetype','EK80','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);

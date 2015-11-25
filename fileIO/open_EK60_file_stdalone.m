@@ -258,6 +258,10 @@ if ~isequal(Filename_cell, 0)
             
             transceiver(i).computeAngles();
             transceiver(i).computeSpSv(envdata);
+            transceiver(i).computeSp_comp();
+            
+           
+            
             
         end
         

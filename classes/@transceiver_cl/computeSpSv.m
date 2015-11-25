@@ -35,7 +35,7 @@ switch trans_obj.Mode
         range = double((trans_obj.Data.Samples - 1) * dR);
         
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
-        
+
         trans_obj.Data.remove_sub_data('sv');
         trans_obj.Data.remove_sub_data('sp');
         

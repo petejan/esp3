@@ -168,7 +168,11 @@ if multi_layer<=0
                     end
                 end
             else
-                new_chains{1}=[couples(:,1) ;couples(end,end)];        
+                if ~isempty(couples)
+                    new_chains{1}=[couples(:,1) ;couples(end,end)];
+                else
+                    new_chains{1}=[];
+                end
             end
             
             for iik=1:length(new_chains)
