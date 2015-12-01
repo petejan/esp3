@@ -7,15 +7,9 @@ else
     file=layer.Filename{1};
 end
 
+regfile=load_regfile(path,file);
 
-reg_filename=fullfile(path,'echoanalysisfiles',[file '.mat']);
-
-if exist(reg_filename,'file')==2
-    load(reg_filename);
-else
-    return;
-end
-
+if ~isempty(regfile)
 freqs=regfile.frequency;
 
 for i=1:length(layer.Frequencies)
@@ -29,7 +23,7 @@ for i=1:length(layer.Frequencies)
         
     end
     
-    
+end
 end
 
 

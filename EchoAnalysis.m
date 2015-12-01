@@ -19,20 +19,7 @@ set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
 
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 
-
-if isdeployed
-    temp_path=ctfroot;
-else
-    temp_path=which('EchoAnalysis');
-end
-
-idx_temp=strfind(temp_path,'\');
-app_path.main=temp_path(1:idx_temp(end));
-app_path.data=fullfile(tempdir,'data_echo');
-app_path.cvs_root=':local:Z:\';
-app_path.data_root='X:\';
-app_path.cal='';
-app_path.cal_eba='';
+app_path=app_path_create();
 
 if ~isdeployed
     update_path(app_path.main);
@@ -112,23 +99,7 @@ end
 if figheight<720
     main_figure.Position(4)=720;
 end
-%movegui(main_figure,'center');
+movegui(main_figure,'center');
 
-end
-
-function update_path(path)
-addpath(path);
-addpath(genpath(fullfile(path, 'acoustic')));
-addpath(genpath(fullfile(path, 'classes')));
-addpath(genpath(fullfile(path, 'algos')));
-addpath(genpath(fullfile(path, 'GUI_parts')));
-addpath(genpath(fullfile(path, 'esp2')));
-addpath(genpath(fullfile(path, 'export')));
-addpath(genpath(fullfile(path, 'fileIO')));
-addpath(genpath(fullfile(path, 'icons')));
-addpath(genpath(fullfile(path, 'general')));
-addpath(genpath(fullfile(path, 'mapping')));
-addpath(genpath(fullfile(path, 'signal_processing')));
-addpath(genpath(fullfile(path, 'external_toolboxes')));
 end
 

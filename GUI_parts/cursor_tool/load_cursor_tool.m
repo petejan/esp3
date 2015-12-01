@@ -28,7 +28,7 @@ else
     if isdeployed
         icon=get_icons_cdata([]);
     else
-        icon=get_icons_cdata([app_path.main 'icons\']);
+        icon=get_icons_cdata(fullfile(app_path.main,'icons'));
     end
     
     cursor_mode_tool_comp.zoom_in=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zin,'TooltipString','Zoom +','Tag','zin');

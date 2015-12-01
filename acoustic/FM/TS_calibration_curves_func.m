@@ -126,7 +126,7 @@ for uui=1:length(layer.Frequencies)
         ZI = griddata(AlongAngle_sph,AcrossAngle_sph,Sp_sph, XI, YI);
         
         
-        figure(123)
+        figure()
         subplot(1,length(layer.Frequencies),uui)
         contourf(XI, YI, ZI)
         hold on
@@ -143,7 +143,7 @@ for uui=1:length(layer.Frequencies)
         drawnow;
         
         
-        figure(124)
+        figure()
         subplot(1,length(layer.Frequencies),uui)
         surf(XI, YI, ZI)
         shading interp
@@ -183,7 +183,7 @@ for uui=1:length(layer.Frequencies)
         
         TS_f_mean=10*log10(nanmean(10.^(TS_f'/10)));
         
-        figure(125)
+        figure()
         hold on;
         %subplot(1,3,uui)
         plot(f_vec/1e3,TS_f,'b','linewidth',0.2);
@@ -228,7 +228,7 @@ if ~isempty(f_vec_save)
         ts(jj) = spherets(2*pi*f_vec_2(jj)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
     end
     
-    figure(125)
+    figure()
     hold on;
     plot(f_vec_2/1e3,ts,'k','linewidth',2)
 end

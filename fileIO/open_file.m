@@ -4,16 +4,16 @@ layer=getappdata(main_figure,'Layer');
 if isvalid(layer)
     if ~isempty(layer)
         if ~isempty(layer.PathToFile)
-            path=layer.PathToFile;
+            file_path=layer.PathToFile;
         else
-            path=pwd;
+            file_path=pwd;
         end
         
     else
-        path=pwd;
+        file_path=pwd;
     end
 else
-    path=pwd;
+    file_path=pwd;
 end
 
 Filename=layer.Filename;
@@ -22,17 +22,30 @@ if iscell(file_id)
     Filename=cell(1,length(file_id));
     PathToFile=cell(1,length(file_id));
     for iui=1:length(file_id)
-        [path_temp,name_temp,ext_temp]=fileparts(file_id{iui});
+        [file_path_temp,name_temp,ext_temp]=fileparts(file_id{iui});
         Filename{iui}=[name_temp ext_temp];
-        PathToFile{iui}=path_temp;
+        PathToFile{iui}=file_path_temp;
     end
 else
     if file_id==0
-        [Filename,PathToFile]= uigetfile( {fullfile(path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
+        [Filename,PathToFile]= uigetfile( {fullfile(file_path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
+        
+        if ~iscell(Filename)
+            Filename={Filename};         
+        end
+        
+        idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
+        Filename=Filename(idx_keep);
+        
+        if isempty(Filename)
+            return;
+        end
+        
     elseif file_id==1
         
-        f = dir(path);
+        f = dir(file_path);
         file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
+        
         if ~isempty(file_list)
             i=1;
             file_diff=0;
@@ -52,8 +65,8 @@ else
             return;
         end
     elseif file_id==2
-        f = dir(path);
-        file_list=cell2mat({f(~cellfun(@isempty,regexpi({f.name},'(raw$|^d)'))).name}');
+        f = dir(file_path);
+        file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
         if ~isempty(file_list)
             i=size(file_list,1);
             file_diff=0;
@@ -76,6 +89,7 @@ else
             return;
         end
     end
+    
     
 end
 
@@ -119,20 +133,36 @@ multi_layer=1;
 join=0;
 
 if ~isequal(Filename, 0)
-    choice = questdlg('Do you want to load previoulsy saved Bottom and Region?', ...
-        'Bottom/Region',...
-        'Yes','No', ...
-        'No');
-    % Handle response
-    switch choice
-        case 'Yes'
-            load_reg=1;
-            
-        case 'No'
-            load_reg=0;
+    if iscell(Filename)
+        has_regfile=0;
+        for iuiu=1:length(Filename)
+            if ~isempty(find_regfile(PathToFile,Filename{iuiu}))
+                has_regfile=1;
+            end
+        end
+    else
+        has_regfile=~isempty(find_regfile(PathToFile,Filename));
     end
     
-    if isempty(choice)
+    if has_regfile>0
+        choice = questdlg('Do you want to load previoulsy saved Bottom and Region?', ...
+            'Bottom/Region',...
+            'Yes','No', ...
+            'No');
+        % Handle response
+        switch choice
+            case 'Yes'
+                load_reg=1;
+                
+            case 'No'
+                load_reg=0;
+        end
+        
+        
+        if isempty(choice)
+            load_reg=0;
+        end
+    else
         load_reg=0;
     end
     if iscell(Filename)

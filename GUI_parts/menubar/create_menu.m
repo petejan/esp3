@@ -52,8 +52,6 @@ mbs = uimenu(main_figure,'Label','MBSing','Tag','menumbs');
 uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
 
 
-fileinfo = uimenu(main_figure,'Label','Info','Tag','filinfo');
-uimenu(fileinfo,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
 
 curves_tools=uimenu(mhhh,'Label','Curves');
 uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
@@ -61,6 +59,14 @@ uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,ma
 
 track_tools=uimenu(mhhh,'Label','Track');
 uimenu(track_tools,'Label','Plot Frequency response from Tracks','Callback',{@plot_freq_resp_tracks_callback,main_figure});
+
+fileinfo = uimenu(main_figure,'Label','Info','Tag','fileinfo');
+uimenu(fileinfo,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
+
+
+options = uimenu(main_figure,'Label','Options','Tag','options');
+uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
+
 
 
 uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');
