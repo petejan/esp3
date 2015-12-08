@@ -4,6 +4,7 @@ function hand_region_create(src,main_figure,func)
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
+src.Pointer = 'ibeam';
 ah=axes_panel_comp.main_axes;
 
 

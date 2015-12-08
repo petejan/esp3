@@ -89,12 +89,6 @@ R_st=-ST.Target_range;
 % grid on;
 % caxis([-65 -45]);
 
-
-% X_st = ST.Target_range.*cos(ST.Angle_major_axis * pi/180).*sin(ST.Angle_minor_axis * pi/180);
-% Y_st = ST.Target_range.*cos(ST.Angle_minor_axis * pi/180).*sin(ST.Angle_major_axis * pi/180);
-% Z_st =-ST.Target_range.*cos(ST.Angle_minor_axis * pi/180).*cos(ST.Angle_major_axis * pi/180);
-% R_st = -ST.Target_range;
-
 pings=nanmin(ST.Ping_number):nanmax(ST.Ping_number);
 nb_pings=length(pings);
 nb_targets_pings=zeros(1,nb_pings);

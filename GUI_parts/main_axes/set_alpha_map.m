@@ -2,7 +2,6 @@ function set_alpha_map(hObject)
 
 layer=getappdata(hObject,'Layer');
 axes_panel_comp=getappdata(hObject,'Axes_panel');
-disp_tab=getappdata(hObject,'Display_tab');
 
 curr_disp=getappdata(hObject,'Curr_disp');
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
@@ -25,7 +24,7 @@ Range=layer.Transceivers(idx_freq).Data.Range;
 Range_mat=repmat(Range,1,nb_pings);
 bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range,nb_samples,1);
 
-if get(disp_tab.disp_under_bot,'value')==1
+if strcmpi(curr_disp.DispUnderBottom,'off')==1
     alpha_map(Range_mat>bot_mat)=0;
 end
 

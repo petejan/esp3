@@ -126,18 +126,7 @@ if Filename==0
     return;
 end
 
-[~,~,ext]=fileparts(Filename);
-
-switch(ext)
-    case '.evl'
-        line=create_line_from_evl(fullfile(PathToFile,Filename));
-    case {'.txt'; '.dat'}
-        line=create_line_from_rbr(fullfile(PathToFile,Filename));
-    case {'.mat'}
-        line=create_line_from_rbr_mat(fullfile(PathToFile,Filename));
-    case {'.cnv'}
-        line=create_line_from_seabird(fullfile(PathToFile,Filename));
-end
+line=import_line(Filename,PathToFile);
 
 if isempty(line)
     return;

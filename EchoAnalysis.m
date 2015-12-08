@@ -85,6 +85,7 @@ movegui(main_figure,'center')
 
 initialize_display(main_figure);
 update_display(main_figure,1);
+init_listeners(main_figure);
 
 end
 
@@ -99,7 +100,6 @@ end
 if figheight<720
     main_figure.Position(4)=720;
 end
-movegui(main_figure,'center');
 
 end
 

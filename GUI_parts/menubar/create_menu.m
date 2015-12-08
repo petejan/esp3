@@ -1,14 +1,18 @@
 function create_menu(main_figure)
 
-mh = uimenu(main_figure,'Label','File','Tag','menufile');
-uimenu(mh,'Label','Open file','Callback',{@open_file,0,main_figure});
-uimenu(mh,'Label','Open next file','Callback',{@open_file,1,main_figure});
-uimenu(mh,'Label','Open previous file','Callback',{@open_file,2,main_figure});
+m_files = uimenu(main_figure,'Label','File','Tag','menufile');
+uimenu(m_files,'Label','Open file','Callback',{@open_file,0,main_figure});
+uimenu(m_files,'Label','Open next file','Callback',{@open_file,1,main_figure});
+uimenu(m_files,'Label','Open previous file','Callback',{@open_file,2,main_figure});
+uimenu(m_files,'Label','Save Current Bottom/Regions/Algo','Callback',{@save_regions_callback,main_figure},'separator','on');
+uimenu(m_files,'Label','Load Previously Saved Bottom/Regions/Algo','Callback',{@load_regions_callback,main_figure});
 
 
-mhh = uimenu(main_figure,'Label','Export','Tag','menuexport');
+
+mhh = uimenu(main_figure,'Label','Import/Export','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
+uimenu(mhh,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure});
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
@@ -30,10 +34,8 @@ main_menu.close_all_fig=uimenu(m_display,'Label','Close All External Figures','C
 
 
 mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
-reg_tools=uimenu(mhhh,'Label','Regions');
 
-uimenu(reg_tools,'Label','Save Current Bottom/Regions','Callback',{@save_regions_callback,main_figure});
-uimenu(reg_tools,'Label','Load Previously Saved Bottom/Regions','Callback',{@load_regions_callback,main_figure});
+reg_tools=uimenu(mhhh,'Label','Regions');
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callback,main_figure});

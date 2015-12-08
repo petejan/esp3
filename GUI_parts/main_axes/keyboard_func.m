@@ -1,6 +1,7 @@
 function keyboard_func(~,callbackdata,main_figure)
 
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
+curr_disp=getappdata(main_figure,'Curr_disp');
 
 switch callbackdata.Key
     case {'leftarrow','rightarrow','uparrow','downarrow'}
@@ -49,22 +50,54 @@ switch callbackdata.Key
         end
         
     case '1'
+        
         switch get(cursor_mode_tool_comp.zoom_in,'state');
-            case 'off'
+            case 'off'  
                 set(cursor_mode_tool_comp.zoom_in,'state','on');
+                curr_disp.CursorMode='Zoom In'; 
             case 'on'
                 set(cursor_mode_tool_comp.zoom_in,'state','off');
+                curr_disp.CursorMode='Normal';
         end
-        toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
-    case '2'       
-        switch get(cursor_mode_tool_comp.zoom_out,'state');
-            case 'off'
-                set(cursor_mode_tool_comp.zoom_out,'state','on');
+        %toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
+    case '2'
+        
+        switch get(cursor_mode_tool_comp.bad_trans,'state');
+            case 'off'  
+                set(cursor_mode_tool_comp.bad_trans,'state','on');
+                curr_disp.CursorMode='Bad Transmits';
             case 'on'
-                set(cursor_mode_tool_comp.zoom_out,'state','off');
+                set(cursor_mode_tool_comp.bad_trans,'state','off');
+                curr_disp.CursorMode='Normal'; 
         end
-        toggle_func(cursor_mode_tool_comp.zoom_out,[],main_figure);
+        %toggle_func(cursor_mode_tool_comp.bad_trans,[],main_figure);
+    case '3'
+        
+        switch get(cursor_mode_tool_comp.edit_bottom,'state');
+            case 'off' 
+                set(cursor_mode_tool_comp.edit_bottom,'state','on');      
+                curr_disp.CursorMode='Edit Bottom';
+            case 'on'
+                set(cursor_mode_tool_comp.edit_bottom,'state','off');
+                curr_disp.CursorMode='Normal';        
+        end
+        %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
+    case '4'
+        curr_disp.CursorMode='Create Region';
+        reset_mode(0,0,main_figure);
+        set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
+    case '5'
+        curr_disp.CursorMode='Normal';
+        reset_mode(0,0,main_figure);
+    case 'b'
+        switch curr_disp.DispUnderBottom
+            case 'off'
+                curr_disp.DispUnderBottom='on';
+            case 'on'
+                curr_disp.DispUnderBottom='off';
+        end
         
 end
+setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

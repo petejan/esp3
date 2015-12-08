@@ -59,8 +59,13 @@ if ~isempty(cdata)
     end
 
     vert_val=cdata(:,idx_ping);
+    vert_val(vert_val<=-999)=nan;
+    
     bot_x_val=[nanmin(vert_val(~(vert_val==-Inf))) nanmax(vert_val)];
+    
     horz_val=cdata(idx_r,:);
+    horz_val(horz_val<=-999)=nan;
+    
     
     xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
     if ~isempty(Lat)
@@ -89,16 +94,19 @@ if ~isempty(cdata)
     axes(axv);
     plot(vert_val,ydata,'k');
     hold on;
+    plot(bot_x_val,[ydata(idx_r) ydata(idx_r)],'--b');
     plot(bot_x_val,[bot_val bot_val],'r');
     if length(Bottom.Range)>=idx_ping
         text(nanmean(bot_x_val),bot_val,{sprintf('%.2fm',Bottom.Range(idx_ping))},'Color','r','VerticalAlignment','bottom','fontsize',10);
     end
     set(axv,'ylim',y_lim)
     set(allchild(axv),'visible',get(axv,'visible'))
-    
+    y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];
     delete(findall(axh,'Type','Line'));
     axes(axh);
     plot(xdata,horz_val,'r');
+    hold on;
+    plot([xdata(idx_ping) xdata(idx_ping)],y_val,'--b');
     set(axh,'xlim',x_lim)
     set(allchild(axh), 'visible',get(axh,'visible'))
     

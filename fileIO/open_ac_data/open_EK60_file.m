@@ -1,6 +1,5 @@
 
 function  open_EK60_file(hObject,PathToFile,Filename,vec_freq,ping_start,ping_end,multi_layer,join,load_reg)
-curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
 
 app_path=getappdata(hObject,'App_path');
@@ -51,13 +50,8 @@ end
 disp('Shuffling layers');
 [layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join,'load_reg',load_reg);
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-curr_disp.Freq=layer.Frequencies(idx_freq);
-curr_disp.setField('sv');
 
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);
-setappdata(hObject,'Curr_disp',curr_disp);
-
 
 end

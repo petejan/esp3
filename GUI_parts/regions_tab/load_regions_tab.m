@@ -95,8 +95,9 @@ setappdata(main_figure,'Region_tab',region_tab_comp);
 end
 
 function create_region_callback(~,~,main_figure)
-reset_mode(0,0,main_figure);
-set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
+curr_disp=getappdata(main_figure,'Curr_disp');
+curr_disp.CursorMode='Create Region';
+setappdata(main_figure,'Curr_disp',curr_disp);
 end
 
 function classify_reg_callback(~,~,main_figure)
@@ -204,6 +205,8 @@ function freq_response_reg_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
+
+
 region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);

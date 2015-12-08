@@ -2,11 +2,9 @@ function load_axis_panel(main_figure,new)
 
 layer=getappdata(main_figure,'Layer');
 display_tab_comp=getappdata(main_figure,'Display_tab');
-
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-
-
 curr_disp=getappdata(main_figure,'Curr_disp');
+
 
 try
     x=double(get(axes_panel_comp.main_axes,'xlim'));
@@ -16,12 +14,13 @@ catch
     y=[0 0];
 end
 
-
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
 
 if found==0
     idx_freq=1;
     curr_disp.Freq=layer.Frequencies(idx_freq);
+    setappdata(main_figure,'Curr_disp',curr_disp);
+    return;
 end
 
 set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
@@ -29,8 +28,15 @@ set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_f
 [idx_field,found]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 
 if found==0
-    [idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
-    curr_disp.setField('sv');
+    [~,found]=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
+    if found==0
+        field=layer.Transceivers(idx_freq).Data.Fieldname{1};
+    else
+        field='sv';
+    end
+    curr_disp.setField(field);
+    setappdata(main_figure,'Curr_disp',curr_disp);
+    return;
 end
 
 set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field);
@@ -112,6 +118,7 @@ hold(axes_panel_comp.vaxes,'on');
 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 setappdata(main_figure,'Layer',layer);
+setappdata(main_figure,'Curr_disp',curr_disp);
 set_axes_position(main_figure);
 
 

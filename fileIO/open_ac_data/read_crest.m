@@ -98,8 +98,6 @@ if ~isequal(Filename_cell, 0)
         
         survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
         
-
-        
         gps_data.Time=linspace(start_time,end_time,length(gps_data.Time));
         attitude_data.Time=linspace(start_time,end_time,length(attitude_data.Time));
         

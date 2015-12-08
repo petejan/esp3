@@ -127,108 +127,19 @@ if ~isequal(Filename_cell, 0)
         prev_ping_end=data.pings(1).number(end);
         
         
-        curr_gps=1;
-        curr_dist=1;
-        curr_att=1;
-        curr_heading=1;
-        
-
         
         idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(data.NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));
         
+        [gps_data,attitude_full]=nmea_to_attitude_gps(data.NMEA.string,data.NMEA.time,idx_NMEA);
         
-        for iiii=idx_NMEA'
-            %for iiii=1:length(data.NMEA.string)
-            curr_message=data.NMEA.string{iiii};
-            curr_message(isspace(curr_message))=' ';
-            [nmea,nmea_type]=parseNMEA(curr_message);           
-            try
-                switch nmea_type
-                    case 'gps'
-                        if curr_gps==1
-                            data.gps.type=nmea.type;
-                        end
-                        %Because gps messages can sometimes be corrupted
-                        %with spurious characters it is possible to parse
-                        %the NMEA message and still end up with invalid
-                        %lat/long values. The tests below are to ignore
-                        %such values
-                        if ~isempty(nmea.lat) && isreal(nmea.lat)       ...
-                        && ~isempty(nmea.lon) && isreal(nmea.lon)       ...
-                        && (nmea.lat_hem == 'S' || nmea.lat_hem == 'N') ...
-                        && (nmea.lon_hem == 'E' || nmea.lon_hem == 'W')
-                            if strcmp(nmea.type,data.gps.type)
-                                data.gps.time(curr_gps) = data.NMEA.time(iiii);
-                                %  set lat/lon signs and store values
-                                if (nmea.lat_hem == 'S');
-                                    data.gps.lat(curr_gps) = -nmea.lat;
-                                else
-                                    data.gps.lat(curr_gps) = nmea.lat;
-                                end
-                                if (nmea.lon_hem == 'W');
-                                    data.gps.lon(curr_gps) = -nmea.lon;
-                                else
-                                    data.gps.lon(curr_gps) = nmea.lon;
-                                end
-                                curr_gps=curr_gps+1;
-                            end
-                        end
-                        %             case 'speed'
-                        %                 data.vspeed.time(curr_speed) = dgTime;
-                        %                 data.vspeed.speed(curr_speed) = nmea.sog_knts;
-                        %                 curr_speed = curr_speed + 1;
-                    case 'dist'
-                        if ~isempty(nmea.total_cum_dist)
-                            data.dist.time(curr_dist) = data.NMEA.time(iiii);
-                            data.dist.vlog(curr_dist) = nmea.total_cum_dist;
-                            curr_dist=curr_dist+1;
-                        end
-                    case 'attitude'
-                        if  ~isempty(nmea.heading) && ~isempty(nmea.pitch) && ~isempty(nmea.roll) && ~isempty(nmea.heave)
-                            data.attitude.time(curr_att) = data.NMEA.time(iiii);
-                            data.attitude.heading(curr_att) = nmea.heading;
-                            data.attitude.pitch(curr_att) = nmea.pitch;
-                            data.attitude.roll(curr_att) = nmea.roll;
-                            data.attitude.heave(curr_att) = nmea.heave;
-                            curr_att=curr_att+1;
-                        end
-                    case 'heading'
-                        if ~isempty(nmea.heading)
-                            data.heading.time(curr_heading) = data.NMEA.time(iiii);
-                            data.heading.heading(curr_heading) = nmea.heading;
-                            curr_heading=curr_heading+1;
-                        end
-                end
-            catch
-                fprintf('Invalid NMEA message: %s\n',curr_message);
-            end
-        end
-        
-        if isfield(data, 'gps')
-            gps_data=gps_data_cl('Lat',data.gps.lat,'Long',data.gps.lon,'Time',data.gps.time,'NMEA',data.gps.type);
-        else
-            gps_data=gps_data_cl();
-        end
-        
-        if isfield(data,'attitude')
-            attitude_full=attitude_nav_cl('Heading',data.attitude.heading,'Pitch',data.attitude.pitch,'Roll',data.attitude.roll,'Heave',data.attitude.heave,'Time',data.attitude.time);
-        elseif isfield(data,'heading')
-            attitude_full=attitude_nav_cl('Heading',data.heading.heading,'Time',data.heading.time);
-        else
-            attitude_full=attitude_nav_cl();
-        end
-        
-
-        
-        
+       
         if  ~isstruct(header)
             if exist('opening_file','var')
                 close(opening_file);
             end
             return;
         end
-        
-        
+         
         if ~isempty(cal)
             for n=1:header.transceivercount
                 idx_cal=find(data.pings(n).frequency(1)==cal.F);
@@ -251,6 +162,7 @@ if ~isequal(Filename_cell, 0)
         calParms = readEKRaw_GetCalParms(header,data);
                    
         Filename_bot=[Filename(1:end-4) '.bot'];
+        
         if exist(fullfile(path,Filename_bot),'file')
             [~,temp, ~] = readEKBot(fullfile(path,Filename_bot), calParms,'Frequencies',vec_freq);
             
@@ -345,6 +257,10 @@ if ~isequal(Filename_cell, 0)
             
             transceiver(i).computeAngles();
             transceiver(i).computeSpSv(envdata);
+            transceiver(i).computeSp_comp();
+            
+           
+            
             
         end
         

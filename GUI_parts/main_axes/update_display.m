@@ -16,8 +16,7 @@ if new==1
     load_regions_tab(main_figure,main_childs(idx_opt));
     load_lines_tab(main_figure,main_childs(idx_opt));
     load_calibration_tab(main_figure,main_childs(idx_opt));
-    load_processing_tab(main_figure,main_childs(idx_opt));
-    
+    load_processing_tab(main_figure,main_childs(idx_opt));   
     load_bottom_tab(main_figure,main_childs(idx_algo));
     load_bad_pings_tab(main_figure,main_childs(idx_algo));
     load_denoise_tab(main_figure,main_childs(idx_algo));

@@ -19,4 +19,6 @@ for i=1:length(layers)
 end
 setappdata(main_figure,'Layers',layers);
 update_display(main_figure,0);
+update_algos(main_figure);
+
 end

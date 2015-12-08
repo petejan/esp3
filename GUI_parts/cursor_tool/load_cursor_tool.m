@@ -35,19 +35,12 @@ else
     cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom -','Tag','zout');
     cursor_mode_tool_comp.pan=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.pan ,'TooltipString','Pan','Tag','pan');
     cursor_mode_tool_comp.edit_bottom=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.edit_bot ,'TooltipString','Edit Bottom','Tag','ed_bot');
-    %cursor_mode_tool_comp.location=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.ts_cal ,'TooltipString','Display Location','Tag','loc');
     cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.bad_trans ,'TooltipString','Bad Transmit','Tag','bt');
     
-    % if strcmp(layer.Transceivers(idx_freq).Mode,'FM')
-    %     cursor_mode_tool_comp.freq_dist=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.fplot,'TooltipString','Freqency Distribution','Tag','fd');
-    % end
-    %
-    % cursor_mode_tool_comp.ts_cal=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.ts_cal,'TooltipString','TS Calibration','Tag','ts_cal');
-    % cursor_mode_tool_comp.eba_cal=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.eba_cal,'TooltipString','EBA Calibration','Tag','eba_cal');
-    
+
     childs=findall(main_figure,'type','uitoggletool');
     set(childs,...
-        'ClickedCallback',{@toggle_func,main_figure});
+        'ClickedCallback',{@set_curr_disp_mode,main_figure});
     
     [idx,~]=find_layer_idx(layers,layer.ID_num);
     
@@ -71,13 +64,11 @@ else
     
 end
 
-% set(main_figure,'KeyPressFcn',{@key_switch,main_figure});
-% set(main_figure,'KeyReleaseFcn',{@key_switch,main_figure});
-
 setappdata(main_figure,'Cursor_mode_tool',cursor_mode_tool_comp);
 end
 
 function change_layer(hCombo, ~,main_figure)
+
 
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
@@ -97,36 +88,34 @@ update_display(main_figure,1);
 
 end
 
+function set_curr_disp_mode(src,~,main_figure)
 
-
-%
-% function display_freq_response(src,~,main_figure)
-%
-% curr_disp=getappdata(main_figure,'Curr_disp');
-% switch(curr_disp.Fieldname)
-%     case 'Sv'
-%         set(main_figure,'WindowButtonDownFcn',{@display_sv_freq_response_v2,main_figure});
-%     case 'Sp'
-%         set(main_figure,'WindowButtonDownFcn',{@display_TS_freq_response_v2,main_figure});
-%     otherwise
-%         set(main_figure,'WindowButtonDownFcn','');
-% end
-%
-%
-% end
-
-
-
-function key_switch(~,callbackdata,main_figure)
-cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
-
-switch callbackdata.Key
-    case '1'
-        set(cursor_mode_tool_comp.zoom_in,'state','on');
-        toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
-    case '2'
-        set(cursor_mode_tool_comp.zoom_out,'state','on');
-        toggle_func(cursor_mode_tool_comp.zoom_out,[],main_figure);
+curr_disp=getappdata(main_figure,'Curr_disp');
+if strcmp(src.State,'on')
+    switch src.Tag
+         case 'bt'
+            curr_disp.CursorMode='Bad Transmits';
+        case 'zout'
+            curr_disp.CursorMode='Zoom Out';
+        case 'zin'
+            curr_disp.CursorMode='Zoom In';
+        case 'pan'
+            curr_disp.CursorMode='Pan';
+        case 'ed_bot'
+            curr_disp.CursorMode='Edit Bottom';  
+    end
+else
+    curr_disp.CursorMode='Normal';
 end
 
+setappdata(main_figure,'Curr_disp',curr_disp);
 end
+
+
+
+
+
+
+
+
+

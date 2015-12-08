@@ -30,7 +30,8 @@ list_line = layer.list_lines();
 axes(main_axes)
 
 active_line_idx=get(lines_tab_comp.tog_line,'value');
-if curr_disp.DispReg>0
+
+if curr_disp.DispLines>0
     vis='on';
 else
     vis='off';

@@ -111,10 +111,6 @@ end
 
 layer=layers(end);
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-curr_disp.Freq=layer.Frequencies(idx_freq);
-curr_disp.setField('sv');
-
 setappdata(hObject_main,'MBS',mbs_vec);
 setappdata(hObject_main,'Layer',layer);
 setappdata(hObject_main,'Layers',layers);

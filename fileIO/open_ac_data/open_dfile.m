@@ -1,5 +1,4 @@
 function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,load_reg,multi_layer)
-curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
 app_path=getappdata(hObject,'App_path');
 
@@ -23,7 +22,7 @@ if ~isequal(Filename_cell, 0)
         
         ifileInfo = parse_ifile(path, str2double(FileName(2:end)));
         RawFilename=ifileInfo.rawFileName;
-        
+        survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
         origin=fullfile(path,FileName);
         
         [~,PathToRawFile]=find_file_recursive(path,RawFilename);
@@ -42,6 +41,7 @@ if ~isequal(Filename_cell, 0)
         layer_temp(uu)=open_EK60_file_stdalone(PathToRawFile{1},RawFilename,...
             'PathToMemmap',app_path.data,'Frequencies',[],'Calibration',cal);
         layer_temp(uu).OriginCrest=origin;
+        layer_temp(uu).SurveyData=survey_data;
 
         if CVScheck>0
             layer_temp(uu).CVS_BottomRegions(app_path.cvs_root)
@@ -51,12 +51,7 @@ if ~isequal(Filename_cell, 0)
     disp('Shuffling layers');
     [layers,layer]=shuffle_layers(layers,layer_temp,'load_reg',load_reg,'multi_layer',multi_layer);
     
-    idx_freq=find_freq_idx(layer,curr_disp.Freq);
-    curr_disp.Freq=layer.Frequencies(idx_freq);
-    curr_disp.setField('sv');
-    
     setappdata(hObject,'Layer',layer);
     setappdata(hObject,'Layers',layers);
-    setappdata(hObject,'Curr_disp',curr_disp);
     
 end

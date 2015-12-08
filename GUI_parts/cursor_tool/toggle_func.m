@@ -22,6 +22,7 @@ set(region_tab_comp.create_button,'value',get(region_tab_comp.create_button,'Min
 
 
 if strcmp(src.State,'on')
+    axes_panel_comp.main_echo.UIContextMenu=[];
     switch type
         case 'zin'
             set(h,'Enable','on','Direction','in');
@@ -46,7 +47,7 @@ if strcmp(src.State,'on')
                     set(main_figure,'WindowButtonDownFcn','');
             end
         case 'eba_cal'
-                        set(h,'Enable','off');
+            set(h,'Enable','off');
             set(h_pan,'Enable','off');
             switch(curr_disp.Fieldname)
                 case {'Sp','Sv'}

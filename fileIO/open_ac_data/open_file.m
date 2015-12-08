@@ -1,5 +1,6 @@
 function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
+layers=getappdata(main_figure,'Layers');
 
 if isvalid(layer)
     if ~isempty(layer)
@@ -29,17 +30,22 @@ if iscell(file_id)
 else
     if file_id==0
         [Filename,PathToFile]= uigetfile( {fullfile(file_path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
+        if isempty(Filename)
+            return;
+        end
         
+         
         if ~iscell(Filename)
-            Filename={Filename};         
+            if (Filename==0)
+                return;
+            end
+            Filename={Filename};
         end
         
         idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
         Filename=Filename(idx_keep);
         
-        if isempty(Filename)
-            return;
-        end
+        
         
     elseif file_id==1
         
@@ -132,6 +138,7 @@ read_all=0;
 multi_layer=1;
 join=0;
 
+
 if ~isequal(Filename, 0)
     if iscell(Filename)
         has_regfile=0;
@@ -165,10 +172,18 @@ if ~isequal(Filename, 0)
     else
         load_reg=0;
     end
-    if iscell(Filename)
+    
+    ask_q=1;
+    if length(layers)==1&&length(Filename)==1
+        if layers.ID_num==0
+            ask_q=0;
+        end
+    end
+    
+    if ask_q==1
         choice = questdlg('Do you want to open files as separate layers?', ...
             'File opening mode',...
-            'Yes','No','No, and force concatenation', ...
+            'Yes','No','Force Concatenation', ...
             'Yes');
         % Handle response
         switch choice
@@ -178,7 +193,7 @@ if ~isequal(Filename, 0)
             case 'No'
                 multi_layer=0;
                 read_all=1;
-            case 'No, and force concatenation'
+            case 'Force concatenation'
                 multi_layer=-1;
                 read_all=1;
             otherwise

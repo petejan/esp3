@@ -24,7 +24,9 @@ if ~isempty(info_panel_comp)
     end
     
     
-    summary_str=(sprintf('%s: %s. Mode: %s Freq: %.0fkHz',type,layer.Filename{1},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000));
+    summary_str=sprintf('%s: %s. Mode: %s Freq: %.0fkHz',type,layer.Filename{1},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000);
+    cur_str=sprintf('Cursor mode: %s',curr_disp.CursorMode);
+    
     
     
     info_panel_comp.summary=uicontrol(info_panel_comp.info_panel,'Style','Text','String',summary_str,'units','normalized','Position',[0.7 0.5 0.3 0.5],'BackgroundColor',[1 1 1]);
@@ -32,8 +34,9 @@ if ~isempty(info_panel_comp)
     info_panel_comp.xy_disp=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0 0 0.2 1],'BackgroundColor',[1 1 1]);
     info_panel_comp.pos_disp=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0.2 0 0.2 1],'BackgroundColor',[1 1 1]);
     info_panel_comp.time_disp=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0.4 0 0.1 1],'BackgroundColor',[1 1 1]);
-    info_panel_comp.value=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0.5 0 0.2 1],'BackgroundColor',[1 1 1]   );
-    
+    info_panel_comp.value=uicontrol(info_panel_comp.info_panel,'Style','Text','String','','units','normalized','Position',[0.5 0 0.2 1],'BackgroundColor',[1 1 1]);
+    info_panel_comp.cursor_mode=uicontrol(info_panel_comp.info_panel,'Style','Text','String',cur_str,'units','normalized','Position',[0.7 0 0.3 0.5],'BackgroundColor',[1 1 1]);
+   
     setappdata(main_figure,'Info_panel',info_panel_comp);
 end
 end
