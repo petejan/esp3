@@ -39,7 +39,6 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
         setappdata(main_figure,'Layer',layer);
         update_regions_tab(main_figure);
         display_regions(main_figure);
-        display_info_ButtonMotionFcn([],[],main_figure,1);
     else
         return
     end

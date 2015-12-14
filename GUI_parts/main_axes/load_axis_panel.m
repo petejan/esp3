@@ -92,13 +92,19 @@ colormap(axes_panel_comp.main_axes,jet);
 
 axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
 
+if new==1
+%addlistener(axes_panel_comp.main_axes,'XLim','PostSet',@(src,envdata)listenXLim(src,envdata,main_figure)); 
+addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
+end
+
 set(axes_panel_comp.vaxes,'YTick',get(axes_panel_comp.main_axes,'YTick'));
 set(axes_panel_comp.haxes,'XTick',get(axes_panel_comp.main_axes,'XTick'));
 
-context_menu=uicontextmenu;
-axes_panel_comp.main_echo.UIContextMenu=context_menu;
-uimenu(context_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
-
+if strcmpi(curr_disp.CursorMode,'Normal')
+    context_menu=uicontextmenu;
+    axes_panel_comp.main_echo.UIContextMenu=context_menu;
+    uimenu(context_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
+end
 
 % axes_panel_comp.axes_listener_xlim=addlistener(axes_panel_comp.main_axes,'XLim','PostSet',@(src,envdata)update_xtick_labels(src,envdata,axes_panel_comp.main_axes,curr_disp.Xaxes));
 % axes_panel_comp.axes_listener_ylim=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)update_ytick_labels(src,envdata,axes_panel_comp.main_axes));
@@ -121,7 +127,6 @@ setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
 set_axes_position(main_figure);
 
-
 if ~isempty(layer.Transceivers(idx_freq).Regions)
     display_regions(main_figure)
 end
@@ -131,5 +136,8 @@ if ~isempty(layer.Lines)
 end
 
 set_alpha_map(main_figure);
+axes_panel_comp.haxes
 display_info_ButtonMotionFcn([],[],main_figure,1);
+update_xtick_labels([],[],axes_panel_comp.haxes,curr_disp.Xaxes);
+update_ytick_labels([],[],axes_panel_comp.vaxes);
 end

@@ -1,8 +1,10 @@
 function listenCursorMode(src,listdata,main_figure)
+%disp('ListenCursorMode')
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 info_panel_comp=getappdata(main_figure,'Info_panel');
 cur_str=sprintf('Cursor mode: %s',listdata.AffectedObject.CursorMode);
 set(info_panel_comp.cursor_mode,'String',cur_str);
+
 
 switch listdata.AffectedObject.CursorMode
     case 'Zoom In'
@@ -21,4 +23,5 @@ switch listdata.AffectedObject.CursorMode
     case 'Normal'
         reset_mode(0,0,main_figure);
 end
+
 end

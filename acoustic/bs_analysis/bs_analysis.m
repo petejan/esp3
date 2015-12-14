@@ -1,68 +1,68 @@
-function bs_analysis(layer,varargin)
+function bs_analysis(layer, varargin)
 
 p = inputParser;
 
-addRequired(p,'layer',@(obj) isa(obj,'layer_cl'));
-addParameter(p,'IdxFreq',1,@isnumeric);
-addParameter(p,'PhiStdThr','',@isnumeric);
-addParameter(p,'TransAngle',[0 45],@isnumeric);
-addParameter(p,'PosTrans',[-5;-5;-5],@isnumeric);
-addParameter(p,'AttCal',[0 0],@isnumeric);
-addParameter(p,'RayTrayBool',0,@isnumeric);
-parse(p,layer,varargin{:});
+addRequired( p,'layer',       @(obj) isa(obj,'layer_cl'));
+addParameter(p, 'IdxFreq',    1,          @isnumeric);
+addParameter(p, 'PhiStdThr',  20,         @isnumeric);
+addParameter(p, 'TransAngle', [0 45],     @isnumeric);
+addParameter(p, 'PosTrans',   [-5;-5;-5], @isnumeric);
+addParameter(p, 'AttCal',     [0 0],      @isnumeric);
+addParameter(p, 'RayTrayBool', 0,         @isnumeric);
+parse(p, layer, varargin{:});
 
-res=p.Results;
-idx_freq=res.IdxFreq;
-phi_std_thr=res.PhiStdThr;
-trans_angle=res.TransAngle;
-pos_trans=res.PosTrans;
-att_cal=res.AttCal;
-ray_tray_bool=res.RayTrayBool;
+res           = p.Results;
+idx_freq      = res.IdxFreq;
+phi_std_thr   = res.PhiStdThr;
+trans_angle   = res.TransAngle;
+pos_trans     = res.PosTrans;
+att_cal       = res.AttCal;
+ray_tray_bool = res.RayTrayBool;
 
-roll_cal=att_cal(2);
-pitch_cal=att_cal(1);
+roll_cal = att_cal(2);
+pitch_cal = att_cal(1);
 
 trans=layer.Transceivers(idx_freq);
 
-trans.set_position(pos_trans,trans_angle);
+trans.set_position(pos_trans, trans_angle);
 
-range=trans.Data.Range;
+range = trans.Data.Range;
 
-dr=nanmean(diff(range));
+dr = nanmean(diff(range));
 
-bw_mean=(trans.Config.BeamWidthAlongship+trans.Config.BeamWidthAthwartship)/4/180*pi;
-t_angle=atan(sqrt(tand(trans.Config.Angles(2)).^2+tand(trans.Config.Angles(1)).^2));
+bw_mean = (trans.Config.BeamWidthAlongship+trans.Config.BeamWidthAthwartship)/4/180*pi;
+t_angle = atan(sqrt(tand(trans.Config.Angles(2)).^2+tand(trans.Config.Angles(1)).^2));
 
 %time=trans.Data.Time;
-number=trans.Data.Number;
+number = trans.Data.Number;
 
-bot_range=trans.Bottom.Range;
+bot_range = trans.Bottom.Range;
 
-sv=trans.Data.get_datamat('sv');
-sp=trans.Data.get_datamat('sp');
-[nb_samples,nb_pings]=size(sv);
-time_r=(0:nb_samples-1)*trans.Params.SampleInterval;
-eq_beam_angle=trans.Config.EquivalentBeamAngle;
+sv = trans.Data.get_datamat('sv');
+sp = trans.Data.get_datamat('sp');
+[nb_samples,nb_pings] = size(sv);
+time_r = (0:nb_samples-1) * trans.Params.SampleInterval;
+eq_beam_angle = trans.Config.EquivalentBeamAngle;
 
-acrossangle=trans.Data.get_datamat('acrossangle');
-alongangle=trans.Data.get_datamat('alongangle');
+acrossangle = trans.Data.get_datamat('acrossangle');
+alongangle  = trans.Data.get_datamat('alongangle');
 
-[alongphi,acrossphi]=trans.get_phase();
+[alongphi, acrossphi] = trans.get_phase();
 
 
-idx_algo_bot=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
+idx_algo_bot = find_algo_idx(layer.Transceivers(idx_freq), 'BottomDetection');
 
-algo=layer.Transceivers(idx_freq).Algo(idx_algo_bot);
+algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
-[PulseLength,~]=trans.get_pulse_length();
-[amp_est,across_est,along_est]=detec_bottom_bathymetric(sv,alongphi,acrossphi,...
-    layer.Transceivers(idx_freq).Data.Range,1/trans.Params.SampleInterval(1),PulseLength,algo.Varargin.thr_bottom,algo.Varargin.thr_echo,algo.Varargin.r_min);
-z_max=nanmax(amp_est.range)*cos(t_angle);
-ext_len=floor(z_max*(tan(t_angle+bw_mean)-tan(t_angle-bw_mean))/dr/2);
+[PulseLength,~] = trans.get_pulse_length();
+[amp_est, across_est, along_est] = detec_bottom_bathymetric(sv, alongphi, acrossphi, ...
+    layer.Transceivers(idx_freq).Data.Range, 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, algo.Varargin.thr_echo, algo.Varargin.r_min);
+z_max = nanmax(amp_est.range) * cos(t_angle);
+ext_len = floor(z_max*(tan(t_angle+bw_mean) - tan(t_angle-bw_mean)) / dr/2);
 
 figure();
-a1=subplot(2,1,1);
-plot(number,bot_range,'r','linewidth',2);
+a1 = subplot(2,1,1);
+plot(number, bot_range, 'r', 'linewidth',2);
 hold on;
 plot(number,amp_est.range,'g','linewidth',2);
 plot(number(across_est.idx~=1),across_est.range(across_est.idx~=1),'k','linewidth',2);
@@ -81,38 +81,38 @@ ylabel('\delta \phi (m)')
 linkaxes([a1 a2],'x')
 
 
-true_idx_bottom=across_est.idx;
-true_idx_bottom(across_est.idx==1)=nan;
-true_idx_bottom(across_est.delta>phi_std_thr)=nan;
+true_idx_bottom = across_est.idx;
+true_idx_bottom(across_est.idx == 1) = nan;
+true_idx_bottom(across_est.delta > phi_std_thr) = nan;
 idx_nan=isnan(true_idx_bottom);
-idx_along_add=along_est.delta(idx_nan)<phi_std_thr;
-true_idx_bottom(idx_nan(idx_along_add))=along_est.idx(idx_nan(idx_along_add));
+idx_along_add=along_est.delta(idx_nan) < phi_std_thr;
+true_idx_bottom(idx_nan(idx_along_add)) = along_est.idx(idx_nan(idx_along_add));
 
-idx_nan=isnan(true_idx_bottom);
-true_idx_bottom(idx_nan)=amp_est.idx(idx_nan);
-true_idx_bottom(true_idx_bottom==1)=nan;
+idx_nan = isnan(true_idx_bottom);
+true_idx_bottom(idx_nan) = amp_est.idx(idx_nan);
+true_idx_bottom(true_idx_bottom==1) = nan;
 
-true_idx_bottom=round(true_idx_bottom);
+true_idx_bottom = round(true_idx_bottom);
 
-straight_range_bottom=nan(size(true_idx_bottom));
-straight_range_bottom(~isnan(true_idx_bottom))=range(true_idx_bottom(~isnan(true_idx_bottom)));
+straight_range_bottom = nan(size(true_idx_bottom));
+straight_range_bottom(~isnan(true_idx_bottom)) = range(true_idx_bottom(~isnan(true_idx_bottom)));
 
-true_time_bottom=nan(size(true_idx_bottom));
-true_time_bottom(~isnan(true_idx_bottom))=time_r(true_idx_bottom(~isnan(true_idx_bottom)));
+true_time_bottom = nan(size(true_idx_bottom));
+true_time_bottom(~isnan(true_idx_bottom)) = time_r(true_idx_bottom(~isnan(true_idx_bottom)));
 
-time_recept=true_time_bottom/(24*60*60)+trans.Data.Time;
-time_recept(isnan(time_recept))=trans.Data.Time(isnan(time_recept));
-time_trans=trans.Data.Time;
+time_recept = true_time_bottom / (24*60*60) + trans.Data.Time;
+time_recept(isnan(time_recept)) = trans.Data.Time(isnan(time_recept));
+time_trans = trans.Data.Time;
 
-att_trans=layer.AttitudeNav.resample_attitude_nav_data(time_trans);
-Pitch= att_trans.Pitch(:)'+pitch_cal;
-Roll= att_trans.Roll(:)'+roll_cal;
-Heave= att_trans.Heave(:)';
+att_trans = layer.AttitudeNav.resample_attitude_nav_data(time_trans);
+Pitch = att_trans.Pitch(:)'+pitch_cal;
+Roll  = att_trans.Roll(:)'+roll_cal;
+Heave = att_trans.Heave(:)';
 
-att_recept=layer.AttitudeNav.resample_attitude_nav_data(time_recept);
-Pitch_r= att_recept.Pitch(:)'+pitch_cal;
-Roll_r= att_recept.Roll(:)'+roll_cal;
-Heave_r= att_recept.Heave(:)';
+att_recept = layer.AttitudeNav.resample_attitude_nav_data(time_recept);
+Pitch_r = att_recept.Pitch(:)' + pitch_cal;
+Roll_r  = att_recept.Roll(:)'  + roll_cal;
+Heave_r = att_recept.Heave(:)';
 
 % d_pitch=Pitch_r-Pitch;
 % d_roll=Roll_r-Roll;
@@ -122,10 +122,10 @@ Heave_r= att_recept.Heave(:)';
 % hold on;
 % plot((across_est.slope-nanmean(across_est.slope))/nanmax(abs(across_est.slope-nanmean(across_est.slope))));
 
-Range_mat=repmat(range,1,nb_pings);
-transmit_angles=pi/2-atan(sqrt(tand(Roll_r+trans.Config.Angles(2)).^2+tand(Pitch_r+trans.Config.Angles(1)).^2));
+Range_mat = repmat(range,1, nb_pings);
+transmit_angles = (pi/2) - atan(sqrt(tand(Roll_r + trans.Config.Angles(2)) .^2 + tand(Pitch_r + trans.Config.Angles(1)) .^2));
 
-BS=sp-10*log10(Range_mat)+10*log10(cos(repmat(transmit_angles,nb_samples,1)))-eq_beam_angle;
+BS = sp-10*log10(Range_mat) + 10*log10(cos(repmat(transmit_angles, nb_samples,1))) - eq_beam_angle;
 
 bs_bottom=nan(2*ext_len+1,nb_pings);
 extended_time=nan(2*ext_len+1,nb_pings);
@@ -138,25 +138,25 @@ extended_along_angle=nan(2*ext_len+1,nb_pings);
 
 for i=1:nb_pings
     if ~isnan(true_idx_bottom(i))
-        idx_temp=nanmax(true_idx_bottom(i)-ext_len,1):nanmin(true_idx_bottom(i)+ext_len,nb_samples);
-        bs_temp=BS(idx_temp,i);
-        time_temp=time_r(idx_temp);
-        range_temp=range(idx_temp);
-        across_angle_temp=acrossangle(idx_temp,i);
-        along_angle_temp=alongangle(idx_temp,i);
-        idx=floor((-length(idx_temp)+(2*ext_len+1))/2)+1:floor((-length(idx_temp)+(2*ext_len+1))/2)+length(idx_temp);
+        idx_temp   = nanmax(true_idx_bottom(i)-ext_len,1):nanmin(true_idx_bottom(i)+ext_len,nb_samples);
+        bs_temp    = BS(idx_temp,i);
+        time_temp  = time_r(idx_temp);
+        range_temp = range(idx_temp);
+        across_angle_temp = acrossangle(idx_temp,i);
+        along_angle_temp  = alongangle(idx_temp,i);
+        idx = floor((-length(idx_temp)+(2*ext_len+1))/2)+1:floor((-length(idx_temp)+(2*ext_len+1))/2)+length(idx_temp);
         
-        bs_bottom(idx,i)=bs_temp;
-        extended_time(1:length(idx),i)=time_temp;
-        extended_straight_range(1:length(idx),i)=range_temp;
-        if across_est.delta(i)<phi_std_thr
-            extended_across_angle(1:length(idx),i)=across_angle_temp;
+        bs_bottom(idx,i) = bs_temp;
+        extended_time(1:length(idx),i) = time_temp;
+        extended_straight_range(1:length(idx),i) = range_temp;
+        if across_est.delta(i) < phi_std_thr
+            extended_across_angle(1:length(idx), i) = across_angle_temp;
         else
-            extended_across_angle(1:length(idx),i)=nan;
+            extended_across_angle(1:length(idx), i) = nan;
         end
         
-        if along_est.delta(i)<phi_std_thr
-            extended_along_angle(1:length(idx),i)=along_angle_temp;
+        if along_est.delta(i) < phi_std_thr
+            extended_along_angle(1:length(idx),i) = along_angle_temp;
         else
             extended_along_angle(1:length(idx),i)=0;
         end

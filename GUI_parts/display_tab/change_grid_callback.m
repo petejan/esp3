@@ -23,9 +23,9 @@ switch curr_disp.Xaxes
 end
 
 set(axes_panel_comp.main_axes,'Xtick',(xdata(1):dx:xdata(end)),'Ytick',(ydata(1):curr_disp.Grid_y:ydata(end)));
-set(axes_panel_comp.haxes,'Xtick',(xdata(1):dx:xdata(end)));
-set(axes_panel_comp.vaxes,'Ytick',(ydata(1):curr_disp.Grid_y:ydata(end)));
-
+set(axes_panel_comp.vaxes,'YTick',get(axes_panel_comp.main_axes,'YTick'));
+set(axes_panel_comp.haxes,'XTick',get(axes_panel_comp.main_axes,'XTick'));
+display_info_ButtonMotionFcn([],[],main_figure,1)
 update_xtick_labels([],[],axes_panel_comp.haxes,curr_disp.Xaxes);
 update_ytick_labels([],[],axes_panel_comp.vaxes);
 

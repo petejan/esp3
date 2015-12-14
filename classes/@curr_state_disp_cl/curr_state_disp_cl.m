@@ -15,15 +15,17 @@ classdef curr_state_disp_cl <handle
         CursorMode
         Grid_x
         Grid_y
+        CurrLayerID
+        NbLayers
     end
     
     methods
         function obj =curr_state_disp_cl(varargin)
             
             p = inputParser;
-            addParameter(p,'Freq',38000,@isnumeric);
-            addParameter(p,'Fieldname','sv',@ischar);
-            addParameter(p,'Cax',[-100 -90],@ischar);
+            addParameter(p,'Freq',0,@isnumeric);
+            addParameter(p,'Fieldname','',@ischar);
+            addParameter(p,'Cax',[],@ischar);
             addParameter(p,'DispBottom','on',@ischar);
             addParameter(p,'DispUnderBottom','on',@ischar);
             addParameter(p,'DispTracks','on',@ischar);
@@ -34,6 +36,8 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Grid_x',100,@isnumeric);
             addParameter(p,'Grid_y',100,@isnumeric);
             addParameter(p,'CursorMode','Normal',@ischar);
+            addParameter(p,'CurrLayerID',0,@isnumeric);
+            addParameter(p,'NbLayers',0,@isnumeric);
             parse(p,varargin{:});
             results=p.Results;
             props=fieldnames(results);

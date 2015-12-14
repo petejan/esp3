@@ -3,7 +3,7 @@ function update_xtick_labels(~,~,ax,ax_type)
 %axc=get(ax,'children');
 
 %delete(axc(strcmp(get(axc,'tag'),'xtick')));
-
+delete(findall(ax,'Type','Text'));
 xtick=get(ax,'xtick');
 
 xticklabel=format_label(xtick,ax_type);

@@ -163,6 +163,7 @@ max_pulse_length=nanmax(Pulse_length_max_sample(:));
 
 for j=1:max_pulse_length
     idx_sup_before=idx_sup_before.*(pulse_level<=peak_mat(nanmax(i_peaks_lin-j,1)+(j_peaks_lin-1)*nb_samples));
+
     idx_sup_after=idx_sup_after.*(pulse_level<=peak_mat(nanmin(i_peaks_lin+j,nb_samples)+(j_peaks_lin-1)*nb_samples));
     pulse_env_before_lin=pulse_env_before_lin+idx_sup_before;
     pulse_env_after_lin=pulse_env_after_lin+idx_sup_after;

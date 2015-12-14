@@ -127,8 +127,6 @@ end
 
         create_region_context_menu(reg_plot,main_figure,reg_curr);
        
-
-        
     end
 
 end

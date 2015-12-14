@@ -28,9 +28,9 @@ file_outputs_def=[layer.PathToFile '\' Filename(1:end-5) '_' num2str(Freq) '_out
 if ~isequal(file_outputs,0)&&~isequal(path_out,0)
     
     new_struct=regions_to_struct(Regions);
-
-struct2csv(new_struct,fullfile(path_out,file_outputs));
-   
+    
+    struct2csv(new_struct,fullfile(path_out,file_outputs));
+    
 end
 
 end

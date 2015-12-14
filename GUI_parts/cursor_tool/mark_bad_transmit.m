@@ -20,11 +20,10 @@ else
     return;
 end
 
-dat=layer.Transceivers(idx_freq).Data.get_datamat('Power');
 
 range=layer.Transceivers(idx_freq).Data.Range;
 
-[~,nb_pings]=size(dat);
+nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
 
 cp = ah.CurrentPoint;
 xinit = cp(1,1);
@@ -34,17 +33,20 @@ if xinit<xdata(1)||xinit>xdata(end)||yinit<1||yinit>range(end)
     return
 end
 
-x_box=xinit;
+x_bad=[xinit xinit];
 
 src.WindowButtonMotionFcn = @wbmcb;
 src.WindowButtonUpFcn = @wbucb;
+axes(ah);
+hold on;
+hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1);
 
     function wbmcb(~,~)
         
         cp = ah.CurrentPoint;
         
-        X = [xinit,cp(1,1)];
-
+        X = sort([xinit ,cp(1,1)]);
+        Y=  [cp(1,2),cp(1,2)];   
         
         x_min=nanmin(X);
         x_min=nanmax(xdata(1),x_min);
@@ -52,17 +54,19 @@ src.WindowButtonUpFcn = @wbucb;
         x_max=nanmax(X);
         x_max=nanmin(xdata(end),x_max);
         
-        x_box=[x_min x_max  x_max x_min x_min];
+        x_bad=[x_min x_max];
+        delete(hp);
+        hp=plot(x_bad,Y,'color','k','linewidth',1,'marker','x');
  
     end
 
     function wbucb(src,~)
-
+       
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
-        [~,idx_start]=nanmin(abs(xdata-nanmin(x_box)));
-        [~,idx_end]=nanmin(abs(xdata-nanmax(x_box)));
+        [~,idx_start]=nanmin(abs(xdata-nanmin(x_bad)));
+        [~,idx_end]=nanmin(abs(xdata-nanmax(x_bad)));
         idx_pings=idx_start:idx_end;
         pings=zeros(1,nb_pings);
         if ~isempty(layer.Transceivers(idx_freq).IdxBad)
@@ -73,6 +77,6 @@ src.WindowButtonUpFcn = @wbucb;
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);
-        
+        delete(hp);
     end
 end

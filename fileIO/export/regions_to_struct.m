@@ -34,5 +34,6 @@ for i=1:length(Regions)
             end
         end
     end
-    new_struct=orderfields(new_struct,length(fieldnames(new_struct)):-1:1);
+    
 end
+new_struct=orderfields(new_struct,length(fieldnames(new_struct)):-1:1);

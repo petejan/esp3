@@ -131,8 +131,7 @@ if ~isempty(cdata)
     
 end
 
-
-update_xtick_labels([],[],axh,curr_disp.Xaxes);
-update_ytick_labels([],[],axv);
+% update_xtick_labels([],[],axh,curr_disp.Xaxes);
+% update_ytick_labels([],[],axv);
 
 end

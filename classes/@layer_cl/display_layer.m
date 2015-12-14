@@ -10,8 +10,8 @@ if isempty(axes_type)
     axes_type='Number';
     x=layer.Transceivers(idx_freq).Data.Time;
     y=layer.Transceivers(idx_freq).Data.Range;
-    dx=(x(2)-x(1))/10;
-    dy=(y(2)-y(1))/10;
+    dx=(x(end)-x(1))/10;
+    dy=(y(end)-y(1))/10;
     new=1;
 end
 
@@ -65,8 +65,6 @@ idx_ylim=[idx_ylim_min idx_ylim_max];
 
 
 
-
-
 switch lower(deblank(fieldname))
     case {'y','y_imag','y_real'}
         data_mat=10*log10(abs(data));
@@ -77,6 +75,7 @@ switch lower(deblank(fieldname))
     otherwise
         data_mat=data;
 end
+data_mat=single(data_mat);
 
 axes(ax);
 switch axes_type

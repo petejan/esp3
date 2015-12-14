@@ -57,6 +57,12 @@ if ~isequal(Filename_cell, 0)
                     continue;
                 end
             end
+            if isnumeric(header_temp)
+                if header_temp==-1
+                    disp(['Cannot open file ' Filename]);
+                    continue;
+                end
+            end
             
             for ki=1:header_temp.transceivercount
                 vec_freq_temp=[vec_freq_temp data_temp.config(ki).frequency];
@@ -232,16 +238,8 @@ if ~isequal(Filename_cell, 0)
             
             algo_vec=init_algos(range);
             
-            
-            
-            if length(Bottom_sim(i,:))~=size(data.pings(i).power,2);
-                Bottom=nan(1,size(data.pings(i).power,2));
-                Bottom_idx=nan(1,size(data.pings(i).power,2));
-                bot=bottom_cl('Origin','None','Range',Bottom,'Sample_idx',Bottom_idx);
-            else
-                bot= bottom_cl('Origin','Simrad','Range',Bottom_sim(i,:),'Sample_idx',Bottom_sim_idx(i,:));
-            end
-            
+            bot= bottom_cl('Origin','Simrad','Range',Bottom_sim(i,:),'Sample_idx',Bottom_sim_idx(i,:));
+
             transceiver(i)=transceiver_cl('Data',ac_data_temp,...
                 'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...

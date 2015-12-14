@@ -41,8 +41,8 @@ display_tab_comp.tog_axes=uicontrol(display_tab_comp.display_tab,'Style','popupm
 
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','X Grid','units','normalized','Position',[0.5 0.6 0.1 0.1]);
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Y Grid','units','normalized','Position',[0.75 0.6 0.1 0.1]);
-display_tab_comp.grid_x=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.6 0.6 0.1 0.1],'string',curr_disp.Grid_x);
-display_tab_comp.grid_y=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.6 0.1 0.1],'string',curr_disp.Grid_y);
+display_tab_comp.grid_x=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.6 0.6 0.1 0.1],'string',num2str(curr_disp.Grid_x,'%.0f'));
+display_tab_comp.grid_y=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.6 0.1 0.1],'string',num2str(curr_disp.Grid_y,'%.0f'));
 set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_callback,main_figure})
 
 cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
@@ -57,12 +57,12 @@ display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit',
 display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',cax(1));
 set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_caxis,main_figure});
 
-display_tab_comp.disp_bottom=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display bottom','units','normalized','Position',[0.3 0.4 0.25 0.1]);
-display_tab_comp.disp_bad_trans=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Bad transmits','units','normalized','Position',[0.3 0.3 0.25 0.1]);
-display_tab_comp.disp_reg=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Regions','units','normalized','Position',[0.3 0.2 0.25 0.1]);
-display_tab_comp.disp_tracks=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Tracks','units','normalized','Position',[0.3 0.1 0.25 0.1]);
-display_tab_comp.disp_lines=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',1,'String','Display Lines','units','normalized','Position',[0.6 0.3 0.3 0.1]);
-display_tab_comp.disp_under_bot=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Remove Under Bottom data','units','normalized','Position',[0.6 0.4 0.3 0.1]);
+display_tab_comp.disp_bottom=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',strcmpi(curr_disp.DispBottom,'on'),'String','Display bottom','units','normalized','Position',[0.3 0.4 0.25 0.1]);
+display_tab_comp.disp_bad_trans=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',curr_disp.DispBadTrans,'String','Display Bad transmits','units','normalized','Position',[0.3 0.3 0.25 0.1]);
+display_tab_comp.disp_reg=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',curr_disp.DispReg,'String','Display Regions','units','normalized','Position',[0.3 0.2 0.25 0.1]);
+display_tab_comp.disp_tracks=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',strcmpi(curr_disp.DispTracks,'on'),'String','Display Tracks','units','normalized','Position',[0.3 0.1 0.25 0.1]);
+display_tab_comp.disp_lines=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',curr_disp.DispLines,'String','Display Lines','units','normalized','Position',[0.6 0.3 0.3 0.1]);
+display_tab_comp.disp_under_bot=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',strcmpi(curr_disp.DispUnderBottom,'off'),'String','Remove Under Bottom data','units','normalized','Position',[0.6 0.4 0.3 0.1]);
 
 set([display_tab_comp.disp_tracks display_tab_comp.disp_under_bot display_tab_comp.disp_bottom display_tab_comp.disp_bad_trans display_tab_comp.disp_lines display_tab_comp.disp_reg],'callback',{@set_curr_disp,main_figure});
 

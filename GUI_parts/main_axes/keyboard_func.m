@@ -1,5 +1,4 @@
 function keyboard_func(~,callbackdata,main_figure)
-
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
@@ -90,14 +89,14 @@ switch callbackdata.Key
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);
     case 'b'
+
         switch curr_disp.DispUnderBottom
             case 'off'
                 curr_disp.DispUnderBottom='on';
             case 'on'
                 curr_disp.DispUnderBottom='off';
         end
-        
+
 end
-setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

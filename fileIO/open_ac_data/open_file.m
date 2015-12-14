@@ -2,23 +2,20 @@ function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
 
-if isvalid(layer)
-    if ~isempty(layer)
-        if ~isempty(layer.PathToFile)
-            file_path=layer.PathToFile;
-        else
-            file_path=pwd;
-        end
-        
+
+if ~isempty(layer)
+    if ~isempty(layer.PathToFile)
+        file_path=layer.PathToFile;
     else
         file_path=pwd;
     end
+    ID_num=layer.ID_num;
 else
     file_path=pwd;
+    ID_num=0;
 end
 
-Filename=layer.Filename;
-PathToFile=layer.PathToFile;
+
 if iscell(file_id)
     Filename=cell(1,length(file_id));
     PathToFile=cell(1,length(file_id));
@@ -48,20 +45,26 @@ else
         
         
     elseif file_id==1
+        if ~isempty(layer)
+            Filename=layer.Filename;
+            PathToFile=layer.PathToFile;
+        else
+            return;
+        end
         
         f = dir(file_path);
-        file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
+        file_list=({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
         
         if ~isempty(file_list)
             i=1;
             file_diff=0;
             while i< size(file_list,1)&& file_diff==0
-                file_diff=strcmp(file_list(i,:),Filename{end});
+                file_diff=strcmp(file_list{i},Filename{end});
                 i=i+1;
             end
             
             if file_diff
-                Filename=file_list(i,:);
+                Filename=file_list{i};
                 PathToFile=layer.PathToFile;
             else
                 Filename=0;
@@ -71,17 +74,25 @@ else
             return;
         end
     elseif file_id==2
+        if ~isempty(layer)
+            Filename=layer.Filename;
+            PathToFile=layer.PathToFile;
+        else
+            return;
+        end
+        
+        
         f = dir(file_path);
-        file_list=cell2mat({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
+        file_list=({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
         if ~isempty(file_list)
             i=size(file_list,1);
             file_diff=0;
             while i>1 && file_diff==0
-                file_diff=strcmp(file_list(i,:),Filename{1});
+                file_diff=strcmp(file_list{i},Filename{1});
                 i=i-1;
             end
             if file_diff
-                Filename=file_list(i,:);
+                Filename=file_list{i};
                 PathToFile=layer.PathToFile;
             else
                 Filename=0;
@@ -174,7 +185,7 @@ if ~isequal(Filename, 0)
     end
     
     ask_q=1;
-    if length(layers)==1&&length(Filename)==1
+    if ~isempty(layers)&&length(Filename)==1
         if layers.ID_num==0
             ask_q=0;
         end
@@ -193,7 +204,7 @@ if ~isequal(Filename, 0)
             case 'No'
                 multi_layer=0;
                 read_all=1;
-            case 'Force concatenation'
+            case 'Force Concatenation'
                 multi_layer=-1;
                 read_all=1;
             otherwise
@@ -210,8 +221,7 @@ if ~isequal(Filename, 0)
     if ~strcmp(ftype,'dfile')
         
         
-        
-        if multi_layer==0&&layer.ID_num~=0
+        if multi_layer==0&&ID_num~=0&&~isempty(layers)
             choice = questdlg('Do you want to join those new layers to existing ones?', ...
                 'File opening mode',...
                 'Yes','No', ...
@@ -299,7 +309,7 @@ if ~isequal(Filename, 0)
             
     end
     
-    update_display(main_figure,1);
+    listenEcho([],[],main_figure);
     
 end
 end

@@ -12,7 +12,9 @@ uimenu(m_files,'Label','Load Previously Saved Bottom/Regions/Algo','Callback',{@
 mhh = uimenu(main_figure,'Label','Import/Export','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
-uimenu(mhh,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure});
+uimenu(mhh,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure},'separator','on');
+uimenu(mhh,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
+uimenu(mhh,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});

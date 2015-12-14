@@ -134,7 +134,7 @@ end
 
 curr_time=layer.Transceivers(1).Data.Time;
 
-[y_line,~,~]=resample_data(line.Range,line.Time,curr_time);
+[y_line,~,~]=resample_data_v2(line.Range,line.Time,curr_time);
 
 if isempty(y_line)
     warning('Line time does not match the current layer.');

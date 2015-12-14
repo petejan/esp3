@@ -19,8 +19,7 @@ classdef region_cl < handle
         Cell_h
         Cell_h_unit
         Output
-        Reg
-        
+  
     end
     
 

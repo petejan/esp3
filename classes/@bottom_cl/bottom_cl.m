@@ -24,8 +24,7 @@ classdef bottom_cl
             props=fieldnames(results);
             
             for i=1:length(props)        
-                obj.(props{i})=results.(props{i});
-                
+                    obj.(props{i})=results.(props{i});
             end
             
         end

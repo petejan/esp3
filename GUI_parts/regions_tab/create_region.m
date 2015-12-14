@@ -16,7 +16,7 @@ switch shape
         inter_region_create(src,main_figure,mode,@create_region_func)
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
-curr_disp.CursorMode='normal';
+curr_disp.CursorMode='Normal';
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

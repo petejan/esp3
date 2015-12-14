@@ -83,7 +83,7 @@ else
 end
 
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,1);
+listenEcho([],[],main_figure);
 % user processing needs to be placed here
 
 end

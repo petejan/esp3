@@ -22,6 +22,7 @@ for i=1:length(layers)
     end
 end
 
+shuffling_box=msgbox('Shuffling layers... This window will close when finished...','Shuffling layers','modal');
 
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);
@@ -30,6 +31,9 @@ else
     if length(new_layers_in)==1
         layers=new_layers_in;
         layer=new_layers_in;
+        try
+            close(shuffling_box);
+        end
         return;
     end
 end
@@ -226,5 +230,9 @@ for u=1:length(new_layers_out)
     end
 end
 
+try
+    close(shuffling_box);
+end
+    
 end
 

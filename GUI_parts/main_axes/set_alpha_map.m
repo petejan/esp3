@@ -12,7 +12,12 @@ end
 idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(1);
 
-data=layer.Transceivers(idx_freq).Data.get_datamat(curr_disp.Fieldname);
+if ~isfield(axes_panel_comp,'main_echo')
+    return;
+end
+
+
+data=double(get(axes_panel_comp.main_echo,'CData'));
 alpha_map=double(data>=min_axis);
 
 if curr_disp.DispBadTrans

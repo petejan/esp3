@@ -1,5 +1,4 @@
 function axes_panel_comp=display_bottom(xdata,ydata,idx_bottom,axes_panel_comp,vis)
-
 if~isempty(idx_bottom)&&~isempty(xdata)&&~isempty(ydata)
     x=linspace(xdata(1),xdata(end),length(xdata));
     %x(isnan(idx_bottom))=[];

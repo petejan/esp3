@@ -1,6 +1,5 @@
 function edit_bottom(src,~,main_figure)
 
-
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -22,21 +21,24 @@ ydata=double(get(axes_panel_comp.main_echo,'YData'));
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
-dat=layer.Transceivers(idx_freq).Data.get_datamat('Power');
+nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
+nb_samples=length(layer.Transceivers(idx_freq).Data.Range);
 bot=layer.Transceivers(idx_freq).Bottom;
-[nb_samples,nb_pings]=size(dat);
+
 
 if isempty(bot.Range)
     bot.Range=nan(1,nb_pings);
     bot.Sample_idx=nan(1,nb_pings);
     bot.Double_bot_mask=zeros(nb_samples,nb_pings);
 end
+xinit=nan(1,nb_pings);
+yinit=nan(1,nb_pings);
 
 cp = ah.CurrentPoint;
-xinit = cp(1,1);
-yinit=cp(1,2);
-
-if xinit<xdata(1)||xinit>xdata(end)||yinit<1||yinit>ydata(end)
+xinit(1) = cp(1,1);
+yinit(1)=cp(1,2);
+u=1;
+if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
     return
 end
 axes(ah);
@@ -49,17 +51,13 @@ elseif strcmp(src.SelectionType,'alt')
     src.WindowButtonUpFcn = @wbucb_alt;
 end
     function wbmcb(~,~)
-        
-        cp = ah.CurrentPoint;
-        
-        xinit = [xinit,cp(1,1)];
-        yinit = [yinit,cp(1,2)];
+        u=u+1;
+        cp=ah.CurrentPoint;
+        xinit(u)=cp(1,1);
+        yinit(u)=cp(1,2);
         
         delete(hp);
-        axes(ah);
-        hold on;
         hp=plot(xinit,yinit,'color','k','linewidth',1);
-        drawnow;
     end
 
     function wbucb(src,~)
@@ -68,7 +66,8 @@ end
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
         delete(hp);
-        
+        xinit(isnan(xinit))=[];
+        yinit(isnan(yinit))=[];
         x_rem=xinit>xdata(end)|xinit<xdata(1);
         y_rem=yinit>ydata(end)|yinit<ydata(1);
         
@@ -101,7 +100,8 @@ end
         axes_panel_comp=display_bottom(xdata,ydata,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom);
         set_alpha_map(main_figure);
         setappdata(main_figure,'Axes_panel',axes_panel_comp);
-        display_info_ButtonMotionFcn([],[],main_figure,1);
+        %display_info_ButtonMotionFcn([],[],main_figure,1);
+        
     end
 
     function wbucb_alt(src,~)
@@ -126,6 +126,6 @@ end
         axes_panel_comp=display_bottom(xdata,ydata,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom);
         set_alpha_map(main_figure);
         setappdata(main_figure,'Axes_panel',axes_panel_comp);
-        display_info_ButtonMotionFcn([],[],main_figure,1);
+        %display_info_ButtonMotionFcn([],[],main_figure,1);
     end
 end
