@@ -1,5 +1,6 @@
-function listenYLim(src,listdata,main_figure)
-disp('ListenYLim')
-display_info_ButtonMotionFcn([],[],main_figure,1)
+function listenYLim(src,~,main_figure)
+
+
+load_axis_panel(main_figure,0)
 
 end

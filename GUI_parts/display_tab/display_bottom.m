@@ -4,6 +4,7 @@ if~isempty(idx_bottom)&&~isempty(xdata)&&~isempty(ydata)
     %x(isnan(idx_bottom))=[];
     y=nan(size(x));
     y(~isnan(idx_bottom))=ydata(idx_bottom(~isnan(idx_bottom)));
+    
     if isfield(axes_panel_comp,'bottom_plot')
         if ishandle(axes_panel_comp.bottom_plot)
             delete(axes_panel_comp.bottom_plot);

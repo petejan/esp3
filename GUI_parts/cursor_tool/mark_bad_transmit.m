@@ -6,6 +6,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
+[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
 
@@ -67,12 +68,12 @@ hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1);
         src.Pointer = 'arrow';
         [~,idx_start]=nanmin(abs(xdata-nanmin(x_bad)));
         [~,idx_end]=nanmin(abs(xdata-nanmax(x_bad)));
-        idx_pings=idx_start:idx_end;
+        idx_f=idx_pings(idx_start:idx_end);
         pings=zeros(1,nb_pings);
         if ~isempty(layer.Transceivers(idx_freq).IdxBad)
             pings(layer.Transceivers(idx_freq).IdxBad)=1;
         end
-        pings(idx_pings)=set_val;
+        pings(idx_f)=set_val;
         layer.Transceivers(idx_freq).IdxBad=find(pings);
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);

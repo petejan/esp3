@@ -185,10 +185,8 @@ if ~isequal(Filename, 0)
     end
     
     ask_q=1;
-    if ~isempty(layers)&&length(Filename)==1
-        if layers.ID_num==0
+    if length(Filename)==1||~iscell(Filename)
             ask_q=0;
-        end
     end
     
     if ask_q==1

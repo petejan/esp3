@@ -2,7 +2,7 @@ function init_listeners(main_figure)
 
 curr_disp_obj=getappdata(main_figure,'Curr_disp');
 if isappdata(main_figure,'ListenersH')
-ls=getappdata(main_figure,'ListenersH');
+    ls=getappdata(main_figure,'ListenersH');
 else
     ls=[];
 end

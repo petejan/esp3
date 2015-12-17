@@ -12,7 +12,6 @@ if found_freq==0
     idx_freq=1;
     %disp('Cannot Find Frequency...');
     curr_disp.Freq=layer.Frequencies(idx_freq);   
-    return;
 end
 
 if found_field==0

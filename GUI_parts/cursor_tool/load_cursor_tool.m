@@ -83,7 +83,9 @@ else
 end
 
 setappdata(main_figure,'Layer',layer);
+rm_listeners(main_figure)
 listenEcho([],[],main_figure);
+init_listeners(main_figure);
 % user processing needs to be placed here
 
 end

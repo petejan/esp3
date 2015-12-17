@@ -105,8 +105,10 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
 layer.Transceivers(idx_freq).set_ST(ST);
 
 layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
-curr_disp.setField('singletarget');
 setappdata(main_figure,'Layer',layer);
+curr_disp.setField('singletarget');
+curr_disp.Freq=curr_disp.Freq;
+setappdata(main_figure,'Curr_disp',curr_disp);
     
 
 end

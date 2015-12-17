@@ -52,6 +52,9 @@ for i=1:length(reg_evr)
     Idx_pings=pings(1):pings(2);
     Idx_r=samples(1):samples(2);
     
+    if nansum(isnan(Idx_pings))==length(Idx_pings)
+        continue;
+    end
     
     switch reg_evr(i).info.r_type
         case 0 %Horizontal region

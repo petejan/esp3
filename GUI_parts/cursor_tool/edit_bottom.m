@@ -76,6 +76,7 @@ end
         
         [x_f,IA,~] = unique(xinit);
         y_f=yinit(IA);
+        [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
         
         if length(x_f)>1
             for i=1:length(x_f)-1
@@ -83,24 +84,20 @@ end
                 [~, idx_bot_1]=nanmin(abs(x_f(i+1)-xdata));
                 [~,idx_r]=nanmin(abs(y_f(i)-ydata));
                 [~,idx_r1]=nanmin(abs(y_f(i+1)-ydata));
-                bot.Range(idx_bot:idx_bot_1)=linspace(y_f(i),y_f(i+1),length(idx_bot:idx_bot_1));
-                bot.Sample_idx(idx_bot:idx_bot_1)=round(linspace(idx_r,idx_r1,length(idx_bot:idx_bot_1)));
+                
+                idx_bot_tot=(idx_bot:idx_bot_1)+idx_ping_ori-1;
+
+                bot.Range(idx_bot_tot)=linspace(y_f(i),y_f(i+1),length(idx_bot_tot));
+                bot.Sample_idx(idx_bot_tot)=round(linspace(idx_r+idx_r_ori-1,idx_r1+idx_r_ori-1,length(idx_bot_tot)));
             end
         elseif length(x_f)==1
             [~, idx_bot]=nanmin(abs(x_f-xdata));
             [~,idx_r]=nanmin(abs(y_f-ydata));
-            bot.Sample_idx(idx_bot)=idx_r;
-            bot.Range(idx_bot)=y_f;
+            bot.Sample_idx(idx_bot+idx_ping_ori-1)=idx_r+idx_r_ori-1;
+            bot.Range(idx_bot+idx_ping_ori-1)=y_f;
         end
-        
-        
-        layer.Transceivers(idx_freq).Bottom=bot;
-        setappdata(main_figure,'Layer',layer);
-        reset_disp_info(main_figure);
-        axes_panel_comp=display_bottom(xdata,ydata,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom);
-        set_alpha_map(main_figure);
-        setappdata(main_figure,'Axes_panel',axes_panel_comp);
-        %display_info_ButtonMotionFcn([],[],main_figure,1);
+          
+     end_bottom_edit();
         
     end
 
@@ -114,18 +111,28 @@ end
         x_min=nanmin(xinit);
         x_max=nanmax(xinit);
         
+        [~,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
+        
         [~, idx_min]=nanmin(abs(x_min-xdata));
         [~, idx_max]=nanmin(abs(x_max-xdata));
-        
-        bot.Range(idx_min:idx_max)=nan;
-        bot.Sample_idx(idx_min:idx_max)=nan;
+        idx_pings=(idx_min:idx_max)+idx_ping_ori-1;
+        bot.Range(idx_pings)=nan;
+        bot.Sample_idx(idx_pings)=nan;
+        end_bottom_edit();
+
+   
+    end
+
+    function end_bottom_edit()
+
+        xdata_real=layer.Transceivers(idx_freq).Data.Number;
+        ydata_real=layer.Transceivers(idx_freq).Data.Range;
         
         layer.Transceivers(idx_freq).Bottom=bot;
         setappdata(main_figure,'Layer',layer);
         reset_disp_info(main_figure);
-        axes_panel_comp=display_bottom(xdata,ydata,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom);
+        axes_panel_comp=display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom);
         set_alpha_map(main_figure);
         setappdata(main_figure,'Axes_panel',axes_panel_comp);
-        %display_info_ButtonMotionFcn([],[],main_figure,1);
     end
 end

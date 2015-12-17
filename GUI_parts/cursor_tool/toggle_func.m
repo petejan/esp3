@@ -7,10 +7,10 @@ ah=axes_panel_comp.main_axes;
 axes(ah);
 h=zoom;
 h_pan=pan;
+
+
 type=src.Tag;
-
 childs=findall(main_figure,'type','uitoggletool');
-
 for i=1:length(childs)
     if ~strcmp(get(childs(i),'tag'),type)
         set(childs(i),'state','off');
@@ -20,16 +20,24 @@ end
 region_tab_comp=getappdata(main_figure,'Region_tab');
 set(region_tab_comp.create_button,'value',get(region_tab_comp.create_button,'Min'));
 
-
 if strcmp(src.State,'on')
     axes_panel_comp.main_echo.UIContextMenu=[];
     switch type
         case 'zin'
-            set(h,'Enable','on','Direction','in');
-        case 'zout'
-            set(h,'Enable','on','Direction','out');
+           set(h,'Enable','off');
+            set(h_pan,'Enable','off');
+            setptr(main_figure,'glassplus');
+            set(main_figure,'WindowButtonDownFcn',{@zoom_in_callback,main_figure});
+            %zoom_in_callback(main_figure);
+        case 'zout'  
+            set(h,'Enable','off');
+            set(h_pan,'Enable','off');
+            setptr(main_figure,'glassminus');
+            set(main_figure,'WindowButtonDownFcn',{@zoom_out_callback,main_figure});
+            %set(h,'Enable','on','Direction','out');
         case 'fd'
             set(h,'Enable','off');
+            set(h_pan,'Enable','off');
             switch(curr_disp.Fieldname)
                 case {'Sv','Sp'}
                     set(main_figure,'WindowButtonDownFcn',{@freq_response,main_figure});
@@ -58,6 +66,7 @@ if strcmp(src.State,'on')
         case 'bt'
             set(h,'Enable','off');
             set(h_pan,'Enable','off');
+            set(main_figure,'Pointer','arrow');
             set(main_figure,'WindowButtonDownFcn',@(src,envdata)mark_bad_transmit(src,envdata,main_figure));
         case 'pan'
             set(h,'Enable','off');
@@ -67,17 +76,21 @@ if strcmp(src.State,'on')
         case 'ed_bot'
             set(h,'Enable','off');
             set(h_pan,'Enable','off');
+             set(main_figure,'Pointer','arrow');
             set(main_figure,'WindowButtonDownFcn',@(src,envdata)edit_bottom(src,envdata,main_figure));
                         
         case 'loc'
             set(h,'Enable','off');
             set(h_pan,'Enable','off');
+             set(main_figure,'Pointer','arrow');
             set(main_figure,'WindowButtonDownFcn',@(src,envdata)disp_loc(src,envdata,main_figure));
     end
    axes_panel_comp.main_echo.UIContextMenu=[];
 else
+    
     set(h_pan,'Enable','off');
     set(h,'Enable','off');
+    set(main_figure,'Pointer','arrow');
     set(main_figure,'WindowButtonDownFcn','');
     context_menu=uicontextmenu;
     axes_panel_comp.main_echo.UIContextMenu=context_menu;

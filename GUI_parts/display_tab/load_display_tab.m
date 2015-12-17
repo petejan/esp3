@@ -20,30 +20,59 @@ end
 
 display_tab_comp.display_tab=uitab(option_tab_panel,'Title','Display Option');
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Frequency','units','normalized','Position',[0 0.8 0.2 0.1]);
-display_tab_comp.tog_freq=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',num2str(layer.Frequencies'),'Value',idx_freq,'units','normalized','Position', [0.2 0.8 0.2 0.1],'Callback',{@choose_freq,main_figure});
+display_tab_comp.tog_freq=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',num2str(layer.Frequencies'),'Value',idx_freq,'units','normalized','Position', [0.2 0.8 0.12 0.1],'Callback',{@choose_freq,main_figure});
 
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Data','units','normalized','Position',[0 0.6 0.2 0.1]);
-display_tab_comp.tog_type=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field,'units','normalized','Position', [0.2 0.6 0.2 0.1],'Callback',{@choose_field,main_figure});
+display_tab_comp.tog_type=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field,'units','normalized','Position', [0.2 0.6 0.12 0.1],'Callback',{@choose_field,main_figure});
 
 if isempty(layer.Transceivers(idx_freq).GPSDataPing)
-    Axes_type={'Number','Time'};
+        Axes_type={'Number','Time'};
 else
-    Axes_type={'Number','Time','Distance'};
+    if ~isempty(layer.Transceivers(idx_freq).GPSDataPing.Dist)
+        Axes_type={'Number','Time','Distance'};
+    else
+         Axes_type={'Number','Time'};
+    end
 end
 idx_axes=find(strcmp(curr_disp.Xaxes,Axes_type),1);
+
 if isempty(idx_axes)
     idx_axes=1;
-    curr_disp.Xaxes=Axes_type(idx_axes);
+    curr_disp.Xaxes=Axes_type{idx_axes};
 end
 
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','X Axes','units','normalized','Position',[0.5 0.8 0.2 0.1]);
-display_tab_comp.tog_axes=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',Axes_type,'Value',idx_axes,'units','normalized','Position', [0.7 0.8 0.2 0.1],'Callback',{@choose_Xaxes,main_figure});
+switch curr_disp.Xaxes
+    case 'Distance'
+        grid_x_unit='(m)';
+    case 'Time'
+        grid_x_unit='(s)';
+    otherwise 
+        grid_x_unit='';
+end
 
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','X Grid','units','normalized','Position',[0.5 0.6 0.1 0.1]);
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Y Grid','units','normalized','Position',[0.75 0.6 0.1 0.1]);
-display_tab_comp.grid_x=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.6 0.6 0.1 0.1],'string',num2str(curr_disp.Grid_x,'%.0f'));
-display_tab_comp.grid_y=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.6 0.1 0.1],'string',num2str(curr_disp.Grid_y,'%.0f'));
+
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','X Axes:','units','normalized','Position',[0.35 0.8 0.1 0.1]);
+display_tab_comp.tog_axes=uicontrol(display_tab_comp.display_tab,'Style','popupmenu','String',Axes_type,'Value',idx_axes,'units','normalized','Position', [0.45 0.8 0.2 0.1],'Callback',{@choose_Xaxes,main_figure});
+
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Grid:','units','normalized','Position',[0.35 0.6 0.05 0.1]);
+display_tab_comp.grid_x=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.4 0.6 0.05 0.1],'string',num2str(curr_disp.Grid_x,'%.0f'));
+display_tab_comp.grid_x_unit=uicontrol(display_tab_comp.display_tab,'Style','Text','unit','normalized','position',[0.45 0.6 0.04 0.1],'string',grid_x_unit);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','X','units','normalized','Position',[0.49 0.6 0.02 0.1]);
+display_tab_comp.grid_y=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.51 0.6 0.05 0.1],'string',num2str(curr_disp.Grid_y,'%.0f'));
+display_tab_comp.grid_y_unit=uicontrol(display_tab_comp.display_tab,'Style','Text','unit','normalized','position',[0.56 0.6 0.04 0.1],'string','(m)');
 set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_callback,main_figure})
+
+
+
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Max Display Size (px)','units','normalized','Position',[0.7 0.8 0.25 0.1]);
+display_tab_comp.width_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.74 0.7 0.07 0.1],'string',num2str(curr_disp.LayerMaxDispSize(2),'%.0f'));
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','X','units','normalized','Position',[0.81 0.7 0.02 0.1]);
+display_tab_comp.height_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.83 0.7 0.07 0.1],'string',num2str(curr_disp.LayerMaxDispSize(1),'%.0f'));
+
+set([display_tab_comp.width_disp display_tab_comp.height_disp],'callback',{@change_size_disp_callback,main_figure})
+uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Full Resolution','units','normalized','Position',[0.7 0.6 0.25 0.1],'Callback',{@set_full_res_callback,main_figure});
+
+
 
 cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 if isempty(cax)

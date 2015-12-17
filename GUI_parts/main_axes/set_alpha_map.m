@@ -18,19 +18,31 @@ end
 
 
 data=double(get(axes_panel_comp.main_echo,'CData'));
+xdata=double(get(axes_panel_comp.main_echo,'XData'));
+ydata=double(get(axes_panel_comp.main_echo,'YData'));
 alpha_map=double(data>=min_axis);
+nb_pings=length(xdata);
+nb_samples=length(ydata);
+
+[~,nb_pings_red]=size(alpha_map);
+[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
+
+
+idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(layer.Transceivers(idx_freq).IdxBad,idx_pings)-idx_pings(1)+1)));
+idx_bad_red(idx_bad_red==0)=[];
 
 if curr_disp.DispBadTrans
-    alpha_map(:,layer.Transceivers(idx_freq).IdxBad)=0.5;
+    alpha_map(:,idx_bad_red)=0.5;
 end
 
-[nb_samples,nb_pings]=size(alpha_map);
-Range=layer.Transceivers(idx_freq).Data.Range;
-Range_mat=repmat(Range,1,nb_pings);
-bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range,nb_samples,1);
+
+Range_mat=repmat(ydata,1,nb_pings);
+bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),nb_samples,1);
+idx_bot=Range_mat>bot_mat;
+idx_bot_red=imresize(idx_bot,size(alpha_map));
 
 if strcmpi(curr_disp.DispUnderBottom,'off')==1
-    alpha_map(Range_mat>bot_mat)=0;
+    alpha_map(idx_bot_red)=0;
 end
 
 

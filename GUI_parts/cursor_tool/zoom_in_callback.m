@@ -1,19 +1,23 @@
-function inter_region_create(src,main_figure,mode,func)
-
+function zoom_in_callback(src,~,main_figure)
 obj=gco;
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-src.Pointer = 'ibeam';
 ah=axes_panel_comp.main_axes;
 
-if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
+if strcmp(src.SelectionType,'normal')
+    mode='rectangular';
+else
+    mode='horizontal';
+end
+
+if axes_panel_comp.main_echo==obj
     
     clear_lines(ah)
-
+    
     drawnow;
     xdata=get(axes_panel_comp.main_echo,'XData');
     ydata=get(axes_panel_comp.main_echo,'YData');
-    cp = ah.CurrentPoint;  
+    cp = ah.CurrentPoint;
     
     switch mode
         case 'rectangular'
@@ -27,14 +31,11 @@ if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
             yinit = ydata(1);
     end
     
-
+    
     if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
-        idx_r=[];
-        idx_pings=[];
         return;
     end
-    src.Pointer = 'cross';
-    
+
     x_box=xinit;
     y_box=yinit;
     
@@ -44,15 +45,7 @@ if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
     axes(ah);
     hold on;
     hp=plot(x_box,y_box,'color','k','linewidth',1);
-    
-    
-else
-    src.WindowButtonMotionFcn = '';
-    src.WindowButtonUpFcn = '';
-    src.Pointer = 'arrow';
-    idx_r=[];
-    idx_pings=[];
-         
+  
 end
 
     function wbmcb(~,~)
@@ -88,24 +81,16 @@ end
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
         
-
+        
         hp=plot(x_box,y_box,'color','k','linewidth',1);
         drawnow;
         
     end
 
     function wbucb(src,~)
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
-        src.Pointer = 'arrow';
-        
-        
-        layer=getappdata(main_figure,'Layer');
-        curr_disp=getappdata(main_figure,'Curr_disp');
-        [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-
-        [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
-
+        delete(hp);
+         src.WindowButtonMotionFcn = '';
+         src.WindowButtonUpFcn = '';
         
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
@@ -119,28 +104,26 @@ end
         x_max=nanmax(x_box);
         x_max=nanmin(xdata(end),x_max);
         
-
-        idx_pings=find(xdata<=x_max&xdata>=x_min);
-        idx_r=find(ydata<=y_max&ydata>=y_min);
         
-        switch mode
-            case 'horizontal'
-                idx_r=idx_r+idx_r_ori-1;
-                idx_pings=1:length(layer.Transceivers(idx_freq).Data.Number);
-            case 'vertical'
-                idx_r=1:length(layer.Transceivers(idx_freq).Data.Range);
-                idx_pings=idx_pings+idx_ping_ori-1;
-            otherwise
-                idx_r=idx_r+idx_r_ori-1;
-                idx_pings=idx_pings+idx_ping_ori-1;
+        if x_max==x_min||y_max==y_min
+            x_lim=get(ah,'XLim');
+            y_lim=get(ah,'YLim');
+            dx=abs(diff(x_lim));
+            dy=diff(y_lim);
+            
+            x_lim(1)=x_lim(1)+dx/4;
+            y_lim(1)=y_lim(1)+dy/4;
+            x_lim(2)=x_lim(2)-dx/4;
+            y_lim(2)=y_lim(2)-dy/4;
+            
+        else
+           x_lim=[x_min x_max];
+           y_lim=[y_min y_max];
         end
-        
-        
-        
+
+        set(ah,'XLim',x_lim,'YLim',y_lim);
         reset_disp_info(main_figure);
-        clear_lines(ah)
-        feval(func,main_figure,idx_r,idx_pings);
-        
+
     end
 
 end

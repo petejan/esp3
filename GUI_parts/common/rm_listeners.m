@@ -6,10 +6,12 @@ else
     ls=[];
 end
 
-for i=1:length(listeners)
-    delete(ls(i));
+if ~isempty(ls)
+    for i=1:length(ls)
+        delete(ls(i));
+    end
 end
 
-ls=[];
-    setappdata(main_figure,'ListenersH',ls);
+setappdata(main_figure,'ListenersH',[]);
+
 end

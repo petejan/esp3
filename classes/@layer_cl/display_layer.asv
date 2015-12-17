@@ -50,15 +50,14 @@ nb_pings=length(idx_ping);
 
 outputSize=nanmin(outputSize,[nb_samples nb_pings]);
 
-dr=round(nb_samples/outputSize(1))+1;
-dp=round(nb_pings/outputSize(2))+1;
 
-data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
+
+data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r,idx_ping);
 
 
 if isempty(data)
    fieldname= layer.Transceivers(idx_freq).Data.Fieldname{1};
-  data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
+   data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r,idx_ping);
 end
 
 if isempty(data)
@@ -78,7 +77,7 @@ switch lower(deblank(fieldname))
     otherwise
         data_mat=data;
 end
-data_mat=single(data_mat);
+%data_mat=single(data_mat);
 
 % if nansum(outputSize==size(data))<2
 %     data_mat = imresize(data_mat,outputSize,'nearest');

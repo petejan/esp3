@@ -75,7 +75,7 @@ classdef ac_data_cl < handle
                 if found
                     new_sub_data=[new_sub_data; concatenate_SubData(data_1.SubData(uuu),data_2.SubData(idx),new_name)];
                 else
-                    warning('Cannot find field');
+                    warning('Cannot find field. This field will not be added.');
                 end
             end
             
