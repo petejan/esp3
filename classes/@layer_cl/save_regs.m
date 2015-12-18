@@ -21,7 +21,7 @@ for i=1:length(layer.Frequencies)
     regfile.Algo{i}=layer.Transceivers(i).Algo;
     regfile.ST{i}=layer.Transceivers(i).ST;
     regfile.Tracks{i}=layer.Transceivers(i).Tracks;
-    regfile.frequency(i)=layer.Frequencies(i);
+    regfile.Frequencies(i)=layer.Frequencies(i);
     regfile.date=now;
 end
 

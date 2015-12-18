@@ -8,17 +8,20 @@ uimenu(m_files,'Label','Save Current Bottom/Regions/Algo','Callback',{@save_regi
 uimenu(m_files,'Label','Load Previously Saved Bottom/Regions/Algo','Callback',{@load_regions_callback,main_figure});
 
 
-
 mhh = uimenu(main_figure,'Label','Import/Export','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
 uimenu(mhh,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure},'separator','on');
 uimenu(mhh,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
 uimenu(mhh,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
+uimenu(mhh,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback',{@import_line_callback,main_figure},'separator','on');
+uimenu(mhh,'Label','Import Survey Data from (.*csv)','Callback',{@import_survey_data_callback,main_figure},'separator','on');
 
-mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
+
+mhhhh = uimenu(main_figure,'Label','MultiLayers','Tag','menulayers');
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 uimenu(mhhhh,'Label','Reload opened Layers Previously Saved Bottom/Regions','Callback',{@reload_psr_callback,main_figure});
+uimenu(mhhhh,'Label','Save opened Layers Bottom/Regions','Callback',{@save_psr_callback,main_figure});
 uimenu(mhhhh,'Label','Remove opened Layers Previously Saved Bottom/Regions','Callback',{@remove_psr_callback,main_figure});
 uimenu(mhhhh,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
 uimenu(mhhhh,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
@@ -64,8 +67,9 @@ uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,ma
 track_tools=uimenu(mhhh,'Label','Track');
 uimenu(track_tools,'Label','Plot Frequency response from Tracks','Callback',{@plot_freq_resp_tracks_callback,main_figure});
 
-fileinfo = uimenu(main_figure,'Label','Info','Tag','fileinfo');
-uimenu(fileinfo,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
+surveyInfo = uimenu(main_figure,'Label','Survey','Tag','fileinfo');
+uimenu(surveyInfo,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
+uimenu(surveyInfo,'Label','Edit Survey Data','Callback',{@edit_survey_info_callback,main_figure});
 
 
 options = uimenu(main_figure,'Label','Options','Tag','options');

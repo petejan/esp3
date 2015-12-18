@@ -37,14 +37,15 @@ end
 
 
 Range_mat=repmat(ydata,1,nb_pings);
-bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),nb_samples,1);
-idx_bot=Range_mat>bot_mat;
-idx_bot_red=imresize(idx_bot,size(alpha_map));
-
-if strcmpi(curr_disp.DispUnderBottom,'off')==1
-    alpha_map(idx_bot_red)=0;
+if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
+    bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),nb_samples,1);
+    idx_bot=Range_mat>bot_mat;
+    idx_bot_red=imresize(idx_bot,size(alpha_map));
+    
+    if strcmpi(curr_disp.DispUnderBottom,'off')==1
+        alpha_map(idx_bot_red)=0;
+    end
 end
-
 
 if isa(axes_panel_comp.main_echo,'matlab.graphics.primitive.Surface')
     set(axes_panel_comp.main_echo,'AlphaData',double(alpha_map),'FaceAlpha','flat',...

@@ -1,6 +1,9 @@
 function keyboard_func(~,callbackdata,main_figure)
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
@@ -28,7 +31,7 @@ switch callbackdata.Key
         if ~isfield(axes_panel_comp,'main_echo')
             return;
         end
-
+        
         x_lim=double(get(main_axes,'xlim'));
         y_lim=double(get(main_axes,'ylim'));
         dx=(x_lim(2)-x_lim(1));
@@ -38,22 +41,22 @@ switch callbackdata.Key
                 if x_lim(1)<=xdata(1)
                     return;
                 else
-                    x_lim=[nanmax(xdata(1),x_lim(1)-dx/4),nanmax(xdata(1),x_lim(1)-dx/4)+dx];  
+                    x_lim=[nanmax(xdata(1),x_lim(1)-dx/4),nanmax(xdata(1),x_lim(1)-dx/4)+dx];
                 end
                 set(main_axes,'xlim',x_lim);
                 set(main_axes,'ylim',y_lim);
             case 'rightarrow'
                 if x_lim(2)>=xdata(end)
                     return;
-                else  
+                else
                     x_lim=[nanmin(xdata(end),x_lim(2)+dx/4)-dx,nanmin(xdata(end),x_lim(2)+dx/4)];
                 end
                 set(main_axes,'xlim',x_lim);
                 set(main_axes,'ylim',y_lim);
             case 'downarrow'
-                 if y_lim(2)>=ydata(end)
+                if y_lim(2)>=ydata(end)
                     return;
-                else  
+                else
                     y_lim=[nanmin(ydata(end),y_lim(2)+dy/4)-dy,nanmin(ydata(end),y_lim(2)+dy/4)];
                 end
                 set(main_axes,'ylim',y_lim);
@@ -69,9 +72,9 @@ switch callbackdata.Key
     case '1'
         
         switch get(cursor_mode_tool_comp.zoom_in,'state');
-            case 'off'  
+            case 'off'
                 set(cursor_mode_tool_comp.zoom_in,'state','on');
-                curr_disp.CursorMode='Zoom In'; 
+                curr_disp.CursorMode='Zoom In';
             case 'on'
                 set(cursor_mode_tool_comp.zoom_in,'state','off');
                 curr_disp.CursorMode='Normal';
@@ -80,23 +83,23 @@ switch callbackdata.Key
     case '2'
         
         switch get(cursor_mode_tool_comp.bad_trans,'state');
-            case 'off'  
+            case 'off'
                 set(cursor_mode_tool_comp.bad_trans,'state','on');
                 curr_disp.CursorMode='Bad Transmits';
             case 'on'
                 set(cursor_mode_tool_comp.bad_trans,'state','off');
-                curr_disp.CursorMode='Normal'; 
+                curr_disp.CursorMode='Normal';
         end
         %toggle_func(cursor_mode_tool_comp.bad_trans,[],main_figure);
     case '3'
         
         switch get(cursor_mode_tool_comp.edit_bottom,'state');
-            case 'off' 
-                set(cursor_mode_tool_comp.edit_bottom,'state','on');      
+            case 'off'
+                set(cursor_mode_tool_comp.edit_bottom,'state','on');
                 curr_disp.CursorMode='Edit Bottom';
             case 'on'
                 set(cursor_mode_tool_comp.edit_bottom,'state','off');
-                curr_disp.CursorMode='Normal';        
+                curr_disp.CursorMode='Normal';
         end
         %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
     case '4'
@@ -107,14 +110,14 @@ switch callbackdata.Key
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);
     case 'b'
-
+        
         switch curr_disp.DispUnderBottom
             case 'off'
                 curr_disp.DispUnderBottom='on';
             case 'on'
                 curr_disp.DispUnderBottom='off';
         end
-
+        
 end
 
 end
