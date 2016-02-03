@@ -8,7 +8,6 @@ if ~ischar(Filename)
     return;
 end
 
-
 regions=create_regions_from_evr(fullfile(PathToFile,Filename),layer.Transceivers(idx_freq).Data.Range,layer.Transceivers(idx_freq).Data.Time);
 if ~isempty(regions)
     layer.Transceivers(idx_freq).add_region(regions);

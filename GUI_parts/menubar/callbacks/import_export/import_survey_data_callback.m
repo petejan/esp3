@@ -41,19 +41,23 @@ for i=1:length(layers)
             incomplete=[incomplete '\n' str_data{ii}];
         end
     end
-    if diff
-        warning('Some Layers seem to contains more than one transect... You should double check that they have been splitted properly...');
-        sprintf(diff);
+    if ~isempty(diff)
+        warning('Layer seem to contains more than one transect... You should double check that they have been splitted properly...');
+        fprintf('%s ',layers(i).Filename{:});
+        fprintf(diff);
     end
     
-    if incomplete
-        warning('Some Layers seem to contains incomplete transects... You should double check that they are all there...');
-        sprintf(incomplete);
+    fprintf('\n');
+    if ~isempty(incomplete)
+        warning('Layer seem to contains incomplete transects... You should double check that they are all there...');
+        fprintf('%s ',layers(i).Filename{:});
+        fprintf(incomplete);
     end
     
     if ~isempty(idx_files)
         layers(i).SurveyData=survey_vec(idx_files(1));
     end 
+    fprintf('\n');
 end
 
 setappdata(main_figure,'Layers',layers);

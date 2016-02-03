@@ -1,19 +1,24 @@
 
-function load_map_fig(main_fig,mbs_vec)
+function load_map_fig(main_fig,obj_vec)
 
 p = inputParser;
 
 addRequired(p,'main_fig',@ishandle);
-addRequired(p,'mbs_vec',@(obj) isa(obj,'mbs_cl')||isempty(obj));
-parse(p,main_fig,mbs_vec);
+addRequired(p,'obj_vec',@(obj) isa(obj,'mbs_cl')||isa(obj,'survey_cl')||isempty(obj));
+parse(p,main_fig,obj_vec);
 
-if isempty(mbs_vec)
+if isempty(obj_vec)
     layers=getappdata(main_fig,'Layers');
     [box.lat_box,box.lon_box,box.lat_lays,box.lon_lays]=get_lat_lon_lim(layers);
     list_Str=list_layers(layers);
 else
-    [box.lat_box,box.lon_box,box.lat_lays,box.lon_lays]=get_lat_lon_lim(mbs_vec);
-    list_Str=list_mbs(mbs_vec);
+    [box.lat_box,box.lon_box,box.lat_lays,box.lon_lays]=get_lat_lon_lim(obj_vec);
+    switch class(obj_vec)
+        case 'mbs_cl'
+            list_Str=list_mbs(obj_vec);
+        case 'survey_cl'
+            list_Str=list_survey(obj_vec);
+    end
 end
 box.lat_lim=[nan nan];
 box.lon_lim=[nan nan];
@@ -26,8 +31,8 @@ if nansum(isnan(box.lat_lim))==2
 end
 
 box.slice_size=10;
-box.abscf_max=0.0017;
-box.r_max=30;
+box.abscf_max=0.00005;
+box.r_max=50;
 box.nb_pts=100;
 proj=m_getproj;
 box.list_proj_str={proj(:).name};
@@ -96,7 +101,7 @@ box.slice_size_box = uicontrol(map_fig,'Style','edit',...
     'BackgroundColor','w',...
     'Tag','slice_size','Callback',{@check_slice_size,map_fig});
 
-if ~isempty(mbs_vec)
+if ~isempty(obj_vec)
     set(box.slice_size_box,'enable','off');
 end
 
@@ -128,7 +133,7 @@ box.r_max_box = uicontrol(map_fig,'Style','edit',...
 uicontrol(map_fig,'Style','pushbutton','units','normalized',...
     'string','Create Map','pos',[0.7 0.1 0.1 0.05],...
     'TooltipString', 'Create Map',...
-    'HorizontalAlignment','left','BackgroundColor','white','callback',{@create_map_callback,map_fig,main_fig,mbs_vec});
+    'HorizontalAlignment','left','BackgroundColor','white','callback',{@create_map_callback,map_fig,main_fig,obj_vec});
 
 
 setappdata(map_fig,'Box',box);
@@ -193,10 +198,12 @@ end
 index_selected = get(box.listbox,'Value');
 
 for i=1:length(box.lat_lays)
-    if ~isempty(find(index_selected==i,1))
-        box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','r','linewidth',2,'linestyle','none','marker','.');
-    else
-        box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','k','linewidth',1,'linestyle','none','marker','.');
+    if ~isempty(box.lat_lays{i})
+        if ~isempty(find(index_selected==i,1))
+            box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','r','linewidth',2,'linestyle','none','marker','.');
+        else
+            box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','k','linewidth',1,'linestyle','none','marker','.');
+        end
     end
 end
 
@@ -367,9 +374,10 @@ init_map([],[],map_fig);
 end
 
 
-function create_map_callback(~,~,map_fig,main_fig,mbs_vec_tot)
+function create_map_callback(~,~,map_fig,main_fig,obj_vec_tot)
 box=getappdata(map_fig,'Box');
 hfigs=getappdata(main_fig,'ExternalFigures');
+curr_disp=getappdata(main_fig,'Curr_disp');
 index_selected = get(box.listbox,'Value');
 
 if get(box.depth_box,'Value')>0
@@ -378,19 +386,18 @@ else
     cont=0;
 end
 
-if isempty(mbs_vec_tot)
+if isempty(obj_vec_tot)
     layers_tot=getappdata(main_fig,'Layers');
     obj=layers_tot(index_selected);
 else
-    obj=mbs_vec_tot(index_selected);
+    obj=obj_vec_tot(index_selected);
 end
 
-if isempty(mbs_vec_tot)
-    map_input=map_input_cl.map_input_cl_from_obj(obj,'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
+if isempty(obj_vec_tot)
+    map_input=map_input_cl.map_input_cl_from_obj(obj,'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont,'Freq',curr_disp.Freq);
     map_input.LatLim=sort(box.lat_box);
     map_input.LonLim=sort(box.lon_box);
 else
-
     for ui=1:length(obj)
         map_input(ui)=map_input_cl.map_input_cl_from_obj(obj(ui),'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
         map_input(ui).LatLim=sort(box.lat_box);
@@ -398,8 +405,8 @@ else
     end
 end
 
-hfig=figure('Name','Results','NumberTitle','off','tag','nav');
-map_input.display_map_input_cl(hfig);
+hfig=figure();
+map_input.display_map_input_cl(hfig,main_fig);
 
 hfigs_new=[hfigs hfig];
 setappdata(main_fig,'ExternalFigures',hfigs_new);

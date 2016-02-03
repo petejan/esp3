@@ -16,7 +16,7 @@ else
     path=pwd;
 end
 
-hfigs=getappdata(hObject_main,'ExternalFigures');
+
 [Filename,PathToFile]= uigetfile( {fullfile(path,'*')}, 'Pick an MBS output file','MultiSelect','on');
 if ~isequal(Filename, 0)
     if ~iscell(Filename)

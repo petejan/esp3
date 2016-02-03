@@ -5,7 +5,7 @@ classdef bottom_cl
         Range
         Sample_idx
         Double_bot_mask
-               
+        Tag         
     end
     
     
@@ -17,6 +17,7 @@ classdef bottom_cl
             addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'Sample_idx',[],@isnumeric);
             addParameter(p,'Double_bot_mask',[],@(x) isempty(x)||islogical(x));
+            addParameter(p,'Tag',[],@(x) isnumeric(x)||islogical(x));
           
             parse(p,varargin{:});
             
@@ -27,16 +28,21 @@ classdef bottom_cl
                     obj.(props{i})=results.(props{i});
             end
             
+            if isempty(obj.Tag)&&~isempty(obj.Sample_idx)
+               obj.Tag=ones(size(obj.Sample_idx));
+            end
+            
         end
         
         function bot_out=concatenate_Bottom(bot_1,bot_2)
 
             n_r=[bot_1.Range(:); bot_2.Range(:)];
             n_s=[bot_1.Sample_idx(:); bot_2.Sample_idx(:)];
+            n_t=[bot_1.Tag(:); bot_2.Tag(:)];
             
             bot_out=bottom_cl('Origin',bot_1.Origin,...
                 'Range',n_r,...
-                'Sample_idx',n_s);
+                'Sample_idx',n_s,'Tag',n_t);
         end
         
     end

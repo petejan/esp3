@@ -31,12 +31,13 @@ if ~isequal(Filename_cell, 0)
     if ~iscell(Filename_cell)
         Filename_cell={Filename_cell};
     end
-
+    
     prev_ping_end=0;
     prev_ping_start=1;
     
     for uu=1:length(Filename_cell)
         vec_freq_temp=[];
+        
         Filename=Filename_cell{uu};
         if iscell(PathToFile)
             path=PathToFile{uu};
@@ -44,33 +45,42 @@ if ~isequal(Filename_cell, 0)
             path=PathToFile;
         end
         
+        fileN=fullfile(path,Filename);
+        
         if isempty(vec_freq_init)
-            try
-                [header_temp,data_temp, ~]=readEKRaw(fullfile(path,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0);
-                AllowModeChange=false;
-            catch err
-                if (strcmp(err.identifier,'readEKRaw:ModeChange'))
-                    [header_temp,data_temp, ~]=readEKRaw(fullfile(path,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0,'AllowModeChange',true);
-                    AllowModeChange=true;
-                else
-                    disp(['Cannot open file ' Filename]);
-                    continue;
-                end
+            %             try
+            %                 [header_temp,data_temp, ~]=readEKRaw(fullfile(path,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0);
+            %                 AllowModeChange=false;
+            %             catch err
+            %                 if (strcmp(err.identifier,'readEKRaw:ModeChange'))
+            %                     [header_temp,data_temp, ~]=readEKRaw(fullfile(path,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0,'AllowModeChange',true);
+            %                     AllowModeChange=true;
+            %                 else
+            %                     disp(['Cannot open file ' Filename]);
+            %                     continue;
+            %                 end
+            %             end
+            
+            
+            fid=fopen(fileN,'r');
+            [~, frequency] = readEKRaw_ReadHeader(fid);
+            fclose(fid);
+            
+            if isempty(frequency)
+                disp(['Cannot open file ' Filename]);
+                continue;
+                
             end
-            if isnumeric(header_temp)
-                if header_temp==-1
-                    disp(['Cannot open file ' Filename]);
-                    continue;
-                end
+            transceivercount=length(frequency);
+            vec_freq_temp=nan(1,transceivercount);
+            list_freq_str=cell(1,transceivercount);
+            for ki=1:transceivercount
+                vec_freq_temp(ki)=frequency(ki);
+                list_freq_str{ki}=num2str(frequency(ki),'%.0f');
             end
             
-            for ki=1:header_temp.transceivercount
-                vec_freq_temp=[vec_freq_temp data_temp.config(ki).frequency];
-                list_freq_str=[list_freq_str num2str(data_temp.config(ki).frequency,'%.0f')];
-            end
-            
-            if header_temp.transceivercount>1
-                if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
+            if transceivercount>1
+                if length(intersect(vec_freq_temp,vec_freq_tot))~=transceivercount
                     vec_freq_tot=vec_freq_temp;
                     [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load','InitialValue',1:length(vec_freq_tot));
                 end
@@ -82,9 +92,9 @@ if ~isequal(Filename_cell, 0)
             else
                 vec_freq=[];
             end
-
+            
         else
-            AllowModeChange=false;
+            %AllowModeChange=false;
             vec_freq=vec_freq_init;
         end
         
@@ -109,13 +119,29 @@ if ~isequal(Filename_cell, 0)
             break;
         end
         
-        try
-            [header,data, ~]=readEKRaw(fullfile(path,Filename),'MaxBadBytes',0,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
-        catch err2
-            disp(err2.message);
-            [header,data, ~]=readEKRaw(fullfile(path,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
-            AllowModeChange=true;
+        %         try
+        %             [header,data, ~]=readEKRaw(fullfile(path,Filename),'MaxBadBytes',0,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
+        %         catch err2
+        %             disp(err2.message);
+        %             [header,data, ~]=readEKRaw(fullfile(path,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
+        %             AllowModeChange=true;
+        %         end
+        
+        if ~isdir(fullfile(path,'echoanalysisfiles'))
+            mkdir(fullfile(path,'echoanalysisfiles'));
         end
+        fileIdx=fullfile(path,'echoanalysisfiles',[Filename(1:end-4) '_echoidx.mat']);
+        if exist(fileIdx,'file')==0
+            idx_raw_obj=idx_from_rawEK60(path,Filename);
+            save(fileIdx,'idx_raw_obj');
+        else
+            load(fileIdx);
+        end
+        
+        
+        [header,data]=data_from_raw_idx_cl(path,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq);
+        
+        
         
         if isnumeric(header)
             disp('Could not read file.')
@@ -138,14 +164,14 @@ if ~isequal(Filename_cell, 0)
         
         [gps_data,attitude_full]=nmea_to_attitude_gps(data.NMEA.string,data.NMEA.time,idx_NMEA);
         
-       
+        
         if  ~isstruct(header)
             if exist('opening_file','var')
                 close(opening_file);
             end
             return;
         end
-         
+        
         if ~isempty(cal)
             for n=1:header.transceivercount
                 idx_cal=find(data.pings(n).frequency(1)==cal.F);
@@ -166,7 +192,7 @@ if ~isequal(Filename_cell, 0)
         end
         
         calParms = readEKRaw_GetCalParms(header,data);
-                   
+        
         Filename_bot=[Filename(1:end-4) '.bot'];
         
         if exist(fullfile(path,Filename_bot),'file')
@@ -189,7 +215,7 @@ if ~isequal(Filename_cell, 0)
         sample_end=nan(header.transceivercount,1);
         
         for i =1:header.transceivercount
-            sample_start(i)=sample_range(1);    
+            sample_start(i)=sample_range(1);
             if sample_range(2)==Inf
                 sample_end(i) =size(data.pings(i).power,1)+sample_start(i)-1;
             else
@@ -197,14 +223,14 @@ if ~isequal(Filename_cell, 0)
             end
         end
         
-
+        
         dR = double(c .* t / 2)';
-
+        
         Bottom_sim_idx=round(Bottom_sim./repmat(dR,1,size(Bottom_sim,2))-repmat(sample_start,1,size(Bottom_sim,2)))+1;
         Bottom_sim_idx(Bottom_sim_idx<=1)=nan;
         
         
-  
+        
         freq=nan(1,header.transceivercount);
         
         fileID = unidrnd(2^64);
@@ -214,13 +240,13 @@ if ~isequal(Filename_cell, 0)
         
         for i =1:header.transceivercount
             
-            curr_data.power=single(10.^(double(data.pings(i).power/10)));
+            curr_data.power=single(db2pow_perso(data.pings(i).power));
             curr_data.acrossphi=single(data.pings(i).athwartship_e);
             curr_data.alongphi=single(data.pings(i).alongship_e);
             
             [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,dir_data,p.Results.FieldNames);
-                        
- 
+            
+            
             samples=double((sample_start(i):sample_end(i)))';
             range=double(samples-1)*dR(i);
             
@@ -232,14 +258,14 @@ if ~isequal(Filename_cell, 0)
                 'MemapName',curr_name);
             
             clear curr_data;
-
+            
             gps_data_ping=gps_data.resample_gps_data(data.pings(i).time);
             attitude=attitude_full.resample_attitude_nav_data(data.pings(i).time);
             
             algo_vec=init_algos(range);
             
             bot= bottom_cl('Origin','Simrad','Range',Bottom_sim(i,:),'Sample_idx',Bottom_sim_idx(i,:));
-
+            
             transceiver(i)=transceiver_cl('Data',ac_data_temp,...
                 'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...
@@ -255,9 +281,9 @@ if ~isequal(Filename_cell, 0)
             
             transceiver(i).computeAngles();
             transceiver(i).computeSpSv(envdata);
-            transceiver(i).computeSp_comp();
+            %transceiver(i).computeSp_comp();
             
-           
+            
             
             
         end

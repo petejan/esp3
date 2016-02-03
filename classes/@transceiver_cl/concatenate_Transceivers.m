@@ -14,7 +14,6 @@ if length(trans_1)==length(trans_2)
             regions_2=trans_1(i).Regions;
             regions_1=trans_2(i).Regions;
             new_bot=concatenate_Bottom(trans_2(i).Bottom,trans_1(i).Bottom);
-            IdxBad=[trans_2(i).IdxBad; trans_1(i).IdxBad+length(trans_2(i).Data.Number)];
             for ir2=1:length(regions_2)
                 regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_2(i).Data.Number);
             end
@@ -22,12 +21,11 @@ if length(trans_1)==length(trans_2)
             regions_1=trans_1(i).Regions;
             regions_2=trans_2(i).Regions;
             new_bot=concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom);
-            IdxBad=[trans_1(i).IdxBad; trans_2(i).IdxBad+length(trans_1(i).Data.Number)];
             for ir2=1:length(regions_2)
                 regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_1(i).Data.Number);
             end    
         end
-        trans_out(i).setBottomIdxBad(new_bot,IdxBad);
+        trans_out(i).setBottom(new_bot);
  
         trans_out(i).add_region(regions_1);
         trans_out(i).add_region(regions_2);

@@ -14,7 +14,12 @@ cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    sv_disp=active_reg.Output.Sv_mean;
+%     profile on;
+    output_reg=active_reg.integrate_region(Transceiver);
+%     profile off;
+%     profile viewer;
+    sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
+    
     
     if isempty(find(~isnan(sv_disp(:)), 1))
         return;
@@ -26,8 +31,8 @@ if ~isempty(list_reg)
     tt=sprintf('File: %s Region: %.0f',filedisp,active_reg.ID);
     if size(sv_disp,1)>1&&size(sv_disp,2)>1
         
-        x_disp=nanmean(active_reg.Output.Ping_S);
-        y_disp=nanmean(active_reg.Output.y_node-active_reg.Output.height/2,2);
+        x_disp=nanmean(output_reg.Ping_S);
+        y_disp=nanmean(output_reg.y_node-output_reg.height/2,2);
         
         new_fig=figure('Name',tt,'NumberTitle','off','tag','regions');
         subplot(2,1,1)
@@ -44,7 +49,7 @@ if ~isempty(list_reg)
         hold on;
         title(tt);
         subplot(2,1,2)
-        plot(nanmean(active_reg.Output.Sv_mean_lin_esp2,2),y_disp,'r');
+        plot(nanmean(output_reg.Sv_mean_lin_esp2,2),y_disp,'r');
         grid on;
         xlabel('Sv mean')
         ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
@@ -52,9 +57,9 @@ if ~isempty(list_reg)
         grid on;
     else
       new_fig=figure('Name',tt,'NumberTitle','off','tag','regions');
-        plot(active_reg.Output.Sv_mean_lin_esp2,active_reg.Output.y_node-active_reg.Output.height/2,'r');
+        plot(output_reg.Sv_mean_lin_esp2,output_reg.y_node-output_reg.height/2,'r');
         hold on
-        plot(active_reg.Output.Sv_mean_lin,active_reg.Output.y_node-active_reg.Output.height/2,'k');
+        plot(output_reg.Sv_mean_lin,output_reg.y_node-output_reg.height/2,'k');
         grid on;
         xlabel('Sv mean')
         ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));

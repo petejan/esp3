@@ -27,8 +27,7 @@ end
 
 switch Slice_units
     case 'pings'
-        bin_ref=trans_obj.Data.Number;
-        
+        bin_ref=trans_obj.Data.Number;    
     case 'meters'
         bin_ref=trans_obj.GPSDataPing.Dist;
 end
@@ -39,6 +38,8 @@ binEnd = bins(2:end);
 
 numSlices = length(binStart); % num_slices
 slice_abscf=zeros(1,length(binStart));
+nb_tracks=zeros(1,length(binStart));
+nb_st=zeros(1,length(binStart));
 nb_good_pings=zeros(1,length(binStart));
 idx_bins_S=nan(1,length(binStart));
 idx_bins_E=nan(1,length(binStart));
@@ -49,9 +50,40 @@ for k = 1:length(binStart); % sum up abscf data according to bins
 end
 
 
+if ~isempty(trans_obj.ST.TS_comp)
+    x_st=trans_obj.ST.Ping_number;
+    att_st=zeros(1,length(trans_obj.ST.Ping_number));
+    for k = 1:length(binStart); 
+        ix = (x_st>=binStart(k) &  x_st<binEnd(k))& ~att_st;
+        att_st(ix)=1;
+        nb_st(k)=nansum(ix);
+    end  
+end
+
+if ~isempty(trans_obj.Tracks.target_id)
+    ping_num_st=trans_obj.ST.Ping_number;
+    ping_num_track=nan(1,length(trans_obj.Tracks.target_id));
+    for itracks=1:length(trans_obj.Tracks.target_id)
+        idx_tr=trans_obj.Tracks.target_id{itracks};
+        ping_num_track(itracks)=nanmean(ping_num_st(idx_tr));
+    end
+    
+    att_tr=zeros(1,length(trans_obj.Tracks.target_id));
+    for k = 1:length(binStart); 
+        ix = (ping_num_track>=binStart(k) &  ping_num_track<binEnd(k))& ~att_tr;
+        att_tr(ix)=1;
+        nb_tracks(k)=nansum(ix);
+    end 
+end
+
+
 for iuu=1:length(idx_reg)
     reg_curr=trans_obj.Regions(idx_reg(iuu));
-    regCellInt=reg_curr.Output;
+    if ~strcmp(reg_curr.Type,'Data')
+        continue;
+    end
+    
+    regCellInt=reg_curr.integrate_region(trans_obj);
     if ~isempty(~isnan([reg(:).id]))
         regCellIntSub = getCellIntSubSet(regCellInt,reg(iuu),reg_curr.Reference);
     else
@@ -82,5 +114,8 @@ output.slice_lat=trans_obj.GPSDataPing.Lat(round((idx_bins_S+idx_bins_E)/2))';
 output.slice_lon=trans_obj.GPSDataPing.Long(round((idx_bins_S+idx_bins_E)/2))';
 output.slice_lat_esp2=trans_obj.GPSDataPing.Lat(idx_bins_S)';
 output.slice_lon_esp2=trans_obj.GPSDataPing.Long(idx_bins_S)';
-
+output.slice_time_start=trans_obj.GPSDataPing.Time(idx_bins_S)';
+output.slice_time_end=trans_obj.GPSDataPing.Time(idx_bins_E)';
+output.slice_nb_tracks=nb_tracks;
+output.slice_nb_st=nb_st;
 end

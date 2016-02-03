@@ -1,10 +1,10 @@
 function obj=map_input_cl_from_obj(Ext_obj,varargin)
 
 p = inputParser;
-check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl');
+check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl')|isa(x,'survey_cl');
 addRequired(p,'Ext_obj',check_layer_cl);
 addParameter(p,'Proj','lambert',@ischar);
-addParameter(p,'AbscfMax',0.001,@isnumeric);
+addParameter(p,'AbscfMax',0.0001,@isnumeric);
 addParameter(p,'Rmax',30,@isnumeric);
 addParameter(p,'SliceSize',100,@isnumeric);
 addParameter(p,'Freq',38000,@isnumeric);
@@ -23,6 +23,10 @@ switch class(Ext_obj)
         mbs_out_reg=mbs.Output.regionSum.Data;
         mbs_head=mbs.Header;
         nb_trans=size(mbs_out,1);
+        
+    case 'survey_cl'
+        survey_obj=Ext_obj;
+        nb_trans=length(survey_obj.SurvOutput.transectSum.snapshot);
 end
 
 
@@ -38,6 +42,8 @@ obj.Lon=cell(1,nb_trans);
 obj.SliceLat=cell(1,nb_trans);
 obj.SliceLon=cell(1,nb_trans);
 obj.SliceAbscf=cell(1,nb_trans);
+obj.Nb_ST=cell(1,nb_trans);
+obj.Nb_Tracks=cell(1,nb_trans);
 obj.Proj=p.Results.Proj;
 obj.AbscfMax=p.Results.AbscfMax;
 obj.Rmax=p.Results.Rmax;
@@ -50,7 +56,13 @@ obj.LonLim=[nan nan];
 switch class(Ext_obj)
     case 'mbs_cl'
         for i=1:nb_trans
-            obj.Trip{i}=mbs_head.voyage;
+            if ~strcmpi(mbs_head.voyage,'')
+                obj.Trip{i}=mbs_head.voyage;
+            else
+                obj.Trip{i}=mbs_head.title;
+            end
+            
+            
             obj.SliceLat{i}=mbs_out{i,6};
             obj.SliceLon{i}=mbs_out{i,7};
             obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
@@ -94,7 +106,17 @@ switch class(Ext_obj)
             end
             
             if p.Results.SliceSize>0
+                
+                
                 idx_reg=1:length(layers(i).Transceivers(idx_freq).Regions);
+                idx_bad=zeros(1,length(idx_reg));
+                for ireg=1:length(idx_reg)
+                    if strcmpi(layers(i).Transceivers(idx_freq).Regions(ireg).Type,'Bad Data')
+                        idx_bad(ireg)=1;
+                    end
+                end
+                idx_reg(idx_bad==1)=[];
+                
                 reg=layers(i).Transceivers(idx_freq).get_reg_spec(idx_reg);
                 output=layers(i).Transceivers(idx_freq).slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
                 obj.SliceLat{i}=output.slice_lat_esp2;
@@ -110,6 +132,35 @@ switch class(Ext_obj)
                 obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.Lat{it}));
                 obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.Lon{it}));
             end
+        end
+        
+    case 'survey_cl'
+        
+        for i=1:nb_trans
+            if ~strcmpi(survey_obj.SurvInput.Infos.Voyage,'')
+                obj.Trip{i}=survey_obj.SurvInput.Infos.Voyage;
+            else
+                obj.Trip{i}=survey_obj.SurvInput.Infos.Title;
+            end
+            obj.SliceLat{i}=survey_obj.SurvOutput.slicedTransectSum.latitude{i};
+            obj.SliceLon{i}=survey_obj.SurvOutput.slicedTransectSum.longitude{i};
+            obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
+            obj.SliceAbscf{i}=survey_obj.SurvOutput.slicedTransectSum.slice_abscf{i};
+            obj.Snapshot(i)=survey_obj.SurvOutput.slicedTransectSum.snapshot(i);
+            obj.Stratum{i}=survey_obj.SurvOutput.slicedTransectSum.stratum{i};
+            obj.Transect(i)=survey_obj.SurvOutput.slicedTransectSum.transect(i);
+            obj.LatLim(1)=nanmin(obj.LatLim(1),nanmin(obj.SliceLat{i}));
+            obj.LonLim(1)=nanmin(obj.LonLim(1),nanmin(obj.SliceLon{i}));
+            obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.SliceLat{i}));
+            obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.SliceLon{i}));
+            
+            idx_file=find(obj.Snapshot(i)==survey_obj.SurvOutput.regionSum.snapshot...
+                &strcmpi(obj.Stratum(i),survey_obj.SurvOutput.regionSum.stratum)...
+                &obj.Transect(i)==survey_obj.SurvOutput.regionSum.transect,1);
+            if ~isempty(idx_file)
+                obj.Filename{i}=survey_obj.SurvOutput.regionSum.file{idx_file}{:};
+            end
+            
         end
 end
 

@@ -215,12 +215,13 @@ for i=1:nb_targets
     if mod(i,floor(nb_targets/10))==0
         waitbar(i/nb_targets,h,sprintf('Target %i/%i',i,nb_targets));
     end
-    samples_targets_power(1:pulse_length_lin(i),i)=Power(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i));
-    samples_targets_comp(1:pulse_length_lin(i),i)=simradBeamCompensation(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i));
-    samples_targets_range(1:pulse_length_lin(i),i)=Range(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i));
-    samples_targets_sample(1:pulse_length_lin(i),i)=Samples(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i));
-    samples_targets_along(1:pulse_length_lin(i),i)=along(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i));
-    samples_targets_athwart(1:pulse_length_lin(i),i)=athwart(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i));
+    idx_pulse=idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i);
+    samples_targets_power(1:pulse_length_lin(i),i)=Power(idx_pulse);
+    samples_targets_comp(1:pulse_length_lin(i),i)=simradBeamCompensation(idx_pulse);
+    samples_targets_range(1:pulse_length_lin(i),i)=Range(idx_pulse);
+    samples_targets_sample(1:pulse_length_lin(i),i)=Samples(idx_pulse);
+    samples_targets_along(1:pulse_length_lin(i),i)=along(idx_pulse);
+    samples_targets_athwart(1:pulse_length_lin(i),i)=athwart(idx_pulse);
     target_ping_number(i)=Ping(idx_target_lin(i));
     target_time(i)=Ping(idx_target_lin(i));
 end

@@ -10,7 +10,7 @@ else
     mode='horizontal';
 end
 
-if axes_panel_comp.main_echo==obj
+if 1
     
     clear_lines(ah)
     

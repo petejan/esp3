@@ -182,7 +182,7 @@ for ii=1:length(filenames)
                                         case 'ChannelID'
                                             data.params(idx).(fields_params{jj}){curr_ping(idx)-p.Results.PingRange(1)+1}=(params_temp.(fields_params{jj}));
                                         otherwise
-                                            data.params(idx).(fields_params{jj})(curr_ping(idx)-p.Results.PingRange(1)+1)=str2double(params_temp.(fields_params{jj}));
+                                            data.params(idx).(fields_params{jj})(curr_ping(idx)-p.Results.PingRange(1)+1)=(params_temp.(fields_params{jj}));
                                     end
                                 end
                             end

@@ -8,17 +8,19 @@ end
 
 % Recurse over child nodes. This could run into problems
 % with very deeply nested trees.
-try
-    theStruct = parseChildNodes(tree);
-catch
-    error('Unable to parse XML file %s.',filename);
-end
+%try
+    [theStruct,datatext] = parseChildNodes(tree);
+    theStruct.Data=datatext;
+% catch
+%     error('Unable to parse XML file %s.',filename);
+% end
 
 
 % ----- Local function PARSECHILDNODES -----
-function children = parseChildNodes(theNode)
+function [children,data_text] = parseChildNodes(theNode)
 % Recurse over node children.
 children = [];
+data_text='';
 if theNode.hasChildNodes
     childNodes = theNode.getChildNodes;
     numChildNodes = childNodes.getLength;
@@ -27,35 +29,37 @@ if theNode.hasChildNodes
     children = struct(             ...
         'Name', allocCell, 'Attributes', allocCell,    ...
         'Data', allocCell, 'Children', allocCell);
-    
-    
+     
     id_curr=0;
     for count = 1:numChildNodes
         id_curr=id_curr+1;
-        theChild = childNodes.item(count-1);
-        
+        theChild = childNodes.item(count-1);  
         children(id_curr) = makeStructFromNode(theChild);
         if strcmp(children(id_curr).Name,'#text')||isempty(children(id_curr).Name)
+            data_text=char(children(id_curr).Data);
             children(id_curr)=[];
             id_curr=id_curr-1;
         end
     end
 end
 
+
+
+
 % ----- Local function MAKESTRUCTFROMNODE -----
 function nodeStruct = makeStructFromNode(theNode)
 % Create structure of node info.
-
+[child,datatext]=parseChildNodes(theNode);
 nodeStruct = struct(                        ...
     'Name', char(theNode.getNodeName),       ...
     'Attributes', parseAttributes(theNode),  ...
     'Data', '',                              ...
-    'Children', parseChildNodes(theNode));
+    'Children', child);
 
-if any(strcmp(methods(theNode), 'getData'))
-    nodeStruct.Data = char(theNode.getData);
+if any(strcmp(methods(theNode),'getData'))
+    nodeStruct.Data = char(theNode.getData());
 else
-    nodeStruct.Data = '';
+    nodeStruct.Data = datatext;
 end
 
 % ----- Local function PARSEATTRIBUTES -----
@@ -73,6 +77,10 @@ if theNode.hasAttributes
     for count = 1:numAttributes
         attrib = theAttributes.item(count-1);
         attributes(count).Name = char(attrib.getName);
-        attributes(count).Value = char(attrib.getValue);
+        if ~isnan(str2double(attrib.getValue))
+            attributes(count).Value = str2double(attrib.getValue);
+        else
+            attributes(count).Value = char(attrib.getValue);
+        end
     end
 end

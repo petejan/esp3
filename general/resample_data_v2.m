@@ -1,4 +1,4 @@
-function [ydata_new,idx_nearest]=resample_data_v2(ydata,xdata,xdata_n,varargin)
+function ydata_new=resample_data_v2(ydata,xdata,xdata_n,varargin)
 p = inputParser;
 
 addRequired(p,'ydata',@isnumeric);
@@ -8,15 +8,14 @@ addParameter(p,'Opt','Linear',@ischar);
 addParameter(p,'Type','Real',@ischar);
 
 parse(p,ydata,xdata,xdata_n,varargin{:});
+idx_nan=isnan(xdata);
 
+xdata(idx_nan)=[];
+ydata(idx_nan)=[];
 [xdata,IA,~] = unique(xdata);
 ydata=ydata(IA);
 
-idx_nearest=nan(1,length(xdata_n));
 
-for jj=1:length(xdata_n)
-    [~,idx_nearest(jj)]=nanmin(abs(xdata-xdata_n(jj)));
-end
 
 
 switch p.Results.Type
@@ -44,8 +43,12 @@ switch p.Results.Opt
     case 'Linear'
         idx_nan=find(isnan(ydata_new));
         if ~isempty(idx_nan)
-            ydata_new(idx_nan(1))=ydata(idx_nearest(idx_nan(1)));
-            ydata_new(idx_nan(end))=ydata(idx_nearest(idx_nan(end)));
+             idx_nearest=nan(1,length(idx_nan));
+            for ij=1:length(idx_nan)
+                [~,idx_nearest(ij)]=min(abs(xdata-xdata_n(idx_nan(ij))));
+            end
+            ydata_new(idx_nan)=ydata(idx_nearest);
+            ydata_new(idx_nan)=ydata(idx_nearest);
         end
 end
 

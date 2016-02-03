@@ -18,6 +18,10 @@ end
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
+if isempty(trans.Regions)
+    return; 
+end
+
 Number=trans.Data.Number;
 Range=trans.Data.Range;
 
@@ -109,11 +113,11 @@ end
                         y_text=nanmean(y_reg{jj});
                     end   
                    
-                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis);
+                    reg_plot(jj)=plot(x_reg{jj}-dx,y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis);
                     
                 end
                 grid_in = inpolygon(X_grid,Y_grid,x_reg{idx_len_max},y_reg{idx_len_max});
-          
+                X_grid=X_grid-dx;
                 X_grid(~grid_in)=nan;
                 Y_grid(~grid_in)=nan;
 %               X_grid=[];

@@ -50,8 +50,8 @@ nb_pings=length(idx_ping);
 
 outputSize=nanmin(outputSize,[nb_samples nb_pings]);
 
-dr=round(nb_samples/outputSize(1))+1;
-dp=round(nb_pings/outputSize(2))+1;
+dr=nanmax(floor(nb_samples/outputSize(1)),1);
+dp=nanmax(floor(nb_pings/outputSize(2)),1);
 
 data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
 

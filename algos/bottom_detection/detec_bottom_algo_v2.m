@@ -16,6 +16,8 @@ check_thr_bottom=@(x)(x>=-120&&x<=-10);
 default_thr_echo=-12;
 check_thr_echo=@(x)(x>=-20&&x<=-3);
 
+check_shift_bot=@(x)(x>=0);
+
 
 addRequired(p,'Sv',@isnumeric);
 addRequired(p,'Range',@isnumeric);
@@ -25,6 +27,8 @@ addParameter(p,'r_min',default_idx_r_min,check_idx_r_min);
 addParameter(p,'r_max',default_idx_r_max,check_idx_r_max);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
+addParameter(p,'shift_bot',0,check_shift_bot);
+
 [nb_samples,nb_pings]=size(Sv);
 
 parse(p,Sv,Range,Fs,PulseLength,varargin{:});
@@ -206,6 +210,11 @@ BS_filter=(20*log10(filter2_perso(ones(4*Np,1),10.^(BS/20)))).*Bottom_region;
 
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
+
+if p.Results.shift_bot>0
+    Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
+    Bottom(Bottom<=0)=1;
+end
 
 try
     close(detecting_bottom);

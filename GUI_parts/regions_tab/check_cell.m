@@ -25,24 +25,24 @@ if ~isnan(val)&&val>0
         case 'w'
             switch w_unit
                 case 'pings'
-                    if val>nb_pings/2
-                        val=floor(nb_pings/2);
+                    if val>nb_pings
+                        val=floor(nb_pings);
                     end
                 case 'meters'
-                    if val>dist(end)/2
-                        val=floor(dist(end)/2);
+                    if val>dist(end)
+                        val=floor(dist(end));
                     end
             end
         case 'h'
             switch h_unit
                 case 'samples'
-                    if val>nb_samples/2
+                    if val>nb_samples
                         val=floor(nb_samples);
                     end
                     
                 case 'meters'
-                    if val>layer.Transceivers(idx_freq).Data.Range(end)/2
-                        val=layer.Transceivers(idx_freq).Data.Range(end)/2;
+                    if val>layer.Transceivers(idx_freq).Data.Range(end)
+                        val=layer.Transceivers(idx_freq).Data.Range(end);
                     end
             end
     end

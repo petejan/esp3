@@ -2,7 +2,6 @@
 %
 %            Data: [1x1 ac_data_cl]
 %          Bottom: [1x1 bottom_cl]
-%          IdxBad: []
 %         Regions: []
 %          Params: [1x1 params_cl]
 %          Config: [1x1 config_cl]
@@ -24,7 +23,6 @@ classdef transceiver_cl < handle
     properties
         Data
         Bottom
-        IdxBad
         ST
         Tracks
         Regions
@@ -56,7 +54,6 @@ classdef transceiver_cl < handle
             
             addParameter(p,'Data',[],check_data_class);
             addParameter(p,'Bottom',bottom_cl(),check_bottom_class);
-            addParameter(p,'IdxBad',[],@(obj)(isnumeric(obj)||islogical(obj)));
             addParameter(p,'ST',init_st_struct(),@isstruct);
             addParameter(p,'Tracks',struct('target_id',{},'target_ping_number',{}),@isstruct);
             addParameter(p,'Regions',[],check_region_class);
@@ -221,16 +218,15 @@ classdef transceiver_cl < handle
         
         
         
-        function id=new_id(obj,name)
+        function id=new_id(obj)
             reg_curr=obj.Regions;
             id_list=[];
             for i=1:length(reg_curr)
-                if strcmpi((reg_curr(i).Name),name)
                     id_list=[reg_curr(i).ID id_list];
-                end
             end
             if~isempty(id_list)
-                id=nanmax(id_list)+1;
+                new_id=setdiff(1:nanmax(id_list)+1,id_list);
+                id=new_id(1);
             else
                 id=1;
             end
@@ -326,7 +322,7 @@ classdef transceiver_cl < handle
                 end
             end
             
-            Sv(:,obj.IdxBad)=NaN;
+            Sv(:,(obj.Bottom.Tag==0))=NaN;
             bot_r=obj.Bottom.Range;
             bot_r(bot_r==0)=obj.Data.Range(end);
             bot_r(isnan(bot_r))=obj.Data.Range(end);

@@ -14,10 +14,12 @@ if exist(filename,'file')==0
     return;
 end
 
-[timestamp,depth]=read_evl(filename);
+[timestamp,depth,tag]=read_evl(filename);
 
-[depth_resampled,~]=resample_data_v2(depth,timestamp,timevec);
-[sample_idx,~]=resample_data_v2(1:length(range),range,depth_resampled,'Opt','Nearest');
-obj=bottom_cl('Origin','EVL','Range',depth,'Sample_idx',sample_idx);
+depth_resampled=resample_data_v2(depth,timestamp,timevec);
+sample_idx=resample_data_v2(1:length(range),range,depth_resampled,'Opt','Nearest');
+tag_resampled=resample_data_v2(tag,timestamp,timevec,'Opt','Nearest');
+
+obj=bottom_cl('Origin','EVL','Range',depth,'Sample_idx',sample_idx,'Tag',tag_resampled~=2);
 
 end

@@ -35,9 +35,11 @@ if multi_layer==-1
 end
 
 
-
+        
+% profile on
 layers_temp=open_EK60_file_stdalone(PathToFile,Filename,...
     'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'Calibration',cal);
+        
 
 if exist('opening_file','var')
     close(opening_file);
@@ -49,7 +51,8 @@ end
 
 disp('Shuffling layers');
 [layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join,'load_reg',load_reg);
-
+% profile off
+% profile viewer;
 
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);

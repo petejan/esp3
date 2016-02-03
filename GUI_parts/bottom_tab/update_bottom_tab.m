@@ -26,6 +26,9 @@ set(bottom_tab_comp.r_max_ed,'string',num2str(get(bottom_tab_comp.r_max_sl,'Valu
 set(bottom_tab_comp.Thr_echo_sl,'value',algo.thr_echo);
 set(bottom_tab_comp.Thr_echo_ed,'string',num2str(get(bottom_tab_comp.Thr_echo_sl,'Value'),'%.0f'));
 
+set(bottom_tab_comp.Shift_bot_sl,'value',algo.shift_bot);
+set(bottom_tab_comp.Shift_bot_ed,'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.0f'));
+
 set(bottom_tab_comp.denoised,'value',algo.denoised);
 
 end

@@ -42,7 +42,8 @@ if strcmp(src.SelectionType,'normal')
     end
     axes(ah);
     hold on;
-    hp=plot(xinit,xinit,'color','k','linewidth',1);
+    hp=plot(xinit,yinit,'color','k','linewidth',1);
+    txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
     
     src.WindowButtonMotionFcn = @wbmcb;
     src.WindowButtonUpFcn = @wbucb;
@@ -55,8 +56,10 @@ end
         yinit(u) = cp(1,2);
         
         delete(hp);
+        delete(txt);
         hold on;
         hp=plot(xinit,yinit,'color','k','linewidth',1);
+        txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
         drawnow;
     end
 
@@ -65,7 +68,7 @@ end
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
-        delete(hp);
+        delete(txt);
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];

@@ -10,7 +10,7 @@ end
 ls=[ls addlistener(curr_disp_obj,'DispBottom','PostSet',@(src,envdata)listenDispBot(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispUnderBottom','PostSet',@(src,envdata)listenDispUnderBot(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispBadTrans','PostSet',@(src,envdata)listenDispBadTrans(src,envdata,main_figure))];
-ls=[ls addlistener(curr_disp_obj,'DispReg','PostSet',@(src,envdata)listenDispBadTrans(src,envdata,main_figure))];
+ls=[ls addlistener(curr_disp_obj,'DispReg','PostSet',@(src,envdata)listenDispReg(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispTracks','PostSet',@(src,envdata)listenDispTracks(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispLines','PostSet',@(src,envdata)listenDispLines(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'CursorMode','PostSet',@(src,envdata)listenCursorMode(src,envdata,main_figure))];

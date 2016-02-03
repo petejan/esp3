@@ -33,7 +33,7 @@ f_vec_save=[];
 
 for uui=1:length(layer.Frequencies)
     
-    bad_trans(layer.Transceivers(idx_freq).IdxBad)=1;
+    bad_trans(layer.Transceivers(idx_freq).Bottom.Tag==0)=1;
 
     range=layer.Transceivers(uui).Data.Range;
     ping_num=layer.Transceivers(uui).Data.Number;

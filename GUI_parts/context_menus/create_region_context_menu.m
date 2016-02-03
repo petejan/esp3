@@ -22,9 +22,10 @@ trans=layer.Transceivers(idx_freq);
 data=trans.Data.get_subdatamat(curr_disp.Fieldname,reg_curr.Idx_r,reg_curr.Idx_pings);
 
 sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
+idxBad=find(trans.Bottom.Tag==0);
 [sub_bot_mat,sub_sample_mat]=meshgrid(sub_bot,reg_curr.Idx_r);
 
-sub_idx_bad=intersect(reg_curr.Idx_pings,trans.IdxBad);
+sub_idx_bad=intersect(reg_curr.Idx_pings,idxBad);
 sub_idx_bad=sub_idx_bad-reg_curr.Idx_pings(1)+1;
 
 switch reg_curr.Shape

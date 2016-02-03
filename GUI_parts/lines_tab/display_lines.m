@@ -26,6 +26,10 @@ x=double(get(main_echo,'xdata'));
 
 list_line = layer.list_lines();
 
+if isempty(layer.Lines)
+    return; 
+end
+
 axes(main_axes)
 
 active_line_idx=get(lines_tab_comp.tog_line,'value');

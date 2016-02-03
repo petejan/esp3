@@ -1,6 +1,6 @@
-function new_struct=regions_to_struct(Regions)
+function new_struct=regions_to_struct(Regions,output_vec)
 
-output_names=fieldnames(Regions(1).Output);
+output_names=fieldnames(output_vec(1));
 for k=length(output_names):-1:1
     new_struct.(output_names{k})=[];
 end
@@ -18,9 +18,9 @@ for k=length(names):-1:1
 end
 
 for i=1:length(Regions)
-    output_names=fieldnames(Regions(i).Output);
+    output_names=fieldnames(output_vec(i));
     for k=1:length(output_names)
-        curr_data=Regions(i).Output.(output_names{k});
+        curr_data=output_vec(i).(output_names{k});
         new_struct.(output_names{k})=[new_struct.(output_names{k}); curr_data(:)];
     end
     n=length(curr_data(:));

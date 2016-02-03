@@ -10,6 +10,8 @@ classdef map_input_cl
         SliceLat
         SliceLon
         SliceAbscf
+        Nb_ST
+        Nb_Tracks
         LatLim
         LonLim
         Proj
@@ -34,7 +36,9 @@ classdef map_input_cl
             addParameter(p,'Lon',@iscell);
             addParameter(p,'SliceLat',@iscell);
             addParameter(p,'SliceLon',@iscell);
-            addParameter(p,'SliceAbscf',@isnumeric);
+            addParameter(p,'SliceAbscf',@iscell);
+            addParameter(p,'Nb_ST',@iscell);
+            addParameter(p,'Nb_Tracks',@iscell);
             addParameter(p,'LatLim',@isnumeric);
             addParameter(p,'LonLim',@isnumeric);
             addParameter(p,'Proj','lambert',@ischar);

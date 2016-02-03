@@ -23,7 +23,7 @@ switch class(obj)
                 lon_lim(2)=nanmax(lon_lim(2),nanmax(lon{i}));
             end
         end
-    case 'mbs_cl'
+    case {'mbs_cl' 'survey_cl'}
         for ii=1:length(obj)
             map_temp=map_input_cl.map_input_cl_from_obj(obj(ii));
             lat{ii}=[map_temp.SliceLat{:}];
@@ -36,6 +36,7 @@ switch class(obj)
             end
         end
 end
+
 
 [lat_lim,lon_lim]=ext_lat_lon_lim(lat_lim,lon_lim,0.1);
 

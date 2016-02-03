@@ -1,6 +1,10 @@
 function edit_survey_info_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
+
 surveydata=layer.SurveyData;
 
 prompt={'Survey Name',...

@@ -1,14 +1,22 @@
 function set_full_res_callback(src,~,main_figure)
 display_tab_comp=getappdata(main_figure,'Display_tab');
 curr_disp=getappdata(main_figure,'Curr_disp');
-layer=getappdata(main_figure,'Layer');
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-
 
 val=get(src,'value');
+
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+
+set(axes_panel_comp.axes_panel,'units','pixels');
+pos_ax=get(axes_panel_comp.axes_panel,'position');
+set(axes_panel_comp.axes_panel,'units','normalized');
+outputsize=[nan nan];
+outputsize(1)=nanmax(curr_disp.LayerMaxDispSize(1),round(pos_ax(4)));
+outputsize(2)=nanmax(curr_disp.LayerMaxDispSize(2),round(pos_ax(3)));
+
+
 if val>0
-    curr_disp.LayerMaxDispSize(2)=length(layer.Transceivers(idx_freq).Data.Number);
-    curr_disp.LayerMaxDispSize(1)=length(layer.Transceivers(idx_freq).Data.Range);
+    curr_disp.LayerMaxDispSize(2)=outputsize(2);
+    curr_disp.LayerMaxDispSize(1)=outputsize(1);
     set(display_tab_comp.width_disp,'Enable','off');
     set(display_tab_comp.height_disp,'Enable','off');
 else

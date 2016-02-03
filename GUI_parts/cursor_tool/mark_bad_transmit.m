@@ -14,9 +14,9 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 if strcmp(src.SelectionType,'normal')
-    set_val=1;
-elseif  strcmp(src.SelectionType,'alt')
     set_val=0;
+elseif  strcmp(src.SelectionType,'alt')
+    set_val=1;
 else
     return;
 end
@@ -69,12 +69,9 @@ hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1);
         [~,idx_start]=nanmin(abs(xdata-nanmin(x_bad)));
         [~,idx_end]=nanmin(abs(xdata-nanmax(x_bad)));
         idx_f=idx_pings(idx_start:idx_end);
-        pings=zeros(1,nb_pings);
-        if ~isempty(layer.Transceivers(idx_freq).IdxBad)
-            pings(layer.Transceivers(idx_freq).IdxBad)=1;
-        end
+        pings=layer.Transceivers(idx_freq).Bottom.Tag;
         pings(idx_f)=set_val;
-        layer.Transceivers(idx_freq).IdxBad=find(pings);
+        layer.Transceivers(idx_freq).Bottom.Tag=pings;
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);

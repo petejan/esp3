@@ -22,7 +22,7 @@ classdef curr_state_disp_cl <handle
     
     methods
         function obj =curr_state_disp_cl(varargin)
-            
+            screenSize=get(0,'ScreenSize');
             p = inputParser;
             addParameter(p,'Freq',0,@isnumeric);
             addParameter(p,'Fieldname','',@ischar);
@@ -39,7 +39,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'CursorMode','Normal',@ischar);
             addParameter(p,'CurrLayerID',0,@isnumeric);
             addParameter(p,'NbLayers',0,@isnumeric);
-            addParameter(p,'LayerMaxDispSize',[1000 1000],@isnumeric);
+            addParameter(p,'LayerMaxDispSize',screenSize(3:4),@isnumeric);
             parse(p,varargin{:});
             results=p.Results;
             props=fieldnames(results);

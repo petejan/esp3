@@ -6,6 +6,7 @@ classdef region_cl < handle
         Tag
         Origin
         Unique_ID
+        Remove_ST
         Type
         Idx_pings
         Idx_r
@@ -18,7 +19,6 @@ classdef region_cl < handle
         Cell_w_unit
         Cell_h
         Cell_h_unit
-        Output
   
     end
     
@@ -33,7 +33,6 @@ classdef region_cl < handle
             check_reference=@(ref) ~isempty(strcmp(ref,{'Surface','Bottom'}));
             check_w_unit=@(unit) ~isempty(strcmp(unit,{'pings','meters'}));
             check_h_unit=@(unit) ~isempty(strcmp(unit,{'samples','meters'}));
-            check_output=@(output) isempty(output)||isstruct(output);
             
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);
@@ -44,13 +43,13 @@ classdef region_cl < handle
             addParameter(p,'Idx_pings',[],@isnumeric);
             addParameter(p,'Idx_r',[],@isnumeric);
             addParameter(p,'Shape','Rectangular',check_shape);
+            addParameter(p,'Remove_ST',0,@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Sv_reg',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Reference','Surface',check_reference);
             addParameter(p,'Cell_w',10,@isnumeric);
             addParameter(p,'Cell_h',10,@isnumeric);
             addParameter(p,'Cell_w_unit','pings',check_w_unit);
             addParameter(p,'Cell_h_unit','meters',check_h_unit);
-            addParameter(p,'Output',[],check_output)
 
             parse(p,varargin{:});
             

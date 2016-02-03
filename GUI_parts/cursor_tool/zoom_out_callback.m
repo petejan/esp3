@@ -13,7 +13,7 @@ Range=trans.Data.Range;
 xdata_tot=Number;
 ydata_tot=Range;
 
-if axes_panel_comp.main_echo==obj
+if 1
     ah=axes_panel_comp.main_axes;
     if strcmp(src.SelectionType,'normal')
         

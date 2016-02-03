@@ -27,8 +27,8 @@ nb_samples=length(ydata);
 [~,nb_pings_red]=size(alpha_map);
 [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
-
-idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(layer.Transceivers(idx_freq).IdxBad,idx_pings)-idx_pings(1)+1)));
+idxBad=find(layer.Transceivers(idx_freq).Bottom.Tag==0);
+idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
 idx_bad_red(idx_bad_red==0)=[];
 
 if curr_disp.DispBadTrans

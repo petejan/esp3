@@ -44,10 +44,9 @@ reg_temp=region_cl(...
     'Cell_w',cell_w,...
     'Cell_w_unit',w_unit,...
     'Cell_h',cell_h,...
-    'Cell_h_unit',h_unit,...
-    'Output',[]);
+    'Cell_h_unit',h_unit);
 
-reg_temp.integrate_region(Transceiver);
+output=reg_temp.integrate_region(Transceiver);
 
 Freq=layer.Frequencies(idx_freq);
 Filename=layer.Filename{1};
@@ -69,7 +68,7 @@ if ~isequal(file_outputs,0)&&~isequal(path_out,0)
 end
 
 active_reg=reg_temp;
-sv_disp=active_reg.Output.Sv_mean;
+sv_disp=pow2db_perso(output.Sv_mean_lin);
 idx_field=find_field_idx(Transceiver.Data,'sv');
 cax=Transceiver.Data.SubData(idx_field).CaxisDisplay;
 
@@ -78,7 +77,7 @@ cax=Transceiver.Data.SubData(idx_field).CaxisDisplay;
 if size(sv_disp,1)>1&&size(sv_disp,2)>1
     figure();
     subplot(2,1,1)
-    pcolor(active_reg.Output.x_node,active_reg.Output.y_node,sv_disp)
+    pcolor(output.x_node,output.y_node,sv_disp)
     xlabel(sprintf('%s',active_reg.Cell_w_unit))
     ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
     shading interp
@@ -87,7 +86,7 @@ if size(sv_disp,1)>1&&size(sv_disp,2)>1
     axis ij
     hold on;
     subplot(2,1,2)
-    plot(10*log10(nanmean(10.^(active_reg.Output.Sv_mean/10),2)),nanmean(active_reg.Output.y_node,2));
+    plot(10*log10(nanmean(output.Sv_mean_lin,2)),nanmean(output.y_node,2));
     grid on;
     xlabel('Sv mean')
     ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));
@@ -96,14 +95,14 @@ if size(sv_disp,1)>1&&size(sv_disp,2)>1
 else
     figure();
     subplot(2,1,1)
-    plot(active_reg.Output.x_node,sv_disp)
+    plot(output.x_node,sv_disp)
     xlabel(sprintf('%s',active_reg.Cell_w_unit))
     ylabel('Sv mean')
     
     axis ij
     hold on;
     subplot(2,1,2)
-    plot(sv_disp,active_reg.Output.y_node)
+    plot(sv_disp,output.y_node)
     grid on;
     xlabel('Sv mean')
     ylabel(sprintf('Depth (%s)',active_reg.Cell_h_unit));

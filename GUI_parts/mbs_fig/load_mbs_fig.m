@@ -70,11 +70,11 @@ for i=1:length(selected_mbs)
     
     switch src.Tag
         case 'crest'
-            layers=load_files_regions(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans);
+            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans);
         case 'raw'
-            layers=load_files_regions(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'type','raw');
+            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'type','raw');
         case 'sch'
-            layers=load_files_regions(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'mode','sch');
+            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'mode','sch');
     end
     
     mbs.generate_output(layers,'idx_trans',idx_trans);
@@ -89,6 +89,7 @@ for i=1:length(selected_mbs)
     %         disp(ME.identifier);
     %         continue;
     %     end
+    
     layers_old=[layers_old layers];
     if ~isempty(mbs_vec)
         idx=find_mbs(mbs_vec,mbs.Header.MbsId);
@@ -115,7 +116,7 @@ setappdata(hObject_main,'MBS',mbs_vec);
 setappdata(hObject_main,'Layer',layer);
 setappdata(hObject_main,'Layers',layers);
 setappdata(hObject_main,'Curr_disp',curr_disp);
-listenEcho([],[],hObject_main);
+update_display(hObject_main,1);
 load_map_fig(hObject_main,mbs_vec);
 
 end

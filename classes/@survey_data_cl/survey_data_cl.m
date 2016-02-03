@@ -17,9 +17,9 @@ classdef survey_data_cl
             ver_fmt=@(x) ischar(x)||isnumeric(x);
             
             addParameter(p,'SurveyName','',@ischar);
-            addParameter(p,'Snapshot',[],@isnumeric);
+            addParameter(p,'Snapshot',0,@isnumeric);
             addParameter(p,'Stratum','',ver_fmt);
-            addParameter(p,'Transect','',ver_fmt);
+            addParameter(p,'Transect',0,ver_fmt);
             addParameter(p,'Voyage','',@ischar);
             addParameter(p,'VerticalSlice',500);
             

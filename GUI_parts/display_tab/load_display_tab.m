@@ -8,6 +8,8 @@ if isappdata(main_figure,'Display_tab')
     rmappdata(main_figure,'Display_tab');
 end
 
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
@@ -63,14 +65,25 @@ display_tab_comp.grid_y_unit=uicontrol(display_tab_comp.display_tab,'Style','Tex
 set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_callback,main_figure})
 
 
+set(axes_panel_comp.axes_panel,'units','pixels');
+pos_ax=get(axes_panel_comp.axes_panel,'position');
+set(axes_panel_comp.axes_panel,'units','normalized');
+outputsize=[nan nan];
+
+outputsize(1)=nanmin(curr_disp.LayerMaxDispSize(1),round(pos_ax(4)));
+outputsize(2)=nanmin(curr_disp.LayerMaxDispSize(2),round(pos_ax(3)));
+
+curr_disp.LayerMaxDispSize(1)=outputsize(1);
+curr_disp.LayerMaxDispSize(2)=outputsize(2);
+
 
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Max Display Size (px)','units','normalized','Position',[0.7 0.8 0.25 0.1]);
-display_tab_comp.width_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.74 0.7 0.07 0.1],'string',num2str(curr_disp.LayerMaxDispSize(2),'%.0f'));
+display_tab_comp.width_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.74 0.7 0.07 0.1],'string',num2str(outputsize(2),'%.0f'));
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','X','units','normalized','Position',[0.81 0.7 0.02 0.1]);
-display_tab_comp.height_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.83 0.7 0.07 0.1],'string',num2str(curr_disp.LayerMaxDispSize(1),'%.0f'));
+display_tab_comp.height_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.83 0.7 0.07 0.1],'string',num2str(outputsize(1),'%.0f'));
 
 set([display_tab_comp.width_disp display_tab_comp.height_disp],'callback',{@change_size_disp_callback,main_figure})
-uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Full Resolution','units','normalized','Position',[0.7 0.6 0.25 0.1],'Callback',{@set_full_res_callback,main_figure});
+uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Max Resolution','units','normalized','Position',[0.7 0.6 0.25 0.1],'Callback',{@set_full_res_callback,main_figure});
 
 
 

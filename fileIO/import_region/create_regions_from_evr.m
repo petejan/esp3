@@ -43,10 +43,10 @@ for i=1:length(reg_evr)
             % "4" = bad (empty water)
     end
     time_box=[reg_evr(i).bbox.time_start reg_evr(i).bbox.time_end];
-    [pings,~]=resample_data_v2(1:length(timevec),timevec,time_box,'Opt','Nearest');
+    pings=resample_data_v2(1:length(timevec),timevec,time_box,'Opt','Nearest');
 
     depth_box=[reg_evr(i).bbox.depth_start reg_evr(i).bbox.depth_end];
-    [samples,~]=resample_data_v2(1:length(range),range,depth_box,'Opt','Nearest');
+    samples=resample_data_v2(1:length(range),range,depth_box,'Opt','Nearest');
 
     
     Idx_pings=pings(1):pings(2);
@@ -85,8 +85,8 @@ for i=1:length(reg_evr)
         case 'Rectangular'
             Sv_reg=[];
         case 'Polygon'
-            [X_cont,~]=resample_data_v2(1:length(timevec),timevec,reg_evr(i).timestamp,'Opt','Nearest');
-            [Y_cont,~]=resample_data_v2(1:length(range),range,reg_evr(i).depth,'Opt','Nearest');
+            X_cont=resample_data_v2(1:length(timevec),timevec,reg_evr(i).timestamp,'Opt','Nearest');
+            Y_cont=resample_data_v2(1:length(range),range,reg_evr(i).depth,'Opt','Nearest');
             X_cont=X_cont-Idx_pings(1)+1;
             Y_cont=Y_cont-Idx_r(1)+1;
             [X,Y] = meshgrid(Idx_pings,Idx_r);
@@ -106,8 +106,7 @@ for i=1:length(reg_evr)
         'Cell_w',Cell_w,...
         'Cell_w_unit',Cell_w_unit,...
         'Cell_h',Cell_h,...
-        'Cell_h_unit',Cell_h_unit,...
-        'Output',[])];
+        'Cell_h_unit',Cell_h_unit)];
   
     nb_reg=nb_reg+1;
 end

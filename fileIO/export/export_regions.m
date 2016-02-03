@@ -3,6 +3,10 @@ function export_regions(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
+if isempty(layer)
+    return;
+end
+
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
 if found==0
     return;

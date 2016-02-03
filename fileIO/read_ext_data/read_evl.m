@@ -10,6 +10,9 @@ depth=nan(1,num_pings);
 tag=nan(1,num_pings);
 
 for i = 1:num_pings
+    if feof(fid)
+        break;
+    end
     line = fgetl(fid);
     temp=textscan(line, '%s %s %f %d');
     time=char(temp{2});

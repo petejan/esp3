@@ -13,8 +13,12 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
     if found==0
         return;
     end
-    
     region_tab_comp=getappdata(main_figure,'Region_tab');
+    if get(region_tab_comp.tog_reg,'value')==idx_reg
+        return;
+    end
+    
+    
     list_reg = list_regions(layer.Transceivers(idx_freq));
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
     ah=axes_panel_comp.main_axes;
@@ -27,8 +31,7 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
             if length(list_reg)>=idx_reg
                 set(region_tab_comp.tog_reg,'value',idx_reg)
                 set(region_tab_comp.tog_reg,'string',list_reg);
-            else
-                
+            else 
                 set(region_tab_comp.tog_reg,'value',1)
                 set(region_tab_comp.tog_reg,'string',list_reg);
             end

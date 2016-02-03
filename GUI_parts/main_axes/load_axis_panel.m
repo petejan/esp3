@@ -97,7 +97,10 @@ axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes);
 axes_panel_comp.colorbar.Position=axes_panel_comp.colorbar.Position+[0 0.01 -axes_panel_comp.colorbar.Position(3)/2 -0.02];
 colormap(axes_panel_comp.main_axes,jet);
 
-axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,curr_disp.LayerMaxDispSize,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
+outputsize(1)=curr_disp.LayerMaxDispSize(1);
+outputsize(2)=curr_disp.LayerMaxDispSize(2);
+
+axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,outputsize,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
 
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 
@@ -138,13 +141,9 @@ setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
 set_axes_position(main_figure);
 
-if ~isempty(trans.Regions)
-    display_regions(main_figure)
-end
+display_regions(main_figure)
+display_lines(main_figure)
 
-if ~isempty(layer.Lines)
-    display_lines(main_figure)
-end
 
 set_alpha_map(main_figure);
 

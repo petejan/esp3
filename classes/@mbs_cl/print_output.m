@@ -1,6 +1,7 @@
         function print_output(mbs) % print the whole Output on the screen
             % and if defined in mbs.OutputFile into a text file
             fids{1} = 1;
+            
             if ~isempty(mbs.OutputFile)
                 fids{2} = fopen(mbs.OutputFile, 'w+');
             end

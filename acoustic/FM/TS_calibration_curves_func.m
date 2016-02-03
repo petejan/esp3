@@ -28,10 +28,6 @@ idx_freq=find(layer.Frequencies==curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 range=Transceiver.Data.Range;
 
-xdata=get(axes_panel_comp.main_echo,'XData');
-ydata=get(axes_panel_comp.main_echo,'YData');
-
-
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
 
@@ -45,7 +41,7 @@ for uui=1:length(layer.Frequencies)
     ping_num=layer.Transceivers(uui).Data.Number;
     
     bad_trans=zeros(size(ping_num));
-    bad_trans(layer.Transceivers(uui).IdxBad)=1;
+    bad_trans(layer.Transceivers(idx_freq).Bottom.Tag==0)=1;
     
     idx_r=find(range<=r_max&range>=r_min);
     idx_pings=double(ping_num)-double(ping_num(1))+1;
@@ -110,10 +106,15 @@ for uui=1:length(layer.Frequencies)
     
     
     if idx_freq==uui
-        axes(ah);
-        hold on;
-        plot(xdata(idx_pings),ydata(idx_peak),'color','r','linewidth',2);
-        drawnow
+        switch curr_disp.Xaxes
+            case 'Number'
+                axes(ah);
+                hold on;
+                plot(layer.Transceivers(uui).Data.Number(idx_pings),layer.Transceivers(uui).Data.Range(idx_peak),'color','r','linewidth',2);
+                drawnow
+            otherwise
+                
+        end
     end
     
     

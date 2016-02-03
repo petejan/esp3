@@ -77,7 +77,8 @@ end
     
 id_to_remove=[];
 for ii=1:length(idx_school_38)
-    if length(layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Output.Sv_mean(:))<50
+    output_reg_38=layer.Transceivers(idx_38).Regions(idx_school_38(ii)).integrate_region(layer.Transceivers(idx_38));
+    if length(pow2db_perso(output_reg_38.Sv_mean_lin(:)))<50
         id_to_remove=[id_to_remove layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Unique_ID];
     end
 end

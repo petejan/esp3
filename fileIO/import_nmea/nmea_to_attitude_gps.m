@@ -79,7 +79,7 @@ for iiii=idx_NMEA(:)'
     end
 end
 
-if curr_gps>0
+if curr_gps>0&&isfield(gps,'lat')
     gps_data=gps_data_cl('Lat',gps.lat,'Long',gps.lon,'Time',gps.time,'NMEA',gps.type);
 else
     gps_data=gps_data_cl();

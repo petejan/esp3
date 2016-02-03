@@ -1,6 +1,9 @@
-function display_map_input_cl(obj_tot,hfig)
+function display_map_input_cl(obj_tot,hfig,main_figure)
 snap=[];
-col_obj={'r','b','g','k','m'};
+%col_snap={'r','b','g','k','m'};
+col_snap={'k'};
+
+set(hfig,'Name','Results','NumberTitle','off','tag','nav');
 
 LonLim=[nan nan];
 LatLim=[nan nan];
@@ -53,7 +56,12 @@ for usnap=1:length(snap)
     
     axes(n_ax(usnap));
     hold on;
-    title(sprintf('%s\n Snapshot %d',obj.Trip{usnap},snap(usnap)));
+   
+    
+%     context_menu=uicontextmenu;
+%     n_ax(usnap).UIContextMenu=context_menu;
+%     uimenu(context_menu,'Label','Copy Axes to new Figure','Callback',{@copy_axes_callback});
+%     
     try
         m_grid('box','fancy','tickdir','in');
     catch
@@ -72,6 +80,8 @@ for usnap=1:length(snap)
     if obj.Depth_Contour>0
         try
             [Cs,hs]=m_elev('contour',-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on');
+           % map=load('D:\Docs\NIWA main\Projects\DOC Smelt\Maps\taupo_map.mat'); 
+            %[Cs,hs]=m_contour(map.long,map.lat,map.z,-10000:obj.Depth_Contour:-1,'edgecolor',[.5 .5 .5]);
             clabel(Cs,hs,'fontsize',8);
         catch
             disp('No Bathymetric data available...')
@@ -106,29 +116,43 @@ for uuobj=1:length(obj_tot)
     
     for usnap=1:length(snap)
         idx_snap=find(obj.Snapshot==snap(usnap));
+        
+        if isempty(idx_snap)
+           continue;
+        end
         axes(n_ax(usnap));
         hold on;
+        title(sprintf('%s\n Snapshot %d',obj.Trip{idx_snap(1)},snap(usnap)));
 
         for uui=1:length(idx_snap)
-            
             if ~isempty(obj.Lon{idx_snap(uui)})
                 u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'k');
                 set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
+                m_text(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
             end
             
             if ~isempty(obj.SliceLon{idx_snap(uui)})
+                if isempty(obj.Lon{idx_snap(uui)})
+                    m_text(obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
+                end
                 u_plot_slice(idx_snap(uui))=m_plot(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'k');
                 set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
                 ring_size=obj.Rmax*(log10(obj.SliceAbscf{idx_snap(uui)}/obj.AbscfMax+10)-1);
                 idx_rings=find(ring_size>0);
                 for uuj=idx_rings
-                    m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_obj{rem(uuobj,5)+1},'linewidth',1.5);
+                    m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5);
                 end
             end
         end
         
     end
 end
+if nargin>2
+    set(hfig,'WindowButtonDownFcn',{@copy_axes_callback,main_figure});
+else
+    set(hfig,'WindowButtonDownFcn',{@copy_axes_callback});
+end
+
 
 Map_info.Proj=obj.Proj;
 Map_info.LonLim=LonLim;

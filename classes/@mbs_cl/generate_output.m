@@ -43,8 +43,7 @@ for uit=idx_trans
     ii=ii+1;
     eint=0;
     
-    reg_tot=[];
-    end_ping=zeros(1,length(idx_lay));
+
     Output_echo=[];
     for ifi=idx_lay
         dfile_Curr=fullfile(mbs.Input.dfileDir{idx_trans(ifi)},sprintf('d%07d',mbs.Input.dfileNum(idx_trans(ifi))));
@@ -71,11 +70,11 @@ for uit=idx_trans
             
             reg_curr=trans.Regions(j);
             reg=reg_tot(j);
-            regCellInt = reg_curr.Output;
+            regCellInt = reg_curr.integrate_region(trans);
             startPing = regCellInt.Ping_S(1);
             stopPing = regCellInt.Ping_E(end);
             ix = (startPing:stopPing);
-            ix_good=setdiff(ix,trans.IdxBad);
+            ix_good=setdiff(ix,find(trans.Bottom.Tag==0));
             
             horzSlice = reg_curr.Cell_h;
             %vertSlice = reg_curr.Cell_w;
@@ -142,9 +141,10 @@ for uit=idx_trans
             rsv{j,6} = size(regCellIntSub.Sa_lin,1);% num_h_slices
             rsv{j,7} = size(regCellIntSub.Lat_S,2); % num_v_slices
             rsv{j,8} = rs{j,13}; % Vbscf Region
-            [I,~]=find(~isnan(regCellIntSub.Sa_lin'));
-            idx_first=nanmin(I);
-            tmp = regCellIntSub.Sv_mean_lin_esp2(idx_first:(idx_first+rsv{j,6})-1,:);
+%             [I,~]=find(~isnan(regCellIntSub.Sa_lin'));
+%             idx_first=nanmin(I);
+%             tmp = regCellIntSub.Sv_mean_lin_esp2(idx_first:(idx_first+rsv{j,6})-1,:);
+            tmp = regCellIntSub.Sv_mean_lin_esp2;
             tmp(isnan(tmp))=0;
             tmp=tmp';
             tmp=tmp(:);
@@ -165,19 +165,27 @@ for uit=idx_trans
     
     gps_tot=layers(idx_lay(1)).Transceivers(idx_freq).GPSDataPing;
     bot_tot=layers(idx_lay(1)).Transceivers(idx_freq).Bottom;
-    IdxBad_tot=layers(idx_lay(1)).Transceivers(idx_freq).IdxBad;
-    
+
+    dist_tot = m_lldist([gps_tot.Long(1) gps_tot.Long(end)],[gps_tot.Lat(1) gps_tot.Lat(end)])/1.852;% get distance as esp2 does... Straigth line estimate
+    time_s_tot = gps_tot.Time(1);
+    time_e_tot = gps_tot.Time(end);
+    timediff_tot = (time_e_tot-time_s_tot)*24;
     if length(idx_lay)>1
         for i=2:length(idx_lay)
             idx_freq=find_freq_idx(layers(idx_lay(i)),38000);
             if layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
                 bot_tot=concatenate_Bottom(bot_tot,layers(idx_lay(i)).Transceivers(idx_freq).Bottom);
-                IdxBad_tot=[IdxBad_tot(:) ; layers(idx_lay(i)).Transceivers(idx_freq).IdxBad(:)];
             else
                 bot_tot=concatenate_Bottom(layers(idx_lay(i)).Transceivers(idx_freq).Bottom,bot_tot);
-                IdxBad_tot=[layers(idx_lay(i)).Transceivers(idx_freq).IdxBad(:) ; IdxBad_tot(:)];
             end
-            gps_tot=concatenate_GPSData(gps_tot,layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing);
+            gps_add=layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing;
+            gps_tot=concatenate_GPSData(gps_tot,gps_add);
+            
+            dist_tot = dist_tot+m_lldist([gps_add.Long(1) gps_add.Long(end)],[gps_add.Lat(1) gps_add.Lat(end)])/1.852;
+            time_s_add = gps_add.Time(1);
+            time_e_add = gps_add.Time(end);
+            timediff_add = (time_e_add-time_s_add)*24;
+            timediff_tot=timediff_add+timediff_tot;
         end
     end
     
@@ -186,12 +194,8 @@ for uit=idx_trans
     
     %% File Summary (part of 2nd Mbs Output Block)
     idx_pings=1:length(gps_tot.Time);
-    idx_good_pings=setdiff(idx_pings,IdxBad_tot);
+    idx_good_pings=intersect(idx_pings,find(bot_tot.Tag>0));
     
-    dist_tot = m_lldist([gps_tot.Long(1) gps_tot.Long(end)],[gps_tot.Lat(1) gps_tot.Lat(end)])/1.852;% get distance as esp2 does... Straigth line estimate
-    time_s_tot = gps_tot.Time(1);
-    time_e_tot = gps_tot.Time(end);
-    timediff_tot = (time_e_tot-time_s_tot)*24;
     av_speed_tot=dist_tot/timediff_tot;
     good_bot_tot=nanmean(bot_tot.Range(idx_good_pings));
     
@@ -204,10 +208,10 @@ for uit=idx_trans
     fs{ii,7} = nanmean(good_bot_tot); % mean_d
     fs{ii,8}= length(idx_good_pings); % pings %
     fs{ii,9} = av_speed_tot; % av_speed
-    fs{ii,10} = gps.Lat(1); % start_lat
-    fs{ii,11} = gps.Long(1); % start_lon
-    fs{ii,12} = gps.Lat(end); % finish_lat
-    fs{ii,13} = gps.Long(end); % finish_lon
+    fs{ii,10} = gps_tot.Lat(1); % start_lat
+    fs{ii,11} = gps_tot.Long(1); % start_lon
+    fs{ii,12} = gps_tot.Lat(end); % finish_lat
+    fs{ii,13} = gps_tot.Long(end); % finish_lon
     fs{ii,14} = eint; % Echo Integral
     fs{ii,15} = nansum(fs{ii,8}.*fs{ii,7}); % mean bottom depth * pings
     fs{ii,5} = fs{ii,14}/fs{ii,15}; % vbscf according to Esp2 formula

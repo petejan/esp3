@@ -37,7 +37,7 @@ for i=1:nb_transceivers
             case {'Gain','PulseLength','SaCorrection'}
                 config(i).(fields{jj})=str2double(strsplit(config_temp.(fields{jj}),';'));
             otherwise
-                config(i).(fields{jj})=str2double(config_temp.(fields{jj}));
+                config(i).(fields{jj})=(config_temp.(fields{jj}));
         end
     end
 end

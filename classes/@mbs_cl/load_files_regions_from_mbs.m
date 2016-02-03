@@ -1,4 +1,4 @@
-function layer=load_files_regions(mbs,varargin)
+function layer=load_files_regions_from_mbs(mbs,varargin)
 
 p = inputParser;
 

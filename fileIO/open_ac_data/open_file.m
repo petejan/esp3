@@ -41,7 +41,9 @@ else
         
         idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
         Filename=Filename(idx_keep);
-        
+        if isempty(Filename)
+           return; 
+        end
         
         
     elseif file_id==1

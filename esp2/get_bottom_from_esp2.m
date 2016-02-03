@@ -1,4 +1,4 @@
-function [bad,bottom,rawFileName]=get_bottom_from_esp2(iFilePath,iFileName,voyage,cvsroot,varargin)
+function [bottom,rawFileName]=get_bottom_from_esp2(iFilePath,iFileName,voyage,cvsroot,varargin)
 
 switch nargin
     case 4
@@ -63,23 +63,22 @@ bFilePath = fullfile(outDir,remain_str);
 
 sample_idx = load_bottom_file(fullfile(bFilePath,bFileName));
 if isempty(sample_idx)
-    bad=[];
     bottom=bottom_cl(...
         'Origin','Esp2',...
         'Range',[],...
-        'Sample_idx',[]);
+        'Sample_idx',[],'Tag',[]);
     return;
 end
 
 bottom = sample_idx/depthFactor;
 
 bad = load_bad_transmits(fullfile(bFilePath,bFileName))';
-bad=find(bad);
 
 bottom=bottom_cl(...
     'Origin','Esp2',...
     'Range',bottom,...
-    'Sample_idx',sample_idx);
+    'Sample_idx',sample_idx,...
+    'Tag',bad==0);
 rmdir(outDir,'s');
 
 end

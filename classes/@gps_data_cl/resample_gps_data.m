@@ -4,8 +4,8 @@ if ~isempty(gps_obj.Lat)
     if nansum(size(gps_obj.Time)==size(time))<2
         time=time';
     end
-    [lat,~]=resample_data_v2(gps_obj.Lat,gps_obj.Time,time,'Type','Angle');
-    [long,~]=resample_data_v2(gps_obj.Long,gps_obj.Time,time,'Type','Angle');
+    lat=resample_data_v2(gps_obj.Lat,gps_obj.Time,time,'Type','Angle');
+    long=resample_data_v2(gps_obj.Long,gps_obj.Time,time,'Type','Angle');
     nmea=gps_obj.NMEA;
     
     if nansum((size(long)==size(time)))<2

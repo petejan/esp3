@@ -14,12 +14,7 @@ end
 
     fields=fieldnames(env_temp);
     
-    for jj=1:length(fields)
-        switch fields{jj}
-            case 'TransducerName' 
-                env.(fields{jj})=(env_temp.(fields{jj}));
-            otherwise
-                env.(fields{jj})=str2double(env_temp.(fields{jj}));
-        end
+    for jj=1:length(fields) 
+        env.(fields{jj})=str2double(env_temp.(fields{jj}));
     end
 end

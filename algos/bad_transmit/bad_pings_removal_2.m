@@ -20,7 +20,7 @@ check_spikes=@(x)(x>=0&&x<=20);
 
 default_idx_r_max=Range(end);
 default_spikes=4;
-
+check_shift_bot=@(x)x>=0;
 
 addRequired(p,'Sv',@isnumeric);
 addRequired(p,'Range',@isnumeric);
@@ -37,6 +37,7 @@ addParameter(p,'thr_spikes_Below',default_spikes,check_spikes);
 addParameter(p,'Above',true,@islogical);
 addParameter(p,'Below',true,@islogical);
 addParameter(p,'burst_removal',false,@islogical);
+addParameter(p,'shift_bot',0,check_shift_bot);
 
 parse(p,Sv,Range,Fs,PulseLength,varargin{:});
 
@@ -52,6 +53,7 @@ thr_spikes_Below=p.Results.thr_spikes_Below;
 Above=p.Results.Above;
 Below=p.Results.Below;
 burst_removal=p.Results.burst_removal;
+shift_bot=p.Results.shift_bot;
 
 Np=round(PulseLength*Fs);
 [nb_samples,nb_pings]=size(Sv);
@@ -68,7 +70,8 @@ Np=round(PulseLength*Fs);
     'thr_bottom',thr_bottom,...
     'thr_echo',thr_echo,...
     'r_min',r_min,...
-    'r_max',r_max);
+    'r_max',r_max,...
+    'shift_bot',shift_bot);
 
 
 start_sample=nanmin([50 nb_samples]);

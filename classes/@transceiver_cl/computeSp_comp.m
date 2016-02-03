@@ -10,11 +10,9 @@ switch trans_obj.Mode
         
     case 'CW'
 
-        simradBeamCompensation = 6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2);
-
-        Sp_comp=sp+simradBeamCompensation;
         trans_obj.Data.remove_sub_data('sp_comp');
-        trans_obj.Data.add_sub_data(sub_ac_data_cl('sp_comp',trans_obj.Data.MemapName,Sp_comp));
+        trans_obj.Data.add_sub_data(sub_ac_data_cl('sp_comp',trans_obj.Data.MemapName,sp+...
+            6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2)));
 end
 
 

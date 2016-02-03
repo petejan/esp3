@@ -94,11 +94,11 @@ for uu=idx_to_process
         bottom_range=nan(size(Bottom));
         bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
         
-        layer.Transceivers(uu).IdxBad=find(idx_noise_sector);
         layer.Transceivers(uu).Bottom=bottom_cl('Origin','Algo_v2_bp',...
             'Range', bottom_range,...
             'Sample_idx',Bottom,...
-            'Double_bot_mask',Double_bottom_region);
+            'Double_bot_mask',Double_bottom_region,'Tag',idx_noise_sector==0);
+        
     end
     if uu==idx_38
         if reprocess==1

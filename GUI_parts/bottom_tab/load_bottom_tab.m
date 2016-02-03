@@ -52,6 +52,13 @@ set(bottom_tab_comp.Thr_echo_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_echo
 set(bottom_tab_comp.Thr_echo_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_echo_sl,'%.0f'});
 
 
+uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{1,4});
+bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',500,'Value',algo_bottom.shift_bot,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
+bottom_tab_comp.Shift_bot_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.0f'));
+set(bottom_tab_comp.Shift_bot_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Shift_bot_ed,'%.0f'});
+set(bottom_tab_comp.Shift_bot_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Shift_bot_sl,'%.0f'});
+
+
 bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,'Style','checkbox','Value',algo_bottom.denoised,'String','Compute on Denoised data','units','normalized','Position',[0.5 0.3 0.3 0.1]);
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
@@ -94,6 +101,7 @@ algo=layer.Transceivers(idx_freq).Algo(idx_algo_bot);
     layer.Transceivers(idx_freq).Params.PulseLength(1),...
     'thr_bottom',algo.Varargin.thr_bottom,...
     'thr_echo',algo.Varargin.thr_echo,...
+    'shift_bot',algo.Varargin.shift_bot,...
     'r_min',algo.Varargin.r_min,...
     'r_max',algo.Varargin.r_max);
 

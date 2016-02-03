@@ -44,7 +44,7 @@ if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
     axes(ah);
     hold on;
     hp=plot(x_box,y_box,'color','k','linewidth',1);
-    
+   txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
     
 else
     src.WindowButtonMotionFcn = '';
@@ -56,7 +56,7 @@ else
 end
 
     function wbmcb(~,~)
-        delete(hp)
+
         cp = ah.CurrentPoint;
         
         
@@ -88,13 +88,17 @@ end
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
         
-
+        delete(hp)
+        delete(txt);
         hp=plot(x_box,y_box,'color','k','linewidth',1);
+        txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
         drawnow;
         
     end
 
     function wbucb(src,~)
+        
+        delete(txt);
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
