@@ -10,6 +10,6 @@ function obj=create_line_from_rbr_mat(filename)
         timestamp(i) = datenum(Y,M,D,H,MN,S);
     end
 	depth = RBR.data(:,4)     % uncomment line below if desired
-    #depth = depth - 6;       % to account for draught of Tangaroa (6m). 
+    %depth = depth - 6;       % to account for draught of Tangaroa (6m). 
     obj=line_cl('Tag','Imported from RBR','Range',depth,'Time',timestamp-12/24,'File_origin',filename,'UTC_diff',-12);
 end
