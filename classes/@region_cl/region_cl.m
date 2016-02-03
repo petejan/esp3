@@ -19,8 +19,7 @@ classdef region_cl < handle
         Cell_h
         Cell_h_unit
         Output
-        Reg
-        
+  
     end
     
 
@@ -47,7 +46,7 @@ classdef region_cl < handle
             addParameter(p,'Shape','Rectangular',check_shape);
             addParameter(p,'Sv_reg',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Reference','Surface',check_reference);
-            addParameter(p,'Cell_w',500,@isnumeric);
+            addParameter(p,'Cell_w',10,@isnumeric);
             addParameter(p,'Cell_h',10,@isnumeric);
             addParameter(p,'Cell_w_unit','pings',check_w_unit);
             addParameter(p,'Cell_h_unit','meters',check_h_unit);

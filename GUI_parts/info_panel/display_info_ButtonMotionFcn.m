@@ -9,26 +9,43 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 Range=trans.Data.Range;
 Bottom=trans.Bottom;
-Time=trans.Data.Time;
-Number=trans.Data.Number;
+
 Samples=trans.Data.Samples;
 Lat=trans.GPSDataPing.Lat;
 Long=trans.GPSDataPing.Long;
-%Dist=trans.GPSDataPing.Dist;
+Time=trans.Data.Time;
+Number=trans.Data.Number;
 
 ax_main=axes_panel_comp.main_axes;
-axh=axes_panel_comp.haxes;
-axv=axes_panel_comp.vaxes;
-
 
 % xdata=get(axes_panel_comp.main_echo,'XData');
 % ydata=get(axes_panel_comp.main_echo,'YData');
 
+
 x_lim=double(get(ax_main,'xlim'));
 y_lim=double(get(ax_main,'ylim'));
+cdata=double(get(axes_panel_comp.main_echo,'CData'));
+[nb_samples_red,nb_pings_red]=size(cdata);
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
 ydata=double(get(axes_panel_comp.main_echo,'YData'));
-cdata=double(get(axes_panel_comp.main_echo,'CData'));
+
+nb_pings=length(Time);
+nb_samples=length(Range);
+
+if nb_pings_red<nb_pings
+    xdata_red=linspace(x_lim(1),x_lim(2),nb_pings_red);
+else
+    xdata_red=xdata;
+end
+
+if nb_samples_red<nb_samples
+    ydata_red=linspace(y_lim(1),y_lim(2),nb_samples_red);
+else
+    ydata_red=ydata;
+end
+
+[idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
+
 
 cp = ax_main.CurrentPoint;
 x=cp(1,1);
@@ -46,21 +63,40 @@ y=nanmin(y,y_lim(2));
 
 if ~isempty(cdata)
     [~,idx_ping]=nanmin(abs(xdata-x));
+    idx_ping=idx_ping+idx_ping_ori-1;
     [~,idx_r]=nanmin(abs(ydata-y));
+    idx_r=idx_r+idx_r_ori-1;
+    if nb_pings_red<nb_pings
+        [~,idx_ping_red]=nanmin(abs(xdata_red-x));
+    else
+        idx_ping_red=idx_ping;
+    end
+    
+    if nb_samples_red<nb_samples
+        [~,idx_r_red]=nanmin(abs(ydata_red-y));
+    else
+        idx_r_red=idx_r;
+    end
+    
     
     if idx_ping<=length(Bottom.Sample_idx)
         if ~isnan(Bottom.Sample_idx(idx_ping))
-            bot_val=ydata(Bottom.Sample_idx(idx_ping));
+            bot_val=Range(Bottom.Sample_idx(idx_ping));
         else
             bot_val=nan;
         end
     else
         bot_val=nan;
     end
-
-    vert_val=cdata(:,idx_ping);
+    
+    vert_val=cdata(:,idx_ping_red);
+    vert_val(vert_val<=-999)=nan;
+    
     bot_x_val=[nanmin(vert_val(~(vert_val==-Inf))) nanmax(vert_val)];
-    horz_val=cdata(idx_r,:);
+    
+    horz_val=cdata(idx_r_red,:);
+    horz_val(horz_val<=-999)=nan;
+    
     
     xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
     if ~isempty(Lat)
@@ -72,11 +108,11 @@ if ~isempty(cdata)
     
     switch lower(deblank(curr_disp.Fieldname))
         case{'alongangle','acrossangle'}
-            val_str=sprintf('Angle: %.2f deg.',cdata(idx_r,idx_ping));
+            val_str=sprintf('Angle: %.2f deg.',cdata(idx_r_red,idx_ping_red));
         case{'alongphi','acrossphi'}
-            val_str=sprintf('Phase: %.2f deg.(phase)',cdata(idx_r,idx_ping));
+            val_str=sprintf('Phase: %.2f deg.(phase)',cdata(idx_r_red,idx_ping_red));
         otherwise
-            val_str=sprintf('%s: %.2f dB',curr_disp.Type,cdata(idx_r,idx_ping));
+            val_str=sprintf('%s: %.2f dB',curr_disp.Type,cdata(idx_r_red,idx_ping_red));
     end
     
     set(info_panel_comp.xy_disp,'string',xy_string);
@@ -84,25 +120,32 @@ if ~isempty(cdata)
     set(info_panel_comp.time_disp,'string',time_str);
     set(info_panel_comp.value,'string',val_str);
     
+    axh=axes_panel_comp.haxes;
+    axv=axes_panel_comp.vaxes;
     delete(findall(axv,'Type','Line'));
     delete(findall(axv,'Type','Text'));
+    
     axes(axv);
-    plot(vert_val,ydata,'k');
+    plot(vert_val,ydata_red,'k');
     hold on;
+    plot(bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b');
     plot(bot_x_val,[bot_val bot_val],'r');
     if length(Bottom.Range)>=idx_ping
         text(nanmean(bot_x_val),bot_val,{sprintf('%.2fm',Bottom.Range(idx_ping))},'Color','r','VerticalAlignment','bottom','fontsize',10);
     end
     set(axv,'ylim',y_lim)
     set(allchild(axv),'visible',get(axv,'visible'))
-    
+    y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];
     delete(findall(axh,'Type','Line'));
+    
     axes(axh);
-    plot(xdata,horz_val,'r');
+    plot(xdata_red,horz_val,'r');
+    hold on;
+    plot([xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b');
     set(axh,'xlim',x_lim)
     set(allchild(axh), 'visible',get(axh,'visible'))
     
-
+    
     hfigs=getappdata(main_figure,'ExternalFigures');
     for iu=1:length(hfigs)
         if isvalid(hfigs(iu))
@@ -112,19 +155,18 @@ if ~isempty(cdata)
                     Map_info=getappdata(hfigs(iu),'Map_info');
                     m_proj(Map_info.Proj,'long',Map_info.LonLim,'lat',Map_info.LatLim);
                 end
-                for iui=1:length(hAllAxes)
-                    delete(findobj(hAllAxes(iui),'tag','boat_pos'));
-                    m_plot(hAllAxes(iui),Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k','tag','boat_pos')
+                if ~isempty(Long)
+                    for iui=1:length(hAllAxes)
+                        delete(findobj(hAllAxes(iui),'tag','boat_pos'));
+                        m_plot(hAllAxes(iui),Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k','tag','boat_pos')
+                    end
                 end
             end
         end
     end
-
+    
     
 end
 
-
-update_xtick_labels([],[],axh,curr_disp.Xaxes);
-update_ytick_labels([],[],axv);
 
 end

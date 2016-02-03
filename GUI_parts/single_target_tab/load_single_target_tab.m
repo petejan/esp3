@@ -90,11 +90,6 @@ layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 idx_single_target=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
 
-Sp=layer.Transceivers(idx_freq).Data.get_datamat('Sp');
-if isempty(Sp)
-    disp('Can''t find single targets with no Sp datagram...'); 
-    return;
-end
 
 ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
     'Type',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.Type,...
@@ -106,24 +101,15 @@ ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Tra
     'MaxStdMinAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
     'MaxStdMajAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle,...
     'DataType',layer.Transceivers(idx_freq).Mode);
-dataMat=nan(size(Sp));
-dataMat(ST.idx_target_lin)=ST.TS_comp;
 
-
-memapname=layer.Transceivers(idx_freq).Data.MemapName;
-
-layer.Transceivers(idx_freq).Data.remove_sub_data('singletarget');
-sub_ac_data_temp=sub_ac_data_cl('singletarget',memapname,dataMat);
-
-layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
-
-layer.Transceivers(idx_freq).ST=ST;
+layer.Transceivers(idx_freq).set_ST(ST);
 
 layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
-curr_disp.setField('singletarget');
 setappdata(main_figure,'Layer',layer);
+curr_disp.setField('singletarget');
+curr_disp.Freq=curr_disp.Freq;
+setappdata(main_figure,'Curr_disp',curr_disp);
     
-update_display(main_figure,0);
 
 end
 

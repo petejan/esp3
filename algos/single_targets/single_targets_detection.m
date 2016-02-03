@@ -56,6 +56,7 @@ end
 
 
 [nb_samples,nb_pings]=size(TS);
+nb_samples_ori=nb_samples;
 mask=zeros(size(TS));
 
 idx_bad_data=Transceiver.list_regions_type('Bad Data');
@@ -67,20 +68,33 @@ end
 
 TS(mask>=1)=-999;
 
-along=Transceiver.Data.get_datamat('AlongAngle');
-athwart=Transceiver.Data.get_datamat('AcrossAngle');
+
 [nb_samples,nb_pings]=size(TS);
-Range=repmat(Transceiver.Data.Range,1,nb_pings);
-Samples=repmat((1:nb_samples)',1,nb_pings);
-Ping=repmat(Transceiver.Data.Number,nb_samples,1);
+
+Idx_samples_lin=reshape(1:nb_samples*nb_pings,nb_samples,nb_pings);
 
 Bottom=Transceiver.Bottom.Range;
 if isempty(Bottom)
     Bottom=ones(1,nb_pings)*Range(end);
 end
 
+Range=repmat(Transceiver.Data.Range(1:nb_samples),1,nb_pings);
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;
+
+idx_r_max=find(Transceiver.Data.Range==nanmax(Range(TS>-999)));%%TODO but
+
+%%%%%%%Remove all unnecessary data%%%%%%%%
+
+TS(idx_r_max:end,:)=[];
+Idx_samples_lin(idx_r_max:end,:)=[];
+[nb_samples,nb_pings]=size(TS);
+along=Transceiver.Data.get_subdatamat('AlongAngle',1:nb_samples,1:nb_pings);
+athwart=Transceiver.Data.get_subdatamat('AcrossAngle',1:nb_samples,1:nb_pings);
+Range=repmat(Transceiver.Data.Range(1:nb_samples),1,nb_pings);
+Samples=repmat((1:nb_samples)',1,nb_pings);
+Ping=repmat(Transceiver.Data.Number,nb_samples,1);
+
 
 [T,Np]=Transceiver.get_pulse_length();
 %[T,Np]=Transceiver.get_pulse_Comp_length();
@@ -89,6 +103,7 @@ switch p.Results.DataType
     case 'CW'
         simu_pulse=ones(1,Np);
     case 'FM'
+       TSun(idx_r_max:end,:)=[];
         [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));   
         Np=4;
 end
@@ -154,6 +169,7 @@ idx_peaks_lin = find(idx_peaks);
 [i_peaks_lin,j_peaks_lin] = find(idx_peaks);
 nb_peaks=length(idx_peaks_lin);
 pulse_level=peak_mat(idx_peaks_lin)-p.Results.PLDL;
+idx_samples_lin=Idx_samples_lin(idx_peaks);
 pulse_env_after_lin=zeros(nb_peaks,1);
 pulse_env_before_lin=zeros(nb_peaks,1);
 idx_sup_after=ones(nb_peaks,1);
@@ -163,6 +179,7 @@ max_pulse_length=nanmax(Pulse_length_max_sample(:));
 
 for j=1:max_pulse_length
     idx_sup_before=idx_sup_before.*(pulse_level<=peak_mat(nanmax(i_peaks_lin-j,1)+(j_peaks_lin-1)*nb_samples));
+
     idx_sup_after=idx_sup_after.*(pulse_level<=peak_mat(nanmin(i_peaks_lin+j,nb_samples)+(j_peaks_lin-1)*nb_samples));
     pulse_env_before_lin=pulse_env_before_lin+idx_sup_before;
     pulse_env_after_lin=pulse_env_after_lin+idx_sup_after;
@@ -173,6 +190,7 @@ pulse_length_lin=pulse_env_before_lin+pulse_env_after_lin+1;
 idx_good_pulses=(pulse_length_lin<=Pulse_length_max_sample(idx_peaks))&(pulse_length_lin>=Pulse_length_min_sample(idx_peaks));
 
 idx_target_lin=idx_peaks_lin(idx_good_pulses);
+idx_samples_lin=idx_samples_lin(idx_good_pulses);
 pulse_length_lin=pulse_length_lin(idx_good_pulses);
 pulse_length_trans_lin=temp_pulse_length_sample;
 pulse_env_before_lin=pulse_env_before_lin(idx_good_pulses);
@@ -260,6 +278,7 @@ target_ping_number=target_ping_number(idx_keep);
 target_time=target_time(idx_keep);
 nb_valid_targets=nansum(idx_keep);
 idx_target_lin=idx_target_lin(idx_keep);
+idx_samples_lin=idx_samples_lin(idx_keep);
 pulse_env_before_lin=pulse_env_before_lin(idx_keep);
 pulse_env_after_lin=pulse_env_after_lin(idx_keep);
 
@@ -313,7 +332,8 @@ single_targets.Angle_major_axis=phi_athwart(idx_keep_final);
 single_targets.Ping_number=target_ping_number(idx_keep_final);
 single_targets.Time=target_time(idx_keep_final);
 single_targets.nb_valid_targets=nansum(idx_keep_final);
-single_targets.idx_target_lin=idx_target_lin(idx_keep_final)';
+idx_target_lin=idx_target_lin(idx_keep_final)';
+single_targets.idx_target_lin=idx_samples_lin(idx_keep_final)';
 single_targets.pulse_env_before_lin=pulse_env_before_lin(idx_keep_final)';
 single_targets.pulse_env_after_lin=pulse_env_after_lin(idx_keep_final)';
 single_targets.PulseLength_Normalized_PLDL=(pulse_env_after_lin(idx_keep_final)'+pulse_env_before_lin(idx_keep_final)'+1)./pulse_length_trans_lin(idx_keep_final)';
@@ -346,17 +366,11 @@ pitch_mat=repmat(pitch,nb_samples,1);
 heave_mat=repmat(heave,nb_samples,1);
 dist_mat=repmat(dist,nb_samples,1);
 
-single_targets.Dist=dist_mat(single_targets.idx_target_lin);
-single_targets.Roll=roll_mat(single_targets.idx_target_lin);
-single_targets.Pitch=pitch_mat(single_targets.idx_target_lin);
-single_targets.Heave=heave_mat(single_targets.idx_target_lin);
-single_targets.Heading=heading_mat(single_targets.idx_target_lin);
-
-%single_targets.idx_target_mat=idx_target;
-
-% figure();
-% imagesc(idx_target);
-
+single_targets.Dist=dist_mat(idx_target_lin);
+single_targets.Roll=roll_mat(idx_target_lin);
+single_targets.Pitch=pitch_mat(idx_target_lin);
+single_targets.Heave=heave_mat(idx_target_lin);
+single_targets.Heading=heading_mat(idx_target_lin);
 
 
 

@@ -6,7 +6,6 @@ addpath(genpath(fullfile(path, 'classes')));
 addpath(genpath(fullfile(path, 'algos')));
 addpath(genpath(fullfile(path, 'GUI_parts')));
 addpath(genpath(fullfile(path, 'esp2')));
-addpath(genpath(fullfile(path, 'export')));
 addpath(genpath(fullfile(path, 'fileIO')));
 addpath(genpath(fullfile(path, 'icons')));
 addpath(genpath(fullfile(path, 'general')));

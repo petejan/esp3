@@ -17,7 +17,7 @@ main_figure=figure('Visible','off',...
 set(0,'DefaultUicontrolFontSize',10);%Default font size for Controls
 set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
 
-set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+
 
 app_path=app_path_create();
 
@@ -35,7 +35,7 @@ files_in_temp=dir(fullfile(app_path.data,'*.bin'));
 
 idx_old=[];
 for uu=1:length(files_in_temp)
-    if (now-files_in_temp(uu).datenum)>0
+    if (now-files_in_temp(uu).datenum)>1
         idx_old=[idx_old uu];
     end
 end
@@ -68,7 +68,7 @@ if ~isempty(idx_old)
 end
 
 
-layer_obj=layer_cl();
+layer_obj=[];
 curr_disp_obj=curr_state_disp_cl();
 process_obj=process_cl.empty;
 
@@ -84,7 +84,8 @@ setappdata(main_figure,'MBS',[]);
 movegui(main_figure,'center')
 
 initialize_display(main_figure);
-update_display(main_figure,1);
+init_listeners(main_figure);
+set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 
 end
 
@@ -99,7 +100,6 @@ end
 if figheight<720
     main_figure.Position(4)=720;
 end
-movegui(main_figure,'center');
 
 end
 

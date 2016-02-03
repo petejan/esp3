@@ -111,15 +111,11 @@ end
 
 layer=layers(end);
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-curr_disp.Freq=layer.Frequencies(idx_freq);
-curr_disp.setField('sv');
-
 setappdata(hObject_main,'MBS',mbs_vec);
 setappdata(hObject_main,'Layer',layer);
 setappdata(hObject_main,'Layers',layers);
 setappdata(hObject_main,'Curr_disp',curr_disp);
-update_display(hObject_main,1);
+listenEcho([],[],hObject_main);
 load_map_fig(hObject_main,mbs_vec);
 
 end

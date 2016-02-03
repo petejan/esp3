@@ -9,7 +9,6 @@ addRequired(p,'regions',@(obj) isa(obj,'region_cl')||isempty(obj));
 addParameter(p,'Tag','',@(x) ischar(x)||iscell(x));
 addParameter(p,'Origin','',@ischar);
 
-
 parse(p,obj,regions,varargin{:});
 
 Tag=p.Results.Tag;
@@ -29,9 +28,21 @@ for i=1:length(regions)
             else
                 regions(i).Tag=Tag{length(Tag)};
             end
+        end 
+    end
+    
+    if ~strcmpi(Origin,'')
+        if ~iscell(Origin)
+            regions(i).Origin=Origin;
+        else
+            if length(Origin)>=i
+                regions(i).Origin=Origin{i};
+            else
+                regions(i).Origin=Origin{length(Origin)};
+            end
         end
     end
-    regions(i).Origin=Origin;
+
     obj.Regions=[obj.Regions regions(i)];
 end
 end

@@ -25,7 +25,7 @@ classdef survey_data_cl
             
             parse(p,varargin{:});
             
-            
+           
             results=p.Results;
             props=fieldnames(results);
             

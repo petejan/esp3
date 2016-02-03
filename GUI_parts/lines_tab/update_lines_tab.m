@@ -10,7 +10,7 @@ if ~isempty(list_lines)
 else
     set(lines_tab_comp.tog_line,'string',{'--'});
     set(lines_tab_comp.UTC_diff,'string',0)
-     set(lines_tab_comp.Dist_diff,'string',0)
+    set(lines_tab_comp.Dist_diff,'string',0)
 end
 
 

@@ -6,7 +6,6 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 main_axes=axes_panel_comp.main_axes;
-main_echo=axes_panel_comp.main_echo;
 
 u=get(main_axes,'children');
 
@@ -15,19 +14,22 @@ for ii=1:length(u)
         delete(u(ii));
     end
 end
-    
-
-xdata=double(get(main_echo,'xdata'));
-x=linspace(xdata(1),xdata(end),length(xdata));
-y=double(get(main_echo,'ydata'));
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-%idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
+trans=layer.Transceivers(idx_freq);
 
-list_reg = list_regions(layer.Transceivers(idx_freq));
+Number=trans.Data.Number;
+Range=trans.Data.Range;
+
+xdata=Number;
+
+x=xdata;
+y=Range;
+
+list_reg = list_regions(trans);
 axes(main_axes);
-dr=nanmean(diff(layer.Transceivers(idx_freq).Data.Range));
-dp=nanmean(diff(layer.Transceivers(idx_freq).GPSDataPing.Dist));
+dr=nanmean(diff(trans.Data.Range));
+dp=nanmean(diff(trans.GPSDataPing.Dist));
 
 active_reg=get(region_tab_comp.tog_reg,'value');
 if curr_disp.DispReg>0
@@ -38,13 +40,14 @@ end
 
 
     for i=1:length(list_reg)
-        reg_curr=layer.Transceivers(idx_freq).Regions(i);
+        reg_curr=trans.Regions(i);
         if i==active_reg
             col='r';
         else
             col='b';
         end
         
+
         x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
         y_reg_rect=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
         
@@ -79,7 +82,7 @@ end
                 reg_plot=gobjects(1,length(x_grid)+length(y_grid)+1);
                 reg_plot(1)=plot(x_reg_rect,y_reg_rect,col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid);
             case 'Polygon'
-                lst='-';
+
                 idx_x=reg_curr.X_cont;
                 idx_y=reg_curr.Y_cont;
                 x_reg=cell(1,length(idx_x));
@@ -87,6 +90,7 @@ end
 
                 nb_cont=length(idx_x);
                 reg_plot=gobjects(1,length(x_grid)+length(y_grid)+nb_cont);
+                %reg_plot=gobjects(1,nb_cont);
                 len_max=0;
                 idx_len_max=[];
                 for jj=1:length(idx_x)
@@ -112,6 +116,8 @@ end
           
                 X_grid(~grid_in)=nan;
                 Y_grid(~grid_in)=nan;
+%               X_grid=[];
+%               Y_grid=[];
                  
         end
                
@@ -127,8 +133,6 @@ end
 
         create_region_context_menu(reg_plot,main_figure,reg_curr);
        
-
-        
     end
 
 end

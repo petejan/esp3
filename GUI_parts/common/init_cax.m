@@ -10,12 +10,16 @@ switch Fieldname
     case 'sp'
         Cax=[-60 -30];
         Type='Sp';
+    case 'sp_comp'
+        Cax=[-60 -30];
+        Type='TS';
     case    'spdenoised'
         Cax=[-60 -30];
         Type='Denoised Sp';
     case  'spunmatched'
         Cax=[-60 -30];
         Type='Sp before match filtering';
+        
     case 'power'
         Cax=[-200 0];
         Type='Power';

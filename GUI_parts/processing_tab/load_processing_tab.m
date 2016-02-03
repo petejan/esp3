@@ -28,25 +28,32 @@ if ~isempty(process_list)
     bad_trans_algo=found;
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
     school_detect_algo=found;
+    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SingleTarget');
+    st_detect_algo=found;
+    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'TrackTarget');
+    track_algo=found;
 else
     
     noise_rem_algo=0;
-    
-    bot_algo=0;
-    
+    bot_algo=0;  
     bad_trans_algo=0;
-    
-    school_detect_algo=0;
+    school_detect_algo=0; 
+    st_detect_algo=0;
+    track_algo=0;
     
 end
 
 uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Algorithms','units','normalized','Position',[0.3 0.85 0.2 0.1]);
-processing_tab_comp.noise_removal=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',noise_rem_algo,'String','Noise Removal','units','normalized','Position',[0.3 0.7 0.3 0.15]);
-processing_tab_comp.bot_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',bot_algo,'String','Bottom Detection','units','normalized','Position',[0.3 0.55 0.3 0.15]);
-processing_tab_comp.bad_transmit=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',bad_trans_algo,'String','Bad Transmit Removal','units','normalized','Position',[0.3 0.4 0.3 0.15]);
-processing_tab_comp.school_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',school_detect_algo,'String','School detection','units','normalized','Position',[0.3 0.25 0.3 0.15]);
+processing_tab_comp.noise_removal=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',noise_rem_algo,'String','Noise Removal','units','normalized','Position',[0.3 0.75 0.3 0.1]);
+processing_tab_comp.bot_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',bot_algo,'String','Bottom Detection','units','normalized','Position',[0.3 0.65 0.3 0.1]);
+processing_tab_comp.bad_transmit=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',bad_trans_algo,'String','Bad Transmit Removal','units','normalized','Position',[0.3 0.55 0.3 0.1]);
+processing_tab_comp.school_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',school_detect_algo,'String','School detection','units','normalized','Position',[0.3 0.45 0.3 0.1]);
+processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',st_detect_algo,'String','Single Target Detection','units','normalized','Position',[0.3 0.35 0.3 0.1]);
+processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',track_algo,'String','Track Targets','units','normalized','Position',[0.3 0.25 0.3 0.1]);
 
-set([processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bad_transmit processing_tab_comp.school_detec],'Callback',{@update_process_list,main_figure})
+
+
+set([processing_tab_comp.track_target processing_tab_comp.single_target processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bad_transmit processing_tab_comp.school_detec],'Callback',{@update_process_list,main_figure})
 
 uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','File Selection','units','normalized','Position',[0.6 0.85 0.2 0.1]);
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.3 0.15],'callback',{@process,main_figure,0});
@@ -92,6 +99,8 @@ for ii=1:length(layer_to_proc)
         [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,curr_disp.Freq,'BottomDetection');
         [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
         [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
+        [~,idx_single_target,single_target_algo]=find_process_algo(process_list,curr_disp.Freq,'SingleTarget');
+        [~,idx_track_target,single_track_algo]=find_process_algo(process_list,curr_disp.Freq,'TrackTarget');
         
         Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
         
@@ -241,7 +250,7 @@ for ii=1:length(layer_to_proc)
                 'l_min_tot',process_list(kk).Algo(idx_school_detect).Varargin.l_min_tot,...
                 'nb_min_sples',process_list(kk).Algo(idx_school_detect).Varargin.nb_min_sples,...
                 'horz_link_max',process_list(kk).Algo(idx_school_detect).Varargin.horz_link_max,...
-                'vert_link_max',process_list(kk).Algo(idx_school_detect).Varargin.vert_link_max);;
+                'vert_link_max',process_list(kk).Algo(idx_school_detect).Varargin.vert_link_max);
             
             layer.Transceivers(idx_freq).rm_region_name('School');
             
@@ -262,6 +271,56 @@ for ii=1:length(layer_to_proc)
         layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
 
         end
+        
+        if single_target_algo
+            ST=feval(process_list(kk).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
+                'Type',process_list(kk).Algo(idx_single_target).Varargin.Type,...
+                'TS_threshold',process_list(kk).Algo(idx_single_target).Varargin.TS_threshold,...
+                'PLDL',process_list(kk).Algo(idx_single_target).Varargin.PLDL,...
+                'MinNormPL',process_list(kk).Algo(idx_single_target).Varargin.MinNormPL,...
+                'MaxNormPL',process_list(kk).Algo(idx_single_target).Varargin.MaxNormPL,...
+                'MaxBeamComp',process_list(kk).Algo(idx_single_target).Varargin.MaxBeamComp,...
+                'MaxStdMinAxisAngle',process_list(kk).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
+                'MaxStdMajAxisAngle',process_list(kk).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle,...
+                'DataType',layer.Transceivers(idx_freq).Mode);
+            
+            layer.Transceivers(idx_freq).set_ST(ST);
+            layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
+            
+            if single_track_algo
+                tracks=feval(process_list(kk).Algo(idx_track_target).Function,layer.Transceivers(idx_freq).ST,...
+                    'AlphaMajAxis',process_list(kk).Algo(idx_track_target).Varargin.AlphaMajAxis,...
+                    'AlphaMinAxis',process_list(kk).Algo(idx_track_target).Varargin.AlphaMinAxis,...
+                    'AlphaRange',process_list(kk).Algo(idx_track_target).Varargin.AlphaRange,...
+                    'BetaMajAxis',process_list(kk).Algo(idx_track_target).Varargin.BetaMajAxis,...
+                    'BetaMinAxis',process_list(kk).Algo(idx_track_target).Varargin.BetaMinAxis,...
+                    'BetaRange',process_list(kk).Algo(idx_track_target).Varargin.BetaRange,...
+                    'ExcluDistMajAxis',process_list(kk).Algo(idx_track_target).Varargin.ExcluDistMajAxis,...
+                    'ExcluDistMinAxis',process_list(kk).Algo(idx_track_target).Varargin.ExcluDistMinAxis,...
+                    'ExcluDistRange',process_list(kk).Algo(idx_track_target).Varargin.ExcluDistRange,...
+                    'MaxStdMinorAxisAngle',process_list(kk).Algo(idx_track_target).Varargin.MaxStdMinorAxisAngle,...
+                    'MaxStdMajorAxisAngle',process_list(kk).Algo(idx_track_target).Varargin.MaxStdMajorAxisAngle,...
+                    'MissedPingExpMajAxis',process_list(kk).Algo(idx_track_target).Varargin.MissedPingExpMajAxis,...
+                    'MissedPingExpMinAxis',process_list(kk).Algo(idx_track_target).Varargin.MissedPingExpMinAxis,...
+                    'MissedPingExpRange',process_list(kk).Algo(idx_track_target).Varargin.MissedPingExpRange,...
+                    'WeightMajAxis',process_list(kk).Algo(idx_track_target).Varargin.WeightMajAxis,...
+                    'WeightMinAxis',process_list(kk).Algo(idx_track_target).Varargin.WeightMinAxis,...
+                    'WeightRange',process_list(kk).Algo(idx_track_target).Varargin.WeightRange,...
+                    'WeightTS',process_list(kk).Algo(idx_track_target).Varargin.WeightTS,...
+                    'WeightPingGap',process_list(kk).Algo(idx_track_target).Varargin.WeightPingGap,...
+                    'Min_ST_Track',process_list(kk).Algo(idx_track_target).Varargin.Min_ST_Track,...
+                    'Min_Pings_Track',process_list(kk).Algo(idx_track_target).Varargin.Min_Pings_Track,...
+                    'Max_Gap_Track',process_list(kk).Algo(idx_track_target).Varargin.Max_Gap_Track);
+                
+                layer.Transceivers(idx_freq).Tracks=tracks;
+                
+                
+            end
+            
+            
+        end
+        
+        
         	
         setappdata(main_figure,'Curr_disp',curr_disp); 
         setappdata(main_figure,'Layers',layers);
@@ -301,13 +360,24 @@ add=get(processing_tab_comp.school_detec,'value')==get(processing_tab_comp.schoo
 idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'SchoolDetection');
 process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
 
+add_st=get(processing_tab_comp.single_target,'value')==get(processing_tab_comp.single_target,'max');
+idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add_st);
+
+if add_st==0
+set(processing_tab_comp.track_target,'value',get(processing_tab_comp.track_target,'min'));
+end
+
+add=get(processing_tab_comp.track_target,'value')==get(processing_tab_comp.track_target,'max');
+idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'TrackTarget');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
 
 setappdata(main_figure,'Process',process_list);
 end
 
 function tog_freq(src,~,main_figure)
 choose_freq(src,[],main_figure);
-
+curr_disp=getappdata(main_figure,'Curr_disp');
 process_list=getappdata(main_figure,'Process');
 processing_tab_comp=getappdata(main_figure,'Processing_tab');
 
@@ -316,6 +386,7 @@ idx_freq=get(processing_tab_comp.tog_freq,'value');
 
 freq=str2double(freq_vec(idx_freq,:));
 
+curr_disp.Freq=freq;
 if ~isempty(process_list)
     [~,~,found]=find_process_algo(process_list,freq,'Denoise');
     noise_rem_algo=found;

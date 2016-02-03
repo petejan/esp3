@@ -1,6 +1,27 @@
 function keyboard_func(~,callbackdata,main_figure)
-
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
+layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
+trans=layer.Transceivers(idx_freq);
+Time=trans.Data.Time;
+Number=trans.Data.Number;
+Range=trans.Data.Range;
+Dist=trans.GPSDataPing.Dist;
+
+switch curr_disp.Xaxes
+    case 'Time'
+        xdata=Time;
+    case 'Distance'
+        xdata=Dist;
+    case 'Number'
+        xdata=Number;
+end
+ydata=Range;
 
 switch callbackdata.Key
     case {'leftarrow','rightarrow','uparrow','downarrow'}
@@ -10,60 +31,92 @@ switch callbackdata.Key
         if ~isfield(axes_panel_comp,'main_echo')
             return;
         end
-        main_echo=axes_panel_comp.main_echo;
-        x=double(get(main_axes,'xlim'));
-        y=double(get(main_axes,'ylim'));
-        xdata=double(get(main_echo,'Xdata'));
-        ydata=double(get(main_echo,'Ydata'));
-        nb_x=100;
-        nb_y=100;
-        x_vec=linspace(xdata(1),xdata(end),nb_x);
-        y_vec=linspace(ydata(1),ydata(end),nb_y);
         
-        [~,idx_curr_pos_xmin]=nanmin(abs(x_vec-x(1)));
-        [~,idx_curr_pos_xmax]=nanmin(abs(x_vec-x(2)));
-        x_w=idx_curr_pos_xmax-idx_curr_pos_xmin;
-        
-        [~,idx_curr_pos_ymin]=nanmin(abs(y_vec-y(1)));
-        [~,idx_curr_pos_ymax]=nanmin(abs(y_vec-y(2)));
-        y_w=idx_curr_pos_ymax-idx_curr_pos_ymin;
-        
+        x_lim=double(get(main_axes,'xlim'));
+        y_lim=double(get(main_axes,'ylim'));
+        dx=(x_lim(2)-x_lim(1));
+        dy=(y_lim(2)-y_lim(1));
         switch callbackdata.Key
             case 'leftarrow'
-                idx1=nanmin(nanmax(idx_curr_pos_xmin-1,1),nb_x-x_w);
-                idx2=idx1+x_w;
-                set(main_axes,'xlim',[x_vec(idx1) x_vec(idx2)]);
+                if x_lim(1)<=xdata(1)
+                    return;
+                else
+                    x_lim=[nanmax(xdata(1),x_lim(1)-dx/4),nanmax(xdata(1),x_lim(1)-dx/4)+dx];
+                end
+                set(main_axes,'xlim',x_lim);
+                set(main_axes,'ylim',y_lim);
             case 'rightarrow'
-                idx1=nanmin(idx_curr_pos_xmin+1,nb_x-x_w);
-                idx2=idx1+x_w;
-                set(main_axes,'xlim',[x_vec(idx1) x_vec(idx2)]);
+                if x_lim(2)>=xdata(end)
+                    return;
+                else
+                    x_lim=[nanmin(xdata(end),x_lim(2)+dx/4)-dx,nanmin(xdata(end),x_lim(2)+dx/4)];
+                end
+                set(main_axes,'xlim',x_lim);
+                set(main_axes,'ylim',y_lim);
             case 'downarrow'
-                idx1=nanmin(idx_curr_pos_ymin+1,nb_y-y_w);
-                idx2=idx1+y_w;
-                set(main_axes,'ylim',[y_vec(idx1) y_vec(idx2)]);
+                if y_lim(2)>=ydata(end)
+                    return;
+                else
+                    y_lim=[nanmin(ydata(end),y_lim(2)+dy/4)-dy,nanmin(ydata(end),y_lim(2)+dy/4)];
+                end
+                set(main_axes,'ylim',y_lim);
             case 'uparrow'
-                idx1=nanmin(nanmax(idx_curr_pos_ymin-1,1),nb_y-y_w);
-                idx2=idx1+y_w;
-                set(main_axes,'ylim',[y_vec(idx1) y_vec(idx2)]);
-                
+                if y_lim(1)<=ydata(1)
+                    return;
+                else
+                    y_lim=[nanmax(ydata(1),y_lim(1)-dy/4),nanmax(ydata(1),y_lim(1)-dy/4)+dy];
+                end
+                set(main_axes,'ylim',y_lim);
         end
         
     case '1'
+        
         switch get(cursor_mode_tool_comp.zoom_in,'state');
             case 'off'
                 set(cursor_mode_tool_comp.zoom_in,'state','on');
+                curr_disp.CursorMode='Zoom In';
             case 'on'
                 set(cursor_mode_tool_comp.zoom_in,'state','off');
+                curr_disp.CursorMode='Normal';
         end
-        toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
-    case '2'       
-        switch get(cursor_mode_tool_comp.zoom_out,'state');
+        %toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
+    case '2'
+        
+        switch get(cursor_mode_tool_comp.bad_trans,'state');
             case 'off'
-                set(cursor_mode_tool_comp.zoom_out,'state','on');
+                set(cursor_mode_tool_comp.bad_trans,'state','on');
+                curr_disp.CursorMode='Bad Transmits';
             case 'on'
-                set(cursor_mode_tool_comp.zoom_out,'state','off');
+                set(cursor_mode_tool_comp.bad_trans,'state','off');
+                curr_disp.CursorMode='Normal';
         end
-        toggle_func(cursor_mode_tool_comp.zoom_out,[],main_figure);
+        %toggle_func(cursor_mode_tool_comp.bad_trans,[],main_figure);
+    case '3'
+        
+        switch get(cursor_mode_tool_comp.edit_bottom,'state');
+            case 'off'
+                set(cursor_mode_tool_comp.edit_bottom,'state','on');
+                curr_disp.CursorMode='Edit Bottom';
+            case 'on'
+                set(cursor_mode_tool_comp.edit_bottom,'state','off');
+                curr_disp.CursorMode='Normal';
+        end
+        %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
+    case '4'
+        curr_disp.CursorMode='Create Region';
+        reset_mode(0,0,main_figure);
+        set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
+    case '5'
+        curr_disp.CursorMode='Normal';
+        reset_mode(0,0,main_figure);
+    case 'b'
+        
+        switch curr_disp.DispUnderBottom
+            case 'off'
+                curr_disp.DispUnderBottom='on';
+            case 'on'
+                curr_disp.DispUnderBottom='off';
+        end
         
 end
 

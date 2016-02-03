@@ -8,12 +8,8 @@ trans=layer.Transceivers(idx_freq);
 
 Bottom=trans.Bottom;
 
-ax_main=axes_panel_comp.main_axes;
-axh=axes_panel_comp.haxes;
-axv=axes_panel_comp.vaxes;
+ax_main=ax_main;
 
-% xdata=get(axes_panel_comp.main_echo,'XData');
-% ydata=get(axes_panel_comp.main_echo,'YData');
 
 x_lim=double(get(ax_main,'xlim'));
 y_lim=double(get(ax_main,'ylim'));
@@ -72,7 +68,8 @@ if ~isempty(cdata)
     grid on;
     ylabel('Range(m)')
     xlabel(ylab_str);
-    set(axv,'YTick',get(axes_panel_comp.main_axes,'YTick'));
+    set(axv,'YTick',get(ax_main,'YTick'));
+    set(axv,'YTicklabel',get(ax_main,'YTicklabel'));
     axis ij;
 
     figure();
@@ -83,11 +80,10 @@ if ~isempty(cdata)
     grid on;
     xlabel(xlab_str);
     ylabel(ylab_str);
-    set(axh,'XTick',get(axes_panel_comp.main_axes,'XTick'));
+    set(axh,'XTick',get(ax_main,'XTick'));
+    set(axh,'XTicklabel',get(ax_main,'XTicklabel'));
    
 end
 
-update_xtick_labels([],[],axh,curr_disp.Xaxes);
-update_ytick_labels([],[],axv);
 
 end

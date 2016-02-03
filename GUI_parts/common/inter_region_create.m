@@ -3,6 +3,7 @@ function inter_region_create(src,main_figure,mode,func)
 obj=gco;
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
+src.Pointer = 'ibeam';
 ah=axes_panel_comp.main_axes;
 
 if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
@@ -87,8 +88,7 @@ end
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
         
-        axes(ah);
-        hold on;
+
         hp=plot(x_box,y_box,'color','k','linewidth',1);
         drawnow;
         
@@ -98,6 +98,14 @@ end
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
+        
+        
+        layer=getappdata(main_figure,'Layer');
+        curr_disp=getappdata(main_figure,'Curr_disp');
+        [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
+
+        [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
+
         
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
@@ -111,15 +119,28 @@ end
         x_max=nanmax(x_box);
         x_max=nanmin(xdata(end),x_max);
         
-        x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
-        
-        idx_pings=find(x_data_disp<=x_max&x_data_disp>=x_min);
+
+        idx_pings=find(xdata<=x_max&xdata>=x_min);
         idx_r=find(ydata<=y_max&ydata>=y_min);
+        
+        switch mode
+            case 'horizontal'
+                idx_r=idx_r+idx_r_ori-1;
+                idx_pings=1:length(layer.Transceivers(idx_freq).Data.Number);
+            case 'vertical'
+                idx_r=1:length(layer.Transceivers(idx_freq).Data.Range);
+                idx_pings=idx_pings+idx_ping_ori-1;
+            otherwise
+                idx_r=idx_r+idx_r_ori-1;
+                idx_pings=idx_pings+idx_ping_ori-1;
+        end
+        
+        
+        
         reset_disp_info(main_figure);
         clear_lines(ah)
         feval(func,main_figure,idx_r,idx_pings);
         
-
     end
 
 end
