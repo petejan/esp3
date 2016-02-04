@@ -9,7 +9,7 @@ if nansum(isnan(map_input.LatLim))>=1
 end
 
 hfig=figure('Name','Navigation','NumberTitle','off','tag','nav');
-map_input.display_map_input_cl(hfig);
+map_input.display_map_input_cl(hfig,main_figure);
 
 hfigs=[hfigs hfig];
 setappdata(main_figure,'ExternalFigures',hfigs);

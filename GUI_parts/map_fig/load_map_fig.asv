@@ -5,8 +5,8 @@ p = inputParser;
 
 addRequired(p,'main_fig',@ishandle);
 addRequired(p,'obj_vec',@(obj) isa(obj,'mbs_cl')||isa(obj,'survey_cl')||isempty(obj));
-addParameter(p,'field','SliceAbscf',@ischar);
-parse(p,main_fig,obj_vec,varargin{:});
+addParamter(p,'field','SliceAbscf',ischar);
+parse(p,main_fig,obj_vec,varargin);
 
 box.field=p.Results.field;
 
@@ -35,12 +35,10 @@ end
 
 box.slice_size=10;
 
-switch box.field
-    case 'SliceAbscf'
-        box.val_max=0.00005;
-    otherwise
-        box.val_max=10;
-end
+switch 
+box.abscf_max=0.00005;
+
+
 
 box.r_max=50;
 box.nb_pts=100;
@@ -113,12 +111,6 @@ box.slice_size_box = uicontrol(map_fig,'Style','edit',...
 
 if ~isempty(obj_vec)
     set(box.slice_size_box,'enable','off');
-    switch class(obj_vec)
-        case 'survey_cl'
-            set(box.slice_size_box,'String',num2str(obj_vec.SurvInput.Options.Vertical_slice_size,'%d'));
-        case 'mbs_cl'
-            
-    end
 end
 
 
@@ -126,13 +118,13 @@ uicontrol(map_fig,'Style','text',...
     'Units','normalized',...
     'BackgroundColor','w',...
     'Position',[0.025 0.1 0.125 0.05],...
-    'String',sprintf('Max %s',box.field));
-box.val_max_box = uicontrol(map_fig,'Style','edit',...
+    'String','Max Abscf:');
+box.abscf_max_box = uicontrol(map_fig,'Style','edit',...
     'Units','normalized',...
     'Position',[0.175 0.1 0.1 0.05],...
-    'String',num2str(box.val_max,'%.5f'),...
+    'String',num2str(box.abscf_max,'%.5f'),...
     'BackgroundColor','w',...
-    'Tag','slice_size','Callback',{@check_val_max,map_fig});
+    'Tag','slice_size','Callback',{@check_abscf_max,map_fig});
 
 uicontrol(map_fig,'Style','text',...
     'Units','normalized',...
@@ -351,14 +343,14 @@ end
 setappdata(map_fig,'Box',box);
 end
 
-function check_val_max(src,~,map_fig)
+function check_abscf_max(src,~,map_fig)
 box=getappdata(map_fig,'Box');
 str=get(src,'string');
 if isnan(str2double(str))||str2double(str)<=0
-    set(src,'string',num2str(box.val_max,'%.5f'));
+    set(src,'string',num2str(box.abscf_max,'%.5f'));
 else
-    box.val_max=str2double(str);
-    set(src,'string',num2str(box.val_max,'%.5f'));
+    box.abscf_max=str2double(str);
+    set(src,'string',num2str(box.abscf_max,'%.5f'));
 end
 setappdata(map_fig,'Box',box);
 end
@@ -410,12 +402,12 @@ else
 end
 
 if isempty(obj_vec_tot)
-    map_input=map_input_cl.map_input_cl_from_obj(obj,'ValMax',box.val_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont,'Freq',curr_disp.Freq);
+    map_input=map_input_cl.map_input_cl_from_obj(obj,'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont,'Freq',curr_disp.Freq);
     map_input.LatLim=sort(box.lat_box);
     map_input.LonLim=sort(box.lon_box);
 else
     for ui=1:length(obj)
-        map_input(ui)=map_input_cl.map_input_cl_from_obj(obj(ui),'ValMax',box.val_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
+        map_input(ui)=map_input_cl.map_input_cl_from_obj(obj(ui),'AbscfMax',box.abscf_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
         map_input(ui).LatLim=sort(box.lat_box);
         map_input(ui).LonLim=sort(box.lon_box);
     end

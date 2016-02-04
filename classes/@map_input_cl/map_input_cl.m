@@ -15,7 +15,7 @@ classdef map_input_cl
         LatLim
         LonLim
         Proj
-        AbscfMax
+        ValMax
         Rmax
         Coast
         Depth_Contour
@@ -42,7 +42,7 @@ classdef map_input_cl
             addParameter(p,'LatLim',@isnumeric);
             addParameter(p,'LonLim',@isnumeric);
             addParameter(p,'Proj','lambert',@ischar);
-            addParameter(p,'AbscfMax',0.0017,@isnumeric);
+            addParameter(p,'ValMax',0.0017,@isnumeric);
             addParameter(p,'Rmax',17,@isnumeric);
             addParameter(p,'Coast',1,@isnumeric);
             

@@ -141,7 +141,7 @@ for uuobj=1:length(obj_tot)
                 end
                 u_plot_slice(idx_snap(uui))=m_plot(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'k');
                 set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
-                ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
+                ring_size=obj.Rmax*(log10(obj.(field){idx_snap(uui)}/obj.ValMax+10)-1);
                 idx_rings=find(ring_size>0);
                 for uuj=idx_rings
                     m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5);

@@ -32,16 +32,11 @@ if ~isequal(Filename, 0)
     end
     
     if ~isempty(obj_vec)
-
-        choice_str={'SliceAbscf','Nb_ST','Nb_Tracks'};
         [s,v] = listdlg('PromptString','What do you want to plot?',...
                 'SelectionMode','single',...
-                'ListString',choice_str,'ListSize',[150 150]);
-            if v>0
-                field=choice_str{s};
-            end
+                'ListString',{'SliceAbscf','Nb_ST','Nb_Track'},'ListSize',[150 150])
         
-        load_map_fig(hObject_main,obj_vec,'field',field);
+        load_map_fig(hObject_main,obj_vec);
     else
         return;
     end
