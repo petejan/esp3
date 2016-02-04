@@ -5,10 +5,9 @@ p = inputParser;
 
 addRequired(p,'main_fig',@ishandle);
 addRequired(p,'obj_vec',@(obj) isa(obj,'mbs_cl')||isa(obj,'survey_cl')||isempty(obj));
-addParameter(p,'field','SliceAbscf',@ischar);
+
 parse(p,main_fig,obj_vec,varargin{:});
 
-box.field=p.Results.field;
 
 if isempty(obj_vec)
     layers=getappdata(main_fig,'Layers');
@@ -34,15 +33,8 @@ if nansum(isnan(box.lat_lim))==2
 end
 
 box.slice_size=10;
-
-switch box.field
-    case 'SliceAbscf'
-        box.val_max=0.00005;
-    otherwise
-        box.val_max=10;
-end
-
-box.r_max=50;
+box.val_max=0.00001;
+box.r_max=2;
 box.nb_pts=100;
 proj=m_getproj;
 box.list_proj_str={proj(:).name};
@@ -76,6 +68,27 @@ box.listbox = uicontrol(map_fig,'Style','listbox',...
     'Max',2,...
     'Tag','listbox',...
     'Callback',{@update_map_callback,map_fig});
+
+switch class(obj_vec)
+    case 'mbs_cl'
+        field_str={'SliceAbscf'};
+    case 'survey_cl'
+        field_str={'SliceAbscf','Nb_ST','Nb_Tracks'};
+    otherwise
+        field_str={'SliceAbscf','Nb_ST','Nb_Tracks'};
+end
+        
+uicontrol(map_fig,'Style','text',...
+    'Units','normalized',...
+    'Position',[0.3 0.175 0.25 0.05],...
+    'BackgroundColor','w',...
+    'String','Variable to plot:');
+box.field = uicontrol(map_fig,'Style','popupmenu',...
+    'Units','normalized',...
+    'Position',[0.3 0.1 0.2 0.05],...
+    'String',field_str,...
+    'Tag','listbox',...
+    'Callback',{@update_field_callback,map_fig});
 
 
 box.tog_proj=uicontrol(map_fig,'Style','popupmenu','String',box.list_proj_str,'Value',box.proj_idx,...
@@ -120,17 +133,18 @@ if ~isempty(obj_vec)
             
     end
 end
+str_field=get(box.field,'string');
+str_field=str_field{get(box.field,'value')};
 
-
-uicontrol(map_fig,'Style','text',...
+box.str_field=uicontrol(map_fig,'Style','text',...
     'Units','normalized',...
     'BackgroundColor','w',...
     'Position',[0.025 0.1 0.125 0.05],...
-    'String',sprintf('Max %s',box.field));
+    'String',sprintf('Max %s',str_field));
 box.val_max_box = uicontrol(map_fig,'Style','edit',...
     'Units','normalized',...
     'Position',[0.175 0.1 0.1 0.05],...
-    'String',num2str(box.val_max,'%.5f'),...
+    'String',num2str(box.val_max,'%.6f'),...
     'BackgroundColor','w',...
     'Tag','slice_size','Callback',{@check_val_max,map_fig});
 
@@ -303,6 +317,28 @@ setappdata(map_fig,'Box',box);
 create_box_impoints(map_fig,i);
 end
 
+
+function update_field_callback(~,~,map_fig)
+
+box=getappdata(map_fig,'Box');
+
+str_field=get(box.field,'string');
+str_field=str_field{get(box.field,'value')};
+
+switch (str_field)
+    case 'SliceAbscf'
+       box.val_max=0.00001;
+    case 'Nb_ST'
+       box.val_max=20;
+    case 'Nb_Tracks'
+       box.val_max=10;
+end
+
+set(box.val_max_box,'string',num2str(box.val_max,'%.6f'));
+set(box.str_field,'String',sprintf('Max %s',str_field));
+end
+
+
 function update_map_callback(~,~,map_fig)
 
 box=getappdata(map_fig,'Box');
@@ -355,10 +391,10 @@ function check_val_max(src,~,map_fig)
 box=getappdata(map_fig,'Box');
 str=get(src,'string');
 if isnan(str2double(str))||str2double(str)<=0
-    set(src,'string',num2str(box.val_max,'%.5f'));
+    set(src,'string',num2str(box.val_max,'%.6f'));
 else
     box.val_max=str2double(str);
-    set(src,'string',num2str(box.val_max,'%.5f'));
+    set(src,'string',num2str(box.val_max,'%.6f'));
 end
 setappdata(map_fig,'Box',box);
 end
@@ -420,12 +456,13 @@ else
         map_input(ui).LonLim=sort(box.lon_box);
     end
 end
-
+str_field=get(box.field,'string');
+str_field=str_field{get(box.field,'value')};
 hfig=figure();
-map_input.display_map_input_cl(hfig,main_fig,box.field);
+map_input.display_map_input_cl(hfig,main_fig,str_field);
 
 hfigs_new=[hfigs hfig];
 setappdata(main_fig,'ExternalFigures',hfigs_new);
-delete(map_fig);
+
 end
 

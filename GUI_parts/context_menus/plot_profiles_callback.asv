@@ -51,7 +51,7 @@ end
 [~,idx_ping]=nanmin(abs(xdata-x));
 [~,idx_r]=nanmin(abs(ydata-y));
 vert_val=trans.Data.get_subdatamat(curr_disp.Fieldname,1:length(ydata),idx_ping);
-horz_val=trans.Data.get_subdatamat(curr_disp.Fieldname,idx_r,1:length(xdata));
+horz_val=trans.Data.get_subdatamat(curr_disp.Fieldname,1:length(ydata),1:length(xdata));
 
 
 if ~isnan(Bottom.Sample_idx(idx_ping))
@@ -71,6 +71,8 @@ plot(bot_x_val,[bot_val bot_val],'r');
 grid on;
 ylabel('Range(m)')
 xlabel(ylab_str);
+set(axv,'YTick',get(ax_main,'YTick'));
+set(axv,'YTicklabel',get(ax_main,'YTicklabel'));
 axis ij;
 
 figure();
@@ -81,11 +83,8 @@ plot(xdata,horz_val,'r');
 grid on;
 xlabel(xlab_str);
 ylabel(ylab_str);
-switch curr_disp.Xaxes
-    case 'Time'
-        datetick(axh,'x','dd-mmm-yyyy HH:MM:SS')
-end
-
+set(axh,'XTick',get(ax_main,'XTick'));
+set(axh,'XTicklabel',get(ax_main,'XTicklabel'));
 
 
 

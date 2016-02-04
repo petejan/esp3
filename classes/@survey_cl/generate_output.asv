@@ -307,20 +307,18 @@ for isn = 1:length(snap_vec)
         
         dist=surv_out_obj.transectSum.dist(idx);
         trans_abscf=surv_out_obj.transectSum.abscf(idx);
-        abscf_mean_j=surv_out_obj.stratumSum.abscf_mean(j);
-        
+        abscf_wmean_j=surv_out_obj.stratumSum.abscf_wmean(j);
         nb_trans_j=surv_out_obj.stratumSum.no_transects(j);
         
         if surv_out_obj.stratumSum.no_transects(j)>1
-            surv_out_obj.stratumSum.abscf_sd(j) = sqrt((sum_sq_abscf-abscf_mean_j.^2.*nb_trans_j)/(nb_trans_j-1)); %
+            surv_out_obj.stratumSum.abscf_sd(j) = sqrt((sum_sq_abscf-surv_out_obj.stratumSum.abscf_mean(j).^2.*nb_trans_j)/(nb_trans_j-1)); %
         else
             surv_out_obj.stratumSum.abscf_sd(j)=0;
         end
         
-        surv_out_obj.stratumSum.abscf_wmean(j) = nansum(dist.*trans_abscf)/...
-            nansum(dist); % abscf_wmean according to esp2 formula
-        abscf_wmean_j=surv_out_obj.stratumSum.abscf_wmean(j);
-        
+        surv_out_obj.stratumSum.abscf_wmean(j) = nansum(surv_out_obj.transectSum.dist(idx).*surv_out_obj.transectSum.abscf(idx))/...
+            nansum(surv_out_obj.transectSum.dist(idx)); % abscf_wmean according to esp2 formula
+
         if nb_trans_j>1
             surv_out_obj.stratumSum.abscf_var(j) = nb_trans_j*(nansum(dist.^2.*trans_abscf.^2)-2*abscf_wmean_j*nansum(dist.^2.*trans_abscf)+abscf_wmean_j^2*nansum(dist.^2))...
                 /((nb_trans_j-1)*nansum(dist.^2)); % abscf_var according to esp2 formula

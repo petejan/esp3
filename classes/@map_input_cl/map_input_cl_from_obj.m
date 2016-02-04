@@ -5,7 +5,7 @@ check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl')|isa(x,'survey_c
 addRequired(p,'Ext_obj',check_layer_cl);
 addParameter(p,'Proj','lambert',@ischar);
 addParameter(p,'ValMax',0.0001,@isnumeric);
-addParameter(p,'Rmax',30,@isnumeric);
+addParameter(p,'Rmax',2,@isnumeric);
 addParameter(p,'SliceSize',100,@isnumeric);
 addParameter(p,'Freq',38000,@isnumeric);
 addParameter(p,'Coast',1,@isnumeric);

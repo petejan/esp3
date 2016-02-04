@@ -43,7 +43,7 @@ classdef map_input_cl
             addParameter(p,'LonLim',@isnumeric);
             addParameter(p,'Proj','lambert',@ischar);
             addParameter(p,'ValMax',0.0017,@isnumeric);
-            addParameter(p,'Rmax',17,@isnumeric);
+            addParameter(p,'Rmax',5,@isnumeric);
             addParameter(p,'Coast',1,@isnumeric);
             
             parse(p,varargin{:});
