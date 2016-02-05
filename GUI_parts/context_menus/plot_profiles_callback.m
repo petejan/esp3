@@ -38,20 +38,24 @@ switch curr_disp.Xaxes
 end
 
 ydata=trans.Data.Range;
-
+[~,idx_ping]=nanmin(abs(xdata-x));
+[~,idx_r]=nanmin(abs(ydata-y));
+vert_val=trans.Data.get_subdatamat(curr_disp.Fieldname,1:length(ydata),idx_ping);
+horz_val=trans.Data.get_subdatamat(curr_disp.Fieldname,idx_r,1:length(xdata));
 
 switch lower(deblank(curr_disp.Fieldname))
     case{'alongangle','acrossangle'}
         ylab_str=sprintf('Angle(deg.)');
     case{'alongphi','acrossphi'}
         ylab_str=sprintf('Phase(deg.)');
+    case 'power'
+        ylab_str=sprintf('%s(dB)',curr_disp.Type);
+        vert_val=pow2db_perso(vert_val);
+        horz_val=pow2db_perso(horz_val);
     otherwise
         ylab_str=sprintf('%s(dB)',curr_disp.Type);
 end
-[~,idx_ping]=nanmin(abs(xdata-x));
-[~,idx_r]=nanmin(abs(ydata-y));
-vert_val=trans.Data.get_subdatamat(curr_disp.Fieldname,1:length(ydata),idx_ping);
-horz_val=trans.Data.get_subdatamat(curr_disp.Fieldname,idx_r,1:length(xdata));
+
 
 
 if ~isnan(Bottom.Sample_idx(idx_ping))

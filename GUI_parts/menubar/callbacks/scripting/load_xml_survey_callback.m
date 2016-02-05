@@ -25,16 +25,16 @@ for i=1:length(Filename)
         warning('Could not parse the File describing the survey...');
         return;
     end
-    profile off;
-    profile on;
-    
-    
+%     profile off;
+%     profile on;
+%     
+%     
     layers_new=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data);
     surv_obj.generate_output(layers_new);
     
-    profile off;
-    profile viewer;
-    
+%     profile off;
+%     profile viewer;
+%     
     save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
     outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
     surv_obj.print_output(outputFile);

@@ -63,14 +63,13 @@ for uit=idx_trans
         rsa={};
         reg_tot=mbs.Input.reg{idx_trans(ifi)};
         mbsVS = (mbs.Header.vertical_slice_size);
+        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings');
+        Output_echo=[Output_echo sliced_output];
         
-        Output_echo=[Output_echo trans.slice_transect('reg',reg_tot,'Slice_w',mbsVS,'Slice_units','pings')];
-        
-        for j=idx_reg
+        for j=1:length(regs)
             
-            reg_curr=trans.Regions(j);
-            reg=reg_tot(j);
-            regCellInt = reg_curr.integrate_region(trans);
+            reg_curr=regs{j};
+            regCellInt = regCellInt_tot{j};
             startPing = regCellInt.Ping_S(1);
             stopPing = regCellInt.Ping_E(end);
             ix = (startPing:stopPing);

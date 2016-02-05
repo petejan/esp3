@@ -1,4 +1,4 @@
-function output=slice_transect(trans_obj,varargin)
+function [output,regs,regCellInt]=slice_transect(trans_obj,varargin)
 
 p = inputParser;
 init_reg=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth',nan,'startSlice',nan,'finishSlice',nan);
@@ -75,17 +75,18 @@ if ~isempty(trans_obj.Tracks.target_id)
         nb_tracks(k)=nansum(ix);
     end 
 end
-
-
+i_reg=0;
 for iuu=1:length(idx_reg)
+    i_reg=i_reg+1;
     reg_curr=trans_obj.Regions(idx_reg(iuu));
     if ~strcmp(reg_curr.Type,'Data')
         continue;
     end
     
-    regCellInt=reg_curr.integrate_region(trans_obj);
+    regCellInt{i_reg}=reg_curr.integrate_region(trans_obj);
+    regs{i_reg}=reg_curr;
     if ~isempty(~isnan([reg(:).id]))
-        regCellIntSub = getCellIntSubSet(regCellInt,reg(iuu),reg_curr.Reference);
+        regCellIntSub = getCellIntSubSet(regCellInt{iuu},reg(iuu),reg_curr.Reference);
     else
         regCellIntSub=regCellInt;
     end

@@ -8,7 +8,7 @@ addParameter(p,'PathToMemmap','',@ischar);
 parse(p,surv_obj,layers,varargin{:});
 
 if isempty(layers)
-    layers=load_files_from_survey_SurvInput(surv_obj,'PathToMemmap',p.Results.PathToMemmap);
+    layers=load_files_from_survey_input(surv_obj,'PathToMemmap',p.Results.PathToMemmap);
 end
 
 surv_in_obj=surv_obj.SurvInput;
@@ -38,9 +38,8 @@ nb_reg=nansum(nb_reg_lay);
 surv_out_obj=survey_output_cl(nb_strat,nb_trans,nansum(nb_reg_lay));
 snapshots=surv_in_obj.Snapshots;
 
-i_reg=0;
 i_trans=0;
-
+i_reg=0;
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
@@ -101,15 +100,14 @@ for isn=1:length(snapshots)
                 end
                 
                 idx_reg=trans_obj_tr.list_regions_type('Data');
-                
                 reg_tot=trans_obj_tr.get_reg_spec(idx_reg);
-                Output_echo=[Output_echo trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings')];
-                
-                for j=idx_reg
+                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings');
+                Output_echo=[Output_echo sliced_output];
+                for j=1:length(regs)
                     i_reg=i_reg+1;
-                    reg_curr=trans_obj_tr.Regions(j);
-                    reg=reg_tot(j==idx_reg);
-                    regCellInt=reg_curr.integrate_region(trans_obj_tr);
+                    reg_curr =regs{j};
+                    reg=reg_tot(j);
+                    regCellInt=regCellInt_tot{j};
                     startPing = regCellInt.Ping_S(1);
                     stopPing = regCellInt.Ping_E(end);
                     ix = (startPing:stopPing);
@@ -190,7 +188,9 @@ for isn=1:length(snapshots)
                     surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellIntSub.Time_S;
                     surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellIntSub.Sv_mean_lin_esp2,1);% num_h_slices
                     surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellIntSub.Sv_mean_lin_esp2,2); % num_v_slices
-                    surv_out_obj.regionSumVbscf.region_vbscf(i_reg) = surv_out_obj.regionSum.vbscf(i_reg); % Vbscf Region
+                    tmp=surv_out_obj.regionSum.vbscf(i_reg);
+                    tmp(isnan(tmp))=0;
+                    surv_out_obj.regionSumVbscf.region_vbscf(i_reg) = tmp; % Vbscf Region
                     surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellIntSub.Sv_mean_lin_esp2; %
                     
                     %% Region echo integral for Transect Summary
