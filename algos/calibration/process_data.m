@@ -194,9 +194,19 @@ if exitflag ~= 1
     disp('that there is something wrong with the echosounder.')
     
     % Plot the probably wrong data, using the un-filtered dataset
+    figure('name', 'Beam pattern contour plot')
+    clf
     [XI,YI]=meshgrid(-trimTo:.1:trimTo,-trimTo:.1:trimTo);
+    warning('off','MATLAB:griddata:DuplicateDataPoints');
     ZI = griddata(original.sphere(:,2), original.sphere(:,3), original.sphere(:,1), XI, YI);
-    contourf(XI, YI, ZI)
+    warning('on','MATLAB:griddata:DuplicateDataPoints');
+    contourf(XI,YI,ZI)
+    axis square
+    grid
+    xlabel('Port/starboard angle (\circ)')
+    ylabel('Fore/aft angle (\circ)')
+    colorbar
+
     hold on
     plot(sphere(:,2), sphere(:,3),'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
     
@@ -206,15 +216,11 @@ if exitflag ~= 1
         y = r * sin(0:.01:2*pi);
         plot(x, y, 'k')
     end
-    colorbar
-    axis square
     hold off
     disp(' ')
     disp('Contour plot is of all data points (no filtering, beyond what you did manually).')
     disp(' ')
     disp('No further analysis will be done. The beam is odd.')
-    disp(' ')
-    disp(['Produced using version ' 'nope version' ' of this Matlab function'])
     return
 end
 
