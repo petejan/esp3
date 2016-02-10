@@ -1,5 +1,10 @@
 function display_region_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+return;
+end
+    
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 hfigs=getappdata(main_figure,'ExternalFigures');

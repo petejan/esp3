@@ -140,6 +140,7 @@ for isn=1:length(snapshots)
                     surv_out_obj.regionsIntegrated.transect(i_reg)=trans_num;
                     surv_out_obj.regionsIntegrated.file{i_reg}=layer_obj_tr.Filename;
                     surv_out_obj.regionsIntegrated.Region{i_reg}=reg_curr;
+                    surv_out_obj.regionsIntegrated.RegOutput{i_reg}=regCellInt;
                     
                     surv_out_obj.regionSum.snapshot(i_reg)=snap_num;
                     surv_out_obj.regionSumAbscf.snapshot(i_reg)=snap_num;

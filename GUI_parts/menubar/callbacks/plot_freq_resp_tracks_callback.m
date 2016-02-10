@@ -1,5 +1,10 @@
 function plot_freq_resp_tracks_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+return;
+end
+    
 curr_disp=getappdata(main_figure,'Curr_disp');
 tag=sprintf('Track from %.0f kHz',curr_disp.Freq);
 

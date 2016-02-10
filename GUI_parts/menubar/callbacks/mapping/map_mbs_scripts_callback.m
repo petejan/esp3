@@ -1,6 +1,11 @@
 function map_mbs_scripts_callback(~,~,hObject_main)
 layer=getappdata(hObject_main,'Layer');
 
+if isempty(layer)
+return;
+end
+    
+
 if isvalid(layer)
     if ~isempty(layer)
         if ~isempty(layer.PathToFile)

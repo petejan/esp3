@@ -30,7 +30,7 @@ sub_idx_bad=sub_idx_bad-reg_curr.Idx_pings(1)+1;
 
 switch reg_curr.Shape
     case 'Polygon'
-        data(isnan(reg_curr.Sv_reg))=nan;
+        data(~reg_curr.MaskReg)=nan;
     case 'Rectangular'
         
 end

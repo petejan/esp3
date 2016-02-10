@@ -14,12 +14,8 @@ uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_
 uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
 uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
 uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
-uimenu(m_bot_reg,'Label','Save Current Bottom/Regions/Algo','Callback',{@save_regions_callback,main_figure},'separator','on');
-uimenu(m_bot_reg,'Label','Load Previously Saved Bottom/Regions/Algo','Callback',{@load_regions_callback,main_figure});
-uimenu(m_bot_reg,'Label','Reload opened Layers Previously Saved Bottom/Regions','Callback',{@reload_psr_callback,main_figure});
-uimenu(m_bot_reg,'Label','Save opened Layers Bottom/Regions','Callback',{@save_psr_callback,main_figure});
-uimenu(m_bot_reg,'Label','Remove opened Layers Previously Saved Bottom/Regions','Callback',{@remove_psr_callback,main_figure});
-
+uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_callback,main_figure},'separator','on');
+uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_regs_from_xml_callback,main_figure});
 
 mhh = uimenu(main_figure,'Label','Export Results','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
@@ -31,6 +27,7 @@ m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 uimenu(m_import,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure});
 uimenu(m_import,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
 uimenu(m_import,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
+
 uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback',{@import_line_callback,main_figure},'separator','on');
 uimenu(m_import,'Label','Import Survey Data from (.*csv)','Callback',{@import_survey_data_callback,main_figure},'separator','on');
 
@@ -97,16 +94,3 @@ load_map_fig(main_fig,[]);
 end
 
 
-
-function save_regions_callback(~,~,main_figure)  
-    layer=getappdata(main_figure,'Layer');
-    layer.save_regs();
-end
-
-
-function load_regions_callback(~,~,main_figure)  
-    layer=getappdata(main_figure,'Layer');
-    layer.load_regs();
-    setappdata(main_figure,'Layer',layer);
-    update_display(main_figure,0);
-end

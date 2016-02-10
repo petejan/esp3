@@ -6,14 +6,12 @@ addRequired(p,'layers',@(obj) isa(obj,'layer_cl')||isempty(obj));
 addRequired(p,'new_layers_in',@(obj) isa(obj,'layer_cl')||isempty(obj));
 addParameter(p,'multi_layer',1);
 addParameter(p,'join',0);
-addParameter(p,'load_reg',0);
 addParameter(p,'keep',0);
 
 parse(p,layers,new_layers_in,varargin{:});
 
 multi_layer=p.Results.multi_layer;
 join=p.Results.join;
-load_reg=p.Results.load_reg;
 keep=p.Results.keep;
 
 for i=1:length(layers)
@@ -31,6 +29,7 @@ else
     if length(new_layers_in)==1
         layers=new_layers_in;
         layer=new_layers_in;
+        new_layers_in.load_bot_regs();
         try
             close(shuffling_box);
         end
@@ -52,7 +51,6 @@ if multi_layer<=0
     
     if join==1
         new_layers_in=[layers new_layers_in];
-        %old_layers=layers;
         layers=[];
     end
     
@@ -196,13 +194,14 @@ if multi_layer<=0
                     if keep==0
                         delete_layers(curr_layers,[]);
                     end
-                    
+                    layer_conc.load_bot_regs();
                     new_layers_out=[new_layers_out layer_conc];
                 end
             end
         end
         
         for kkkj=1:length(idx_not_to_concatenate{uui})
+            new_layers_in(idx_not_to_concatenate{uui}(kkkj)).load_bot_regs();
             new_layers_out=[new_layers_out new_layers_in(idx_not_to_concatenate{uui}(kkkj))];
         end
         
@@ -210,7 +209,11 @@ if multi_layer<=0
     
 else
     new_layers_out=new_layers_in;
+    for inl=1:length(new_layers_out)
+        new_layers_out(inl).load_bot_regs();
+    end
 end
+
 
 for u=1:length(new_layers_out)
     layer=new_layers_out(u);
@@ -223,9 +226,6 @@ for u=1:length(new_layers_out)
     if found==1
         warning('Who, that''s extremely unlikely! There has been a problem in the shuffling process. This programm will crash very soon.');
     else
-        if load_reg>0
-            layer.load_regs();
-        end
         layers=[layers layer];
     end
 end

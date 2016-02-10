@@ -2,6 +2,11 @@ function bs_analysis_callback(~,~,main_figure)
 update_algos(main_figure);
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+return;
+end
+    
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 choice = questdlg('Do you want Use Ray tracing?', ...
     'Ray tracing',...

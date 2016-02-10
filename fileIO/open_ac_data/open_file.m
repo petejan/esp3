@@ -152,39 +152,9 @@ multi_layer=1;
 join=0;
 
 
+
 if ~isequal(Filename, 0)
-    if iscell(Filename)
-        has_regfile=0;
-        for iuiu=1:length(Filename)
-            if ~isempty(find_regfile(PathToFile,Filename{iuiu}))
-                has_regfile=1;
-            end
-        end
-    else
-        has_regfile=~isempty(find_regfile(PathToFile,Filename));
-    end
-    
-    if has_regfile>0
-        choice = questdlg('Do you want to load previoulsy saved Bottom and Region?', ...
-            'Bottom/Region',...
-            'Yes','No', ...
-            'No');
-        % Handle response
-        switch choice
-            case 'Yes'
-                load_reg=1;
-                
-            case 'No'
-                load_reg=0;
-        end
-        
-        
-        if isempty(choice)
-            load_reg=0;
-        end
-    else
-        load_reg=0;
-    end
+
     
     ask_q=1;
     if length(Filename)==1||~iscell(Filename)
@@ -262,9 +232,9 @@ if ~isequal(Filename, 0)
     
     switch ftype
         case 'EK60'
-            open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join,load_reg)
+            open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'EK80'
-            open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join,load_reg)
+            open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'dfile'
             choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
                 'd-file/raw_file',...
@@ -302,9 +272,9 @@ if ~isequal(Filename, 0)
             
             switch dfile
                 case 1
-                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck,load_reg,multi_layer);
+                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck);
                 case 0
-                    open_dfile(main_figure,PathToFile,Filename,CVSCheck,load_reg,multi_layer);
+                    open_dfile(main_figure,PathToFile,Filename,CVSCheck);
             end
             
     end

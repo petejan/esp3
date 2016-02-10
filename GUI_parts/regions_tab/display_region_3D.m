@@ -22,7 +22,7 @@ if ~isempty(list_reg)
         case 'Rectangular'
             Mask=ones(nb_samples,nb_pings);
         case 'Polygon'
-            Mask=~isnan(active_reg.Sv_reg);
+            Mask=(active_reg.MaskReg);
     end
     
 

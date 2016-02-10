@@ -3,6 +3,11 @@ function delete_layer_callback(~,~,main_figure)
     layers=getappdata(main_figure,'Layers');
     layer=getappdata(main_figure,'Layer');
     
+    if isempty(layer)
+        return;
+    end
+    
+    
     if length(layers)==1
         warning('You cannot delete the last layer standing');
         return;

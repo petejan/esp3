@@ -11,7 +11,7 @@ classdef region_cl < handle
         Idx_pings
         Idx_r
         Shape
-        Sv_reg
+        MaskReg
         X_cont
         Y_cont
         Reference
@@ -44,7 +44,7 @@ classdef region_cl < handle
             addParameter(p,'Idx_r',[],@isnumeric);
             addParameter(p,'Shape','Rectangular',check_shape);
             addParameter(p,'Remove_ST',0,@(x) isnumeric(x)||islogical(x));
-            addParameter(p,'Sv_reg',[],@(x) isnumeric(x)||islogical(x));
+            addParameter(p,'MaskReg',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Reference','Surface',check_reference);
             addParameter(p,'Cell_w',10,@isnumeric);
             addParameter(p,'Cell_h',10,@isnumeric);
@@ -59,7 +59,8 @@ classdef region_cl < handle
             for i=1:length(props)
                 obj.(props{i})=results.(props{i});
             end
-            if isempty(obj.Sv_reg)
+			
+            if isempty(obj.MaskReg)
                 obj.Shape='Rectangular';
             end
             
@@ -68,12 +69,13 @@ classdef region_cl < handle
                     obj.X_cont=[];
                     obj.Y_cont=[];
                 case 'Polygon'
-                    Mask=~isnan(obj.Sv_reg);Mask(1,:)=0;Mask(end,:)=0;Mask(:,1)=0;Mask(:,end)=0;
-                    %Mask=ceil(filter2(ones(2,2),Mask,'same'));
-                    C=contourc(double(Mask),[1 1]);
-                    if ~isempty(C)
-                        [x,y,~]=C2xyz(C);
-
+                    Mask=(obj.MaskReg);Mask(1,:)=0;Mask(end,:)=0;Mask(:,1)=0;Mask(:,end)=0;
+                    [x,y]=cont_from_mask(Mask);
+                    if ~isempty(y)
+                        for i=1:length(x)
+                            x{i}=x{i}-1;
+                            y{i}=y{i}-1;
+                        end
                         obj.X_cont=x;
                         obj.Y_cont=y;
                     else
@@ -100,7 +102,7 @@ classdef region_cl < handle
                 case 'Rectangular'
                     mask(obj.Idx_r,obj.Idx_pings)=1;
                 case 'Polygon'
-                   mask(obj.Idx_r,obj.Idx_pings)=~isnan(obj.Sv_reg);
+                   mask(obj.Idx_r,obj.Idx_pings)=obj.MaskReg;
              end
                      
             

@@ -11,9 +11,8 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
             dr_ori=nanmean(diff(range_ori));
             dt_ori=nanmean(diff(time_ori));
             
-            sv_reg_ori=active_reg.Sv_reg;
-            mask_reg_ori=~isnan(sv_reg_ori);
-            [nb_samples_ori,nb_pings_ori]=size(sv_reg_ori);
+            mask_reg_ori=active_reg.MaskReg;
+            [nb_samples_ori,nb_pings_ori]=size(mask_reg_ori);
             [S_ori,P_ori]=meshgrid(1:nb_samples_ori,1:nb_pings_ori);
             
             
@@ -63,12 +62,9 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
                         [nb_samples,nb_pings]=size(Sv(idx_r,idx_pings));
                         [S,P]=meshgrid(1:nb_samples,1:nb_pings);
                         F=scatteredInterpolant(S_ori(:),P_ori(:),double(mask_reg_ori(:)),'nearest','nearest');
-                        new_mask=F(S,P);
-                        sv_reg=Sv(idx_r,idx_pings);
-                        sv_reg(new_mask<1)=nan;
-                        
+                        MaskReg=F(S,P);   
                     otherwise
-                        sv_reg=Sv(idx_r,idx_pings);
+                        MaskReg=ones(length(idx_r),length(idx_pings));
                 end
                 
                 reg_temp=region_cl(...
@@ -79,7 +75,7 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
                     'Idx_pings',idx_pings,...
                     'Idx_r',idx_r,...
                     'Shape',active_reg.Shape,...
-                    'Sv_reg',sv_reg,...
+                    'MaskReg',MaskReg,...
                     'Reference','Surface',...
                     'Cell_w',cell_w,...
                     'Cell_w_unit',active_reg.Cell_w_unit,...

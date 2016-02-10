@@ -318,7 +318,9 @@ classdef transceiver_cl < handle
                     case 'Rectangular'
                         Sv(idx_r_curr,idx_pings_curr)=NaN;
                     case 'Polygon'
-                        Sv(idx_r_curr,idx_pings_curr)=curr_reg.Sv_reg;
+					Sv_temp=v(idx_r_curr,idx_pings_curr);
+					Sv_temp(~curr_reg.MaskReg)=nan;
+                    Sv(idx_r_curr,idx_pings_curr)=Sv_temp;
                 end
             end
             

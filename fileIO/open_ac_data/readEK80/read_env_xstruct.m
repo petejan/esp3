@@ -15,6 +15,6 @@ end
     fields=fieldnames(env_temp);
     
     for jj=1:length(fields) 
-        env.(fields{jj})=str2double(env_temp.(fields{jj}));
+        env.(fields{jj})=(env_temp.(fields{jj}));
     end
 end

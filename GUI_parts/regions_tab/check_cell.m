@@ -11,10 +11,18 @@ nb_samples=length(layer.Transceivers(idx_freq).Data.Range);
 
 w_units=get(region_tab_comp.cell_w_unit,'string');
 w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
+if isempty(w_unit_idx)
+    w_unit_idx=1;
+end
 w_unit=w_units{w_unit_idx};
+
+
 
 h_units=get(region_tab_comp.cell_h_unit,'string');
 h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
+if isempty(h_unit_idx)
+    h_unit_idx=1;
+end
 h_unit=h_units{h_unit_idx};
 
 

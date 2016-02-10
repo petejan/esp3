@@ -1,5 +1,5 @@
 
-function  open_EK60_file(hObject,PathToFile,Filename,vec_freq,ping_start,ping_end,multi_layer,join,load_reg)
+function  open_EK60_file(hObject,PathToFile,Filename,vec_freq,ping_start,ping_end,multi_layer,join)
 layers=getappdata(hObject,'Layers');
 
 app_path=getappdata(hObject,'App_path');
@@ -50,7 +50,7 @@ if isempty(layers_temp)
 end
 
 disp('Shuffling layers');
-[layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join,'load_reg',load_reg);
+[layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join);
 % profile off
 % profile viewer;
 

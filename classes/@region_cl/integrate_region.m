@@ -62,7 +62,7 @@ for i=idx
             Sv(idx_r_curr,idx_pings_curr)=NaN;
         case 'Polygon'
             Sv_temp=Sv(idx_r_curr,idx_pings_curr);
-            Sv_temp(~isnan(curr_reg.Sv_reg))=NaN;
+            Sv_temp(curr_reg.MaskReg)=NaN;
             Sv(idx_r_curr,idx_pings_curr)= Sv_temp;
     end
 end
@@ -95,9 +95,9 @@ bot_sple(isnan(bot_sple))=inf;
 
 switch region.Shape
     case 'Polygon'
-        if ~isempty(region.Sv_reg)
+        if ~isempty(region.MaskReg)
             Sv_temp=Sv(idx_r,idx_pings);
-            Sv_temp(isnan(region.Sv_reg))=NaN;
+            Sv_temp(~(region.MaskReg))=NaN;
             Sv_reg=Sv_temp;
         else
             region.Shape='Rectangular';

@@ -6,7 +6,6 @@ try
     while n<length(C)
         n=n+1;
         m(n) = m(n-1)+C(2,m(n-1))+1;
-        
     end
 end
 

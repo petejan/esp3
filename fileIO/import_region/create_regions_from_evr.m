@@ -16,8 +16,6 @@ end
 
 reg_evr=read_evr(filename);
 
-
-
 Cell_w=10;
 Cell_h=10;
 
@@ -83,15 +81,14 @@ for i=1:length(reg_evr)
     
     switch Shape
         case 'Rectangular'
-            Sv_reg=[];
+            MaskReg=[];
         case 'Polygon'
             X_cont=resample_data_v2(1:length(timevec),timevec,reg_evr(i).timestamp,'Opt','Nearest');
             Y_cont=resample_data_v2(1:length(range),range,reg_evr(i).depth,'Opt','Nearest');
             X_cont=X_cont-Idx_pings(1)+1;
             Y_cont=Y_cont-Idx_r(1)+1;
             [X,Y] = meshgrid(Idx_pings,Idx_r);
-            Sv_reg = double(inpolygon(X,Y,X_cont,Y_cont));
-            Sv_reg(Sv_reg==0)=nan;
+            MaskReg = double(inpolygon(X,Y,X_cont,Y_cont));
     end
     regions=[regions region_cl(...
         'ID',ID,...
@@ -101,7 +98,7 @@ for i=1:length(reg_evr)
         'Idx_pings',Idx_pings,...
         'Idx_r',Idx_r,...
         'Shape',Shape,...
-        'Sv_reg',Sv_reg,...
+        'MaskReg',MaskReg,...
         'Reference',Reference,...
         'Cell_w',Cell_w,...
         'Cell_w_unit',Cell_w_unit,...

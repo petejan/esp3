@@ -1,4 +1,4 @@
-function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,load_reg,multi_layer)
+function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,multi_layer)
 layers=getappdata(hObject,'Layers');
 app_path=getappdata(hObject,'App_path');
 
@@ -48,9 +48,8 @@ if ~isequal(Filename_cell, 0)
         end
     end
     
-    disp('Shuffling layers');
-    [layers,layer]=shuffle_layers(layers,layer_temp,'load_reg',load_reg,'multi_layer',multi_layer);
-    
+    layer=layer_temp(end);
+    layers=[layer_temp,layers];
     setappdata(hObject,'Layer',layer);
     setappdata(hObject,'Layers',layers);
     

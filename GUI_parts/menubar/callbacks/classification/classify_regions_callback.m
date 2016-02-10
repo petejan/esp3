@@ -1,6 +1,11 @@
 function classify_regions_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+return;
+end
+    
 curr_disp=getappdata(main_figure,'Curr_disp');
 hfigs=getappdata(main_figure,'ExternalFigures');
 

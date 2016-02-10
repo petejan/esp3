@@ -1,6 +1,11 @@
 function load_bot_reg_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+return;
+end
+    
 app_path=getappdata(main_figure,'App_path');
 
 if layer.ID_num==0

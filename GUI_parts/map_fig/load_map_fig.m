@@ -128,7 +128,7 @@ if ~isempty(obj_vec)
     set(box.slice_size_box,'enable','off');
     switch class(obj_vec)
         case 'survey_cl'
-            set(box.slice_size_box,'String',num2str(obj_vec.SurvInput.Options.Vertical_slice_size,'%d'));
+            set(box.slice_size_box,'String',num2str(obj_vec(1).SurvInput.Options.Vertical_slice_size,'%d'));
         case 'mbs_cl'
             
     end

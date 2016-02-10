@@ -97,6 +97,7 @@ end
                 %reg_plot=gobjects(1,nb_cont);
                 len_max=0;
                 idx_len_max=[];
+                 
                 for jj=1:length(idx_x)
                     if length(idx_x{jj})>len_max
                         idx_len_max=jj;
@@ -113,15 +114,12 @@ end
                         y_text=nanmean(y_reg{jj});
                     end   
                    
-                    reg_plot(jj)=plot(x_reg{jj}-dx,y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis);
-                    
+                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis); 
                 end
-                grid_in = inpolygon(X_grid,Y_grid,x_reg{idx_len_max},y_reg{idx_len_max});
-                X_grid=X_grid-dx;
+                grid_in=mask_from_cont(X_grid,Y_grid,x_reg,y_reg);   
                 X_grid(~grid_in)=nan;
                 Y_grid(~grid_in)=nan;
-%               X_grid=[];
-%               Y_grid=[];
+
                  
         end
                

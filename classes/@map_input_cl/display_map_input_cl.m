@@ -3,7 +3,7 @@ snap=[];
 %col_snap={'r','b','g','k','m'};
 col_snap={'k'};
 
-if isempty(field)
+if nargin<4
     field='SliceAbscf';
 end
 
