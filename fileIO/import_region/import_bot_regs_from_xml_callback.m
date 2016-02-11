@@ -1,4 +1,4 @@
-function import_regs_from_xml_callback(~,~,main_figure)
+function import_bot_regs_from_xml_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
@@ -14,7 +14,6 @@ switch choice
     case 'No'
         return;
 end
-
 
 layer.load_bot_regs();
 update_display(main_figure,0);

@@ -186,7 +186,6 @@ for isn=1:length(snapshots)
                         layer_new.Transceivers(idx_freq).add_region(reg_to_add(uii),'ID',layer_new.Transceivers(idx_freq).new_id());
                     end
                 end
-                layer_new.save_regs();
                 u=u+1;
                 layers(u)=layer_new;
             end

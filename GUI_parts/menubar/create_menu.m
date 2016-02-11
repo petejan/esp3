@@ -15,7 +15,7 @@ uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg
 uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
 uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
 uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_callback,main_figure},'separator','on');
-uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_regs_from_xml_callback,main_figure});
+uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure});
 
 mhh = uimenu(main_figure,'Label','Export Results','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});

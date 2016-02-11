@@ -1,4 +1,4 @@
-function regions=add_regions_from_reg_xml(layer_obj,xml_file)
+function add_regions_from_reg_xml(layer_obj,xml_file)
 
 p = inputParser;
 
@@ -9,7 +9,7 @@ addRequired(p,'xml_file',@ischar);
 parse(p,layer_obj,xml_file);
 
 if exist(xml_file,'file')==0
-    disp('Cannot find specified .xml file');
+    disp('Cannot find specified region .xml file');
     return;
 end
 
