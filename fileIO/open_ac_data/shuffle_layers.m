@@ -5,6 +5,8 @@ p = inputParser;
 addRequired(p,'layers',@(obj) isa(obj,'layer_cl')||isempty(obj));
 addRequired(p,'new_layers_in',@(obj) isa(obj,'layer_cl')||isempty(obj));
 addParameter(p,'multi_layer',1);
+addParameter(p,'reg_ver',1);
+addParameter(p,'bot_ver',1);
 addParameter(p,'join',0);
 addParameter(p,'keep',0);
 
@@ -29,7 +31,7 @@ else
     if length(new_layers_in)==1
         layers=new_layers_in;
         layer=new_layers_in;
-        new_layers_in.load_bot_regs();
+        new_layers_in.load_bot_regs('reg_ver',p.Results.reg_ver,'bot_ver',p.Results.bot_ver);
         try
             close(shuffling_box);
         end
@@ -188,20 +190,22 @@ if multi_layer<=0
                         else
                             layer_conc=concatenate_layers(curr_layers(kk+1),layer_conc);
                         end
-
+                        
                     end
                     
                     if keep==0
                         delete_layers(curr_layers,[]);
                     end
-                    layer_conc.load_bot_regs();
+                    layer_conc.load_bot_regs('reg_ver',p.Results.reg_ver,'bot_ver',p.Results.bot_ver);
+                    
+                   
                     new_layers_out=[new_layers_out layer_conc];
                 end
             end
         end
         
         for kkkj=1:length(idx_not_to_concatenate{uui})
-            new_layers_in(idx_not_to_concatenate{uui}(kkkj)).load_bot_regs();
+            new_layers_in(idx_not_to_concatenate{uui}(kkkj)).load_bot_regs('reg_ver',p.Results.reg_ver,'bot_ver',p.Results.bot_ver);
             new_layers_out=[new_layers_out new_layers_in(idx_not_to_concatenate{uui}(kkkj))];
         end
         
@@ -210,7 +214,7 @@ if multi_layer<=0
 else
     new_layers_out=new_layers_in;
     for inl=1:length(new_layers_out)
-        new_layers_out(inl).load_bot_regs();
+        new_layers_out(inl).load_bot_regs('reg_ver',p.Results.reg_ver,'bot_ver',p.Results.bot_ver);
     end
 end
 
@@ -233,6 +237,6 @@ end
 try
     close(shuffling_box);
 end
-    
+
 end
 

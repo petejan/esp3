@@ -63,7 +63,7 @@ idx_bad_data=Transceiver.list_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
    curr_reg=Transceiver.Regions(idx_bad_data(jj));
-   mask=mask+curr_reg.create_mask(nb_samples,nb_pings);
+   mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
 end
 
 TS(mask>=1)=-999;

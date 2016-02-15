@@ -18,7 +18,7 @@ classdef survey_output_cl
             p = inputParser;
             addRequired(p,'nb_strat',@(x) x>0);
             addRequired(p,'nb_trans',@(x) x>0);
-            addRequired(p,'nb_reg',@(x) x>0);
+            addRequired(p,'nb_reg',@(x) x>=0);
             parse(p,nb_strat,nb_trans,nb_reg);
             
    

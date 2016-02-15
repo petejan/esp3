@@ -15,6 +15,8 @@ classdef sub_ac_data_cl < handle
             obj.Fieldname=lower(deblank(field));
             
             curr_name=[memapname field '.bin'];
+            
+            
             fileID = fopen(curr_name,'w+');
             
             while fileID==-1
@@ -27,6 +29,8 @@ classdef sub_ac_data_cl < handle
             
             obj.Memap = memmapfile(curr_name,...
                 'Format',format,'repeat',1,'writable',false);
+            
+            
             [obj.CaxisDisplay,obj.Type]=init_cax(obj.Fieldname);
            
             

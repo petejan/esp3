@@ -1,27 +1,27 @@
 
-function add_region(obj,regions,varargin)
+function add_region(trans_obj,regions,varargin)
 
 
 p = inputParser;
 
-addRequired(p,'obj',@(obj) isa(obj,'transceiver_cl'));
+addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addRequired(p,'regions',@(obj) isa(obj,'region_cl')||isempty(obj));
 addParameter(p,'Tag','',@(x) ischar(x)||iscell(x));
 addParameter(p,'Origin','',@ischar);
 addParameter(p,'ID',[],@isnumeric);
 
-parse(p,obj,regions,varargin{:});
+parse(p,trans_obj,regions,varargin{:});
 
 Tag=p.Results.Tag;
 Origin=p.Results.Origin;
 
 for i=1:length(regions)
-    obj.rm_region_id(regions(i).Unique_ID);
+    trans_obj.rm_region_id(regions(i).Unique_ID);
     regions(i).Unique_ID=regions(i).Unique_ID;
     if isempty(p.Results.ID)
-        regions(i).ID=regions(i).ID;
+        regions(i).ID=trans_obj.new_id();
     else
-       regions(i).ID=obj.new_id();
+       regions(i).ID=p.Results.ID;
     end
         
     if ~strcmpi(Tag,'')
@@ -48,6 +48,6 @@ for i=1:length(regions)
         end
     end
 
-    obj.Regions=[obj.Regions regions(i)];
+    trans_obj.Regions=[trans_obj.Regions regions(i)];
 end
 end

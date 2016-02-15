@@ -27,12 +27,25 @@ if ~isempty(tracks)
         idx_pings=max(1,min(idx_pings_st(idx_targets)-2)):min(max(idx_pings_st(idx_targets))+2,nb_pings);
         idx_r_tracks=round(interp1(idx_pings_st(idx_targets),idx_r_st(idx_targets),idx_pings,'spline'));
         
+        idx_rem=idx_r_tracks>nb_samples|idx_r_tracks<0;
+        idx_pings(idx_rem)=[];
+        idx_r_tracks(idx_rem)=[];
+        
         idx_r=max(1,min(idx_r_tracks-ceil(3/2*Np))):min(max(idx_r_tracks)+ceil(5/2*Np),nb_samples);
 
-        MaskReg=nan(length(idx_r),length(idx_pings));
+        MaskReg=zeros(length(idx_r),length(idx_pings));
         MaskReg((idx_r_tracks-min(idx_r)+1)+(idx_pings-min(idx_pings))*(length(idx_r)))=1;
-        MaskReg=ceil(filter2_perso(ones(3*Np,1),MaskReg));
-
+        MaskReg=ceil(filter2_perso(ones(4*Np,2),MaskReg));
+        
+        [full_candidates, num_can] = bwlabeln(MaskReg>0);
+        nb_max=0;
+        id_max=1;
+        for ui=1:num_can
+            if nansum(full_candidates==ui)>nb_max
+               id_max=ui; 
+            end
+        end
+        MaskReg=(full_candidates==id_max);
         
         reg_temp=region_cl(...
             'ID',trans_obj.new_id(),...

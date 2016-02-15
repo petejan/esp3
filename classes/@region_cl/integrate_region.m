@@ -55,16 +55,16 @@ idx=list_regions_type(trans_obj,'Bad Data');
 
 for i=idx
     curr_reg=trans_obj.Regions(i);
+    if curr_reg.Unique_ID==region.Unique_ID
+        continue;
+    end
     idx_r_curr=curr_reg.Idx_r;
     idx_pings_curr=curr_reg.Idx_pings;
-    switch curr_reg.Shape
-        case 'Rectangular'
-            Sv(idx_r_curr,idx_pings_curr)=NaN;
-        case 'Polygon'
-            Sv_temp=Sv(idx_r_curr,idx_pings_curr);
-            Sv_temp(curr_reg.MaskReg)=NaN;
-            Sv(idx_r_curr,idx_pings_curr)= Sv_temp;
-    end
+    
+    mask=curr_reg.create_mask();
+    Sv_temp=Sv(idx_r_curr,idx_pings_curr);
+    Sv_temp(mask>0)=NaN;
+    Sv(idx_r_curr,idx_pings_curr)= Sv_temp;
 end
 
 
@@ -93,19 +93,12 @@ bot_r(isnan(bot_sple))=nan;
 bot_r(isnan(bot_r))=inf;
 bot_sple(isnan(bot_sple))=inf;
 
-switch region.Shape
-    case 'Polygon'
-        if ~isempty(region.MaskReg)
-            Sv_temp=Sv(idx_r,idx_pings);
-            Sv_temp(~(region.MaskReg))=NaN;
-            Sv_reg=Sv_temp;
-        else
-            region.Shape='Rectangular';
-            Sv_reg=Sv(idx_r,idx_pings);
-        end
-    case 'Rectangular'
-        Sv_reg=Sv(idx_r,idx_pings);
-end
+
+mask=region.create_mask();
+Sv_temp=Sv(idx_r,idx_pings);
+Sv_temp(mask==0)=NaN;
+Sv_reg=Sv_temp;
+
 Mask=~isnan(Sv_reg);
 
 sub_samples=samples(idx_r);

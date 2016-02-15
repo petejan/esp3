@@ -27,7 +27,7 @@ for isn=1:length(snapshots)
             
             filenames_cell=transects{itr}.files;
             trans_num=transects{itr}.number;
-            disp(sprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num));
+            fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             if ~iscell(filenames_cell)
                 filenames_cell={filenames_cell};
             end
@@ -35,6 +35,9 @@ for isn=1:length(snapshots)
             bot=transects{itr}.Bottom;
             cal_t=transects{itr}.Cal;
             layer_temp=[];
+            
+
+
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 if exist(fileN,'file')==2
@@ -52,7 +55,7 @@ for isn=1:length(snapshots)
                 end
             end
             if ~isempty(layer_temp)
-                [layers_temp,~]=shuffle_layers([],layer_temp,'multi_layer',0);
+                [layers_temp,~]=shuffle_layers([],layer_temp,'multi_layer',0,'reg_ver',0,'bot_ver',0);
             else
                 warning('Could not find any files in this transect...');
                 layers_temp=[];
@@ -79,24 +82,55 @@ for isn=1:length(snapshots)
                         layer_new.Transceivers(idx_freq).setBottom_from_evl(fullfile(snapshots{isn}.Folder,bot.file));
                     else
                         warning('Cannot find bottom for file %s',layer_new.Filename{1});
-                        layer_new.Transceivers(idx_freq).setBottom(bottom_cl());
                     end
+                    layer_new.save_bot_regs('save_regs',0);
                 end
                 
-                reg_to_add=[];
-                for ire=1:length(regs)
+                
+                if isfield(bot,'ver')
+                    layer_new.load_bot_regs('reg_ver',0);
+                end
+                
+                
+                 for ire=1:length(regs)
+                    if isfield(regs{ire},'ver')
+                        if isfield(regs,'ID')
+                            IDs=cell2mat(str2double(strsplit(regs{1}.ID,';')));
+                            layer_new.load_bot_regs('load_bot',0,'IDs',IDs);
+                        else
+                            layer_new.load_bot_regs('load_bot',0);
+                        end
+                     end
+                 end
+                
+                nb_reg_out=0;
+                for ire=1:length(regs)     
                     if isfield(regs{ire},'file')
+                        nb_reg_out=nb_reg_out+1;
                         if  exist(fullfile(snapshots{isn}.Folder,regs{ire}.file),'file')>0
                             new_reg=create_regions_from_evr(fullfile(snapshots{isn}.Folder,regs{ire}.file),layer_new.Transceivers(idx_freq).Data.Range,layer_new.Transceivers(idx_freq).Data.Time);                          
-                            reg_to_add=[reg_to_add new_reg];
+                            if isempty(new_reg)
+                                continue;
+                            end
+                            for iur=1:length(new_reg)
+                                new_reg(iur).Remove_ST=options.Remove_ST;
+                            end
+                            layer_new.Transceivers(idx_freq).add_region(new_reg);
                         else
                             warning('Cannot find region for file %s',layer_new.Filename{:});
                         end
                     end
-                    
+                end
+                
+                if nb_reg_out>=1
+                    layer_new.save_bot_regs('save_bot',0);
+                end
+                
+                for ire=1:length(regs)
                     if isfield(regs{ire},'name')
                         switch regs{ire}.name
                             case 'WC'
+                                layer_new.Transceivers(idx_freq).rm_region_name('WC');
                                 for irewc=1:length(regions_wc)
                                     reg_wc=layer_new.Transceivers(idx_freq).create_WC_region('y_min',regions_wc{irewc}.y_min,...
                                         'Type','Data',...
@@ -106,20 +140,12 @@ for isn=1:length(snapshots)
                                         'Cell_w_unit',regions_wc{irewc}.Cell_w_unit,...
                                         'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                     reg_wc.Remove_ST=options.Remove_ST;
-                                    reg_to_add=[reg_to_add reg_wc];
                                 end
+                                layer_new.Transceivers(idx_freq).add_region(reg_wc);
                         end
                     end
                 end
-                idx_bad_reg=[];
-                for uii=1:length(reg_to_add)
-                    if strcmpi(reg_to_add(uii).Type,'Bad Data')
-                        layer_new.Transceivers(idx_freq).add_region(reg_to_add(uii),'ID',layer_new.Transceivers(idx_freq).new_id());
-                        idx_bad_reg=[idx_bad_reg uii];
-                    end
-                end
-                
-                reg_to_add(idx_bad_reg)=[];
+
                 
                 for ial=1:length(algos)
                     algo_curr=init_algos(layer_new.Transceivers(idx_freq).Data.Range,algos{ial}.Name);
@@ -180,12 +206,6 @@ for isn=1:length(snapshots)
                     
                 end
                 
-                for uii=1:length(reg_to_add)
-                    if strcmpi(reg_to_add(uii).Type,'Data')
-                        reg_to_add(uii).Remove_ST=options.Remove_ST;
-                        layer_new.Transceivers(idx_freq).add_region(reg_to_add(uii),'ID',layer_new.Transceivers(idx_freq).new_id());
-                    end
-                end
                 u=u+1;
                 layers(u)=layer_new;
             end

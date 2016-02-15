@@ -3,7 +3,7 @@ function bottom_xml=parse_bottom_xml(xml_file)
 xml_struct=parseXML(xml_file);
 
 if ~strcmpi(xml_struct.Name,'bottom_file')
-    warning('XML file not describing a region');
+    warning('XML file not describing a bottom');
     bottom_xml=[];
     return;
 end

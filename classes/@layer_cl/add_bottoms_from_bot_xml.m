@@ -25,7 +25,7 @@ for itrans=1:length(bottom_xml_tot)
     [idx_freq,found]=find_freq_idx(layer_obj,bottom_xml.Infos.Freq);
     
     if isempty(found)
-        warning('Could not load bottoms for frequency %.0fkHz',bottom_xml.Infos.Freq);
+        warning('Could not load bottoms for frequency %.0fkHz, it is not there...',bottom_xml.Infos.Freq);
         continue;
     end
     trans_obj=layer_obj.Transceivers(idx_freq);
@@ -33,8 +33,7 @@ for itrans=1:length(bottom_xml_tot)
         warning('Those bottoms have been written for a different GPT %.0fkHz',bottom_xml.Infos.Freq);
     end
     
-    
-    
+   
     
     bot_xml=bottom_xml.Bottom;
     
@@ -54,7 +53,7 @@ for itrans=1:length(bottom_xml_tot)
         idx_end_file=length(trans_obj.Data.Time);
     else
         idx_ping_end=length(time);
-        idx_end_file=find(trans_obj.Data.Time(end)-time>=0,1);
+        idx_end_file=find(trans_obj.Data.Time-time(end)>=0,1);
     end
     
     if  time(end)<=trans_obj.Data.Time(1)||time(1)>=trans_obj.Data.Time(end)

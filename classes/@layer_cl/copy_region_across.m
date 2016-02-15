@@ -11,7 +11,7 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
             dr_ori=nanmean(diff(range_ori));
             dt_ori=nanmean(diff(time_ori));
             
-            mask_reg_ori=active_reg.MaskReg;
+            mask_reg_ori=active_reg.create_mask();
             [nb_samples_ori,nb_pings_ori]=size(mask_reg_ori);
             [S_ori,P_ori]=meshgrid(1:nb_samples_ori,1:nb_pings_ori);
             

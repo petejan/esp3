@@ -70,11 +70,15 @@ end
         end
         
         
-        
-        x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
-        y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
-         
+        if strcmp(reg_curr.Name,'Track')
+            x_grid=[];
+            y_grid=[];
+        else
+            x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
+            y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
+        end
         [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
+        
         
         switch reg_curr.Shape
             case 'Rectangular'       
@@ -94,15 +98,9 @@ end
 
                 nb_cont=length(idx_x);
                 reg_plot=gobjects(1,length(x_grid)+length(y_grid)+nb_cont);
-                %reg_plot=gobjects(1,nb_cont);
-                len_max=0;
-                idx_len_max=[];
                  
                 for jj=1:length(idx_x)
-                    if length(idx_x{jj})>len_max
-                        idx_len_max=jj;
-                        len_max=length(idx_x{jj});
-                    end
+
                     idx_x{jj}=idx_x{jj}+reg_curr.Idx_pings(1);
                     idx_y{jj}=idx_y{jj}+reg_curr.Idx_r(1);
 
@@ -116,22 +114,27 @@ end
                    
                     reg_plot(jj)=plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis); 
                 end
-                grid_in=mask_from_cont(X_grid,Y_grid,x_reg,y_reg);   
+                if strcmp(reg_curr.Name,'Track')
+                   grid_in=zeros(size(x_grid)); 
+                else
+                    grid_in=grid_mask_from_cont(Y_grid,X_grid,y_reg,x_reg);   
+                end
+                
                 X_grid(~grid_in)=nan;
                 Y_grid(~grid_in)=nan;
 
                  
         end
-               
 
-        for uui=1:size(X_grid,1)
-            reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
-        end
-        for uuj=1:size(X_grid,2)
-            reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
-        end
-        
+            for uui=1:size(X_grid,1)
+                reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+            end
+            for uuj=1:size(X_grid,2)
+                reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+            end
+
         text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region');
+        
 
         create_region_context_menu(reg_plot,main_figure,reg_curr);
        

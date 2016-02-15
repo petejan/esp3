@@ -1,4 +1,4 @@
-function add_regions_from_reg_xml(layer_obj,xml_file)
+function add_regions_from_reg_xml(layer_obj,xml_file,IDs)
 
 p = inputParser;
 
@@ -25,7 +25,7 @@ for itrans=1:length(region_xml_tot)
     [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
     
     if isempty(found)
-        warning('Could not load regions for frequency %.0fkHz',region_xml.Infos.Freq);
+        warning('Could not load regions for frequency %.0fkHz, it is not there...',region_xml.Infos.Freq);
         continue;
     end
     trans_obj=layer_obj.Transceivers(idx_freq);
@@ -33,16 +33,20 @@ for itrans=1:length(region_xml_tot)
          warning('Those regions have been written for a different GPT %.0fkHz',region_xml.Infos.Freq);
     end
     
-    
+    t_max=nanmax(trans_obj.Data.Time);
+    t_min=nanmin(trans_obj.Data.Time);
     nb_reg=length(region_xml.Regions);
     Origin='RegXML';
     
     reg_xml=region_xml.Regions;
     regions=[];
     
-    for ui=1:length(reg_xml)
+
         
-        for i=1:length(region_xml.Regions)
+        for i=1:length(reg_xml)
+            if ~(isempty(IDs)||nansum(reg_xml{i}.ID==IDs)>0)
+                continue;
+            end
             ID=reg_xml{i}.ID;
             Tag=reg_xml{i}.Tag;
             Name=reg_xml{i}.Name;
@@ -55,6 +59,8 @@ for itrans=1:length(region_xml_tot)
             Reference=reg_xml{i}.Reference;
             
             time_box=reg_xml{i}.bbox_t;
+            time_box(time_box<t_min)=t_min;
+            time_box(time_box>t_max)=t_max;
             pings=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,time_box,'Opt','Nearest');
             
             depth_box=reg_xml{i}.bbox_r;
@@ -69,21 +75,26 @@ for itrans=1:length(region_xml_tot)
             
             switch Shape
                 case 'Rectangular'
-                    MaskReg=[];
+                    X_cont=[];
+                    Y_cont=[];
                 case 'Polygon'
-                    X_cont=cell(1,length(reg_xml{i}.Contours));
-                    Y_cont=cell(1,length(reg_xml{i}.Contours));
+%                     X_cont=cell(1,length(reg_xml{i}.Contours));
+%                     Y_cont=cell(1,length(reg_xml{i}.Contours));
+                     i_cont=0;
                     for ic=1:length(reg_xml{i}.Contours)
-                        X_cont{ic}=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,reg_xml{i}.Contours{ic}.Time,'Opt','Nearest');
-                        X_cont{ic}=X_cont{ic}-Idx_pings(1)+1;
-                        Y_cont{ic}=resample_data_v2(1:length(trans_obj.Data.Range),trans_obj.Data.Range,reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
-                        Y_cont{ic}=Y_cont{ic}-Idx_r(1)+1;
+                        idx_rem=reg_xml{i}.Contours{ic}.Time>t_max|reg_xml{i}.Contours{ic}.Time<t_min;
+                        reg_xml{i}.Contours{ic}.Time(idx_rem)=[];
+                        reg_xml{i}.Contours{ic}.Range(idx_rem)=[];
+                        if isempty(reg_xml{i}.Contours{ic}.Time)
+                            continue;
+                        end
+                        i_cont=i_cont+1;
+                        X_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,reg_xml{i}.Contours{ic}.Time,'Opt','Nearest');
+                        X_cont{i_cont}=X_cont{i_cont}-Idx_pings(1)+1;
+                        Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Range),trans_obj.Data.Range,reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
+                        Y_cont{i_cont}=Y_cont{i_cont}-Idx_r(1)+1;
                     end
-                    X_grid=repmat((1:length(Idx_pings)),length(Idx_r),1);
-                    Y_grid=repmat((1:length(Idx_r))',1,length(Idx_pings));
-                    
-                    MaskReg=mask_from_cont(X_grid,Y_grid,X_cont,Y_cont);
-                    
+                                      
             end
             regions=[regions region_cl(...
                 'ID',ID,...
@@ -94,7 +105,8 @@ for itrans=1:length(region_xml_tot)
                 'Idx_pings',Idx_pings,...
                 'Idx_r',Idx_r,...
                 'Shape',Shape,...
-                'MaskReg',MaskReg,...
+                'X_cont',X_cont,...
+                'Y_cont',Y_cont,...
                 'Reference',Reference,...
                 'Cell_w',Cell_w,...
                 'Cell_w_unit',Cell_w_unit,...
@@ -105,7 +117,7 @@ for itrans=1:length(region_xml_tot)
         end
         trans_obj.add_region(regions);
         
-    end
+    
     
 end
 

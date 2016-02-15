@@ -11,7 +11,6 @@ classdef region_cl < handle
         Idx_pings
         Idx_r
         Shape
-        MaskReg
         X_cont
         Y_cont
         Reference
@@ -42,9 +41,11 @@ classdef region_cl < handle
             addParameter(p,'Type','Data',check_type);
             addParameter(p,'Idx_pings',[],@isnumeric);
             addParameter(p,'Idx_r',[],@isnumeric);
+            addParameter(p,'MaskReg',[],@(x) isnumeric(x)||islogical(x));
+            addParameter(p,'X_cont',[],@(x) isempty(x)||iscell(x));
+            addParameter(p,'Y_cont',[],@(x) isnumeric(x)||iscell(x));
             addParameter(p,'Shape','Rectangular',check_shape);
             addParameter(p,'Remove_ST',0,@(x) isnumeric(x)||islogical(x));
-            addParameter(p,'MaskReg',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Reference','Surface',check_reference);
             addParameter(p,'Cell_w',10,@isnumeric);
             addParameter(p,'Cell_h',10,@isnumeric);
@@ -57,27 +58,32 @@ classdef region_cl < handle
             props=fieldnames(results);
             
             for i=1:length(props)
-                obj.(props{i})=results.(props{i});
+                if ~strcmp((props{i}),'MaskReg')
+                    obj.(props{i})=results.(props{i});
+                end
             end
 			
-            if isempty(obj.MaskReg)
-                obj.Shape='Rectangular';
-            end
             
             switch obj.Shape
                 case 'Rectangular'
                     obj.X_cont=[];
                     obj.Y_cont=[];
                 case 'Polygon'
-                    Mask=(obj.MaskReg);Mask(1,:)=0;Mask(end,:)=0;Mask(:,1)=0;Mask(:,end)=0;
-                    [x,y]=cont_from_mask(Mask);
-                    if ~isempty(y)
-                        for i=1:length(x)
-                            x{i}=x{i}-1;
-                            y{i}=y{i}-1;
+                    if isempty(p.Results.X_cont)&&~isempty(results.MaskReg)
+                        [x,y]=cont_from_mask(results.MaskReg);
+                        if ~isempty(y)
+                            for i=1:length(x)
+                                x{i}=x{i}-1;
+                                y{i}=y{i}-1;
+                            end
+                            obj.X_cont=x;
+                            obj.Y_cont=y;
+                        else
+                            obj.Shape='Rectangular';
+                            obj.X_cont=[];
+                            obj.Y_cont=[];
                         end
-                        obj.X_cont=x;
-                        obj.Y_cont=y;
+                        
                     else
                         obj.Shape='Rectangular';
                         obj.X_cont=[];
@@ -95,16 +101,16 @@ classdef region_cl < handle
             str=sprintf('Region %s %d Type: %s Reference: %s ',obj.Name,obj.ID,obj.Type,obj.Reference);
         end
         
-        function mask=create_mask(obj,nb_samples,nb_pings)
-            mask=zeros(nb_samples,nb_pings);
-
-             switch obj.Shape
-                case 'Rectangular'
-                    mask(obj.Idx_r,obj.Idx_pings)=1;
+        function mask=create_mask(obj)
+            nb_pings=length(obj.Idx_pings);
+            nb_samples=length(obj.Idx_r);
+            mask=ones(nb_samples,nb_pings);
+            
+            switch obj.Shape
                 case 'Polygon'
-                   mask(obj.Idx_r,obj.Idx_pings)=obj.MaskReg;
-             end
-                     
+                    mask=mask_from_cont(obj.X_cont,obj.Y_cont,nb_samples,nb_pings);
+            end
+            
             
         end
         

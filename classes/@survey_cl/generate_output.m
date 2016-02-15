@@ -35,7 +35,7 @@ nb_reg=nansum(nb_reg_lay);
 
 [~,nb_strat,nb_trans]=get_num_trans(snap_lay,strat_lay,trans_lay);
 
-surv_out_obj=survey_output_cl(nb_strat,nb_trans,nansum(nb_reg_lay));
+surv_out_obj=survey_output_cl(nb_strat,nb_trans,nb_reg);
 snapshots=surv_in_obj.Snapshots;
 
 i_trans=0;

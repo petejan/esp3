@@ -312,16 +312,10 @@ classdef transceiver_cl < handle
             
             for i=idx
                 curr_reg=obj.Regions(i);
-                idx_r_curr=curr_reg.Idx_r;
-                idx_pings_curr=curr_reg.Idx_pings;
-                switch curr_reg.Shape
-                    case 'Rectangular'
-                        Sv(idx_r_curr,idx_pings_curr)=NaN;
-                    case 'Polygon'
-					Sv_temp=v(idx_r_curr,idx_pings_curr);
-					Sv_temp(~curr_reg.MaskReg)=nan;
-                    Sv(idx_r_curr,idx_pings_curr)=Sv_temp;
-                end
+                Sv_temp=Sv(idx_r_curr,idx_pings_curr);
+                mask=curr_reg.create_mask();
+                Sv(mask)=nan;
+                Sv(idx_r_curr,idx_pings_curr)=Sv_temp;
             end
             
             Sv(:,(obj.Bottom.Tag==0))=NaN;
