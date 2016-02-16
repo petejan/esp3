@@ -115,6 +115,10 @@ if ~isempty(cdata)
             val_str=sprintf('%s: %.2f dB',curr_disp.Type,cdata(idx_r_red,idx_ping_red));
     end
     
+    iFile=layer.Transceivers(idx_freq).Data.FileId(idx_ping);
+    summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',layer.Filename{iFile},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
+
+     set(info_panel_comp.summary,'string',summary_str);
     set(info_panel_comp.xy_disp,'string',xy_string);
     set(info_panel_comp.pos_disp,'string',pos_string);
     set(info_panel_comp.time_disp,'string',time_str);

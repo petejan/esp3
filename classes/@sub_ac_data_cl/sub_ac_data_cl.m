@@ -6,9 +6,6 @@ classdef sub_ac_data_cl < handle
         Fieldname
         CaxisDisplay
     end
-    events
-        UpdateGraph
-    end
     methods
         function obj = sub_ac_data_cl(field,memapname,data)
             

@@ -6,6 +6,7 @@ classdef ac_data_cl < handle
         Type
         Samples
         Range
+        FileId
         Time
         Number
         MemapName
@@ -24,6 +25,7 @@ classdef ac_data_cl < handle
             addParameter(p,'Samples',[],@isnumeric);
             addParameter(p,'Time',[],@isnumeric);
             addParameter(p,'Number',[],@isnumeric);
+            addParameter(p,'FileId',[],@isnumeric);
             addParameter(p,'MemapName','',@ischar);
             
             parse(p,varargin{:});
@@ -33,6 +35,10 @@ classdef ac_data_cl < handle
             
             for i=1:length(props)
                 obj.(props{i})=results.(props{i});
+            end
+            
+            if isempty(p.Results.FileId)
+                obj.FileId=ones(size(obj.Number));
             end
             
             if ~isempty(p.Results.SubData)
