@@ -18,6 +18,7 @@ classdef ac_data_cl < handle
             p = inputParser;
             
             check_sub_ac_data_class=@(sub_ac_data_obj) isa(sub_ac_data_obj,'sub_ac_data_cl')||isempty(sub_ac_data_obj);
+            checkname=@(name) iscell(name)||ischar(name);
             
             
             addParameter(p,'SubData',[],check_sub_ac_data_class);
@@ -26,7 +27,7 @@ classdef ac_data_cl < handle
             addParameter(p,'Time',[],@isnumeric);
             addParameter(p,'Number',[],@isnumeric);
             addParameter(p,'FileId',[],@isnumeric);
-            addParameter(p,'MemapName','',@ischar);
+            addParameter(p,'MemapName','',checkname);
             
             parse(p,varargin{:});
             
@@ -35,6 +36,10 @@ classdef ac_data_cl < handle
             
             for i=1:length(props)
                 obj.(props{i})=results.(props{i});
+            end
+            
+            if ischar(obj.MemapName)
+                obj.MemapName={obj.MemapName};
             end
             
             if isempty(p.Results.FileId)
@@ -56,14 +61,6 @@ classdef ac_data_cl < handle
                 obj.Type={};
             end
         end
-        
-        
-        
-        
-       
-        
-       
-        
     end
 end
 

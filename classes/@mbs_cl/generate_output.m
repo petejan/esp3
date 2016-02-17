@@ -63,7 +63,7 @@ for uit=idx_trans
         rsa={};
         reg_tot=mbs.Input.reg{idx_trans(ifi)};
         mbsVS = (mbs.Header.vertical_slice_size);
-        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings');
+        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',mbsVS,'Slice_units','pings');
         Output_echo=[Output_echo sliced_output];
         
         for j=1:length(regs)

@@ -7,63 +7,64 @@ classdef sub_ac_data_cl < handle
         CaxisDisplay
     end
     methods
-        function obj = sub_ac_data_cl(field,memapname,data)
+        function obj = sub_ac_data_cl(field,memapname,data,varargin)
             
+             p = inputParser;
+            
+            checkname=@(name) iscell(name)||ischar(name);
+            checkdata=@(data) iscell(data)||isnumeric(data);
+            
+            addRequired(p,'field',@ischar);
+            addRequired(p,'memapname',checkname);
+            addRequired(p,'data',checkdata);
+
+            parse(p,field,memapname,data,varargin{:});
+
             obj.Fieldname=lower(deblank(field));
             
-            curr_name=[memapname field '.bin'];
-            
-            
-            fileID = fopen(curr_name,'w+');
-            
-            while fileID==-1
-                return;
+            if ischar(memapname)
+                memapname={memapname};
             end
             
-            format={'single',size(data),field};
-            fwrite(fileID,single(data),'single');
-            fclose(fileID);
+            if ~iscell(data)
+                data={data};
+            end
             
-            obj.Memap = memmapfile(curr_name,...
-                'Format',format,'repeat',1,'writable',false);
-            
-            
+            cax_min=nan;
+            cax_max=nan;        
             [obj.CaxisDisplay,obj.Type]=init_cax(obj.Fieldname);
            
+            obj.Memap={};
+            for icell=1:length(data)
+                if ~isempty(data{icell})
+                    curr_name=[memapname{icell} field '.bin'];
+                    fileID = fopen(curr_name,'w+');
+                    while fileID==-1
+                        continue;
+                    end
+                    format={'single',size(data{icell}),field};
+                    fwrite(fileID,single(data{icell}),'single');
+                    fclose(fileID);
+                    
+                    obj.Memap{icell} = memmapfile(curr_name,...
+                        'Format',format,'repeat',1,'writable',false);
+                    if isempty(obj.CaxisDisplay);
+                        cax_min=nanmin(cax_min,nanmin(real(data{icell}(:))));
+                        cax_max=nanmax(cax_min,nanmax(real(data{icell}(:))));
+                    end
+                end
+            end
             
+    
             if isempty(obj.CaxisDisplay);
-                obj.CaxisDisplay=[nanmin(real(data(:))) nanmax(real(data(:)))];
+                obj.CaxisDisplay=[cax_min cax_max];
             end
             
             if obj.CaxisDisplay(1)>=obj.CaxisDisplay(2)
                 obj.CaxisDisplay=[obj.CaxisDisplay(1) obj.CaxisDisplay(1)+abs(obj.CaxisDisplay(1))/10];
             end
         end
-        
-        function delete(obj)
-            if isa(obj.Memap,'memmapfile')
-                if exist(obj.Memap.Filename,'file')>0
-                    obj.Memap.Writable=false;
-                    delete(obj.Memap.Filename);
-                end
-            end
-        end
-        
-        function sub_out=concatenate_SubData(sub_1,sub_2,new_name)
-            
-            if ~strcmp(sub_1.Fieldname,sub_2.Fieldname)
-                warning('Concatenating two different subdataset'); 
-            end
-            
-            data_1=sub_1.Memap.Data.(sub_1.Fieldname);
-            data_2=sub_2.Memap.Data.(sub_2.Fieldname);
-            
-            new_data=[data_1 data_2];   
-            sub_out=sub_ac_data_cl(sub_1.Fieldname,new_name,new_data);
 
-        end
-        
-       
     end
     
     methods (Static)

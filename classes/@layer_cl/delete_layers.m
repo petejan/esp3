@@ -1,5 +1,5 @@
 
-function layers=delete_layers(layers,ID_num)
+function layers=delete_layers(layers,ID_num,rm_memmap)
 
 if isempty(ID_num)
     idx=1:length(layers);
@@ -12,8 +12,9 @@ else
 end
 
 for i=idx
-    layers(i).delete();
+    layers(i).rm_memaps();
 end
+
 
 layers(idx)=[];
 

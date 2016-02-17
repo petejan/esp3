@@ -117,18 +117,10 @@ power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
 
 memapname=layer.Transceivers(idx_freq).Data.MemapName;
 
-layer.Transceivers(idx_freq).Data.remove_sub_data('powerdenoised');
-layer.Transceivers(idx_freq).Data.remove_sub_data('spdenoised');
-layer.Transceivers(idx_freq).Data.remove_sub_data('svdenoised');
-layer.Transceivers(idx_freq).Data.remove_sub_data('snr');
-
-sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
-    sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...
-    sub_ac_data_cl('svdenoised',memapname,Sv_unoised) ...
-    sub_ac_data_cl('snr',memapname,SNR)];
-
-layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
-
+layer.Transceivers(idx_freq).Data.add_sub_data('powerdenoised',power_unoised);
+layer.Transceivers(idx_freq).Data.add_sub_data('spdenoised',Sp_unoised);
+layer.Transceivers(idx_freq).Data.add_sub_data('svdenoised',Sv_unoised);
+layer.Transceivers(idx_freq).Data.add_sub_data('snr',SNR);
 curr_disp.setField('svdenoised');
 
 setappdata(main_figure,'Layer',layer);

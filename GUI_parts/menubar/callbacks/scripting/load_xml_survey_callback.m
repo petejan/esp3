@@ -28,7 +28,7 @@ for i=1:length(Filename)
 %     profile off;
 %     profile on;
 %     
-%     
+    
     layers_new=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data);
     surv_obj.generate_output(layers_new);
     

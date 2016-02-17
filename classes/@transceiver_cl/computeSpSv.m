@@ -23,25 +23,19 @@ switch trans_obj.Mode
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
         [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr);
         
-        trans_obj.Data.remove_sub_data('sv');
-        trans_obj.Data.remove_sub_data('sp');
-        trans_obj.Data.remove_sub_data('spunmatched');
-        
+
         trans_obj.Data.Range=range;        
-        trans_obj.Data.add_sub_data(sub_ac_data_cl('sv',trans_obj.Data.MemapName,Sv));
-        trans_obj.Data.add_sub_data(sub_ac_data_cl('sp',trans_obj.Data.MemapName,Sp));
-        trans_obj.Data.add_sub_data(sub_ac_data_cl('spunmatched',trans_obj.Data.MemapName,Sp_un));
+        trans_obj.Data.add_sub_data('sv',Sv);
+        trans_obj.Data.add_sub_data('sp',Sp);
+        trans_obj.Data.add_sub_data('spunmatched',Sp_un);
     case 'CW'
         range = double((trans_obj.Data.Samples - 1) * dR);
         
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
-
-        trans_obj.Data.remove_sub_data('sv');
-        trans_obj.Data.remove_sub_data('sp');
-        
+       
         trans_obj.Data.Range=range;
-        trans_obj.Data.add_sub_data(sub_ac_data_cl('sv',trans_obj.Data.MemapName,Sv));
-        trans_obj.Data.add_sub_data(sub_ac_data_cl('sp',trans_obj.Data.MemapName,Sp));
+        trans_obj.Data.add_sub_data('sv',Sv);
+        trans_obj.Data.add_sub_data('sp',Sp);
 end
 
 

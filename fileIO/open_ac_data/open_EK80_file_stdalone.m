@@ -153,16 +153,9 @@ if ~isequal(Filename_cell, 0)
                 fileID = unidrnd(2^64);
             end
             
+           
             
-            [~,curr_filename,~]=fileparts(tempname);
-            curr_name=fullfile(dir_data,curr_filename);
-            
-            ff=fields(curr_data);
-            sub_ac_data_temp=[];
-            
-            for uuuk=1:length(ff)
-                sub_ac_data_temp=[sub_ac_data_temp sub_ac_data_cl(ff{uuuk},curr_name,curr_data.(ff{uuuk}))];
-            end
+            [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,dir_data,p.Results.FieldNames);
             
             ac_data_temp=ac_data_cl('SubData',sub_ac_data_temp,...
                 'Range',double(data.pings(i).range),...

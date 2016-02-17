@@ -132,7 +132,7 @@ for i=idx_trans
             end
     end
     
-    layer(u).SurveyData=survey_data_cl('Voyage',voyage,'SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i),'VerticalSlice',vertslice);
+    layer(u).SurveyData=survey_data_cl('Voyage',voyage,'SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i));
     
 end
 

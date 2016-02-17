@@ -12,7 +12,7 @@ psBW=trans_obj.Config.BeamWidthAthwartship;
 
 compensation=create_motion_comp(pitch,roll,time_att,time_pings_start,time_ping_vec,faBW,psBW);
 
-trans_obj.Data.add_sub_data(sub_ac_data_cl('motioncompensation',trans_obj.Data.MemapName,compensation));
+trans_obj.Data.add_sub_data('motioncompensation',compensation);
 
 
 end

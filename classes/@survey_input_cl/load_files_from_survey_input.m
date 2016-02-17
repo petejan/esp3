@@ -36,8 +36,6 @@ for isn=1:length(snapshots)
             cal_t=transects{itr}.Cal;
             layer_temp=[];
             
-
-
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 if exist(fileN,'file')==2
@@ -48,14 +46,21 @@ for isn=1:length(snapshots)
                         warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
                         continue;
                     end
+                    
+                  
+                    
                     layer_temp=[layer_temp new_lay];
+                    clear new_lay;
                 else
                     warning('Cannot Find specified file %s',filenames_cell{ifiles});
                     continue;
                 end
+
             end
+            
             if ~isempty(layer_temp)
                 [layers_temp,~]=shuffle_layers([],layer_temp,'multi_layer',0,'reg_ver',0,'bot_ver',0);
+                clear layer_temp;
             else
                 warning('Could not find any files in this transect...');
                 layers_temp=[];
@@ -68,14 +73,15 @@ for isn=1:length(snapshots)
             
             for i_lay=1:length(layers_temp)
                 layer_new=layers_temp(i_lay);
-                if isempty(cal_t)
-                    layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
-                else
-                    layer_new.Transceivers(idx_freq).apply_cw_cal(cal_t);
-                end
                 
-                layer_new.Transceivers(idx_freq).apply_absorption(options.Absorbtion/1e3);
-                layer_new.SurveyData=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num,'VerticalSlice',options.Vertical_slice_size);
+                  if isempty(cal_t)
+                        layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
+                    else
+                        layer_new.Transceivers(idx_freq).apply_cw_cal(cal_t);
+                    end
+                    layer_new.Transceivers(idx_freq).apply_absorption(options.Absorbtion/1e3);
+
+                layer_new.SurveyData=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                 
                 if isfield(bot,'file')
                     if exist(fullfile(snapshots{isn}.Folder,bot.file),'file')>0

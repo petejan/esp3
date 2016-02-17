@@ -56,11 +56,11 @@ classdef layer_cl < handle
 
         end
         
-        function delete(layer)
+        function rm_memaps(layer)
             
             for kk=1:length(layer.Transceivers)
                 for uu=1:length(layer.Transceivers(kk).Data.SubData)
-                    layer.Transceivers(kk).Data.SubData(uu).delete();
+                    layer.Transceivers(kk).Data.remove_sub_data();
                 end
                 
             end

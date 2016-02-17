@@ -57,20 +57,7 @@ for uu=idx_to_process
             'VertFilt',layer.Transceivers(uu).Algo(idx_algo_denoise).Varargin.VertFilt,...
             'NoiseThr',layer.Transceivers(uu).Algo(idx_algo_denoise).Varargin.NoiseThr);
         
-        
-        memapname=layer.Transceivers(uu).Data.MemapName;
-        
-        layer.Transceivers(uu).Data.remove_sub_data('powerdenoised');
-        layer.Transceivers(uu).Data.remove_sub_data('spdenoised');
-        layer.Transceivers(uu).Data.remove_sub_data('svdenoised');
-        layer.Transceivers(uu).Data.remove_sub_data('snr');
-        
-        sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
-            sub_ac_data_cl('spdenoised',memapname,Sp_denoised) ...
-            sub_ac_data_cl('svdenoised',memapname,Sv_denoised) ...
-            sub_ac_data_cl('snr',memapname,SNR)];
-        
-        layer.Transceivers(uu).Data.add_sub_data(sub_ac_data_temp);
+        layer.Transceivers(uu).Data.add_sub_data({'powerdenoised','spdenoised','svdenoised','snr'},{power_unoised Sp_denoised Sv_denoised SNR});
     end
     
     if reprocess==1||~strcmp(layer.Transceivers(uu).Bottom.Origin,'Algo_v2_bp')

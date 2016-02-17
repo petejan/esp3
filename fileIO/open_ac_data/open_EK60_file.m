@@ -49,10 +49,17 @@ if isempty(layers_temp)
     return;
 end
 
+
+
 disp('Shuffling layers');
 [layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join);
+clear layers_temp;
 % profile off
 % profile viewer;
+
+for ilay=1:length(layers)
+    layers(ilay).load_echo_logbook();
+end
 
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);

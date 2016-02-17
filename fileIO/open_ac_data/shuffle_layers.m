@@ -192,10 +192,7 @@ if multi_layer<=0
                         end
                         
                     end
-                    
-                    if keep==0
-                        delete_layers(curr_layers,[]);
-                    end
+                    clear curr_layers;
                     layer_conc.load_bot_regs('reg_ver',p.Results.reg_ver,'bot_ver',p.Results.bot_ver);
                     
                    

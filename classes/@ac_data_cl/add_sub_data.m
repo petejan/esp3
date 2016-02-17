@@ -1,24 +1,26 @@
-function add_sub_data(data,subdata)
-subdata_temp=data.SubData;
-
-for i=1:length(subdata)
-    fieldname=subdata(i).Fieldname;
-    [idx,found]=find_field_idx(data,fieldname);
-    if found==0
-        if size(subdata_temp,1)==1
-            subdata_temp=[subdata_temp subdata(i)];
-        else
-            subdata_temp=[subdata_temp; subdata(i)];
-        end
-        data.Fieldname=[data.Fieldname subdata(i).Fieldname];
-        data.Type=[data.Type subdata(i).Type];
-    else
-        subdata_temp(idx).Memap.Writable=false;
-        delete(subdata_temp(idx).Memap.Filename);
-        subdata_temp(idx)=subdata(i);
-    end
+function add_sub_data(data_obj,field,data_mat)
+if ~iscell(field)
+    field={field};
 end
 
-data.SubData=subdata_temp;
+if ~iscell(data_mat)
+    data_mat={data_mat};
+end
+
+for i=1:length(field)
+    fieldname=field{i};
+    data_obj.remove_sub_data(fieldname);
+    
+    nb_pings=data_obj.get_nb_pings_per_file();
+    nb_samples=repmat(length(data_obj.Range),1,length(nb_pings));
+    data_mat_cell=divide_mat(data_mat{i},nb_samples,nb_pings);
+  
+    new_sub_data=sub_ac_data_cl(fieldname,data_obj.MemapName,data_mat_cell);
+    data_obj.SubData=[data_obj.SubData new_sub_data]; 
+    data_obj.Fieldname=[data_obj.Fieldname {new_sub_data.Fieldname}];
+    data_obj.Type=[data_obj.Type {new_sub_data.Type}];
+
+end
+
 
 end
