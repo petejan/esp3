@@ -4,7 +4,7 @@ nb_layers=length(layers);
 layers_Str=cell(1,nb_layers);
 for i=1:nb_layers
     if ~isempty(layers(i).get_survey_data())
-        new_name=[layers(i).Filename{1} layers(i).get_survey_data().print_survey_data()];
+        new_name=[layers(i).Filename{1} ' ' layers(i).get_survey_data().print_survey_data()];
     else
         new_name=layers(i).Filename{1};
     end

@@ -166,6 +166,7 @@ if ~isequal(Filename, 0)
 %     end
     
     survey_struct=import_survey_data(PathToFile_tmp,'echo_logbook.csv');
+    
     [~,~,idx_missing]=find_survey_data(Filename,survey_struct);
     
     idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));

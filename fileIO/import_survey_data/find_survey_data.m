@@ -1,6 +1,14 @@
 
 
-function [idx_files,idx_loaded,idx_missing]=find_survey_data(files_layer,survey_data_struct)
+function [idx_files,idx_loaded,idx_missing,idx_nan]=find_survey_data(files_layer,survey_data_struct)
+
+if isempty(survey_data_struct)
+    idx_files=[];
+    idx_loaded={};
+    idx_missing={};
+    return;
+end
+    
 
 idx_files=[];
 for u=1:length(files_layer)
@@ -13,7 +21,7 @@ snap=survey_data_struct.Snapshot;
 strat=survey_data_struct.Stratum;
 trans=survey_data_struct.Transect;
 
-idx_nan=(snap==0)|strcmp(strat,' ')|trans==0;
+idx_nan=setdiff(find((snap==0)|strcmp(strat,' ')|trans==0),idx_files);
 snap(idx_nan)=nan;
 trans(idx_nan)=nan;
 

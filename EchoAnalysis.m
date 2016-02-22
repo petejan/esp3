@@ -4,8 +4,9 @@ DEBUG=0;
 
 %%%%%%%%%%%%%% main_figure is the handle to the main window of the App %%%%
 %%%%%%%%%%%%%%
+size_max=get(0,'ScreenSize');
 main_figure=figure('Visible','off',...
-    'Units','pixels','Position',[100 100 1280 720],...       %Position and size normalized to the screen size ([left, bottom, width, height])
+    'Units','pixels','Position',[0 100 size_max(3)/4*3 size_max(4)/4*3],...       %Position and size normalized to the screen size ([left, bottom, width, height])
     'Color','White',...                                         %Background color
     'Name','Echo Analysis','NumberTitle','off',...    %GUI Name
     'Resize','on',...
@@ -94,11 +95,12 @@ function resize_main_fig(main_figure,~)
 figwidth = main_figure.Position(3);
 figheight = main_figure.Position(4);
 
-if figwidth<1280
-    main_figure.Position(3)=1280;
+size_max=get(0,'ScreenSize');
+if figwidth<size_max(3)/4*3;
+    main_figure.Position(3)=size_max(3)/4*3;
 end
-if figheight<720
-    main_figure.Position(4)=720;
+if figheight<size_max(4)/4*3;
+    main_figure.Position(4)=size_max(4)/4*3;
 end
 
 end

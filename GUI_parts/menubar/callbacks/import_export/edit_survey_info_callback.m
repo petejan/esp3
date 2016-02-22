@@ -26,24 +26,25 @@ answer=inputdlg(prompt,name,numlines,defaultanswer);
 if isempty(answer)
     return;
 end
-survd=survey_data_cl();
 
-survd.SurveyName=answer{1};
-survd.Voyage=answer{2};
+SurveyName=answer{1};
+Voyage=answer{2};
 
 if ~isnan(str2double(answer{3}))
-    survd.Snapshot=floor(str2double(answer{3}));
+    Snapshot=floor(str2double(answer{3}));
 else
     warning('Invalid Snapshot number.');return;
 end
 
-survd.Stratum=answer{4};
+Stratum=answer{4};
 
 if ~isnan(str2double(answer{5}))
-    survd.Transect=floor(str2double(answer{5}));
+    Transect=floor(str2double(answer{5}));
 else
     warning('Invalid Transect number');return;
 end
+
+survd=survey_data_cl('Voyage',Voyage,'SurveyName',SurveyName,'Snapshot',Snapshot,'Stratum',Stratum,'Transect',Transect);
 
 layer.set_survey_data(survd);
 

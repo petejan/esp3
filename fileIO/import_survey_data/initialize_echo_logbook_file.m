@@ -25,7 +25,7 @@ function initialize_echo_logbook_file(datapath)
      
      for i=1:nb_files
         start_date=get_start_date_from_raw(list_raw(i,:));
-        fprintf(fid,'%s, , ,%s,0, ,0,%d,1\n',datapath,strrep(list_raw(i,:),' ',''),start_date);
+        fprintf(fid,'%s, , ,%s,0, ,0,%.0f,1\n',datapath,strrep(list_raw(i,:),' ',''),start_date);
      end
      
      fclose(fid);

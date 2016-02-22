@@ -21,11 +21,10 @@ classdef survey_data_cl
             addParameter(p,'SurveyName',' ',ver_fmt);
             addParameter(p,'Snapshot',0,@isnumeric);
             addParameter(p,'Stratum',' ',ver_fmt);
-            addParameter(p,'Transect',0,ver_fmt);
+            addParameter(p,'Transect',0,@isnumeric);
             addParameter(p,'Voyage',' ',ver_fmt);
             addParameter(p,'StartTime',0,@isnumeric);
-            addParameter(p,'EndTime',1,@isnumeric);
-            
+            addParameter(p,'EndTime',1,@isnumeric);      
             parse(p,varargin{:});
             
             results=p.Results;
@@ -34,34 +33,35 @@ classdef survey_data_cl
             obj.SurveyName=results.SurveyName;
             obj.Snapshot=results.Snapshot;
             obj.Stratum=results.Stratum;
-            obj.Transect=results.Stratum;
+            obj.Transect=results.Transect;
             obj.StartTime=results.StartTime;
             obj.EndTime=results.EndTime;
+            
+            if isnumeric(obj.Stratum)
+                obj.Stratum=num2str(obj.Stratum,'%.0f');
+            end
+            if isnumeric(obj.SurveyName)
+                obj.SurveyName=' ';
+            end
+            
+            if isnumeric(obj.Voyage)
+                obj.Voyage=' ';
+            end
+            
+            if isempty(obj.Snapshot)
+                obj.Snapshot=0;
+            end
+            
+            if isempty(obj.Transect)
+                obj.Transect=0;
+            end
             
             
         end
         function i_str=print_survey_data(obj)
-                        
-            if ~iscell(obj.Voyage)
-                if ischar(obj.Stratum)
-                    i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
-                        obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
-                else
-                    i_str=sprintf('%s Snap %d, Strat. %d, Trans. %d',...
-                        obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
-                end
-            else
-                if ischar(obj.Stratum{1})
-                    i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
-                        obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
-                else
-                    i_str=sprintf('%s Snap %d, Strat. %d, Trans. %d',...
-                        obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
-                end
-            end
-            if ~isempty(strfind(i_str,'NaN'))
-                i_str='';
-            end
+            i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
+                obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
+            
         end
         
       

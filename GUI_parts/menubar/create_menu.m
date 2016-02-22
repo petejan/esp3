@@ -29,12 +29,16 @@ uimenu(m_import,'Label','Import Bottom from .evl','Callback',{@import_bot_from_e
 uimenu(m_import,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
 
 uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback',{@import_line_callback,main_figure},'separator','on');
-uimenu(m_import,'Label','Import Survey Data from (.*csv)','Callback',{@import_survey_data_callback,main_figure},'separator','on');
+
+m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
+uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
+uimenu(m_survey,'Label','Edit Survey Data','Callback',{@edit_survey_info_callback,main_figure});
+uimenu(m_survey,'Label','Edit Trip Info','Callback',{@edit_trip_info_callback,main_figure});
+
 
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
 uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
-uimenu(mhhhh,'Label','Edit Survey Data','Callback',{@edit_survey_info_callback,main_figure});
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
