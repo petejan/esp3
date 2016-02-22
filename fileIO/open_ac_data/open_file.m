@@ -31,7 +31,7 @@ else
             return;
         end
         
-         
+        
         if ~iscell(Filename)
             if (Filename==0)
                 return;
@@ -42,7 +42,7 @@ else
         idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
         Filename=Filename(idx_keep);
         if isempty(Filename)
-           return; 
+            return;
         end
         
         
@@ -148,87 +148,117 @@ end
 setappdata(main_figure,'Layer',layer);
 
 read_all=0;
-multi_layer=1;
+
+multi_layer=0;
 join=0;
 
+if ~iscell(Filename)
+    Filename={Filename};
+end
 
 
 if ~isequal(Filename, 0)
-
     
-    ask_q=1;
-    if length(Filename)==1||~iscell(Filename)
-            ask_q=0;
-    end
     
-    if ask_q==1
-        choice = questdlg('Do you want to open files as separate layers?', ...
-            'File opening mode',...
-            'Yes','No','Force Concatenation', ...
+%     ask_q=1;
+%     if length(Filename)==1||~iscell(Filename)
+%         ask_q=0;
+%     end
+    
+    survey_struct=import_survey_data(PathToFile_tmp,'echo_logbook.csv');
+    [~,~,idx_missing]=find_survey_data(Filename,survey_struct);
+    
+    idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
+    
+    if ~isempty(idx_incomp)
+        choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
+            'Incomplete',...
+            'Yes','No',...'Force Concatenation', ...
             'Yes');
         % Handle response
         switch choice
             case 'Yes'
-                multi_layer=1;
-                read_all=0;
+                for ifile_miss=idx_incomp
+                    miss_files=survey_struct.Filename(idx_missing{idx_incomp});
+                    Filename=[Filename; miss_files];
+                end
             case 'No'
-                multi_layer=0;
-                read_all=1;
-            case 'Force Concatenation'
-                multi_layer=-1;
-                read_all=1;
             otherwise
                 return;
         end
-        
-        if isempty(choice)
-            return;
-        end
-    else
-        multi_layer=0;
+        Filename=unique(Filename);
     end
     
-    if ~strcmp(ftype,'dfile')
-        
-        
-        if multi_layer==0&&ID_num~=0&&~isempty(layers)
-            choice = questdlg('Do you want to join those new layers to existing ones?', ...
-                'File opening mode',...
-                'Yes','No', ...
-                'No');
-            % Handle response
-            switch choice
-                case 'Yes'
-                    join=1;
-                case 'No'
-                    join=0;
-            end
-            if isempty(choice)
-                return;
-            end
-        else
-            join=0;
-        end
-        
-        if read_all==0&&join==0
-            prompt={'First ping:',...
-                'Last Ping:'};
-            name='Pings to load from each files';
-            numlines=1;
-            defaultanswer={'1','Inf'};
-            answer=inputdlg(prompt,name,numlines,defaultanswer);
-            
-            if isempty(answer)
-                return;
-            end
-            
-            ping_start= str2double(answer{1});
-            ping_end= str2double(answer{2});
-        else
-            ping_start=1;
-            ping_end=Inf;
-        end
-    end
+%     
+%     if ask_q==1
+%         choice = questdlg('Do you want to open files as separate layers?', ...
+%             'File opening mode',...
+%             'Yes','No',...'Force Concatenation', ...
+%             'Yes');
+%         % Handle response
+%         switch choice
+%             case 'Yes'
+%                 multi_layer=1;
+%                 read_all=0;
+%             case 'No'
+%                 multi_layer=0;
+%                 read_all=1;
+%             case 'Force Concatenation'
+%                 multi_layer=-1;
+%                 read_all=1;
+%             otherwise
+%                 return;
+%         end
+%         
+%         if isempty(choice)
+%             return;
+%         end
+%     else
+%         multi_layer=0;
+%     end
+    
+    %  if ~strcmp(ftype,'dfile')
+    %         if multi_layer==0&&ID_num~=0&&~isempty(layers)
+    %             choice = questdlg('Do you want to join those new layers to existing ones?', ...
+    %                 'File opening mode',...
+    %                 'Yes','No', ...
+    %                 'No');
+    %             % Handle response
+    %             switch choice
+    %                 case 'Yes'
+    %                     join=1;
+    %                 case 'No'
+    %                     join=0;
+    %             end
+    %             if isempty(choice)
+    %                 return;
+    %             end
+    %         else
+    %             join=0;
+    %         end
+    
+    %         if read_all==0&&join==0
+    %             prompt={'First ping:',...
+    %                 'Last Ping:'};
+    %             name='Pings to load from each files';
+    %             numlines=1;
+    %             defaultanswer={'1','Inf'};
+    %             answer=inputdlg(prompt,name,numlines,defaultanswer);
+    %
+    %             if isempty(answer)
+    %                 return;
+    %             end
+    %
+    %             ping_start= str2double(answer{1});
+    %         %             ping_end= str2double(answer{2});
+    %         %         else
+    %         ping_start=1;
+    %         ping_end=Inf;
+    %         end
+    % end
+    
+    ping_start=1;
+    ping_end=Inf;
     
     switch ftype
         case 'EK60'

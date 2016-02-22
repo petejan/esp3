@@ -4,6 +4,8 @@ display_tab_comp=getappdata(main_figure,'Display_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
+
+
 try
     x=double(get(axes_panel_comp.main_axes,'xlim'));
     y=double(get(axes_panel_comp.main_axes,'ylim'));
@@ -127,8 +129,6 @@ set(display_tab_comp.caxis_down,'String',num2str(axes_panel_comp.main_axes.CLim(
 
 idx_bottom=trans.Bottom.Sample_idx;
 
-
-
 xdata_real=Number;
 axes_panel_comp=display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom);
 axes_panel_comp=display_tracks(xdata_real,trans.ST,trans.Tracks,axes_panel_comp,curr_disp.DispTracks);
@@ -143,8 +143,6 @@ set_axes_position(main_figure);
 
 display_regions(main_figure)
 display_lines(main_figure)
-
-
 set_alpha_map(main_figure);
 
 display_info_ButtonMotionFcn([],[],main_figure,1);

@@ -22,9 +22,10 @@ strat_lay=cell(1,length(layers));
 trans_lay=nan(1,length(layers));
 
 for it=1:length(layers)
-    snap_lay(it)=layers(it).SurveyData.Snapshot;
-    strat_lay{it}=layers(it).SurveyData.Stratum;
-    trans_lay(it)=layers(it).SurveyData.Transect;
+    surv_data=layers(it).get_survey_data();
+    snap_lay(it)=surv_data.Snapshot;
+    strat_lay{it}=surv_data.Stratum;
+    trans_lay(it)=surv_data.Transect;
 end
 
 processed=zeros(1,length(layers));

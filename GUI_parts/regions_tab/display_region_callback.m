@@ -12,7 +12,7 @@ hfigs=getappdata(main_figure,'ExternalFigures');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
-list_reg = list_regions(layer.Transceivers(idx_freq));
+list_reg = layer.Transceivers(idx_freq).regions_to_str();
 idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
 cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 

@@ -3,24 +3,19 @@ layers=getappdata(main_figure,'Layers');
 
 if ~isempty(layers)
     if ~isempty(layers(1).PathToFile)
-        path=layers(1).PathToFile;
+        path_csv=layers(1).PathToFile;
     else
-        path=pwd;
+        path_csv=pwd;
     end
     
 else
     return;
 end
 
-[Filename,PathToFile]= uigetfile({fullfile(path,'*.csv')}, 'Pick a Csv file','MultiSelect','off');
-if Filename==0
-    return;
-end
-
-[files_csv,survey_vec]=import_survey_data(PathToFile,Filename);
+survey_struct=import_survey_data(path_csv,'echo_logbook.csv');
 
 for i=1:length(layers)
-    layers(i).add_survey_data(files_csv,survey_vec);
+    layers(i).add_survey_data(survey_struct);
 end
 
 setappdata(main_figure,'Layers',layers);

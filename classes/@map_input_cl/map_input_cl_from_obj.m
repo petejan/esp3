@@ -90,11 +90,12 @@ switch class(Ext_obj)
             obj.Lat{i}=layers(i).GPSData.Lat;
             obj.Lon{i}=layers(i).GPSData.Long;
             
-            if ~isempty(layers(i).SurveyData)
-                obj.Trip{i}=layers(i).SurveyData.Voyage;
-                obj.Snapshot(i)=layers(i).SurveyData.Snapshot;
-                obj.Stratum{i}=layers(i).SurveyData.Stratum;
-                obj.Transect(i)=layers(i).SurveyData.Transect;
+            if ~isempty(layers(i).get_survey_data())
+                surv_data=layers(i).get_survey_data();
+                obj.Trip{i}=surv_data.Voyage;
+                obj.Snapshot(i)=surv_data.Snapshot;
+                obj.Stratum{i}=surv_data.Stratum;
+                obj.Transect(i)=surv_data.Transect;
             else
                 obj.Trip{i}='';
             end

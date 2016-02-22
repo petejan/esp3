@@ -15,8 +15,8 @@ end
 path=layer.PathToFile;
 
 
-if ~isempty(layer.SurveyData)
-    file=layer.SurveyData.print_survey_data();
+if ~isempty(layer.get_survey_data())
+    file=layer.get_survey_data().print_survey_data();
 else
     if length(layer.Filename)>1
         file=[layer.Filename{1} '_' layer.Filename{end}];

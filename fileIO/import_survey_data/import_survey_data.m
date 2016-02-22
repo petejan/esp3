@@ -1,41 +1,24 @@
-function [filenames,survey_data]=import_survey_data(PathToFile,FileName)
-survey_data=[];
+function surv_data_struct=import_survey_data(PathToFile,FileName)
+surv_data_struct=[];
 
 if exist(fullfile(PathToFile,FileName),'file')==2
     surv_data_struct=csv2struct(fullfile(PathToFile,FileName));
-    %Filename	SurveyName	Voyage	Snapshot	Stratum	Transect
-    
-    if isempty(find(isfield(surv_data_struct,{'Datapath' 'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect'})==0, 1))
-        filenames=surv_data_struct.Filename;
-        for i=1:length(surv_data_struct.Filename)
-            if iscell(surv_data_struct.Stratum)
-                strat=surv_data_struct.Stratum{i};
-            else
-                strat=surv_data_struct.Stratum(i);
-            end
-            if ~isnumeric(surv_data_struct.Stratum(i))
-                snap=[];
-            else
-                snap=surv_data_struct.Snapshot(i);
-            end
-            
-            if ~isnumeric(surv_data_struct.Transect(i))
-                trans=[];
-            else
-                trans=surv_data_struct.Transect(i);
-            end
-            
-            survey_data=[survey_data survey_data_cl('SurveyName',surv_data_struct.SurveyName{i},...
-                'Voyage',surv_data_struct.Voyage{i},...
-                'Snapshot',snap,...
-                'Stratum',strat,...
-                'Transect',trans)];
-        end
-    else
+
+    if ~isempty(find(isfield(surv_data_struct,{'Datapath' 'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'})==0, 1))
+        surv_data_struct=[];
         warning('cannot find required fields in the *.csv file...');
     end
     
-    
+if ~iscell(surv_data_struct.Voyage)
+    surv_data_struct.Voyage=cell(size(surv_data_struct.Voyage)); 
+end
+
+if iscell(surv_data_struct.SurveyName)
+    surv_data_struct.SurveyName=cell(size(surv_data_struct.SurveyName)); 
+end
+
+if iscell(surv_data_struct.Stratum)
+    surv_data_struct.SurveyName=cell(size(surv_data_struct.Stratum)); 
 end
 
 end

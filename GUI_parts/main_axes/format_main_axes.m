@@ -6,9 +6,12 @@ if ~isempty(cax)
     end
     caxis(cax);
 end
-
-set(ax,'xlim',[xdata(1) xdata(end)]);
-set(ax,'ylim',[ydata(1) ydata(end)]);
+if length(xdata)>1
+    set(ax,'xlim',[xdata(1) xdata(end)]);
+end
+if length(ydata)>1
+    set(ax,'ylim',[ydata(1) ydata(end)]);
+end
 zoom reset;
 
 % if new==0 && idx_xlim(1)<idx_xlim(2) && idx_ylim(1)<idx_ylim(2)

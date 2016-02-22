@@ -4,24 +4,32 @@ function initialize_echo_logbook_file(datapath)
      nb_files=size(list_raw,1);
      
      file_name=fullfile(datapath,'echo_logbook.csv');
-     %fields=properties(survey_data_cl);
-     %[~,voyage_init,~]=fileparts(datapath);
-     fid=fopen(file_name,'w+');
-     
-     if fid==-1
-         warning('Could not initialize the .csv logbook file');
+     if exist(file_name,'file')==2
          return;
      end
      
-     fprintf(fid,'Datapath,Voyage,SurveyName,Filename,Snapshot,Stratum,Transect\n');
+     fid=fopen(file_name,'w+');
+     
+     if fid==-1
+         fclose('all');
+         fid=fopen(file_name,'w+');
+         if fid==-1
+         warning('Could not initialize the .csv logbook file');
+         return;
+         end
+     end
+     
+     
+
+     fprintf(fid,'Datapath,Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
      
      for i=1:nb_files
-        fprintf(fid,'%s,,,%s,,,\n',datapath,strrep(list_raw(i,:),' ',''));
+        start_date=get_start_date_from_raw(list_raw(i,:));
+        fprintf(fid,'%s, , ,%s,0, ,0,%d,1\n',datapath,strrep(list_raw(i,:),' ',''),start_date);
      end
      
      fclose(fid);
      
     
-     
-
+ 
 end

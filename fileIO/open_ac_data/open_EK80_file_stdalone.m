@@ -233,7 +233,7 @@ if ~isequal(Filename_cell, 0)
             %transceiver(i).computeSp_comp();
         end
         
-        layers(uuu)=layer_cl('ID_num',fileID,'Filename',{curr_Filename},'Filetype','EK80','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        layers(uuu)=layer_cl('Filename',{curr_Filename},'Filetype','EK80','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
     end
     try

@@ -233,11 +233,6 @@ if ~isequal(Filename_cell, 0)
         
         freq=nan(1,header.transceivercount);
         
-        fileID = unidrnd(2^64);
-        while fileID==0
-            fileID = unidrnd(2^64);
-        end
-        
         for i =1:header.transceivercount
             
             curr_data.power=single(db2pow_perso(data.pings(i).power));
@@ -288,7 +283,7 @@ if ~isequal(Filename_cell, 0)
             
         end
         
-        layers_temp(uu)=layer_cl('ID_num',fileID,'Filename',{Filename},'Filetype','EK60','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        layers_temp(uu)=layer_cl('Filename',{Filename},'Filetype','EK60','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
         %layers_temp(uu).create_motion_comp_subdata(3);
         

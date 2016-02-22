@@ -74,25 +74,32 @@ classdef transceiver_cl < handle
                 obj.(props{i})=results.(props{i});
             end
             
-%             if isempty(p.Results.Data)
-%                 obj.Data=ac_data_cl();
-%             end
+            %             if isempty(p.Results.Data)
+            %                 obj.Data=ac_data_cl();
+            %             end
             
         end
         
         
         
-        function list=list_regions(obj)
+        function list=regions_to_str(obj)
             if isempty(obj.Regions)
                 list={};
             else
                 list=cell(1,length(obj.Regions));
                 for i=1:length(obj.Regions)
-                    list{i}=sprintf('%s %0.f %s',obj.Regions(i).Name,obj.Regions(i).ID,obj.Regions(i).Type);
+                   new_name=sprintf('%s %0.f %s',obj.Regions(i).Name,obj.Regions(i).ID,obj.Regions(i).Type);     
+                    u=1;
+                    new_name_ori=new_name;
+                    while nansum(strcmpi(new_name,list))>=1
+                        new_name=[new_name_ori '_' num2str(u)];
+                        u=u+1;
+                    end
+                    list{i}=new_name;
                 end
             end
         end
-
+        
         function idx=list_regions_origin(obj,origin)
             if isempty(obj.Regions)
                 idx=[];
@@ -119,18 +126,18 @@ classdef transceiver_cl < handle
                 end
             end
         end
-
+        
         function idx=list_regions_ID(obj,ID)
             if isempty(obj.Regions)
                 idx=[];
             else
-              idx=[];
+                idx=[];
                 for i=1:length(ID)
                     idx=union(idx,find([obj.Regions(:).ID]==ID(i)));
                 end
             end
         end
-
+        
         function idx=list_regions_Unique_ID(obj,ID)
             if isempty(obj.Regions)
                 idx=[];
@@ -189,7 +196,11 @@ classdef transceiver_cl < handle
                     reg_new=[reg_new reg_curr(i)];
                 end
             end
-            obj.Regions=reg_new;
+            if isempty(reg_new)
+                obj.Regions=[];
+            else
+                obj.Regions=reg_new;
+            end
         end
         
         
@@ -203,7 +214,7 @@ classdef transceiver_cl < handle
             end
             obj.Regions=reg_new;
         end
-      
+        
         function rm_region_origin(obj,origin)
             reg_curr=obj.Regions;
             reg_new=[];
@@ -214,7 +225,7 @@ classdef transceiver_cl < handle
             end
             obj.Regions=reg_new;
         end
-      
+        
         
         
         
@@ -222,7 +233,7 @@ classdef transceiver_cl < handle
             reg_curr=obj.Regions;
             id_list=[];
             for i=1:length(reg_curr)
-                    id_list=[reg_curr(i).ID id_list];
+                id_list=[reg_curr(i).ID id_list];
             end
             if~isempty(id_list)
                 new_id=setdiff(1:nanmax(id_list)+1,id_list);
@@ -238,18 +249,19 @@ classdef transceiver_cl < handle
             for i=1:length(reg_curr)
                 id_list(i)=reg_curr(i).Unique_ID;
             end
-            unique_id=unidrnd(2^64);
+            unique_id=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
             while ~isempty(find(unique_id==id_list,1))
-                unique_id=unidrnd(2^64);
+                unique_id=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
             end
         end
         
-        function [idx,found]=find_reg_idx(trans,id)
+        function [idx,found]=find_reg_idx(trans,u_id)
             
             idx=[];
             for ii=1:length(trans.Regions)
-                if id==trans.Regions(ii).Unique_ID
-                    idx=ii;
+                
+                if u_id==trans.Regions(ii).Unique_ID
+                    idx=[idx ii];
                     found=1;
                 end
             end
@@ -257,6 +269,10 @@ classdef transceiver_cl < handle
             if isempty(idx)
                 idx=1;
                 found=0;
+            end
+            
+            if length(idx)>1
+                warning('several regions with the same ID')
             end
             
         end
@@ -276,7 +292,7 @@ classdef transceiver_cl < handle
                 idx=1;
                 found=0;
             end
-
+            
         end
         
         

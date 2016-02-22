@@ -47,8 +47,6 @@ for isn=1:length(snapshots)
                         continue;
                     end
                     
-                  
-                    
                     layer_temp=[layer_temp new_lay];
                     clear new_lay;
                 else
@@ -59,7 +57,7 @@ for isn=1:length(snapshots)
             end
             
             if ~isempty(layer_temp)
-                [layers_temp,~]=shuffle_layers([],layer_temp,'multi_layer',0,'reg_ver',0,'bot_ver',0);
+                [layers_temp,~]=shuffle_layers([],layer_temp,'multi_layer',0);
                 clear layer_temp;
             else
                 warning('Could not find any files in this transect...');
@@ -81,7 +79,9 @@ for isn=1:length(snapshots)
                     end
                     layer_new.Transceivers(idx_freq).apply_absorption(options.Absorbtion/1e3);
 
-                layer_new.SurveyData=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
+                surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
+                layer(u).set_survey_data(surv);
+                layer_new.update_echo_logbook_file();
                 
                 if isfield(bot,'file')
                     if exist(fullfile(snapshots{isn}.Folder,bot.file),'file')>0
@@ -102,9 +102,9 @@ for isn=1:length(snapshots)
                     if isfield(regs{ire},'ver')
                         if isfield(regs,'ID')
                             IDs=cell2mat(str2double(strsplit(regs{1}.ID,';')));
-                            layer_new.load_bot_regs('load_bot',0,'IDs',IDs);
+                            layer_new.load_bot_regs('bot_ver',0,'IDs',IDs);
                         else
-                            layer_new.load_bot_regs('load_bot',0);
+                            layer_new.load_bot_regs('bot_ver',0);
                         end
                      end
                  end
@@ -147,7 +147,7 @@ for isn=1:length(snapshots)
                                         'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                     reg_wc.Remove_ST=options.Remove_ST;
                                 end
-                                layer_new.Transceivers(idx_freq).add_region(reg_wc);
+                                layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
                         end
                     end
                 end
@@ -201,9 +201,7 @@ for isn=1:length(snapshots)
                             if options.Remove_tracks
                                 layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
                             end
-                            
-                            
-                            
+                                    
                             
                     end
                     algo_curr.Varargin=algos{ial}.Varargin;

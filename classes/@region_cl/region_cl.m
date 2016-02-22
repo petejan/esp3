@@ -33,9 +33,13 @@ classdef region_cl < handle
             check_w_unit=@(unit) ~isempty(strcmp(unit,{'pings','meters'}));
             check_h_unit=@(unit) ~isempty(strcmp(unit,{'samples','meters'}));
             
+            unique_ID=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
+            %num2str(unique_ID,'%.0f')
+            pause(1e-3);
+            
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);
-            addParameter(p,'Unique_ID',unidrnd(2^64),@isnumeric);
+            addParameter(p,'Unique_ID',unique_ID,@isnumeric);
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Origin','',@ischar);
             addParameter(p,'Type','Data',check_type);
@@ -84,10 +88,10 @@ classdef region_cl < handle
                             obj.Y_cont=[];
                         end
                         
-                    else
-                        obj.Shape='Rectangular';
-                        obj.X_cont=[];
-                        obj.Y_cont=[];
+                    elseif ~isempty(p.Results.X_cont)&&isempty(results.MaskReg)
+                        obj.Shape='Polygon';
+                        obj.X_cont=p.Results.X_cont;
+                        obj.Y_cont=p.Results.Y_cont;
                     end
                 otherwise
                     obj.Shape='Rectangular';

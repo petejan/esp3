@@ -31,6 +31,7 @@ if ~isempty(bot_sple)
     end
     
     new_bot_sple(new_bot_sple>length(range))=length(range);
+    new_bot_sple(new_bot_sple<=0)=1;
     
     new_bot_r(~isnan(new_bot_sple))=range(new_bot_sple(~isnan(new_bot_sple)));
 end

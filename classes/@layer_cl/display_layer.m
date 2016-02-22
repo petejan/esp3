@@ -95,6 +95,14 @@ switch axes_type
     otherwise
         main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat));
 end
+
+idx_change_file=find(diff(layer.Transceivers(idx_freq).Data.FileId)>0);
+
+for ifile=1:length(idx_change_file)
+    plot(xdata(idx_change_file(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'k','tag','file_id');
+end
+
+
 if strcmp(axes_type,'Time')
    dx=dx/(24*60*60); 
 end

@@ -143,13 +143,10 @@ if ~isequal(Filename_cell, 0)
         [transceiver.Config,transceiver.Params]=config_from_ifile(fullfile(path,FileName));
         
 
-            fileID = unidrnd(2^64);
-            while fileID==0
-                fileID = unidrnd(2^64);
-            end
             
-            layers(uu)=layer_cl('ID_num',fileID,'Filename',{FileName},'Filetype','CREST','PathToFile',path,'SurveyData',survey_data,...
+            layers(uu)=layer_cl('Filename',{FileName},'Filetype','CREST','PathToFile',path,...
                 'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(path,FileName));
+            layers(uu).set_survey_data(survey_data);
  
             if p.Results.CVSCheck&&~strcmp(cvs_root,'')
                 layers(uu).CVS_BottomRegions(cvs_root);      

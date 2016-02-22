@@ -41,12 +41,17 @@ classdef layer_cl < handle
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
             addParameter(p,'OriginCrest','');
-            addParameter(p,'SurveyData',[],@(obj) isa(obj,'survey_data_cl')|isempty(obj))
+            addParameter(p,'SurveyData',{},@(obj) isa(obj,'survey_data_cl')|iscell(obj)|isempty(obj))
             
             parse(p,varargin{:});
-            
-            
             results=p.Results;
+            if results.ID_num==0
+                results.ID_num=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
+                pause(1e-3);
+            end
+            
+            
+            
             props=fieldnames(results);
             
             for i=1:length(props)               

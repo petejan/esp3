@@ -1,3 +1,4 @@
+
 function display_regions(main_figure)
 
 layer=getappdata(main_figure,'Layer');
@@ -30,7 +31,7 @@ xdata=Number;
 x=xdata;
 y=Range;
 
-list_reg = list_regions(trans);
+list_reg = trans.regions_to_str();
 axes(main_axes);
 dr=nanmean(diff(trans.Data.Range));
 dp=nanmean(diff(trans.GPSDataPing.Dist));
@@ -48,7 +49,12 @@ end
         if i==active_reg
             col='r';
         else
-            col='b';
+            switch lower(reg_curr.Type)
+                case 'data'
+                    col='b';
+                case 'bad data'
+                    col=[0.7 0.7 0.7];
+            end
         end
         
 
@@ -88,7 +94,7 @@ end
                 y_text=nanmean(y_reg_rect(:));
                 nb_cont=1;
                 reg_plot=gobjects(1,length(x_grid)+length(y_grid)+1);
-                reg_plot(1)=plot(x_reg_rect,y_reg_rect,col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid);
+                reg_plot(1)=plot(x_reg_rect,y_reg_rect,'color',col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid);
             case 'Polygon'
 
                 idx_x=reg_curr.X_cont;
@@ -112,7 +118,7 @@ end
                         y_text=nanmean(y_reg{jj});
                     end   
                    
-                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},col,'linewidth',1,'tag','region','PickableParts','all','visible',vis); 
+                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},'color',col,'linewidth',1,'tag','region','PickableParts','all','visible',vis); 
                 end
                 if strcmp(reg_curr.Name,'Track')
                    grid_in=zeros(size(x_grid)); 
@@ -127,10 +133,10 @@ end
         end
 
             for uui=1:size(X_grid,1)
-                reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+                reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
             end
             for uuj=1:size(X_grid,2)
-                reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+                reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
             end
 
         text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region');

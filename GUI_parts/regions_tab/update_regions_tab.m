@@ -5,7 +5,7 @@ layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
-list_reg = list_regions(layer.Transceivers(idx_freq));
+list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 if isempty(list_reg)
     list_reg={'--'};

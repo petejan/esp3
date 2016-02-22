@@ -19,20 +19,21 @@ end
 sple_start=1;
 sple_end=inf;
 
-if multi_layer==-1
-    prompt={'First Sample:',...
-        'Last Sample:'};
-    name='Nb_samples to load from each files';
-    numlines=1;
-    defaultanswer={'1','Inf'};
-    answer=inputdlg(prompt,name,numlines,defaultanswer);
-    
-    if isempty(answer)
-        return;
-    end
-    sple_start= str2double(answer{1});
-    sple_end= str2double(answer{2});
-end
+% if multi_layer==-1
+%     prompt={'First Sample:',...
+%         'Last Sample:'};
+%     name='Nb_samples to load from each files';
+%     numlines=1;
+%     defaultanswer={'1','Inf'};
+%     answer=inputdlg(prompt,name,numlines,defaultanswer);
+%     
+%     if isempty(answer)
+%         return;
+%     end
+%     sple_start= str2double(answer{1});
+%     sple_end= str2double(answer{2});
+% end
+
 
 
         
@@ -49,7 +50,9 @@ if isempty(layers_temp)
     return;
 end
 
-
+for i=1:length(layers_temp)
+    layers_temp(i).load_bot_regs();
+end
 
 disp('Shuffling layers');
 [layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join);
@@ -57,9 +60,7 @@ clear layers_temp;
 % profile off
 % profile viewer;
 
-for ilay=1:length(layers)
-    layers(ilay).load_echo_logbook();
-end
+
 
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);

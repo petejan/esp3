@@ -6,9 +6,9 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
     curr_disp=getappdata(main_figure,'Curr_disp');
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
-    Transceiver=layer.Transceivers(idx_freq);
+    trans_obj=layer.Transceivers(idx_freq);
     
-    [idx_reg,found]=find_reg_idx(Transceiver,reg_curr.Unique_ID);
+    [idx_reg,found]=trans_obj.find_reg_idx(reg_curr.Unique_ID);
     
     if found==0
         return;
@@ -19,13 +19,14 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
     end
     
     
-    list_reg = list_regions(layer.Transceivers(idx_freq));
+    
+    list_reg = regions_to_str(layer.Transceivers(idx_freq));
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
     ah=axes_panel_comp.main_axes;
     clear_lines(ah);
     
     if ~isempty(list_reg)
-        list_reg = list_regions(layer.Transceivers(idx_freq));
+        list_reg = regions_to_str(layer.Transceivers(idx_freq));
         
         if ~isempty(list_reg)
             if length(list_reg)>=idx_reg

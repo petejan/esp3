@@ -131,8 +131,9 @@ for i=idx_trans
                 layer(u).Transceivers(idx_freq).rm_region_id(rm_id(uik));
             end
     end
+    surv=survey_data_cl('Voyage',voyage,'SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i));
+    layer(u).set_survey_data(surv);
     
-    layer(u).SurveyData=survey_data_cl('Voyage',voyage,'SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i));
     
 end
 

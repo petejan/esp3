@@ -12,6 +12,8 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 
+tag=get(region_tab_comp.tag,'string');
+
 shape_types=get(region_tab_comp.shape_type,'string');
 shape_type_idx=get(region_tab_comp.shape_type,'value');
 shape_type=shape_types{shape_type_idx};
@@ -45,6 +47,7 @@ cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
 reg_temp=region_cl(...
     'ID',layer.Transceivers(idx_freq).new_id(),...
+    'Tag',tag,...
     'Name','User defined',...
     'Type',data_type,...
     'Idx_pings',idx_pings,...
@@ -59,7 +62,7 @@ reg_temp=region_cl(...
 
 layer.Transceivers(idx_freq).add_region(reg_temp);
 
-list_reg = list_regions(layer.Transceivers(idx_freq));
+list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 if ~isempty(list_reg)
     set(region_tab_comp.tog_reg,'string',list_reg);

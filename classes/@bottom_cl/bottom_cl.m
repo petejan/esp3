@@ -35,7 +35,15 @@ classdef bottom_cl
         end
         
         function bot_out=concatenate_Bottom(bot_1,bot_2)
-
+            
+            if isempty(bot_1)
+                bot_out=bot_2;
+                return;
+            elseif isempty(bot_2)
+                bot_out=bot_1;
+                return;
+            end
+                
             n_r=[bot_1.Range(:); bot_2.Range(:)];
             n_s=[bot_1.Sample_idx(:); bot_2.Sample_idx(:)];
             n_t=[bot_1.Tag(:); bot_2.Tag(:)];

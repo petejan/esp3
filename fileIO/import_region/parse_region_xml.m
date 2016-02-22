@@ -52,7 +52,7 @@ regions_node=get_childs(node,'region');
 regions=cell(1,length(regions_node));
 
 for iu=1:length(regions_node)
-    region_curr=struct('ID',0,'Tag','','Shape','Rectangular','Name','','Type','Data','Ref','Surface',...
+    region_curr=struct('ID',0,'Unique_ID',[],'Tag','','Shape','Rectangular','Name','','Type','Data','Ref','Surface',...
         'Cell_w',100,'Cell_h',5,'Cell_w_unit','pings','Cell_h_unit','meters','bbox_t',[],'bbox_r',[],'Contours',[]);
     region_att=get_node_att(regions_node(iu));
     field_att=fieldnames(region_att);

@@ -61,7 +61,7 @@ if ~isempty(tracks)
             'Cell_h',1,...
             'Cell_h_unit','samples');
       
-        trans_obj.add_region(reg_temp);
+        trans_obj.add_region(reg_temp,'Split',0);
     end
     
 end

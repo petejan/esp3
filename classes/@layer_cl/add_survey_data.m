@@ -1,51 +1,41 @@
-function add_survey_data(layer,survey_vec,files_csv)
+function add_survey_data(layer,survey_data_struct)
+%'Datapath' 'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'
 
-str_data_csv=cell(1,length(survey_vec));
+[idx_files,idx_loaded,idx_missing]=find_survey_data(layer.Filename,survey_data_struct);
 
-for iiu=1:length(survey_vec)
-    str_data_csv{iiu}= survey_vec(iiu).print_survey_data();
-end
-
-
-files_layer=layer.Filename;
-idx_files=[];
-for u=1:length(files_layer)
-    idx_files=union(idx_files,find(strcmpi(files_layer{u},files_csv)));
-end
-str_data=cell(1,length(idx_files));
-diff=[];
-incomplete=[];
-to_load=[];
-for ii=1:length(idx_files)
-    str_data{ii}=survey_vec(idx_files(ii)).print_survey_data();
-    if ~strcmpi(str_data{1},str_data{ii})
-        diff=[diff '\n' str_data{ii}];
+surv_data=cell(1,length(idx_loaded));
+for i=1:length(surv_data)
+    if isempty(idx_loaded{i})
+        surv_data{i}=[];
+        continue;
+    end
+    start_time=survey_data_struct.StartTime(idx_loaded{i}(1));
+    end_time=survey_data_struct.EndTime(idx_loaded{i}(1));
+    
+    if start_time==0
+        start_time=layer.Transceivers(1).Data.Time(1);
+    else
+        start_time=datenum(num2str(end_time),'yyyymmddHHMMSS');
     end
     
-    idx_incomp=strcmpi(str_data{ii},str_data_csv);
-    if (length(idx_files)~=length(idx_incomp));
-        incomplete=[incomplete '\n' str_data{ii}];
-        to_load=[to_load sprintf('%s ',files_csv{idx_incomp})];
+    if end_time==1
+        end_time=layer.Transceivers(1).Data.Time(end);
+    else
+        end_time=datenum(num2str(end_time),'yyyymmddHHMMSS');
     end
-end
-if ~isempty(diff)
-    warning('Layer seem to contains more than one transect... You should double check that they have been splitted properly...');
-    fprintf('File joined: %s \n',layer.Filename{:});
-    fprintf('Transects contained : %s \n', diff);
-end
-
-fprintf('\n');
-if ~isempty(incomplete)
-    warning('Layer seem to be incomplete transects... You should load the other files as well...');
-    fprintf('File loaded %s \n',layer.Filename{:});
-    fprintf('Incomplete Transects: %s \n',incomplete);
-    fprintf('File to load %s \n',to_load);
+    
+    surv_temp=survey_data_cl();
+    surv_temp.Voyage=survey_data_struct.Voyage{idx_loaded{i}(1)};
+    surv_temp.SurveyName=survey_data_struct.SurveyName{idx_loaded{i}(1)};
+    surv_temp.Snapshot=survey_data_struct.Snapshot(idx_loaded{i}(1));
+    surv_temp.Stratum=survey_data_struct.Stratum{idx_loaded{i}(1)};
+    surv_temp.Transect=survey_data_struct.Transect(idx_loaded{i}(1));
+    surv_temp.StartTime=start_time;
+    surv_temp.EndTime=end_time;
+    
+    surv_data{i}=surv_temp;
 end
 
-if ~isempty(idx_files)
-    layer.SurveyData=survey_vec(idx_files(1));
-end
-fprintf('\n');
-
+layer.set_survey_data(surv_data);
 
 end

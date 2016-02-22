@@ -7,13 +7,24 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 active_reg=get(region_tab_comp.tog_reg,'value');
 list_name=get(region_tab_comp.tog_reg,'string');
+list_name_reg = layer.Transceivers(idx_freq).regions_to_str();
+
+active_reg=nanmin(active_reg,length(list_name_reg));
+
+if isempty(list_name_reg)
+    list_name{1}='--';
+    active_reg=1;
+end
 
 switch list_name{active_reg}
     case '--'
-        return
+        return;
     otherwise
         reg_curr=layer.Transceivers(idx_freq).Regions(active_reg);
 end
+
+set(region_tab_comp.tog_reg,'string',list_name_reg);
+
 shape_types=get(region_tab_comp.shape_type,'string');
 shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
 set(region_tab_comp.shape_type,'value',shape_type_idx);
@@ -33,6 +44,9 @@ set(region_tab_comp.cell_w_unit,'value',w_unit_idx);
 h_units=get(region_tab_comp.cell_h_unit,'string');
 h_unit_idx=find(strcmp(reg_curr.Cell_h_unit,h_units));
 set(region_tab_comp.cell_h_unit,'value',h_unit_idx);
+
+set(region_tab_comp.tag,'string',reg_curr.Tag);
+set(region_tab_comp.id,'string',num2str(reg_curr.ID,'%.0f'));
 
 cell_w=reg_curr.Cell_w;
 set(region_tab_comp.cell_w,'string',cell_w);

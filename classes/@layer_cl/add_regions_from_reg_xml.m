@@ -3,44 +3,53 @@ function add_regions_from_reg_xml(layer_obj,xml_file,IDs)
 p = inputParser;
 
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
-addRequired(p,'xml_file',@ischar);
+addRequired(p,'xml_file',@iscell);
+addRequired(p,'IDs',@isnumeric);
 
+parse(p,layer_obj,xml_file,IDs);
 
-parse(p,layer_obj,xml_file);
-
-if exist(xml_file,'file')==0
-    disp('Cannot find specified region .xml file');
-    return;
+for idx_freq=1:length(layer_obj.Transceivers)
+    trans_obj=layer_obj.Transceivers(idx_freq);
+    trans_obj.rm_all_region();
 end
 
-region_xml_tot=parse_region_xml(xml_file);
 
-if isempty(region_xml_tot)
-    disp('Cannot parse specified .xml file');
-    return;
-end
 
-for itrans=1:length(region_xml_tot)
-    region_xml=region_xml_tot{itrans};
-    [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
-    
-    if isempty(found)
-        warning('Could not load regions for frequency %.0fkHz, it is not there...',region_xml.Infos.Freq);
+for ix=1:length(xml_file)
+    if exist(xml_file{ix},'file')==0
+        sprintf('Cannot find xml region file for %s\n',layer_obj.Filename{ix});
         continue;
     end
-    trans_obj=layer_obj.Transceivers(idx_freq);
-    if ~strcmp(deblank(trans_obj.Config.ChannelID),region_xml.Infos.ChannelID)
-         warning('Those regions have been written for a different GPT %.0fkHz',region_xml.Infos.Freq);
+    
+    region_xml_tot=parse_region_xml(xml_file{ix});
+    
+    if isempty(region_xml_tot)
+         sprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
+        return;
     end
     
-    t_max=nanmax(trans_obj.Data.Time);
-    t_min=nanmin(trans_obj.Data.Time);
-    nb_reg=length(region_xml.Regions);
-    Origin='RegXML';
     
-    reg_xml=region_xml.Regions;
-    regions=[];
     
+    for itrans=1:length(region_xml_tot)
+        region_xml=region_xml_tot{itrans};
+        [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
+        
+        if isempty(found)
+            warning('Could not load regions for frequency %.0fkHz, it is not there...',region_xml.Infos.Freq);
+            continue;
+        end
+        trans_obj=layer_obj.Transceivers(idx_freq);
+
+        if ~strcmp(deblank(trans_obj.Config.ChannelID),region_xml.Infos.ChannelID)
+            warning('Those regions have been written for a different GPT %.0fkHz',region_xml.Infos.Freq);
+        end
+        
+        t_max=nanmax(trans_obj.Data.Time);
+        t_min=nanmin(trans_obj.Data.Time);
+       
+        Origin='RegXML';
+        
+        reg_xml=region_xml.Regions;
 
         
         for i=1:length(reg_xml)
@@ -48,6 +57,7 @@ for itrans=1:length(region_xml_tot)
                 continue;
             end
             ID=reg_xml{i}.ID;
+            Unique_ID=reg_xml{i}.Unique_ID;
             Tag=reg_xml{i}.Tag;
             Name=reg_xml{i}.Name;
             Type=reg_xml{i}.Type;
@@ -78,9 +88,7 @@ for itrans=1:length(region_xml_tot)
                     X_cont=[];
                     Y_cont=[];
                 case 'Polygon'
-%                     X_cont=cell(1,length(reg_xml{i}.Contours));
-%                     Y_cont=cell(1,length(reg_xml{i}.Contours));
-                     i_cont=0;
+                    i_cont=0;
                     for ic=1:length(reg_xml{i}.Contours)
                         idx_rem=reg_xml{i}.Contours{ic}.Time>t_max|reg_xml{i}.Contours{ic}.Time<t_min;
                         reg_xml{i}.Contours{ic}.Time(idx_rem)=[];
@@ -94,10 +102,11 @@ for itrans=1:length(region_xml_tot)
                         Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Range),trans_obj.Data.Range,reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
                         Y_cont{i_cont}=Y_cont{i_cont}-Idx_r(1)+1;
                     end
-                                      
+                    
             end
-            regions=[regions region_cl(...
+            new_reg=region_cl(...
                 'ID',ID,...
+                'Unique_ID',Unique_ID,...
                 'Name',Name,...
                 'Tag',Tag,...
                 'Type',Type,...
@@ -111,13 +120,14 @@ for itrans=1:length(region_xml_tot)
                 'Cell_w',Cell_w,...
                 'Cell_w_unit',Cell_w_unit,...
                 'Cell_h',Cell_h,...
-                'Cell_h_unit',Cell_h_unit)];
+                'Cell_h_unit',Cell_h_unit);
             
-            nb_reg=nb_reg+1;
+            trans_obj.add_region(new_reg);
         end
-        trans_obj.add_region(regions);
-        
+
+    end
     
+
     
 end
 

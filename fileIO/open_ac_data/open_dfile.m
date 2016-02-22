@@ -41,7 +41,8 @@ if ~isequal(Filename_cell, 0)
         layer_temp(uu)=open_EK60_file_stdalone(PathToRawFile{1},RawFilename,...
             'PathToMemmap',app_path.data,'Frequencies',[],'Calibration',cal);
         layer_temp(uu).OriginCrest=origin;
-        layer_temp(uu).SurveyData=survey_data;
+        
+        layer_temp(uu).set_survey_data(survey_data);
 
         if CVScheck>0
             layer_temp(uu).CVS_BottomRegions(app_path.cvs_root)

@@ -20,6 +20,8 @@ data_types=get(region_tab_comp.data_type,'string');
 data_type_idx=get(region_tab_comp.data_type,'value');
 data_type=data_types{data_type_idx};
 
+tag=get(region_tab_comp.tag,'string');
+
 refs=get(region_tab_comp.tog_ref,'string');
 ref_idx=get(region_tab_comp.tog_ref,'value');
 ref=refs{ref_idx};
@@ -60,6 +62,7 @@ cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
 reg_temp=region_cl(...
     'ID',layer.Transceivers(idx_freq).new_id(),...
+    'Tag',tag,...
     'Name','User defined',...
     'Type',data_type,...
     'Idx_pings',idx_pings,...
@@ -75,7 +78,7 @@ reg_temp=region_cl(...
 
 layer.Transceivers(idx_freq).add_region(reg_temp);
 
-list_reg = list_regions(layer.Transceivers(idx_freq));
+list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 if ~isempty(list_reg)
     set(region_tab_comp.tog_reg,'string',list_reg);

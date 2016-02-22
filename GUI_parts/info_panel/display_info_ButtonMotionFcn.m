@@ -117,8 +117,16 @@ if ~isempty(cdata)
     
     iFile=layer.Transceivers(idx_freq).Data.FileId(idx_ping);
     summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',layer.Filename{iFile},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
-
-     set(info_panel_comp.summary,'string',summary_str);
+        
+    
+    if ~isempty(layer.get_survey_data())
+        i_str=layer.get_survey_data().print_survey_data();
+    else
+        i_str='';
+    end
+    
+    set(info_panel_comp.i_str,'String',i_str);
+    set(info_panel_comp.summary,'string',summary_str);
     set(info_panel_comp.xy_disp,'string',xy_string);
     set(info_panel_comp.pos_disp,'string',pos_string);
     set(info_panel_comp.time_disp,'string',time_str);
@@ -148,7 +156,6 @@ if ~isempty(cdata)
     plot([xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b');
     set(axh,'xlim',x_lim)
     set(allchild(axh), 'visible',get(axh,'visible'))
-    
     
     hfigs=getappdata(main_figure,'ExternalFigures');
     for iu=1:length(hfigs)

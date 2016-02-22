@@ -83,7 +83,7 @@ uicontrol(display_tab_comp.display_tab,'Style','Text','String','X','units','norm
 display_tab_comp.height_disp=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.83 0.7 0.07 0.1],'string',num2str(outputsize(1),'%.0f'));
 
 set([display_tab_comp.width_disp display_tab_comp.height_disp],'callback',{@change_size_disp_callback,main_figure})
-uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Max Resolution','units','normalized','Position',[0.7 0.6 0.25 0.1],'Callback',{@set_full_res_callback,main_figure});
+display_tab_comp.full_res=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',0,'String','Max Resolution','units','normalized','Position',[0.7 0.6 0.25 0.1],'Callback',{@set_full_res_callback,main_figure});
 
 
 

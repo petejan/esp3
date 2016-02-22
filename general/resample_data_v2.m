@@ -39,18 +39,24 @@ switch p.Results.Type
         ydata_new=sign(asin(imag(ydata_new_temp))).*acos(real(ydata_new_temp))/pi*180;
 end
 
-switch p.Results.Opt
-    case 'Linear'
-        idx_nan=find(isnan(ydata_new));
-        if ~isempty(idx_nan)
-             idx_nearest=nan(1,length(idx_nan));
-            for ij=1:length(idx_nan)
-                [~,idx_nearest(ij)]=min(abs(xdata-xdata_n(idx_nan(ij))));
-            end
-            ydata_new(idx_nan)=ydata(idx_nearest);
-            ydata_new(idx_nan)=ydata(idx_nearest);
+
+idx_nan=find(isnan(ydata_new));
+if ~isempty(idx_nan)
+    idx_nearest=nan(1,length(idx_nan));
+    dx=nanmean(diff(xdata));
+    idx_far=[];
+    for ij=1:length(idx_nan)
+        [val,idx_nearest(ij)]=min(abs(xdata-xdata_n(idx_nan(ij))));
+        if val>2*dx
+            idx_far=[idx_far ij];
         end
+    end
+    idx_nan(idx_far)=[];
+    idx_nearest(idx_far)=[];
+    ydata_new(idx_nan)=ydata(idx_nearest);
+    ydata_new(idx_nan)=ydata(idx_nearest);
+end
 end
 
-end
+
 

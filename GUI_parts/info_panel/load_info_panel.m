@@ -21,8 +21,8 @@ info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[
 types=layer.Transceivers(idx_freq).Data.Type;
 type=types{get(display_tab_comp.tog_type,'value')};
 
-if ~isempty(layer.SurveyData)
-    i_str=layer.SurveyData.print_survey_data();
+if ~isempty(layer.get_survey_data())
+    i_str=layer.get_survey_data().print_survey_data();
 else
     i_str='';
 end
