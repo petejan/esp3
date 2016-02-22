@@ -80,7 +80,7 @@ for isn=1:length(snapshots)
                     layer_new.Transceivers(idx_freq).apply_absorption(options.Absorbtion/1e3);
 
                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
-                layer(u).set_survey_data(surv);
+                layer_new.set_survey_data(surv);
                 layer_new.update_echo_logbook_file();
                 
                 if isfield(bot,'file')
