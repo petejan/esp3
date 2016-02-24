@@ -17,6 +17,12 @@ Regions=Transceiver.Regions;
 if isempty(Regions)
     return;
 end
+output=[];
+
+
+for ir=1:length(Regions)
+    output=[output Regions(ir).integrate_region(Transceiver)];
+end
 
 Freq=layer.Frequencies(idx_freq);
 Filename=layer.Filename{1};
@@ -31,7 +37,7 @@ file_outputs_def=[layer.PathToFile '\' Filename(1:end-5) '_' num2str(Freq) '_out
 
 if ~isequal(file_outputs,0)&&~isequal(path_out,0)
     
-    new_struct=regions_to_struct(Regions);
+    new_struct=regions_to_struct(Regions,output);
     
     struct2csv(new_struct,fullfile(path_out,file_outputs));
     

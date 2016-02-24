@@ -34,7 +34,7 @@ for isn=1:length(snapshots)
             regs=transects{itr}.Regions;
             bot=transects{itr}.Bottom;
             cal_t=transects{itr}.Cal;
-            layer_temp=[];
+            layers_in=[];
             
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
@@ -47,7 +47,7 @@ for isn=1:length(snapshots)
                         continue;
                     end
                     
-                    layer_temp=[layer_temp new_lay];
+                    layers_in=[layers_in new_lay];
                     clear new_lay;
                 else
                     warning('Cannot Find specified file %s',filenames_cell{ifiles});
@@ -56,21 +56,21 @@ for isn=1:length(snapshots)
 
             end
             
-            if ~isempty(layer_temp)
-                [layers_temp,~]=shuffle_layers([],layer_temp,'multi_layer',0);
-                clear layer_temp;
+            if ~isempty(layers_in)
+                layers_out_temp=shuffle_layers(layers_in,'multi_layer',0);
+                clear layers_in;
             else
                 warning('Could not find any files in this transect...');
-                layers_temp=[];
+                layers_out_temp=[];
             end
             
             
-            if length(layers_temp)>1
+            if length(layers_out_temp)>1
                 warning('Non continuous files in Snapshot %.0f Stratum %s Transect %.0f',snap_num,strat_name,trans_num);
             end
             
-            for i_lay=1:length(layers_temp)
-                layer_new=layers_temp(i_lay);
+            for i_lay=1:length(layers_out_temp)
+                layer_new=layers_out_temp(i_lay);
                 
                   if isempty(cal_t)
                         layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
@@ -208,11 +208,11 @@ for isn=1:length(snapshots)
                     [idx_algo,~]=layer_new.Transceivers(idx_freq).find_algo_idx(algos{ial}.Name);
                     layer_new.Transceivers(idx_freq).Algo(idx_algo)=algo_curr;
                     
-                end
-                
+                end 
                 u=u+1;
                 layers(u)=layer_new;
             end
+            clear layers_out_temp;
         end
         
     end

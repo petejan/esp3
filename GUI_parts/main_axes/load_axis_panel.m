@@ -95,6 +95,7 @@ else
 end
 
 hold(axes_panel_comp.main_axes,'on')
+clear_lines(axes_panel_comp.main_axes);
 axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes);
 axes_panel_comp.colorbar.Position=axes_panel_comp.colorbar.Position+[0 0.01 -axes_panel_comp.colorbar.Position(3)/2 -0.02];
 colormap(axes_panel_comp.main_axes,jet);

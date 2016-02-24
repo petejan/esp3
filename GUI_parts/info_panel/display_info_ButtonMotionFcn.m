@@ -97,6 +97,22 @@ if ~isempty(cdata)
     horz_val=cdata(idx_r_red,:);
     horz_val(horz_val<=-999)=nan;
     
+    t_n=Time(idx_ping);
+    
+    i_str='';
+
+    if length(layer.SurveyData)>=1
+        for is=1:length(layer.SurveyData)
+            surv_temp=layer.get_survey_data('Idx',is);
+            if ~isempty(surv_temp)
+                if t_n>=surv_temp.StartTime&&t_n<=surv_temp.EndTime
+                    i_str=surv_temp.print_survey_data();
+                end
+            end
+        end
+    end
+    
+     
     
     xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
     if ~isempty(Lat)
@@ -118,13 +134,7 @@ if ~isempty(cdata)
     iFile=layer.Transceivers(idx_freq).Data.FileId(idx_ping);
     summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',layer.Filename{iFile},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
         
-    
-    if ~isempty(layer.get_survey_data())
-        i_str=layer.get_survey_data().print_survey_data();
-    else
-        i_str='';
-    end
-    
+        
     set(info_panel_comp.i_str,'String',i_str);
     set(info_panel_comp.summary,'string',summary_str);
     set(info_panel_comp.xy_disp,'string',xy_string);

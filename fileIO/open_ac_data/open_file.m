@@ -180,8 +180,8 @@ if ~isequal(Filename, 0)
         switch choice
             case 'Yes'
                 for ifile_miss=idx_incomp
-                    miss_files=survey_struct.Filename(idx_missing{idx_incomp});
-                    Filename=[Filename; miss_files];
+                    miss_files=survey_struct.Filename(idx_missing{ifile_miss});
+                    Filename=[Filename miss_files'];
                 end
             case 'No'
             otherwise

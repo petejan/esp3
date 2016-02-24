@@ -1,9 +1,9 @@
-function display_navigation_callback(~,~,main_figure)
-layer=getappdata(main_figure,'Layer');
+function display_multi_navigation_callback(~,~,main_figure)
+layers=getappdata(main_figure,'Layers');
 hfigs=getappdata(main_figure,'ExternalFigures');
 
 
-map_input=map_input_cl.map_input_cl_from_obj(layer,'SliceSize',0);
+map_input=map_input_cl.map_input_cl_from_obj(layers,'SliceSize',0);
 if nansum(isnan(map_input.LatLim))>=1
     return;
 end
@@ -11,9 +11,7 @@ end
 hfig=figure('Name','Navigation','NumberTitle','off','tag','nav');
 map_input.display_map_input_cl(hfig,main_figure);
 
-hfig2=layer.GPSData.display_speed();
-
-hfigs=[hfigs hfig hfig2];
+hfigs=[hfigs hfig];
 setappdata(main_figure,'ExternalFigures',hfigs);
 
 end

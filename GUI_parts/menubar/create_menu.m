@@ -15,11 +15,16 @@ uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg
 uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
 uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
 uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_callback,main_figure},'separator','on');
-uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure});
+uimenu(m_bot_reg,'Label','Save Bottom to xml','Callback',{@save_bot_xml_callback,main_figure});
+uimenu(m_bot_reg,'Label','Save Regions to xml','Callback',{@save_reg_xml_callback,main_figure});
+uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,1},'separator','on');
+uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,0});
+uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,1});
 
 mhh = uimenu(main_figure,'Label','Export Results','Tag','menuexport');
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
+uimenu(mhh,'Label','Export Tracks','Callback',{@export_tracks_callback,main_figure});
 uimenu(mhh,'Label','Export Bottom as .evl','Callback',{@export_bot_as_evl_callback,main_figure});
 
 
@@ -27,7 +32,6 @@ m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 uimenu(m_import,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure});
 uimenu(m_import,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
 uimenu(m_import,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
-
 uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback',{@import_line_callback,main_figure},'separator','on');
 
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
@@ -42,6 +46,7 @@ uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_f
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
+uimenu(m_map,'Label','Display Multi Layers Navigation','Callback',{@display_multi_navigation_callback,main_figure});
 uimenu(m_map,'Label','Multi Layers Map','Callback',{@load_map_fig_callback,main_figure});
 uimenu(m_map,'Label','Map from MBS result files','Callback',{@map_mbs_scripts_callback,main_figure});
 uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_callback,main_figure});

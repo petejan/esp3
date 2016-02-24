@@ -115,7 +115,6 @@ power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
     'VertFilt',round(get(denoise_tab_comp.VertFilt_sl,'Value')),...
     'NoiseThr',round(get(denoise_tab_comp.NoiseThr_sl,'Value')));
 
-memapname=layer.Transceivers(idx_freq).Data.MemapName;
 
 layer.Transceivers(idx_freq).Data.add_sub_data('powerdenoised',power_unoised);
 layer.Transceivers(idx_freq).Data.add_sub_data('spdenoised',Sp_unoised);

@@ -14,7 +14,25 @@ end
 
 
 disp('Shuffling layers');
-[layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join);
+if join==1
+    layers_temp=[layers layers_temp];
+end
+
+disp('Shuffling layers');
+layers_out=shuffle_layers(layers_temp,'multi_layer',multi_layer);
+clear layers_temp;
+
+for i=1:length(layers_out)
+    layers_out(i).load_echo_logbook();
+end
+
+if join==1
+    layers=layers_out;
+else
+    layers=[layers layers_out];
+end
+
+layer=layers(end);
 
 
 

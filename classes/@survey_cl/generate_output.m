@@ -21,9 +21,10 @@ trans_lay=nan(1,length(layers));
 nb_reg_lay=nan(1,length(layers));
 
 for it=1:length(layers)
-    snap_lay(it)=layers(it).SurveyData.Snapshot;
-    strat_lay{it}=layers(it).SurveyData.Stratum;
-    trans_lay(it)=layers(it).SurveyData.Transect;
+    survd=layers(it).get_survey_data();
+    snap_lay(it)=survd.Snapshot;
+    strat_lay{it}=survd.Stratum;
+    trans_lay(it)=survd.Transect;
     idx_freq=find_freq_idx(layers(it),surv_in_obj.Options.Frequency);
     idx_reg=layers(it).Transceivers(idx_freq).list_regions_type('Data');
     nb_reg_lay(it)=length(idx_reg);
@@ -31,7 +32,7 @@ for it=1:length(layers)
 end
 
 nb_reg=nansum(nb_reg_lay);
-[snap_vec,stratum_vec,transect_vec]=surv_in_obj.list_transects();
+[snap_vec,~,~]=surv_in_obj.list_transects();
 
 [~,nb_strat,nb_trans]=get_num_trans(snap_lay,strat_lay,trans_lay);
 

@@ -1,15 +1,16 @@
 function app_path=app_path_create(varargin)
 
-if isdeployed
-    temp_path=fullfile(ctfroot);
-else
+
+if isdeployed % Stand-alone mode.
+    [~, result] = system('path');
+    app_path_main = char(regexpi(result, 'Path=(.*?);', 'tokens', 'once'));
+else % MATLAB mode.
     temp_path=which('EchoAnalysis');
+    idx_temp=strfind(temp_path,'\');
+    app_path_main=temp_path(1:idx_temp(end));
 end
 
-idx_temp=strfind(temp_path,'\');
 
-
-app_path_main=temp_path(1:idx_temp(end));
 app_path_data=fullfile(tempdir,'data_echo');
 app_path_cvs_root=':local:Z:\';
 app_path_data_root='X:\';

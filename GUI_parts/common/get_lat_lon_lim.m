@@ -37,6 +37,9 @@ switch class(obj)
         end
 end
 
+idx_empty=find(cellfun(@(x) isempty(x),lat));
+lat(idx_empty)=[];
+lon(idx_empty)=[];
 
 [lat_lim,lon_lim]=ext_lat_lon_lim(lat_lim,lon_lim,0.1);
 

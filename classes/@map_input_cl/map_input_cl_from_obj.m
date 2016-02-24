@@ -62,7 +62,6 @@ switch class(Ext_obj)
                 obj.Trip{i}=mbs_head.title;
             end
             
-            
             obj.SliceLat{i}=mbs_out{i,6};
             obj.SliceLon{i}=mbs_out{i,7};
             obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;

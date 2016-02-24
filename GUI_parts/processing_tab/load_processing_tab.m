@@ -35,9 +35,9 @@ if ~isempty(process_list)
 else
     
     noise_rem_algo=0;
-    bot_algo=0;  
+    bot_algo=0;
     bad_trans_algo=0;
-    school_detect_algo=0; 
+    school_detect_algo=0;
     st_detect_algo=0;
     track_algo=0;
     
@@ -68,39 +68,37 @@ function process(~,~,main_figure,mode)
 update_process_list([],[],main_figure);
 layer_curr=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
-curr_disp=getappdata(main_figure,'Curr_disp');
 process_list=getappdata(main_figure,'Process');
-
 
 if layer_curr.ID_num==0
     return;
 end
 
 if mode==0
-   layer_to_proc=layer_curr;
+    layer_to_proc=layer_curr;
 elseif mode ==1
-   layer_to_proc=layers;
+    layer_to_proc=layers;
 end
-    
+
 
 for ii=1:length(layer_to_proc)
     layer=layer_to_proc(ii);
-
+    
     for kk=1:length(process_list)
         
         if isempty(process_list(kk).Algo)
             continue;
         end
         
-
+        
         idx_freq=find_freq_idx(layer,process_list(kk).Freq);
         
-        [~,idx_algo_denoise,noise_rem_algo]=find_process_algo(process_list,curr_disp.Freq,'Denoise');
-        [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,curr_disp.Freq,'BottomDetection');
-        [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
-        [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
-        [~,idx_single_target,single_target_algo]=find_process_algo(process_list,curr_disp.Freq,'SingleTarget');
-        [~,idx_track_target,single_track_algo]=find_process_algo(process_list,curr_disp.Freq,'TrackTarget');
+        [~,idx_algo_denoise,noise_rem_algo]=find_process_algo(process_list,process_list(kk).Freq,'Denoise');
+        [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetection');
+        [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,process_list(kk).Freq,'BadPings');
+        [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,process_list(kk).Freq,'SchoolDetection');
+        [~,idx_single_target,single_target_algo]=find_process_algo(process_list,process_list(kk).Freq,'SingleTarget');
+        [~,idx_track_target,single_track_algo]=find_process_algo(process_list,process_list(kk).Freq,'TrackTarget');
         
         Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
         
@@ -132,7 +130,7 @@ for ii=1:length(layer_to_proc)
                 t_eff=pulse_length;
             end
             power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
-
+            
             
             [power_unoised,Sv_unoised,Sp_unoised,SNR]=feval(process_list(kk).Algo(idx_algo_denoise).Function,...
                 power,...
@@ -143,19 +141,14 @@ for ii=1:length(layer_to_proc)
                 'VertFilt',process_list(kk).Algo(idx_algo_denoise).Varargin.VertFilt,...
                 'NoiseThr',process_list(kk).Algo(idx_algo_denoise).Varargin.NoiseThr);
             
-            memapname=layer.Transceivers(idx_freq).Data.MemapName;
             
-            layer.Transceivers(idx_freq).Data.remove_sub_data('powerdenoised');
-            layer.Transceivers(idx_freq).Data.remove_sub_data('spdenoised');
-            layer.Transceivers(idx_freq).Data.remove_sub_data('svdenoised');
-            layer.Transceivers(idx_freq).Data.remove_sub_data('snr');
             
-            sub_ac_data_temp=[sub_ac_data_cl('powerdenoised',memapname,power_unoised) ...
-                sub_ac_data_cl('spdenoised',memapname,Sp_unoised) ...
-                sub_ac_data_cl('svdenoised',memapname,Sv_unoised) ...
-                sub_ac_data_cl('snr',memapname,SNR)];
+            layer.Transceivers(idx_freq).Data.add_sub_data('powerdenoised',power_unoised);
+            layer.Transceivers(idx_freq).Data.add_sub_data('spdenoised',Sp_unoised);
+            layer.Transceivers(idx_freq).Data.add_sub_data('svdenoised',Sv_unoised);
+            layer.Transceivers(idx_freq).Data.add_sub_data('snr',SNR);
             
-            layer.Transceivers(idx_freq).Data.add_sub_data(sub_ac_data_temp);
+            
             
         end
         
@@ -169,10 +162,10 @@ for ii=1:length(layer_to_proc)
             end
         else
             Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
-                fieldname='svdenoised';
+            fieldname='svdenoised';
         end
-    
-      
+        
+        
         if bot_algo&&~bad_trans_algo
             [Bottom,Double_bottom_region,~,~,~]=feval(process_list(kk).Algo(idx_algo_bot).Function,Sv,...
                 layer.Transceivers(idx_freq).Data.Range,...
@@ -202,7 +195,7 @@ for ii=1:length(layer_to_proc)
                 layer.Transceivers(idx_freq).Params.PulseLength(1),...
                 'thr_bottom',process_list(kk).Algo(idx_algo_bp).Varargin.thr_bottom,...
                 'thr_echo',process_list(kk).Algo(idx_algo_bp).Varargin.thr_echo,...
-                'shift_bot',process_list(kk).Algo(idx_algo_bot).Varargin.shift_bot,...
+                'shift_bot',process_list(kk).Algo(idx_algo_bp).Varargin.shift_bot,...
                 'r_min',process_list(kk).Algo(idx_algo_bp).Varargin.r_min,...
                 'r_max',process_list(kk).Algo(idx_algo_bp).Varargin.r_max,...
                 'BS_std',process_list(kk).Algo(idx_algo_bp).Varargin.BS_std,...
@@ -215,8 +208,6 @@ for ii=1:length(layer_to_proc)
             range=layer.Transceivers(idx_freq).Data.Range;
             bottom_range=nan(size(Bottom));
             bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
-            
-            layer.Transceivers(idx_freq).IdxBad=find(idx_noise_sector);
             
             tag=layer.Transceivers(idx_freq).Bottom.Tag;
             tag(idx_noise_sector)=0;
@@ -244,10 +235,10 @@ for ii=1:length(layer_to_proc)
                 return;
             end
             
-
+            
             
             linked_candidates=feval(process_list(kk).Algo(idx_school_detect).Function,layer.Transceivers(idx_freq),...
-			'Type',fieldname,...
+                'Type',fieldname,...
                 'Sv_thr',process_list(kk).Algo(idx_school_detect).Varargin.Sv_thr,...
                 'l_min_can',process_list(kk).Algo(idx_school_detect).Varargin.l_min_can,...
                 'h_min_tot',process_list(kk).Algo(idx_school_detect).Varargin.h_min_tot,...
@@ -273,8 +264,8 @@ for ii=1:length(layer_to_proc)
             cell_w=str2double(get(region_tab_comp.cell_w,'string'));
             
             
-        layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
-
+            layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
+            
         end
         
         if single_target_algo
@@ -325,16 +316,11 @@ for ii=1:length(layer_to_proc)
             
         end
         
-        
-        	
-        setappdata(main_figure,'Curr_disp',curr_disp); 
-        setappdata(main_figure,'Layers',layers);
-        update_display(main_figure,0);
-        
     end
     
 end
-
+setappdata(main_figure,'Layers',layers);
+update_display(main_figure,0);
 
 end
 
@@ -346,7 +332,7 @@ processing_tab_comp=getappdata(main_figure,'Processing_tab');
 idx_freq=get(processing_tab_comp.tog_freq, 'value');
 
 if isempty(layer.Transceivers(idx_freq).Algo)
-   return; 
+    return;
 end
 
 add=get(processing_tab_comp.noise_removal,'value')==get(processing_tab_comp.noise_removal,'max');
@@ -370,7 +356,7 @@ idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
 process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add_st);
 
 if add_st==0
-set(processing_tab_comp.track_target,'value',get(processing_tab_comp.track_target,'min'));
+    set(processing_tab_comp.track_target,'value',get(processing_tab_comp.track_target,'min'));
 end
 
 add=get(processing_tab_comp.track_target,'value')==get(processing_tab_comp.track_target,'max');
@@ -424,7 +410,7 @@ voyage_path=uigetdir();
 u=strfind(voyage_path,'tan');
 
 if ~isempty(u)
-voyage=upper(voyage_path(u(1):u(1)+6));
+    voyage=upper(voyage_path(u(1):u(1)+6));
 else
     return;
 end
@@ -433,7 +419,7 @@ display(['Get rawfile names of trawl files for voyage: ', voyage]);
 j=0;
 tmpfold = dir(fullfile(voyage_path(1:end-5), 'i*')); % Assume i-files will be
 
-for i = 1:length(tmpfold);                          % in parent directory for raw files    
+for i = 1:length(tmpfold);                          % in parent directory for raw files
     tmpfile = tmpfold(i).name;
     ifileInfo = parse_ifile(voyage_path(1:end-5),tmpfile);
     if strcmp(ifileInfo.stratum, 'trawl')

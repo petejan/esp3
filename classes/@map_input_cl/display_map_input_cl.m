@@ -7,7 +7,7 @@ if nargin<4
     field='SliceAbscf';
 end
 
-set(hfig,'Name','Results','NumberTitle','off','tag','nav');
+set(hfig,'Name','Navigation','NumberTitle','off','tag','nav');
 
 LonLim=[nan nan];
 LatLim=[nan nan];
@@ -84,8 +84,6 @@ for usnap=1:length(snap)
     if obj.Depth_Contour>0
         try
             [Cs,hs]=m_elev('contour',-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on');
-           % map=load('D:\Docs\NIWA main\Projects\DOC Smelt\Maps\taupo_map.mat'); 
-            %[Cs,hs]=m_contour(map.long,map.lat,map.z,-10000:obj.Depth_Contour:-1,'edgecolor',[.5 .5 .5]);
             clabel(Cs,hs,'fontsize',8);
         catch
             disp('No Bathymetric data available...')
@@ -130,9 +128,11 @@ for uuobj=1:length(obj_tot)
 
         for uui=1:length(idx_snap)
             if ~isempty(obj.Lon{idx_snap(uui)})
-                u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'k');
+                u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','r','linewidth',2);
                 set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
-                m_text(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
+                if obj.Transect(idx_snap(uui))>0
+                    m_text(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
+                end
             end
             
             if ~isempty(obj.SliceLon{idx_snap(uui)})
@@ -151,6 +151,7 @@ for uuobj=1:length(obj_tot)
         
     end
 end
+
 if nargin>2
     set(hfig,'WindowButtonDownFcn',{@copy_axes_callback,main_figure});
 else

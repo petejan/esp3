@@ -22,7 +22,7 @@ if ~isempty(roll)
     ax(1).XColor = 'r';
     ax(1).YColor = 'r';
     ax1_pos = ax(1).Position; % position of first axes
-    xlabel('Time');
+    xlabel('Time(s)');
     ylabel('Heave (m)');
     legend('Heave','Location','northwest')
     legend('boxoff')
@@ -47,7 +47,7 @@ if ~isempty(heading)
     h_fig(u)=figure('Name','Heading','NumberTitle','off','tag','attitude');
     ax(3)=axes();
     plot(time,heading,'k');
-    xlabel('Time');
+    xlabel('Time(s)');
     ylabel('Heading (deg)');
     grid on;
     linkaxes(ax,'x');

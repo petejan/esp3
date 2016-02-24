@@ -32,7 +32,7 @@ classdef gps_data_cl <handle
             obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
             
             if length(obj.Long)>=2
-                dist_disp=[0;cumsum(m_lldist(obj.Long,obj.Lat))]*1000/1.852;
+                dist_disp=[0;cumsum(m_lldist(obj.Long,obj.Lat))]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
                 obj.Dist=dist_disp;
             else
                 obj.Dist=[];

@@ -1,9 +1,9 @@
 
 
-function [idx_files,idx_loaded,idx_missing,idx_nan]=find_survey_data(files_layer,survey_data_struct)
+function [idx_files_layer,idx_loaded,idx_missing]=find_survey_data(files_layer,survey_data_struct)
 
 if isempty(survey_data_struct)
-    idx_files=[];
+    idx_files_layer=[];
     idx_loaded={};
     idx_missing={};
     return;
@@ -11,8 +11,11 @@ end
     
 
 idx_files=[];
+file_layer_id=[];
 for u=1:length(files_layer)
-    idx_files=union(idx_files,find(strcmpi(files_layer{u},survey_data_struct.Filename)));
+    files_cvs_id= find(strcmpi(files_layer{u},survey_data_struct.Filename));
+    idx_files=[idx_files files_cvs_id'];
+    file_layer_id=[file_layer_id u*ones(1,length(files_cvs_id))];
 end
 
 to_load=[];
@@ -39,11 +42,9 @@ for ii=1:length(idx_files)
     sn=survey_data_struct.Snapshot(idx_files(ii));
     st=survey_data_struct.Stratum{idx_files(ii)};
     tr=survey_data_struct.Transect(idx_files(ii));
-    if isnumeric(st)
-        idx=find(sn==snap&tr==trans&cellfun(@(x) x==st,strat));
-    else
-        idx=find(sn==snap&tr==trans&cellfun(@(x) strcmp(x,st),strat));
-    end
+    
+    idx=find(sn==snap&tr==trans&cellfun(@(x) compare_num_or_str(st,x),strat));
+
     idx_missing{i_trans}=setdiff(idx,idx_files);
     idx_loaded{i_trans}=intersect(idx,idx_files);
     
@@ -68,21 +69,32 @@ for i=1:length(idx_missing)
     end
 end
 
-if length(idx_loaded)>1
-    fprintf('Layer seem to be containing more than one transect!\n'); 
-    fprintf('Containing : \n');
-    for i=1:length(idx_loaded)
-        if ~isempty(idx_loaded{i})
-            snap_loaded=snap(idx_loaded{i}(1));
-            trans_loaded=trans(idx_loaded{i}(1));
-            strat_loaded=strat{idx_loaded{i}(1)};
-            if isnumeric(strat_loaded)
-                strat_loaded=num2str(strat_loaded,'%.0f');
-            end           
-            fprintf('Snap %.0f Strat %s Trans %.0f \n',snap_loaded,strat_loaded,trans_loaded);
-            
-        end
+idx_files_layer=cell(1,length(idx_loaded));
+
+for ilo=1:length(idx_loaded)
+    for il=1:length(idx_loaded{ilo})
+        idx_files_layer{ilo}(il)=find(strcmpi(files_layer,survey_data_struct.Filename{idx_loaded{ilo}(il)}));
     end
 end
 
+
+% fprintf('Layer seem to be containing more than one transect!\n');
+% fprintf('Containing : \n');
+% for i=1:length(idx_loaded)
+%     if ~isempty(idx_loaded{i})
+%         snap_loaded=snap(idx_loaded{i}(1));
+%         trans_loaded=trans(idx_loaded{i}(1));
+%         strat_loaded=strat{idx_loaded{i}(1)};
+%         if isnumeric(strat_loaded)
+%             strat_loaded=num2str(strat_loaded,'%.0f');
+%         end
+%         fprintf('Snap %.0f Strat %s Trans %.0f \n',snap_loaded,strat_loaded,trans_loaded);
+%         
+%     end
+% end
+
 end
+
+
+
+

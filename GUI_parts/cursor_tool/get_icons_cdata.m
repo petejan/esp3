@@ -1,5 +1,7 @@
 function icon=get_icons_cdata(icon_dir)
 
+
+
 icon.zin  = iconRead(fullfile(icon_dir,'tool_zoom_in.png'));
 
 icon.zout = iconRead(fullfile(icon_dir,'tool_zoom_out.png'));
@@ -18,6 +20,6 @@ icon.edit_bot = iconRead(fullfile(icon_dir,'edit_bot.png'));
 
 icon.folder = iconRead(fullfile(icon_dir,'folder_small.png'));
 
-
+icon.del_lay = iconRead(fullfile(icon_dir,'delete.png'));
 
 end

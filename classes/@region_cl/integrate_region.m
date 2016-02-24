@@ -249,7 +249,7 @@ for i=1:N_x
         output.Dist_S(:,i)=nanmax(sub_dist(idx_bin_x));
 %         output.Dist_M(:,i)=nanmean(sub_dist(idx_bin_x));
 %         output.Time_M(:,i)=nanmean(sub_time(idx_bin_x));
-%         output.Time_S(:,i)=sub_time(idx_bin_x(1));
+        output.Time_S(:,i)=sub_time(idx_bin_x(1));
         output.Time_E(:,i)=sub_time(idx_bin_x(end));
 %         output.Lat_M(:,i)=nanmean(sub_lat(idx_bin_x));
 %         output.Lon_M(:,i)=nanmean(sub_lon(idx_bin_x));
@@ -260,7 +260,7 @@ for i=1:N_x
         output.Ping_S(:,i)=sub_pings(idx_bin_x(1));
         output.Ping_E(:,i)=sub_pings(idx_bin_x(end));
 %         output.Ping_M(:,i)=nanmean(sub_pings(idx_bin_x));
-%         output.VL_S(:,i)=sub_dist(idx_bin_x(1));
+        output.VL_S(:,i)=sub_dist(idx_bin_x(1));
         output.VL_E(:,i)=sub_dist(idx_bin_x(end));
     else
         break;

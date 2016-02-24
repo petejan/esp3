@@ -59,6 +59,8 @@ classdef survey_data_cl
             
         end
         function i_str=print_survey_data(obj)
+            
+             
             i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
                 obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
             

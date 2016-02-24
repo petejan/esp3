@@ -5,19 +5,8 @@ path_fig = figure('Position',[200 200 600 200],'Resize','off',...
 
 app_path=getappdata(main_fig,'App_path');
 
+icon=get_icons_cdata(fullfile(app_path.main,'icons'));
 
-
-if isdeployed
-    icon=get_icons_cdata([]);
-else
-    icon=get_icons_cdata(fullfile(app_path.main,'icons'));
-end
-
-
-app_path_cvs_root=':local:Z:\';
-app_path_data_root='X:\';
-app_path_cal='';
-app_path_cal_eba='';
 
 %%%%%Main%%%%
 uicontrol(path_fig,'Style','text',...

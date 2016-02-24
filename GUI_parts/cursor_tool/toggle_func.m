@@ -20,6 +20,10 @@ end
 region_tab_comp=getappdata(main_figure,'Region_tab');
 set(region_tab_comp.create_button,'value',get(region_tab_comp.create_button,'Min'));
 
+if isa(src,'matlab.ui.container.toolbar.PushTool')
+    return;
+end
+
 if strcmp(src.State,'on')
     axes_panel_comp.main_echo.UIContextMenu=[];
     switch type

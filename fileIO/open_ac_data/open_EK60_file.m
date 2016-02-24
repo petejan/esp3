@@ -38,7 +38,7 @@ sple_end=inf;
 
         
 % profile on
-layers_temp=open_EK60_file_stdalone(PathToFile,Filename,...
+new_layers=open_EK60_file_stdalone(PathToFile,Filename,...
     'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'Calibration',cal);
         
 
@@ -46,17 +46,40 @@ if exist('opening_file','var')
     close(opening_file);
 end
 
-if isempty(layers_temp)
+if isempty(new_layers)
     return;
 end
 
-for i=1:length(layers_temp)
-    layers_temp(i).load_bot_regs();
+for i=1:length(new_layers)
+    new_layers(i).load_bot_regs();
 end
 
+new_layers.load_echo_logbook();
+
+if join==1
+    new_layers=[layers new_layers];
+end
+
+
+new_layers_sorted=new_layers.sort_per_survey_data();
+
 disp('Shuffling layers');
-[layers,layer]=shuffle_layers(layers,layers_temp,'multi_layer',multi_layer,'join',join);
-clear layers_temp;
+layers_out=[];
+
+for icell=1:length(new_layers_sorted)
+    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',multi_layer)];
+end
+
+if join==1
+    layers=layers_out;
+else
+    layers=[layers layers_out];
+end
+
+layers=reorder_layers_time(layers);
+
+layer=layers(end);
+
 % profile off
 % profile viewer;
 
