@@ -101,6 +101,7 @@ data_mat=single(data_mat);
 % if nansum(outputSize==size(data))<2
 %     data_mat = imresize(data_mat,outputSize,'nearest');
 % end
+dt=nanmean(diff(xdata));
 
 axes(ax);
 switch axes_type
@@ -116,19 +117,28 @@ end
 
 idx_change_file=find(diff(layer.Transceivers(idx_freq).Data.FileId)>0);
 
+u=get(ax,'children');
+
+for ii=1:length(u)
+    if strcmp(get(u(ii),'tag'),'file_id')||strcmp(get(u(ii),'tag'),'surv_id')
+        delete(u(ii));
+    end
+end
+
+
 for ifile=1:length(idx_change_file)
     plot(xdata(idx_change_file(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'k','tag','file_id');
 end
 
 for ifile=1:length(idx_start_time)
     if ~isempty(idx_start_time(ifile))
-        plot(xdata(idx_start_time(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'g','tag','surv_id');
+        plot(xdata(idx_start_time(ifile)).*ones(size(ydata(idx_r)))+dt,ydata(idx_r),'g','tag','surv_id');
     end
 end
 
 for ifile=1:length(idx_end_time)
     if ~isempty(idx_end_time(ifile))
-        plot(xdata(idx_end_time(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'g','tag','surv_id');
+        plot(xdata(idx_end_time(ifile)).*ones(size(ydata(idx_r)))-dt,ydata(idx_r),'r','tag','surv_id');
     end
 end
 

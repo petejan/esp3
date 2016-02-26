@@ -8,26 +8,10 @@ end
 
 surveydata=layer.get_survey_data();
 
-prompt={'Survey Name',...
-    'Voyage'};
-name='Trip Info';
-numlines=1;
-
-if ~isempty(surveydata)
-    defaultanswer={surveydata.SurveyName,surveydata.Voyage};
-else
-    defaultanswer={' ',' '};
-end
-
-answer=inputdlg(prompt,name,numlines,defaultanswer);
-
-if isempty(answer)
+[Voyage,SurveyName,~,~,~,can]=fill_survey_data_dlbox(surveydata,'trip_only',1,'Title','Edit Trip Info');
+if can>0
     return;
 end
-
-SurveyName=answer{1};
-Voyage=answer{2};
-
 layer.update_echo_logbook_file('SurveyName',SurveyName,'Voyage',Voyage);
 
 for i=1:length(layers)

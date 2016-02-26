@@ -18,13 +18,22 @@ Filename={Filename};
 end
 
 for i=1:length(Filename)
+    %try
     surv_obj=survey_cl();
     surv_obj.SurvInput=parse_survey_xml(fullfile(PathToFile,Filename{i}));
     
     if isempty(surv_obj.SurvInput)
         warning('Could not parse the File describing the survey...');
-        return;
+        continue;
     end
+    
+    valid=surv_obj.SurvInput.check_n_complete_input();
+    
+    if valid==0
+        warning('It looks like there is a problem with XML survey file %s\n',Filename{i});
+        continue;
+    end
+    
 %     profile off;
 %     profile on;
 %     
@@ -40,6 +49,9 @@ for i=1:length(Filename)
     surv_obj.print_output(outputFile);
 
     layers_old=[layers_old layers_new];  
+%     catch
+%         warning('Could not process survey described in file %s\n',Filename{i});    
+%     end
 end
 
 layers=layers_old;

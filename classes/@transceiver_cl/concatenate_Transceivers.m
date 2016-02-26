@@ -1,4 +1,11 @@
 function trans_out=concatenate_Transceivers(trans_1,trans_2)
+if isempty(trans_1)
+    trans_out=trans_2;
+    return;
+elseif isempty(trans_2)
+    trans_out=trans_1;
+    return;
+end
 if length(trans_1)==length(trans_2)
     for i=1:length(trans_1)
         trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_1(i).Data,trans_2(i).Data),...

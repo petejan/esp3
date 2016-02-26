@@ -11,9 +11,6 @@ multi_layer=p.Results.multi_layer;
 
 if length(layers_in)==1
     layers_out=layers_in;
-    try
-        close(shuffling_box);
-    end
     return;
 end
 

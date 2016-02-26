@@ -1,7 +1,5 @@
 function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
-layers=getappdata(main_figure,'Layers');
-
 
 if ~isempty(layer)
     if ~isempty(layer.PathToFile)
@@ -9,10 +7,8 @@ if ~isempty(layer)
     else
         file_path=pwd;
     end
-    ID_num=layer.ID_num;
 else
     file_path=pwd;
-    ID_num=0;
 end
 
 
@@ -31,7 +27,6 @@ else
             return;
         end
         
-        
         if ~iscell(Filename)
             if (Filename==0)
                 return;
@@ -49,7 +44,6 @@ else
     elseif file_id==1
         if ~isempty(layer)
             Filename=layer.Filename;
-            PathToFile=layer.PathToFile;
         else
             return;
         end
@@ -147,7 +141,7 @@ end
 
 setappdata(main_figure,'Layer',layer);
 
-read_all=0;
+%read_all=0;
 
 multi_layer=0;
 join=0;
@@ -160,10 +154,10 @@ end
 if ~isequal(Filename, 0)
     
     
-%     ask_q=1;
-%     if length(Filename)==1||~iscell(Filename)
-%         ask_q=0;
-%     end
+    %     ask_q=1;
+    %     if length(Filename)==1||~iscell(Filename)
+    %         ask_q=0;
+    %     end
     
     survey_struct=import_survey_data(PathToFile_tmp,'echo_logbook.csv');
     
@@ -181,42 +175,50 @@ if ~isequal(Filename, 0)
             case 'Yes'
                 for ifile_miss=idx_incomp
                     miss_files=survey_struct.Filename(idx_missing{ifile_miss});
+                    
                     Filename=[Filename miss_files'];
+                    if iscell(PathToFile)
+                        miss_path=survey_struct.Datapath(idx_missing{ifile_miss});
+                        PathToFile=[PathToFile miss_path'];
+                    end
                 end
             case 'No'
             otherwise
                 return;
         end
-        Filename=unique(Filename);
+        [Filename,idx_uni]=unique(Filename);
+        if iscell(PathToFile)
+            PathToFile=PathToFile(idx_uni);
+        end
     end
     
-%     
-%     if ask_q==1
-%         choice = questdlg('Do you want to open files as separate layers?', ...
-%             'File opening mode',...
-%             'Yes','No',...'Force Concatenation', ...
-%             'Yes');
-%         % Handle response
-%         switch choice
-%             case 'Yes'
-%                 multi_layer=1;
-%                 read_all=0;
-%             case 'No'
-%                 multi_layer=0;
-%                 read_all=1;
-%             case 'Force Concatenation'
-%                 multi_layer=-1;
-%                 read_all=1;
-%             otherwise
-%                 return;
-%         end
-%         
-%         if isempty(choice)
-%             return;
-%         end
-%     else
-%         multi_layer=0;
-%     end
+    %
+    %     if ask_q==1
+    %         choice = questdlg('Do you want to open files as separate layers?', ...
+    %             'File opening mode',...
+    %             'Yes','No',...'Force Concatenation', ...
+    %             'Yes');
+    %         % Handle response
+    %         switch choice
+    %             case 'Yes'
+    %                 multi_layer=1;
+    %                 read_all=0;
+    %             case 'No'
+    %                 multi_layer=0;
+    %                 read_all=1;
+    %             case 'Force Concatenation'
+    %                 multi_layer=-1;
+    %                 read_all=1;
+    %             otherwise
+    %                 return;
+    %         end
+    %
+    %         if isempty(choice)
+    %             return;
+    %         end
+    %     else
+    %         multi_layer=0;
+    %     end
     
     %  if ~strcmp(ftype,'dfile')
     %         if multi_layer==0&&ID_num~=0&&~isempty(layers)

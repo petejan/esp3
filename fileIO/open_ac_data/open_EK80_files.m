@@ -6,25 +6,30 @@ if multi_layer<0
     multi_layer=0;
 end
 
-layers_temp=open_EK80_file_stdalone(PathToFile,Filename,'Frequencies',vec_freq_init,'PingRange',[ping_start ping_end],'PathToMemmap',app_path.data);
+new_layers=open_EK80_file_stdalone(PathToFile,Filename,'Frequencies',vec_freq_init,'PingRange',[ping_start ping_end],'PathToMemmap',app_path.data);
 
-for i=1:length(layers_temp)
-    layers_temp(i).load_bot_regs();
+for i=1:length(new_layers)
+    new_layers(i).load_bot_regs();
 end
 
 
-disp('Shuffling layers');
+new_layers.load_echo_logbook();
+
 if join==1
-    layers_temp=[layers layers_temp];
+    new_layers=[layers new_layers];
 end
+
+
+new_layers_sorted=new_layers.sort_per_survey_data();
 
 disp('Shuffling layers');
-layers_out=shuffle_layers(layers_temp,'multi_layer',multi_layer);
-clear layers_temp;
+layers_out=[];
 
-for i=1:length(layers_out)
-    layers_out(i).load_echo_logbook();
+for icell=1:length(new_layers_sorted)
+    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',multi_layer)];
 end
+
+id_lay=layers_out(end).ID_num;
 
 if join==1
     layers=layers_out;
@@ -32,8 +37,10 @@ else
     layers=[layers layers_out];
 end
 
-layer=layers(end);
+layers=reorder_layers_time(layers);
 
+[idx,~]=find_layer_idx(layers,id_lay);
+layer=layers(idx);
 
 
 setappdata(main_figure,'Layer',layer);

@@ -118,10 +118,8 @@ set(axes_panel_comp.haxes,'XTick',xticks);
 set(axes_panel_comp.vaxes,'YtickLabel',yticks_label);
 set(axes_panel_comp.haxes,'XtickLabel',xticks_label,'XTickLabelRotation',90,'box','on');
 
-if strcmpi(curr_disp.CursorMode,'Normal')
-    context_menu=uicontextmenu;
-    axes_panel_comp.main_echo.UIContextMenu=context_menu;
-    uimenu(context_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
+if strcmpi(curr_disp.CursorMode,'Normal')  
+    create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);
 end
 
 

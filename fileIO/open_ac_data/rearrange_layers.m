@@ -24,16 +24,28 @@ idx_not_to_concatenate=cell(1,length(trans_nb));
 
 for uu=1:length(trans_nb)
     idx=find(nb_transceivers==trans_nb(uu));
+   
     for jj=1:length(idx)
         curr_layer=layers_in(idx(jj));
-        for ii=1:trans_nb(uu)
-            curr_trans=curr_layer.Transceivers(ii);
-            layers_grp(uu).freqs(ii,jj)=curr_trans.Config.Frequency;
-            layers_grp(uu).time_start(ii,jj)=curr_trans.Data.Time(1);
-            layers_grp(uu).time_end(ii,jj)=curr_trans.Data.Time(end);
-            layers_grp(uu).dt(ii,jj)=(curr_trans.Data.Time(end)-curr_trans.Data.Time(1))/length(curr_trans.Data.Time);
-            layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.Data.Range);
+        if (trans_nb(uu))>0
+            for ii=1:trans_nb(uu)
+                curr_trans=curr_layer.Transceivers(ii);
+                layers_grp(uu).freqs(ii,jj)=curr_trans.Config.Frequency;
+                layers_grp(uu).time_start(ii,jj)=curr_trans.Data.Time(1);
+                layers_grp(uu).time_end(ii,jj)=curr_trans.Data.Time(end);
+                layers_grp(uu).dt(ii,jj)=(curr_trans.Data.Time(end)-curr_trans.Data.Time(1))/length(curr_trans.Data.Time);
+                layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.Data.Range);
+            end
+        else
+                layers_grp(uu).freqs(1,jj)=0;
+                if~isempty(curr_layer.GPSData.Time)
+                    layers_grp(uu).time_start(1,jj)=curr_layer.GPSData.Time(1);
+                    layers_grp(uu).time_end(1,jj)=curr_layer.GPSData.Time(end);
+                end
+                layers_grp(uu).dt(1,jj)=(curr_layer.GPSData.Time(end)-curr_layer.GPSData.Time(1))/length(curr_layer.GPSData.Time)*10;
+                layers_grp(uu).nb_samples_range(1,jj)=0;
         end
+        
     end
     
     samples_nb=unique(layers_grp(uu).nb_samples_range','rows')';
@@ -42,7 +54,12 @@ for uu=1:length(trans_nb)
     for kk=1:size(samples_nb,2)
         idx_to_concatenate{uu}{kk}=[];
         
-        idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1)==trans_nb(uu));
+        if trans_nb(uu)>0
+            idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1)==trans_nb(uu));
+        else
+             idx_same_samples=find(nansum(layers_grp(uu).nb_samples_range==repmat(samples_nb(:,kk),1,size(layers_grp(uu).nb_samples_range,2)),1));
+             trans_nb(uu)=1;
+        end
         
         if multi_layer==0
             for kki=idx_same_samples
@@ -136,7 +153,24 @@ for uui=1:length(idx_to_concatenate)
             if length(curr_layers)>1
                 layer_conc=curr_layers(1);
                 for kk=1:length(curr_layers)-1
-                    if layer_conc.Transceivers(1).Data.Time(end)<=curr_layers(kk+1).Transceivers(1).Data.Time(end)
+                    if ~isempty(layer_conc.Transceivers)
+                        t_1=layer_conc.Transceivers(1).Data.Time(end);
+                    elseif ~isempty(layer_conc.GPSData.Time)
+                        t_1=layer_conc.GPSData.Time(end);
+                    else
+                       t_1=[]; 
+                    end
+                    
+                    if ~isempty(curr_layers(kk+1).Transceivers)
+                        t_2=curr_layers(kk+1).Transceivers(1).Data.Time(end);
+                    elseif ~isempty(curr_layers(kk+1).GPSData.Time)
+                        t_2=curr_layers(kk+1).GPSData.Time(end);
+                    else
+                        t_2=[];
+                    end
+                    
+                    
+                    if t_1<=t_2
                         layer_conc=concatenate_layers(layer_conc,curr_layers(kk+1));
                     else
                         layer_conc=concatenate_layers(curr_layers(kk+1),layer_conc);

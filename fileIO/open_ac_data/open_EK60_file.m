@@ -4,18 +4,6 @@ layers=getappdata(hObject,'Layers');
 
 app_path=getappdata(hObject,'App_path');
 
-if iscell(PathToFile)
-    path=PathToFile{1};
-else
-    path=PathToFile;
-end
-
-if exist(fullfile(path,'cal_echo.csv'),'file')>0
-    cal=csv2struct(fullfile(path,'cal_echo.csv'));
-else
-    cal=[];
-end
-
 sple_start=1;
 sple_end=inf;
 
@@ -39,7 +27,7 @@ sple_end=inf;
         
 % profile on
 new_layers=open_EK60_file_stdalone(PathToFile,Filename,...
-    'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'Calibration',cal);
+    'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
         
 
 if exist('opening_file','var')
@@ -70,6 +58,8 @@ for icell=1:length(new_layers_sorted)
     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',multi_layer)];
 end
 
+id_lay=layers_out(end).ID_num;
+
 if join==1
     layers=layers_out;
 else
@@ -78,7 +68,8 @@ end
 
 layers=reorder_layers_time(layers);
 
-layer=layers(end);
+[idx,~]=find_layer_idx(layers,id_lay);
+layer=layers(idx);
 
 % profile off
 % profile viewer;

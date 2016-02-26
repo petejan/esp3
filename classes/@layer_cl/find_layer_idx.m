@@ -1,6 +1,6 @@
 function [idx,found]=find_layer_idx(layers,ID)
 
-layer_id=nan(length(layers));
+layer_id=nan(1,length(layers));
 for i=1:length(layers)
     if isvalid(layers(i))
         layer_id(i)=layers(i).ID_num;

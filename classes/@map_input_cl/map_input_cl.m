@@ -1,9 +1,11 @@
 classdef map_input_cl
     properties
+        SurveyName
         Trip
         Snapshot
         Stratum
         Transect
+        PathToFile
         Filename
         Lat
         Lon
@@ -27,11 +29,13 @@ classdef map_input_cl
             
             %Parse Arguments
             p = inputParser;
+            addParameter(p,'SurveyName',@iscell);
             addParameter(p,'Trip',@iscell);
             addParameter(p,'Snapshot',@isnumeric);
             addParameter(p,'Stratum',@iscell);
             addParameter(p,'Transect',@isnumeric);
             addParameter(p,'Filename',@iscell);
+            addParameter(p,'PathToFile',@iscell);
             addParameter(p,'Lat',@iscell);
             addParameter(p,'Lon',@iscell);
             addParameter(p,'SliceLat',@iscell);

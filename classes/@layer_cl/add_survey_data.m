@@ -48,6 +48,7 @@ for i=1:length(idx_loaded)
             'Transect',survey_data_struct.Transect(idx_loaded{i}(il)),...
             'StartTime',start_time,...
             'EndTime',end_time);
+        
         surv_data{idx_lay(il)}{length(surv_data{idx_lay(il)})+1}=surv_temp;
     end
 end

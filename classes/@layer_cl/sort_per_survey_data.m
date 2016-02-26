@@ -2,7 +2,8 @@ function layers_out_cell=sort_per_survey_data(layers_in)
 
 survey_data_str={};
 idx_lay=[];
-layer_survey_data_str=cell(1,length(layers_in));
+str_null=sprintf('Snap %d, Strat. %s, Trans. %d',...
+                0,' ',0); 
 i_str=0;
 for il=1:length(layers_in)
     surv_data_cell=layers_in(il).SurveyData;
@@ -11,8 +12,13 @@ for il=1:length(layers_in)
         if ~isempty(surv_data_cell{ic})
             survey_data_str{i_str}=surv_data_cell{ic}.print_survey_data();
         else
-            survey_data_str{i_str}='';
+            survey_data_str{i_str}=num2str(il);
         end
+        
+        if ~isempty(strfind(survey_data_str{i_str},str_null))
+            survey_data_str{i_str}=num2str(il);
+        end
+        
         idx_lay(i_str)=il;
     end
 end
@@ -33,7 +39,7 @@ for ilay=1:length(layers_in)
             layers_out_cell{ilay}=[layers_out_cell{ilay} layers_in(idx_lay(istr))];
             id_lay(idx_lay(istr))=0;
         end
-    end 
+    end
 end
 
 layers_out_cell(cellfun(@isempty,layers_out_cell))=[];

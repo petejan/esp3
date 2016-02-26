@@ -92,7 +92,9 @@ for iu=1:length(trans_nodes)
     for iiu=1:length(reg_curr)
         trans_curr.Regions{iiu}=get_node_att(reg_curr(iiu));
     end
-    trans_curr.files=strsplit(trans_curr.files,';');
+    if isfield(trans_curr,'files')
+        trans_curr.files=strsplit(trans_curr.files,';');
+    end
     transects{iu}=trans_curr;
 end
 

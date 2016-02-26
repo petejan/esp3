@@ -32,8 +32,10 @@ end
 
 obj=map_input_cl();
 
+obj.SurveyName=cell(1,nb_trans);
 obj.Trip=cell(1,nb_trans);
 obj.Filename=cell(1,nb_trans);
+obj.PathToFile=cell(1,nb_trans);
 obj.Snapshot=zeros(1,nb_trans);
 obj.Stratum=cell(1,nb_trans);
 obj.Transect=zeros(1,nb_trans);
@@ -61,7 +63,8 @@ switch class(Ext_obj)
             else
                 obj.Trip{i}=mbs_head.title;
             end
-            
+            obj.SurveyName{i}=mbs_head.title;
+            obj.PathToFile{i}='';
             obj.SliceLat{i}=mbs_out{i,6};
             obj.SliceLon{i}=mbs_out{i,7};
             obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
@@ -85,7 +88,8 @@ switch class(Ext_obj)
         
     case 'layer_cl'
         for i=1:nb_trans
-            obj.Filename{i}=layers(i).Filename{1};
+            obj.Filename{i}=layers(i).Filename;
+            obj.PathToFile{i}=layers(i).PathToFile;
             obj.Lat{i}=layers(i).GPSData.Lat;
             obj.Lon{i}=layers(i).GPSData.Long;
             
@@ -95,8 +99,10 @@ switch class(Ext_obj)
                 obj.Snapshot(i)=surv_data.Snapshot;
                 obj.Stratum{i}=surv_data.Stratum;
                 obj.Transect(i)=surv_data.Transect;
+                obj.SurveyName{i}=surv_data.SurveyName;
             else
                 obj.Trip{i}='';
+                obj.SurveyName{i}='';
             end
             
             [idx_freq,found]=find_freq_idx(layers(i),p.Results.Freq);
@@ -106,8 +112,6 @@ switch class(Ext_obj)
             end
             
             if p.Results.SliceSize>0
-                
-                
                 idx_reg=1:length(layers(i).Transceivers(idx_freq).Regions);
                 idx_bad=zeros(1,length(idx_reg));
                 for ireg=1:length(idx_reg)
@@ -138,10 +142,11 @@ switch class(Ext_obj)
         
         for i=1:nb_trans
             if ~strcmpi(survey_obj.SurvInput.Infos.Voyage,'')
-                obj.Trip{i}=survey_obj.SurvInput.Infos.Voyage;
+                obj.Trip{i}=survey_obj.SurvInput.Infos.Voyage;  
             else
                 obj.Trip{i}=survey_obj.SurvInput.Infos.Title;
             end
+            obj.SurveyName{i}=survey_obj.SurvInput.Infos.Title;
             obj.SliceLat{i}=survey_obj.SurvOutput.slicedTransectSum.latitude{i};
             obj.SliceLon{i}=survey_obj.SurvOutput.slicedTransectSum.longitude{i};
             obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
@@ -159,10 +164,14 @@ switch class(Ext_obj)
             idx_file=find(obj.Snapshot(i)==survey_obj.SurvOutput.regionSum.snapshot...
                 &strcmpi(obj.Stratum(i),survey_obj.SurvOutput.regionSum.stratum)...
                 &obj.Transect(i)==survey_obj.SurvOutput.regionSum.transect,1);
-            if ~isempty(idx_file)
-                obj.Filename{i}=survey_obj.SurvOutput.regionSum.file{idx_file}{:};
-            end
             
+            if ~isempty(idx_file)
+                obj.Filename{i}=survey_obj.SurvOutput.regionSum.file{idx_file};
+            else
+                obj.Filename{i}='';
+            end
+            idx_snap=(obj.Snapshot(i)==survey_obj.SurvOutput.stratumSum.snapshot);
+            obj.PathToFile{i}=survey_obj.SurvInput.Snapshots{idx_snap}.Folder;
         end
 end
 

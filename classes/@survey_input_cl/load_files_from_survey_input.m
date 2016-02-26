@@ -1,21 +1,21 @@
-function layers=load_files_from_survey_input(surv_obj,varargin)
+function layers=load_files_from_survey_input(surv_input_obj,varargin)
 
 p = inputParser;
 
-addRequired(p,'surv_obj',@(obj) isa(obj,'survey_input_cl'));
+addRequired(p,'surv_input_obj',@(obj) isa(obj,'survey_input_cl'));
 addParameter(p,'PathToMemmap','',@ischar)
 
-parse(p,surv_obj,varargin{:});
+parse(p,surv_input_obj,varargin{:});
 
 datapath=p.Results.PathToMemmap;
-infos=surv_obj.Infos;
-options=surv_obj.Options;
-regions_wc=surv_obj.Regions_WC;
-algos=surv_obj.Algos;
-cal=surv_obj.Cal;
+infos=surv_input_obj.Infos;
+options=surv_input_obj.Options;
+regions_wc=surv_input_obj.Regions_WC;
+algos=surv_input_obj.Algos;
+cal=surv_input_obj.Cal;
 
 
-snapshots=surv_obj.Snapshots;
+snapshots=surv_input_obj.Snapshots;
 u=0;
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;

@@ -6,6 +6,7 @@ addRequired(p,'idx_raw_obj',@(x) isa(x,'raw_idx_cl'));
 addParameter(p,'PingRange',[1 inf],@isnumeric);
 addParameter(p,'SampleRange',[1 inf],@isnumeric);
 addParameter(p,'Frequencies',[],@isnumeric);
+addParameter(p,'GPSOnly',0,@isnumeric);
 
 parse(p,path,idx_raw_obj,varargin{:});
 results=p.Results;
@@ -38,6 +39,11 @@ if isempty(idx_freq)
 end
 
 
+if p.Results.GPSOnly>0
+    channels=[];
+    nb_pings=0;
+    nb_samples=0;
+else
 channels=unique(idx_raw_obj.chan_dg(~isnan(idx_raw_obj.chan_dg)));
 channels=channels(idx_freq);
 nb_pings=idx_raw_obj.get_nb_pings_per_channels();
@@ -51,15 +57,15 @@ nb_samples=nb_samples(idx_freq);
 nb_samples=nanmin(nb_samples,SampleRange(2));
 nb_samples=nb_samples-SampleRange(1)+1;
 nb_samples(nb_samples<0)=0;
+end
 
 nb_nmea=idx_raw_obj.get_nb_nmea_dg();
 
-
 data=init_dataEK60(nb_pings,nb_samples,nb_nmea);
-
 
 data.config=tmp.transceiver(idx_freq);
 header.transceivercount=length(idx_freq);
+
 time_nmea=idx_raw_obj.get_time_dg('NME0');
 data.NMEA.time= time_nmea;
 data.NMEA.string= cell(1,nb_nmea);
@@ -77,7 +83,9 @@ for idg=1:length(idx_raw_obj.type_dg)
           i_nmea=i_nmea+1;
           data.NMEA.string{i_nmea}=char(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'uchar', 'l')');
        case 'RAW0'
-
+           if p.Results.GPSOnly>0
+               continue;
+           end
            chan=idx_raw_obj.chan_dg(idg);
            idx_chan=find(chan==channels);
            if isempty(idx_chan)

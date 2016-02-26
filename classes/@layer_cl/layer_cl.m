@@ -25,7 +25,7 @@ classdef layer_cl < handle
             check_att_class=@(obj) isa(obj,'attitude_nav_cl');
             check_gps_class=@(gps_data_obj) isa(gps_data_obj,'gps_data_cl');
             check_curve_cl=@(curve_obj) isempty(curve_obj)|isa(curve_obj,'curve_cl');
-            check_env_class=@(env_data_obj) isa(env_data_obj,'env_data_cl');
+            check_env_class=@(env_data_obj) isa(env_data_obj,'env_data_cl')|isempty(env_data_obj);
             check_transceiver_class=@(transceiver_obj) isa(transceiver_obj,'transceiver_cl')|isempty(transceiver_obj);
             check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
             
@@ -51,13 +51,17 @@ classdef layer_cl < handle
             end
             
             
-            
             props=fieldnames(results);
             
             for i=1:length(props)               
                 obj.(props{i})=results.(props{i});               
             end
-            obj.(props{i})=results.(props{i});          
+            obj.(props{i})=results.(props{i});        
+            
+            obj.Frequencies=zeros(1,length(obj.Transceivers));
+            for ifr=1:length(obj.Transceivers)
+                obj.Frequencies(ifr)=obj.Transceivers(ifr).Config.Frequency(1);
+            end
 
         end
         
@@ -79,8 +83,7 @@ classdef layer_cl < handle
             end           
         end
         
-        
-        
+       
         function list=list_lines(obj)
             if isempty(obj.Lines)
                 list={};

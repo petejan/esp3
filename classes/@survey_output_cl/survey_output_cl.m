@@ -1,4 +1,4 @@
-classdef survey_output_cl
+classdef survey_output_cl < handle
     properties 
         stratumSum
         transectSum

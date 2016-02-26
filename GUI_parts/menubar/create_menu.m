@@ -36,7 +36,6 @@ uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback'
 
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
-uimenu(m_survey,'Label','Edit Survey Data','Callback',{@edit_survey_info_callback,main_figure});
 uimenu(m_survey,'Label','Edit Trip Info','Callback',{@edit_trip_info_callback,main_figure});
 
 
@@ -51,6 +50,7 @@ uimenu(m_map,'Label','Multi Layers Map','Callback',{@load_map_fig_callback,main_
 uimenu(m_map,'Label','Map from MBS result files','Callback',{@map_mbs_scripts_callback,main_figure});
 uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_callback,main_figure});
 uimenu(m_map,'Label','Map from saved MBS result','Callback',{@display_saved_mbs_callback,main_figure});
+uimenu(m_map,'Label','Plot Tracks from Raw files','Callback',{@plot_gps_track_from_files_callback,main_figure});
 
 m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@set_axes_position_callback,main_figure},'Tag','col');

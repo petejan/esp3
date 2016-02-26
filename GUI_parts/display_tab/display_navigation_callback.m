@@ -9,7 +9,7 @@ if nansum(isnan(map_input.LatLim))>=1
 end
 
 hfig=figure('Name','Navigation','NumberTitle','off','tag','nav');
-map_input.display_map_input_cl(hfig,main_figure);
+map_input.display_map_input_cl('hfig',hfig,'main_figure',main_figure);
 
 hfig2=layer.GPSData.display_speed();
 

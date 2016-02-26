@@ -8,6 +8,7 @@ if isa(obj,'matlab.graphics.primitive.Patch')&&strcmp(src.SelectionType,'normal'
     src.WindowButtonUpFcn = @wbucb;
     cp = src.CurrentPoint;
     src.Pointer = 'fleur';
+    pos=src.Position;
     
 end
 
@@ -17,20 +18,22 @@ end
 
     function wbucb(~,~)
         
-        if nansum(cp<0|cp>1)>=1
+        if nansum(cp<0|cp>pos(3:4))>=1
             h=figure();
             ax_old=obj.Parent;
             fig_old=ax_old.Parent;
             new_ax=copyobj(ax_old,h);
             set(new_ax,'Units','Normalized','OuterPosition',[0 0 1 1]);
-            set(h,'Name',fig_old.Name,'NumberTitle',fig_old.NumberTitle,'Tag',fig_old.Tag);
+            set(h,'Name',[fig_old.Name 'Copy'],'NumberTitle',fig_old.NumberTitle,'Tag',fig_old.Tag);
+        else  
+            h=[];
         end
-
+        
         src.Pointer = 'arrow';
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         
-        if nargin>=2
+        if nargin>2
             hfigs=getappdata(main_figure,'ExternalFigures');
             setappdata(main_figure,'ExternalFigures',[h hfigs]);
         end

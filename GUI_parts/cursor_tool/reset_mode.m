@@ -21,8 +21,6 @@ set(h_pan,'Enable','off');
 set(h,'Enable','off');
 set(main_figure,'Pointer','arrow');
 set(main_figure,'WindowButtonDownFcn','');
-context_menu=uicontextmenu;
-axes_panel_comp.main_echo.UIContextMenu=context_menu;
-uimenu(context_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
+create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);
 
 end

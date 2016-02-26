@@ -1,4 +1,4 @@
-function plot_profiles_callback(src,~,main_figure)
+function plot_profiles_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');

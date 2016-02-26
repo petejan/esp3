@@ -1,11 +1,27 @@
-function display_map_input_cl(obj_tot,hfig,main_figure,field)
+function display_map_input_cl(obj_tot,varargin)
+p = inputParser;
+
+addRequired(p,'obj_tot',@(x) isa(x,'map_input_cl'));
+addParameter(p,'hfig',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
+addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
+addParameter(p,'field','SliceAbscf',@ischar);
+
+parse(p,obj_tot,varargin{:});
+hfig=p.Results.hfig;
+main_figure=p.Results.main_figure;
+field=p.Results.field;
+
+
+if isempty(hfig)
+    hfig=figure();
+end
+
+
+
 snap=[];
 %col_snap={'r','b','g','k','m'};
 col_snap={'k'};
 
-if nargin<4
-    field='SliceAbscf';
-end
 
 set(hfig,'Name','Navigation','NumberTitle','off','tag','nav');
 
@@ -60,17 +76,17 @@ for usnap=1:length(snap)
     
     axes(n_ax(usnap));
     hold on;
-   
     
-%     context_menu=uicontextmenu;
-%     n_ax(usnap).UIContextMenu=context_menu;
-%     uimenu(context_menu,'Label','Copy Axes to new Figure','Callback',{@copy_axes_callback});
-%     
+    
+    %     context_menu=uicontextmenu;
+    %     n_ax(usnap).UIContextMenu=context_menu;
+    %     uimenu(context_menu,'Label','Copy Axes to new Figure','Callback',{@copy_axes_callback});
+    %
     try
         m_grid('box','fancy','tickdir','in');
     catch
-       fprintf(1,'Area to small to display Navigation\n');
-       return;
+        fprintf(1,'Area to small to display Navigation\n');
+        return;
     end
     
     try
@@ -92,22 +108,27 @@ for usnap=1:length(snap)
 end
 
 for uuobj=1:length(obj_tot)
-
+    
     obj=obj_tot(uuobj);
     str=cell(1,length(obj.Transect));
     str_disp=cell(1,length(obj.Transect));
     for i=1:length(obj.Transect)
+        if iscell(obj.Filename{i})
+            str_temp=sprintf('%s\n',obj.Filename{i}{:});
+            str_temp=str_temp(1:end-1);
+        else
+            str_temp=obj.Filename{i};
+        end
         if ~isempty(obj.Stratum{i})
-            if ischar(obj.Stratum{i})
-                str{i}=sprintf('File %s\n Stratum %s\n Transect %d\n',...
-                    obj.Filename{i},obj.Stratum{i},obj.Transect(i));
-                str_disp{i}=sprintf('St %s T %d',...
-                    obj.Stratum{i},obj.Transect(i));
-            else
-                str{i}=sprintf('File %s\n Stratum %d\n Transect %d\n',...
-                    obj.Filename{i},obj.Stratum{i},obj.Transect(i));
-                str_disp{i}=sprintf('St %d T %d',...
-                    obj.Stratum{i},obj.Transect(i));
+            
+            str{i}=sprintf('File %s\n Stratum %d\n Transect %d\n',...
+                str_temp,obj.Stratum{i},obj.Transect(i));
+            str_disp{i}=sprintf('St %d T %d',...
+                obj.Stratum{i},obj.Transect(i));
+            
+            if obj.Snapshot(i)==0&&strcmp(obj.Stratum(i),' ')&&obj.Transect(i)==0
+                str_disp{i}='';
+                str{i}=obj.Filename{i};
             end
         else
             str_disp{i}='';
@@ -116,22 +137,28 @@ for uuobj=1:length(obj_tot)
         
     end
     
+    u_plot=gobjects(1,length(obj.Snapshot));
+    u_plot_slice=gobjects(1,length(obj.Snapshot));
+    
     for usnap=1:length(snap)
         idx_snap=find(obj.Snapshot==snap(usnap));
         
         if isempty(idx_snap)
-           continue;
+            continue;
         end
         axes(n_ax(usnap));
         hold on;
         title(sprintf('%s\n Snapshot %d',obj.Trip{idx_snap(1)},snap(usnap)));
-
+        
         for uui=1:length(idx_snap)
             if ~isempty(obj.Lon{idx_snap(uui)})
-                u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','r','linewidth',2);
+                u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'tag','nav');
                 set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
+                if~isempty(main_figure)
+                    create_context_menu_line(main_figure,u_plot(idx_snap(uui)),obj.PathToFile{idx_snap(uui)},obj.Filename{idx_snap(uui)});
+                end
                 if obj.Transect(idx_snap(uui))>0
-                    m_text(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
+                    m_text(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','b');
                 end
             end
             
@@ -139,8 +166,11 @@ for uuobj=1:length(obj_tot)
                 if isempty(obj.Lon{idx_snap(uui)})
                     m_text(obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
                 end
-                u_plot_slice(idx_snap(uui))=m_plot(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'xk');
+                u_plot_slice(idx_snap(uui))=m_plot(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'xb');
                 set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
+                if~isempty(main_figure)
+                    create_context_menu_line(main_figure,u_plot_slice(idx_snap(uui)),obj.PathToFile{idx_snap(uui)},obj.Filename{idx_snap(uui)});
+                end
                 ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
                 idx_rings=find(ring_size>0);
                 for uuj=idx_rings
@@ -150,9 +180,10 @@ for uuobj=1:length(obj_tot)
         end
         
     end
+    linkaxes(n_ax,'x');
 end
 
-if nargin>2
+if~isempty(main_figure)
     set(hfig,'WindowButtonDownFcn',{@copy_axes_callback,main_figure});
 else
     set(hfig,'WindowButtonDownFcn',{@copy_axes_callback});
@@ -175,15 +206,125 @@ cp=ax.CurrentPoint;
 x = cp(1,1);
 y=cp(1,2);
 
-u=get(ax,'children');
+u = findobj(ax,'Tag','name');
+delete(u);
 
-for ii=1:length(u)
-    if strcmp(get(u(ii),'tag'),'name')
-        delete(u(ii));
-    end
-end
 axes(ax);
 text(x,y,name,'tag','name');
 
 
+lines = findobj(ax,'Type','Line','tag','nav');
+for il=1:length(lines)
+    if lines(il)==src
+        set(lines(il),'color','r');
+    else
+        set(lines(il),'color','b');
+    end
+    
 end
+
+end
+
+
+function create_context_menu_line(main_figure,line,pathtofile,files)
+
+context_menu=uicontextmenu;
+line.UIContextMenu=context_menu;
+uimenu(context_menu,'Label','Go to this layer','Callback',{@activate_line_callback,main_figure,pathtofile,files});
+uimenu(context_menu,'Label','Edit Survey Data','Callback',{@edit_survey_data_line_callback,main_figure,pathtofile,files});
+
+end
+
+function activate_line_callback(src,~,main_figure,pathtofile,files)
+layers=getappdata(main_figure,'Layers');
+if~isempty(layers)
+    [idx,found]=layers.find_layer_idx_files_path(pathtofile,files);
+    
+else
+    found=0;
+end
+if found==1
+    layer=layers(idx(1));
+    setappdata(main_figure,'Layer',layer);
+    update_display(main_figure,1);
+else
+    choice = questdlg('We cannot find the transect you are pointing at... Do you want to load it?', ...
+        'Incomplete',...
+        'Yes','No',...
+        'Yes');
+    % Handle response
+    switch choice
+        case 'Yes'
+            files_to_open=cell(1,length(files));
+            if ~isempty(pathtofile)
+                for ifi=1:length(files)
+                    files_to_open{ifi}=fullfile(pathtofile,files{ifi});
+                end
+            else
+                return;
+            end
+            open_file([],[],files_to_open,main_figure);
+        case 'No'
+        otherwise
+            return;
+    end
+    
+end
+end
+
+function edit_survey_data_line_callback(~,~,main_figure,pathtofile,files)
+layers=getappdata(main_figure,'Layers');
+
+if~isempty(layers)
+    [idx,found]=layers.find_layer_idx_files_path(pathtofile,files);
+else
+    found=0;
+end
+
+if found==0
+    choice = questdlg('We cannot find the transect you are pointing at... Do you want to load it?', ...
+        'Incomplete',...
+        'Yes','No',...
+        'Yes');
+    % Handle response
+    switch choice
+        case 'Yes'
+            files_to_open=cell(1,length(files));
+            if ~isempty(pathtofile)
+                for ifi=1:length(files)
+                    files_to_open{ifi}=fullfile(pathtofile,files{ifi});
+                end
+            else
+                return;
+            end
+            open_file([],[],files_to_open,main_figure);
+        case 'No'
+        otherwise
+            return;
+    end
+    layers=getappdata(main_figure,'Layers');
+    
+    if~isempty(layers)
+        [idx,found]=layers.find_layer_idx_files_path(pathtofile,files);
+    else
+        found=0;
+    end
+    if found==0
+        disp('We tried to load the files but this does not work...');
+        return;
+    end
+    
+end
+layer=layers(idx(1));
+new_surveydata=layer.get_survey_data();
+[new_surveydata.Voyage,new_surveydata.SurveyName,new_surveydata.Snapshot,new_surveydata.Stratum,new_surveydata.Transect,cancel]=fill_survey_data_dlbox(new_surveydata,'title','Enter New Survey Data');
+if cancel>0
+    return;
+end
+layer.set_survey_data(new_surveydata);
+layer.update_echo_logbook_file();
+setappdata(main_figure,'Layer',layer);
+update_display(main_figure,1);
+end
+
+

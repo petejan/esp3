@@ -1,4 +1,4 @@
-classdef survey_input_cl
+classdef survey_input_cl < handle
     properties
         
         Infos

@@ -4,18 +4,44 @@ if ~iscell(surv_data_cell)
     surv_data_cell={surv_data_cell};
 end
 
-str_surv_data_cell=cell(1,length(surv_data_cell));
+surv_data_cell(cellfun(@isempty,surv_data_cell))=[];
 
+if isempty(surv_data_cell)
+    layer_obj.SurveyData=surv_data_cell;
+    return;
+end
+
+
+start_time=nan(1,length(surv_data_cell));
+
+for ic=1:length(start_time)
+    if ~isempty(surv_data_cell{ic})
+        start_time(ic)=surv_data_cell{ic}.StartTime;
+    else
+        start_time(ic)=0;
+    end
+end
+[~,idx_sort]=sort(start_time);
+
+surv_data_cell=surv_data_cell(idx_sort);
+
+
+str_surv_data_cell=cell(1,length(surv_data_cell));
 for ic=1:length(str_surv_data_cell)
     if ~isempty(surv_data_cell{ic})
         %str_surv_data_cell{ic}=[surv_data_cell{ic}.print_survey_data() datestr(surv_data_cell{ic}.StartTime) datestr(surv_data_cell{ic}.EndTime)];
         str_surv_data_cell{ic}=surv_data_cell{ic}.print_survey_data();
+        start_time(ic)=surv_data_cell{ic}.StartTime;
     else
         str_surv_data_cell{ic}='';
     end
 end
 
+
+
 [~,idx_unique,idx_rep]=unique(str_surv_data_cell);
+
+
 
 surv_data_cell_out=cell(1,length(idx_unique));
 
@@ -51,7 +77,21 @@ for i_cell=1:length(surv_data_cell_out)
         end
     end
 end
-surv_data_cell_out{1}
+
+
+start_time=nan(1,length(surv_data_cell_out));
+
+for ic=1:length(start_time)
+    if ~isempty(surv_data_cell_out{ic})
+        start_time(ic)=surv_data_cell_out{ic}.StartTime;
+    else
+        start_time(ic)=0;
+    end
+end
+[~,idx_sort]=sort(start_time);
+
+surv_data_cell_out=surv_data_cell_out(idx_sort);
+
 layer_obj.SurveyData=surv_data_cell_out;
 
 end

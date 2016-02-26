@@ -5,8 +5,8 @@ classdef raw_idx_cl
         nb_samples
         time_dg
         type_dg
-        pos_dg
-        len_dg
+        pos_dg%bytes from start of the file
+        len_dg%
         chan_dg
     end
     

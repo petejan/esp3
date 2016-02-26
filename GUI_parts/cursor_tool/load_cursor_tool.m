@@ -11,7 +11,7 @@ layers_Str=list_layers(layers);
 
 if isappdata(main_figure,'Cursor_mode_tool')
     cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');  
-    [idx,~]=find_layer_idx(layers,layer.ID_num);
+    [idx,~]=layers.find_layer_idx(layer.ID_num);
     cursor_mode_tool_comp.jCombo.removeAllItems();
     for i=1:nb_layers
          cursor_mode_tool_comp.jCombo.addItem(layers_Str{i});
