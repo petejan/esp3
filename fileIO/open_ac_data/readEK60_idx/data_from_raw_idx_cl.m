@@ -1,14 +1,14 @@
-function [header,data]=data_from_raw_idx_cl(path,idx_raw_obj,varargin)
+function [header,data]=data_from_raw_idx_cl(path_f,idx_raw_obj,varargin)
 
 p = inputParser;
-addRequired(p,'path',@ischar);
+addRequired(p,'path_f',@(x) ischar(x));
 addRequired(p,'idx_raw_obj',@(x) isa(x,'raw_idx_cl'));
 addParameter(p,'PingRange',[1 inf],@isnumeric);
 addParameter(p,'SampleRange',[1 inf],@isnumeric);
 addParameter(p,'Frequencies',[],@isnumeric);
 addParameter(p,'GPSOnly',0,@isnumeric);
 
-parse(p,path,idx_raw_obj,varargin{:});
+parse(p,path_f,idx_raw_obj,varargin{:});
 results=p.Results;
 
 PingRange=results.PingRange;
@@ -16,10 +16,10 @@ SampleRange=results.SampleRange;
 Frequencies=results.Frequencies;
 
 HEADER_LEN=12;
-fid=fopen(fullfile(path,idx_raw_obj.filename),'r');
+fid=fopen(fullfile(path_f,idx_raw_obj.filename),'r');
 
 if fid==-1
-    warning('Cannot Open file %s',fullfile(path,idx_raw_obj.filename));
+    warning('Cannot Open file %s',idx_raw_obj.filename);
     header=-1;
     data=-1;
     return;

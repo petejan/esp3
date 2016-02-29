@@ -20,7 +20,7 @@ else
 end
 
 
-ifile_info=parse_ifile(iFilePath,str2double(iFileName(end-6:end)));
+ifile_info=parse_ifile(fullfile(iFilePath,iFileName));
 rawFileName=ifile_info.rawFileName;
 depthFactor = ifile_info.depth_factor;
 

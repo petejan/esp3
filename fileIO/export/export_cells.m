@@ -51,11 +51,8 @@ output=reg_temp.integrate_region(Transceiver);
 Freq=layer.Frequencies(idx_freq);
 Filename=layer.Filename{1};
 
-if iscell(Filename)
-    Filename=Filename{1};
-end
 
-file_outputs_def=[layer.PathToFile '\' Filename(1:end-5) '_' num2str(Freq) '_cell_outputs.csv'];
+file_outputs_def=[Filename(1:end-5) '_' num2str(Freq) '_cell_outputs.csv'];
 
 [file_outputs,path_out] = uiputfile('*_cell_outputs.csv','Select Filename for saving output',file_outputs_def);
 

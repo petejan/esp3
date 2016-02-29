@@ -1,15 +1,21 @@
-function  layers=open_EK80_file_stdalone(PathToFile,Filename_cell,varargin)
+function  layers=open_EK80_file_stdalone(Filename_cell,varargin)
 
 p = inputParser;
 
-addRequired(p,'PathToFile',@(x) ischar(x)||iscell(x));
+
+if ~iscell(Filename_cell)
+    Filename_cell={Filename_cell};
+end
+
+[def_path_m,~,~]=fileparts(Filename_cell{1});
+
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
-addParameter(p,'PathToMemmap',PathToFile);
+addParameter(p,'PathToMemmap',def_path_m);
 addParameter(p,'Frequencies',[]);
 addParameter(p,'PingRange',[1 inf]);
 addParameter(p,'FieldNames',{});
 
-parse(p,PathToFile,Filename_cell,varargin{:});
+parse(p,Filename_cell,varargin{:});
 
 
 dir_data=p.Results.PathToMemmap;
@@ -25,9 +31,6 @@ ite=1;
 
 if ~isequal(Filename_cell, 0)
     
-    if ~iscell(Filename_cell)
-        Filename_cell={Filename_cell};
-    end
     
     if ite==0
         nb_layers=1;
@@ -37,23 +40,22 @@ if ~isequal(Filename_cell, 0)
     
     prev_ping_end=0;
     prev_ping_start=1;
+    [~,file_currN,~]=fileparts(Filename_cell{1});
     
-    opening_file=waitbar(1/nb_layers,['Opening file: ',Filename_cell{1}],'Name','Opening files','WindowStyle','Modal');
+    opening_file=waitbar(1/nb_layers,sprintf('Opening file: %s ',file_currN),'Name','Opening files','WindowStyle','Modal');
     
     for uuu=1:nb_layers
         vec_freq_temp=[];
         
         if ite==1
             curr_Filename=Filename_cell{uuu};
+            [~,fileN,~]=fileparts(curr_Filename);
         else
             curr_Filename=Filename_cell;
+            [~,fileN,~]=fileparts(curr_Filename{1});
+            
         end
         
-        if iscell(PathToFile)
-            path=PathToFile{uu};
-        else
-            path=PathToFile;
-        end
         
         if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
             break;
@@ -61,7 +63,7 @@ if ~isequal(Filename_cell, 0)
         
         
         if isempty(vec_freq_init)
-            [header_temp,data_temp]=readEK80(path,curr_Filename,'PingRange',[1 1]);
+            [header_temp,data_temp]=readEK80(curr_Filename,'PingRange',[1 1]);
             
             for ki=1:header_temp.transceivercount
                 vec_freq_temp=[vec_freq_temp data_temp.config(ki).Frequency];
@@ -92,7 +94,7 @@ if ~isequal(Filename_cell, 0)
         end
         
         
-        [header,data]=readEK80(path,curr_Filename,'PingRange',pings_range,'Frequencies',vec_freq);
+        [header,data]=readEK80(curr_Filename,'PingRange',pings_range,'Frequencies',vec_freq);
         
         prev_ping_start=pings_range(1);
         prev_ping_end=data.pings(1).number(end);
@@ -106,17 +108,16 @@ if ~isequal(Filename_cell, 0)
         end
         
         try
-            waitbar(uuu/nb_layers,opening_file,['Opening file: ',curr_Filename],'WindowStyle','Modal');
+            waitbar(uuu/nb_layers,opening_file,['Opening file: ',fileN],'WindowStyle','Modal');
         catch
-            opening_file=waitbar(uuu/nb_layers,['Opening file: ',curr_Filename],'Name','Opening files','WindowStyle','Modal');
+            opening_file=waitbar(uuu/nb_layers,['Opening file: ',fileN],'Name','Opening files','WindowStyle','Modal');
         end
         
         
-        if iscell(curr_Filename)
-            if length(curr_Filename)>1
-                data=reorder_ping(data);
-            end
+        if length(curr_Filename)>1
+            data=reorder_ping(data);
         end
+
         data_ori=data;
         [data,mode]=match_filter_data(data);
         
@@ -233,7 +234,7 @@ if ~isequal(Filename_cell, 0)
             %transceiver(i).computeSp_comp();
         end
         
-        layers(uuu)=layer_cl('Filename',{curr_Filename},'Filetype','EK80','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
+        layers(uuu)=layer_cl('Filename',{curr_Filename},'Filetype','EK80','Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'Frequencies',freq,'EnvData',envdata);
         
     end
     try

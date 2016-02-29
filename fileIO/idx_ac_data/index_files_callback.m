@@ -2,9 +2,11 @@ function  index_files_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 
+
 if ~isempty(layer)
-    if ~isempty(layer.PathToFile)
-        file_path=layer.PathToFile;
+    [path_lay,~]=get_path_files(layer);
+    if ~isempty(path_lay)
+        file_path=path_lay{1};
     else
         file_path=pwd;
     end

@@ -132,7 +132,8 @@ if ~isempty(cdata)
     end
     
     iFile=layer.Transceivers(idx_freq).Data.FileId(idx_ping);
-    summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',layer.Filename{iFile},layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
+    [~,file_curr,~]=fileparts(layer.Filename{iFile});
+    summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
         
         
     set(info_panel_comp.i_str,'String',i_str);

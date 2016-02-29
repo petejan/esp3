@@ -28,9 +28,7 @@ if ~strcmp(layer.Filetype,'CREST')
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Reprocess','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
     else
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Display Calibration Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.1 0.7 0.2 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Find TS cal curves','callback',{@find_TS_cal,main_figure},'unit','normalized','position',[0.1 0.45 0.2 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Find EBA cal curves','callback',{@find_EBA_cal,main_figure},'unit','normalized','position',[0.1 0.20 0.2 0.2]);
-        
+         
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process TS Cal','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.80 0.1 0.15 0.2]);
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process EBA Cal','callback',{@reprocess_EBA_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
         
@@ -39,30 +37,6 @@ end
 
 
 setappdata(main_figure,'Calibration_tab',calibration_tab_comp);
-end
-
-function find_TS_cal(~,~,main_figure)
-app_path=getappdata(main_figure,'App_path');
-layer=getappdata(main_figure,'Layer');
-[~,path] = uigetfile(fullfile(layer.PathToFile,'Curve_*.mat'),'Pick calibration files');
-if path~=0
-    app_path.cal=path;
-else
-    app_path.cal=[];
-end
-setappdata(main_figure,'App_path',app_path);
-end
-
-function find_EBA_cal(~,~,main_figure)
-app_path=getappdata(main_figure,'App_path');
-layer=getappdata(main_figure,'Layer');
-[~,path] = uigetfile(fullfile(layer.PathToFile,'Curve_EBA_*.mat'),'Pick calibration files');
-if path~=0
-    app_path.cal_eba=path;
-else
-    app_path.cal_eba=[];
-end
-setappdata(main_figure,'App_path',app_path);
 end
 
 
@@ -101,7 +75,9 @@ function save_CW_calibration(~,~,main_figure)
 apply_calibration([],[],main_figure);
 layer=getappdata(main_figure,'Layer');
 
-fid=fopen(fullfile(layer.PathToFile,'cal_echo.csv'),'w+');
+[~,cal_path,~]=fileparts(layer.Filename{1});
+
+fid=fopen(fullfile(cal_path,'cal_echo.csv'),'w+');
 fprintf(fid,'%s,%s,%s\n', 'F', 'G0', 'SACORRECT');
 for i=1:length(layer.Transceivers)
     cal_cw=get_cal(layer.Transceivers(i));

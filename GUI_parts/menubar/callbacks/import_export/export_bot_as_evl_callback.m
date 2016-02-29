@@ -12,21 +12,21 @@ if isempty(layer)
     return;
 end
 
-path=layer.PathToFile;
-
 
 if ~isempty(layer.get_survey_data())
     file=layer.get_survey_data().print_survey_data();
 else
     if length(layer.Filename)>1
-        file=[layer.Filename{1} '_' layer.Filename{end}];
+        [path_f,f_1,~]=fileparts(layer.Filename{1});
+        [~,f_2,~]=fileparts(layer.Filename{end});
+        file=fullfile(path_f,[f_1 '_' f_2]);
     else
         file=layer.Filename{1};
     end
     file=regexprep(file,'.raw','');
 end
 
-[Filename,PathToFile]= uiputfile({fullfile(path,[file '.evl'])}, 'Name an .evl');
+[Filename,PathToFile]= uiputfile([file '.evl'], 'Name an .evl');
 if isempty(Filename)
     return;
 end

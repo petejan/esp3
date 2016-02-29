@@ -5,9 +5,10 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
 return;
 end
-    
 
-[Filename,PathToFile]= uigetfile({fullfile(layer.PathToFile,'*.csv')}, 'Pick a csv/txt','MultiSelect','off');
+[path_f,~,~]=fileparts(layer.Filename{1});
+
+[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.csv')}, 'Pick a csv/txt','MultiSelect','off');
 if isempty(Filename)
     return;
 end

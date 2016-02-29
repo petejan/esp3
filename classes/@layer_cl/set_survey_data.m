@@ -64,13 +64,13 @@ for i_cell=1:length(surv_data_cell_out)
             
         end
         
-        if start_time==0
+        if start_time==0&&~isempty(layer_obj.Transceivers)
             surv_data_cell_out{i_cell}.StartTime=layer_obj.Transceivers(1).Data.Time(1);
         else
             surv_data_cell_out{i_cell}.StartTime=start_time;
         end
         
-        if end_time==1
+        if end_time==1&&~isempty(layer_obj.Transceivers)
             surv_data_cell_out{i_cell}.EndTime=layer_obj.Transceivers(1).Data.Time(end);
         else
             surv_data_cell_out{i_cell}.EndTime=end_time;

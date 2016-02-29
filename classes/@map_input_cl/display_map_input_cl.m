@@ -5,6 +5,7 @@ addRequired(p,'obj_tot',@(x) isa(x,'map_input_cl'));
 addParameter(p,'hfig',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 addParameter(p,'field','SliceAbscf',@ischar);
+addParameter(p,'oneMap',0,@isnumeric);
 
 parse(p,obj_tot,varargin{:});
 hfig=p.Results.hfig;
@@ -20,7 +21,7 @@ end
 
 snap=[];
 %col_snap={'r','b','g','k','m'};
-col_snap={'k'};
+col_snap={'b'};
 
 
 set(hfig,'Name','Navigation','NumberTitle','off','tag','nav');
@@ -35,6 +36,10 @@ for uuobj=1:length(obj_tot)
     LonLim(2)=nanmax(LonLim(2),obj.LonLim(2));
     LatLim(1)=nanmin(LatLim(1),obj.LatLim(1));
     LatLim(2)=nanmax(LatLim(2),obj.LatLim(2));
+end
+
+if p.Results.oneMap>0
+    snap=1;
 end
 
 nb_row=ceil(length(snap)/3);
@@ -78,10 +83,6 @@ for usnap=1:length(snap)
     hold on;
     
     
-    %     context_menu=uicontextmenu;
-    %     n_ax(usnap).UIContextMenu=context_menu;
-    %     uimenu(context_menu,'Label','Copy Axes to new Figure','Callback',{@copy_axes_callback});
-    %
     try
         m_grid('box','fancy','tickdir','in');
     catch
@@ -111,7 +112,7 @@ for uuobj=1:length(obj_tot)
     
     obj=obj_tot(uuobj);
     str=cell(1,length(obj.Transect));
-    str_disp=cell(1,length(obj.Transect));
+    
     for i=1:length(obj.Transect)
         if iscell(obj.Filename{i})
             str_temp=sprintf('%s\n',obj.Filename{i}{:});
@@ -119,20 +120,17 @@ for uuobj=1:length(obj_tot)
         else
             str_temp=obj.Filename{i};
         end
+        
         if ~isempty(obj.Stratum{i})
             
-            str{i}=sprintf('File %s\n Stratum %d\n Transect %d\n',...
-                str_temp,obj.Stratum{i},obj.Transect(i));
-            str_disp{i}=sprintf('St %d T %d',...
-                obj.Stratum{i},obj.Transect(i));
+            str{i}=sprintf('File %s\n Snap. %d Strat. %s Trans. %d\n',...
+                str_temp,obj.Snapshot(i),obj.Stratum{i},obj.Transect(i));
             
             if obj.Snapshot(i)==0&&strcmp(obj.Stratum(i),' ')&&obj.Transect(i)==0
-                str_disp{i}='';
-                str{i}=obj.Filename{i};
+                str{i}=str_temp;
             end
         else
-            str_disp{i}='';
-            str{i}=obj.Filename{i};
+            str{i}=str_temp;
         end
         
     end
@@ -141,33 +139,37 @@ for uuobj=1:length(obj_tot)
     u_plot_slice=gobjects(1,length(obj.Snapshot));
     
     for usnap=1:length(snap)
-        idx_snap=find(obj.Snapshot==snap(usnap));
-        
-        if isempty(idx_snap)
-            continue;
+        if p.Results.oneMap==0
+            idx_snap=find(obj.Snapshot==snap(usnap));
+            if isempty(idx_snap)
+                continue;
+            end
+            axes(n_ax(usnap));
+            hold on;
+            title(sprintf('%s\n Snapshot %d',obj.Trip{idx_snap(1)},snap(usnap)));
+        else
+            idx_snap=1:length(obj.Snapshot);
+            axes(n_ax(usnap));
+            hold on;
+            title(sprintf('%s\n',obj.Trip{idx_snap(1)}));
         end
-        axes(n_ax(usnap));
-        hold on;
-        title(sprintf('%s\n Snapshot %d',obj.Trip{idx_snap(1)},snap(usnap)));
         
         for uui=1:length(idx_snap)
             if ~isempty(obj.Lon{idx_snap(uui)})
-                u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'tag','nav');
-                set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
+                u_plot(idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag',str{idx_snap(uui)});
+                set(u_plot(idx_snap(uui)),'ButtonDownFcn',@disp_line_name_callback);
                 if~isempty(main_figure)
                     create_context_menu_line(main_figure,u_plot(idx_snap(uui)),obj.PathToFile{idx_snap(uui)},obj.Filename{idx_snap(uui)});
                 end
-                if obj.Transect(idx_snap(uui))>0
-                    m_text(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','b');
-                end
+                    m_plot(obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g');
             end
             
             if ~isempty(obj.SliceLon{idx_snap(uui)})
                 if isempty(obj.Lon{idx_snap(uui)})
-                    m_text(obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),num2str(obj.Transect(idx_snap(uui)),'%.0f'),'Fontsize',16,'Fontweight','Bold','Color','r');
+                    m_plot(obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g');
                 end
-                u_plot_slice(idx_snap(uui))=m_plot(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'xb');
-                set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,str{idx_snap(uui)}});
+                u_plot_slice(idx_snap(uui))=m_plot(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'xb','Tag',str{idx_snap(uui)});
+                set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',@disp_line_name_callback);
                 if~isempty(main_figure)
                     create_context_menu_line(main_figure,u_plot_slice(idx_snap(uui)),obj.PathToFile{idx_snap(uui)},obj.Filename{idx_snap(uui)});
                 end
@@ -199,7 +201,7 @@ end
 
 
 
-function disp_line_name_callback(src,~,name)
+function disp_line_name_callback(src,~)
 
 ax=get(src,'parent');
 cp=ax.CurrentPoint;
@@ -210,10 +212,9 @@ u = findobj(ax,'Tag','name');
 delete(u);
 
 axes(ax);
-text(x,y,name,'tag','name');
+text(x,y,src.Tag,'tag','name');
 
-
-lines = findobj(ax,'Type','Line','tag','nav');
+lines = findobj(ax,'Type','Line');
 for il=1:length(lines)
     if lines(il)==src
         set(lines(il),'color','r');
@@ -231,11 +232,10 @@ function create_context_menu_line(main_figure,line,pathtofile,files)
 context_menu=uicontextmenu;
 line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Go to this layer','Callback',{@activate_line_callback,main_figure,pathtofile,files});
-uimenu(context_menu,'Label','Edit Survey Data','Callback',{@edit_survey_data_line_callback,main_figure,pathtofile,files});
 
 end
 
-function activate_line_callback(src,~,main_figure,pathtofile,files)
+function activate_line_callback(~,~,main_figure,pathtofile,files)
 layers=getappdata(main_figure,'Layers');
 if~isempty(layers)
     [idx,found]=layers.find_layer_idx_files_path(pathtofile,files);
@@ -270,61 +270,6 @@ else
     end
     
 end
-end
-
-function edit_survey_data_line_callback(~,~,main_figure,pathtofile,files)
-layers=getappdata(main_figure,'Layers');
-
-if~isempty(layers)
-    [idx,found]=layers.find_layer_idx_files_path(pathtofile,files);
-else
-    found=0;
-end
-
-if found==0
-    choice = questdlg('We cannot find the transect you are pointing at... Do you want to load it?', ...
-        'Incomplete',...
-        'Yes','No',...
-        'Yes');
-    % Handle response
-    switch choice
-        case 'Yes'
-            files_to_open=cell(1,length(files));
-            if ~isempty(pathtofile)
-                for ifi=1:length(files)
-                    files_to_open{ifi}=fullfile(pathtofile,files{ifi});
-                end
-            else
-                return;
-            end
-            open_file([],[],files_to_open,main_figure);
-        case 'No'
-        otherwise
-            return;
-    end
-    layers=getappdata(main_figure,'Layers');
-    
-    if~isempty(layers)
-        [idx,found]=layers.find_layer_idx_files_path(pathtofile,files);
-    else
-        found=0;
-    end
-    if found==0
-        disp('We tried to load the files but this does not work...');
-        return;
-    end
-    
-end
-layer=layers(idx(1));
-new_surveydata=layer.get_survey_data();
-[new_surveydata.Voyage,new_surveydata.SurveyName,new_surveydata.Snapshot,new_surveydata.Stratum,new_surveydata.Transect,cancel]=fill_survey_data_dlbox(new_surveydata,'title','Enter New Survey Data');
-if cancel>0
-    return;
-end
-layer.set_survey_data(new_surveydata);
-layer.update_echo_logbook_file();
-setappdata(main_figure,'Layer',layer);
-update_display(main_figure,1);
 end
 
 

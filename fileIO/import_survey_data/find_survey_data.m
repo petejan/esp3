@@ -13,7 +13,7 @@ end
 idx_files=[];
 file_layer_id=[];
 for u=1:length(files_layer)
-    files_cvs_id= find(strcmpi(files_layer{u},survey_data_struct.Filename));
+    files_cvs_id= find(strcmpi(files_layer{u},fullfile(survey_data_struct.Datapath,survey_data_struct.Filename)));
     idx_files=[idx_files files_cvs_id'];
     file_layer_id=[file_layer_id u*ones(1,length(files_cvs_id))];
 end
@@ -73,7 +73,7 @@ idx_files_layer=cell(1,length(idx_loaded));
 
 for ilo=1:length(idx_loaded)
     for il=1:length(idx_loaded{ilo})
-        idx_files_layer{ilo}(il)=find(strcmpi(files_layer,survey_data_struct.Filename{idx_loaded{ilo}(il)}));
+        idx_files_layer{ilo}(il)=find(strcmpi(files_layer,fullfile(survey_data_struct.Datapath{idx_loaded{ilo}(il)},survey_data_struct.Filename{idx_loaded{ilo}(il)})));
     end
 end
 

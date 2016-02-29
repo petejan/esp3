@@ -2,8 +2,9 @@ function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if ~isempty(layer)
-    if ~isempty(layer.PathToFile)
-        file_path=layer.PathToFile;
+    [path_lay,~]=layer.get_path_files();
+    if ~isempty(path_lay)
+        file_path=path_lay{1};
     else
         file_path=pwd;
     end
@@ -13,16 +14,10 @@ end
 
 
 if iscell(file_id)
-    Filename=cell(1,length(file_id));
-    PathToFile=cell(1,length(file_id));
-    for iui=1:length(file_id)
-        [file_path_temp,name_temp,ext_temp]=fileparts(file_id{iui});
-        Filename{iui}=[name_temp ext_temp];
-        PathToFile{iui}=file_path_temp;
-    end
+    Filename=file_id;
 else
     if file_id==0
-        [Filename,PathToFile]= uigetfile( {fullfile(file_path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
+        [Filename,path_f]= uigetfile( {fullfile(file_path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
         if isempty(Filename)
             return;
         end
@@ -40,10 +35,14 @@ else
             return;
         end
         
+        for ic=1:length(Filename)
+            Filename{ic}=fullfile(path_f,Filename{ic});
+        end
+        
         
     elseif file_id==1
         if ~isempty(layer)
-            Filename=layer.Filename;
+            [~,Filename]=layer.get_path_files();
         else
             return;
         end
@@ -60,23 +59,19 @@ else
             end
             
             if file_diff
-                Filename=file_list{i};
-                PathToFile=layer.PathToFile;
+                Filename=fullfile(file_path,file_list{i});
             else
-                Filename=0;
-                PathToFile=layer.PathToFile;
+                Filename=[];
             end
         else
             return;
         end
     elseif file_id==2
         if ~isempty(layer)
-            Filename=layer.Filename;
-            PathToFile=layer.PathToFile;
+            [~,Filename]=layer.get_path_files();
         else
             return;
         end
-        
         
         f = dir(file_path);
         file_list=({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
@@ -88,16 +83,14 @@ else
                 i=i-1;
             end
             if file_diff
-                Filename=file_list{i};
-                PathToFile=layer.PathToFile;
+                Filename=fullfile(file_path,file_list{i});
             else
-                Filename=0;
-                PathToFile=layer.PathToFile;
+                Filename=[];
             end
         end
         
     elseif ischar(file_id)
-        [PathToFile,Filename,~]=fileparts(fileID);
+        Filename=fileID;
         if isempty(Filename)
             return;
         end
@@ -112,14 +105,9 @@ else
     Filename_tmp=Filename;
 end
 
-if iscell(PathToFile)
-    PathToFile_tmp=PathToFile{1};
-else
-    PathToFile_tmp=PathToFile;
-end
 
 if ~isequal(Filename, 0)
-    fid = fopen(fullfile(PathToFile_tmp,Filename_tmp), 'r');
+    fid = fopen(Filename_tmp, 'r');
     if fid==-1
         warning('Cannot open file');
         return;
@@ -153,13 +141,9 @@ end
 
 if ~isequal(Filename, 0)
     
+    [path_tmp,~,~]=fileparts(Filename{1});
     
-    %     ask_q=1;
-    %     if length(Filename)==1||~iscell(Filename)
-    %         ask_q=0;
-    %     end
-    
-    survey_struct=import_survey_data(PathToFile_tmp,'echo_logbook.csv');
+    survey_struct=import_survey_data(fullfile(path_tmp,'echo_logbook.csv'));
     
     [~,~,idx_missing]=find_survey_data(Filename,survey_struct);
     
@@ -174,22 +158,15 @@ if ~isequal(Filename, 0)
         switch choice
             case 'Yes'
                 for ifile_miss=idx_incomp
-                    miss_files=survey_struct.Filename(idx_missing{ifile_miss});
-                    
+                    miss_files=fullfile(survey_struct.Datapath(idx_missing{ifile_miss}),survey_struct.Filename(idx_missing{ifile_miss}));
                     Filename=[Filename miss_files'];
-                    if iscell(PathToFile)
-                        miss_path=survey_struct.Datapath(idx_missing{ifile_miss});
-                        PathToFile=[PathToFile miss_path'];
-                    end
                 end
             case 'No'
             otherwise
                 return;
         end
-        [Filename,idx_uni]=unique(Filename);
-        if iscell(PathToFile)
-            PathToFile=PathToFile(idx_uni);
-        end
+        Filename=unique(Filename);
+
     end
     
     %
@@ -265,9 +242,9 @@ if ~isequal(Filename, 0)
     
     switch ftype
         case 'EK60'
-            open_EK60_file(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
+            open_EK60_file(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'EK80'
-            open_EK80_files(main_figure,PathToFile,Filename,[],ping_start,ping_end,multi_layer,join)
+            open_EK80_files(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'dfile'
             choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
                 'd-file/raw_file',...
@@ -305,9 +282,9 @@ if ~isequal(Filename, 0)
             
             switch dfile
                 case 1
-                    open_dfile_crest(main_figure,PathToFile,Filename,CVSCheck);
+                    open_dfile_crest(main_figure,Filename,CVSCheck);
                 case 0
-                    open_dfile(main_figure,PathToFile,Filename,CVSCheck);
+                    open_dfile(main_figure,Filename,CVSCheck);
             end
             
     end

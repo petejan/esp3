@@ -1,7 +1,7 @@
 
-function  open_EK60_file_GPS_only(hObject,PathToFile,Filename)
+function  open_EK60_file_GPS_only(hObject,Filename)
 
-new_layers=open_EK60_file_stdalone(PathToFile,Filename,'GPSOnly',1);
+new_layers=open_EK60_file_stdalone(Filename,'GPSOnly',1);
         
 
 if isempty(new_layers)
@@ -26,7 +26,7 @@ map_obj=map_input_cl.map_input_cl_from_obj(layers_out);
 hfigs=getappdata(hObject,'ExternalFigures');
 
 hfig=figure();
-map_obj.display_map_input_cl('hfig',hfig,'main_figure',hObject);
+map_obj.display_map_input_cl('hfig',hfig,'main_figure',hObject,'oneMap',1);
 
 hfigs=[hfigs hfig];
 setappdata(hObject,'ExternalFigures',hfigs);

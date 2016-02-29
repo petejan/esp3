@@ -4,7 +4,6 @@ classdef layer_cl < handle
         ID_num=0;
         Filename={''};
         Filetype='';
-        PathToFile='';
         Transceivers
         OriginCrest
         Lines
@@ -32,7 +31,6 @@ classdef layer_cl < handle
             addParameter(p,'ID_num',0,@isnumeric);
             addParameter(p,'Filename',{'No Data'},@(fname)(iscell(fname)));
             addParameter(p,'Filetype','',@(ftype)(ischar(ftype)));
-            addParameter(p,'PathToFile','',@(fname)(ischar(fname)||iscell(fname)));
             addParameter(p,'Transceivers',[],check_transceiver_class);
             addParameter(p,'Lines',[],check_line_class);
             addParameter(p,'Frequencies',[],@isnumeric);
@@ -53,16 +51,23 @@ classdef layer_cl < handle
             
             props=fieldnames(results);
             
-            for i=1:length(props)               
-                obj.(props{i})=results.(props{i});               
+            for i=1:length(props)
+                obj.(props{i})=results.(props{i});
             end
-            obj.(props{i})=results.(props{i});        
+            if ~iscell(obj.Filename)
+                layer.Filename={obj.Filename};
+            end
+            
             
             obj.Frequencies=zeros(1,length(obj.Transceivers));
             for ifr=1:length(obj.Transceivers)
                 obj.Frequencies(ifr)=obj.Transceivers(ifr).Config.Frequency(1);
             end
-
+            
+            if isempty(obj.Transceivers)
+                obj.Transceivers=transceiver_cl.empty();
+            end
+            
         end
         
         function rm_memaps(layer)
@@ -75,15 +80,15 @@ classdef layer_cl < handle
             end
         end
         
-       
         
-        function rm_region_across_id(layer,ID)                                
+        
+        function rm_region_across_id(layer,ID)
             for i=1:length(layer.Transceivers)
                 layer.Transceivers(i).rm_region_id(ID);
-            end           
+            end
         end
         
-       
+        
         function list=list_lines(obj)
             if isempty(obj.Lines)
                 list={};
@@ -116,7 +121,7 @@ classdef layer_cl < handle
         
         function add_curves(obj,curves)
             for i=1:length(curves)
-               obj.Curves=[obj.Curves curves(i)]; 
+                obj.Curves=[obj.Curves curves(i)];
             end
         end
         

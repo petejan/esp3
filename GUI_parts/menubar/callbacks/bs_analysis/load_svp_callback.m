@@ -5,8 +5,8 @@ if isempty(layer)
 return;
 end
     
-
-[svp_filename,svp_path]= uigetfile( {fullfile(layer.PathToFile,'*.asvp*')}, 'Pick a Svp file','MultiSelect','off');   
+[~,path_file,~]=fileparts(layer.Filename{1});
+[svp_filename,svp_path]= uigetfile( {fullfile(path_file,'*.asvp*')}, 'Pick a Svp file','MultiSelect','off');   
     if svp_filename~=0
         u=importdata(fullfile(svp_path,svp_filename));
         z_c=u.data(:,1);

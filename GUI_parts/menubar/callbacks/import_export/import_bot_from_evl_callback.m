@@ -5,12 +5,11 @@ if isempty(layer)
 return;
 end
     
-
-
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[path_f,~,~]=fileparts(layer.Filename{1});
 
-[Filename,PathToFile]= uigetfile({fullfile(layer.PathToFile,'*.evl')}, 'Pick a .evl','MultiSelect','off');
+[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.evl')}, 'Pick a .evl','MultiSelect','off');
 if isempty(Filename)
     return;
 end

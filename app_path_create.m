@@ -14,8 +14,7 @@ end
 app_path_data=fullfile(tempdir,'data_echo');
 app_path_cvs_root=':local:Z:\';
 app_path_data_root='X:\';
-app_path_cal='';
-app_path_cal_eba='';
+
 
 p = inputParser;
 
@@ -23,8 +22,7 @@ addParameter(p,'main',app_path_main,@ischar);
 addParameter(p,'data',app_path_data,@ischar);
 addParameter(p,'cvs_root',app_path_cvs_root,@ischar);
 addParameter(p,'data_root',app_path_data_root,@ischar);
-addParameter(p,'cal',app_path_cal,@ischar);
-addParameter(p,'cal_eba',app_path_cal_eba,@ischar);
+
 
 parse(p,varargin{:});
 

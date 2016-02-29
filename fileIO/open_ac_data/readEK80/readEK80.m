@@ -1,4 +1,4 @@
-function [header,data]=readEK80(path,filenames,varargin)
+function [header,data]=readEK80(filenames,varargin)
 
 timeOffset=0;
 HEADER_LEN=12;
@@ -10,14 +10,14 @@ checkPingRange=@(PingRange)(PingRange(1)>0&&PingRange(2)>=PingRange(1));
 
 checkFilenames=@(name)(ischar(name)||iscell(name));
 
-addRequired(p,'path',@ischar);
+
 addRequired(p,'filenames',checkFilenames);
 addParameter(p,'PingRange',defaultPingRange,checkPingRange);
 addParameter(p,'GPS',true,@islogical);
 addParameter(p,'GPSOnly',false,@islogical);
 addParameter(p,'Frequencies',-1,@isnumeric);
 
-parse(p,path,filenames,varargin{:});
+parse(p,filenames,varargin{:});
 
 vec_freq=p.Results.Frequencies;
 
@@ -27,7 +27,7 @@ end
 
 file_date=nan(1,length(filenames));
 for ii=1:length(filenames)
-    listing = dir([path filenames{ii}]);
+    listing = dir(filenames{ii});
     file_date(ii)=listing.datenum;
 end
 
@@ -39,7 +39,8 @@ end
 
 for ii=1:length(filenames)
     filename=filenames{ii};
-    fid = fopen([path filename], 'r');
+    [path_f,~,~]=fileparts(filename);
+    fid = fopen(filename, 'r');
     len=fread(fid, 1, 'int32', 'l');
     
     [dgType, ~] =read_dgHeader(fid,timeOffset);
@@ -52,11 +53,11 @@ for ii=1:length(filenames)
             
             fread(fid, 1, 'int32', 'l');
             
-            fid_xml=fopen([path 'xml0_config.xml'],'w');
+            fid_xml=fopen([path_f 'xml0_config.xml'],'w');
             fprintf(fid_xml,'%s',t_line);
             fclose(fid_xml);
             
-            xstruct=parseXML([path 'xml0_config.xml']);
+            xstruct=parseXML([path_f 'xml0_config.xml']);
             
             [header,config]=read_config_xstruct(xstruct);
             
@@ -106,7 +107,7 @@ end
 for ii=1:length(filenames)
     
     filename=filenames{ii};
-    fid = fopen([path filename], 'r');
+    fid = fopen(filename, 'r');
     
     if ii==1
         for i=1:length(data.config)
@@ -144,20 +145,20 @@ for ii=1:length(filenames)
                 t_line=(fread(fid,len-HEADER_LEN,'*char','l'))';
                 t_line=deblank(t_line);
                 if ~isempty(strfind(t_line,'Configuration'))
-                    fid_xml=fopen([path 'xml0_config.xml'],'w');
+                    fid_xml=fopen([path_f 'xml0_config.xml'],'w');
                     fprintf(fid_xml,'%s',t_line);
                     fclose(fid_xml);
-                    xstruct=parseXML([path 'xml0_config.xml']);
+                    xstruct=parseXML([path_f 'xml0_config.xml']);
                 elseif ~isempty(strfind(t_line,'Environment'))
-                    fid_xml=fopen([path 'xml0_env.xml'],'w');
+                    fid_xml=fopen([path_f 'xml0_env.xml'],'w');
                     fprintf(fid_xml,'%s',t_line);
                     fclose(fid_xml);
-                    xstruct=parseXML([path 'xml0_env.xml']);
+                    xstruct=parseXML([path_f 'xml0_env.xml']);
                 elseif ~isempty(strfind(t_line,'Parameter'))
-                    fid_xml=fopen([path 'xml0_param.xml'],'w');
+                    fid_xml=fopen([path_f 'xml0_param.xml'],'w');
                     fprintf(fid_xml,'%s',t_line);
                     fclose(fid_xml);
-                    xstruct=parseXML([path 'xml0_param.xml']);
+                    xstruct=parseXML([path_f 'xml0_param.xml']);
                 end
                 
                 switch xstruct.Name

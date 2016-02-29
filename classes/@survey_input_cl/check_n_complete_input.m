@@ -51,7 +51,7 @@ for isn=1:length(snapshots)
     if exist(file_name,'file')==0
         initialize_echo_logbook_file(snapshots{isn}.Folder);
     end
-    surv_data_struct=import_survey_data(snapshots{isn}.Folder,'echo_logbook.csv');
+    surv_data_struct=import_survey_data(file_name);
     
     for ist=1:length(stratum)
         

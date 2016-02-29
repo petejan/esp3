@@ -1,4 +1,4 @@
-function  open_dfile(hObject,PathToFile,Filename_cell,CVScheck,multi_layer)
+function  open_dfile(hObject,Filename_cell,CVScheck)
 layers=getappdata(hObject,'Layers');
 app_path=getappdata(hObject,'App_path');
 
@@ -12,20 +12,17 @@ if ~isequal(Filename_cell, 0)
     
     
     for uu=1:length(Filename_cell)
-        if iscell(PathToFile)
-            path=PathToFile{uu};
-        else
-            path=PathToFile;
-        end
+
         
         FileName=Filename_cell{uu};
-        
-        ifileInfo = parse_ifile(path, str2double(FileName(2:end)));
+        [path_f,~,~]=fileparts(FileName);
+        ifileInfo = parse_ifile(FileName);
         RawFilename=ifileInfo.rawFileName;
-        survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
-        origin=fullfile(path,FileName);
         
-        [~,PathToRawFile]=find_file_recursive(path,RawFilename);
+        survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
+        origin=FileName;
+        
+        [~,PathToRawFile]=find_file_recursive(path_f,RawFilename);
         
         if isempty(PathToRawFile)
             warning('Could not find associated .*raw file');
@@ -38,7 +35,7 @@ if ~isequal(Filename_cell, 0)
             cal=[];
         end
         
-        layer_temp(uu)=open_EK60_file_stdalone(PathToRawFile{1},RawFilename,...
+        layer_temp(uu)=open_EK60_file_stdalone(fullfile(PathToRawFile{1},RawFilename),...
             'PathToMemmap',app_path.data,'Frequencies',[],'Calibration',cal);
         layer_temp(uu).OriginCrest=origin;
         

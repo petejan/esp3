@@ -8,8 +8,9 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[path_f,~,~]=fileparts(layer.Filename{1});
 
-[Filename,PathToFile]= uigetfile({fullfile(layer.PathToFile,'*.evr')}, 'Pick a .evr','MultiSelect','off');
+[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.evr')}, 'Pick a .evr','MultiSelect','off');
 if ~ischar(Filename)
     return;
 end

@@ -3,22 +3,18 @@ layer=getappdata(hObject_main,'Layer');
 
 
 if ~isempty(layer)
-    if ~isempty(layer)
-        if ~isempty(layer.PathToFile)
-            path=layer.PathToFile;
-        else
-            path=pwd;
-        end
-        
+    if ~isempty(layer(1).Filename)
+        [path_f,~,~]=fileparts(layer.Filename{1});
     else
-        path=pwd;
+        path_f=pwd;
     end
+    
 else
-    path=pwd;
+    path_f=pwd;
 end
 
 
-[Filename,PathToFile]= uigetfile( {fullfile(path,'*')}, 'Pick an MBS output file','MultiSelect','on');
+[Filename,PathToFile]= uigetfile( {fullfile(path_f,'*')}, 'Pick an MBS output file','MultiSelect','on');
 if ~isequal(Filename, 0)
     if ~iscell(Filename)
         Filename={Filename};

@@ -2,15 +2,17 @@ function layers_Str=list_layers(layers)
 
 nb_layers=length(layers);
 layers_Str=cell(1,nb_layers);
-for i=1:nb_layers
+for i=1:nb_layers 
+    [~,file_curr,~]=fileparts(layers(i).Filename{1});
     if ~isempty(layers(i).get_survey_data())
-        new_name=[layers(i).Filename{1} ' ' layers(i).get_survey_data().print_survey_data()];
+       
+        new_name=[file_curr ' ' layers(i).get_survey_data().print_survey_data()];
     else
-        new_name=layers(i).Filename{1};
+        new_name=file_curr;
     end
     
     if strcmp(new_name,'')
-         new_name=fullfile(layers(i).Filename{1});
+         new_name=file_curr;
     end
     
     u=1;

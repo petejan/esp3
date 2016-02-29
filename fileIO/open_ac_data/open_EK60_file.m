@@ -1,5 +1,5 @@
 
-function  open_EK60_file(hObject,PathToFile,Filename,vec_freq,ping_start,ping_end,multi_layer,join)
+function  open_EK60_file(hObject,Filename,vec_freq,ping_start,ping_end,multi_layer,join)
 layers=getappdata(hObject,'Layers');
 
 app_path=getappdata(hObject,'App_path');
@@ -26,7 +26,7 @@ sple_end=inf;
 
         
 % profile on
-new_layers=open_EK60_file_stdalone(PathToFile,Filename,...
+new_layers=open_EK60_file_stdalone(Filename,...
     'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
         
 

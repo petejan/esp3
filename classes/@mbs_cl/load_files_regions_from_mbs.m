@@ -54,8 +54,8 @@ for i=idx_trans
     switch type
         case 'raw'
             if exist(fullfile(rawPathToFile{i},rawFilename{i}),'file')==2
-                ifileInfo=parse_ifile(dPathToFile{i},dFileNum(i));
-                layer(u)=open_EK60_file_stdalone(rawPathToFile{i},rawFilename{i},...
+                ifileInfo=parse_ifile(fullfile(dPathToFile{i},sprintf('i%07d', dFileNum(i))));
+                layer(u)=open_EK60_file_stdalone(fullfile(rawPathToFile{i},rawFilename{i}),...
                     'PathToMemmap',datapath,'Frequencies',38000,'EsOffset',ifileInfo.es60error_offset);
             else
                 continue;
@@ -70,7 +70,7 @@ for i=idx_trans
             layer(u).OriginCrest=origin;
             layer(u).Transceivers(idx_freq).apply_cw_cal(calRaw{i});
         case 'crest'
-            layer(u)=read_crest(dPathToFile{i},sprintf('d%07d',dFileNum(i)),'PathToMemmap',datapath,'CVSCheck',0);
+            layer(u)=read_crest(fullfile(dPathToFile{i},sprintf('d%07d',dFileNum(i))),'PathToMemmap',datapath,'CVSCheck',0);
             idx_freq=find_freq_idx(layer(u),38000);
     end
     

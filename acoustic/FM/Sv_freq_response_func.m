@@ -2,7 +2,6 @@ function Sv_freq_response_func(main_figure,idx_r,idx_pings)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-app_path=getappdata(main_figure,'App_path');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 range=layer.Transceivers(idx_freq).Data.Range;
 r_min=nanmin(range(idx_r));
@@ -11,21 +10,14 @@ r_max=nanmax(range(idx_r));
 f_vec=[];
 Sv_f=[];
 
-cal_path=app_path.cal;
-cal_path_eba=app_path.cal_eba;
-if isempty(cal_path)
-    cal_path=layer.PathToFile;
-end
+[cal_path,~,~]=fileparts(layer.Filename{1});
 
-if isempty(cal_path_eba)
-    cal_path_eba=layer.PathToFile;
-end
 
 for uui=1:length(layer.Frequencies)
     if strcmp(layer.Transceivers(uui).Mode,'FM')
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
                 
-        file_cal_eba=[cal_path_eba 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
+        file_cal_eba=fullfile(cal_path,[ 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
         
         if exist(file_cal_eba,'file')>0

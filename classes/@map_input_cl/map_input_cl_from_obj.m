@@ -88,8 +88,9 @@ switch class(Ext_obj)
         
     case 'layer_cl'
         for i=1:nb_trans
-            obj.Filename{i}=layers(i).Filename;
-            obj.PathToFile{i}=layers(i).PathToFile;
+            [path_l,files]=layers(i).get_path_files();
+            obj.Filename{i}=files;
+            obj.PathToFile{i}=path_l;
             obj.Lat{i}=layers(i).GPSData.Lat;
             obj.Lon{i}=layers(i).GPSData.Long;
             

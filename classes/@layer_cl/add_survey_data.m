@@ -27,7 +27,7 @@ for i=1:length(idx_loaded)
         
         [start_file_time,end_file_time]=layers(idx_lay(il)).get_time_bound_files();
         
-        ifile=strcmp(survey_data_struct.Filename(idx_loaded{i}(il)),layers(idx_lay(il)).Filename);
+        ifile=strcmp(fullfile(survey_data_struct.Datapath(idx_loaded{i}(il)),survey_data_struct.Filename(idx_loaded{i}(il))),layers(idx_lay(il)).Filename);
         
         if start_time==0
             start_time=start_file_time(ifile);

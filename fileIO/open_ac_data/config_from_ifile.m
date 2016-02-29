@@ -33,7 +33,7 @@ params_obj=params_cl();
 % # Run by user aca on computer esp2vm, started at Fri Jan  4 00:18:21 2013
 % 
 
-ifileInfo=parse_ifile('',ifile);
+ifileInfo=parse_ifile(ifile);
 
 config_obj.EthernetAddress='';
 config_obj.IPAddress='';

@@ -3,13 +3,19 @@ layers_old=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
+
 if ~isempty(layer)
-    path=layer.PathToFile;
+    if ~isempty(layer(1).Filename)
+        [path_f,~,~]=fileparts(layer.Filename{1});
+    else
+        path_f=pwd;
+    end
+    
 else
-    path=pwd;
+    path_f=pwd;
 end
 
-[Filename,PathToFile]= uigetfile({fullfile(path,'*.xml')}, 'Pick a survey xml file','MultiSelect','on');
+[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.xml')}, 'Pick a survey xml file','MultiSelect','on');
 if ~iscell(Filename)
 if Filename==0
     return;

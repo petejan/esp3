@@ -1,24 +1,26 @@
-function bs_analysis_EK60_standalone(PathToFile,Filename,varargin)
+function bs_analysis_EK60_standalone(Filename,varargin)
 
 p = inputParser;
 
-addRequired( p, 'PathToFile',   @(x) ischar(x)||iscell(x));
+[def_path_to_mem,~,~]=fileparts(Filename{1});
+
 addRequired( p, 'Filename',     @(x) ischar(x)||iscell(x));
 addParameter(p, 'PathToSVP',    '', @(x) ischar(x));
 addParameter(p, 'Filename_SVP', '', @(x) ischar(x));
 addParameter(p, 'PathToAtt',    '', @(x) ischar(x));
 addParameter(p, 'Filename_Att', '', @(x) ischar(x));
-addParameter(p, 'PathToMemmap', PathToFile);
+addParameter(p, 'PathToMemmap', def_path_to_mem,@ischar);
 addParameter(p, 'Frequencies',  []);
 addParameter(p, 'PingRange',    [1 inf]);
 addParameter(p, 'SampleRange',  [1 inf]);
 addParameter(p, 'Calibration',  []); %Calibration is a struct containing 3 fields:F,G0,SACORRECT.
 
-parse(p, PathToFile,Filename, varargin{:});
+parse(p, Filename, varargin{:});
 
 
-layer = open_EK60_file_stdalone(PathToFile,Filename, ...
-    'PathToMemmap', p.Results.PathToMemmap, 'Frequencies', p.Results.Frequencies,...
+
+layer = open_EK60_file_stdalone(Filename, ...
+    'PathToMemmap', p.Results.PathToMemmap,Path, 'Frequencies', p.Results.Frequencies,...
     'PingRange', p.Results.PingRange, 'SampleRange', p.Results.SampleRange, ...
     'Calibration', p.Results.Calibration);
 

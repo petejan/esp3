@@ -18,7 +18,6 @@ end
 
 
 layer=getappdata(main_figure,'Layer');
-app_path=getappdata(main_figure,'App_path');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
@@ -199,9 +198,10 @@ for uui=1:length(layer.Frequencies)
             th_ts(jj) = spherets(2*pi*f_vec(jj,1)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
         end
         
-        
-        app_path.cal=layer.PathToFile;
-        file_cal=[app_path.cal 'Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
+
+
+        [cal_path,~,~]=fileparts(layer.Filename{1});
+        file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
         freq_vec=f_vec(:,1);
         cal_ts=TS_f_mean;
@@ -237,5 +237,5 @@ end
 set(main_figure,'WindowButtonDownFcn','');
 
 setappdata(main_figure,'Layer',layer);
-setappdata(main_figure,'App_path',app_path);
+
 end

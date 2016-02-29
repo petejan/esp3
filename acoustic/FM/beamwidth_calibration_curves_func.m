@@ -19,7 +19,7 @@ end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-app_path=getappdata(main_figure,'App_path');
+
 ah=axes_panel_comp.main_axes;
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 range=layer.Transceivers(idx_freq).Data.Range;
@@ -179,8 +179,9 @@ for uui=1:length(layer.Frequencies)
         drawnow;
         ylim([nanmin(BeamWidthAthwartship_f_th)*0.7 nanmax(BeamWidthAthwartship_f_th)*1.3]);
         
-        file_cal=[layer.PathToFile 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
-        app_path.cal_eba=layer.PathToFile;
+        [cal_path,~,~]=fileparts(layer.Filename{1});
+        file_cal=fullfile(cal_path,['Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
+
         
         freq_vec=f_vec(:,1);
         
@@ -195,6 +196,6 @@ end
 
 set(main_figure,'WindowButtonDownFcn','');
 setappdata(main_figure,'Layer',layer);
-setappdata(main_figure,'App_path',app_path);
+
 end
 

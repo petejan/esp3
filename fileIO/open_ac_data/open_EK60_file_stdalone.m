@@ -1,12 +1,16 @@
 
-function  layers=open_EK60_file_stdalone(PathToFile,Filename_cell,varargin)
+function  layers=open_EK60_file_stdalone(Filename_cell,varargin)
 
 p = inputParser;
 
+if ~iscell(Filename_cell)
+    Filename_cell={Filename_cell};
+end
 
-addRequired(p,'PathToFile',@(x) ischar(x)||iscell(x));
+[def_path_m,~,~]=fileparts(Filename_cell{1});
+
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
-addParameter(p,'PathToMemmap',PathToFile);
+addParameter(p,'PathToMemmap',def_path_m,@ischar);
 addParameter(p,'Calibration',[]);
 addParameter(p,'Frequencies',[]);
 addParameter(p,'PingRange',[1 inf]);
@@ -15,7 +19,7 @@ addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'GPSOnly',0);
 
-parse(p,PathToFile,Filename_cell,varargin{:});
+parse(p,Filename_cell,varargin{:});
 
 
 dir_data=p.Results.PathToMemmap;
@@ -29,39 +33,23 @@ vec_freq_tot=[];
 
 if ~isequal(Filename_cell, 0)
     
-    if ~iscell(Filename_cell)
-        Filename_cell={Filename_cell};
-    end
-    
-    if iscell(PathToFile)
-        if length(PathToFile)~=length(Filename_cell)
-            PathToFile=PathToFile{1};
-        end
-    end
-    
-
-    
+  
     prev_ping_end=0;
     prev_ping_start=1;
     nb_lay=0;
     for uu=1:length(Filename_cell)
         
         Filename=Filename_cell{uu};
-        if iscell(PathToFile)
-            path=PathToFile{uu};
-        else
-            path=PathToFile;
-        end
-        
-        fileN=fullfile(path,Filename);
+        [path_f,fileN,~]=fileparts(Filename);
+
         
         if isempty(vec_freq_init)
             %             try
-            %                 [header_temp,data_temp, ~]=readEKRaw(fullfile(path,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0);
+            %                 [header_temp,data_temp, ~]=readEKRaw(fullfile(path_f,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0);
             %                 AllowModeChange=false;
             %             catch err
             %                 if (strcmp(err.identifier,'readEKRaw:ModeChange'))
-            %                     [header_temp,data_temp, ~]=readEKRaw(fullfile(path,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0,'AllowModeChange',true);
+            %                     [header_temp,data_temp, ~]=readEKRaw(fullfile(path_f,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0,'AllowModeChange',true);
             %                     AllowModeChange=true;
             %                 else
             %                     disp(['Cannot open file ' Filename]);
@@ -70,7 +58,7 @@ if ~isequal(Filename_cell, 0)
             %             end
             
             
-            fid=fopen(fileN,'r');
+            fid=fopen(Filename,'r');
             [~, frequency] = readEKRaw_ReadHeader(fid);
             fclose(fid);
             
@@ -115,9 +103,9 @@ if ~isequal(Filename_cell, 0)
         
         
         try
-            waitbar(uu/length(Filename_cell),opening_file,sprintf('Opening file: %s',Filename_cell{uu}), 'WindowStyle', 'modal');
+            waitbar(uu/length(Filename_cell),opening_file,sprintf('Opening file: %s',fileN), 'WindowStyle', 'modal');
         catch
-            opening_file=waitbar(uu/length(Filename_cell),sprintf('Opening file: %s',Filename_cell{uu}),'Name','Opening files', 'WindowStyle', 'modal');
+            opening_file=waitbar(uu/length(Filename_cell),sprintf('Opening file: %s',fileN),'Name','Opening files', 'WindowStyle', 'modal');
         end
         
         pings_range(1)=pings_range(1)-prev_ping_start+1;
@@ -131,26 +119,25 @@ if ~isequal(Filename_cell, 0)
         end
         
         %         try
-        %             [header,data, ~]=readEKRaw(fullfile(path,Filename),'MaxBadBytes',0,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
+        %             [header,data, ~]=readEKRaw(fullfile(path_f,Filename),'MaxBadBytes',0,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',AllowModeChange);
         %         catch err2
         %             disp(err2.message);
-        %             [header,data, ~]=readEKRaw(fullfile(path,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
+        %             [header,data, ~]=readEKRaw(fullfile(path_f,Filename),'MaxBadBytes',0,'AllowModeChange',true,'PingRange',pings_range,'SampleRange',sample_range,'GPS',0,'RawNMEA','True','Frequencies',vec_freq,'AllowModeChange',true);
         %             AllowModeChange=true;
         %         end
         
-        if ~isdir(fullfile(path,'echoanalysisfiles'))
-            mkdir(fullfile(path,'echoanalysisfiles'));
+        if ~isdir(fullfile(path_f,'echoanalysisfiles'))
+            mkdir(fullfile(path_f,'echoanalysisfiles'));
         end
-        fileIdx=fullfile(path,'echoanalysisfiles',[Filename(1:end-4) '_echoidx.mat']);
+        fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
-            idx_raw_obj=idx_from_rawEK60(path,Filename);
+            idx_raw_obj=idx_from_rawEK60(Filename);
             save(fileIdx,'idx_raw_obj');
         else
             load(fileIdx);
         end
         
-        
-        [header,data]=data_from_raw_idx_cl(path,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly);
+        [header,data]=data_from_raw_idx_cl(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly);
         
         
         if isnumeric(header)
@@ -204,8 +191,8 @@ if ~isequal(Filename_cell, 0)
             
             Filename_bot=[Filename(1:end-4) '.bot'];
             
-            if exist(fullfile(path,Filename_bot),'file')
-                [~,temp, ~] = readEKBot(fullfile(path,Filename_bot), calParms,'Frequencies',vec_freq);
+            if exist(Filename_bot,'file')
+                [~,temp, ~] = readEKBot(Filename_bot, calParms,'Frequencies',vec_freq);
                 
                 
                 if pings_range(2)==Inf
@@ -295,7 +282,7 @@ if ~isequal(Filename_cell, 0)
             envdata=env_data_cl.empty();
         end
         
-        layers_temp(nb_lay)=layer_cl('Filename',{Filename},'Filetype','EK60','PathToFile',path,'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
+        layers_temp(nb_lay)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
         
         %layers_temp(uu).create_motion_comp_subdata(3);
         

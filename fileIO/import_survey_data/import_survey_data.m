@@ -1,8 +1,8 @@
-function surv_data_struct=import_survey_data(PathToFile,FileName)
+function surv_data_struct=import_survey_data(FileN)
 surv_data_struct=[];
 
-if exist(fullfile(PathToFile,FileName),'file')==2
-    surv_data_struct=csv2struct(fullfile(PathToFile,FileName));
+if exist(FileN,'file')==2
+    surv_data_struct=csv2struct(FileN);
     
     if ~isempty(find(isfield(surv_data_struct,{'Datapath' 'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'})==0, 1))
         surv_data_struct=[];

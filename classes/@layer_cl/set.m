@@ -10,7 +10,6 @@ check_layer_class=@(layer_obj) isa(layer_obj,'layer_cl');
 addRequired(p,'obj',check_layer_class);
 addParameter(p,'ID_num',obj.ID_num,@isnumeric);
 addParameter(p,'Filename',obj.Filename);
-addParameter(p,'PathToFile',obj.PathToFile,@ischar);
 addParameter(p,'AcData',ac_data_cl(),check_ac_data_class);
 addParameter(p,'Frequencies',obj.Frequencies,@isnumeric);
 addParameter(p,'GPSData',obj.GPSData,check_gps_class);

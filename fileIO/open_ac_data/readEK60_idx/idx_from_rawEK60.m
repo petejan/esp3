@@ -1,5 +1,5 @@
-function raw_idx_obj=idx_from_rawEK60(pathtofile,filename)
-fid=fopen(fullfile(pathtofile,filename));
+function raw_idx_obj=idx_from_rawEK60(filename)
+fid=fopen(filename);
 raw_idx_obj=raw_idx_cl();
 if fid==-1
     return;
@@ -8,7 +8,9 @@ end
 HEADER_LEN=12;
 MAX_DG_SIZE=1e6;
 
-raw_idx_obj.filename=filename;
+[~,fileN,ext]=fileparts(filename);
+
+raw_idx_obj.filename=[fileN ext];
 raw_idx_obj.raw_type='EK60';
 raw_idx_obj.nb_samples=nan(1,MAX_DG_SIZE);
 raw_idx_obj.time_dg=nan(1,MAX_DG_SIZE);

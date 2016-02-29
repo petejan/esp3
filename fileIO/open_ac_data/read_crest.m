@@ -1,17 +1,20 @@
-function layers=read_crest(PathToFile,Filename_cell,varargin)
+function layers=read_crest(Filename_cell,varargin)
 
 p = inputParser;
+    if ~iscell(Filename_cell)
+        Filename_cell={Filename_cell};
+    end
+    
+[path_to_mem_def,~,~]=fileparts(Filename_cell{1});
 
-
-addRequired(p,'PathToFile',@(x) ischar(x)||iscell(x));
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
-addParameter(p,'PathToMemmap',PathToFile);
+addParameter(p,'PathToMemmap',path_to_mem_def);
 addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'CVSCheck',0);
 addParameter(p,'CVSroot','');
 
-parse(p,PathToFile,Filename_cell,varargin{:});
+parse(p,Filename_cell,varargin{:});
 
 
 dir_data=p.Results.PathToMemmap;
@@ -23,23 +26,15 @@ cvs_root=p.Results.CVSroot;
 
 if ~isequal(Filename_cell, 0)
     
-    if ~iscell(Filename_cell)
-        Filename_cell={Filename_cell};
-    end
-    
+
     
     for uu=1:length(Filename_cell)
-        if iscell(PathToFile)
-            path=PathToFile{uu};
-        else
-            path=PathToFile;
-        end
+       
         
         FileName=Filename_cell{uu};
         filenumber=str2double(FileName(end-7:end));
-        fid = fopen(fullfile(path,FileName),'r',machineformat);
-        
-        
+        fid = fopen(fullfile(FileName),'r',machineformat);
+
         if fid == -1
             warning(['Unable to open file ' sprintf('d%07d',filenumber)]);
             data=[];
@@ -85,9 +80,9 @@ if ~isequal(Filename_cell, 0)
         clear sample_real sample_imag ping_num;
         
         
-        [gps_data,attitude_data]= read_n_file(fullfile(path,FileName));
+        [gps_data,attitude_data]= read_n_file(fullfile(FileName));
 
-        ifileInfo=parse_ifile(path,FileName);
+        ifileInfo=parse_ifile(FileName);
 
         system_calibration=ifileInfo.system_calibration;
         depth_factor=ifileInfo.depth_factor;
@@ -140,12 +135,12 @@ if ~isequal(Filename_cell, 0)
                 'GPSDataPing',gps_data_ping,...
                 'Mode','CW',...
                 'AttitudeNavPing',attitude_data_pings);
-        [transceiver.Config,transceiver.Params]=config_from_ifile(fullfile(path,FileName));
+        [transceiver.Config,transceiver.Params]=config_from_ifile(FileName);
         
 
             
-            layers(uu)=layer_cl('Filename',{FileName},'Filetype','CREST','PathToFile',path,...
-                'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',fullfile(path,FileName));
+            layers(uu)=layer_cl('Filename',{FileName},'Filetype','CREST',...
+                'Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_data,'Frequencies',38000,'OriginCrest',FileName);
             layers(uu).set_survey_data(survey_data);
  
             if p.Results.CVSCheck&&~strcmp(cvs_root,'')

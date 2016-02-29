@@ -1,5 +1,5 @@
 
-function ifileInfo=parse_ifile(path,ifile)
+function ifileInfo=parse_ifile(ifile)
 
 if  ischar(ifile)
     %if a d-,n- or t- file was specified instead of an i-file use the corresponding i-file
@@ -8,8 +8,7 @@ if  ischar(ifile)
     if (tok == 'd' || tok == 'n' || tok == 't') && ~isempty(str2double(num))
         ifile(end-7) = 'i';
     end
-else
-    ifile = sprintf('i%07d', ifile);
+
 end
 
 
@@ -27,7 +26,7 @@ ifileInfo=struct('version','','compression','','snapshot',nan,'stratum','','tran
     'channel',nan,'Cal_crest',nan,'rawFileName','','rawSubDir','','G0',nan,'SACORRECT',nan,...
     'es60_zero_error_ping_num',nan,'es60error_method',nan,'es60error_offset',nan,'es60error_min_std',nan,'es60error_min_mean',nan,'es60error_min_GOF',nan);
 
-fid=fopen(fullfile(path,ifile),'r');
+fid=fopen(ifile,'r');
 
 if fid == -1
     warning(['Unable to open file ' ifile]);

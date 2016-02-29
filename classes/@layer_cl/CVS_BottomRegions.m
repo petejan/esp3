@@ -21,15 +21,12 @@ reg_rev=p.Results.RegRev;
 reg=p.Results.Reg;
 
 if strcmp(layer.Filetype,'CREST')
-    PathToFile=layer.PathToFile;
-    FileName=layer.Filename{1};
+    [PathToFile,FileName,~]=fileparts(layer.Filename{1});
 else
     [PathToFile,FileName]=fileparts(layer.OriginCrest);
 end
 
 if ~isempty(PathToFile)&&~isempty(FileName)
-    
-    
     
     idx_slash=union(strfind(PathToFile,'\'),strfind(PathToFile,'/'));
     if length(idx_slash)>=2

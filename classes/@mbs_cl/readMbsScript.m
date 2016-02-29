@@ -132,7 +132,8 @@ else
                 
                 mbs.Input.crestDir{i}=fullfile(dataroot,mbs.Input.dfileDir{i});
                 
-                ifile_info=parse_ifile(mbs.Input.crestDir{i},mbs.Input.dfileNum(i));
+                ifile_info=parse_ifile(fullfile(mbs.Input.crestDir{i},sprintf('i%07d', mbs.Input.dfileNum(i))));
+              
                 mbs.Input.rawDir{i}=fullfile(mbs.Input.crestDir{i},ifile_info.rawSubDir);
                 mbs.Input.rawFileName{i}=ifile_info.rawFileName;
                 mbs.Input.rawSubDir{i}=ifile_info.rawSubDir;

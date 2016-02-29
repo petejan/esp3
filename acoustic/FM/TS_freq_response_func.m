@@ -4,7 +4,7 @@ function TS_freq_response_func(main_figure,idx_r,idx_pings)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-app_path=getappdata(main_figure,'App_path');
+
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -21,10 +21,7 @@ f_vec_save=[];
 
 TS_f=[];
 
-cal_path=app_path.cal;
-if isempty(cal_path)
-    cal_path=layer.PathToFile;
-end
+[cal_path,~,~]=fileparts(layer.Filename{1});
 
 [~,idx_sort]=sort(layer.Frequencies);
 angle_fig=figure();
@@ -66,7 +63,7 @@ for uui=idx_sort
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
         
-        file_cal=[cal_path 'Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
+        file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
         if exist(file_cal,'file')>0
             cal=load(file_cal);

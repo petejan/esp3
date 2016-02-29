@@ -130,8 +130,6 @@ else
 end
 
 layer.set_survey_data(new_surveydata);
-
-
 layer.update_echo_logbook_file();
 
 setappdata(main_figure,'Layer',layer);

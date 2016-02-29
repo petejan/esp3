@@ -3,27 +3,7 @@ function display_cal(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 
-app_path=getappdata(main_figure,'App_path');
-
-if isfield(app_path,'cal')
-    cal_path=app_path.cal;
-else
-    cal_path=[];
-end
-
-if isempty(cal_path)
-    cal_path=layer.PathToFile;
-end
-
-if isfield(app_path,'cal')
-    cal_path_eba=app_path.cal_eba;
-else
-    cal_path_eba=[];
-end
-
-if isempty(cal_path_eba)
-    cal_path_eba=layer.PathToFile;
-end
+[cal_path,~,~]=fileparts(layer.Filename{1});
 
 
 [~,idx_sort]=sort(layer.Frequencies);
@@ -42,8 +22,8 @@ end
     ylabel('EBA(dB)')
 
 for uui=idx_sort
-    file_cal=[cal_path 'Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
-    file_cal_eba=[cal_path_eba 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat'];
+    file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
+    file_cal_eba=fullfile(cal_path,['Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
     
     Freq=(layer.Transceivers(uui).Config.Frequency);
     eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
