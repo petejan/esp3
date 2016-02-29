@@ -39,7 +39,7 @@ for isn=1:length(snapshots)
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 if exist(fileN,'file')==2
-                    new_lay=open_EK60_file_stdalone(snapshots{isn}.Folder,filenames_cell{ifiles},...
+                    new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
                         'PathToMemmap',datapath,'Frequencies',options.Frequency,'EsOffset',options.Es60_correction);
                     [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
                     if found==0
@@ -81,7 +81,6 @@ for isn=1:length(snapshots)
 
                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                 layer_new.set_survey_data(surv);
-                layer_new.update_echo_logbook_file();
                 
                 if isfield(bot,'file')
                     if exist(fullfile(snapshots{isn}.Folder,bot.file),'file')>0

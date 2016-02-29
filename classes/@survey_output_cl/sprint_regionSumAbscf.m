@@ -8,16 +8,26 @@ prec={'%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%0.f,'};
 fields=fieldnames(regionSumAbscf);
 for k = 1:length(regionSumAbscf.snapshot)
     for iu=1:length(fields)-6
-        if iscell(regionSumAbscf.(fields{iu}))
-             if ~iscell(regionSumAbscf.(fields{iu}){k})
-                str=[str sprintf(prec{iu}, regionSumAbscf.(fields{iu}){k})];
-            else
-                str=[str sprintf(prec{iu}, cell2mat(regionSumAbscf.(fields{iu}){k}))];
-            end
-        else
-            str=[str sprintf(prec{iu}, regionSumAbscf.(fields{iu})(k))];
+        switch fields{iu}
+            case 'file'
+                for ifs=1:length(regionSumAbscf.(fields{iu}){k})
+                    [~,file,~]=fileparts(regionSumAbscf.(fields{iu}){k}{ifs});
+                    str=[str ';' file];
+                end
+                
+            otherwise
+                if iscell(regionSumAbscf.(fields{iu}))
+                    if ~iscell(regionSumAbscf.(fields{iu}){k})
+                        str=[str sprintf(prec{iu}, regionSumAbscf.(fields{iu}){k})];
+                    else
+                        str=[str sprintf(prec{iu}, cell2mat(regionSumAbscf.(fields{iu}){k}))];
+                    end
+                else
+                    str=[str sprintf(prec{iu}, regionSumAbscf.(fields{iu})(k))];
+                end
         end
     end
+    
     for ik=1:length(regionSumAbscf.latitude{k})
         str=[str sprintf('%.0f,', regionSumAbscf.transmit_start{k}(ik))];
         str=[str sprintf('%.4f,', regionSumAbscf.latitude{k}(ik))];

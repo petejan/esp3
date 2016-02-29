@@ -6,14 +6,24 @@ prec={'%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%0.f,' '%0.3f,' '%0.3f,
 fields=fieldnames(regionSum);
 for k = 1:length(regionSum.snapshot)
     for iu=1:length(fields)-2
-        if iscell(regionSum.(fields{iu}))
-            if ~iscell(regionSum.(fields{iu}){k})
-                str=[str sprintf(prec{iu}, regionSum.(fields{iu}){k})];
-            else
-                str=[str sprintf(prec{iu}, cell2mat(regionSum.(fields{iu}){k}))];
-            end
-        else
-            str=[str sprintf(prec{iu}, regionSum.(fields{iu})(k))];
+        switch fields{iu}
+            case 'file'
+                for ifs=1:length(regionSum.(fields{iu}){k})
+                    [~,file,~]=fileparts(regionSum.(fields{iu}){k}{ifs});
+                    str=[str ';' file];
+                end
+                
+            otherwise
+                
+                if iscell(regionSum.(fields{iu}))
+                    if ~iscell(regionSum.(fields{iu}){k})
+                        str=[str sprintf(prec{iu}, regionSum.(fields{iu}){k})];
+                    else
+                        str=[str sprintf(prec{iu}, cell2mat(regionSum.(fields{iu}){k}))];
+                    end
+                else
+                    str=[str sprintf(prec{iu}, regionSum.(fields{iu})(k))];
+                end
         end
     end
     

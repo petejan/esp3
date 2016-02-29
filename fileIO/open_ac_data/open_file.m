@@ -57,12 +57,12 @@ else
                 file_diff=strcmp(file_list{i},Filename{end});
                 i=i+1;
             end
-            
             if file_diff
                 Filename=fullfile(file_path,file_list{i});
             else
                 Filename=[];
             end
+            
         else
             return;
         end
@@ -87,6 +87,7 @@ else
             else
                 Filename=[];
             end
+            
         end
         
     elseif ischar(file_id)
@@ -105,6 +106,9 @@ else
     Filename_tmp=Filename;
 end
 
+if isempty(Filename)
+    return;
+end
 
 if ~isequal(Filename, 0)
     fid = fopen(Filename_tmp, 'r');

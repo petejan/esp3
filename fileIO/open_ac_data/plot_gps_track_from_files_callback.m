@@ -13,7 +13,7 @@ else
 end
 
 
-[Filename,PathToFile]= uigetfile( {fullfile(file_path,'*.raw')}, 'Pick an EK60 raw file','MultiSelect','on');
+[Filename,PathTofile]= uigetfile( {fullfile(file_path,'*.raw')}, 'Pick an EK60 raw file','MultiSelect','on');
 if isempty(Filename)
     return;
 end

@@ -41,8 +41,8 @@ for uu=1:length(trans_nb)
                 if~isempty(curr_layer.GPSData.Time)
                     layers_grp(uu).time_start(1,jj)=curr_layer.GPSData.Time(1);
                     layers_grp(uu).time_end(1,jj)=curr_layer.GPSData.Time(end);
+                    layers_grp(uu).dt(1,jj)=(curr_layer.GPSData.Time(end)-curr_layer.GPSData.Time(1))/length(curr_layer.GPSData.Time)*10;
                 end
-                layers_grp(uu).dt(1,jj)=(curr_layer.GPSData.Time(end)-curr_layer.GPSData.Time(1))/length(curr_layer.GPSData.Time)*10;
                 layers_grp(uu).nb_samples_range(1,jj)=0;
         end
         

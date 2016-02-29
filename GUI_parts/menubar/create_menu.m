@@ -37,7 +37,7 @@ uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback'
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
 uimenu(m_survey,'Label','Edit Trip Info','Callback',{@edit_trip_info_callback,main_figure});
-
+uimenu(m_survey,'Label','Display logbook','Callback',{@logbook_display_callback,main_figure});
 
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
@@ -82,6 +82,7 @@ uimenu(track_tools,'Label','Create Exclude Regions from Tracks','Callback',{@cre
 
 mbs = uimenu(main_figure,'Label','Scripting','Tag','menumbs');
 uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
+uimenu(mbs,'Label','Check XML scripts','Callback',{@check_xml_survey_callback,main_figure});
 uimenu(mbs,'Label','Load Survey(s) from XML','Callback',{@load_xml_survey_callback,main_figure});
 uimenu(mbs,'Label','Plot survey results from Survey Output files','Callback',{@plot_survey_results_callback,main_figure});
 
@@ -102,4 +103,18 @@ function load_map_fig_callback(~,~,main_fig)
 load_map_fig(main_fig,[]);
 end
 
+function logbook_display_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+
+[path_lay,~]=layer.get_path_files();
+
+file=fullfile(path_lay{1},'echo_logbook.csv');
+if exist(file,'file')==0
+    initialize_echo_logbook_file(path_lay{1});
+end
+
+edit(file);
+
+
+end
 

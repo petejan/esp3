@@ -8,16 +8,26 @@ prec={'%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%0.f,' '%0.f,' '%.5e,'};
 
 fields=fieldnames(regionSumVbscf);
 for k = 1:length(regionSumVbscf.snapshot)
-
+    
     for iu=1:length(fields)-3
-        if iscell(regionSumVbscf.(fields{iu}))
-            if ~iscell(regionSumVbscf.(fields{iu}){k})
-                str=[str sprintf(prec{iu}, regionSumVbscf.(fields{iu}){k})];
-            else
-                str=[str sprintf(prec{iu}, cell2mat(regionSumVbscf.(fields{iu}){k}))];
-            end
-        else
-            str=[str sprintf(prec{iu}, regionSumVbscf.(fields{iu})(k))];
+        switch fields{iu}
+            case 'file'
+                for ifs=1:length(regionSumVbscf.(fields{iu}){k})
+                    [~,file,~]=fileparts(regionSumVbscf.(fields{iu}){k}{ifs});
+                    str=[str ';' file];
+                end
+                
+            otherwise
+                
+                if iscell(regionSumVbscf.(fields{iu}))
+                    if ~iscell(regionSumVbscf.(fields{iu}){k})
+                        str=[str sprintf(prec{iu}, regionSumVbscf.(fields{iu}){k})];
+                    else
+                        str=[str sprintf(prec{iu}, cell2mat(regionSumVbscf.(fields{iu}){k}))];
+                    end
+                else
+                    str=[str sprintf(prec{iu}, regionSumVbscf.(fields{iu})(k))];
+                end
         end
     end
     for ik=1:length(regionSumVbscf.vbscf_values{k}(:))
