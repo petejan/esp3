@@ -36,7 +36,7 @@ uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback'
 
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
-uimenu(m_survey,'Label','Edit Trip Info','Callback',{@edit_trip_info_callback,main_figure});
+uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
 uimenu(m_survey,'Label','Display logbook','Callback',{@logbook_display_callback,main_figure});
 
 
@@ -45,12 +45,12 @@ uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_f
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
-uimenu(m_map,'Label','Display Multi Layers Navigation','Callback',{@display_multi_navigation_callback,main_figure});
-uimenu(m_map,'Label','Multi Layers Map','Callback',{@load_map_fig_callback,main_figure});
+uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});
+uimenu(m_map,'Label','Plot Tracks from Raw files','Callback',{@plot_gps_track_from_files_callback,main_figure});
+uimenu(m_map,'Label','Map from current layers (integrated)','Callback',{@load_map_fig_callback,main_figure},'separator','on');
 uimenu(m_map,'Label','Map from MBS result files','Callback',{@map_mbs_scripts_callback,main_figure});
 uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_callback,main_figure});
-uimenu(m_map,'Label','Map from saved MBS result','Callback',{@display_saved_mbs_callback,main_figure});
-uimenu(m_map,'Label','Plot Tracks from Raw files','Callback',{@plot_gps_track_from_files_callback,main_figure});
+
 
 m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@set_axes_position_callback,main_figure},'Tag','col');
@@ -61,10 +61,11 @@ main_menu.close_all_fig=uimenu(m_display,'Label','Close All External Figures','C
 mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
 
 reg_tools=uimenu(mhhh,'Label','Regions Tools');
+uimenu(reg_tools,'Label','Create WC Region','Callback',{@create_reg_dlbox,main_figure});
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callback,main_figure});
-uimenu(reg_tools,'Label','Create WC Region','Callback',{@create_reg_dlbox,main_figure});
+
 
 bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
 uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
@@ -113,7 +114,8 @@ if exist(file,'file')==0
     initialize_echo_logbook_file(path_lay{1});
 end
 
-edit(file);
+
+system(sprintf('start %s',file));
 
 
 end

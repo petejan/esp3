@@ -116,6 +116,7 @@ for ilay=1:length(layers_obj)
                 if isempty(survey_data_temp)
                     survey_data_temp={[]};
                 end
+                
                 for  i_cell=1:length(survey_data_temp)
                     if ~isempty(survey_data_temp{i_cell})
                         if strcmp(voy,' ')

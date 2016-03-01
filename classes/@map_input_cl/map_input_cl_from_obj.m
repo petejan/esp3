@@ -12,6 +12,7 @@ addParameter(p,'Coast',1,@isnumeric);
 addParameter(p,'Depth_Contour',500,@isnumeric);
 
 parse(p,Ext_obj,varargin{:});
+obj=map_input_cl();
 
 switch class(Ext_obj)
     case 'layer_cl'
@@ -27,13 +28,14 @@ switch class(Ext_obj)
     case 'survey_cl'
         survey_obj=Ext_obj;
         nb_trans=length(survey_obj.SurvOutput.transectSum.snapshot);
+    otherwise
+        return;
 end
 
 
-obj=map_input_cl();
 
 obj.SurveyName=cell(1,nb_trans);
-obj.Trip=cell(1,nb_trans);
+obj.Voyage=cell(1,nb_trans);
 obj.Filename=cell(1,nb_trans);
 obj.PathToFile=cell(1,nb_trans);
 obj.Snapshot=zeros(1,nb_trans);
@@ -41,8 +43,11 @@ obj.Stratum=cell(1,nb_trans);
 obj.Transect=zeros(1,nb_trans);
 obj.Lat=cell(1,nb_trans);
 obj.Lon=cell(1,nb_trans);
+obj.Time=cell(1,nb_trans);
 obj.SliceLat=cell(1,nb_trans);
 obj.SliceLon=cell(1,nb_trans);
+obj.SliceTime_S=cell(1,nb_trans);
+obj.SliceTime_E=cell(1,nb_trans);
 obj.SliceAbscf=cell(1,nb_trans);
 obj.Nb_ST=cell(1,nb_trans);
 obj.Nb_Tracks=cell(1,nb_trans);
@@ -59,9 +64,9 @@ switch class(Ext_obj)
     case 'mbs_cl'
         for i=1:nb_trans
             if ~strcmpi(mbs_head.voyage,'')
-                obj.Trip{i}=mbs_head.voyage;
+                obj.Voyage{i}=mbs_head.voyage;
             else
-                obj.Trip{i}=mbs_head.title;
+                obj.Voyage{i}=mbs_head.title;
             end
             obj.SurveyName{i}=mbs_head.title;
             obj.PathToFile{i}='';
@@ -83,7 +88,6 @@ switch class(Ext_obj)
             if ~isempty(idx_file)
                 obj.Filename{i}=mbs_out_reg{idx_file,4};
             end
-            
         end
         
     case 'layer_cl'
@@ -93,16 +97,16 @@ switch class(Ext_obj)
             obj.PathToFile{i}=path_l;
             obj.Lat{i}=layers(i).GPSData.Lat;
             obj.Lon{i}=layers(i).GPSData.Long;
-            
+            obj.Time{i}=layers(i).GPSData.Time;
             if ~isempty(layers(i).get_survey_data())
                 surv_data=layers(i).get_survey_data();
-                obj.Trip{i}=surv_data.Voyage;
+                obj.Voyage{i}=surv_data.Voyage;
                 obj.Snapshot(i)=surv_data.Snapshot;
                 obj.Stratum{i}=surv_data.Stratum;
                 obj.Transect(i)=surv_data.Transect;
                 obj.SurveyName{i}=surv_data.SurveyName;
             else
-                obj.Trip{i}='';
+                obj.Voyage{i}='';
                 obj.SurveyName{i}='';
             end
             
@@ -127,6 +131,8 @@ switch class(Ext_obj)
                 obj.SliceLat{i}=output.slice_lat_esp2;
                 obj.SliceLon{i}=output.slice_lon_esp2;
                 obj.SliceAbscf{i}=output.slice_abscf;
+                obj.Slice_Time_S{i}=output.slice_time_start;
+                obj.Slice_Time_E{i}=output.slice_time_end;
             end
         end
         
@@ -143,14 +149,16 @@ switch class(Ext_obj)
         
         for i=1:nb_trans
             if ~strcmpi(survey_obj.SurvInput.Infos.Voyage,'')
-                obj.Trip{i}=survey_obj.SurvInput.Infos.Voyage;  
+                obj.Voyage{i}=survey_obj.SurvInput.Infos.Voyage;  
             else
-                obj.Trip{i}=survey_obj.SurvInput.Infos.Title;
+                obj.Voyage{i}=survey_obj.SurvInput.Infos.Title;
             end
             obj.SurveyName{i}=survey_obj.SurvInput.Infos.Title;
             obj.SliceLat{i}=survey_obj.SurvOutput.slicedTransectSum.latitude{i};
             obj.SliceLon{i}=survey_obj.SurvOutput.slicedTransectSum.longitude{i};
             obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
+            obj.SliceTime_S{i}=survey_obj.SurvOutput.slicedTransectSum.time_start{i};
+            obj.SliceTime_E{i}=survey_obj.SurvOutput.slicedTransectSum.time_end{i};
             obj.SliceAbscf{i}=survey_obj.SurvOutput.slicedTransectSum.slice_abscf{i};
             obj.Nb_ST{i}=survey_obj.SurvOutput.slicedTransectSum.slice_nb_st{i};
             obj.Nb_Tracks{i}=survey_obj.SurvOutput.slicedTransectSum.slice_nb_tracks{i};
@@ -167,12 +175,18 @@ switch class(Ext_obj)
                 &obj.Transect(i)==survey_obj.SurvOutput.regionSum.transect,1);
             
             if ~isempty(idx_file)
-                obj.Filename{i}=survey_obj.SurvOutput.regionSum.file{idx_file};
+                [path_lay,files_lay,ext_lay]=cellfun(@fileparts,survey_obj.SurvOutput.regionSum.file{idx_file},'UniformOutput',0);
+                for ic=1:length(path_lay)
+                    files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
+                end
+                obj.Filename{i}=files_lay;
+                obj.PathToFile{i}=path_lay;
             else
                 obj.Filename{i}='';
+                obj.PathToFile{i}=survey_obj.SurvInput.Snapshots{idx_snap}.Folder;
             end
             idx_snap=(obj.Snapshot(i)==survey_obj.SurvOutput.stratumSum.snapshot);
-            obj.PathToFile{i}=survey_obj.SurvInput.Snapshots{idx_snap}.Folder;
+            
         end
 end
 

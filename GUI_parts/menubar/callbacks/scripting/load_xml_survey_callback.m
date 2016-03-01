@@ -17,47 +17,48 @@ end
 
 [Filename,PathToFile]= uigetfile({fullfile(path_f,'*.xml')}, 'Pick a survey xml file','MultiSelect','on');
 if ~iscell(Filename)
-if Filename==0
-    return;
-end
-Filename={Filename};
+    if Filename==0
+        return;
+    end
+    Filename={Filename};
 end
 
 for i=1:length(Filename)
-    %try
-    surv_obj=survey_cl();
-    surv_obj.SurvInput=parse_survey_xml(fullfile(PathToFile,Filename{i}));
-    
-    if isempty(surv_obj.SurvInput)
-        warning('Could not parse the File describing the survey...');
-        continue;
-    end
-    
-    valid=surv_obj.SurvInput.check_n_complete_input();
-    
-    if valid==0
-        warning('It looks like there is a problem with XML survey file %s\n',Filename{i});
-        continue;
-    end
-    
-%     profile off;
-%     profile on;
-%     
-    
-    layers_new=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data);
-    surv_obj.generate_output(layers_new);
-    
-%     profile off;
-%     profile viewer;
-%     
-    save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
-    outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
-    surv_obj.print_output(outputFile);
+    try
+        surv_obj=survey_cl();
+        surv_obj.SurvInput=parse_survey_xml(fullfile(PathToFile,Filename{i}));
+        
+        if isempty(surv_obj.SurvInput)
+            warning('Could not parse the File describing the survey...');
+            continue;
+        end
+        
+        valid=surv_obj.SurvInput.check_n_complete_input();
+        
+        if valid==0
+            warning('It looks like there is a problem with XML survey file %s\n',Filename{i});
+            continue;
+        end
+        
+        %     profile off;
+        %     profile on;
+        %
+        
+        layers_new=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data);
+        surv_obj.generate_output(layers_new);
+        
+        %     profile off;
+        %     profile viewer;
+        %
+        save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
+        outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
+        surv_obj.print_output(outputFile);
 
-    layers_old=[layers_old layers_new];  
-%     catch
-%         warning('Could not process survey described in file %s\n',Filename{i});    
-%     end
+        layers_old=[layers_old layers_new];
+    catch err
+        disp(err.message);
+        warning('Could not process survey described in file %s\n',Filename{i});
+    end
 end
 
 layers=layers_old;

@@ -8,7 +8,7 @@ end
 
 surveydata=layer.get_survey_data();
 
-[Voyage,SurveyName,~,~,~,can]=fill_survey_data_dlbox(surveydata,'trip_only',1,'Title','Edit Trip Info');
+[Voyage,SurveyName,~,~,~,can]=fill_survey_data_dlbox(surveydata,'Voyage_only',1,'Title','Edit Voyage Info');
 if can>0
     return;
 end

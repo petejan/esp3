@@ -20,7 +20,7 @@ snapshots=surv_input_obj.Snapshots;
 
 valid=1;
 
-fprintf('\n\nChecking survey input for %s  trip %s:\n',...
+fprintf('\n\nChecking survey input for %s  Voyage %s:\n',...
     surveyName,voyage);
 
 for isn=1:length(snapshots)
@@ -115,7 +115,7 @@ for isn=1:length(snapshots)
 end
 
 if valid==0
-    fprintf('Invalid XML script file for trip %s %s\n',voyage,surveyName);
+    fprintf('Invalid XML script file for Voyage %s %s\n',voyage,surveyName);
 end
 
 end

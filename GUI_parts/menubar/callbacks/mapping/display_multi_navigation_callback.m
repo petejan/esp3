@@ -4,6 +4,7 @@ hfigs=getappdata(main_figure,'ExternalFigures');
 
 
 map_input=map_input_cl.map_input_cl_from_obj(layers,'SliceSize',0);
+
 if nansum(isnan(map_input.LatLim))>=1
     return;
 end

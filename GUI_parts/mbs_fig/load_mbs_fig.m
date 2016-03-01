@@ -54,7 +54,7 @@ selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(hObject_main,'App_path');
 curr_disp=getappdata(hObject_main,'Curr_disp');
 layers_old=getappdata(hObject_main,'Layers');
-mbs_vec=getappdata(hObject_main,'MBS');
+mbs_vec=[];
 
 for i=1:length(selected_mbs)
     %try
@@ -112,7 +112,6 @@ end
 
 layer=layers(end);
 
-setappdata(hObject_main,'MBS',mbs_vec);
 setappdata(hObject_main,'Layer',layer);
 setappdata(hObject_main,'Layers',layers);
 setappdata(hObject_main,'Curr_disp',curr_disp);

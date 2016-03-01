@@ -455,6 +455,7 @@ else
         map_input(ui).LatLim=sort(box.lat_box);
         map_input(ui).LonLim=sort(box.lon_box);
     end
+    map_input=map_input.concatenate_map_input();
 end
 str_field=get(box.field,'string');
 str_field=str_field{get(box.field,'value')};

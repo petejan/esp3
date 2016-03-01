@@ -2154,10 +2154,10 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
             dataFieldsStr = evalc('disp(dataFields)');
             if dataFieldsStr(end)==char(10),  dataFieldsStr=dataFieldsStr(1:end-1);  end
 
-            % Strip out callbacks
+            % strip out callbacks
             dataFieldsStr = regexprep(dataFieldsStr,'^\s*\w*Callback(Data)?:[^\n]*$','','lineanchors');
 
-            % Strip out internal HG2 mirror properties
+            % strip out internal HG2 mirror properties
             dataFieldsStr = regexprep(dataFieldsStr,'^\s*\w*_I:[^\n]*$','','lineanchors');
             dataFieldsStr = regexprep(dataFieldsStr,'\n\n+','\n');
 
@@ -2535,7 +2535,7 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
                 nodeName = hndl.getClass.getSimpleName;
             end
 
-            % Strip away the package name, leaving only the regular classname
+            % strip away the package name, leaving only the regular classname
             if ~isempty(nodeName) && ischar(nodeName)
                 nodeName = java.lang.String(nodeName);
                 nodeName = nodeName.substring(nodeName.lastIndexOf('.')+1);
@@ -2603,7 +2603,7 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
         end
     end
 
-    %% Strip standard Swing callbacks from a list of events
+    %% strip standard Swing callbacks from a list of events
     function evNames = stripStdCbs(evNames)
         try
             stdEvents = {'AncestorAdded',  'AncestorMoved',    'AncestorRemoved', 'AncestorResized', ...

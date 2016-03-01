@@ -1,7 +1,7 @@
 classdef map_input_cl
     properties
         SurveyName
-        Trip
+        Voyage
         Snapshot
         Stratum
         Transect
@@ -9,8 +9,11 @@ classdef map_input_cl
         Filename
         Lat
         Lon
+        Time
         SliceLat
         SliceLon
+        SliceTime_S
+        SliceTime_E
         SliceAbscf
         Nb_ST
         Nb_Tracks
@@ -29,22 +32,25 @@ classdef map_input_cl
             
             %Parse Arguments
             p = inputParser;
-            addParameter(p,'SurveyName',@iscell);
-            addParameter(p,'Trip',@iscell);
-            addParameter(p,'Snapshot',@isnumeric);
-            addParameter(p,'Stratum',@iscell);
-            addParameter(p,'Transect',@isnumeric);
-            addParameter(p,'Filename',@iscell);
-            addParameter(p,'PathToFile',@iscell);
-            addParameter(p,'Lat',@iscell);
-            addParameter(p,'Lon',@iscell);
-            addParameter(p,'SliceLat',@iscell);
-            addParameter(p,'SliceLon',@iscell);
-            addParameter(p,'SliceAbscf',@iscell);
-            addParameter(p,'Nb_ST',@iscell);
-            addParameter(p,'Nb_Tracks',@iscell);
-            addParameter(p,'LatLim',@isnumeric);
-            addParameter(p,'LonLim',@isnumeric);
+            addParameter(p,'SurveyName',{},@iscell);
+            addParameter(p,'Voyage',{},@iscell);
+            addParameter(p,'Snapshot',[],@isnumeric);
+            addParameter(p,'Stratum',{},@iscell);
+            addParameter(p,'Transect',[],@isnumeric);
+            addParameter(p,'Filename',{},@iscell);
+            addParameter(p,'PathToFile',{},@iscell);
+            addParameter(p,'Lat',{},@iscell);
+            addParameter(p,'Lon',{},@iscell);
+            addParameter(p,'Time',{},@iscell);
+            addParameter(p,'SliceLat',{},@iscell);
+            addParameter(p,'SliceLon',{},@iscell);
+            addParameter(p,'SliceAbscf',{},@iscell);
+            addParameter(p,'SliceTime_E',{},@iscell);
+            addParameter(p,'SliceTime_S',{},@iscell)
+            addParameter(p,'Nb_ST',{},@iscell);
+            addParameter(p,'Nb_Tracks',{},@iscell);
+            addParameter(p,'LatLim',[nan nan],@isnumeric);
+            addParameter(p,'LonLim',[nan nan],@isnumeric);
             addParameter(p,'Proj','lambert',@ischar);
             addParameter(p,'ValMax',0.0017,@isnumeric);
             addParameter(p,'Rmax',5,@isnumeric);

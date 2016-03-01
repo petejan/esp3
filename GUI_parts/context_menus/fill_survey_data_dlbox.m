@@ -4,7 +4,7 @@ function [Voyage,SurveyName,Snapshot,Stratum,Transect,cancel]=fill_survey_data_d
 p = inputParser;
 
 addRequired(p,'surv_input_obj',@(obj) isa(obj,'survey_data_cl')||isempty(obj));
-addParameter(p,'trip_only',0,@isnumeric);
+addParameter(p,'Voyage_only',0,@isnumeric);
 addParameter(p,'Title','Survey Data',@ischar);
 
 parse(p,surveydata,varargin{:});
@@ -12,7 +12,7 @@ parse(p,surveydata,varargin{:});
 cancel=0;
 numlines=1;
 name=p.Results.Title;
-if p.Results.trip_only>0
+if p.Results.Voyage_only>0
     
     prompt={'Survey Name',...
         'Voyage'};
@@ -50,7 +50,7 @@ if isempty(surveydata)
     surveydata=survey_data_cl();
 end
 
-if p.Results.trip_only>0
+if p.Results.Voyage_only>0
     Snapshot=surveydata.Snapshot;
     Stratum=surveydata.Stratum;
     Transect=surveydata.Transect;

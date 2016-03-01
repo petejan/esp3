@@ -8,6 +8,7 @@ layers=getappdata(main_figure,'Layers');
 nb_layers=length(layers);
 layers_Str=list_layers(layers);
 
+[path_lay,~]=layer.get_path_files();
 
 if isappdata(main_figure,'Cursor_mode_tool')
     cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');  
@@ -17,9 +18,10 @@ if isappdata(main_figure,'Cursor_mode_tool')
          cursor_mode_tool_comp.jCombo.addItem(layers_Str{i});
     end
     set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
+    set(cursor_mode_tool_comp.jCombo,'ToolTipText',path_lay{1})
 else
     
-    %idx_freq=find_freq_idx(layer,curr_disp.Freq);
+   
     
     
     
@@ -50,13 +52,14 @@ else
         set(cursor_mode_tool_comp.jCombo, 'ActionPerformedCallback', {@change_layer,main_figure});
         set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(500,500));
         set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
-        set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0))
+        set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0));
+        set(cursor_mode_tool_comp.jCombo,'ToolTipText',path_lay{1})
         jToolbar(1).add(cursor_mode_tool_comp.jCombo,6);
         jToolbar(1).repaint;
         jToolbar(1).revalidate;
     end
     
-     cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.del_lay ,'TooltipString','Delete Layer','ClickedCallback',{@delete_layer_callback,main_figure});
+    cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.del_lay ,'TooltipString','Delete Layer','ClickedCallback',{@delete_layer_callback,main_figure});
     
 end
 

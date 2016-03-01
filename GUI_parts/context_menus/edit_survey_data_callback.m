@@ -32,10 +32,9 @@ end
 t_n=trans.Data.Time(idx_ping);
 surv=cell(1,1);
 idx_modif=0;
-idx_start=0;
-idx_end=length(layer.SurveyData);
+
 surv_to_modif=[];
-surv_temp=[];
+
 if isempty(layer.SurveyData)
     surv{1}=survey_data_cl();
     start_time=trans.Data.Time(1);
@@ -58,14 +57,7 @@ else
         end
     end
     
-    if idx_modif>1
-        idx_start=idx_modif-1;
-    end
-    
-    if idx_modif<length(layer.SurveyData)
-        idx_end=idx_modif+1;
-    end
-    
+ 
     if ~isempty(surv_to_modif)
         surv{1}=surv_to_modif;
         start_time=surv_to_modif.StartTime;
@@ -78,7 +70,6 @@ else
         dt_after(dt_after<0)=nan;
         
         if isempty(find(~isnan(dt_before),1))
-            idx_start=0;
             start_time=trans.Data.Time(1);
         else
             [~,idx_start]=nanmin(dt_before);
@@ -86,8 +77,7 @@ else
             start_time=surv_temp.EndTime;
         end
         
-        if isempty(find(~isnan(dt_after),1))
-            idx_end=length(layer.SurveyData);
+        if isempty(find(~isnan(dt_after),1));
             end_time=trans.Data.Time(end);
         else
             [~,idx_end]=nanmin(dt_after);
@@ -97,7 +87,6 @@ else
     end
     
 end
-
 
 
 if idx_modif>0

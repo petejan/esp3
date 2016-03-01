@@ -82,7 +82,6 @@ setappdata(main_figure,'Curr_disp',curr_disp_obj);
 setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',[]);
-setappdata(main_figure,'MBS',[]);
 
 movegui(main_figure,'center')
 
