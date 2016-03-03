@@ -1,12 +1,13 @@
 function add_survey_data(layers,survey_data_struct)
-%'Datapath' 'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'
+%'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'
 files={};
 nb_files=0;
 
 surv_data=cell(1,length(layers));
 for ilay=1:length(layers)
     idx_files_lay(nb_files+1:nb_files+length(layers(ilay).Filename))=ilay;
-    files=[files layers(ilay).Filename];
+    [~,files_temp]=layers(ilay).get_path_files();
+    files=[files files_temp];
     nb_files=nb_files+length(layers(ilay).Filename);
 end
 idx_files=1:nb_files;
@@ -27,7 +28,8 @@ for i=1:length(idx_loaded)
         
         [start_file_time,end_file_time]=layers(idx_lay(il)).get_time_bound_files();
         
-        ifile=strcmp(fullfile(survey_data_struct.Datapath(idx_loaded{i}(il)),survey_data_struct.Filename(idx_loaded{i}(il))),layers(idx_lay(il)).Filename);
+        [~,files_lay]=layers(idx_lay(il)).get_path_files();
+        ifile=find(strcmp(files_lay,survey_data_struct.Filename(idx_loaded{i}(il))));
         
         if start_time==0
             start_time=start_file_time(ifile);

@@ -86,14 +86,8 @@ for isn=1:length(snapshots)
                     'Stratum',strat_name,...
                     'Transect',trans_num);
                 
-                [pathtofiles,filenames]=surv_temp.get_files_from_surv_struct(surv_data_struct);
-                idx_same=find(cellfun(@(x) strcmp(x,snapshots{isn}.Folder),pathtofiles)==0,1);
-                if ~isempty(idx_same)
-                    fprintf('Some files from %s Snapshot %.0f Stratum %s Transect %.0f seem to be in another folder... Check the logbook\n',...
-                        surveyName,snap_num,strat_name,trans_num);
-                    valid=0;
-                    continue;
-                end
+                filenames=surv_temp.get_files_from_surv_struct(surv_data_struct);
+
                 if ~isempty(filenames(:))
                 fprintf(' Files added to Snapshot %.0f Stratum %s Transect %.0f:\n',...
                     snap_num,strat_name,trans_num);

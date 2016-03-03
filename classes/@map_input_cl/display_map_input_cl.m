@@ -212,7 +212,8 @@ function create_context_menu_line(main_figure,hfig,line)
 context_menu=uicontextmenu;
 line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Load/Display this Line(s)','Callback',{@activate_line_callback,main_figure,hfig});
-uimenu(context_menu,'Label','Edit Survey Data','Callback',{@edit_survey_data_map_callback,main_figure,hfig});
+%uimenu(context_menu,'Label','Edit Survey
+%Data','Callback',{@edit_survey_data_map_callback,main_figure,hfig});%TOFIX!!!!
 
 end
 

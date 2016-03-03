@@ -8,7 +8,7 @@ end
 
 surv_data_struct=import_survey_data(fullfile(path,'echo_logbook.csv'));
 
-idx_surv_data=find(strcmp(path,surv_data_struct.Datapath)&strcmp(file,surv_data_struct.Filename));
+idx_surv_data=find(strcmp(file,surv_data_struct.Filename));
 
 survey_data=cell(1,length(idx_surv_data));
 for i=1:length(idx_surv_data)

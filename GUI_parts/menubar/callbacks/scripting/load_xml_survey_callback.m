@@ -53,8 +53,8 @@ for i=1:length(Filename)
         save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
         outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
         surv_obj.print_output(outputFile);
-
         layers_old=[layers_old layers_new];
+        
     catch err
         disp(err.message);
         warning('Could not process survey described in file %s\n',Filename{i});

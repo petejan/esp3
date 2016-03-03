@@ -149,7 +149,12 @@ if ~isequal(Filename, 0)
     
     survey_struct=import_survey_data(fullfile(path_tmp,'echo_logbook.csv'));
     
-    [~,~,idx_missing]=find_survey_data(Filename,survey_struct);
+    [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
+    for ic=1:length(files_lay)
+        files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
+    end
+    
+    [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
     
     idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
     
@@ -162,8 +167,8 @@ if ~isequal(Filename, 0)
         switch choice
             case 'Yes'
                 for ifile_miss=idx_incomp
-                    miss_files=fullfile(survey_struct.Datapath(idx_missing{ifile_miss}),survey_struct.Filename(idx_missing{ifile_miss}));
-                    Filename=[Filename miss_files'];
+                    miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
+                    Filename=[Filename miss_files];
                 end
             case 'No'
             otherwise

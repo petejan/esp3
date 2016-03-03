@@ -131,8 +131,8 @@ switch class(Ext_obj)
                 obj.SliceLat{i}=output.slice_lat_esp2;
                 obj.SliceLon{i}=output.slice_lon_esp2;
                 obj.SliceAbscf{i}=output.slice_abscf;
-                obj.Slice_Time_S{i}=output.slice_time_start;
-                obj.Slice_Time_E{i}=output.slice_time_end;
+                obj.SliceTime_S{i}=output.slice_time_start;
+                obj.SliceTime_E{i}=output.slice_time_end;
             end
         end
         

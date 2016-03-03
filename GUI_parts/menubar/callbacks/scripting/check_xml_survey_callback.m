@@ -37,6 +37,8 @@ for i=1:length(Filename)
     if valid==0
         warning('It looks like there is a problem with XML survey file %s\n',Filename{i});
         continue;
+    else
+        disp('Script appears to be valid...') 
     end
    
 end

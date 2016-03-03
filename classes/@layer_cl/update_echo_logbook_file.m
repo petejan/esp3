@@ -46,7 +46,7 @@ for ilay=1:length(layers_obj)
             end
         end
         
-        fprintf(fid,'Datapath,Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
+        fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
         
         for i=1:nb_files
             file_curr=deblank(list_raw(i,:));
@@ -56,7 +56,7 @@ for ilay=1:length(layers_obj)
             if isempty(idx_file)
                 if ~isempty(idx_file_cvs)
                     
-                    for is=idx_file_cvs'
+                    for is=idx_file_cvs
                         if~isnan(surv_data_struct.StartTime(is))
                             startTime=surv_data_struct.StartTime(is);
                         else
@@ -85,8 +85,7 @@ for ilay=1:length(layers_obj)
                             surv_name_temp=surv_name;
                         end
                         
-                        fprintf(fid,'%s,%s,%s,%s,%.0f,%s,%.0f,%.0f,%.0f\n',...
-                            surv_data_struct.Datapath{is},...
+                        fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%.0f,%.0f\n',...
                             voy_temp,...
                             surv_name_temp,...
                             strrep(file_curr,' ',''),...
@@ -100,8 +99,7 @@ for ilay=1:length(layers_obj)
                 else
                     
                     start_date=get_start_date_from_raw(file_curr);
-                    fprintf(fid,'%s,%s,%s,%s,0, ,0,%.0f,1\n',...
-                        path_lay{1},...
+                    fprintf(fid,'%s,%s,%s,0, ,0,%.0f,1\n',...
                         voy,...
                         surv_name,...
                         strrep(file_curr,' ',''),...
@@ -134,7 +132,7 @@ for ilay=1:length(layers_obj)
                         endTime=survey_data_temp{i_cell}.EndTime;
                         
                         if (end_file_time(ifi)<startTime||start_file_time(ifi)>(endTime))
-                            continue;
+                           warning('There might be some time issues in the logbook');
                         end
                         
                         if startTime~=0
@@ -148,8 +146,7 @@ for ilay=1:length(layers_obj)
                         endTimeStr=datestr(endTime,'yyyymmddHHMMSS');
                         startTimeStr=datestr(startTime,'yyyymmddHHMMSS');
                         
-                        fprintf(fid,'%s,%s,%s,%s,%.0f,%s,%.0f,%s,%s\n',...
-                            path_lay{ifi},...
+                        fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%s,%s\n',...
                             voy_temp,...
                             surv_name_temp,...
                             strrep(file_curr,' ',''),...
@@ -162,7 +159,7 @@ for ilay=1:length(layers_obj)
                     else
                         endTimeStr=datestr(layer_obj.Transceivers(1).Data.Time(end),'yyyymmddHHMMSS');
                         startTimeStr=datestr(layer_obj.Transceivers(1).Data.Time(1),'yyyymmddHHMMSS');
-                        fprintf(fid,'%s,%s,%s,%s,0, ,0,%s,%s\n',path_lay{ifi},voy,surv_name,strrep(file_curr,' ',''),startTimeStr,endTimeStr);
+                        fprintf(fid,'%s,%s,%s,0, ,0,%s,%s\n',voy,surv_name,strrep(file_curr,' ',''),startTimeStr,endTimeStr);
                     end
                 end
                 

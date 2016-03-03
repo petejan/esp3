@@ -2,9 +2,9 @@ function surv_data_struct=import_survey_data(FileN)
 surv_data_struct=[];
 
 if exist(FileN,'file')==2
-    surv_data_struct=csv2struct(FileN);
+    surv_data_struct=csv2struct_perso(FileN);
     
-    if ~isempty(find(isfield(surv_data_struct,{'Datapath' 'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'})==0, 1))
+    if ~isempty(find(isfield(surv_data_struct,{'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'})==0, 1))
         surv_data_struct=[];
         warning('cannot find required fields in the *.csv file...');
     end
@@ -18,6 +18,7 @@ if exist(FileN,'file')==2
     end
     
     if ~iscell(surv_data_struct.Stratum)
+        surv_data_struct.Stratum(isnan(surv_data_struct.Stratum))=0;
         surv_data_struct.Stratum=replace_vec_per_cell(surv_data_struct.Stratum);
     end
     

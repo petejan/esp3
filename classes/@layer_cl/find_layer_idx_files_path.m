@@ -21,7 +21,11 @@ if strcmp(pathtofile(end),'\')
     idx_path_2=find(cellfun(@(x) strcmp(x,pathtofile(1:end-1)),path_lay));
     idx_path=union(idx_path,idx_path_2);
 end
-idx_files=find(cellfun(@(x) nansum(strcmp(x,files)==0)==0,files_lay));
+
+idx_files_1=find(cellfun(@(x) length(x)==length(files),files_lay));%TOFIX when layers have different number of files...
+idx_files_2=(cellfun(@(x) nansum(strcmp(x,files)==0)==0,files_lay(idx_files_1)));%TOFIX when layers have different number of files...
+
+idx_files=idx_files_1(idx_files_2);
 
 idx=intersect(idx_path,idx_files);
 
