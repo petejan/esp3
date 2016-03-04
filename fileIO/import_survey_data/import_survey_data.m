@@ -18,8 +18,9 @@ if exist(FileN,'file')==2
     end
     
     if ~iscell(surv_data_struct.Stratum)
-        surv_data_struct.Stratum(isnan(surv_data_struct.Stratum))=0;
+        idx_nan=isnan(surv_data_struct.Stratum);
         surv_data_struct.Stratum=replace_vec_per_cell(surv_data_struct.Stratum);
+        surv_data_struct.Stratum(idx_nan)={' '};
     end
     
 end

@@ -11,17 +11,17 @@ end
 
 new_layers.load_echo_logbook();
 
-new_layers_sorted=new_layers.sort_per_survey_data();
+% new_layers_sorted=new_layers.sort_per_survey_data();
+% 
+% disp('Shuffling layers');
+% layers_out=[];
+% 
+% for icell=1:length(new_layers_sorted)
+%     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
+% end
 
-disp('Shuffling layers');
-layers_out=[];
 
-for icell=1:length(new_layers_sorted)
-    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
-end
-
-
-map_obj=map_input_cl.map_input_cl_from_obj(layers_out);
+map_obj=map_input_cl.map_input_cl_from_obj(new_layers);
  
 hfigs=getappdata(hObject,'ExternalFigures');
 

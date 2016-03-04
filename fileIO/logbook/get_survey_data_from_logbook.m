@@ -1,12 +1,15 @@
-function survey_data=get_survey_data_from_logbook(path,file)
+function survey_data=get_survey_data_from_logbook(file_full)%file_full is the full filename with path (str)
 
-file_name=fullfile(path,'echo_logbook.csv');
+[path_f,file_name,file_ext]=fileparts(file_full);
+
+file=[file_name,file_ext];
+file_name=fullfile(path_f,'echo_logbook.csv');
 
 if exist(file_name,'file')==0
-    initialize_echo_logbook_file(path);
+    initialize_echo_logbook_file(path_f);
 end
 
-surv_data_struct=import_survey_data(fullfile(path,'echo_logbook.csv'));
+surv_data_struct=import_survey_data(fullfile(path_f,'echo_logbook.csv'));
 
 idx_surv_data=find(strcmp(file,surv_data_struct.Filename));
 

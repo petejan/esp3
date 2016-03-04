@@ -42,6 +42,7 @@ uimenu(m_survey,'Label','Display logbook','Callback',{@logbook_display_callback,
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
 uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
+uimenu(mhhhh,'Label','Re-shuffle Layers','Callback',{@reshuffle_layers_callback,main_figure});
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
@@ -107,6 +108,9 @@ end
 function logbook_display_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
+if isempty(layer)
+    return;
+end
 [path_lay,~]=layer.get_path_files();
 
 file=fullfile(path_lay{1},'echo_logbook.csv');
@@ -114,9 +118,12 @@ if exist(file,'file')==0
     initialize_echo_logbook_file(path_lay{1});
 end
 
-
-system(sprintf('start  %s',file));%TOFIX
-
+try
+    system(sprintf('start notepad++ "%s"',file));
+catch
+    diap('You should install Notepad++...')
+    system(sprintf('start "" "%s"',file));
+end
 
 end
 

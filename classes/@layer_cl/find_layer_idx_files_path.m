@@ -1,36 +1,28 @@
-function [idx,found]=find_layer_idx_files_path(layers,pathtofile,files)
-
-if iscell(pathtofile)
-    pathtofile=pathtofile{1};
-end
+function [idx_lays,found]=find_layer_idx_files_path(layers,filenames)
 
 
-files_lay=cell(1,length(layers));
-path_lay=cell(1,length(layers));
+[filenames_lays,layer_IDs]=layers.list_files_layers();
 
-for i=1:length(layers)
-    if isvalid(layers(i))
-        [path_lay_temp,files_lay{i}]=layers(i).get_path_files();
-        path_lay{i}=path_lay_temp{1};
+idx_lays=[];
+for ifi=1:length(filenames)
+    idx_f=find(strcmpi(filenames{ifi},filenames_lays));
+    if isempty(idx_f)
+        continue;
     end
+    id_lays=unique(layer_IDs(idx_f));
+    for i=1:length(id_lays)
+        [idx_tmp,found_id]=layers.find_layer_idx(id_lays(i));
+        if found_id==1
+            idx_lays=[idx_tmp idx_lays];
+        end
+    end
+    
 end
 
-idx_path=find(cellfun(@(x) strcmp(x,pathtofile),path_lay));
+idx_lays=unique(idx_lays);
 
-if strcmp(pathtofile(end),'\')
-    idx_path_2=find(cellfun(@(x) strcmp(x,pathtofile(1:end-1)),path_lay));
-    idx_path=union(idx_path,idx_path_2);
-end
-
-idx_files_1=find(cellfun(@(x) length(x)==length(files),files_lay));%TOFIX when layers have different number of files...
-idx_files_2=(cellfun(@(x) nansum(strcmp(x,files)==0)==0,files_lay(idx_files_1)));%TOFIX when layers have different number of files...
-
-idx_files=idx_files_1(idx_files_2);
-
-idx=intersect(idx_path,idx_files);
-
-if isempty(idx)
-    idx=1;
+if isempty(idx_lays)
+    idx_lays=1;
     found=0;
 else
     found=1;

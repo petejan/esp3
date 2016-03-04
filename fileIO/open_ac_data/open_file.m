@@ -175,36 +175,35 @@ if ~isequal(Filename, 0)
                 return;
         end
         Filename=unique(Filename);
-
+        
     end
     
+    
+    %         if ask_q==1
+    %             choice = questdlg('Do you want to open files as separate layers?', ...
+    %                 'File opening mode',...
+    %                 'Yes','No',...'Force Concatenation', ...
+    %                 'Yes');
+    %             % Handle response
+    %             switch choice
+    %                 case 'Yes'
+    %                     multi_layer=1;
+    %                     %read_all=0;
+    %                 case 'No'
+    %                     multi_layer=0;
+    %                     %read_all=1;
+    %                 case 'Force Concatenation'
+    %                     multi_layer=-1;
+    %                 otherwise
+    %                     return;
+    %             end
     %
-    %     if ask_q==1
-    %         choice = questdlg('Do you want to open files as separate layers?', ...
-    %             'File opening mode',...
-    %             'Yes','No',...'Force Concatenation', ...
-    %             'Yes');
-    %         % Handle response
-    %         switch choice
-    %             case 'Yes'
-    %                 multi_layer=1;
-    %                 read_all=0;
-    %             case 'No'
-    %                 multi_layer=0;
-    %                 read_all=1;
-    %             case 'Force Concatenation'
-    %                 multi_layer=-1;
-    %                 read_all=1;
-    %             otherwise
+    %             if isempty(choice)
     %                 return;
+    %             end
+    %         else
+    %             multi_layer=0;
     %         end
-    %
-    %         if isempty(choice)
-    %             return;
-    %         end
-    %     else
-    %         multi_layer=0;
-    %     end
     
     %  if ~strcmp(ftype,'dfile')
     %         if multi_layer==0&&ID_num~=0&&~isempty(layers)

@@ -37,7 +37,6 @@ end
 obj.SurveyName=cell(1,nb_trans);
 obj.Voyage=cell(1,nb_trans);
 obj.Filename=cell(1,nb_trans);
-obj.PathToFile=cell(1,nb_trans);
 obj.Snapshot=zeros(1,nb_trans);
 obj.Stratum=cell(1,nb_trans);
 obj.Transect=zeros(1,nb_trans);
@@ -69,7 +68,6 @@ switch class(Ext_obj)
                 obj.Voyage{i}=mbs_head.title;
             end
             obj.SurveyName{i}=mbs_head.title;
-            obj.PathToFile{i}='';
             obj.SliceLat{i}=mbs_out{i,6};
             obj.SliceLon{i}=mbs_out{i,7};
             obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
@@ -92,9 +90,7 @@ switch class(Ext_obj)
         
     case 'layer_cl'
         for i=1:nb_trans
-            [path_l,files]=layers(i).get_path_files();
-            obj.Filename{i}=files;
-            obj.PathToFile{i}=path_l;
+            obj.Filename{i}=layers(i).Filename;
             obj.Lat{i}=layers(i).GPSData.Lat;
             obj.Lon{i}=layers(i).GPSData.Long;
             obj.Time{i}=layers(i).GPSData.Time;
@@ -175,17 +171,10 @@ switch class(Ext_obj)
                 &obj.Transect(i)==survey_obj.SurvOutput.regionSum.transect,1);
             
             if ~isempty(idx_file)
-                [path_lay,files_lay,ext_lay]=cellfun(@fileparts,survey_obj.SurvOutput.regionSum.file{idx_file},'UniformOutput',0);
-                for ic=1:length(path_lay)
-                    files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
-                end
-                obj.Filename{i}=files_lay;
-                obj.PathToFile{i}=path_lay;
+                obj.Filename{i}=survey_obj.SurvOutput.regionSum.file{idx_file};
             else
-                obj.Filename{i}='';
-                obj.PathToFile{i}=survey_obj.SurvInput.Snapshots{idx_snap}.Folder;
+                obj.Filename{i}={''};
             end
-            idx_snap=(obj.Snapshot(i)==survey_obj.SurvOutput.stratumSum.snapshot);
             
         end
 end

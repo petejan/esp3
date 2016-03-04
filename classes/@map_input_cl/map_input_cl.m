@@ -5,7 +5,6 @@ classdef map_input_cl
         Snapshot
         Stratum
         Transect
-        PathToFile
         Filename
         Lat
         Lon
@@ -38,7 +37,6 @@ classdef map_input_cl
             addParameter(p,'Stratum',{},@iscell);
             addParameter(p,'Transect',[],@isnumeric);
             addParameter(p,'Filename',{},@iscell);
-            addParameter(p,'PathToFile',{},@iscell);
             addParameter(p,'Lat',{},@iscell);
             addParameter(p,'Lon',{},@iscell);
             addParameter(p,'Time',{},@iscell);

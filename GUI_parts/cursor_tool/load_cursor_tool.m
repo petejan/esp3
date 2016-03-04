@@ -6,7 +6,8 @@ layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
 
 nb_layers=length(layers);
-layers_Str=list_layers(layers);
+layers_Str=list_layers(layers,'nb_char',80);
+layers_Str_comp=list_layers(layers);
 
 [path_lay,~]=layer.get_path_files();
 
@@ -18,13 +19,10 @@ if isappdata(main_figure,'Cursor_mode_tool')
          cursor_mode_tool_comp.jCombo.addItem(layers_Str{i});
     end
     set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
-    set(cursor_mode_tool_comp.jCombo,'ToolTipText',path_lay{1})
+    set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx}]);
 else
     
    
-    
-    
-    
     cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure);
     
     icon=get_icons_cdata(fullfile(app_path.main,'icons'));
@@ -53,7 +51,7 @@ else
         set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(500,500));
         set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
         set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0));
-        set(cursor_mode_tool_comp.jCombo,'ToolTipText',path_lay{1})
+        set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx}])
         jToolbar(1).add(cursor_mode_tool_comp.jCombo,6);
         jToolbar(1).repaint;
         jToolbar(1).revalidate;

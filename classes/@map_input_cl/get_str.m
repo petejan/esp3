@@ -12,16 +12,17 @@ if isempty(idx)
 end
 str=cell(1,length(idx));
 for i=1:length(idx)
+    
     if iscell(obj.Filename{idx(i)})
         str_temp=sprintf('%s\n',obj.Filename{idx(i)}{:});
-        str_temp=str_temp(1:end-1);
     else
         str_temp=obj.Filename{idx(i)};
     end
     
-    if ~isempty(obj.Stratum{i})
-        str{i}=sprintf('File %s\n Snap. %d Strat. %s Trans. %d\n',...
-            str_temp,obj.Snapshot(idx(i)),obj.Stratum{idx(i)},obj.Transect(idx(i)));
+    if ~isempty(obj.Stratum{idx(i)})
+        str{i}=sprintf('Snap. %d Strat. %s Trans. %d\n File(s):\n %s',...
+            obj.Snapshot(idx(i)),obj.Stratum{idx(i)},obj.Transect(idx(i)),str_temp);
+        
         if obj.Snapshot(idx(i))==0&&strcmp(obj.Stratum(idx(i)),' ')&&obj.Transect(idx(i))==0
             str{i}=str_temp;
         end
