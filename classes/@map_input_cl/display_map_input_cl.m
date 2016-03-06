@@ -184,7 +184,7 @@ switch hfig.SelectionType
         axes(ax);
         text(x,y,str{1},'Interpreter','None','Tag','name');
         
-        dim = [0.1 0.1 0.2 0.3];
+        %dim = [0.1 0.1 0.2 0.3];
         
         %annotation('textbox',dim,'String',str{1},'FitBoxToText','on','Interpreter','None','Tag','name');
         

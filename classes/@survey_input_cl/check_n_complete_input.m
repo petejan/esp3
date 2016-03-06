@@ -89,15 +89,13 @@ for isn=1:length(snapshots)
                 filenames=surv_temp.get_files_from_surv_struct(surv_data_struct);
 
                 if ~isempty(filenames(:))
-                fprintf(' Files added to Snapshot %.0f Stratum %s Transect %.0f:\n',...
-                    snap_num,strat_name,trans_num);
-                
-                fprintf('%s \n',filenames{:});
-                
-                surv_input_obj.Snapshots{isn}.Stratum{ist}.Transects{itr}.files=filenames;
+                    fprintf(' Files added to Snapshot %.0f Stratum %s Transect %.0f:\n',...
+                        snap_num,strat_name,trans_num);                    
+                    fprintf('%s \n',filenames{:});
+                    surv_input_obj.Snapshots{isn}.Stratum{ist}.Transects{itr}.files=filenames;
                 else
-                fprintf('!!!!!!!!!!!!No Files found in Snapshot %.0f Stratum %s Transect %.0f:\n',...
-                    snap_num,strat_name,trans_num);
+                    fprintf('!!!!!!!!!!!!No Files found in Snapshot %.0f Stratum %s Transect %.0f:\n',...
+                        snap_num,strat_name,trans_num);
                     valid=0;
                 end
             end

@@ -10,7 +10,11 @@ for k = 1:length(regionSum.snapshot)
             case 'file'
                 for ifs=1:length(regionSum.(fields{iu}){k})
                     [~,file,~]=fileparts(regionSum.(fields{iu}){k}{ifs});
-                    str=[str ';' file];
+                    if ifs>1
+                        str=[str ';' file];
+                    else
+                        str=[str file];
+                    end
                 end
                 
             otherwise

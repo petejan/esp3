@@ -7,6 +7,8 @@ addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'reg',init_reg,@(x) isstruct(x)||isempty(x));
 addParameter(p,'Slice_w',100,@(x) x>0);
 addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
+addParameter(p,'StartTime',0,@(x) x>0);
+addParameter(p,'EndTime',1,@(x) x>0);
 
 parse(p,trans_obj,varargin{:});
 
@@ -25,11 +27,26 @@ else
 end
 
 
+if p.Results.StartTime~=0
+    st=trans_obj.Data.Time(1);
+else
+    st=p.Results.StartTime;
+end
+
+if p.Results.EndTime~=1
+    et=trans_obj.Data.Time(end);
+else
+    et=p.Results.EndTime;
+end
+
+idx_valid=trans_obj.Data.Time>=st&trans_obj.Data.Time<=et;
+
+
 switch Slice_units
     case 'pings'
-        bin_ref=trans_obj.Data.Number;
+        bin_ref=trans_obj.Data.Number(idx_valid);
     case 'meters'
-        bin_ref=trans_obj.GPSDataPing.Dist;
+        bin_ref=trans_obj.GPSDataPing.Dist(idx_valid);
 end
 
 bins=unique([bin_ref(1):Slice_w:bin_ref(end) bin_ref(end)]);

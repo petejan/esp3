@@ -85,7 +85,7 @@ uimenu(track_tools,'Label','Create Exclude Regions from Tracks','Callback',{@cre
 mbs = uimenu(main_figure,'Label','Scripting','Tag','menumbs');
 uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
 uimenu(mbs,'Label','Check XML scripts','Callback',{@check_xml_survey_callback,main_figure});
-uimenu(mbs,'Label','Load Survey(s) from XML','Callback',{@load_xml_survey_callback,main_figure});
+uimenu(mbs,'Label','Integrate Survey(s) from XML','Callback',{@load_xml_survey_callback,main_figure});
 uimenu(mbs,'Label','Plot survey results from Survey Output files','Callback',{@plot_survey_results_callback,main_figure});
 
 

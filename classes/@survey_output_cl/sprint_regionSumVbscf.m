@@ -14,7 +14,11 @@ for k = 1:length(regionSumVbscf.snapshot)
             case 'file'
                 for ifs=1:length(regionSumVbscf.(fields{iu}){k})
                     [~,file,~]=fileparts(regionSumVbscf.(fields{iu}){k}{ifs});
-                    str=[str ';' file];
+                    if ifs>1
+                        str=[str ';' file];
+                    else
+                        str=[str file];
+                    end
                 end
                 
             otherwise

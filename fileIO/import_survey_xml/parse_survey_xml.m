@@ -8,6 +8,7 @@ if ~strcmpi(xml_struct.Name,'survey_processing')
     return;
 end
 
+Algos={};
 
 nb_child=length(xml_struct.Children);
 nb_reg=0;
@@ -109,7 +110,10 @@ snapshot_struct.Stratum=cell(1,length(stratum));
 for i=1:length(stratum)
     strat_curr.Name=get_att(stratum(i),'name');
     strat_curr.Transects=get_transects(stratum(i));
-    snapshot_struct.Stratum{1}=strat_curr;
+    if isnumeric(strat_curr.Name)
+           strat_curr.Name=num2str(strat_curr.Name,'%.0f');
+    end
+    snapshot_struct.Stratum{i}=strat_curr;
 end
 
 end

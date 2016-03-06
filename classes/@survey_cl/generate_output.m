@@ -15,19 +15,29 @@ surv_in_obj=surv_obj.SurvInput;
 
 vert_slice = surv_in_obj.Options.Vertical_slice_size;
 
-snap_lay=nan(1,length(layers));
-strat_lay=cell(1,length(layers));
-trans_lay=nan(1,length(layers));
-nb_reg_lay=nan(1,length(layers));
-
+% snap_lay=nan(1,length(layers));
+% strat_lay=cell(1,length(layers));
+% trans_lay=nan(1,length(layers));
+% nb_reg_lay=nan(1,length(layers));
+nb_survd=0;
 for it=1:length(layers)
-    survd=layers(it).get_survey_data();
-    snap_lay(it)=survd.Snapshot;
-    strat_lay{it}=survd.Stratum;
-    trans_lay(it)=survd.Transect;
-    idx_freq=find_freq_idx(layers(it),surv_in_obj.Options.Frequency);
-    idx_reg=layers(it).Transceivers(idx_freq).list_regions_type('Data');
-    nb_reg_lay(it)=length(idx_reg);
+    
+    for is=1:length(layers(it).SurveyData)
+        nb_survd=nb_survd+1;
+        survd=layers(it).get_survey_data('Idx',is);    
+        if isempty(survd)
+            nb_survd=nb_survd-1;
+        end
+        snap_lay(nb_survd)=survd.Snapshot;
+        strat_lay{nb_survd}=survd.Stratum;
+        trans_lay(nb_survd)=survd.Transect;
+        end_time(nb_survd)=survd.EndTime;
+        start_time(nb_survd)=survd.StartTime;
+        idx_freq=find_freq_idx(layers(it),surv_in_obj.Options.Frequency);
+        idx_reg=layers(nb_survd).Transceivers(idx_freq).list_regions_type('Data');
+        nb_reg_lay(nb_survd)=length(idx_reg);
+        layer_idx(nb_survd)=it;
+    end
     
 end
 
@@ -69,7 +79,7 @@ for isn=1:length(snapshots)
             time_track=[];
             TS_mean_track=[];
             for ilay=idx_lay
-                layer_obj_tr=layers(ilay);
+                layer_obj_tr=layers(layer_idx(ilay));
                 idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
                 gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
                 bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
@@ -80,7 +90,7 @@ for isn=1:length(snapshots)
                     nb_st=nb_st+length(trans_obj_tr.ST.TS_comp);
                 end
                                   
-                if ~isempty(trans_obj_tr.Tracks.target_id)
+                if ~isempty(trans_obj_tr.Tracks)
                     nb_tracks=nb_tracks+length(trans_obj_tr.Tracks.target_id);
                     lat_st=trans_obj_tr.GPSDataPing.Lat(trans_obj_tr.ST.Ping_number);
                     lon_st=trans_obj_tr.GPSDataPing.Long(trans_obj_tr.ST.Ping_number);
@@ -98,12 +108,22 @@ for isn=1:length(snapshots)
                         ping_num_track=[ping_num_track nanmean(ping_num_st(idx_tr))];
                         TS_mean_track=[TS_mean_track  pow2db_perso(nanmean(db2pow_perso(TS_st(idx_tr))))];
                     end
+                    
+                    idx_time_out=start_time(ilay)<time_track|time_track>end_time(ilay);
+                    lat_track(idx_time_out)=[];
+                    lon_track(idx_time_out)=[];
+                    time_track(idx_time_out)=[];
+                    depth_track(idx_time_out)=[];
+                    ping_num_track(idx_time_out)=[];
+                    TS_mean_track(idx_time_out)=[];
+                    
                 end
                 
                 idx_reg=trans_obj_tr.list_regions_type('Data');
                 reg_tot=trans_obj_tr.get_reg_spec(idx_reg);
-                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings');
+                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',start_time(ilay),'EndTime',end_time(ilay));
                 Output_echo=[Output_echo sliced_output];
+                
                 for j=1:length(regs)
                     i_reg=i_reg+1;
                     reg_curr =regs{j};
