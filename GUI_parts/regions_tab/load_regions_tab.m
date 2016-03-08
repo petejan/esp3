@@ -96,7 +96,7 @@ uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','u
 
 region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Create','units','normalized','pos',[0.45 0.3 0.125 0.15],'callback',{@create_region_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.575 0.3 0.125 0.15],'callback',{@recompute_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.7 0.3 0.125 0.15],'callback',{@delete_region_callback,main_figure,[]});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.7 0.3 0.125 0.15],'callback',{@delete_region_callback,main_figure,[],[]});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Del. Across Freq.','TooltipString','Delete Across Frequencies','units','normalized','pos',[0.825 0.3 0.125 0.15],'callback',{@rm_over_freq_callback,main_figure});
 
 setappdata(main_figure,'Region_tab',region_tab_comp);

@@ -17,7 +17,7 @@ if iscell(file_id)
     Filename=file_id;
 else
     if file_id==0
-        [Filename,path_f]= uigetfile( {fullfile(file_path,'*.raw;d*')}, 'Pick a raw/crest file','MultiSelect','on');
+        [Filename,path_f]= uigetfile( {fullfile(file_path,'*.raw;d*;*A')}, 'Pick a raw/crest/asl file','MultiSelect','on');
         if isempty(Filename)
             return;
         end
@@ -29,7 +29,7 @@ else
             Filename={Filename};
         end
         
-        idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
+        idx_keep=~cellfun(@isempty,regexp(Filename(:),'(A$|raw$|^d.*\d$)'));
         Filename=Filename(idx_keep);
         if isempty(Filename)
             return;
@@ -48,7 +48,7 @@ else
         end
         
         f = dir(file_path);
-        file_list=({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
+        file_list=({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|^d.*\d$)'))).name}');
         
         if ~isempty(file_list)
             i=1;
@@ -74,7 +74,7 @@ else
         end
         
         f = dir(file_path);
-        file_list=({f(~cellfun(@isempty,regexp({f.name},'(raw$|^d.*\d$)'))).name}');
+        file_list=({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|^d.*\d$)'))).name}');
         if ~isempty(file_list)
             i=size(file_list,1);
             file_diff=0;
@@ -124,8 +124,17 @@ if ~isequal(Filename, 0)
             ftype='EK80';
         case 'CON0'
             ftype='EK60';
+
         otherwise
+            fid = fopen(Filename_tmp, 'r','l');
+            dgType=fread(fid,1,'uint16');
+            fclose(fid);
+        if hex2dec('FD02')~=dgType
+            ftype='asl';
+        else
             ftype='dfile';
+        end
+            
     end
 else
     return
@@ -149,35 +158,37 @@ if ~isequal(Filename, 0)
     
     survey_struct=import_survey_data(fullfile(path_tmp,'echo_logbook.csv'));
     
-    [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
-    for ic=1:length(files_lay)
-        files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
-    end
-    
-    [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
-    
-    idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
-    
-    if ~isempty(idx_incomp)
-        choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
-            'Incomplete',...
-            'Yes','No',...'Force Concatenation', ...
-            'Yes');
-        % Handle response
-        switch choice
-            case 'Yes'
-                for ifile_miss=idx_incomp
-                    miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
-                    Filename=[Filename miss_files];
-                end
-            case 'No'
-            otherwise
-                return;
-        end
-        Filename=unique(Filename);
+    if ~isempty(survey_struct)
         
+        [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
+        for ic=1:length(files_lay)
+            files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
+        end
+        
+        [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
+        
+        idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
+        
+        if ~isempty(idx_incomp)
+            choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
+                'Incomplete',...
+                'Yes','No',...'Force Concatenation', ...
+                'Yes');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    for ifile_miss=idx_incomp
+                        miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
+                        Filename=[Filename miss_files];
+                    end
+                case 'No'
+                otherwise
+                    return;
+            end
+            Filename=unique(Filename);
+            
+        end
     end
-    
     
     %         if ask_q==1
     %             choice = questdlg('Do you want to open files as separate layers?', ...
@@ -252,7 +263,9 @@ if ~isequal(Filename, 0)
         case 'EK60'
             open_EK60_file(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)
         case 'EK80'
-            open_EK80_files(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)
+            open_EK80_files(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)    
+        case 'asl'
+            open_asl_files(main_figure,Filename);        
         case 'dfile'
             choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
                 'd-file/raw_file',...

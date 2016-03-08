@@ -7,6 +7,7 @@ if exist(FileN,'file')==2
     if ~isempty(find(isfield(surv_data_struct,{'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'})==0, 1))
         surv_data_struct=[];
         warning('cannot find required fields in the *.csv file...');
+        return;
     end
     
     if ~iscell(surv_data_struct.Voyage)

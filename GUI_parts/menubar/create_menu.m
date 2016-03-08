@@ -1,4 +1,5 @@
 function create_menu(main_figure)
+curr_disp=getappdata(main_figure,'Curr_disp');
 
 m_files = uimenu(main_figure,'Label','File','Tag','menufile');
 uimenu(m_files,'Label','Open file','Callback',{@open_file,0,main_figure});
@@ -54,9 +55,24 @@ uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_
 
 
 m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
-main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@set_axes_position_callback,main_figure},'Tag','col');
-main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@set_axes_position_callback,main_figure},'Tag','axv');
-main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@set_axes_position_callback,main_figure},'Tag','axh');
+main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
+main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
+main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axh');
+
+main_menu.disp_bottom=uimenu(m_display,'checked',curr_disp.DispBottom,'Label','Display bottom');
+main_menu.disp_bad_trans=uimenu(m_display,'checked',curr_disp.DispBadTrans,'Label','Display Bad transmits');
+main_menu.disp_reg=uimenu(m_display,'checked',curr_disp.DispReg,'Label','Display Regions');
+main_menu.disp_tracks=uimenu(m_display,'checked',curr_disp.DispTracks,'Label','Display_tracks');
+main_menu.disp_lines=uimenu(m_display,'checked',curr_disp.DispLines,'Label','Display Lines');
+main_menu.disp_under_bot=uimenu(m_display,'checked',curr_disp.DispUnderBottom,'Label','Display Under Bottom data');
+main_menu.display_file_lines=uimenu(m_display,'checked','off','Label','Display File Lines','Callback',{@checkbox_callback,main_figure,@display_file_lines});
+main_menu.reverse_y_axis=uimenu(m_display,'checked','off','Label','Reverse Y-Axis','Callback',{@checkbox_callback,main_figure,@reverse_y_axis});
+
+
+set([main_menu.disp_tracks main_menu.disp_under_bot main_menu.disp_bottom main_menu.disp_bad_trans main_menu.disp_lines main_menu.disp_reg],'callback',{@set_curr_disp,main_figure});
+
+
+
 main_menu.close_all_fig=uimenu(m_display,'Label','Close All External Figures','Callback',{@close_figures_callback,main_figure});
 
 mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
@@ -126,4 +142,51 @@ catch
 end
 
 end
+
+function set_curr_disp(src,~,main_figure)
+main_menu=getappdata(main_figure,'main_menu');
+curr_disp=getappdata(main_figure,'Curr_disp');
+
+switch src
+    case main_menu.disp_bad_trans
+         if strcmp(get(src,'checked'),'off')
+            curr_disp.DispBadTrans='on';
+        else
+            curr_disp.DispBadTrans='off';
+         end
+    case main_menu.disp_reg
+         if strcmp(get(src,'checked'),'off')
+            curr_disp.DispReg='on';
+        else
+            curr_disp.DispReg='off';
+         end
+    case main_menu.disp_lines
+        if strcmp(get(src,'checked'),'off')
+            curr_disp.DispLines='on';
+        else
+            curr_disp.DispLines='off';
+        end
+    case main_menu.disp_bottom
+        if strcmp(get(src,'checked'),'off')
+            curr_disp.DispBottom='on';
+        else
+            curr_disp.DispBottom='off';
+        end
+    case main_menu.disp_under_bot
+        if strcmp(get(src,'checked'),'off')
+            curr_disp.DispUnderBottom='on';
+        else
+            curr_disp.DispUnderBottom='off';
+        end
+    case main_menu.disp_tracks
+        if strcmp(get(src,'checked'),'off')
+            curr_disp.DispTracks='on';
+        else
+            curr_disp.DispTracks='off';
+        end     
+end
+
+setappdata(main_figure,'Curr_disp',curr_disp);
+end
+
 

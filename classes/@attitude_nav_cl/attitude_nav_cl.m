@@ -32,19 +32,23 @@ classdef attitude_nav_cl < handle
         
         function attitude_out=concatenate_AttitudeNavPing(attitude_1,attitude_2)
             
-
-                heading=[attitude_1.Heading(:); attitude_2.Heading(:)];
-                roll=[attitude_1.Roll(:); attitude_2.Roll(:)];
-                heave=[attitude_1.Heave(:); attitude_2.Heave(:)];
-                pitch=[attitude_1.Pitch(:); attitude_2.Pitch(:)];
-                time=[attitude_1.Time(:); attitude_2.Time(:)];
-         
+            if ~isempty(attitude_1)&&~isempty(attitude_2)
+            
+            heading=[attitude_1.Heading(:); attitude_2.Heading(:)];
+            roll=[attitude_1.Roll(:); attitude_2.Roll(:)];
+            heave=[attitude_1.Heave(:); attitude_2.Heave(:)];
+            pitch=[attitude_1.Pitch(:); attitude_2.Pitch(:)];
+            time=[attitude_1.Time(:); attitude_2.Time(:)];
+            
             
         attitude_out=attitude_nav_cl('Heading',heading,...
             'Roll',roll,...
             'Heave',heave,...
             'Pitch',pitch,...
             'Time',time);
+            else
+                attitude_out=attitude_nav_cl.empty();
+            end
         
         end
         

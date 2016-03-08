@@ -30,9 +30,9 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispBottom','on',@ischar);
             addParameter(p,'DispUnderBottom','on',@ischar);
             addParameter(p,'DispTracks','on',@ischar);
-            addParameter(p,'DispBadTrans',true,@islogical);
-            addParameter(p,'DispReg',true,@islogical);
-            addParameter(p,'DispLines',true,@islogical);
+            addParameter(p,'DispBadTrans','on',@ischar);
+            addParameter(p,'DispReg','on',@ischar);
+            addParameter(p,'DispLines','on',@ischar);
             addParameter(p,'Xaxes','Number',@ischar);
             addParameter(p,'Grid_x',100,@isnumeric);
             addParameter(p,'Grid_y',100,@isnumeric);

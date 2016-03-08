@@ -1,5 +1,5 @@
 function listenDispTracks(src,listdata,main_figure)
-display_tab_comp=getappdata(main_figure,'Display_tab');
-set(display_tab_comp.disp_tracks,'value',strcmpi(listdata.AffectedObject.DispTracks,'on'));
+main_menu=getappdata(main_figure,'main_menu');
+set(main_menu.disp_tracks,'checked',listdata.AffectedObject.DispTracks);
 toggle_disp_tracks(main_figure);
 end

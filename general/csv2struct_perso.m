@@ -14,6 +14,12 @@ nb_fields=length(fields);
 txt_str=fread(fid,'*char')';
 fclose(fid);
 
+if isempty(txt_str)
+    struct_out=[];
+    return;
+end
+
+
 data_cell=textscan(txt_str,'%s','Delimiter',',');
 data=data_cell{1};
 
@@ -33,7 +39,7 @@ for ifi=1:nb_fields
     if nansum(idx_valid)>0
         struct_out.(fields{ifi})=temp;
     end
-
+    
 end
 
 

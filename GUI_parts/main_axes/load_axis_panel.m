@@ -139,6 +139,8 @@ setappdata(main_figure,'Axes_panel',axes_panel_comp);
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
 set_axes_position(main_figure);
+display_file_lines(main_figure);
+reverse_y_axis(main_figure);
 
 display_regions(main_figure)
 display_lines(main_figure)

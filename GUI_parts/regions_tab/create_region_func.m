@@ -72,6 +72,6 @@ else
 end
 setappdata(main_figure,'Region_tab',region_tab_comp);
 setappdata(main_figure,'Layer',layer);
-load_axis_panel(main_figure,0)
+update_display(main_figure,0)
 
 end

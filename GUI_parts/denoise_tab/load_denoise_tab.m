@@ -105,6 +105,9 @@ else
 end
 power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
 
+if isempty(power)
+   disp('Cannot find power. Cannot denoise those data');   
+end
 
 [power_unoised,Sv_unoised,Sp_unoised,SNR]=feval(layer.Transceivers(idx_freq).Algo(idx_algo).Function,...
     power,...

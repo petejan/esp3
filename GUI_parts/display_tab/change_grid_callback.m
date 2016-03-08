@@ -18,7 +18,6 @@ end
 
 set(display_tab_comp.grid_x_unit,'string',grid_x_unit);
 
-
 val=str2double(get(src,'string'));
 if val>0
     curr_disp.Grid_x=str2double(get(display_tab_comp.grid_x,'string'));

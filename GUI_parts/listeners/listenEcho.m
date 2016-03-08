@@ -1,4 +1,4 @@
-function listenEcho(src,listdata,main_figure)
+function listenEcho(~,~,main_figure)
 %disp('ListenEcho')
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');

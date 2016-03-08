@@ -1,4 +1,4 @@
-function set_axes_position_callback(src,~,main_figure)
+function checkbox_callback(src,~,main_figure,func)
 state=get(src,'checked');
 
 switch state
@@ -8,6 +8,6 @@ switch state
         set(src,'checked','on');
 end
 
-set_axes_position(main_figure);
+feval(func,main_figure);
 
 end

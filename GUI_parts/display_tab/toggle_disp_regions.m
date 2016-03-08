@@ -9,11 +9,7 @@ u=get(main_axes,'children');
 
 for ii=1:length(u)
     if strcmp(get(u(ii),'tag'),'region')
-        if curr_disp.DispReg>0
-        set(u(ii),'visible','on');
-        else
-            set(u(ii),'visible','off');
-        end
+        set(u(ii),'visible',curr_disp.DispReg);
     end
 end
     

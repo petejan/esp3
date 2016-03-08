@@ -1,4 +1,5 @@
 
+
 %
 %            Data: [1x1 ac_data_cl]
 %          Bottom: [1x1 bottom_cl]
@@ -177,11 +178,22 @@ classdef transceiver_cl < handle
             obj.Regions=reg_new;
         end
         
+        function rm_region_name_id(obj,name,ID)
+            reg_curr=obj.Regions;
+            reg_new=[];
+            for i=1:length(reg_curr)
+                if ~strcmpi((reg_curr(i).Name),(name))||(reg_curr(i).ID~=ID)
+                    reg_new=[reg_new reg_curr(i)];
+                end
+            end
+            obj.Regions=reg_new;
+        end
+        
         function rm_region_type_id(obj,type,ID)
             reg_curr=obj.Regions;
             reg_new=[];
             for i=1:length(reg_curr)
-                if ~strcmpi((reg_curr(i).Type),(type))&&~strcmpi((reg_curr(i).ID),ID)
+                if ~strcmpi((reg_curr(i).Type),(type))||(reg_curr(i).ID~=ID)
                     reg_new=[reg_new reg_curr(i)];
                 end
             end
@@ -201,18 +213,6 @@ classdef transceiver_cl < handle
             else
                 obj.Regions=reg_new;
             end
-        end
-        
-        
-        function rm_region_name_id(obj,name,ID)
-            reg_curr=obj.Regions;
-            reg_new=[];
-            for i=1:length(reg_curr)
-                if ~(strcmpi((reg_curr(i).Name),(name))&&((reg_curr(i).ID)==ID))
-                    reg_new=[reg_new reg_curr(i)];
-                end
-            end
-            obj.Regions=reg_new;
         end
         
         function rm_region_origin(obj,origin)

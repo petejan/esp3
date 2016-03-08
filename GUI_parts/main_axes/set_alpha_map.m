@@ -31,7 +31,7 @@ idxBad=find(layer.Transceivers(idx_freq).Bottom.Tag==0);
 idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
 idx_bad_red(idx_bad_red==0)=[];
 
-if curr_disp.DispBadTrans
+if strcmp(curr_disp.DispBadTrans,'on')
     alpha_map(:,idx_bad_red)=0.5;
 end
 
