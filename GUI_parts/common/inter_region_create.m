@@ -88,10 +88,8 @@ end
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
         
-        delete(hp)
-        delete(txt);
-        hp=plot(x_box,y_box,'color','k','linewidth',1);
-        txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
+        set(hp,'XData',x_box,'YData',y_box);
+        set(txt,'position',[cp(1,1) cp(1,2) 0]);
         drawnow;
         
     end

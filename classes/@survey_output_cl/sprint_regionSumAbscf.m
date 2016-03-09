@@ -18,7 +18,7 @@ for k = 1:length(regionSumAbscf.snapshot)
                         str=[str file];
                     end
                 end
-                
+                str=[str ','];
             otherwise
                 if iscell(regionSumAbscf.(fields{iu}))
                     if ~iscell(regionSumAbscf.(fields{iu}){k})

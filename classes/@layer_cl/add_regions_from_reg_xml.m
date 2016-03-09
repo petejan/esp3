@@ -24,7 +24,7 @@ for ix=1:length(xml_file)
     region_xml_tot=parse_region_xml(xml_file{ix});
     
     if isempty(region_xml_tot)
-         sprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
+        sprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
         return;
     end
     
@@ -34,33 +34,53 @@ for ix=1:length(xml_file)
         region_xml=region_xml_tot{itrans};
         [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
         
-        if isempty(found)
+        if found==0
             warning('Could not load regions for frequency %.0fkHz, it is not there...',region_xml.Infos.Freq);
             continue;
         end
         trans_obj=layer_obj.Transceivers(idx_freq);
-
+        
         if ~strcmp(deblank(trans_obj.Config.ChannelID),region_xml.Infos.ChannelID)
             warning('Those regions have been written for a different GPT %.0fkHz',region_xml.Infos.Freq);
         end
         
         t_max=nanmax(trans_obj.Data.Time);
         t_min=nanmin(trans_obj.Data.Time);
-       
+        
         Origin='RegXML';
         
         reg_xml=region_xml.Regions;
-
+        
         
         for i=1:length(reg_xml)
-            if ~(isempty(IDs)||nansum(reg_xml{i}.ID==IDs)>0)
+            idx_good=find(reg_xml{i}.ID==IDs);
+            idx_bad=find(reg_xml{i}.ID==-IDs);
+            if ~(isempty(IDs)||~isempty(idx_good)||~isempty(idx_bad))
                 continue;
             end
+            
             ID=reg_xml{i}.ID;
             Unique_ID=reg_xml{i}.Unique_ID;
             Tag=reg_xml{i}.Tag;
+            if isempty(Tag)
+                Tag='';
+            end
             Name=reg_xml{i}.Name;
-            Type=reg_xml{i}.Type;
+            switch reg_xml{i}.Type
+                case 'Data'
+                    if isempty(idx_good)
+                        Type='Bad Data';
+                    else
+                        Type='Data';
+                    end
+                case 'Bad Data'
+                    if isempty(idx_good)
+                        Type='Data';
+                    else
+                        Type='Bad Data';
+                    end
+                    
+            end
             Cell_w_unit=reg_xml{i}.Cell_w_unit;
             Cell_h_unit=reg_xml{i}.Cell_h_unit;
             Cell_w=reg_xml{i}.Cell_w;
@@ -124,10 +144,10 @@ for ix=1:length(xml_file)
             
             trans_obj.add_region(new_reg);
         end
-
+        
     end
     
-
+    
     
 end
 

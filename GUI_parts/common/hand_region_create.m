@@ -17,8 +17,7 @@ if strcmp(src.SelectionType,'normal')
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
     bot=trans.Bottom;
-    Dist=trans.GPSDataPing.Dist;
-    Time=trans.Data.Time;
+
     Number=trans.Data.Number;
     Range=trans.Data.Range;
     nb_samples=length(Range);
@@ -42,24 +41,20 @@ if strcmp(src.SelectionType,'normal')
     end
     axes(ah);
     hold on;
-    hp=plot(xinit,yinit,'color','k','linewidth',1);
+    hp=line(xinit,yinit,'color','k','linewidth',1);
     txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
     
     src.WindowButtonMotionFcn = @wbmcb;
     src.WindowButtonUpFcn = @wbucb;
 end
-    function wbmcb(~,~)
-        
+    function wbmcb(~,~)  
         cp = ah.CurrentPoint;
         u=u+1;
         xinit(u) = cp(1,1);
         yinit(u) = cp(1,2);
         
-        delete(hp);
-        delete(txt);
-        hold on;
-        hp=plot(xinit,yinit,'color','k','linewidth',1);
-        txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
+        set(hp,'XData',xinit,'YData',yinit);
+        set(txt,'position',[cp(1,1) cp(1,2) 0]);
         drawnow;
     end
 

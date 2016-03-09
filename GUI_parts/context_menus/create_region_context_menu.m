@@ -64,5 +64,5 @@ setappdata(main_figure,'ExternalFigures',extfig);
 end
 
 function delete_region_uimenu_callback(~,~,reg_curr,main_figure)
-delete_region_callback([],[],main_figure,reg_curr.Name,reg_curr.ID);
+delete_region_callback([],[],main_figure,reg_curr.Unique_ID);
 end

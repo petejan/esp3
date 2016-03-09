@@ -9,6 +9,7 @@ if ~strcmpi(xml_struct.Name,'survey_processing')
 end
 
 Algos={};
+Regions_WC={};
 
 nb_child=length(xml_struct.Children);
 nb_reg=0;

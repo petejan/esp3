@@ -99,8 +99,12 @@ for isn=1:length(snapshots)
                 
                  for ire=1:length(regs)
                     if isfield(regs{ire},'ver')
-                        if isfield(regs,'ID')
-                            IDs=cell2mat(str2double(strsplit(regs{1}.ID,';')));
+                        if isfield(regs{ire},'IDs')
+                            if ischar(regs{ire}.IDs)
+                                IDs=str2double(strsplit(regs{ire}.IDs,';'));
+                            else
+                                IDs=regs{ire}.IDs;
+                            end
                             layer_new.load_bot_regs('bot_ver',0,'IDs',IDs);
                         else
                             layer_new.load_bot_regs('bot_ver',0);

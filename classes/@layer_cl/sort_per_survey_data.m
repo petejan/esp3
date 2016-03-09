@@ -15,9 +15,9 @@ for il=1:length(layers_in)
             survey_data_str{i_str}=num2str(il);
         end
         
-        if ~isempty(strfind(str_null,survey_data_str{i_str}))
-            survey_data_str{i_str}=num2str(il);
-        end
+%         if ~isempty(strfind(str_null,survey_data_str{i_str}))
+%             survey_data_str{i_str}=num2str(il);
+%         end
         
         idx_lay(i_str)=il;
     end

@@ -43,7 +43,7 @@ end
 idx_nan=find(isnan(ydata_new));
 if ~isempty(idx_nan)
     idx_nearest=nan(1,length(idx_nan));
-    dx=nanmean(diff(xdata));
+    dx=nanmean(diff(xdata_n));
     idx_far=[];
     for ij=1:length(idx_nan)
         [val,idx_nearest(ij)]=min(abs(xdata-xdata_n(idx_nan(ij))));

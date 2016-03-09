@@ -35,7 +35,7 @@ xinit=nan(1,nb_pings);
 yinit=nan(1,nb_pings);
 
 cp = ah.CurrentPoint;
-xinit(1) = cp(1,1);
+xinit(1) =cp(1,1);
 yinit(1)=cp(1,2);
 u=1;
 if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
@@ -55,9 +55,8 @@ end
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        
-        delete(hp);
-        hp=plot(xinit,yinit,'color','k','linewidth',1);
+
+        set(hp,'XData',xinit,'YData',yinit);
     end
 
     function wbucb(src,~)

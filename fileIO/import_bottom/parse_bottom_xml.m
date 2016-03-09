@@ -37,7 +37,6 @@ for j=1:nb_att
 end
 end
 
-
 function childs=get_childs(node,name)
     childs=[];
     for iu=1:length(node.Children)
@@ -47,9 +46,9 @@ function childs=get_childs(node,name)
     end
 end
 
+
+
 function bottom=get_bottom_node(bottom_node)
-
-
 
     bottom=struct('Range',[],'Tag',[],'Time',[]);
 

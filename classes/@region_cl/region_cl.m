@@ -76,10 +76,6 @@ classdef region_cl < handle
                     if isempty(p.Results.X_cont)&&~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
                         if ~isempty(y)
-                            for i=1:length(x)
-                                x{i}=x{i}-1;
-                                y{i}=y{i}-1;
-                            end
                             obj.X_cont=x;
                             obj.Y_cont=y;
                         else

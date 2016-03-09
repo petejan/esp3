@@ -40,7 +40,7 @@ src.WindowButtonMotionFcn = @wbmcb;
 src.WindowButtonUpFcn = @wbucb;
 axes(ah);
 hold on;
-hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1);
+hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1,'marker','x');
 
     function wbmcb(~,~)
         
@@ -56,8 +56,8 @@ hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1);
         x_max=nanmin(xdata(end),x_max);
         
         x_bad=[x_min x_max];
-        delete(hp);
-        hp=plot(x_bad,Y,'color','k','linewidth',1,'marker','x');
+
+        set(hp,'XData',x_bad,'YData',Y);
  
     end
 

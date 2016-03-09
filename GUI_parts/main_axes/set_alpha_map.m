@@ -1,6 +1,10 @@
 function set_alpha_map(hObject)
 
 layer=getappdata(hObject,'Layer');
+if isempty(layer)
+    return;
+end
+
 axes_panel_comp=getappdata(hObject,'Axes_panel');
 
 curr_disp=getappdata(hObject,'Curr_disp');

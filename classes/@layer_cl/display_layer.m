@@ -1,4 +1,4 @@
-function main_echo=display_layer(layer,freq,fieldname,outputSize,ax,axes_type,x,y,dx,dy,new)
+function main_echo=display_layer(layer,freq,fieldname,ax,axes_type,x,y,dx,dy,new)
 
 [idx_freq,found]=layer.find_freq_idx(freq);
 
@@ -66,7 +66,8 @@ end
 nb_samples=length(idx_r);
 nb_pings=length(idx_ping);
 
-outputSize=nanmin(outputSize,[nb_samples nb_pings]);
+screensize=get(0,'ScreenSize');
+outputSize=nanmin(screensize(3:4),[nb_samples nb_pings]);
 
 dr=nanmax(floor(nb_samples/outputSize(1)),1);
 dp=nanmax(floor(nb_pings/outputSize(2)),1);

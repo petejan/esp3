@@ -25,6 +25,7 @@ strat=survey_data_struct.Stratum;
 trans=survey_data_struct.Transect;
 
 idx_nan=setdiff(find((snap==0)|strcmp(strat,' ')|trans==0),idx_files);
+
 snap(idx_nan)=nan;
 trans(idx_nan)=nan;
 

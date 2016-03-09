@@ -16,7 +16,7 @@ for k = 1:length(regionSum.snapshot)
                         str=[str file];
                     end
                 end
-                
+                str=[str ','];
             otherwise
                 
                 if iscell(regionSum.(fields{iu}))

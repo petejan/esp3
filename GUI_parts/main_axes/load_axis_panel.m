@@ -100,10 +100,7 @@ axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes);
 axes_panel_comp.colorbar.Position=axes_panel_comp.colorbar.Position+[0 0.01 -axes_panel_comp.colorbar.Position(3)/2 -0.02];
 colormap(axes_panel_comp.main_axes,jet);
 
-outputsize(1)=curr_disp.LayerMaxDispSize(1);
-outputsize(2)=curr_disp.LayerMaxDispSize(2);
-
-axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,outputsize,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
+axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
 
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 

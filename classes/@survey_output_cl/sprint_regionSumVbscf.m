@@ -20,7 +20,7 @@ for k = 1:length(regionSumVbscf.snapshot)
                         str=[str file];
                     end
                 end
-                
+                str=[str ','];
             otherwise
                 
                 if iscell(regionSumVbscf.(fields{iu}))

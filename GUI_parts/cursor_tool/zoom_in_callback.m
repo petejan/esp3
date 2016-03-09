@@ -1,5 +1,4 @@
 function zoom_in_callback(src,~,main_figure)
-obj=gco;
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
@@ -11,7 +10,7 @@ else
 end
 
 if 1
-    
+
     clear_lines(ah)
     
     drawnow;
@@ -37,19 +36,21 @@ if 1
     end
 
     x_box=xinit;
-    y_box=yinit;
+    y_box=yinit;   
+    
+    axes(ah);
+    hold on;
+    hp=line(x_box,y_box,'color','k','linewidth',1);
+    
     
     src.WindowButtonMotionFcn = @wbmcb;
     src.WindowButtonUpFcn = @wbucb;
     
-    axes(ah);
-    hold on;
-    hp=plot(x_box,y_box,'color','k','linewidth',1);
+
   
 end
 
     function wbmcb(~,~)
-        delete(hp)
         cp = ah.CurrentPoint;
         
         
@@ -81,10 +82,9 @@ end
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
         
-        
-        hp=plot(x_box,y_box,'color','k','linewidth',1);
-        drawnow;
-        
+        set(hp,'XData',x_box,'YData',y_box);
+
+
     end
 
     function wbucb(src,~)

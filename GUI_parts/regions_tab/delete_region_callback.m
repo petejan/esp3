@@ -1,5 +1,5 @@
 
-function delete_region_callback(~,~,main_figure,name,ID)
+function delete_region_callback(~,~,main_figure,ID)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
@@ -14,10 +14,9 @@ if ~isempty(list_reg)
     if isempty(ID)
         idx_reg=nanmin(get(region_tab_comp.tog_reg,'value'),length(trans_obj.Regions));
         active_reg=trans_obj.Regions(idx_reg);
-        ID=active_reg.ID;
-        name=active_reg.Name;
+        ID=active_reg.Unique_ID;
     end
-    layer.Transceivers(idx_freq).rm_region_name_id(name,ID);
+    layer.Transceivers(idx_freq).rm_region_id(ID);
     
     list_reg = layer.Transceivers(idx_freq).regions_to_str();
     
