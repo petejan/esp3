@@ -3,52 +3,50 @@ function zoom_in_callback(src,~,main_figure)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
 
-if strcmp(src.SelectionType,'normal')
-    mode='rectangular';
-else
-    mode='horizontal';
-end
-
-if 1
-
-    clear_lines(ah)
-    
-    drawnow;
-    xdata=get(axes_panel_comp.main_echo,'XData');
-    ydata=get(axes_panel_comp.main_echo,'YData');
-    cp = ah.CurrentPoint;
-    
-    switch mode
-        case 'rectangular'
-            xinit = cp(1,1);
-            yinit = cp(1,2);
-        case 'horizontal'
-            xinit = xdata(1);
-            yinit = cp(1,2);
-        case 'vertical'
-            xinit = cp(1,1);
-            yinit = ydata(1);
-    end
-    
-    
-    if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
+switch src.SelectionType
+    case 'normal'
+        mode='rectangular';
+    case 'alt'
+        mode='horizontal';
+    otherwise
         return;
-    end
-
-    x_box=xinit;
-    y_box=yinit;   
-    
-    axes(ah);
-    hold on;
-    hp=line(x_box,y_box,'color','k','linewidth',1);
-    
-    
-    src.WindowButtonMotionFcn = @wbmcb;
-    src.WindowButtonUpFcn = @wbucb;
-    
-
-  
 end
+
+
+clear_lines(ah)
+
+xdata=get(axes_panel_comp.main_echo,'XData');
+ydata=get(axes_panel_comp.main_echo,'YData');
+cp = ah.CurrentPoint;
+
+switch mode
+    case 'rectangular'
+        xinit = cp(1,1);
+        yinit = cp(1,2);
+    case 'horizontal'
+        xinit = xdata(1);
+        yinit = cp(1,2);
+    case 'vertical'
+        xinit = cp(1,1);
+        yinit = ydata(1);
+end
+
+
+if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
+    return;
+end
+
+x_box=xinit;
+y_box=yinit;
+
+axes(ah);
+hold on;
+hp=line(x_box,y_box,'color','k','linewidth',1);
+
+
+src.WindowButtonMotionFcn = @wbmcb;
+src.WindowButtonUpFcn = @wbucb;
+
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -83,14 +81,14 @@ end
         y_box=([y_max y_max y_min y_min y_max]);
         
         set(hp,'XData',x_box,'YData',y_box);
-
-
+        
+        
     end
 
     function wbucb(src,~)
         delete(hp);
-         src.WindowButtonMotionFcn = '';
-         src.WindowButtonUpFcn = '';
+        src.WindowButtonMotionFcn = '';
+        src.WindowButtonUpFcn = '';
         
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
@@ -117,13 +115,13 @@ end
             y_lim(2)=y_lim(2)-dy/4;
             
         else
-           x_lim=[x_min x_max];
-           y_lim=[y_min y_max];
+            x_lim=[x_min x_max];
+            y_lim=[y_min y_max];
         end
-
+        
         set(ah,'XLim',x_lim,'YLim',y_lim);
         reset_disp_info(main_figure);
-
+        
     end
 
 end
