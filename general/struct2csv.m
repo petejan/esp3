@@ -1,4 +1,4 @@
-function struct2csv(s,fn)
+function struct2csv(s,fn,tt)
 % STRUCT2CSV(s,fn)
 %
 % Output a structure to a comma delimited file with column headers
@@ -35,6 +35,10 @@ function struct2csv(s,fn)
 % Covered by the BSD License
 %
 
+if nargin<3
+    tt=0;
+end
+
 FID = fopen(fn,'w');
 headers = fieldnames(s);
 m = length(headers);
@@ -45,7 +49,11 @@ t = length(s);
 for rr = 1:t
     l = '';
     for ii = 1:m
-        sz(ii,:) = size(s(rr).(headers{ii}));   
+        if tt==1
+            sz(ii,:) = size(s(rr).(headers{ii})'); 
+        else
+            sz(ii,:) = size(s(rr).(headers{ii})); 
+        end
         if ischar(s(rr).(headers{ii}))
             sz(ii,2) = 1;
         end
@@ -61,7 +69,12 @@ for rr = 1:t
     for ii = 1:n
         l = '';
         for jj = 1:m
-            c = s(rr).(headers{jj});
+
+            if tt==1
+                c = (s(rr).(headers{jj})');
+            else
+                c = (s(rr).(headers{jj}));
+            end
             str = '';
             
             if sz(jj,1)<ii
@@ -71,8 +84,10 @@ for rr = 1:t
                     for kk = 1:sz(jj,2)
                             if c(ii,kk)==round(c(ii,kk))
                                 str = [str,sprintf('%d,',c(ii,kk))];
-                            else
+                            elseif c(ii,kk)>1e-5
                                 str = [str,sprintf('%f,',c(ii,kk))];
+                            else
+                                str = [str,sprintf('%5e,',c(ii,kk))];
                             end
                     end
                 elseif islogical(c)
@@ -86,8 +101,10 @@ for rr = 1:t
                         for kk = 1:sz(jj,2)
                             if c{ii,kk}==round(c{ii,kk})
                                 str = [str,sprintf('%d,',c{ii,kk})];
-                            else
+                            elseif c{ii,kk}>1e-5
                                 str = [str,sprintf('%f,',c{ii,kk})];
+                            else
+                                str = [str,sprintf('%5e,',c{ii,kk})];
                             end
                         end
                     elseif islogical(c{1,1})

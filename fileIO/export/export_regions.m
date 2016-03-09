@@ -33,8 +33,7 @@ file_outputs_def=[Filename(1:end-5) '_' num2str(Freq) '_outputs.csv'];
 
 if ~isequal(file_outputs,0)&&~isequal(path_out,0)
     
-    new_struct=regions_to_struct(Regions,output);
-    
+    new_struct=regions_to_struct(Regions,output);  
     struct2csv(new_struct,fullfile(path_out,file_outputs));
     
 end

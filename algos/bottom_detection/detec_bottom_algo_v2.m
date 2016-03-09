@@ -1,6 +1,6 @@
 function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(Sv,Range,Fs,PulseLength,varargin)
 detecting_bottom=msgbox('Detecting Bottom. This box will close when finished...','Detecting Bottom');
-
+%profile on;
 %Parse Arguments
 p = inputParser;
 
@@ -219,8 +219,9 @@ end
 try
     close(detecting_bottom);
 end
-
-
+% 
+% profile off;
+% profile viewer;
 end
 
 

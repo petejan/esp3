@@ -108,11 +108,11 @@ algo=layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 range=layer.Transceivers(idx_freq).Data.Range;
 bottom_range=nan(size(Bottom));
 bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
-
+old_tag=layer.Transceivers(idx_freq).Bottom.Tag;
 layer.Transceivers(idx_freq).setBottom(bottom_cl('Origin','Algo_v2',...
     'Range', bottom_range,...
     'Sample_idx',Bottom,...
-    'Double_bot_mask',Double_bottom_region));
+    'Double_bot_mask',Double_bottom_region,'Tag',old_tag));
 
 setappdata(main_figure,'Layer',layer);
 load_axis_panel(main_figure,0);

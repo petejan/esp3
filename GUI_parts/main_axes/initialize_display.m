@@ -1,5 +1,4 @@
 function initialize_display(main_figure)
-create_menu(main_figure);
 
 axes_panel_comp.axes_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0.05 1 .65],'BackgroundColor',[1 1 1],'tag','axes_panel');
 axes_panel_comp.main_axes=axes('Parent', axes_panel_comp.axes_panel,'FontSize',14,'Units','normalized',...

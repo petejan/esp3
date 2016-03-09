@@ -14,7 +14,7 @@ p = inputParser;
 addRequired(p,'X',@isnumeric);
 addParameter(p,'bin',ceil(length(X(~isnan(X)))/100),@isnumeric);
 addParameter(p,'weight',ones(size(X)),@isnumeric);
-addParameter(p,'win_type','box',@(str) ischar(str)&(nansum(strcmpi({'box','gauss'},str)>0)));
+addParameter(p,'win_type','box',@(str) ischar(str));
 
 
 parse(p,X,varargin{:});
@@ -25,23 +25,27 @@ win_type=p.Results.win_type;
 
 
 X(X==Inf|X==-Inf)=nan;
-w_tot=nansum(weight_idx(~isnan(X)));
+idx_non_nan=~isnan(X);
+X=X(idx_non_nan);
+weight_idx=weight_idx(idx_non_nan);
+w_tot=sum(weight_idx);
 
 if length(bin)==1
-    N=nanmax(bin,2);
+    N=max(bin,2);
     pdf=zeros(1,N);
-    maxi=nanmax(X(:));
-    mini=nanmin(X(:));
+    maxi=max(X(:));
+    mini=min(X(:));
     x=linspace(mini,maxi,N);
-    dx=gradient(x);
-    vec_X=X(~isnan(X));
+    dx=x(2:end)-x(1:end-1);
+    dx=[dx(1) dx];
+
     for i=1:N
         if strcmp(win_type,'box')
-            idx_bin=((vec_X-x(i))/dx(i)<=1/2&(vec_X-x(i))/dx(i)>-1/2);
+            idx_bin=((X-x(i))/dx(i)<=1/2&(X-x(i))/dx(i)>-1/2);
             pdf(i)=sum(weight_idx(idx_bin))/(dx(i)*w_tot);
         elseif strcmp(win_type,'gauss')
-            parz_win=1/(dx(i)*sqrt(2*pi))*exp(-(vec_X-x(i)).^2/(2*dx(i)^2));
-            pdf(i)=nansum(weight_idx(~isnan(X)).*parz_win)/(w_tot);
+            parz_win=1/(dx(i)*sqrt(2*pi))*exp(-(X-x(i)).^2/(2*dx(i)^2));
+            pdf(i)=sum(weight_idx.*parz_win)/(w_tot);
         end
         
     end
@@ -49,15 +53,14 @@ else
     N=nanmax(length(bin),2);
     pdf=zeros(1,N);
     grad_bin=gradient(bin);
-    vec_X=X(~isnan(X));
     x=bin;
     for i=1:N
         if strcmp(win_type,'box')
-            idx_bin=(vec_X>=bin(i)-grad_bin(i)/2&vec_X<bin(i)+grad_bin(i)/2);
+            idx_bin=(X>=bin(i)-grad_bin(i)/2&X<bin(i)+grad_bin(i)/2);
             pdf(i)=sum(weight_idx(idx_bin))/(nanmean(grad_bin)*w_tot);
         elseif strcmp(win_type,'gauss')
-            parz_win=1/(grad_bin(i)*sqrt(2*pi))*exp(-(vec_X-bin(i)).^2/(2*grad_bin(i)^2));
-            pdf(i)=nansum(weight_idx(~isnan(X)).*parz_win)/(w_tot);
+            parz_win=1/(grad_bin(i)*sqrt(2*pi))*exp(-(X-bin(i)).^2/(2*grad_bin(i)^2));
+            pdf(i)=nansum(weight_idx.*parz_win)/(w_tot);
         end
     end
 end

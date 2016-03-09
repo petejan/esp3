@@ -1,11 +1,13 @@
 function EchoAnalysis(varargin)
 global DEBUG;
 DEBUG=0;
+%set the lookand feel of the figure
+javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
 
 %%%%%%%%%%%%%% main_figure is the handle to the main window of the App %%%%
 %%%%%%%%%%%%%%
 size_max=get(0,'ScreenSize');
-main_figure=figure('Visible','off',...
+main_figure=figure('Visible','on',...
     'Units','pixels','Position',[0 100 size_max(3)/4*3 size_max(4)/4*3],...       %Position and size normalized to the screen size ([left, bottom, width, height])
     'Color','White',...                                         %Background color
     'Name','Echo Analysis','NumberTitle','off',...    %GUI Name
@@ -82,35 +84,20 @@ setappdata(main_figure,'Curr_disp',curr_disp_obj);
 setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',[]);
-
 movegui(main_figure,'center')
-
 initialize_display(main_figure);
 init_listeners(main_figure);
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 drawnow;
+
 try
-jFrame = get(handle(main_figure), 'JavaFrame');
-jProx = jFrame.fHG2Client.getWindow;
-jProx.setMinimumSize(java.awt.Dimension(size_max(3)/4*3,size_max(4)/4*3));
+    jFrame = get(handle(main_figure), 'JavaFrame');
+    jProx = jFrame.fHG2Client.getWindow;
+    jProx.setMinimumSize(java.awt.Dimension(size_max(3)/4*3,size_max(4)/4*3));
+    setappdata(main_figure,'javaWindow',jProx);
 catch err
    disp(err.message);
 end
+
+create_menu(main_figure);
 end
-
-% 
-% function resize_main_fig(main_figure,~)
-% set(main_figure,'SizeChangedFcn','')
-% figwidth = main_figure.Position(3);
-% figheight = main_figure.Position(4);
-% 
-% size_max=get(0,'ScreenSize');
-% if figwidth<(size_max(3)/4*3);
-%     main_figure.Position(3)=size_max(3)/4*3;
-% end
-% if figheight<(size_max(4)/4*3);
-%     main_figure.Position(4)=size_max(4)/4*3;
-% end
-% set(main_figure,'SizeChangedFcn',@resize_main_fig);
-% end
-

@@ -31,7 +31,6 @@ for i=1:nb_pings
         end
     else
         y_data_temp=y_data(idx_num);
-              drawnow;
         if gauss_win
             weight_idx=exp(-(double(x_data(idx_num)-double(x_data(1+(i-1)*spc)))).^2/(2*(win/4)^2));
         else

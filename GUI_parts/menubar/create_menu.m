@@ -23,6 +23,7 @@ uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_fro
 uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,1});
 
 mhh = uimenu(main_figure,'Label','Export Results','Tag','menuexport');
+%uimenu(mhh,'Label','Export Survey Output to .csv','Callback',{@export_survey_output_callback,main_figure});
 uimenu(mhh,'Label','Export Regions per Cells','Callback',{@export_regions,main_figure});
 uimenu(mhh,'Label','Export Sv per Cells','Callback',{@export_cells,main_figure});
 uimenu(mhh,'Label','Export Tracks','Callback',{@export_tracks_callback,main_figure});
@@ -55,6 +56,7 @@ uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_
 
 
 m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
+
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
 main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
 main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axh');
@@ -69,8 +71,8 @@ main_menu.display_file_lines=uimenu(m_display,'checked','off','Label','Display F
 main_menu.reverse_y_axis=uimenu(m_display,'checked','off','Label','Reverse Y-Axis','Callback',{@checkbox_callback,main_figure,@reverse_y_axis});
 
 
-set([main_menu.disp_tracks main_menu.disp_under_bot main_menu.disp_bottom main_menu.disp_bad_trans main_menu.disp_lines main_menu.disp_reg],'callback',{@set_curr_disp,main_figure});
 
+set([main_menu.disp_tracks main_menu.disp_under_bot main_menu.disp_bottom main_menu.disp_bad_trans main_menu.disp_lines main_menu.disp_reg],'callback',{@set_curr_disp,main_figure});
 
 
 main_menu.close_all_fig=uimenu(m_display,'Label','Close All External Figures','Callback',{@close_figures_callback,main_figure});
@@ -188,5 +190,6 @@ end
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 end
+
 
 
