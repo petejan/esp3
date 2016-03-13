@@ -35,7 +35,7 @@ idx_selected=[idx_selected_cell{:}];
 
 dates_selected=floor(dates(idx_selected));
 
-dates_to_load=dates(1):1:dates(end);
+dates_to_load=unique(floor(dates));
 
 [~,idx_to_load_selected]=intersect(dates_to_load,dates_selected);
 
@@ -47,11 +47,11 @@ if cancel==0
     return;
 end
 
-dates_selected=dates_to_load(idx_out);
+dates_selected=unique(floor(dates_to_load(idx_out)));
 idx_to_open=[];
 
 for il=1:length(dates_selected)
-    idx_to_open=union(idx_to_open,find(floor(dates)==floor(dates_selected(il))));
+    idx_to_open=union(idx_to_open,find(floor(dates)==dates_selected(il)));
 end
 
 Filename_out=files_out(idx_to_open);
