@@ -51,7 +51,7 @@ dates_selected=dates_to_load(idx_out);
 idx_to_open=[];
 
 for il=1:length(dates_selected)
-    idx_to_open=union(idx_to_open,find(floor(dates)==dates_selected(il)));
+    idx_to_open=union(idx_to_open,find(floor(dates)==floor(dates_selected(il))));
 end
 
 Filename_out=files_out(idx_to_open);
