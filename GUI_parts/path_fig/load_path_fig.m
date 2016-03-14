@@ -127,8 +127,7 @@ end
 
 function validate_path(~,~,path_fig,main_fig)
 app_path=getappdata(path_fig,'AppPath_temp');
-
 setappdata(main_fig,'App_path',app_path);
-write_config_to_xml(app_path);
+write_config_to_xml(app_path,[]);
 close(path_fig);
 end

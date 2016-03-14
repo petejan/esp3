@@ -17,7 +17,6 @@ classdef curr_state_disp_cl <handle
         Grid_y
         CurrLayerID
         NbLayers
-        LayerMaxDispSize
     end
     
     methods
@@ -25,8 +24,7 @@ classdef curr_state_disp_cl <handle
             
             p = inputParser;
             addParameter(p,'Freq',38000,@isnumeric);
-            addParameter(p,'Fieldname','',@ischar);
-            addParameter(p,'Cax',[],@ischar);
+            addParameter(p,'Fieldname','sv',@ischar);
             addParameter(p,'DispBottom','on',@ischar);
             addParameter(p,'DispUnderBottom','on',@ischar);
             addParameter(p,'DispTracks','on',@ischar);

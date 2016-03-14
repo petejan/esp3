@@ -26,7 +26,7 @@ for ii=1:length(fid)
         for im=1:length(curr_methods)
             fprintf(fid{ii},'- %s\n',curr_methods{im});
         end
-        
+        fprintf(fid{ii},'\n\n');
     end
 end
 fclose(fid{2});

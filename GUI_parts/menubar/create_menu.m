@@ -109,7 +109,7 @@ uimenu(mbs,'Label','Plot survey results from Survey Output files','Callback',{@p
 
 options = uimenu(main_figure,'Label','Options','Tag','options');
 uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
-
+uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_display_config_callback,main_figure});
 
 
 uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');
@@ -117,6 +117,11 @@ uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3],'tag','algo_tab_panel');
 
 setappdata(main_figure,'main_menu',main_menu);
 
+end
+
+function save_display_config_callback(~,~,main_fig)
+    curr_disp=getappdata(main_fig,'Curr_disp');
+    write_config_to_xml([],curr_disp);
 end
 
 function load_map_fig_callback(~,~,main_fig)

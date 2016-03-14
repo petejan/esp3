@@ -28,7 +28,7 @@ if ~isdeployed
     update_path(main_path);
 end
 
-app_path=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+[app_path,curr_disp_obj]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
 
 if ~isdir(app_path.data_temp)
     mkdir(app_path.data_temp);
@@ -74,7 +74,7 @@ end
 
 
 layer_obj=[];
-curr_disp_obj=curr_state_disp_cl();
+
 process_obj=process_cl.empty;
 
 layers=layer_obj;
