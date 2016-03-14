@@ -22,8 +22,8 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 ah=axes_panel_comp.main_axes;
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.Range;
-ping_num=layer.Transceivers(idx_freq).Data.Number;
+range=layer.Transceivers(idx_freq).Data.get_range();
+ping_num=layer.Transceivers(idx_freq).Data.get_numbers();
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
 
@@ -35,8 +35,8 @@ for uui=1:length(layer.Frequencies)
     
     bad_trans(layer.Transceivers(idx_freq).Bottom.Tag==0)=1;
 
-    range=layer.Transceivers(uui).Data.Range;
-    ping_num=layer.Transceivers(uui).Data.Number;
+    range=layer.Transceivers(uui).Data.get_range();
+    ping_num=layer.Transceivers(uui).Data.get_numbers();
     
     idx_r=find(range<=r_max&range>=r_min);
     idx_pings=ping_num;

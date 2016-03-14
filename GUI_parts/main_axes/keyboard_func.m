@@ -9,8 +9,8 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 Time=trans.Data.Time;
-Number=trans.Data.Number;
-Range=trans.Data.Range;
+Number=trans.Data.get_numbers();
+Range=trans.Data.get_range();
 Dist=trans.GPSDataPing.Dist;
 
 switch curr_disp.Xaxes

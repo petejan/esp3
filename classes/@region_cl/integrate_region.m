@@ -15,11 +15,11 @@ if isempty(Sv)
     return;
 end
 
-range=double(trans_obj.Data.Range);
+range=double(trans_obj.Data.get_range());
 nb_samples=length(range);
 samples=(1:nb_samples)';
 dr=nanmean(diff(range));
-pings=double(trans_obj.Data.Number);
+pings=double(trans_obj.Data.get_numbers());
 %nb_pings=length(pings);
 time=double(trans_obj.Data.Time);
 

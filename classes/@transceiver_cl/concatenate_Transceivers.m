@@ -22,14 +22,14 @@ if length(trans_1)==length(trans_2)
             regions_1=trans_2(i).Regions;
             new_bot=concatenate_Bottom(trans_2(i).Bottom,trans_1(i).Bottom);
             for ir2=1:length(regions_2)
-                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_2(i).Data.Number);
+                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_2(i).Data.get_numbers());
             end
         else
             regions_1=trans_1(i).Regions;
             regions_2=trans_2(i).Regions;
             new_bot=concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom);
             for ir2=1:length(regions_2)
-                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_1(i).Data.Number);
+                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_1(i).Data.get_numbers());
             end    
         end
         trans_out(i).setBottom(new_bot);

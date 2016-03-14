@@ -7,9 +7,9 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
-Range=trans.Data.Range; 
-xdata_tot=trans.Data.Number;       
-ydata_tot=Range;
+
+xdata_tot=trans.Data.get_numbers();       
+ydata_tot=trans.Data.get_range();
 
 ah=axes_panel_comp.main_axes;
 switch src.SelectionType  

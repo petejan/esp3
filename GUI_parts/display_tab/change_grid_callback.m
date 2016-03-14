@@ -37,16 +37,16 @@ switch curr_disp.Xaxes
     case 'Time'
         xdata_grid=layer.Transceivers(idx_freq).Data.Time(idx_pings);
     case 'Number'
-        xdata_grid=layer.Transceivers(idx_freq).Data.Number(idx_pings);
+        xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers(idx_pings);
     case 'Distance'
         xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist(idx_pings);
         if isempty(xdata)
             disp('NO GPS Data');
             curr_disp.Xaxes='Number';
-            xdata_grid=layer.Transceivers(idx_freq).Data.Number(idx_pings);
+            xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers(idx_pings);
         end
     otherwise
-        xdata_grid=layer.Transceivers(idx_freq).Data.Number(idx_pings);      
+        xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers(idx_pings);      
 end
 
 

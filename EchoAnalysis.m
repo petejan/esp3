@@ -30,11 +30,18 @@ end
 
 [app_path,curr_disp_obj]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
 
-if ~isdir(app_path.data_temp)
-    mkdir(app_path.data_temp);
-    disp('Data Folder Created')
-    disp(app_path.data_temp)
+try
+    if ~isdir(app_path.data_temp)
+        mkdir(app_path.data_temp);
+        disp('Data Folder Created')
+        disp(app_path.data_temp)
+    end
+catch ME
+    delete(fullfile(main_path,'config_echo.xml'));
+    [app_path,curr_disp_obj]=load_config_from_xml(fullfile(main_path,'config_echo.xml')); %#ok<ASGLU>
+    rethrow(ME);
 end
+
 
 files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
 

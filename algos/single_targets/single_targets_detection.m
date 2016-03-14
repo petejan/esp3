@@ -78,11 +78,11 @@ if isempty(Bottom)
     Bottom=ones(1,nb_pings)*Range(end);
 end
 
-Range=repmat(Transceiver.Data.Range(1:nb_samples),1,nb_pings);
+Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;
 
-idx_r_max=find(Transceiver.Data.Range==nanmax(Range(TS>-999)));%%TODO but
+idx_r_max=find(Transceiver.Data.get_range()==nanmax(Range(TS>-999)));%%TODO but
 
 %%%%%%%Remove all unnecessary data%%%%%%%%
 
@@ -91,9 +91,9 @@ Idx_samples_lin(idx_r_max:end,:)=[];
 [nb_samples,nb_pings]=size(TS);
 along=Transceiver.Data.get_subdatamat('AlongAngle',1:nb_samples,1:nb_pings);
 athwart=Transceiver.Data.get_subdatamat('AcrossAngle',1:nb_samples,1:nb_pings);
-Range=repmat(Transceiver.Data.Range(1:nb_samples),1,nb_pings);
+Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
 Samples=repmat((1:nb_samples)',1,nb_pings);
-Ping=repmat(Transceiver.Data.Number,nb_samples,1);
+Ping=repmat(Transceiver.Data.get_numbers(),nb_samples,1);
 
 
 [T,Np]=Transceiver.get_pulse_length();

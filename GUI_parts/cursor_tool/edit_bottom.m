@@ -22,7 +22,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
-nb_samples=length(layer.Transceivers(idx_freq).Data.Range);
+nb_samples=length(layer.Transceivers(idx_freq).Data.get_range());
 bot=layer.Transceivers(idx_freq).Bottom;
 
 
@@ -124,8 +124,8 @@ end
 
     function end_bottom_edit()
 
-        xdata_real=layer.Transceivers(idx_freq).Data.Number;
-        ydata_real=layer.Transceivers(idx_freq).Data.Range;
+        xdata_real=layer.Transceivers(idx_freq).Data.get_numbers();
+        ydata_real=layer.Transceivers(idx_freq).Data.get_range();
         
         layer.Transceivers(idx_freq).Bottom=bot;
         setappdata(main_figure,'Layer',layer);

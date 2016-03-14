@@ -20,22 +20,22 @@ parse(p,trans_obj,varargin{:});
 
 switch p.Results.Cell_w_unit
     case 'pings'
-        xdata=trans_obj.Data.Number;  
+        xdata=trans_obj.Data.get_numbers();  
     case 'meters'
         if ~isempty(trans_obj.GPSDataPing.Dist)
             xdata=trans_obj.GPSDataPing.Dist;
         else
             p.Results.Cell_w_unit='pings';
-            xdata=trans_obj.Data.Number;
+            xdata=trans_obj.Data.get_numbers();
         end
 end
 
 switch p.Results.Cell_h_unit
     case 'samples'
-        ydata=trans_obj.Data.Samples;
+        ydata=trans_obj.Data.get_samples();
         bot_data=trans_obj.Bottom.Sample_idx;
     case 'meters'
-        ydata=trans_obj.Data.Range;
+        ydata=trans_obj.Data.get_range();
         bot_data=trans_obj.Bottom.Range;
 end
 

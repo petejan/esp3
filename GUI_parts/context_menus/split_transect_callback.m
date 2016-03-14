@@ -26,7 +26,7 @@ switch curr_disp.Xaxes
     case 'Distance'
         xdata=trans.GPSDataPing.Dist;
     case 'Number'
-        xdata=trans.Data.Number;
+        xdata=trans.Data.get_numbers();
 end
 
 [~,idx_ping]=nanmin(abs(xdata-x));

@@ -106,7 +106,7 @@ for i=idx_trans
             
         case 'sch'
             layer(u).CVS_BottomRegions(cvsroot,'BotRev',botRev{i},'RegCVS',0);
-            layer(u).Transceivers(idx_freq).Algo=init_algos(layer(u).Transceivers(idx_freq).Data.Range);
+            layer(u).Transceivers(idx_freq).Algo=init_algos(layer(u).Transceivers(idx_freq).Data.get_range());
             [idx_school_detect,~]=find_algo_idx(Transceiver,'SchoolDetection');
             linked_candidates=feval(layer(u).Transceivers(idx_freq).Algo(idx_school_detect).Function,layer(u).Transceivers(idx_freq),...
                 'Type','sv',...

@@ -7,14 +7,14 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
-Range=trans.Data.Range;
+Range=trans.Data.get_range();
 Bottom=trans.Bottom;
 
-Samples=trans.Data.Samples;
+Samples=trans.Data.get_samples();
 Lat=trans.GPSDataPing.Lat;
 Long=trans.GPSDataPing.Long;
 Time=trans.Data.Time;
-Number=trans.Data.Number;
+Number=trans.Data.get_numbers();
 
 ax_main=axes_panel_comp.main_axes;
 
@@ -24,6 +24,7 @@ ax_main=axes_panel_comp.main_axes;
 
 x_lim=double(get(ax_main,'xlim'));
 y_lim=double(get(ax_main,'ylim'));
+
 cdata=double(get(axes_panel_comp.main_echo,'CData'));
 [nb_samples_red,nb_pings_red]=size(cdata);
 xdata=double(get(axes_panel_comp.main_echo,'XData'));

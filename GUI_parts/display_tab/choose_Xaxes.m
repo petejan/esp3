@@ -4,7 +4,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 if ~isempty(layer.Transceivers)
-    dp=length(layer.Transceivers(1).Data.Number)/15;
+    dp=length(layer.Transceivers(1).Data.get_numbers())/15;
     if ~isempty(layer.GPSData.Time)
         dt=(layer.GPSData.Time(end)-layer.GPSData.Time(1))*24*60*60/15;
         dx=(layer.GPSData.Dist(end)-layer.GPSData.Dist(1))/15;

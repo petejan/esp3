@@ -43,9 +43,9 @@ end
 h_unit=h_units{h_unit_idx};
 
 
-range=double(Transceiver.Data.Range);
+range=double(Transceiver.Data.get_range());
 samples=(1:length(range))';
-pings=double(Transceiver.Data.Number-Transceiver.Data.Number(1)+1);
+pings=double(Transceiver.Data.get_numbers()-Transceiver.Data.get_numbers(1)+1);
 
 idx_r=find(samples>=nanmin(poly_r)&samples<=nanmax(poly_r));
 idx_pings=find(pings>=nanmin(poly_pings)&pings<=nanmax(poly_pings));

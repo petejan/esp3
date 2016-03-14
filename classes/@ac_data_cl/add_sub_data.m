@@ -12,7 +12,7 @@ for i=1:length(field)
     data_obj.remove_sub_data(fieldname);
     
     nb_pings=data_obj.get_nb_pings_per_file();
-    nb_samples=repmat(length(data_obj.Range),1,length(nb_pings));
+    nb_samples=repmat(length(data_obj.get_range()),1,length(nb_pings));
     data_mat_cell=divide_mat(data_mat{i},nb_samples,nb_pings);
   
     new_sub_data=sub_ac_data_cl(fieldname,data_obj.MemapName,data_mat_cell);

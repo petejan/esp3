@@ -34,10 +34,10 @@ switch curr_disp.Xaxes
         xdata=trans.GPSDataPing.Dist;
     case 'Number'
         xlab_str='Ping Number';
-        xdata=trans.Data.Number;
+        xdata=trans.Data.get_numbers();
 end
 
-ydata=trans.Data.Range;
+ydata=trans.Data.get_range();
 [~,idx_ping]=nanmin(abs(xdata-x));
 [~,idx_r]=nanmin(abs(ydata-y));
 vert_val=trans.Data.get_subdatamat(curr_disp.Fieldname,1:length(ydata),idx_ping);

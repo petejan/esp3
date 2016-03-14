@@ -18,7 +18,7 @@ if strcmp(Transceiver.Mode,'FM')
     eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
     dr=pulse_length*c/8;
 
-    range=Transceiver.Data.Range;
+    range=Transceiver.Data.get_range();
 
 
     idx_ts=find(range<=r+dr&range>=r-dr);

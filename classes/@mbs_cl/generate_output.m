@@ -85,8 +85,8 @@ for uit=idx_trans
             switch reg_curr.Reference
                 case 'Surface';
                     refType = 's';
-                    if isnan(reg.startDepth); start_d = trans.Data.Range(reg_curr.Idx_r(1)); else start_d = reg.startDepth; end
-                    if isnan(reg.finishDepth); finish_d = trans.Data.Range(reg_curr.Idx_r(1)); else finish_d = reg.finishDepth; end
+                    if isnan(reg.startDepth); start_d = trans.Data.get_range(reg_curr.Idx_r(1)); else start_d = reg.startDepth; end
+                    if isnan(reg.finishDepth); finish_d = trans.Data.get_range(reg_curr.Idx_r(1)); else finish_d = reg.finishDepth; end
                 case 'Bottom';
                     refType = 'b';
                     if isnan(reg.startDepth); start_d = 0; else start_d = reg.startDepth; end

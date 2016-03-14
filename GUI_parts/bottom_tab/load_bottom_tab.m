@@ -9,7 +9,7 @@ end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.Range;
+range=layer.Transceivers(idx_freq).Data.get_range();
 
 
 
@@ -96,7 +96,7 @@ end
 algo=layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
 [Bottom,Double_bottom_region,~,~,~]=feval(algo.Function,Sv,...
-    layer.Transceivers(idx_freq).Data.Range,...
+    layer.Transceivers(idx_freq).Data.get_range(),...
     1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
     layer.Transceivers(idx_freq).Params.PulseLength(1),...
     'thr_bottom',algo.Varargin.thr_bottom,...
@@ -105,7 +105,7 @@ algo=layer.Transceivers(idx_freq).Algo(idx_algo_bot);
     'r_min',algo.Varargin.r_min,...
     'r_max',algo.Varargin.r_max);
 
-range=layer.Transceivers(idx_freq).Data.Range;
+range=layer.Transceivers(idx_freq).Data.get_range();
 bottom_range=nan(size(Bottom));
 bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
 old_tag=layer.Transceivers(idx_freq).Bottom.Tag;

@@ -94,7 +94,7 @@ for ix=1:length(xml_file)
             pings=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,time_box,'Opt','Nearest');
             
             depth_box=reg_xml{i}.bbox_r;
-            samples=resample_data_v2(1:length(trans_obj.Data.Range),trans_obj.Data.Range,depth_box,'Opt','Nearest');
+            samples=resample_data_v2(1:length(trans_obj.Data.get_range()),trans_obj.Data.get_range(),depth_box,'Opt','Nearest');
             
             Idx_pings=pings(1):pings(2);
             Idx_r=samples(1):samples(2);
@@ -119,7 +119,7 @@ for ix=1:length(xml_file)
                         i_cont=i_cont+1;
                         X_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,reg_xml{i}.Contours{ic}.Time,'Opt','Nearest');
                         X_cont{i_cont}=X_cont{i_cont}-Idx_pings(1)+1;
-                        Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Range),trans_obj.Data.Range,reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
+                        Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.get_range()),trans_obj.Data.get_range(),reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
                         Y_cont{i_cont}=Y_cont{i_cont}-Idx_r(1)+1;
                     end
                     

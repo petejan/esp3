@@ -8,8 +8,8 @@ end
 
 if isempty(axes_type)
     axes_type='Number';
-    x=layer.Transceivers(idx_freq).Data.Number;
-    y=layer.Transceivers(idx_freq).Data.Range;
+    x=layer.Transceivers(idx_freq).Data.get_numbers();
+    y=layer.Transceivers(idx_freq).Data.get_range();
     dx=(x(end)-x(1))/15;
     dy=(y(end)-y(1))/15;
     new=1;
@@ -19,20 +19,20 @@ switch axes_type
     case 'Time'
         xdata_grid=layer.Transceivers(idx_freq).Data.Time;
     case 'Number'
-        xdata_grid=layer.Transceivers(idx_freq).Data.Number;
+        xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers();
     case 'Distance'
         xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist;
         if isempty(xdata_grid)
             disp('NO GPS Data');
             axes_type='Number';
-            xdata_grid=layer.Transceivers(idx_freq).Data.Number;
+            xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers();
         end
     otherwise
-        xdata_grid=layer.Transceivers(idx_freq).Data.Number;
+        xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers();
 end
 
-xdata=layer.Transceivers(idx_freq).Data.Number;
-ydata=layer.Transceivers(idx_freq).Data.Range;
+xdata=layer.Transceivers(idx_freq).Data.get_numbers();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
 
 Time=layer.Transceivers(idx_freq).Data.Time;
 idx_start_time=[];
@@ -72,8 +72,8 @@ screensize=get(ax,'position');
 outputSize=nanmin(screensize(3:4),[nb_samples nb_pings]);
 set(ax,'units','normalized');
 
-dr=nanmax(ceil(nb_samples/outputSize(1))+1,1);
-dp=nanmax(ceil(nb_pings/outputSize(2))+1,1);
+dr=nanmax(ceil(nb_samples/outputSize(1)),1);
+dp=nanmax(ceil(nb_pings/outputSize(2)),1);
 
 data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
 

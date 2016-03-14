@@ -8,7 +8,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.Range;
+range=layer.Transceivers(idx_freq).Data.get_range();
 
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
@@ -32,7 +32,7 @@ i_leg=1;
 for uui=idx_sort
     leg_fig{i_leg}=sprintf('%.0f kHz',layer.Frequencies(uui)/1000);
     i_leg=i_leg+1;
-    range=layer.Transceivers(uui).Data.Range;
+    range=layer.Transceivers(uui).Data.get_range();
     idx_r=find(range<=r_max&range>=r_min);
     
     if isempty(idx_r)

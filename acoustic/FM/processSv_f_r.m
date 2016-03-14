@@ -24,7 +24,7 @@ if strcmp(Transceiver.Mode,'FM')
     
     [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));
     
-    range=Transceiver.Data.Range;
+    range=Transceiver.Data.get_range();
     
     nb_samples=length(range);
     nb_pings=length(Transceiver.Data.Time);

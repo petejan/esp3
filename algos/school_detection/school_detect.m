@@ -52,7 +52,7 @@ Sv_mat=Transceiver.Data.get_datamat('sv');
 
    
 [nb_samples,nb_pings]=size(Sv_mat);
-range=Transceiver.Data.Range;
+range=Transceiver.Data.get_range();
 dist_pings=Transceiver.GPSDataPing.Dist;
 
 Bottom=Transceiver.Bottom.Range;

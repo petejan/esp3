@@ -20,10 +20,10 @@ try
     curr_disp=curr_state_disp_cl();
     for ifi=1:length(fields)
         val=disp_struct.(fields{ifi});
-        if ~isnan(num2str(val,'%.0f'))
-            curr_disp.(fields{ifi})=num2str(val,'%.0f');
-        elseif ischar(curr_disp.(fields{ifi}))
+        if isnan(str2double(val))
             curr_disp.(fields{ifi})=val;
+        elseif ischar(curr_disp.(fields{ifi}))
+            curr_disp.(fields{ifi})=str2double(val);
         end
     end
 catch

@@ -117,7 +117,7 @@ for isn=1:length(snapshots)
                     if isfield(regs{ire},'file')
                         nb_reg_out=nb_reg_out+1;
                         if  exist(fullfile(snapshots{isn}.Folder,regs{ire}.file),'file')>0
-                            new_reg=create_regions_from_evr(fullfile(snapshots{isn}.Folder,regs{ire}.file),layer_new.Transceivers(idx_freq).Data.Range,layer_new.Transceivers(idx_freq).Data.Time);                          
+                            new_reg=create_regions_from_evr(fullfile(snapshots{isn}.Folder,regs{ire}.file),layer_new.Transceivers(idx_freq).Data.get_range(),layer_new.Transceivers(idx_freq).Data.Time);                          
                             if isempty(new_reg)
                                 continue;
                             end

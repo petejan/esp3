@@ -9,8 +9,6 @@ end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.Range;
-
 
 [idx_track_target,found]=find_algo_idx(layer.Transceivers(idx_freq),'TrackTarget');
 

@@ -43,7 +43,7 @@ classdef ac_data_cl < handle
             end
             
             if isempty(p.Results.FileId)
-                obj.FileId=ones(size(obj.Number));
+                obj.FileId=ones(size(obj.Time));
             end
             
             if ~isempty(p.Results.SubData)

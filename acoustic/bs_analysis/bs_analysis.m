@@ -26,7 +26,7 @@ trans=layer.Transceivers(idx_freq);
 
 trans.set_position(pos_trans, trans_angle);
 
-range = trans.Data.Range;
+range = trans.Data.get_range();
 
 dr = nanmean(diff(range));
 
@@ -34,7 +34,7 @@ bw_mean = (trans.Config.BeamWidthAlongship+trans.Config.BeamWidthAthwartship)/4/
 t_angle = atan(sqrt(tand(trans.Config.Angles(2)).^2+tand(trans.Config.Angles(1)).^2));
 
 %time=trans.Data.Time;
-number = trans.Data.Number;
+number = trans.Data.get_numbers();
 
 bot_range = trans.Bottom.Range;
 
@@ -56,7 +56,7 @@ algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
 [PulseLength,~] = trans.get_pulse_length();
 [amp_est, across_est, along_est] = detec_bottom_bathymetric(sv, alongphi, acrossphi, ...
-    layer.Transceivers(idx_freq).Data.Range, 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, algo.Varargin.thr_echo, algo.Varargin.r_min);
+    layer.Transceivers(idx_freq).Data.get_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, algo.Varargin.thr_echo, algo.Varargin.r_min);
 z_max = nanmax(amp_est.range) * cos(t_angle);
 ext_len = floor(z_max*(tan(t_angle+bw_mean) - tan(t_angle-bw_mean)) / dr/2);
 

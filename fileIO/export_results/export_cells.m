@@ -25,9 +25,9 @@ h_unit=h_units{h_unit_idx};
 cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
-range=double(Transceiver.Data.Range);
+range=double(Transceiver.Data.get_range());
 samples=(1:length(range))';
-pings=double(Transceiver.Data.Number);
+pings=double(Transceiver.Data.get_numbers());
 
 idx_pings=1:length(pings);
 idx_r=samples;

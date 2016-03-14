@@ -6,8 +6,8 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
-nb_pings=length(layer.Transceivers(idx_freq).Data.Number);
-nb_samples=length(layer.Transceivers(idx_freq).Data.Range);
+nb_pings=length(layer.Transceivers(idx_freq).Data.get_numbers());
+nb_samples=length(layer.Transceivers(idx_freq).Data.get_range());
 
 w_units=get(region_tab_comp.cell_w_unit,'string');
 w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
@@ -49,8 +49,8 @@ if ~isnan(val)&&val>0
                     end
                     
                 case 'meters'
-                    if val>layer.Transceivers(idx_freq).Data.Range(end)
-                        val=layer.Transceivers(idx_freq).Data.Range(end);
+                    if val>layer.Transceivers(idx_freq).Data.Range(2)
+                        val=layer.Transceivers(idx_freq).Data.Range(2);
                     end
             end
     end

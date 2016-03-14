@@ -18,8 +18,8 @@ if strcmp(src.SelectionType,'normal')
     trans=layer.Transceivers(idx_freq);
     bot=trans.Bottom;
 
-    Number=trans.Data.Number;
-    Range=trans.Data.Range;
+    Number=trans.Data.get_numbers();
+    Range=trans.Data.get_range();
     nb_samples=length(Range);
     nb_pings=length(Number);
     

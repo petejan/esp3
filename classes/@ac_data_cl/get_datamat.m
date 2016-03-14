@@ -3,7 +3,7 @@ function [datamat,idx]=get_datamat(data,field)
 [idx,found]=find_field_idx(data,(deblank(field)));
 
 if found
-    datamat=nan(length(data.Range),length(data.Number));
+    datamat=nan(length(data.get_range()),length(data.get_numbers()));
     
     for icell=1:length(data.SubData(idx).Memap)
         idx_ping=(data.FileId==icell);

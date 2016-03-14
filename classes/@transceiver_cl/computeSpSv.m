@@ -18,22 +18,22 @@ dR = double(c * t / 2);
 
 switch trans_obj.Mode
     case 'FM'
-        range = double((trans_obj.Data.Samples - 1) * dR);
+        range = double((trans_obj.Data.get_samples() - 1) * dR);
         
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
         [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr);
         
 
-        trans_obj.Data.Range=range;        
+        trans_obj.Data.Range=[range(1) range(end)];        
         trans_obj.Data.add_sub_data('sv',Sv);
         trans_obj.Data.add_sub_data('sp',Sp);
         trans_obj.Data.add_sub_data('spunmatched',Sp_un);
     case 'CW'
-        range = double((trans_obj.Data.Samples - 1) * dR);
+        range = double((trans_obj.Data.get_samples() - 1) * dR);
         
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
        
-        trans_obj.Data.Range=range;
+        trans_obj.Data.Range=[range(1) range(end)];
         trans_obj.Data.add_sub_data('sv',Sv);
         trans_obj.Data.add_sub_data('sp',Sp);
 end

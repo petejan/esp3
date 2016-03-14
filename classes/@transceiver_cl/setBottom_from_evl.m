@@ -9,7 +9,7 @@ parse(p,trans_obj,filename);
 
 
 timevec=trans_obj.Data.Time;
-range=trans_obj.Data.Range;
+range=trans_obj.Data.get_range();
 
 obj=create_bottom_from_evl(filename,range,timevec);
 

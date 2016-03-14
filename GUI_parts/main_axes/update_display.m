@@ -35,9 +35,10 @@ if new==1
         case 'Distance'
             x_vec=layer.Transceivers(idx_freq).GPSDataPing.Dist;
         case 'Number'  
-            x_vec=layer.Transceivers(idx_freq).Data.Number;
+            x_vec=layer.Transceivers(idx_freq).Data.get_numbers();
     end
-    curr_disp.Grid_y=(layer.Transceivers(idx_freq).Data.Range(end)-layer.Transceivers(idx_freq).Data.Range(1))/10;
+    
+    curr_disp.Grid_y=(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))/10;
     curr_disp.Grid_x=(x_vec(end)-x_vec(1))/15;
     
 else

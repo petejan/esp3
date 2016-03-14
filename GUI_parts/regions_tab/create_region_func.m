@@ -35,9 +35,9 @@ h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
 h_unit=h_units{h_unit_idx};
 
 
-range=double(Transceiver.Data.Range);
+range=double(Transceiver.Data.get_range());
 samples=(1:length(range))';
-pings=double(Transceiver.Data.Number);
+pings=double(Transceiver.Data.get_numbers());
 
 sub_y=samples(idx_r);
 sub_x=pings(idx_pings);

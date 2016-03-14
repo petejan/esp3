@@ -1,7 +1,7 @@
 function setBottom(obj,bottom_obj)
 
-range=obj.Data.Range;
-pings=obj.Data.Number;
+range=obj.Data.get_range();
+pings=obj.Data.get_numbers();
 
 if isempty(bottom_obj)
     return;

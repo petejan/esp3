@@ -9,7 +9,7 @@ addParameter(p,'Type','Data',check_type);
 parse(p,trans_obj,varargin{:});
 
 [~,Np]=trans_obj.get_pulse_length();
-nb_samples=length(trans_obj.Data.Range);
+nb_samples=length(trans_obj.Data.get_range());
 nb_pings=length(trans_obj.Data.Time);
 ST=trans_obj.ST;
 tracks=trans_obj.Tracks;

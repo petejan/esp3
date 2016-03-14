@@ -23,8 +23,8 @@ if isempty(trans.Regions)
     return; 
 end
 
-Number=trans.Data.Number;
-Range=trans.Data.Range;
+Number=trans.Data.get_numbers();
+Range=trans.Data.get_range();
 
 xdata=Number;
 
@@ -33,7 +33,7 @@ y=Range;
 
 list_reg = trans.regions_to_str();
 axes(main_axes);
-dr=nanmean(diff(trans.Data.Range));
+dr=nanmean(diff(trans.Data.get_range()));
 dp=nanmean(diff(trans.GPSDataPing.Dist));
 
 active_reg=get(region_tab_comp.tog_reg,'value');

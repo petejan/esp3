@@ -140,8 +140,8 @@ for isn=1:length(snapshots)
                     switch reg_curr.Reference
                         case 'Surface';
                             refType = 's';
-                            start_d = trans_obj_tr.Data.Range(reg_curr.Idx_r(1));
-                            finish_d = trans_obj_tr.Data.Range(reg_curr.Idx_r(1));
+                            start_d = trans_obj_tr.Data.get_range(reg_curr.Idx_r(1));
+                            finish_d = trans_obj_tr.Data.get_range(reg_curr.Idx_r(1));
                         case 'Bottom';
                             refType = 'b';
                             start_d = 0;

@@ -128,9 +128,9 @@ end
         switch mode
             case 'horizontal'
                 idx_r=idx_r+idx_r_ori-1;
-                idx_pings=1:length(layer.Transceivers(idx_freq).Data.Number);
+                idx_pings=1:length(layer.Transceivers(idx_freq).Data.get_numbers());
             case 'vertical'
-                idx_r=1:length(layer.Transceivers(idx_freq).Data.Range);
+                idx_r=1:length(layer.Transceivers(idx_freq).Data.get_range());
                 idx_pings=idx_pings+idx_ping_ori-1;
             otherwise
                 idx_r=idx_r+idx_r_ori-1;

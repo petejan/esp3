@@ -5,7 +5,7 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
             end
             
             Transceiver=layer.Transceivers(idx_freq);
-            range_ori=Transceiver.Data.Range;
+            range_ori=Transceiver.Data.get_range();
             time_ori=Transceiver.Data.Time;
             
             dr_ori=nanmean(diff(range_ori));
@@ -22,7 +22,7 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
                 end
                 
                 Transceiver_2=layer.Transceivers(i);
-                new_range=Transceiver_2.Data.Range;
+                new_range=Transceiver_2.Data.get_range();
                 new_time=Transceiver_2.Data.Time;
                 
                 Sv=layer.Transceivers(i).Data.get_datamat('svdenoised');

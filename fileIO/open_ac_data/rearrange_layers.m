@@ -34,7 +34,7 @@ for uu=1:length(trans_nb)
                 layers_grp(uu).time_start(ii,jj)=curr_trans.Data.Time(1);
                 layers_grp(uu).time_end(ii,jj)=curr_trans.Data.Time(end);
                 layers_grp(uu).dt(ii,jj)=(curr_trans.Data.Time(end)-curr_trans.Data.Time(1))/length(curr_trans.Data.Time);
-                layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.Data.Range);
+                layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.Data.get_range());
             end
         else
                 layers_grp(uu).freqs(1,jj)=0;

@@ -39,8 +39,8 @@ if found==0
     return;
 end
 trans=layer.Transceivers(idx_freq);
-Number=trans.Data.Number;
-Range=trans.Data.Range;
+Number=trans.Data.get_numbers();
+Range=trans.Data.get_range();
 
 
 set(display_tab_comp.tog_type,'String',trans.Data.Type,'Value',idx_field);

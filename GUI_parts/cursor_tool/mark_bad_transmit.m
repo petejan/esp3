@@ -22,7 +22,7 @@ else
 end
 
 
-range=layer.Transceivers(idx_freq).Data.Range;
+range=layer.Transceivers(idx_freq).Data.get_range();
 
 nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
 

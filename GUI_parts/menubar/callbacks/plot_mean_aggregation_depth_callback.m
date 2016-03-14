@@ -22,13 +22,13 @@ if ~isempty(list_reg)
     Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
 
     bot_r=Transceiver.Bottom.Range;
-    bot_r(bot_r==0)=layer.Transceivers(idx_freq).Data.Range(end);
-    bot_r(isnan(bot_r))=layer.Transceivers(idx_freq).Data.Range(end);
+    bot_r(bot_r==0)=layer.Transceivers(idx_freq).Data.Range(2);
+    bot_r(isnan(bot_r))=layer.Transceivers(idx_freq).Data.Range(2);
     
    idx_pings=active_reg.Idx_pings;
    idx_r=active_reg.Idx_r;
     time=datetime(datestr(layer.Transceivers(idx_freq).Data.Time(idx_pings)));
-    range=layer.Transceivers(idx_freq).Data.Range(idx_r);
+    range=layer.Transceivers(idx_freq).Data.get_range(idx_r);
     figure();
     ax1=subplot(2,1,1);
     u=imagesc(layer.Transceivers(idx_freq).Data.Time(idx_pings),range,Sv(idx_r,idx_pings));

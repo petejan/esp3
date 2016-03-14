@@ -125,12 +125,11 @@ if ~isequal(Filename, 0)
             ftype='EK80';
         case 'CON0'
             ftype='EK60';
-
         otherwise
-            fid = fopen(Filename_tmp, 'r','l');
+            fid = fopen(Filename_tmp, 'r','b');
             dgType=fread(fid,1,'uint16');
             fclose(fid);
-        if hex2dec('FD02')~=dgType
+        if hex2dec('FD02')==dgType
             ftype='asl';
         else
             ftype='dfile';
@@ -275,14 +274,13 @@ if ~isequal(Filename, 0)
             % Handle response
             switch choice
                 case 'raw file'
-                    dfile=0;
-                    
+                    dfile=0;      
                 case 'd-file'
                     dfile=1;
             end
             
             if isempty(choice)
-                dfile=1;
+                return;
             end
             
             choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...

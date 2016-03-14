@@ -44,7 +44,7 @@ idx_valid=trans_obj.Data.Time>=st&trans_obj.Data.Time<=et;
 
 switch Slice_units
     case 'pings'
-        bin_ref=trans_obj.Data.Number(idx_valid);
+        bin_ref=trans_obj.Data.get_numbers(idx_valid);
     case 'meters'
         bin_ref=trans_obj.GPSDataPing.Dist(idx_valid);
 end

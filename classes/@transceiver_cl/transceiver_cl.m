@@ -336,10 +336,10 @@ classdef transceiver_cl < handle
             
             Sv(:,(obj.Bottom.Tag==0))=NaN;
             bot_r=obj.Bottom.Range;
-            bot_r(bot_r==0)=obj.Data.Range(end);
-            bot_r(isnan(bot_r))=obj.Data.Range(end);
+            bot_r(bot_r==0)=obj.Data.Range(2);
+            bot_r(isnan(bot_r))=obj.Data.Range(2);
             
-            Sv(repmat(bot_r,size(Sv,1),1)<=repmat(obj.Data.Range,1,size(Sv,2)))=NaN;
+            Sv(repmat(bot_r,size(Sv,1),1)<=repmat(obj.Data.get_range(),1,size(Sv,2)))=NaN;
             
             idx_r=active_reg.Idx_r;
             idx_pings=active_reg.Idx_pings;
@@ -351,12 +351,12 @@ classdef transceiver_cl < handle
                 otherwise
                     Sv_reg=Sv(idx_r,idx_pings);
             end
-            Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(obj.Data.Range(idx_r),1,size(Sv_reg,2)))=NaN;
+            Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(obj.Data.get_range(idx_r),1,size(Sv_reg,2)))=NaN;
             idx_field=find_field_idx(obj.Data,'sv');
             cax=obj.Data.SubData(idx_field).CaxisDisplay;
             
             Sv_reg(Sv_reg<cax(1))=nan;
-            range=double(obj.Data.Range(idx_r));
+            range=double(obj.Data.get_range(idx_r));
             Sa=10*log10(nansum(10.^(Sv_reg/10).*nanmean(diff(range))));
             
             mean_depth= nansum(10.^(Sv_reg/20).*repmat(range,1,size(Sv_reg,2)))./nansum(10.^(Sv_reg/20));

@@ -3,9 +3,9 @@ function Sv_freq_response_func(main_figure,idx_r,idx_pings)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.Range;
-r_min=nanmin(range(idx_r));
-r_max=nanmax(range(idx_r));
+range=layer.Transceivers(idx_freq).Data.get_range(idx_r);
+r_min=nanmin(range);
+r_max=nanmax(range);
 
 f_vec=[];
 Sv_f=[];
@@ -53,7 +53,7 @@ for uui=1:length(layer.Frequencies)
         
         Sv=layer.Transceivers(uui).Data.get_datamat('Sv');
         
-        range=layer.Transceivers(uui).Data.Range;
+        range=layer.Transceivers(uui).Data.get_range();
         [nb_samples,~]=size(Sv);
 
         [~,idx_r1]=nanmin(abs(range-r_min));
