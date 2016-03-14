@@ -121,6 +121,7 @@ for isn=1:length(snapshots)
                 
                 idx_reg=trans_obj_tr.list_regions_type('Data');
                 reg_tot=trans_obj_tr.get_reg_spec(idx_reg);
+                
                 [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',start_time(ilay),'EndTime',end_time(ilay));
                 Output_echo=[Output_echo sliced_output];
                 
