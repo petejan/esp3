@@ -70,7 +70,7 @@ for uit=idx_trans
         Output_echo=[Output_echo sliced_output];
         
         for j=1:length(regs)
-            
+            reg=reg_tot(j);
             reg_curr=regs{j};
             regCellInt = regCellInt_tot{j};
             startPing = regCellInt.Ping_S(1);

@@ -94,6 +94,9 @@ if ~isempty(trans_obj.Tracks)
 end
 
 i_reg=0;
+regCellInt={};
+regs={};
+
 for iuu=1:length(idx_reg)
     i_reg=i_reg+1;
     reg_curr=trans_obj.Regions(idx_reg(iuu));
