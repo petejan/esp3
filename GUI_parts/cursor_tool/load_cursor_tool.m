@@ -24,8 +24,8 @@ else
     
    
     cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure);
-    
-    icon=get_icons_cdata(fullfile(app_path.main,'icons'));
+    app_path_main=whereisEcho();
+    icon=get_icons_cdata(fullfile(app_path_main,'icons'));
 
     cursor_mode_tool_comp.zoom_in=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zin,'TooltipString','Zoom +','Tag','zin');
     cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom -','Tag','zout');

@@ -1,3 +1,5 @@
+%compile_echo('D:\Docs\MATLAB\echoanalysis','EchoAnalysis.m');
+
 function compile_echo(root_folder,nomFunc)
 
 folders=folders_list(root_folder);

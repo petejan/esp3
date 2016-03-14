@@ -25,28 +25,6 @@ end
 
 end
 
-function node_atts=get_node_att(node)
-if isempty(node)
-    node_atts=[];
-    return;
-end
-nb_att=length(node.Attributes);
-node_atts=[];
-for j=1:nb_att
-    node_atts.(node.Attributes(j).Name)=node.Attributes(j).Value;
-end
-end
-
-function childs=get_childs(node,name)
-    childs=[];
-    for iu=1:length(node.Children)
-        if strcmpi(node.Children(iu).Name,name)
-        childs=[childs node.Children(iu)];
-        end
-    end
-end
-
-
 
 function bottom=get_bottom_node(bottom_node)
 

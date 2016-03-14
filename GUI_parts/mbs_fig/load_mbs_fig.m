@@ -70,11 +70,11 @@ for i=1:length(selected_mbs)
     
     switch src.Tag
         case 'crest'
-            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans);
+            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data_temp,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans);
         case 'raw'
-            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'type','raw');
+            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data_temp,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'type','raw');
         case 'sch'
-            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'mode','sch');
+            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data_temp,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'mode','sch');
     end
     
     mbs.generate_output(layers,'idx_trans',idx_trans);

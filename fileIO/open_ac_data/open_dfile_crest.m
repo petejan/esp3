@@ -4,7 +4,7 @@ curr_disp=getappdata(hObject,'Curr_disp');
 layers=getappdata(hObject,'Layers');
 app_path=getappdata(hObject,'App_path');
 
-layers_temp=read_crest(Filename_cell,'PathToMemmap',app_path.data,'CVSCheck',CVSCheck,'CVSroot',app_path.cvs_root);
+layers_temp=read_crest(Filename_cell,'PathToMemmap',app_path.data_temp,'CVSCheck',CVSCheck,'CVSroot',app_path.cvs_root);
 
 layer=layers_temp(end);
 layers=[layers_temp,layers];

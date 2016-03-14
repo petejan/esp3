@@ -60,7 +60,7 @@ dates_out=dates(idx_to_open);
 fprintf('Openning %.0f day(s), that is %d files\n',length(idx_out),length(idx_to_open));
 
 new_layers=read_asl(Filename_out,...
-    'PathToMemmap',app_path.data);
+    'PathToMemmap',app_path.data_temp);
         
 if isempty(new_layers)
     return;

@@ -22,21 +22,21 @@ main_figure=figure('Visible','on',...
 set(0,'DefaultUicontrolFontSize',10);%Default font size for Controls
 set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
 
+main_path=whereisEcho();
 
-
-app_path=app_path_create();
-
-if ~isdeployed
-    update_path(app_path.main);
+if ~isdeployed    
+    update_path(main_path);
 end
 
-if ~isdir(app_path.data)
-    mkdir(app_path.data);
+app_path=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+
+if ~isdir(app_path.data_temp)
+    mkdir(app_path.data_temp);
     disp('Data Folder Created')
-    disp(app_path.data)
+    disp(app_path.data_temp)
 end
 
-files_in_temp=dir(fullfile(app_path.data,'*.bin'));
+files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
 
 idx_old=[];
 for uu=1:length(files_in_temp)
@@ -65,8 +65,8 @@ if ~isempty(idx_old)
     
     if delete_files==1
         for i=1:length(idx_old)
-            if exist(fullfile(app_path.data,files_in_temp(idx_old(i)).name),'file')==2
-                delete(fullfile(app_path.data,files_in_temp(idx_old(i)).name));
+            if exist(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name),'file')==2
+                delete(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name));
             end
         end
     end

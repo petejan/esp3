@@ -27,7 +27,7 @@ sple_end=inf;
         
 % profile on
 new_layers=open_EK60_file_stdalone(Filename,...
-    'PathToMemmap',app_path.data,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
+    'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
         
 
 if exist('opening_file','var')
