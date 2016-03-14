@@ -80,7 +80,7 @@ for i_file=1:length(dates_out)
        end
     end
     
-    if dates(i_file)-date_ori<=max_load_days
+    if dates_out(i_file)-date_ori<=max_load_days
         new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} new_layers(i_file)];
     else
         i_cell=i_cell+1;

@@ -10,8 +10,8 @@ if isempty(axes_type)
     axes_type='Number';
     x=layer.Transceivers(idx_freq).Data.Number;
     y=layer.Transceivers(idx_freq).Data.Range;
-    dx=(x(end)-x(1))/10;
-    dy=(y(end)-y(1))/10;
+    dx=(x(end)-x(1))/15;
+    dy=(y(end)-y(1))/15;
     new=1;
 end
 
@@ -66,11 +66,14 @@ end
 nb_samples=length(idx_r);
 nb_pings=length(idx_ping);
 
-screensize=get(0,'ScreenSize');
+%screensize=get(0,'ScreenSize');
+set(ax,'units','pixels');
+screensize=get(ax,'position');
 outputSize=nanmin(screensize(3:4),[nb_samples nb_pings]);
+set(ax,'units','normalized');
 
-dr=nanmax(floor(nb_samples/outputSize(1)),1);
-dp=nanmax(floor(nb_pings/outputSize(2)),1);
+dr=nanmax(ceil(nb_samples/outputSize(1))+1,1);
+dp=nanmax(ceil(nb_pings/outputSize(2))+1,1);
 
 data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
 
