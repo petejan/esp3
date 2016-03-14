@@ -17,6 +17,7 @@ path_node = docNode.createElement('AppPath');
 path_node.setAttribute('cvs_root',app_path.cvs_root);
 path_node.setAttribute('data_root',app_path.data_root);
 path_node.setAttribute('data_temp',app_path.data_temp);
+path_node.setAttribute('data',app_path.data);
 
 config_file.appendChild(path_node);
 

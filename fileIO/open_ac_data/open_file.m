@@ -1,15 +1,16 @@
 function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
+app_path=getappdata(main_figure,'App_path');
 
 if ~isempty(layer)
     [path_lay,~]=layer.get_path_files();
     if ~isempty(path_lay)
         file_path=path_lay{1};
     else
-        file_path=pwd;
+        file_path=app_path.data;
     end
 else
-    file_path=pwd;
+    file_path=app_path.data;
 end
 
 
