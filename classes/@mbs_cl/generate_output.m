@@ -12,8 +12,10 @@ idx_trans=p.Results.idx_trans;
 
 transects=mbs.Input.transect;
 
-if length(idx_trans) > length(transects)||isempty(idx_trans)
+if length(idx_trans) > length(transects)
     warning('Requested index > num transects, using num transects');
+    idx_trans=1:length(transects);
+elseif isempty(idx_trans)
     idx_trans=1:length(transects);
 end
 
@@ -64,7 +66,7 @@ for uit=idx_trans
         rsa={};
         reg_tot=mbs.Input.reg{idx_trans(ifi)};
         mbsVS = (mbs.Header.vertical_slice_size);
-        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',mbsVS,'Slice_units','pings');
+        [sliced_output,regs,regCellInt_tot]=trans.slice_transect('reg',reg_tot,'Slice_w',mbsVS,'Slice_units','pings');
         Output_echo=[Output_echo sliced_output];
         
         for j=1:length(regs)

@@ -1,4 +1,4 @@
-function [gps_data,attitude_data]=read_n_file(filename)
+function [gps_data,attitude_data]=read_n_file(filename,start_time,end_time)
 
 filename(end-7)='n';
 
@@ -48,7 +48,7 @@ while (true)
     heading(out{1}+1)=out{8};    
 end
 fclose(fid);
-time=nan(size(lat));
+time=linspace(start_time,end_time,length(lat));
 
 gps_data=gps_data_cl('Lat',lat,'Long',lon,'Time',time,'NMEA','Esp2');
 attitude_data=attitude_nav_cl('Heading',heading,'SOG',sog,'Time',time);

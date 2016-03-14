@@ -18,7 +18,7 @@ mode=p.Results.mode;
 idx_trans=p.Results.idx_trans;
 
 dFileNum=mbs.Input.dfileNum;
-dfileDir=mbs.Input.dfileDir;
+%dfileDir=mbs.Input.dfileDir;
 dPathToFile=mbs.Input.crestDir;
 rawFilename=mbs.Input.rawFileName;
 rawPathToFile=mbs.Input.rawDir;
@@ -30,14 +30,16 @@ calRaw=mbs.Input.calRaw;
 absorbtion=mbs.Input.absorbtion;
 surveyname=mbs.Header.title;
 voyage=mbs.Header.voyage;
-vertslice=mbs.Header.vertical_slice_size;
+%vertslice=mbs.Header.vertical_slice_size;
 snapshot=mbs.Input.snapshot;
 stratum=mbs.Input.stratum;
 transect=mbs.Input.transect;
 
 
-if length(idx_trans) > length(dFileNum)||isempty(idx_trans)
+if length(idx_trans) > length(dFileNum)
     warning('Requested index > num transects, using num transects');
+    idx_trans=1:length(dFileNum);
+elseif isempty(idx_trans)
     idx_trans=1:length(dFileNum);
 end
 

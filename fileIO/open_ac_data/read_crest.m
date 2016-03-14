@@ -80,7 +80,7 @@ if ~isequal(Filename_cell, 0)
         clear sample_real sample_imag ping_num;
         
         
-        [gps_data,attitude_data]= read_n_file(fullfile(FileName));
+        
 
         ifileInfo=parse_ifile(FileName);
 
@@ -93,9 +93,8 @@ if ~isequal(Filename_cell, 0)
         
         survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
         
-        gps_data.Time=linspace(start_time,end_time,length(gps_data.Time));
-        attitude_data.Time=linspace(start_time,end_time,length(attitude_data.Time));
-        
+        [gps_data,attitude_data]= read_n_file(fullfile(FileName),start_time,end_time);
+       
         samples_num=(1:size(samples_val_imag,1))';
         range=samples_num/depth_factor;
         number=(1:size(samples_val_imag,2));

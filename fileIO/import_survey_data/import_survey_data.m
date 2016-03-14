@@ -24,4 +24,5 @@ if exist(FileN,'file')==2
         surv_data_struct.Stratum(idx_nan)={' '};
     end
     
+    
 end
