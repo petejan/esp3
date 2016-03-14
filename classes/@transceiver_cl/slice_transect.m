@@ -27,13 +27,13 @@ else
 end
 
 
-if p.Results.StartTime~=0
+if p.Results.StartTime==0
     st=trans_obj.Data.Time(1);
 else
     st=p.Results.StartTime;
 end
 
-if p.Results.EndTime~=1
+if p.Results.EndTime==1
     et=trans_obj.Data.Time(end);
 else
     et=p.Results.EndTime;
