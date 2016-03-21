@@ -41,13 +41,11 @@ end
 
 
 function reprocess_TS_calibration(~,~,main_figure)
-reset_mode([],[],main_figure)
-set(main_figure,'WindowButtonDownFcn',{@TS_calibration_curves,main_figure});
+TS_calibration_curves_func(main_figure);
 end
 
 function reprocess_EBA_calibration(~,~,main_figure)
-reset_mode([],[],main_figure)
-set(main_figure,'WindowButtonDownFcn',{@beamwidth_calibration_curves,main_figure});
+beamwidth_calibration_curves_func(main_figure);
 end
 
 function apply_calibration(~,~,main_figure)

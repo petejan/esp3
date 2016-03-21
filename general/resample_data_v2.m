@@ -47,7 +47,7 @@ if ~isempty(idx_nan)
     idx_far=[];
     for ij=1:length(idx_nan)
         [val,idx_nearest(ij)]=min(abs(xdata-xdata_n(idx_nan(ij))));
-        if val>2*dx
+        if val>10*dx
             idx_far=[idx_far ij];
         end
     end

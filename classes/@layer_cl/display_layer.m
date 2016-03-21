@@ -69,7 +69,7 @@ nb_pings=length(idx_ping);
 %screensize=get(0,'ScreenSize');
 set(ax,'units','pixels');
 screensize=get(ax,'position');
-outputSize=nanmin(screensize(3:4),[nb_samples nb_pings]);
+outputSize=nanmin(screensize(3:4),[nb_pings nb_samples]);
 set(ax,'units','normalized');
 
 dr=nanmax(ceil(nb_samples/outputSize(2)),1);

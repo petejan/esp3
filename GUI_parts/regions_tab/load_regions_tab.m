@@ -88,7 +88,7 @@ ref_idx=find(strcmp(reg_curr.Reference,ref));
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Reference','units','normalized','Position',[0 0.45 0.2 0.1]);
 region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',ref_idx,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
 
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy Across Freq.','TooltipString','Copy Across Frequencies','units','normalized','pos',[0.45 0.1 0.125 0.15],'callback',{@copy_to_other_freq,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy Regs Across Freq.','TooltipString','Copy All Regions Across Frequencies','units','normalized','pos',[0.45 0.1 0.125 0.15],'callback',{@copy_to_other_freq,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg','units','normalized','pos',[0.575 0.1 0.125 0.15],'callback',{@display_region_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Freq Resp.','TooltipString','Frequency Response (TS(f) of Sv(f))','units','normalized','pos',[0.7 0.1 0.125 0.15],'callback',{@freq_response_reg_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','units','normalized','pos',[0.825 0.1 0.125 0.15],'callback',{@classify_reg_callback,main_figure});
@@ -190,15 +190,9 @@ end
 function copy_to_other_freq(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-Transceiver=layer.Transceivers(idx_freq);
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
-
-
-if ~isempty(list_reg)
-    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    layer.copy_region_across(idx_freq,active_reg,[]);
+for uir=1:length(layer.Transceivers(idx_freq).Regions)
+    layer.copy_region_across(idx_freq,layer.Transceivers(idx_freq).Regions(uir),[]);
 end
 
 setappdata(main_figure,'Layer',layer);

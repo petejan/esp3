@@ -8,8 +8,16 @@ end
 
 uimenu(context_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
-%uimenu(context_menu,'Label','Activate Region','Callback',{@activate_region_callback,reg_curr,main_figure});
+uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
 
+end
+
+function copy_region_callback
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+layer.copy_region_across(idx_freq,reg_curr,[]);
+ 
 end
 
 function disp_hist_region_callback(~,~,reg_curr,main_figure)

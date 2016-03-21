@@ -1,4 +1,4 @@
-function TS_calibration_curves_func(main_figure,idx_r,~)
+function TS_calibration_curves_func(main_figure)
 
 
 options.Interpreter = 'tex';
@@ -21,48 +21,59 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
-
-
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
-Transceiver=layer.Transceivers(idx_freq);
-range=Transceiver.Data.get_range();
-
-r_min=nanmin(range(idx_r));
-r_max=nanmax(range(idx_r));
 
 f_vec_save=[];
 
-
+TS_fig=figure();
+BP_fig_1=figure();
+BP_fig=figure();
 
 for uui=1:length(layer.Frequencies)
     
     range=double(layer.Transceivers(uui).Data.get_range());
     ping_num=layer.Transceivers(uui).Data.get_numbers();
     
+    mask=layer.Transceivers(uui).mask_from_regions();
+    
+    
+    [samples_m,~]=find(mask);
+    
+    r_min=nanmin(range(samples_m));
+    r_max=nanmax(range(samples_m));
+    
+    if isempty(r_min)||isempty(r_max)
+        continue;
+    end
+    
     bad_trans=zeros(size(ping_num));
     bad_trans(layer.Transceivers(idx_freq).Bottom.Tag==0)=1;
+    mask(:,bad_trans==1)=0;
     
     idx_r=find(range<=r_max&range>=r_min);
-    idx_pings=double(ping_num)-double(ping_num(1))+1;
+    
     if isempty(idx_r)
         [~,idx_r]=nanmin(abs(range-r_max));
     end
     
+    idx_pings=find(nansum(mask)>0);
+    
     
     Sp=layer.Transceivers(uui).Data.get_datamat('Sp');
-	AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
+    Sp(mask==0)=nan;
+    AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
     AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
-	
-    Freq=(layer.Transceivers(uui).Config.Frequency); 
+    
+    Freq=(layer.Transceivers(uui).Config.Frequency);
     pulselength=(layer.Transceivers(uui).Params.PulseLength(1));
     Np=double(round(pulselength/layer.Transceivers(uui).Params.SampleInterval(1)));
     
-    [nb_samples,nb_pings]=size(AcrossAngle);
+    [nb_samples,~]=size(AcrossAngle);
     
     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
     
     
-    Sp_red=Sp(idx_r,:);
+    Sp_red=Sp(idx_r,idx_pings);
     Sp_red(Sp_red>sphere_ts+5)=nan;
     if ~strcmp(layer.Transceivers(uui).Mode,'FM')
         Sp_red=filter2(ones(Np,1),Sp_red)./filter2(ones(Np,1),ones(size(Sp_red)));
@@ -79,9 +90,9 @@ for uui=1:length(layer.Frequencies)
     [~,idx_peak]=nanmax(Sp_red,[],1);
     idx_peak=idx_peak+idx_r(1)-1;
     
-    AcrossAngle_sph=AcrossAngle(idx_peak+nb_samples*(0:nb_pings-1));
-    AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(0:nb_pings-1));
-    Sp_sph=Sp(idx_peak+nb_samples*(0:nb_pings-1));
+    AcrossAngle_sph=AcrossAngle(idx_peak+nb_samples*(idx_pings-1));
+    AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(idx_pings-1));
+    Sp_sph=Sp(idx_peak+nb_samples*(idx_pings-1));
     range_sph=range(idx_peak);
     
     
@@ -91,7 +102,7 @@ for uui=1:length(layer.Frequencies)
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
     
-    idx_low=(Sp_sph<=-60)|compensation>12|bad_trans|(Sp_sph>-30);
+    idx_low=(Sp_sph<=-60)|compensation>12|(Sp_sph>-30);
     
     
     AlongAngle_sph(idx_low)=[];
@@ -109,7 +120,7 @@ for uui=1:length(layer.Frequencies)
             case 'Number'
                 axes(ah);
                 hold on;
-                plot(layer.Transceivers(uui).Data.get_numbers(idx_pings),layer.Transceivers(uui).Data.get_range(idx_peak),'color','r','linewidth',2);
+                plot(layer.Transceivers(uui).Data.get_numbers(idx_pings),layer.Transceivers(uui).Data.get_range(idx_peak),'+r','linewidth',2);
                 drawnow
             otherwise
                 
@@ -126,7 +137,7 @@ for uui=1:length(layer.Frequencies)
         ZI = griddata(AlongAngle_sph,AcrossAngle_sph,Sp_sph, XI, YI);
         
         
-        figure()
+        figure(BP_fig_1)
         subplot(1,length(layer.Frequencies),uui)
         contourf(XI, YI, ZI)
         hold on
@@ -143,7 +154,7 @@ for uui=1:length(layer.Frequencies)
         drawnow;
         
         
-        figure()
+        figure(BP_fig)
         subplot(1,length(layer.Frequencies),uui)
         surf(XI, YI, ZI)
         shading interp
@@ -167,12 +178,13 @@ for uui=1:length(layer.Frequencies)
         if idx_freq==uui
             axes(ah);
             hold on;
-            plot(idx_pings,range(idx_peak),'.r','markersize',5);        
+            plot(idx_pings,range(idx_peak),'.r','markersize',5);
             drawnow;
         end
         
         if isempty(idx_peak)
-            break;
+            
+            continue;
         end
         
         for kk=1:length(idx_pings)
@@ -183,7 +195,7 @@ for uui=1:length(layer.Frequencies)
         
         TS_f_mean=10*log10(nanmean(10.^(TS_f'/10)));
         
-        figure()
+        figure(TS_fig);
         hold on;
         %subplot(1,3,uui)
         plot(f_vec/1e3,TS_f,'b','linewidth',0.2);
@@ -198,8 +210,8 @@ for uui=1:length(layer.Frequencies)
             th_ts(jj) = spherets(2*pi*f_vec(jj,1)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
         end
         
-
-
+        
+        
         [cal_path,~,~]=fileparts(layer.Filename{1});
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
@@ -214,10 +226,12 @@ for uui=1:length(layer.Frequencies)
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        
-        for uui=1:length(layer.Frequencies)
-            layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings);
+        if uui==1
+            close(TS_fig);
+            close(BP_fig_1);
+            close(BP_fig);
         end
+        layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings);
     end
 end
 
@@ -229,12 +243,11 @@ if ~isempty(f_vec_save)
         ts(jj) = spherets(2*pi*f_vec_2(jj)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
     end
     
-    figure()
+    figure(TS_fig)
     hold on;
     plot(f_vec_2/1e3,ts,'k','linewidth',2)
 end
 
-set(main_figure,'WindowButtonDownFcn','');
 
 setappdata(main_figure,'Layer',layer);
 
