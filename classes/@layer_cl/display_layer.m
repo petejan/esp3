@@ -72,8 +72,10 @@ screensize=get(ax,'position');
 outputSize=nanmin(screensize(3:4),[nb_samples nb_pings]);
 set(ax,'units','normalized');
 
-dr=nanmax(ceil(nb_samples/outputSize(1)),1);
-dp=nanmax(ceil(nb_pings/outputSize(2)),1);
+dr=nanmax(ceil(nb_samples/outputSize(2)),1);
+dp=nanmax(ceil(nb_pings/outputSize(1)),1);
+% dp=1;
+% dr=1;
 
 data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
 

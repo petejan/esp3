@@ -19,37 +19,45 @@ classdef attitude_nav_cl < handle
             addParameter(p,'Pitch',[],@isnumeric);
             addParameter(p,'Time',[],@isnumeric);
             addParameter(p,'SOG',[],@isnumeric);
-                      
+            
             parse(p,varargin{:});
-           
+            
             results=p.Results;
             props=fieldnames(results);
- 
-            for i=1:length(props)  
-                obj.(props{i})=results.(props{i});        
+            
+            for i=1:length(props)
+                obj.(props{i})=results.(props{i});
+            end
+            
+            [~,idx_sort]=sort(obj.Time);
+            
+            for i=1:length(props)
+                if ~isempty(obj.(props{i}))
+                    obj.(props{i})=obj.(props{i})(idx_sort);
+                end
             end
         end
         
         function attitude_out=concatenate_AttitudeNavPing(attitude_1,attitude_2)
             
             if ~isempty(attitude_1)&&~isempty(attitude_2)
-            
-            heading=[attitude_1.Heading(:); attitude_2.Heading(:)];
-            roll=[attitude_1.Roll(:); attitude_2.Roll(:)];
-            heave=[attitude_1.Heave(:); attitude_2.Heave(:)];
-            pitch=[attitude_1.Pitch(:); attitude_2.Pitch(:)];
-            time=[attitude_1.Time(:); attitude_2.Time(:)];
-            
-            
-        attitude_out=attitude_nav_cl('Heading',heading,...
-            'Roll',roll,...
-            'Heave',heave,...
-            'Pitch',pitch,...
-            'Time',time);
+                
+                heading=[attitude_1.Heading(:); attitude_2.Heading(:)];
+                roll=[attitude_1.Roll(:); attitude_2.Roll(:)];
+                heave=[attitude_1.Heave(:); attitude_2.Heave(:)];
+                pitch=[attitude_1.Pitch(:); attitude_2.Pitch(:)];
+                time=[attitude_1.Time(:); attitude_2.Time(:)];
+                
+                
+                attitude_out=attitude_nav_cl('Heading',heading,...
+                    'Roll',roll,...
+                    'Heave',heave,...
+                    'Pitch',pitch,...
+                    'Time',time);
             else
                 attitude_out=attitude_nav_cl.empty();
             end
-        
+            
         end
         
     end

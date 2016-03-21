@@ -24,26 +24,23 @@ for iiii=idx_NMEA(:)'
                         && ~isempty(nmea.lon) && isreal(nmea.lon)       ...
                         && (nmea.lat_hem == 'S' || nmea.lat_hem == 'N') ...
                         && (nmea.lon_hem == 'E' || nmea.lon_hem == 'W')
-                    if curr_gps==0
-                        gps.type=nmea.type;
+                    
+                    curr_gps=curr_gps+1;
+                    gps.type{curr_gps}=nmea.type;
+                    gps.time(curr_gps) = NMEA_time(iiii);
+                    %  set lat/lon signs and store values
+                    if (nmea.lat_hem == 'S');
+                        gps.lat(curr_gps) = -nmea.lat;
+                    else
+                        gps.lat(curr_gps) = nmea.lat;
                     end
-                    if strcmp(nmea.type,gps.type)
-                        curr_gps=curr_gps+1;
-                        
-                        gps.time(curr_gps) = NMEA_time(iiii);
-                        %  set lat/lon signs and store values
-                        if (nmea.lat_hem == 'S');
-                            gps.lat(curr_gps) = -nmea.lat;
-                        else
-                            gps.lat(curr_gps) = nmea.lat;
-                        end
-                        if (nmea.lon_hem == 'W');
-                            gps.lon(curr_gps) = -nmea.lon;
-                        else
-                            gps.lon(curr_gps) = nmea.lon;
-                        end
-                        
+                    if (nmea.lon_hem == 'W');
+                        gps.lon(curr_gps) = -nmea.lon;
+                    else
+                        gps.lon(curr_gps) = nmea.lon;
                     end
+                    
+                    
                 end
                 %             case 'speed'
                 %                 vspeed.time(curr_speed) = dgTime;
@@ -80,7 +77,11 @@ for iiii=idx_NMEA(:)'
 end
 
 if curr_gps>0&&isfield(gps,'lat')
-    gps_data=gps_data_cl('Lat',gps.lat,'Long',gps.lon,'Time',gps.time,'NMEA',gps.type);
+    types=unique(gps.type);
+    nb_type=cellfun(@(x) nansum(strcmp(x,gps.type)),types);
+    [~,id_max]=nanmax(nb_type);
+    id_keep=strcmp(types(id_max),gps.type);
+    gps_data=gps_data_cl('Lat',gps.lat(id_keep),'Long',gps.lon(id_keep),'Time',gps.time(id_keep),'NMEA',gps.type{id_max});
 else
     gps_data=gps_data_cl();
 end

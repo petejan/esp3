@@ -37,11 +37,7 @@ dr=nanmean(diff(trans.Data.get_range()));
 dp=nanmean(diff(trans.GPSDataPing.Dist));
 
 active_reg=get(region_tab_comp.tog_reg,'value');
-if curr_disp.DispReg>0
-    vis='on';
-else
-    vis='off';
-end
+vis=curr_disp.DispReg;
 
 
     for i=1:length(list_reg)

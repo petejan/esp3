@@ -19,6 +19,8 @@ for ifile=file_ids
                 ping_start=nan;
                 ping_end=nan;
                 nb_cont=0;
+                X_cont={};
+                Y_cont={};
                 for ic=1:length(reg_obj.X_cont)
                     idx_in=find((reg_obj.X_cont{ic}+reg_obj.Idx_pings(1)-1)>=idx_ping_files(1)&(reg_obj.X_cont{ic}+reg_obj.Idx_pings(1)-1)<=idx_ping_files(end));
                     if ~isempty(idx_in)

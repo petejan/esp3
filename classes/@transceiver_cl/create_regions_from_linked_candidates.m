@@ -74,7 +74,7 @@ for j=1:nanmax(linked_candidates(:))
                 'Cell_h_unit',h_unit);
         end
         
-        trans.add_region(reg_temp);
+        trans.add_region(reg_temp,'Split',1);
         
     end
 end
