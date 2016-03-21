@@ -12,7 +12,7 @@ uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region
 
 end
 
-function copy_region_callback
+function copy_region_callback(~,~,reg_curr,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
