@@ -23,6 +23,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
 
+
 f_vec_save=[];
 
 TS_fig=figure();
@@ -30,6 +31,9 @@ BP_fig_1=figure();
 BP_fig=figure();
 
 for uui=1:length(layer.Frequencies)
+    
+   
+    
     
     range=double(layer.Transceivers(uui).Data.get_range());
     ping_num=layer.Transceivers(uui).Data.get_numbers();
@@ -95,7 +99,32 @@ for uui=1:length(layer.Frequencies)
     Sp_sph=Sp(idx_peak+nb_samples*(idx_pings-1));
     range_sph=range(idx_peak);
     
+    t=layer.EnvData.Temperature;
+    t_sphere=layer.EnvData.Temperature;
+    s_sphere=layer.EnvData.Salinity;
+    s=layer.EnvData.Salinity;
+    d=nanmean(range(range<nanmean(range_sph)));
     
+    density_at_sphere = sw_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph));
+    c_at_sphere = sw_svel(s_sphere, t_sphere, nanmean(range_sph));
+    
+    % mean parameters over range from transducer to the sphere
+    c = sw_svel(s, t, d);
+    alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
+    sphere_ts = spherets(2*pi*Freq/c, .0381/2, c_at_sphere, ...
+        6853, 4171, density_at_sphere, 14900);
+    
+    % print out the parameters
+    disp(['sound speed at sphere = ' num2str(c_at_sphere) ' m/s'])
+    disp(['density at sphere = ' num2str(density_at_sphere) ' kg/m^3'])
+    
+    disp(['mean absorption = ' num2str(alpha) ' dB/km'])
+    disp(['mean sound speed = ' num2str(c) ' m/s'])
+    disp(['sphere TS = ' num2str(sphere_ts) ' dB'])
+    
+    layer.Transceivers(uui).apply_soundspeed(layer.EnvData.SoundSpeed,c);
+    layer.EnvData.SoundSpeed=c;
+    layer.Transceivers(uui).apply_absorption(alpha/1e3);
     
     compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
     
@@ -231,7 +260,7 @@ for uui=1:length(layer.Frequencies)
             close(BP_fig_1);
             close(BP_fig);
         end
-        layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings);
+        layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts);
     end
 end
 

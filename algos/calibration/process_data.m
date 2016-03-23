@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part 2: Processing of sphere echoes to yield calibration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function transceiver=process_data(transceiver,envData,idx_peak,idx_pings)
+function transceiver=process_data(transceiver,envData,idx_peak,idx_pings,sphere_ts)
 
 % Optional single target and sphere processing parameters:
 %
@@ -121,7 +121,7 @@ data.cal.power = power;
 data.cal.range = transceiver.Data.get_range(range) - ...
     pulselength * envData.SoundSpeed/4;
 
-data.cal.sphere_ts = spherets(2*pi*Freq/envData.SoundSpeed, .0381/2, envData.SoundSpeed, 6853, 4171, 1025, 14900);
+data.cal.sphere_ts = sphere_ts;
 
 
 %

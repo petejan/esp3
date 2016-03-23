@@ -33,7 +33,7 @@ function alpha = sw_absorption(f, S, T, D, method)
 % 'fands'   - Fisher & Simmonds(1977) - not yet implemented
 
 % Written by Gavin Macaulay, August 2003
-% $Id: sw_absorption.m 6579 2009-06-04 02:00:11Z macaulay $
+% $Id: sw_absorption.m 7191 2015-04-01 18:59:49Z ladroity $
 
 % checks on valid inputs
 

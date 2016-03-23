@@ -49,7 +49,7 @@ vis=curr_disp.DispReg;
                 case 'data'
                     col='b';
                 case 'bad data'
-                    col=[0.7 0.7 0.7];
+                    col=[0.5 0.5 0.5];
             end
         end
         

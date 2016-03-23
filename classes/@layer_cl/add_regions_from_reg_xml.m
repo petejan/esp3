@@ -53,11 +53,17 @@ for ix=1:length(xml_file)
         
         
         for i=1:length(reg_xml)
-            idx_good=find(reg_xml{i}.ID==IDs);
-            idx_bad=find(reg_xml{i}.ID==-IDs);
-            if ~(isempty(IDs)||~isempty(idx_good)||~isempty(idx_bad))
-                continue;
+            
+            if ~isempty(IDs)
+                idx_good=find(reg_xml{i}.ID==IDs);
+                idx_bad=find(reg_xml{i}.ID==-IDs,1);
+                if (isempty(idx_good)&&isempty(idx_bad))
+                    continue;
+                end
+            else
+                idx_good=1;
             end
+            
             
             ID=reg_xml{i}.ID;
             Unique_ID=reg_xml{i}.Unique_ID;
