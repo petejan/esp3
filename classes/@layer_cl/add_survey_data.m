@@ -5,12 +5,10 @@ nb_files=0;
 
 surv_data=cell(1,length(layers));
 for ilay=1:length(layers)
-    idx_files_lay(nb_files+1:nb_files+length(layers(ilay).Filename))=ilay;
     [~,files_temp]=layers(ilay).get_path_files();
     files=[files files_temp];
     nb_files=nb_files+length(layers(ilay).Filename);
 end
-idx_files=1:nb_files;
 
 [idx_files_layer,idx_loaded,~]=find_survey_data(files,survey_data_struct);
 
@@ -19,8 +17,8 @@ for i=1:length(idx_loaded)
     if isempty(idx_loaded{i})
         continue;
     end
-    [~,itemp]=intersect(idx_files,idx_files_layer{i});
-    idx_lay=idx_files_lay(itemp);
+
+    idx_lay=idx_files_layer{i};
     
     for il=1:length(idx_lay)
         start_time=survey_data_struct.StartTime(idx_loaded{i}(il));
@@ -29,6 +27,7 @@ for i=1:length(idx_loaded)
         [start_file_time,end_file_time]=layers(idx_lay(il)).get_time_bound_files();
         
         [~,files_lay]=layers(idx_lay(il)).get_path_files();
+        
         ifile=find(strcmp(files_lay,survey_data_struct.Filename(idx_loaded{i}(il))));
         
         if start_time==0

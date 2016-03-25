@@ -109,7 +109,7 @@ for ilay=1:length(layers_obj)
             else
                 survey_data_temp=layer_obj.SurveyData;
                 [start_file_time,end_file_time]=layer_obj.get_time_bound_files();
-                ifi=strcmp(file_curr,file_lay);
+                ifi=find(strcmp(file_curr,file_lay));
                 
                 if isempty(survey_data_temp)
                     survey_data_temp={[]};

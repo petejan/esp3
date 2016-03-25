@@ -61,7 +61,14 @@ for i_cell=1:length(surv_data_cell_out)
                 start_time=nanmin(start_time,surv_data_tot{icell2}.StartTime);
                 end_time=nanmax(end_time,surv_data_tot{icell2}.EndTime);
             end
-            
+        end
+        
+        if isempty(end_time)
+            end_time=1;
+        end
+        
+        if isempty(start_time)
+            start_time=0;
         end
         
         if start_time==0&&~isempty(layer_obj.Transceivers)
