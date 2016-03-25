@@ -48,7 +48,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
         if reg_cvs==1
             display(['converting regions for dfile ' FileName]);
             regions = get_regions_from_esp2(PathToFile,FileName,voyage,cvsroot,reg_rev);
-            
+
             if ~strcmpi(layer.Filetype,'CREST')
                 for ii=1:length(regions)
                     regions(ii).Idx_pings=regions(ii).Idx_pings+1;

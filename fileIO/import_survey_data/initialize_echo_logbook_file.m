@@ -20,7 +20,6 @@ function initialize_echo_logbook_file(datapath)
      end
      
      
-
      fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
      
      for i=1:nb_files

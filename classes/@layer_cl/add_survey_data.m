@@ -21,6 +21,7 @@ for i=1:length(idx_loaded)
     idx_lay=idx_files_layer{i};
     
     for il=1:length(idx_lay)
+        
         start_time=survey_data_struct.StartTime(idx_loaded{i}(il));
         end_time=survey_data_struct.EndTime(idx_loaded{i}(il));
         

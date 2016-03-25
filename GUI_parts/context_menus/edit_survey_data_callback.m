@@ -62,8 +62,7 @@ else
         surv{1}=surv_to_modif;
         start_time=surv_to_modif.StartTime;
         end_time=surv_to_modif.EndTime;
-    else
-        
+    else  
         surv{1}=survey_data_cl();
         
         dt_before(dt_before<0)=nan;
@@ -106,7 +105,9 @@ if rem==0
         return;
     end
 else
-    surv{1}=[];
+    surv{1}=survey_data_cl();
+    surv{1}.Voyage=surv_temp.Voyage;
+    surv{1}.SurveyName=surv_temp.SurveyName;
 end
 
 if idx_modif>0

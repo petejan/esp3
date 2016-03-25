@@ -9,6 +9,10 @@ uimenu(m_files,'Label','Index Files','Callback',{@index_files_callback,main_figu
 
 
 m_bot_reg = uimenu(main_figure,'Label','Bottom/Regions','Tag','menufile');
+m_bot_reg_old = uimenu(m_bot_reg,'Label','Old b-r_files','Tag','menuold');
+uimenu(m_bot_reg_old,'Label','Load Bottom and Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,1});
+uimenu(m_bot_reg_old,'Label','Load Bottom','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,0});
+uimenu(m_bot_reg_old,'Label','Load Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,0,1});
 mcvs = uimenu(m_bot_reg,'Label','CVS','Tag','menucvs');
 uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
 uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_callback,main_figure});
@@ -119,9 +123,25 @@ setappdata(main_figure,'main_menu',main_menu);
 
 end
 
+function load_bottom_reg_old_files_callback(~,~,main_figure,bot,reg)
+layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
+[path_f,~]=layer.get_path_files();
+folder = uigetdir(path_f{1},'Select folder containing b and r files');
+if folder==0
+    return
+end
+layer.load_bottom_regions_from_folder(folder,'bot',bot,'reg',reg);
+setappdate(main_figure,'Layer',layer);
+update_display(main_figure)
+
+end
+
 function save_display_config_callback(~,~,main_fig)
-    curr_disp=getappdata(main_fig,'Curr_disp');
-    write_config_to_xml([],curr_disp);
+curr_disp=getappdata(main_fig,'Curr_disp');
+write_config_to_xml([],curr_disp);
 end
 
 function load_map_fig_callback(~,~,main_fig)
@@ -156,17 +176,17 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 switch src
     case main_menu.disp_bad_trans
-         if strcmp(get(src,'checked'),'off')
+        if strcmp(get(src,'checked'),'off')
             curr_disp.DispBadTrans='on';
         else
             curr_disp.DispBadTrans='off';
-         end
+        end
     case main_menu.disp_reg
-         if strcmp(get(src,'checked'),'off')
+        if strcmp(get(src,'checked'),'off')
             curr_disp.DispReg='on';
         else
             curr_disp.DispReg='off';
-         end
+        end
     case main_menu.disp_lines
         if strcmp(get(src,'checked'),'off')
             curr_disp.DispLines='on';
@@ -190,7 +210,7 @@ switch src
             curr_disp.DispTracks='on';
         else
             curr_disp.DispTracks='off';
-        end     
+        end
 end
 
 setappdata(main_figure,'Curr_disp',curr_disp);

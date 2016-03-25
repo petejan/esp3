@@ -132,7 +132,7 @@ for ilay=1:length(layers_obj)
                         endTime=survey_data_temp{i_cell}.EndTime;
                         
                         if (end_file_time(ifi)<startTime||start_file_time(ifi)>(endTime))
-                           warning('There might be some time issues in the logbook');
+                           continue;
                         end
                         
                         if startTime~=0
