@@ -49,9 +49,12 @@ if bot>0&&exist(fullfile(folder,bFileName),'file')>0
         'Origin','Esp2',...
         'Range',bottom,...
         'Sample_idx',sample_idx,...
-        'Tag',bad==0);
+        'Tag',double(bad==0));
     
     layer.Transceivers(idx_freq).setBottom(bottom);
+else
+    
+    fprintf('Could not find Bottom for file %s\n', dFileName);
 end
 
 
@@ -70,4 +73,7 @@ layer.Transceivers(idx_freq).rm_region_origin('Esp2');
     
     layer.Transceivers(idx_freq).add_region(regions,'Origin','Esp2');
 
+else
+    
+    fprintf('Could not find regions for file %s\n', dFileName);
 end
