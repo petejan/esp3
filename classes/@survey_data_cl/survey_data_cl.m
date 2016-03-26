@@ -18,11 +18,11 @@ classdef survey_data_cl
             
             ver_fmt=@(x) ischar(x)||isnumeric(x);
             
-            addParameter(p,'SurveyName',' ',ver_fmt);
+            addParameter(p,'SurveyName','',ver_fmt);
             addParameter(p,'Snapshot',0,@isnumeric);
-            addParameter(p,'Stratum',' ',ver_fmt);
+            addParameter(p,'Stratum','',ver_fmt);
             addParameter(p,'Transect',0,@isnumeric);
-            addParameter(p,'Voyage',' ',ver_fmt);
+            addParameter(p,'Voyage','',ver_fmt);
             addParameter(p,'StartTime',0,@isnumeric);
             addParameter(p,'EndTime',1,@isnumeric);      
             parse(p,varargin{:});
@@ -41,11 +41,11 @@ classdef survey_data_cl
                 obj.Stratum=num2str(obj.Stratum,'%.0f');
             end
             if isnumeric(obj.SurveyName)
-                obj.SurveyName=' ';
+                obj.SurveyName='';
             end
             
             if isnumeric(obj.Voyage)
-                obj.Voyage=' ';
+                obj.Voyage='';
             end
             
             if isempty(obj.Snapshot)
@@ -62,9 +62,9 @@ classdef survey_data_cl
         function i_str=print_survey_data(obj)  
             i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
                 obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect); 
-            if obj.Snapshot==0&&strcmp(obj.Stratum,' ')&&obj.Transect==0
-                i_str=sprintf('%s',obj.Voyage); 
-        end
+            if obj.Snapshot==0&&strcmp(obj.Stratum,'')&&obj.Transect==0
+                i_str=sprintf('%s',obj.Voyage);
+            end
         end
         
         

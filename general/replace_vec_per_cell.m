@@ -4,7 +4,7 @@ for i=1:length(vec_vals)
     if isnumeric(vec_vals(i))
         temp{i}=num2str(vec_vals(i),'%.0f');
     else
-        temp{i}=' ';
+        temp{i}='';
     end
 end
 cell_vals=temp;

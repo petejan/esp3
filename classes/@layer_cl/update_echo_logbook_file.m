@@ -5,8 +5,8 @@ p = inputParser;
 ver_fmt=@(x) ischar(x);
 
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
-addParameter(p,'SurveyName',' ',ver_fmt);
-addParameter(p,'Voyage',' ',ver_fmt);
+addParameter(p,'SurveyName','',ver_fmt);
+addParameter(p,'Voyage','',ver_fmt);
 parse(p,layers_obj,varargin{:});
 
 results=p.Results;
@@ -14,14 +14,14 @@ results=p.Results;
 if isempty(find(strcmp(p.UsingDefaults,'Voyage'),1))
     voy=results.Voyage;
 else
-    voy=' ';
+    voy='';
 end
 
 
 if isempty(find(strcmp(p.UsingDefaults,'SurveyName'),1))
     surv_name=results.SurveyName;
 else
-    surv_name= ' ';
+    surv_name= '';
 end
 
 for ilay=1:length(layers_obj)
@@ -49,6 +49,7 @@ for ilay=1:length(layers_obj)
         fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
         
         for i=1:nb_files
+            f_processed=0;
             file_curr=deblank(list_raw(i,:));
             idx_file=find(strcmpi(file_curr,file_lay),1);
             idx_file_cvs=find(strcmpi(file_curr,surv_data_struct.Filename));
@@ -57,29 +58,31 @@ for ilay=1:length(layers_obj)
                 if ~isempty(idx_file_cvs)
                     
                     for is=idx_file_cvs
-                        if~isnan(surv_data_struct.StartTime(is))
+                        
+                        if~isnan(surv_data_struct.StartTime(is))&&(surv_data_struct.StartTime(is)~=0)
                             startTime=surv_data_struct.StartTime(is);
                         else
                             startTime=get_start_date_from_raw(surv_data_struct.Filename{is});
                         end
                         
-                        if~isnan(surv_data_struct.EndTime(is))
+                        if~isnan(surv_data_struct.EndTime(is))&&(surv_data_struct.EndTime(is)~=1)
                             endTime=surv_data_struct.EndTime(is);
                         else
-                            endTime=1;
+                            [~,end_date]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
+                            endTime=datestr(end_date,'yyyymmddHHMMSS');
                         end
                         
                         if isnumeric(surv_data_struct.Stratum{is})
                             surv_data_struct.Stratum{is}=num2str(surv_data_struct.Stratum{is},'%.0f');
                         end
                         
-                        if strcmp(voy,' ')
+                        if strcmp(voy,'')
                             voy_temp=surv_data_struct.Voyage{is};
                         else
                             voy_temp=voy;
                         end
                         
-                        if strcmp(surv_name,' ')
+                        if strcmp(surv_name,'')
                             surv_name_temp=surv_data_struct.SurveyName{is};
                         else
                             surv_name_temp=surv_name;
@@ -94,36 +97,39 @@ for ilay=1:length(layers_obj)
                             surv_data_struct.Transect(is),...
                             startTime,...
                             endTime);
+                        f_processed=1;
                     end
                     
                 else
                     
-                    start_date=get_start_date_from_raw(file_curr);
-                    fprintf(fid,'%s,%s,%s,0, ,0,%.0f,1\n',...
+                    startTime=get_start_date_from_raw(file_curr);
+                    [~,end_date]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
+                    endTime=datestr(end_date,'yyyymmddHHMMSS');
+                    fprintf(fid,'%s,%s,%s,0,,0,%.0f,%s\n',...
                         voy,...
                         surv_name,...
                         strrep(file_curr,' ',''),...
-                        start_date);
+                        startTime,endTime);
+                    f_processed=1;
                 end
                 
             else
                 survey_data_temp=layer_obj.SurveyData;
                 [start_file_time,end_file_time]=layer_obj.get_time_bound_files();
                 ifi=find(strcmp(file_curr,file_lay));
-                
                 if isempty(survey_data_temp)
                     survey_data_temp={[]};
                 end
                 
                 for  i_cell=1:length(survey_data_temp)
                     if ~isempty(survey_data_temp{i_cell})
-                        if strcmp(voy,' ')
+                        if strcmp(voy,'')
                             voy_temp=survey_data_temp{i_cell}.Voyage;
                         else
                             voy_temp=voy;
                         end
                         
-                        if strcmp(surv_name,' ')
+                        if strcmp(surv_name,'')
                             surv_name_temp=survey_data_temp{i_cell}.SurveyName;
                         else
                             surv_name_temp=surv_name;
@@ -132,13 +138,13 @@ for ilay=1:length(layers_obj)
                         endTime=survey_data_temp{i_cell}.EndTime;
                         
                         if (end_file_time(ifi)<startTime||start_file_time(ifi)>(endTime))
-                           continue;
+                            continue;
                         end
                         
                         if startTime~=0
                             startTime=nanmax(startTime,start_file_time(ifi));
                         end
-
+                        
                         if endTime~=1
                             endTime=nanmin(endTime,end_file_time(ifi));
                         end
@@ -155,16 +161,20 @@ for ilay=1:length(layers_obj)
                             survey_data_temp{i_cell}.Transect,...
                             startTimeStr,...
                             endTimeStr);
+                        f_processed=1;
                         
                     else
                         endTimeStr=datestr(layer_obj.Transceivers(1).Data.Time(end),'yyyymmddHHMMSS');
                         startTimeStr=datestr(layer_obj.Transceivers(1).Data.Time(1),'yyyymmddHHMMSS');
-                        fprintf(fid,'%s,%s,%s,0, ,0,%s,%s\n',voy,surv_name,strrep(file_curr,' ',''),startTimeStr,endTimeStr);
+                        fprintf(fid,'%s,%s,%s,0,,0,%s,%s\n',voy,surv_name,strrep(file_curr,' ',''),startTimeStr,endTimeStr);
+                        f_processed=1;
                     end
                 end
                 
             end
-            
+            if f_processed==0
+                disp('Pb in logbook...')
+            end
         end
         fclose(fid);
         delete(fullfile(path_lay{1},'echo_logbook_saved.csv'));

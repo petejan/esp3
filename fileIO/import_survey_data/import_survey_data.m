@@ -11,17 +11,21 @@ if exist(FileN,'file')==2
     end
     
     if ~iscell(surv_data_struct.Voyage)
+        idx_nan=isnan(surv_data_struct.Voyage);
         surv_data_struct.Voyage=replace_vec_per_cell(surv_data_struct.Voyage);
+        surv_data_struct.Voyage(idx_nan)={''};
     end
     
     if ~iscell(surv_data_struct.SurveyName)
+        idx_nan=isnan(surv_data_struct.SurveyName);
         surv_data_struct.SurveyName=replace_vec_per_cell(surv_data_struct.SurveyName);
+        surv_data_struct.SurveyName(idx_nan)={''};
     end
     
     if ~iscell(surv_data_struct.Stratum)
         idx_nan=isnan(surv_data_struct.Stratum);
         surv_data_struct.Stratum=replace_vec_per_cell(surv_data_struct.Stratum);
-        surv_data_struct.Stratum(idx_nan)={' '};
+        surv_data_struct.Stratum(idx_nan)={''};
     end
     
     

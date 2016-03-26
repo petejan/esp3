@@ -1,18 +1,19 @@
 clear all;
 close all;
 
-path='D:\Docs\Data misc\tan1505\hull\ek60';
-fileN='ek60\tan1505-D20150428-T030505.raw';
+path_f='D:\Docs\Data misc\tan1505\hull\ek60';
+%fileN='tan1505-D20150428-T030505.raw';
+fileN='tan1505-D20150423-T142040.raw';
+
+profile on;
+
+idx_raw_obj=idx_from_rawEK60_v2(fullfile(path_f,fileN));
 
 
+[header_idx,data_idx]=data_from_raw_idx_cl(path_f,idx_raw_obj);
 
-idx_raw_obj=idx_from_rawEK60(path,fileN);
+[header, data_ekraw] = readEKRaw(fullfile(path_f,fileN),'gps',0,'RawNMEA',1);
 
 
-[header_idx,data_idx]=data_from_raw_idx_cl(path,idx_raw_obj);
-
-%[header, data_ekraw] = readEKRaw(fileN,'gps',0,'RawNMEA',1);
-
-% 
-% profile off;
-% profile viewer;
+profile off;
+profile viewer;

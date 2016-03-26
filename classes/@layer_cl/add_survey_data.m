@@ -4,8 +4,10 @@ files={};
 nb_files=0;
 
 surv_data=cell(1,length(layers));
+ilay_tot=[];
 for ilay=1:length(layers)
     [~,files_temp]=layers(ilay).get_path_files();
+    ilay_tot=[ilay_tot ilay*ones(1,length(files_temp))];
     files=[files files_temp];
     nb_files=nb_files+length(layers(ilay).Filename);
 end
@@ -18,7 +20,7 @@ for i=1:length(idx_loaded)
         continue;
     end
 
-    idx_lay=idx_files_layer{i};
+    idx_lay=ilay_tot(idx_files_layer{i});
     
     for il=1:length(idx_lay)
         

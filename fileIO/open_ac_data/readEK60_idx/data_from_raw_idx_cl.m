@@ -96,10 +96,9 @@ for idg=1:length(idx_raw_obj.type_dg)
            i_ping(idx_chan)=i_ping(idx_chan)+1;
            if (i_ping(idx_chan)>=PingRange(1))&&(i_ping(idx_chan)<=PingRange(2))
                data.pings(idx_chan).time(i_ping(idx_chan)-PingRange(1)+1)=idx_raw_obj.time_dg(idg);
-%                pos_init=ftell(fid);
+
                 data=readRaw0(data,idx_chan,i_ping(idx_chan)-PingRange(1)+1,PingRange,SampleRange,fid);
-%                fseek(fid,pos_init,-1);
-%               data=readRaw0_v2(data,idx_chan,i_ping(idx_chan)-PingRange(1)+1,SampleRange,fid,idx_raw_obj.len_dg(idg)-HEADER_LEN);
+
            end
    end
 end

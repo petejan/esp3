@@ -6,8 +6,6 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
 ax_main=axes_panel_comp.main_axes;
-
-
 x_lim=double(get(ax_main,'xlim'));
 
 cp = ax_main.CurrentPoint;
@@ -30,6 +28,7 @@ end
 [~,idx_ping]=nanmin(abs(xdata-x));
 
 t_n=trans.Data.Time(idx_ping);
+
 surv=cell(1,1);
 idx_modif=0;
 
@@ -98,8 +97,6 @@ end
 
 
 if rem==0
-    surv{1}.StartTime=start_time;
-    surv{1}.EndTime=end_time;
     [surv{1}.Voyage,surv{1}.SurveyName,surv{1}.Snapshot,surv{1}.Stratum,surv{1}.Transect,cancel]=fill_survey_data_dlbox(surv_temp,'title','Enter New Survey Data');
     if cancel>0
         return;
@@ -109,6 +106,9 @@ else
     surv{1}.Voyage=surv_temp.Voyage;
     surv{1}.SurveyName=surv_temp.SurveyName;
 end
+
+surv{1}.StartTime=start_time;
+surv{1}.EndTime=end_time;
 
 if idx_modif>0
     new_surveydata=layer.SurveyData;

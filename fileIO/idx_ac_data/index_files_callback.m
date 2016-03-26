@@ -47,7 +47,7 @@ for i=1:length(Filename)
     if exist(fileIdx,'file')>0
        delete(fileIdx); 
     end
-    idx_raw_obj=idx_from_rawEK60(fileN);
+    idx_raw_obj=idx_from_rawEK60_v2(fileN);
     save(fileIdx,'idx_raw_obj');
 
 end

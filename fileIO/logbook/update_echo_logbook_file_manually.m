@@ -31,17 +31,18 @@ try
         
         if isfile==0
             if ~isempty(idx_file_cvs)
-                for is=idx_file_cvs'
-                    if~isnan(surv_data_struct.StartTime(is))
+                for is=idx_file_cvs
+                    if~isnan(surv_data_struct.StartTime(is))&&(surv_data_struct.StartTime(is)~=0)
                         startTime=surv_data_struct.StartTime(is);
                     else
                         startTime=get_start_date_from_raw(surv_data_struct.Filename{is});
                     end
                     
-                    if~isnan(surv_data_struct.EndTime(is))
+                    if~isnan(surv_data_struct.EndTime(is))&&(surv_data_struct.EndTime(is)~=1)
                         endTime=surv_data_struct.EndTime(is);
                     else
-                        endTime=1;
+                        [~,end_date]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
+                        endTime=datestr(end_date,'yyyymmddHHMMSS');
                     end
                     
                     if isnumeric(surv_data_struct.Stratum{is})
@@ -51,7 +52,7 @@ try
                     
                     voy_temp=surv_data_struct.Voyage{is};
                     surv_name_temp=surv_data_struct.SurveyName{is};
-                          
+                    
                     fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%.0f,%.0f\n',...
                         voy_temp,...
                         surv_name_temp,...
@@ -65,12 +66,14 @@ try
                 
             else
                 
-                start_date=get_start_date_from_raw(file_curr);
-                fprintf(fid,'%s,%s,%s,0, ,0,%.0f,1\n',...
+                startTime=get_start_date_from_raw(file_curr);
+                [~,end_date]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
+                endTime=datestr(end_date,'yyyymmddHHMMSS');
+                fprintf(fid,'%s,%s,%s,0,,0,%.0f,%s\n',...
                     voy,...
                     surv_name,...
                     strrep(file_curr,' ',''),...
-                    start_date);
+                    startTime,endTime);
             end
             
         else
@@ -104,9 +107,14 @@ try
                     endTimeStr);
                 
             else
-                endTimeStr='0';
-                startTimeStr='1';
-                fprintf(fid,'%s,%s,%s,0, ,0,%s,%s\n',' ',' ',strrep(file_curr,' ',''),startTimeStr,endTimeStr);
+                startTime=get_start_date_from_raw(file_curr);
+                [~,end_date]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
+                endTime=datestr(end_date,'yyyymmddHHMMSS');
+                fprintf(fid,'%s,%s,%s,0,,0,%.0f,%s\n',...
+                    voy,...
+                    surv_name,...
+                    strrep(file_curr,' ',''),...
+                    startTime,endTime);
             end
         end
     end

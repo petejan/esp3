@@ -48,7 +48,6 @@ if join==1
     new_layers=[layers new_layers];
 end
 
-
 new_layers_sorted=new_layers.sort_per_survey_data();
 
 disp('Shuffling layers');

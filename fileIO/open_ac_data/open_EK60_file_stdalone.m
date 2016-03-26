@@ -131,7 +131,7 @@ if ~isequal(Filename_cell, 0)
         end
         fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
-            idx_raw_obj=idx_from_rawEK60(Filename);
+            idx_raw_obj=idx_from_rawEK60_v2(Filename);
             save(fileIdx,'idx_raw_obj');
         else
             load(fileIdx);
