@@ -31,6 +31,7 @@ ifi=find(trans.Data.FileId(idx_ping)==trans.Data.FileId);
 
 start_time=trans.Data.Time(ifi(1));
 end_time=trans.Data.Time(ifi(end));
+
 if isempty(layer.SurveyData)
     surv=survey_data_cl();
 else

@@ -63,7 +63,7 @@ classdef survey_data_cl
             i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
                 obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect); 
             if obj.Snapshot==0&&strcmp(obj.Stratum,'')&&obj.Transect==0
-                i_str=sprintf('%s',obj.Voyage);
+                i_str='';
             end
         end
         

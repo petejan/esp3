@@ -20,14 +20,12 @@ if fid==-1
     end
 end
 
-
+surv_init=survey_data_cl();
 fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
 
 for i=1:nb_files
-    [start_date,end_date]=start_end_time_from_file(fullfile(datapath,list_raw(i,:)));
-    endTimeStr=datestr(end_date,'yyyymmddHHMMSS');
-    startTimeStr=datestr(start_date,'yyyymmddHHMMSS');
-    fprintf(fid,',,%s,0,,0,%s,%s\n',strrep(list_raw(i,:),' ',''),startTimeStr,endTimeStr);
+    [start_date,end_date]=start_end_time_from_file(fullfile(datapath,list_raw(i,:)));    
+    surv_init.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_date,'EndTime',end_date);
 end
 
 fclose(fid);

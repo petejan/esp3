@@ -1,8 +1,7 @@
 function update_echo_logbook_file_manually(file_full,survey_data)%one full file name and one survey data
 
 [path_f,file_name,file_ext]=fileparts(file_full);
-file_lay=[file_name,file_ext];
-
+file_lay=[file_name file_ext];
 
 surv_data_struct=load_logbook_to_struct(path_f);
 list_raw=ls(fullfile(path_f,'*.raw'));
@@ -31,93 +30,50 @@ try
         
         if isfile==0
             if ~isempty(idx_file_cvs)
-                for is=idx_file_cvs
-                    if~isnan(surv_data_struct.StartTime(is))&&(surv_data_struct.StartTime(is)~=0)
-                        startTime=surv_data_struct.StartTime(is);
-                    else
-                        startTime=get_start_date_from_raw(surv_data_struct.Filename{is});
+                for is=idx_file_cvs    
+                    survdata_temp=surv_data_struct.SurvDataObj{is};
+                    start_time=survdata_temp.StartTime;
+                    end_time=survdata_temp.EndTime;
+                    
+                    if isnan(start_time)||(start_time==0)
+                        start_time=get_start_date_from_raw(fullfile(path_f,list_raw(i,:)));
                     end
                     
-                    if~isnan(surv_data_struct.EndTime(is))&&(surv_data_struct.EndTime(is)~=1)
-                        endTime=surv_data_struct.EndTime(is);
-                    else
-                        [~,end_date]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
-                        endTime=datestr(end_date,'yyyymmddHHMMSS');
+                    if isnan(end_time)||(end_time==1)
+                        [~,end_time]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
                     end
                     
-                    if isnumeric(surv_data_struct.Stratum{is})
-                        surv_data_struct.Stratum{is}=num2str(surv_data_struct.Stratum{is},'%.0f');
-                    end
-                    
-                    
-                    voy_temp=surv_data_struct.Voyage{is};
-                    surv_name_temp=surv_data_struct.SurveyName{is};
-                    
-                    fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%.0f,%.0f\n',...
-                        voy_temp,...
-                        surv_name_temp,...
-                        strrep(file_curr,' ',''),...
-                        surv_data_struct.Snapshot(is),...
-                        surv_data_struct.Stratum{is},...
-                        surv_data_struct.Transect(is),...
-                        startTime,...
-                        endTime);
+                    survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
                 end
-                
             else
-                
-                startTime=get_start_date_from_raw(file_curr);
-                [~,end_date]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
-                endTime=datestr(end_date,'yyyymmddHHMMSS');
-                fprintf(fid,'%s,%s,%s,0,,0,%.0f,%s\n',...
-                    voy,...
-                    surv_name,...
-                    strrep(file_curr,' ',''),...
-                    startTime,endTime);
+                [start_time,end_time]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
+                survdata_temp=survey_data_cl();
+                survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
             end
+            
             
         else
-            survey_data_temp=survey_data;
+            survdata_temp=survey_data;
             
-            if isempty(survey_data_temp)
-                survey_data_temp={[]};
+            if isempty(survdata_temp)
+                survdata_temp=survey_data_cl();
             end
             
-            if ~isempty(survey_data_temp)
-                if survey_data_temp.EndTime~=1
-                    endTimeStr=datestr(survey_data_temp.EndTime,'yyyymmddHHMMSS');
-                else
-                    endTimeStr='1';
-                end
-                
-                if survey_data_temp.StartTime~=0
-                    startTimeStr=datestr(survey_data_temp.StartTime,'yyyymmddHHMMSS');
-                else
-                    startTimeStr='0';
-                end
-                
-                fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%s,%s\n',...
-                    survey_data_temp.Voyage,...
-                    survey_data_temp.SurveyName,...
-                    strrep(file_curr,' ',''),...
-                    survey_data_temp.Snapshot,...
-                    survey_data_temp.Stratum,...
-                    survey_data_temp.Transect,...
-                    startTimeStr,...
-                    endTimeStr);
-                
-            else
-                startTime=get_start_date_from_raw(file_curr);
-                [~,end_date]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
-                endTime=datestr(end_date,'yyyymmddHHMMSS');
-                fprintf(fid,'%s,%s,%s,0,,0,%.0f,%s\n',...
-                    voy,...
-                    surv_name,...
-                    strrep(file_curr,' ',''),...
-                    startTime,endTime);
+            start_time=survdata_temp.StartTime;
+            end_time=survdata_temp.EndTime;
+            
+            if isnan(start_time)||(start_time==0)
+                start_time=get_start_date_from_raw(list_raw(i,:));
             end
+            
+            if isnan(end_time)||(end_time==1)
+                [~,end_time]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
+            end
+            
+            survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
         end
     end
+    
     
     fclose(fid);
     delete(fullfile(path_f,'echo_logbook_saved.csv'));

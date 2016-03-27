@@ -59,57 +59,37 @@ for ilay=1:length(layers_obj)
                     
                     for is=idx_file_cvs
                         
-                        if~isnan(surv_data_struct.StartTime(is))&&(surv_data_struct.StartTime(is)~=0)
-                            startTime=surv_data_struct.StartTime(is);
-                        else
-                            startTime=get_start_date_from_raw(surv_data_struct.Filename{is});
+                        survdata_temp=surv_data_struct.SurvDataObj{is};
+                        start_time=survdata_temp.StartTime;
+                        end_time=survdata_temp.EndTime;
+                        
+                        
+                        if isnan(start_time)||(start_time==0)
+                            start_time=get_start_date_from_raw(surv_data_struct.Filename{is});
                         end
                         
-                        if~isnan(surv_data_struct.EndTime(is))&&(surv_data_struct.EndTime(is)~=1)
-                            endTime=surv_data_struct.EndTime(is);
-                        else
-                            [~,end_date]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
-                            endTime=datestr(end_date,'yyyymmddHHMMSS');
+                        if isnan(end_time)||(end_time==1)
+                            [~,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
                         end
                         
-                        if isnumeric(surv_data_struct.Stratum{is})
-                            surv_data_struct.Stratum{is}=num2str(surv_data_struct.Stratum{is},'%.0f');
+                        
+                        if ~strcmp(voy,'')
+                            survdata_temp.Voyage=voy;
                         end
                         
-                        if strcmp(voy,'')
-                            voy_temp=surv_data_struct.Voyage{is};
-                        else
-                            voy_temp=voy;
+                        if ~strcmp(surv_name,'')
+                            survdata_temp.SurveyName=surv_name;
                         end
                         
-                        if strcmp(surv_name,'')
-                            surv_name_temp=surv_data_struct.SurveyName{is};
-                        else
-                            surv_name_temp=surv_name;
-                        end
-                        
-                        fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%.0f,%.0f\n',...
-                            voy_temp,...
-                            surv_name_temp,...
-                            strrep(file_curr,' ',''),...
-                            surv_data_struct.Snapshot(is),...
-                            surv_data_struct.Stratum{is},...
-                            surv_data_struct.Transect(is),...
-                            startTime,...
-                            endTime);
                         f_processed=1;
+                        survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
                     end
                     
                 else
                     
-                    startTime=get_start_date_from_raw(file_curr);
-                    [~,end_date]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
-                    endTime=datestr(end_date,'yyyymmddHHMMSS');
-                    fprintf(fid,'%s,%s,%s,0,,0,%.0f,%s\n',...
-                        voy,...
-                        surv_name,...
-                        strrep(file_curr,' ',''),...
-                        startTime,endTime);
+                    [start_time,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
+                    survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
+                    survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
                     f_processed=1;
                 end
                 
@@ -117,60 +97,49 @@ for ilay=1:length(layers_obj)
                 survey_data_temp=layer_obj.SurveyData;
                 [start_file_time,end_file_time]=layer_obj.get_time_bound_files();
                 ifi=find(strcmp(file_curr,file_lay));
+                
                 if isempty(survey_data_temp)
                     survey_data_temp={[]};
                 end
                 
                 for  i_cell=1:length(survey_data_temp)
                     if ~isempty(survey_data_temp{i_cell})
-                        if strcmp(voy,'')
-                            voy_temp=survey_data_temp{i_cell}.Voyage;
-                        else
-                            voy_temp=voy;
+                        survdata_temp=survey_data_temp{i_cell};
+                        if ~strcmp(voy,'')
+                            survdata_temp.Voyage=voy;
                         end
                         
-                        if strcmp(surv_name,'')
-                            surv_name_temp=survey_data_temp{i_cell}.SurveyName;
-                        else
-                            surv_name_temp=surv_name;
+                        if ~strcmp(surv_name,'')
+                            survdata_temp.SurveyName=surv_name;
                         end
-                        startTime=survey_data_temp{i_cell}.StartTime;
-                        endTime=survey_data_temp{i_cell}.EndTime;
+                       
+                        start_time=survdata_temp.StartTime;
+                        end_time=survdata_temp.EndTime;
                         
-                        if (end_file_time(ifi)<startTime||start_file_time(ifi)>(endTime))
+                        if (end_file_time(ifi)<start_time||start_file_time(ifi)>(end_time))
                             continue;
                         end
                         
-                        if startTime~=0
-                            startTime=nanmax(startTime,start_file_time(ifi));
+                        if start_time~=0
+                            start_time=nanmax(start_time,start_file_time(ifi));
                         end
                         
-                        if endTime~=1
-                            endTime=nanmin(endTime,end_file_time(ifi));
+                        if end_time~=1
+                            end_time=nanmin(end_time,end_file_time(ifi));
                         end
                         
-                        endTimeStr=datestr(endTime,'yyyymmddHHMMSS');
-                        startTimeStr=datestr(startTime,'yyyymmddHHMMSS');
-                        
-                        fprintf(fid,'%s,%s,%s,%.0f,%s,%.0f,%s,%s\n',...
-                            voy_temp,...
-                            surv_name_temp,...
-                            strrep(file_curr,' ',''),...
-                            survey_data_temp{i_cell}.Snapshot,...
-                            survey_data_temp{i_cell}.Stratum,...
-                            survey_data_temp{i_cell}.Transect,...
-                            startTimeStr,...
-                            endTimeStr);
                         f_processed=1;
-                        
-                    else
-                        endTimeStr=datestr(layer_obj.Transceivers(1).Data.Time(end),'yyyymmddHHMMSS');
-                        startTimeStr=datestr(layer_obj.Transceivers(1).Data.Time(1),'yyyymmddHHMMSS');
-                        fprintf(fid,'%s,%s,%s,0,,0,%s,%s\n',voy,surv_name,strrep(file_curr,' ',''),startTimeStr,endTimeStr);
-                        f_processed=1;
+                        survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
                     end
+               
                 end
-                
+                if f_processed==0
+                    survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
+                    end_time=layer_obj.Transceivers(1).Data.Time(end);
+                    start_time=layer_obj.Transceivers(1).Data.Time(1);
+                    f_processed=1;
+                    survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
+                end
             end
             if f_processed==0
                 disp('Pb in logbook...')

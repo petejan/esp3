@@ -28,5 +28,30 @@ if exist(FileN,'file')==2
         surv_data_struct.Stratum(idx_nan)={''};
     end
     
+    surv_data_struct.SurvDataObj=cell(1,length(surv_data_struct.Stratum));
+    for i=1:length(surv_data_struct.Stratum)
+                    if surv_data_struct.StartTime(i)==0
+                        st=0;
+                    else
+                        st=datenum(num2str(surv_data_struct.StartTime(i)),'yyyymmddHHMMSS');
+                    end
+                    
+                    if surv_data_struct.EndTime(i)==1
+                        et=1;
+                    else
+                        et=datenum(num2str(surv_data_struct.EndTime(i)),'yyyymmddHHMMSS');
+                    end
+
+        
+        surv_data_struct.SurvDataObj{i}=survey_data_cl(...
+            'Voyage',surv_data_struct.Voyage{i},...
+            'SurveyName',surv_data_struct.SurveyName{i},...
+            'Snapshot',surv_data_struct.Snapshot(i),...
+            'Stratum',surv_data_struct.Stratum{i},...
+            'Transect',surv_data_struct.Transect(i),...
+            'StartTime',st,...
+            'EndTime',et);
+        
+    end
     
 end
