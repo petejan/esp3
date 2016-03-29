@@ -118,6 +118,13 @@ switch callbackdata.Key
                 curr_disp.DispUnderBottom='off';
         end
         
+    case 'c'
+        cmaps={'jet' 'hsv' 'esp2'};
+        id_map=find(strcmp(curr_disp.Cmap,cmaps));
+        curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
+    case 'f'   
+        id_freq=layer.find_freq_idx(curr_disp.Freq);
+        curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies))); 
 end
 
 end
