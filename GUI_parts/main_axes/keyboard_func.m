@@ -71,13 +71,36 @@ switch callbackdata.Key
         
     case '1'
         
-        switch get(cursor_mode_tool_comp.zoom_in,'state');
-            case 'off'
-                set(cursor_mode_tool_comp.zoom_in,'state','on');
-                curr_disp.CursorMode='Zoom In';
-            case 'on'
-                set(cursor_mode_tool_comp.zoom_in,'state','off');
-                curr_disp.CursorMode='Normal';
+        if isempty(callbackdata.Modifier)
+            zi='zin'
+        elseif strcmpi(callbackdata.Modifier,'shift')
+            zi='zout'
+        else
+            return;
+        end
+        switch zi
+            case 'zin'
+                
+                switch get(cursor_mode_tool_comp.zoom_in,'state');
+                    case 'off'
+                        set(cursor_mode_tool_comp.zoom_in,'state','on');
+                        curr_disp.CursorMode='Zoom In';
+                    case 'on'
+                        set(cursor_mode_tool_comp.zoom_in,'state','off');
+                        curr_disp.CursorMode='Normal';
+                end
+            case 'zout'
+                switch get(cursor_mode_tool_comp.zoom_out,'state');
+                    case 'off'
+                        set(cursor_mode_tool_comp.zoom_out,'state','on');
+                        curr_disp.CursorMode='Zoom Out';
+                    case 'on'
+                        set(cursor_mode_tool_comp.zoom_out,'state','off');
+                        curr_disp.CursorMode='Normal';
+                        
+                        
+                        
+                end
         end
         %toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
     case '2'
@@ -122,9 +145,9 @@ switch callbackdata.Key
         cmaps={'jet' 'hsv' 'esp2'};
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
-    case 'f'   
+    case 'f'
         id_freq=layer.find_freq_idx(curr_disp.Freq);
-        curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies))); 
+        curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
 end
 
 end
