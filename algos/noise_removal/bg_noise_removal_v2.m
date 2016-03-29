@@ -9,7 +9,7 @@ checkHorzFilt=@(HorzFilt)(HorzFilt>0&&HorzFilt<=1000);
 defaultNoiseThr=-125;
 checkNoiseThr=@(NoiseThr)(NoiseThr<=-10&&NoiseThr>=-200);
 defaultSNRThr=10;
-checkSNRThr=@(SNRThr)(SNRThr>0&&SNRThr<=40);
+checkSNRThr=@(SNRThr)(SNRThr>=0&&SNRThr<=40);
 
 addRequired(p,'power',@isnumeric);
 addRequired(p,'range',@isnumeric);

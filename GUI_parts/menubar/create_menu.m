@@ -9,10 +9,10 @@ uimenu(m_files,'Label','Index Files','Callback',{@index_files_callback,main_figu
 
 
 m_bot_reg = uimenu(main_figure,'Label','Bottom/Regions','Tag','menufile');
-m_bot_reg_old = uimenu(m_bot_reg,'Label','Old b-r_files','Tag','menuold');
-uimenu(m_bot_reg_old,'Label','Load Bottom and Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,1});
-uimenu(m_bot_reg_old,'Label','Load Bottom','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,0});
-uimenu(m_bot_reg_old,'Label','Load Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,0,1});
+% m_bot_reg_old = uimenu(m_bot_reg,'Label','Old b-r_files','Tag','menuold');
+% uimenu(m_bot_reg_old,'Label','Load Bottom and Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,1});
+% uimenu(m_bot_reg_old,'Label','Load Bottom','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,0});
+% uimenu(m_bot_reg_old,'Label','Load Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,0,1});
 mcvs = uimenu(m_bot_reg,'Label','CVS','Tag','menucvs');
 uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
 uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_callback,main_figure});
