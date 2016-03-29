@@ -41,7 +41,7 @@ if strcmp(src.SelectionType,'normal')
     end
     axes(ah);
     hold on;
-    hp=line(xinit,yinit,'color','k','linewidth',1);
+    hp=line(xinit,yinit,'color','r','linewidth',1);
     txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
     
     src.WindowButtonMotionFcn = @wbmcb;

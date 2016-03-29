@@ -43,7 +43,7 @@ if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
 end
 axes(ah);
 hold on;
-hp=plot(xinit,xinit,'color','k','linewidth',1);
+hp=plot(xinit,xinit,'color','r','linewidth',1);
 src.WindowButtonMotionFcn = @wbmcb;
 if strcmp(src.SelectionType,'normal')
     src.WindowButtonUpFcn = @wbucb;
@@ -130,7 +130,13 @@ end
         layer.Transceivers(idx_freq).Bottom=bot;
         setappdata(main_figure,'Layer',layer);
         reset_disp_info(main_figure);
-        axes_panel_comp=display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom);
+        if strcmp(curr_disp.Cmap,'esp2')
+            col='y';
+        else
+            col='k';
+        end
+        
+        axes_panel_comp=display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom,col);
         set_alpha_map(main_figure);
         setappdata(main_figure,'Axes_panel',axes_panel_comp);
     end

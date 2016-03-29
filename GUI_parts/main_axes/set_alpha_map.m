@@ -39,6 +39,15 @@ if strcmp(curr_disp.DispBadTrans,'on')
     alpha_map(:,idx_bad_red)=0.5;
 end
 
+switch curr_disp.Cmap
+    case 'jet'
+        cmap='jet';
+    case 'hsv'
+        cmap='hsv';
+    case 'esp2'
+        cmap=esp2_colormap();
+        alpha_map(alpha_map==0)=1;
+end
 
 Range_mat=repmat(ydata,1,nb_pings);
 if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
@@ -47,9 +56,17 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     idx_bot_red=imresize(idx_bot,size(alpha_map));
     
     if strcmpi(curr_disp.DispUnderBottom,'off')==1
+        if strcmp(curr_disp.Cmap,'esp2')
+            alpha_map(idx_bot_red)=0.5;
+        else
         alpha_map(idx_bot_red)=0;
+        end
     end
 end
+
+
+
+colormap(axes_panel_comp.main_axes,cmap);
 
 if isa(axes_panel_comp.main_echo,'matlab.graphics.primitive.Surface')
     set(axes_panel_comp.main_echo,'AlphaData',double(alpha_map),'FaceAlpha','flat',...
@@ -57,5 +74,7 @@ if isa(axes_panel_comp.main_echo,'matlab.graphics.primitive.Surface')
 else
     set(axes_panel_comp.main_echo,'AlphaData',double(alpha_map));
 end
+
+
 
 end

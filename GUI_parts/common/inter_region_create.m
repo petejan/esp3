@@ -43,7 +43,7 @@ if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
     
     axes(ah);
     hold on;
-    hp=plot(x_box,y_box,'color','k','linewidth',1);
+    hp=plot(x_box,y_box,'color','r','linewidth',1);
    txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
     
 else

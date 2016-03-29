@@ -98,7 +98,6 @@ hold(axes_panel_comp.main_axes,'on')
 clear_lines(axes_panel_comp.main_axes);
 axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes,'PickableParts','none');
 axes_panel_comp.colorbar.Position=axes_panel_comp.colorbar.Position+[0 0.01 -axes_panel_comp.colorbar.Position(3)/2 -0.02];
-colormap(axes_panel_comp.main_axes,jet);
 
 axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
 
@@ -124,9 +123,13 @@ set(display_tab_comp.caxis_up,'String',num2str(axes_panel_comp.main_axes.CLim(2)
 set(display_tab_comp.caxis_down,'String',num2str(axes_panel_comp.main_axes.CLim(1),'%.0f'));
 
 idx_bottom=trans.Bottom.Sample_idx;
-
+        if strcmp(curr_disp.Cmap,'esp2')
+            col='y';
+        else
+            col='k';
+        end
 xdata_real=Number;
-axes_panel_comp=display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom);
+axes_panel_comp=display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom,col);
 axes_panel_comp=display_tracks(xdata_real,trans.ST,trans.Tracks,axes_panel_comp,curr_disp.DispTracks);
 
 hold(axes_panel_comp.haxes,'on');

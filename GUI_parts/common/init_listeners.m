@@ -15,7 +15,7 @@ ls=[ls addlistener(curr_disp_obj,'DispTracks','PostSet',@(src,envdata)listenDisp
 ls=[ls addlistener(curr_disp_obj,'DispLines','PostSet',@(src,envdata)listenDispLines(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'CursorMode','PostSet',@(src,envdata)listenCursorMode(src,envdata,main_figure))];
 
-ls=[ls addlistener(curr_disp_obj,'Freq','PostSet',@(src,envdata)listenEcho(src,envdata,main_figure))];
+ls=[ls addlistener(curr_disp_obj,{'Freq','Cmap'},'PostSet',@(src,envdata)listenEcho(src,envdata,main_figure))];
 
 ls=[ls addlistener(curr_disp_obj,'Cax','PostSet',@(src,envdata)listenCax(src,envdata,main_figure))];
 

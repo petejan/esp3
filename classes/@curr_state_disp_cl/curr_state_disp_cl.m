@@ -17,6 +17,7 @@ classdef curr_state_disp_cl <handle
         Grid_y
         CurrLayerID
         NbLayers
+        Cmap
     end
     
     methods
@@ -37,7 +38,8 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'CursorMode','Normal',@ischar);
             addParameter(p,'CurrLayerID',0,@isnumeric);
             addParameter(p,'NbLayers',0,@isnumeric);
-
+            addParameter(p,'Cmap','jet',@ischar);
+            
             parse(p,varargin{:});
             results=p.Results;
             props=fieldnames(results);
