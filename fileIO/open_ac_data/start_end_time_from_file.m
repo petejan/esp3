@@ -1,5 +1,6 @@
 function [start_time,end_time]=start_end_time_from_file(filename)
-fid=fopen(filename);
+fid=fopen(filename,'r+','l');
+BLCK_SIZE=1e3;
 
 if fid==-1
     start_time=0;
@@ -7,19 +8,56 @@ if fid==-1
     return;
 end
 
-file_comp=fread(fid,'*char', 'l')';
 
-idx_raw0=strfind(file_comp,'RAW0');
-idx_raw3=strfind(file_comp,'RAW3');
+str_read=char(zeros(1,BLCK_SIZE+4));
+found_start=0;
+n=0;
+while found_start==0&&~feof(fid)
+   str_read(1:4)=str_read(BLCK_SIZE:BLCK_SIZE+4-1);
+   str_read(5:BLCK_SIZE+4)=fread(fid,BLCK_SIZE,'*char');
+   idx_dg=union(strfind(str_read,'RAW0'),strfind(str_read,'RAW3'));
+   if ~isempty(idx_dg)
+       found_start=1;
+       idx_start=BLCK_SIZE*n+idx_dg(1)-5;
+   end
+   n=n+1;
+end
 
-idx_dg=union(idx_raw0,idx_raw3);
+fseek(fid,0,'eof');
+str_read=char(zeros(1,BLCK_SIZE+4));
+found_end=0;
+n=0;
+pos=ftell(fid);
+while found_end==0&&pos>=BLCK_SIZE
+    
+   fseek(fid,-BLCK_SIZE,'cof');
+   str_read(1:4)=str_read(BLCK_SIZE:BLCK_SIZE+4-1);
+   str_read(5:BLCK_SIZE+4)=fread(fid,BLCK_SIZE,'*char');
+   idx_dg=union(strfind(str_read,'RAW0'),strfind(str_read,'RAW3'));
+   
+   if ~isempty(idx_dg)
+       found_end=1;
+       idx_end=pos-BLCK_SIZE+idx_dg(1)-5;
+   end
+   fseek(fid,-BLCK_SIZE,'cof');
+   pos=ftell(fid);
+   n=n+1;
+end
 
- fseek(fid,idx_dg(1)-1,-1);
- 
+% 
+% frewind(fid);
+% file_comp=fread(fid,'*char', 'l')';
+% idx_raw0=strfind(file_comp,'RAW0');
+% idx_raw3=strfind(file_comp,'RAW3');
+% 
+% idx_dg=union(idx_raw0,idx_raw3);
+% idx_start_old=idx_dg(1)-1;
+% idx_end_old=idx_dg(end)-1;
+
+ fseek(fid,idx_start,-1);
  [~,start_time]=readEK60Header(fid);
 
- fseek(fid,idx_dg(end)-1,-1);
- 
+ fseek(fid,idx_end,-1);
  [~,end_time]=readEK60Header(fid);
 
 
