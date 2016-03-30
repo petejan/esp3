@@ -72,9 +72,9 @@ switch callbackdata.Key
     case '1'
         
         if isempty(callbackdata.Modifier)
-            zi='zin'
+            zi='zin';
         elseif strcmpi(callbackdata.Modifier,'shift')
-            zi='zout'
+            zi='zout';
         else
             return;
         end

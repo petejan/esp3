@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.1">
-   <AppPath cvs_root=":local:Z:\" data="D:\Docs\Data misc\tan1502\hull\ek60" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo"/>
+   <AppPath cvs_root=":local:Z:\" data="D:\Docs\Data misc\tan1505\hull\ek60" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo"/>
    <Display Cmap="esp2" DispBadTrans="on" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="on" Freq="38000" Grid_x="25" Grid_y="25" Xaxes="Number"/>
 </config_file>

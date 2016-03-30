@@ -46,5 +46,6 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.asv
-deploy
 EchoAnalysis.exe
+deploy/private
+deploy/icons
