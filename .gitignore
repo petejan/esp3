@@ -46,6 +46,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.asv
-EchoAnalysis.exe
 deploy/private
 deploy/icons
+deploy/topography.mat
+deploy/config_echo.xml
+deploy/topo.mat
