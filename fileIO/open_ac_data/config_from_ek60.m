@@ -44,6 +44,6 @@ params_obj.SampleInterval=calParms.sampleinterval;
 params_obj.Slope=[];
 params_obj.TransducerDepth=calParms.transducerdepth;
 params_obj.TransmitPower=calParms.transmitpower;
-params_obj.Absorbtion=double(calParms.absorptioncoefficient);
+params_obj.Absorption=double(calParms.absorptioncoefficient);
 
 end

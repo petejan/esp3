@@ -433,7 +433,7 @@ disp(['Port/stbd offset = ' num2str(offset_ps) ' degrees (to be subtracted from 
 
 disp(['Results obtained from ' num2str(length(sphere(:,1))) ' sphere echoes.'])
 disp(['Using c = ' num2str(envData.SoundSpeed) ' m/s.'])
-disp(['Using alpha = ' num2str(transceiver.Params.Absorbtion*1000) ' dB/km.'])
+disp(['Using alpha = ' num2str(transceiver.Params.Absorption*1000) ' dB/km.'])
 
 % Calculate the RMS fit to the beam model
 fit_out_to = mean([psBW faBW]) * p.rmsOutTo; % fit out to half the beamangle

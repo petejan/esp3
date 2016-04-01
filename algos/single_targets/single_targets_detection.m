@@ -117,7 +117,7 @@ Pulse_length_max_sample=ceil(Pulse_length_sample.*p.Results.MaxNormPL);
 Pulse_length_min_sample=floor(Pulse_length_sample.*p.Results.MinNormPL);
 
 c=p.Results.SoundSpeed;
-alpha=Transceiver.Params.Absorbtion;
+alpha=Transceiver.Params.Absorption;
 
 %Calculate simradBeamCompensation
 simradBeamCompensation = 6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2);

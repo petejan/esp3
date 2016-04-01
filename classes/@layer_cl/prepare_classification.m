@@ -34,7 +34,7 @@ for uu=idx_to_process
         FreqCenter=(FreqStart+FreqEnd)/2;
         lambda=c/FreqCenter;
         eq_beam_angle_curr=eq_beam_angle+20*log10(Freq/(FreqCenter));
-        alpha=double(Transceiver.Params.Absorbtion);
+        alpha=double(Transceiver.Params.Absorption);
         sacorr=2*Transceiver.Config.SaCorrection(idx_pulse);
         
         if strcmp(Transceiver.Mode,'FM')

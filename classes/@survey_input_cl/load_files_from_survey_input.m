@@ -77,7 +77,7 @@ for isn=1:length(snapshots)
                     else
                         layer_new.Transceivers(idx_freq).apply_cw_cal(cal_t);
                     end
-                    layer_new.Transceivers(idx_freq).apply_absorption(options.Absorbtion/1e3);
+                    layer_new.Transceivers(idx_freq).apply_absorption(options.Absorption/1e3);
 
                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                 layer_new.set_survey_data(surv);

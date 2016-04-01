@@ -27,7 +27,7 @@ botRev=mbs.Input.botRev;
 regRev=mbs.Input.regRev;
 calRev=mbs.Input.calRev;
 calRaw=mbs.Input.calRaw;
-absorbtion=mbs.Input.absorbtion;
+absorption=mbs.Input.absorption;
 surveyname=mbs.Header.title;
 voyage=mbs.Header.voyage;
 %vertslice=mbs.Header.vertical_slice_size;
@@ -83,10 +83,10 @@ for i=idx_trans
     end
      svCorr(i)=svCorr_def;
     
-    if isnan(mbs.Input.absorbtion(i))
+    if isnan(mbs.Input.absorption(i))
         layer(u).Transceivers(idx_freq).apply_absorption(mbs.Header.default_absorption/1e3);
     else
-        layer(u).Transceivers(idx_freq).apply_absorption(absorbtion(i)/1e3);
+        layer(u).Transceivers(idx_freq).apply_absorption(absorption(i)/1e3);
     end
     
     

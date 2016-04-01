@@ -161,7 +161,7 @@ for i_cell=1:length(Filename_cell)
         params_obj.Slope=[];
         params_obj.TransducerDepth=[];
         params_obj.TransmitPower=1;
-        params_obj.Absorbtion=0.0555;
+        params_obj.Absorption=0.0555;
         
         
         [nb_samples,nb_pings]=size(data.(sprintf('chan_%.0f',ic)));
@@ -170,8 +170,8 @@ for i_cell=1:length(Filename_cell)
         time=sample_number/nanmean(data.f_s(ic,:));
         range=c*time/2;
         
-        data_struct.sv = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(20*log10(range)+2*params_obj.Absorbtion*range,1,nb_pings) - 10*log10(c* config_obj.PulseLength/2)-config_obj.EquivalentBeamAngle;
-        data_struct.sp = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(40*log10(range)+2*params_obj.Absorbtion*range,1,nb_pings);
+        data_struct.sv = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(20*log10(range)+2*params_obj.Absorption*range,1,nb_pings) - 10*log10(c* config_obj.PulseLength/2)-config_obj.EquivalentBeamAngle;
+        data_struct.sp = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(40*log10(range)+2*params_obj.Absorption*range,1,nb_pings);
         
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(data_struct,dir_data,{});

@@ -14,7 +14,7 @@ classdef params_cl
         Slope
         TransducerDepth=0;
         TransmitPower
-        Absorbtion
+        Absorption
     end
        
 end

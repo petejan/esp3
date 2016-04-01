@@ -34,7 +34,7 @@ if ~strcmp(layer.Filetype,'CREST')
         
     end
     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0.1 0.4 0.2 0.1]);
-    calibration_tab_comp.att=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(layer.Transceivers(idx_freq).Params.Absorbtion*1e3,'%.1f'),'callback',{@apply_absorbtion,main_figure});
+    calibration_tab_comp.att=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
     
     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Temp. (degC)','units','normalized','Position',[0.1 0.25 0.2 0.1]);
     calibration_tab_comp.temp=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.25 0.1 0.1],'string',num2str(layer.EnvData.Temperature,'%.1f'),'callback',{@save_envdata_callback,main_figure});
@@ -61,7 +61,7 @@ beamwidth_calibration_curves_func(main_figure);
 update_display(main_figure,0);
 end
 
-function apply_absorbtion(~,~,main_figure)
+function apply_absorption(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
@@ -70,7 +70,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 if~isnan(str2double(get(calibration_tab_comp.sal,'string')))
     layer.Transceivers(idx_freq).apply_absorption(str2double(get(calibration_tab_comp.att,'string'))/1e3)
 end
-set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorbtion*1e3,'%.1f'));
+set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.1f'));
 update_display(main_figure,0);
 end
 

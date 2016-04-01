@@ -89,6 +89,6 @@ params_obj.SampleInterval=1/ifileInfo.depth_factor/soundspeed;
 params_obj.Slope=[];
 params_obj.TransducerDepth=0;
 params_obj.TransmitPower=[];
-params_obj.Absorbtion=ifileInfo.absorption_coefficient/1000;
+params_obj.Absorption=ifileInfo.absorption_coefficient/1000;
 
 end

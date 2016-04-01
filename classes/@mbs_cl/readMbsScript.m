@@ -10,7 +10,7 @@ mbs.Header.Script = fileName;
 mbs.Input=mbs_input_cl();
 
 
-%key_fields={'snapshot','stratum','transect','length','absorbtion'};
+%key_fields={'snapshot','stratum','transect','length','absorption'};
 
 sn=[];
 st='';
@@ -57,7 +57,7 @@ else
                 continue;
             end
             
-            if strfind(tline,'absorbtion');
+            if strfind(tline,'absorption');
                 ab = tline(strfind(tline,':')+2:end);
                 tline = fgetl(fid);
                 continue;
@@ -91,7 +91,7 @@ else
                 mbs.Input.snapshot(i) = sn;
                 mbs.Input.stratum{i} = st;
                 mbs.Input.transect(i) = tr;
-                mbs.Input.absorbtion(i) = ab;
+                mbs.Input.absorption(i) = ab;
                 mbs.Input.length(i) = ln;
                 
                 [out,pos]=textscan(tline,'%s %.0f %s %s %s',1);

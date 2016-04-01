@@ -41,7 +41,7 @@ for idx_freq=1:length(data.config)
     
     alpha= sw_absorption(FreqCenter/1e3, (data.env.Salinity), (data.env.Temperature), (data.env.Depth),'fandg')/1e3;
     
-    data.params(idx_freq).Absorbtion=alpha;
+    data.params(idx_freq).absorption=alpha;
     data.pings(idx_freq).range=range;
 
     y=data.pings(idx_freq).y;

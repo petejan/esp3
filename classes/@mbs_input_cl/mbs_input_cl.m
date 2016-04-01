@@ -14,7 +14,7 @@ classdef mbs_input_cl
         algo={};
         calCrest=[];
         calRaw={};
-        absorbtion=[];
+        absorption=[];
         length=[];
         reg={};
         reg_str={};

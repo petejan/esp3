@@ -118,7 +118,7 @@ for uui=1:length(layer.Frequencies)
     disp(['sound speed at sphere = ' num2str(c_at_sphere) ' m/s'])
     disp(['density at sphere = ' num2str(density_at_sphere) ' kg/m^3'])
     
-    disp(['mean absorption = ' num2str(alpha) ' dB/km'])
+    disp(['mean Absorption = ' num2str(alpha) ' dB/km'])
     disp(['mean sound speed = ' num2str(c) ' m/s'])
     disp(['sphere TS = ' num2str(sphere_ts) ' dB'])
     

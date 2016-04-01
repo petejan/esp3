@@ -2,7 +2,7 @@ function alpha = sw_absorption(f, S, T, D, method)
 
 % function alpha = sw_absorption(f, S, T, D, method)
 %
-% Returns the absorption coefficient [dB/km] for
+% Returns the Absorption coefficient [dB/km] for
 % the given acoustic frequency (f [kHz]), salinity
 % (S, [ppt]), temperature (T, [degC]), and depth
 % (D, [m]).
@@ -18,7 +18,7 @@ function alpha = sw_absorption(f, S, T, D, method)
 %
 % By default function implements the formula given in
 % Doonan, I.J.; Coombs, R.F.; McClatchie, S. (2003).
-% The absorption of sound in seawater in relation to
+% The Absorption of sound in seawater in relation to
 % estimation of deep-water fish biomass. ICES
 % Journal of Marine Science 60: 1-9.
 %
@@ -26,7 +26,7 @@ function alpha = sw_absorption(f, S, T, D, method)
 % in the conclusions.
 %
 % Optional argument 'method', allows the user to specify the
-% absorption formula to use. Default is Doonan etal (2003)
+% Absorption formula to use. Default is Doonan etal (2003)
 % other possibilities are:
 % 'doonan'  - Doonan et al (2003)
 % 'fandg'   - Francois & Garrison (1982)
