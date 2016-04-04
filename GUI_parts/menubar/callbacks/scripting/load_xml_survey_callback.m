@@ -26,7 +26,7 @@ end
 for i=1:length(Filename)
     try
         surv_obj=survey_cl();
-          =parse_survey_xml(fullfile(PathToFile,Filename{i}));
+        surv_obj.SurvInput=parse_survey_xml(fullfile(PathToFile,Filename{i}));
         
         if isempty(surv_obj.SurvInput)
             warning('Could not parse the File describing the survey...');
