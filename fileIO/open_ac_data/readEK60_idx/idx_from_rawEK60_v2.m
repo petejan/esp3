@@ -37,6 +37,7 @@ for i=1:length(idx_dg)
     end
     
     raw_idx_obj.pos_dg(i)=ftell(fid);
+    raw_idx_obj.len_dg(i)=len;
     [dgType,nt_sec]=readEK60Header_v2(fid);
     if (feof(fid))||isempty(dgType)
         break;
@@ -54,9 +55,7 @@ for i=1:length(idx_dg)
         otherwise
             fread(fid,len-HEADER_LEN,'uchar', 'l');
     end
-    len=fread(fid, 1, 'int32', 'l');
-    raw_idx_obj.len_dg(i)=len;
-
+    
 end
 
 
