@@ -15,8 +15,7 @@ main_figure=figure('Visible','on',...
     'MenuBar','none',...'%No Matlab Menu
     'visible','off',...
     'CloseRequestFcn',@closefcn_clean);
-%     'SizeChangedFcn',@resize_main_fig);%Causing to much issues. Replaced
-%     withe the following...
+
 
 
 set(0,'DefaultUicontrolFontSize',10);%Default font size for Controls
@@ -108,3 +107,5 @@ end
 
 create_menu(main_figure);
 end
+
+

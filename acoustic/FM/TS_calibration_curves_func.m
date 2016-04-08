@@ -131,7 +131,7 @@ for uui=1:length(layer.Frequencies)
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
     
-    idx_low=(Sp_sph<=-60)|compensation>12|(Sp_sph>-30);
+    idx_low=(Sp_sph<=-60)|compensation>12|(Sp_sph>-30)|idx_peak==idx_r(1);
     
     
     AlongAngle_sph(idx_low)=[];
