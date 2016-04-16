@@ -8,7 +8,7 @@ javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLoo
 %%%%%%%%%%%%%%
 size_max=get(0,'ScreenSize');
 main_figure=figure('Visible','on',...
-    'Units','pixels','Position',[0 100 size_max(3)/4*3 size_max(4)/4*3],...       %Position and size normalized to the screen size ([left, bottom, width, height])
+    'Units','pixels','Position',[0 100 size_max(3) size_max(4)/8*7],...       %Position and size normalized to the screen size ([left, bottom, width, height])
     'Color','White',...                                         %Background color
     'Name','Echo Analysis','NumberTitle','off',...    %GUI Name
     'Resize','on',...

@@ -5,6 +5,7 @@ m_files = uimenu(main_figure,'Label','File','Tag','menufile');
 uimenu(m_files,'Label','Open file','Callback',{@open_file,0,main_figure});
 uimenu(m_files,'Label','Open next file','Callback',{@open_file,1,main_figure});
 uimenu(m_files,'Label','Open previous file','Callback',{@open_file,2,main_figure});
+uimenu(m_files,'Label','Reload Current file(s)','Callback',{@reload_file,main_figure});
 uimenu(m_files,'Label','Index Files','Callback',{@index_files_callback,main_figure});
 
 

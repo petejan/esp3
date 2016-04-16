@@ -33,7 +33,7 @@ vec_freq_tot=[];
 
 if ~isequal(Filename_cell, 0)
     
-  
+    
     prev_ping_end=0;
     prev_ping_start=1;
     nb_lay=0;
@@ -41,7 +41,7 @@ if ~isequal(Filename_cell, 0)
         
         Filename=Filename_cell{uu};
         [path_f,fileN,~]=fileparts(Filename);
-
+        
         
         if isempty(vec_freq_init)
             %             try
@@ -131,10 +131,18 @@ if ~isequal(Filename_cell, 0)
         end
         fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
-            idx_raw_obj=idx_from_rawEK60_v2(Filename);
+            fprintf('Indexing file: %s\n',Filename);
+            idx_raw_obj=idx_from_raw(Filename);
             save(fileIdx,'idx_raw_obj');
         else
             load(fileIdx);
+            [~,et]=start_end_time_from_file(Filename);
+            if abs(et-idx_raw_obj.time_dg(end))>2*nanmean(diff(idx_raw_obj.time_dg(strcmp(idx_raw_obj.type_dg,'RAW0')&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg))))
+                fprintf('Re-Indexing file: %s\n',Filename);
+                delete(fileIdx);
+                idx_raw_obj=idx_from_raw(Filename);
+                save(fileIdx,'idx_raw_obj');
+            end
         end
         
         [header,data]=data_from_raw_idx_cl(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly);
@@ -295,7 +303,9 @@ if ~isequal(Filename_cell, 0)
         return;
     end
     if exist('opening_file','var')
-        close(opening_file);
+        try
+            close(opening_file);
+        end
     end
     clear data transceiver
     

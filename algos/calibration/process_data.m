@@ -7,7 +7,7 @@ function transceiver=process_data(transceiver,envData,idx_peak,idx_pings,sphere_
 %
 % The std of the arrival angle of each sample in each echo has to be
 % less than or equal to this value for an echo to be kept.
-p.max_std_phase = 1; %[degrees]
+p.max_std_phase = 3; %[degrees]
 
 % Only consider echoes that have an angular position that is within
 % trimToFactor times the beam angle
@@ -16,7 +16,7 @@ p.trimToFactor = 1.7;
 % Any sphere echo more than maxDbDiff1 from the theoretical will be
 % discarded as an outlier. Used in a coarse filter prior to actually
 % working out the beam width.
-p.maxdBDiff1 = 12;
+p.maxdBDiff1 = 20;
 
 % Beam compensated TS values more than maxdBDiff2 dB above or below the
 % sphere TS are discarded. Done after working out the beam width.
@@ -449,14 +449,15 @@ beam_model = peak_ts - compensation;
 rms_fit = sqrt( mean( ( (sphere(i,1) - beam_model(i))/2 ).^2 ) );
 disp(['RMS of fit to beam model out to ' num2str(fit_out_to) ' degrees = ' num2str(rms_fit) ' dB.'])
 
-
 new_cal.SACORRECT=sa_correction;
-
-transceiver.apply_cw_cal(new_cal);
+% 
+% transceiver.apply_cw_cal(new_cal);
 
 end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

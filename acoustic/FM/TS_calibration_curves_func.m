@@ -82,7 +82,7 @@ for uui=1:length(layer.Frequencies)
     if ~strcmp(layer.Transceivers(uui).Mode,'FM')
         Sp_red=filter2(ones(Np,1),Sp_red)./filter2(ones(Np,1),ones(size(Sp_red)));
     end
-    Sp_red(Sp_red<sphere_ts-12)=nan;
+    Sp_red(Sp_red<sphere_ts-30)=nan;
     [~,idx_peak]=nanmax(Sp_red,[],1);
     
     
@@ -111,6 +111,7 @@ for uui=1:length(layer.Frequencies)
     % mean parameters over range from transducer to the sphere
     c = sw_svel(s, t, d);
     alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
+
     sphere_ts = spherets(2*pi*Freq/c, .0381/2, c_at_sphere, ...
         6853, 4171, density_at_sphere, 14900);
     
@@ -131,8 +132,9 @@ for uui=1:length(layer.Frequencies)
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
     
-    idx_low=(Sp_sph<=-60)|compensation>12|(Sp_sph>-30)|idx_peak==idx_r(1);
+    %idx_low=compensation>18|(Sp_sph>-30)|idx_peak==idx_r(1);
     
+    idx_low=idx_peak==idx_r(1)  ;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];

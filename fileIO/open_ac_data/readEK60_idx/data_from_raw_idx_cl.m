@@ -44,6 +44,7 @@ if p.Results.GPSOnly>0
     nb_pings=0;
     nb_samples=0;
 else
+    
 channels=unique(idx_raw_obj.chan_dg(~isnan(idx_raw_obj.chan_dg)));
 channels=channels(idx_freq);
 nb_pings=idx_raw_obj.get_nb_pings_per_channels();
@@ -71,6 +72,7 @@ data.NMEA.time= time_nmea;
 data.NMEA.string= cell(1,nb_nmea);
 i_ping=zeros(1,length(channels));
 i_nmea=0;
+
 
 
 for idg=1:length(idx_raw_obj.type_dg)

@@ -52,7 +52,7 @@ if ~isequal(Filename, 0)
     fclose(fid);
     switch dgType
         case 'XML0'
-            return;
+            open_EK80_file_GPS_only(main_figure,Filename);
         case 'CON0'
            open_EK60_file_GPS_only(main_figure,Filename);
         otherwise

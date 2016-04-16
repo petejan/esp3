@@ -1,5 +1,5 @@
 function [start_time,end_time]=start_end_time_from_file(filename)
-fid=fopen(filename,'r+','l');
+fid=fopen(filename,'r','l');
 BLCK_SIZE=1e3;
 
 if fid==-1

@@ -39,7 +39,6 @@ end
 
 for ii=1:length(filenames)
     filename=filenames{ii};
-    [path_f,~,~]=fileparts(filename);
     fid = fopen(filename, 'r');
     len=fread(fid, 1, 'int32', 'l');
     
@@ -52,17 +51,10 @@ for ii=1:length(filenames)
             t_line=deblank(t_line);
             
             fread(fid, 1, 'int32', 'l');
-            
-            fid_xml=fopen([path_f 'xml0_config.xml'],'w');
-            fprintf(fid_xml,'%s',t_line);
-            fclose(fid_xml);
-            
-            xstruct=parseXML([path_f 'xml0_config.xml']);
-            
-            [header,config]=read_config_xstruct(xstruct);
+            [header,config,~]=read_xml0(t_line);
             
             CIDs=cell(1,length(config));
-            
+
             uuu=0;
             idx_freq=[];
             for i=1:length(config)
@@ -76,12 +68,13 @@ for ii=1:length(filenames)
             end
             CIDs_freq=CIDs(idx_freq);
             header.transceivercount=length(idx_freq);
+ 
+            [nb_samples_curr,nb_pings_curr]=get_nb_samples(fid,CIDs);
+            
             if ii==1
                 nb_pings=zeros(length(idx_freq),1);
                 nb_samples=zeros(length(idx_freq),1);
             end
-            
-            [nb_samples_curr,nb_pings_curr]=get_nb_samples(fid,CIDs);
             
             nb_samples=nanmax(nb_samples_curr(idx_freq,:),nb_samples);
             nb_pings=nb_pings+nb_pings_curr(idx_freq,:);
@@ -116,16 +109,17 @@ for ii=1:length(filenames)
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_4=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).samples=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).number=nan(1,nb_pings(i));
             data.pings(i).time=nan(1,nb_pings(i));
             data.pings(i).samples=(1:nb_samples(i))';
         end
         curr_ping = ones(length(data.config),1);
         curr_nmea=1;
-
+        
     end
-    
+    conf_dg=0;
+    env_dg=0;
+    param_dg=zeros(1,length(CIDs_freq));
     
     while (true)
         
@@ -134,44 +128,50 @@ for ii=1:length(filenames)
             break;
         end
         
+        
         %  read datagram header
         [dgType, dgTime] = read_dgHeader(fid, timeOffset);
         %disp(dgType);
         %  process datagrams by type
+        
+        
         switch (dgType)
             
             case 'XML0'
                 %disp(dgType);
-                t_line=(fread(fid,len-HEADER_LEN,'*char','l'))';
+                
+                t_line=(fread(fid,len-HEADER_LEN,'*char','l'))';      
                 t_line=deblank(t_line);
                 if ~isempty(strfind(t_line,'Configuration'))
-                    fid_xml=fopen([path_f 'xml0_config.xml'],'w');
-                    fprintf(fid_xml,'%s',t_line);
-                    fclose(fid_xml);
-                    xstruct=parseXML([path_f 'xml0_config.xml']);
+                    if conf_dg==1
+                        fread(fid, 1, 'int32', 'l');
+                        continue;
+                    end
+                    conf_dg=1;
                 elseif ~isempty(strfind(t_line,'Environment'))
-                    fid_xml=fopen([path_f 'xml0_env.xml'],'w');
-                    fprintf(fid_xml,'%s',t_line);
-                    fclose(fid_xml);
-                    xstruct=parseXML([path_f 'xml0_env.xml']);
+                    if env_dg==1
+                        fread(fid, 1, 'int32', 'l');
+                        continue;
+                    end
+                   
                 elseif ~isempty(strfind(t_line,'Parameter'))
-                    fid_xml=fopen([path_f 'xml0_param.xml'],'w');
-                    fprintf(fid_xml,'%s',t_line);
-                    fclose(fid_xml);
-                    xstruct=parseXML([path_f 'xml0_param.xml']);
+                    if nansum(param_dg)==length(CIDs_freq);
+                        fread(fid, 1, 'int32', 'l');
+                        continue
+                    end
+                   
                 end
-                
-                switch xstruct.Name
+                 [header_temp,output,type]=read_xml0(t_line);
+                switch type
                     case'Configuration'
-                        [~,config_temp]=read_config_xstruct(xstruct);
-                        data.config=config_temp(idx_freq);
+                        header=header_temp;
+                        data.config=output(idx_freq);
                     case 'Environment'
-                        env_temp=read_env_xstruct(xstruct);
-                        data.env=env_temp;
+                        data.env=output;
                     case 'Parameter'
-                        params_temp=read_params_xstruct(xstruct);
-                        
+                        params_temp=output;    
                         idx = find(strcmp(deblank(CIDs_freq),deblank(params_temp.ChannelID)));
+                        param_dg(idx)=1;
                         
                         fields_params=fieldnames(params_temp);
                         
@@ -217,12 +217,14 @@ for ii=1:length(filenames)
             case 'RAW3'
                 %disp(dgType);
                 % read channel ID
-                if isempty(idx)                    
-                    fseek(fid, len - HEADER_LEN, 0);   
+                channelID = (fread(fid,128,'*char', 'l')');
+                idx = find(strcmp(deblank(CIDs_freq),deblank(channelID)));
+                if isempty(idx)
+                    fseek(fid, len - HEADER_LEN -128 , 0);
                 else
                     if curr_ping(idx)>=p.Results.PingRange(1)&&curr_ping(idx)<=p.Results.PingRange(2)
-                        channelID = (fread(fid,128,'*char', 'l')');
-                        idx = find(strcmp(deblank(CIDs_freq),deblank(channelID)));
+                        
+                        
                         datatype=fread(fid,1,'int16', 'l');
                         fread(fid,1,'int16', 'l');
                         
@@ -230,28 +232,38 @@ for ii=1:length(filenames)
                         sampleCount=fread(fid,1,'int32', 'l');
                         %  store sample number if required/valid
                         number=curr_ping(idx);
-                        
-                        if (sampleCount > 0)
-                            temp = fread(fid,8*sampleCount,'float32', 'l');
-                        end
-                        
                         data.pings(idx).channelID=channelID;
                         data.pings(idx).datatype=datatype;
                         data.pings(idx).offset=offset;
                         data.pings(idx).sampleCount=sampleCount;
                         data.pings(idx).number(curr_ping(idx)-p.Results.PingRange(1)+1)=number;
                         data.pings(idx).time(curr_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
-                        if (sampleCount > 0)
-                            data.pings(idx).comp_sig_1(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
-                            data.pings(idx).comp_sig_2(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
-                            data.pings(idx).comp_sig_3(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
-                            data.pings(idx).comp_sig_4(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
-                        end                        
-                        curr_ping(idx) = curr_ping(idx) + 1;                        
+                        
+                        switch config(idx).TransceiverType
+                            case 'WBT'
+                                if (sampleCount > 0)
+                                    temp = fread(fid,8*sampleCount,'float32', 'l');
+                                end
+                                
+                                if (sampleCount > 0)
+                                    data.pings(idx).comp_sig_1(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
+                                    data.pings(idx).comp_sig_2(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
+                                    data.pings(idx).comp_sig_3(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
+                                    data.pings(idx).comp_sig_4(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
+                                end
+                                
+                            case 'GPT'
+                                data.pings(idx).power(1:sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
+                                angle=fread(fid,[2 sampleCount],'int8', 'l');
+                                data.pings(idx).athwartship_e(1:sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
+                                data.pings(idx).alongship_e(1:sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                                
+                        end
+                        curr_ping(idx) = curr_ping(idx) + 1;
                     else
                         fseek(fid, len - HEADER_LEN, 0);
                         curr_ping(idx) = curr_ping(idx) + 1;
-  
+                        
                         if curr_ping(idx)>p.Results.PingRange(2)
                             fclose(fid);
                             return;
