@@ -87,7 +87,6 @@ update_algos(main_figure);
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
-bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
@@ -125,10 +124,26 @@ range=layer.Transceivers(idx_freq).Data.get_range();
 bottom_range=nan(size(Bottom));
 bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
 
-layer.Transceivers(idx_freq).setBottom(bottom_cl('Origin','Algo_v2_bp',...
-    'Range', bottom_range,...
-    'Sample_idx',Bottom,...
-    'Double_bot_mask',Double_bottom_region,'Tag',idx_noise_sector==0));
+choice = questdlg('Do you want replace the existing bottom?', ...
+    'Replacing bottom...',...
+    'Yes','No',...
+    'Yes');
+% Handle response
+switch choice
+    case 'Yes'
+        layer.Transceivers(idx_freq).setBottom(bottom_cl('Origin','Algo_v2_bp',...
+            'Range', bottom_range,...
+            'Sample_idx',Bottom,...
+            'Double_bot_mask',Double_bottom_region,'Tag',idx_noise_sector==0));
+    case 'No'
+        layer.Transceivers(idx_freq).setBottom(idx_noise_sector==0);
+        
+    otherwise
+        return;
+end
+
+
+
 
 setappdata(main_figure,'Layer',layer);
 load_axis_panel(main_figure,0);

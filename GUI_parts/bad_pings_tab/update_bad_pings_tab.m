@@ -24,6 +24,7 @@ set(bad_ping_tab_comp.Thr_bottom_ed,'string',num2str(get(bad_ping_tab_comp.Thr_b
 set(bad_ping_tab_comp.r_min_sl,'value',algo.r_min);
 set(bad_ping_tab_comp.r_min_ed,'string',num2str(get(bad_ping_tab_comp.r_min_sl,'Value'),'%.1f'));
 
+set(bad_ping_tab_comp.r_max_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
 set(bad_ping_tab_comp.r_max_sl,'value',algo.r_max);
 set(bad_ping_tab_comp.r_max_ed,'string',num2str(get(bad_ping_tab_comp.r_max_sl,'Value'),'%.1f'));
 

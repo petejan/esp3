@@ -82,7 +82,7 @@ for uui=1:length(layer.Frequencies)
     if ~strcmp(layer.Transceivers(uui).Mode,'FM')
         Sp_red=filter2(ones(Np,1),Sp_red)./filter2(ones(Np,1),ones(size(Sp_red)));
     end
-    Sp_red(Sp_red<sphere_ts-30)=nan;
+    Sp_red(Sp_red<sphere_ts-20)=nan;
     [~,idx_peak]=nanmax(Sp_red,[],1);
     
     
@@ -132,9 +132,9 @@ for uui=1:length(layer.Frequencies)
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
     
-    %idx_low=compensation>18|(Sp_sph>-30)|idx_peak==idx_r(1);
+    idx_low=compensation>18|(Sp_sph>-30)|idx_peak==idx_r(1);
     
-    idx_low=idx_peak==idx_r(1)  ;
+    %idx_low=idx_peak==idx_r(1)  ;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];
@@ -281,5 +281,6 @@ end
 
 
 setappdata(main_figure,'Layer',layer);
+update_display(main_figure,0);
 
 end
