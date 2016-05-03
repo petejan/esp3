@@ -24,30 +24,25 @@ else
     surv_name= '';
 end
 
+
+
 for ilay=1:length(layers_obj)
     layer_obj=layers_obj(ilay);
     surv_data_struct=layer_obj.get_logbook_struct();
     [path_lay,file_lay]=layer_obj.get_path_files();
     list_raw=ls(fullfile(path_lay{1},'*.raw'));
     
+    
+    docNode = com.mathworks.xml.XMLUtils.createDocument('echo_logbook');
+    echo_logbook=docNode.getDocumentElement;
+    echo_logbook.setAttribute('version','0.1');
+    survey_node = docNode.createElement('survey');
+    echo_logbook.appendChild(survey_node);
+    
     nb_files=size(list_raw,1);
-    
-    copyfile(fullfile(path_lay{1},'echo_logbook.csv'),fullfile(path_lay{1},'echo_logbook_saved.csv'));
-    
+    survdata_temp=survey_data_cl();
     try
-        fid=fopen(fullfile(path_lay{1},'echo_logbook.csv'),'w+');
-        if fid==-1
-            fclose('all');
-            fid=fopen(fullfile(path_lay{1},'echo_logbook.csv'),'w+');
-            if fid==-1
-                delete(fullfile(path_lay{1},'echo_logbook_saved.csv'));
-                warning('Could not update the .csv logbook file');
-                return;
-            end
-        end
-        
-        fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
-        
+               
         for i=1:nb_files
             f_processed=0;
             file_curr=deblank(list_raw(i,:));
@@ -82,14 +77,15 @@ for ilay=1:length(layers_obj)
                         end
                         
                         f_processed=1;
-                        survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
+                        lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                        survey_node.appendChild(lineNode);
                     end
                     
-                else
-                    
+                else  
                     [start_time,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
                     survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
-                    survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
+                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                    survey_node.appendChild(lineNode);
                     f_processed=1;
                 end
                 
@@ -129,7 +125,8 @@ for ilay=1:length(layers_obj)
                         end
                         
                         f_processed=1;
-                        survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
+                        lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                        survey_node.appendChild(lineNode);
                     end
                
                 end
@@ -138,23 +135,28 @@ for ilay=1:length(layers_obj)
                     end_time=layer_obj.Transceivers(1).Data.Time(end);
                     start_time=layer_obj.Transceivers(1).Data.Time(1);
                     f_processed=1;
-                    survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time); 
+                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                    survey_node.appendChild(lineNode);
                 end
             end
             if f_processed==0
                 disp('Pb in logbook...')
             end
         end
-        fclose(fid);
-        delete(fullfile(path_lay{1},'echo_logbook_saved.csv'));
+
+        survey_node.setAttribute('SurveyName',survdata_temp.SurveyName);
+        survey_node.setAttribute('Voyage',survdata_temp.Voyage);
+        
+        xml_file=fullfile(path_lay{1},'echo_logbook.xml');
+        xmlwrite(xml_file,docNode);
+        
     catch err
         disp(err);
-        warning('Error when updating the logbook. Restoring previous version...') ;
-        fclose('all');
-        [path_lay,~]=layer_obj.get_path_files();
-        copyfile(fullfile(path_lay{1},'echo_logbook_saved.csv'),fullfile(path_lay{1},'echo_logbook.csv'));
-        delete(fullfile(path_lay{1},'echo_logbook_saved.csv'));
+        warning('Error when updating the logbook') ;
     end
+
 end
+
+
 
 end

@@ -30,6 +30,6 @@ tag_node.appendChild(docNode.createTextNode(tag_str));
 bottom_node.appendChild(range_node);
 bottom_node.appendChild(time_node);
 bottom_node.appendChild(tag_node);
-
 bottom_file.appendChild(bottom_node);
+
 end

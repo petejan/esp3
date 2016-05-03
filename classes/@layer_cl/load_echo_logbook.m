@@ -10,11 +10,11 @@ end
 pathtofile=unique(pathtofile);
 
 for ip=1:length(pathtofile)
-    file=fullfile(pathtofile{ip},'echo_logbook.csv');
+    file=fullfile(pathtofile{ip},'echo_logbook.xml');
     if exist(file,'file')==0
         initialize_echo_logbook_file(pathtofile{ip});
     end
-    survey_data_struct_temp=import_survey_data(file);
+    survey_data_struct_temp=import_survey_data_xml(file);
     if ~isempty(survey_data_struct_temp)
         survey_data_struct_lay=[survey_data_struct_lay survey_data_struct_temp];
     end

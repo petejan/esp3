@@ -16,12 +16,12 @@ layer.update_echo_logbook_file('SurveyName',SurveyName,'Voyage',Voyage);
 
 for i=1:length(layers)
     if ~isempty(layers(i).SurveyData)
-        for ui=1:length(layers(i).SurveyData)
-            survd_new=cell(1,length(layers(i).SurveyData));
+        survd_new=cell(1,length(layers(i).SurveyData));
+        for ui=1:length(layers(i).SurveyData)           
             survd=layers(i).get_survey_data('Idx',ui);
             if ~isempty(survd)
                 survd_new{ui}=survey_data_cl('Voyage',Voyage,'SurveyName',SurveyName,...
-                    'Snapshot',survd.Snapshot,'Stratum',survd.Stratum,'Transect',survd.Transect);
+                    'Snapshot',survd.Snapshot,'Stratum',survd.Stratum,'Transect',survd.Transect,'StartTime',survd.StartTime,'EndTime',survd.EndTime);
             else
                 survd_new{ui}=survey_data_cl('Voyage',Voyage,'SurveyName',SurveyName);
             end
