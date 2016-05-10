@@ -47,6 +47,9 @@ switch curr_disp.Cmap
     case 'esp2'
         cmap=esp2_colormap();
         alpha_map(alpha_map==0)=1;
+    case 'ek500'
+        cmap=ek500_colormap();
+        alpha_map(alpha_map==0)=1;
 end
 
 Range_mat=repmat(ydata,1,nb_pings);

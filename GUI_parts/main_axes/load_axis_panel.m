@@ -124,7 +124,9 @@ set(display_tab_comp.caxis_down,'String',num2str(axes_panel_comp.main_axes.CLim(
 
 idx_bottom=trans.Bottom.Sample_idx;
         if strcmp(curr_disp.Cmap,'esp2')
-            col='y';
+            col='y'; % ESP2's colormap is 'black background' so the bottom line is drawn in yellow
+        elseif strcmp(curr_disp.Cmap,'ek500')
+            col='g'; % Simrad sounders use a green bottom line
         else
             col='k';
         end

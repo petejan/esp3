@@ -131,7 +131,9 @@ end
         setappdata(main_figure,'Layer',layer);
         reset_disp_info(main_figure);
         if strcmp(curr_disp.Cmap,'esp2')
-            col='y';
+            col='y'; % ESP2's colormap is 'black background' so the bottom line is drawn in yellow
+        elseif strcmp(curr_disp.Cmap,'ek500')
+            col='g'; % Simrad sounders use a green bottom line
         else
             col='k';
         end

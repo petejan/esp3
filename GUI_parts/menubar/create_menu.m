@@ -67,6 +67,7 @@ m_colormap=uimenu(m_display,'Label','Colormap');
 main_menu.colormap=uimenu(m_colormap,'Label','Jet','Callback',{@change_cmap_callback,main_figure},'Tag','jet');
 main_menu.colormap=uimenu(m_colormap,'Label','HSV','Callback',{@change_cmap_callback,main_figure},'Tag','hsv');
 main_menu.colormap=uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
+main_menu.colormap=uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
 
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
 main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');

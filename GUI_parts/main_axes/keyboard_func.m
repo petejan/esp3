@@ -142,7 +142,7 @@ switch callbackdata.Key
         end
         
     case 'c'
-        cmaps={'jet' 'hsv' 'esp2'};
+        cmaps={'jet' 'hsv' 'esp2' 'ek500'};
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
     case 'f'
