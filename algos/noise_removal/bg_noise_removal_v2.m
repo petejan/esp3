@@ -82,6 +82,10 @@ power_unoised(SNR<SNR_thr)=0;
 Sp_unoised(SNR<SNR_thr)=-999;
 Sv_unoised(SNR<SNR_thr)=-999;
 
+power_unoised(isnan(power_unoised))=0;
+Sp_unoised(isnan(Sp_unoised))=-999;
+Sv_unoised(isnan(Sv_unoised))=-999;
+
 try 
     close(removing_noise)
 end

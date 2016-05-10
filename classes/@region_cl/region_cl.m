@@ -13,6 +13,7 @@ classdef region_cl < handle
         Shape
         X_cont
         Y_cont
+        MaskReg
         Reference
         Cell_w
         Cell_w_unit
@@ -61,19 +62,16 @@ classdef region_cl < handle
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)
-                if ~strcmp((props{i}),'MaskReg')
-                    obj.(props{i})=results.(props{i});
-                end
+            for i=1:length(props)   
+                obj.(props{i})=results.(props{i});
             end
-			
-            
+			 
             switch obj.Shape
                 case 'Rectangular'
                     obj.X_cont=[];
                     obj.Y_cont=[];
                 case 'Polygon'
-                    if isempty(p.Results.X_cont)&&~isempty(results.MaskReg)
+                    if isempty(results.X_cont)&&~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
                         if ~isempty(y)
                             obj.X_cont=x;
@@ -84,17 +82,17 @@ classdef region_cl < handle
                             obj.Y_cont=[];
                         end
                         
-                    elseif ~isempty(p.Results.X_cont)&&isempty(results.MaskReg)
+                    elseif ~isempty(results.X_cont)&&isempty(results.MaskReg)
                         obj.Shape='Polygon';
-                        obj.X_cont=p.Results.X_cont;
-                        obj.Y_cont=p.Results.Y_cont;
+                        obj.X_cont=results.X_cont;
+                        obj.Y_cont=results.Y_cont;
                     end
                 otherwise
                     obj.Shape='Rectangular';
                     obj.X_cont=[];
                     obj.Y_cont=[];
             end
-
+        obj.MaskReg=results.MaskReg;
         end
         
         function str=print(obj)
@@ -112,6 +110,18 @@ classdef region_cl < handle
             end
             
             
+        end
+        
+        function mask=get_mask(obj)
+            nb_pings=length(obj.Idx_pings);
+            nb_samples=length(obj.Idx_r);
+            mask=ones(nb_samples,nb_pings);
+            
+            switch obj.Shape
+                case 'Polygon'
+                    mask=obj.MaskReg;
+            end
+
         end
         
           

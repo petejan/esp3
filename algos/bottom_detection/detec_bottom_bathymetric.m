@@ -180,10 +180,11 @@ for i=1:nb_pings
     if ~isempty(find(i-i_display==0,1))&&DEBUG
         figure(94587)
         clf;
-        subplot(2,1,1)
+        ax1=subplot(3,1,1);
         plot(idx_temp_along,Phi_along_temp/pi*180)
         hold on;
         plot(idx_temp_along,phi_est_along/pi*180,'r');
+        plot(AlongPhi(:,i)/pi*180,'k');
         grid on;
         plot(n_eval_along(i),linspace(-pi,pi,nb_pings),'k','linewidth',2)
         set(gca,'fontsize',16);
@@ -191,41 +192,31 @@ for i=1:nb_pings
         ylabel('Phase deg.');
         title(['Std Fit ' num2str(delta_along(i)/pi*180) 'deg.'])
         
-        subplot(2,1,2)
+        ax2=subplot(3,1,2);
+        plot(idx_temp_across,Phi_across_temp/pi*180)
+        hold on;
+        plot(idx_temp_across,phi_est_across/pi*180,'r');
+        plot(AcrossPhi(:,i)/pi*180,'k');
+        grid on;
+        plot(n_eval_across(i),linspace(-pi,pi,nb_pings),'k','linewidth',2)
+        set(gca,'fontsize',16);
+        xlabel('Sample number');
+        ylabel('Phase deg.');
+        title(['Std Fit ' num2str(delta_across(i)/pi*180) 'deg.'])
+        
+        ax3=subplot(3,1,3);
         plot(idx_temp_along,10*log10(BS_along_temp))
         hold on;
         plot(n_eval_along(i),linspace(0,nanmax(10*log10(BS_along_temp)),nb_pings),'k','linewidth',2)
+        plot(10*log10(BS_lin_ori(:,i)),'k');
         grid on;
         set(gca,'fontsize',16);
         xlabel('Sample number');
         ylabel('BS(dB).');
         title(['Along: Ping Number ' num2str(i)])
         %pause;
-        
-        figure(94588)
-        clf;
-        subplot(2,1,1)
-        plot(idx_temp_across,Phi_across_temp/pi*180),
-        hold on;
-        plot(idx_temp_across,phi_est_across/pi*180,'r');
-        plot(n_eval_across(i),linspace(-180,180,nb_pings),'k','linewidth',2)
-        grid on;
-        set(gca,'fontsize',16);
-        xlabel('Sample number');
-        ylabel('Phase deg.');
-        title(['Std Fit ' num2str(delta_across(i)/pi*180) 'deg.'])
-        
-        subplot(2,1,2)
-        plot(idx_temp_across,10*log10(BS_across_temp))
-        hold on;
-        plot(n_eval_across(i),linspace(0,nanmax(10*log10(BS_across_temp)),nb_pings),'k','linewidth',2)
-        grid on;
-        
-        set(gca,'fontsize',16);
-        xlabel('Sample number');
-        ylabel('BS(dB).');
-        title(['Across: Ping Number ' num2str(i)])
-        
+        linkaxes([ax1,ax2,ax3],'x');
+       
         pause;
         
         

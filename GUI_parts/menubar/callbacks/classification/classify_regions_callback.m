@@ -83,7 +83,7 @@ end
 id_to_remove=[];
 for ii=1:length(idx_school_38)
     output_reg_38=layer.Transceivers(idx_38).Regions(idx_school_38(ii)).integrate_region(layer.Transceivers(idx_38));
-    if length(pow2db_perso(output_reg_38.Sv_mean_lin(:)))<50
+    if length(output_reg_38.Sv_mean_lin(:))<50
         id_to_remove=[id_to_remove layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Unique_ID];
     end
 end
@@ -93,6 +93,7 @@ for uuu=id_to_remove
 end
 
 idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+
 for ii=1:length(idx_school_38)
     new_fig=layer.apply_classification(idx_38,idx_school_38(ii));
 end

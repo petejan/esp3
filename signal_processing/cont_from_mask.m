@@ -12,7 +12,7 @@ end
 [x,y,~]=C2xyz(cont);
 idx_rem=[];
 for i=1:length(x)
-    if length(x{i})>=100
+    if length(x{i})>=250
         x{i}=x{i}-1; 
         y{i}=y{i}-1;
     else

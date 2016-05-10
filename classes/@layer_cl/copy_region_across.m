@@ -11,9 +11,10 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
             dr_ori=nanmean(diff(range_ori));
             dt_ori=nanmean(diff(time_ori));
             
-            mask_reg_ori=active_reg.create_mask();
+            mask_reg_ori=active_reg.get_mask();
+            
             [nb_samples_ori,nb_pings_ori]=size(mask_reg_ori);
-            [S_ori,P_ori]=meshgrid(1:nb_samples_ori,1:nb_pings_ori);
+            [P_ori,S_ori]=meshgrid(1:nb_pings_ori,1:nb_samples_ori);
             
             
             for i=1:length(layer.Transceivers)
@@ -60,16 +61,19 @@ function copy_region_across(layer,idx_freq,active_reg,idx_freq_end)
                 switch active_reg.Shape
                     case 'Polygon'
                         [nb_samples,nb_pings]=size(Sv(idx_r,idx_pings));
-                        [S,P]=meshgrid(1:nb_samples,1:nb_pings);
-                        F=scatteredInterpolant(S_ori(:),P_ori(:),double(mask_reg_ori(:)),'nearest','nearest');
-                        MaskReg=F(S,P);   
+                        if nb_samples~=nb_samples_ori||nb_pings~=nb_pings_ori
+                            [P,S]=meshgrid((1:nb_pings),(1:nb_samples));
+                            F=scatteredInterpolant(S_ori(:),P_ori(:),double(mask_reg_ori(:)),'nearest','nearest');
+                            MaskReg=F(S,P);
+                        else
+                            MaskReg=mask_reg_ori;
+                        end
                     otherwise
                         MaskReg=ones(length(idx_r),length(idx_pings));
                 end
                 
                 reg_temp=region_cl(...
-                    'ID',layer.Transceivers(i).new_id(),...
-                    'Unique_ID',active_reg.Unique_ID,...
+                    'ID',active_reg.ID,...
                     'Name',active_reg.Name,...
                     'Type',active_reg.Type,...
                     'Idx_pings',idx_pings,...
