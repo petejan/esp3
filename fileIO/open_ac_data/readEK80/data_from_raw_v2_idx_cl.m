@@ -220,6 +220,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                         case 'GPT'
                             data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
                             angle=fread(fid,[2 sampleCount],'int8', 'l');
+
                             data.pings(idx).athwartship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
                             data.pings(idx).alongship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
                             

@@ -45,6 +45,7 @@ m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
 uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
 uimenu(m_survey,'Label','Display logbook','Callback',{@logbook_display_callback,main_figure});
+uimenu(m_survey,'Label','Convert Csv Logbook to Xml (current layer)','Callback',{@convert_csv_logbook_to_xml_callback,main_figure});
 
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
@@ -160,6 +161,38 @@ function load_map_fig_callback(~,~,main_fig)
 load_map_fig(main_fig,[]);
 end
 
+
+function convert_csv_logbook_to_xml_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+    return;
+end
+[path_lay,~]=layer.get_path_files();
+
+xmlfile=fullfile(path_lay{1},'echo_logbook.xml');
+htmlfile=fullfile(path_lay{1},'echo_logbook.html');
+csvfile=fullfile(path_lay{1},'echo_logbook.csv');
+
+if exist(csvfile,'file')==0
+    return;
+end
+
+if exist(xmlfile,'file')==0
+   initialize_echo_logbook_file(path_lay{1});
+end
+
+surv_data_struct=import_survey_data(csvfile);
+layer.add_survey_data(surv_data_struct);
+for ifile=1:length(surv_data_struct.Filename)
+    update_echo_logbook_file_manually(fullfile(path_lay{1},surv_data_struct.Filename{ifile}),surv_data_struct.SurvDataObj{ifile});
+end
+update_display(main_figure)
+xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+system(sprintf('start "" "%s"',htmlfile));
+
+end
+
 function logbook_display_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
@@ -168,17 +201,14 @@ if isempty(layer)
 end
 [path_lay,~]=layer.get_path_files();
 
-file=fullfile(path_lay{1},'echo_logbook.csv');
-if exist(file,'file')==0
+xmlfile=fullfile(path_lay{1},'echo_logbook.xml');
+htmlfile=fullfile(path_lay{1},'echo_logbook.html');
+if exist(xmlfile,'file')==0
     initialize_echo_logbook_file(path_lay{1});
 end
 
-try
-    system(sprintf('start notepad++ "%s"',file));
-catch
-    diap('You should install Notepad++...')
-    system(sprintf('start "" "%s"',file));
-end
+xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+system(sprintf('start "" "%s"',htmlfile));
 
 end
 

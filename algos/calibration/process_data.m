@@ -16,7 +16,7 @@ p.trimToFactor = 1.7;
 % Any sphere echo more than maxDbDiff1 from the theoretical will be
 % discarded as an outlier. Used in a coarse filter prior to actually
 % working out the beam width.
-p.maxdBDiff1 = 20;
+p.maxdBDiff1 = 12;
 
 % Beam compensated TS values more than maxdBDiff2 dB above or below the
 % sphere TS are discarded. Done after working out the beam width.
@@ -156,10 +156,15 @@ clear amp_ts range error
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Remove any echoes that are likely to be noisy or wrong
+% idx_rem=repmat(nanmean(power),9,1)<power;
+% 
+% power(idx_rem)=nan;
+% phase_along(idx_rem)=nan;
+% phase_athwart(idx_rem)=nan;
 
 % Filter out echoes with too much variation in their position through the echo.
-i = find(std(phase_along(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase & ...
-    std(phase_athwart(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase);
+i = find(nanstd(phase_along(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase & ...
+    nanstd(phase_athwart(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase);
 
 [sphere,power,phase_along,phase_athwart] = trim_data(i, sphere, power, phase_along, phase_athwart);
 

@@ -156,7 +156,7 @@ if ~isequal(Filename, 0)
     
     [path_tmp,~,~]=fileparts(Filename{1});
     
-    survey_struct=import_survey_data(fullfile(path_tmp,'echo_logbook.csv'));
+    survey_struct=import_survey_data_xml(fullfile(path_tmp,'echo_logbook.xml'));
     
     if ~isempty(survey_struct)
         

@@ -9,7 +9,7 @@ if ~isempty(layers)
             path_csv=pwd;
         end
 
-        survey_struct=import_survey_data(fullfile(path_csv,'echo_logbook.csv'));
+        survey_struct=import_survey_data_xml(fullfile(path_csv,'echo_logbook.xml'));
         layers(i).add_survey_data(survey_struct);
     end
 else

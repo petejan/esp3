@@ -7,22 +7,15 @@ surv_data_struct=load_logbook_to_struct(path_f);
 list_raw=ls(fullfile(path_f,'*.raw'));
 nb_files=size(list_raw,1);
 
-copyfile(fullfile(path_f,'echo_logbook.csv'),fullfile(path_f,'echo_logbook_saved.csv'));
 
+xml_file=fullfile(path_f,'echo_logbook.xml');
 try
-    fid=fopen(fullfile(path_f,'echo_logbook.csv'),'w+');
-    if fid==-1
-        fclose('all');
-        fid=fopen(fullfile(path_f,'echo_logbook.csv'),'w+');
-        if fid==-1
-            delete(fullfile(path_f,'echo_logbook_saved.csv'));
-            warning('Could not update the .csv logbook file');
-            return;
-        end
-    end
-    
-    fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
-    
+    docNode = com.mathworks.xml.XMLUtils.createDocument('echo_logbook');
+    echo_logbook=docNode.getDocumentElement;
+    echo_logbook.setAttribute('version','0.1');
+    survey_node = docNode.createElement('survey');
+    echo_logbook.appendChild(survey_node);
+    survdata_temp=survey_data_cl();
     for i=1:nb_files
         file_curr=deblank(list_raw(i,:));
         isfile=strcmpi(file_curr,file_lay);
@@ -30,7 +23,7 @@ try
         
         if isfile==0
             if ~isempty(idx_file_cvs)
-                for is=idx_file_cvs    
+                for is=idx_file_cvs
                     survdata_temp=surv_data_struct.SurvDataObj{is};
                     start_time=survdata_temp.StartTime;
                     end_time=survdata_temp.EndTime;
@@ -43,12 +36,14 @@ try
                         [~,end_time]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
                     end
                     
-                    survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                    survey_node.appendChild(lineNode);
                 end
             else
                 [start_time,end_time]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
-                survdata_temp=survey_data_cl();
-                survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                
+                lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                survey_node.appendChild(lineNode);
             end
             
             
@@ -70,19 +65,21 @@ try
                 [~,end_time]=start_end_time_from_file(fullfile(path_f,list_raw(i,:)));
             end
             
-            survdata_temp.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+            lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+            survey_node.appendChild(lineNode);
+
         end
     end
     
+    survey_node.setAttribute('SurveyName',survdata_temp.SurveyName);
+    survey_node.setAttribute('Voyage',survdata_temp.Voyage);
     
-    fclose(fid);
-    delete(fullfile(path_f,'echo_logbook_saved.csv'));
+    xmlwrite(xml_file,docNode);
+
 catch err
     disp(err.message);
     warning('Error when updating the logbook. Restoring previous version...') ;
-    fclose('all');
-    copyfile(fullfile(path_f,'echo_logbook_saved.csv'),fullfile(path_f,'echo_logbook.csv'));
-    delete(fullfile(path_f,'echo_logbook_saved.csv'));
+   
 end
 end
 

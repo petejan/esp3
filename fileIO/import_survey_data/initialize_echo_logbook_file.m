@@ -1,34 +1,35 @@
 function initialize_echo_logbook_file(datapath)
-disp('Creating .csv logbook file, this might take a couple minutes...');
+disp('Creating .xml logbook file, this might take a couple minutes...');
 list_raw=ls(fullfile(datapath,'*.raw'));
 
 nb_files=size(list_raw,1);
 
-file_name=fullfile(datapath,'echo_logbook.csv');
-if exist(file_name,'file')==2
+
+xml_file=fullfile(datapath,'echo_logbook.xml');
+if exist(xml_file,'file')==2
     return;
 end
 
-fid=fopen(file_name,'w+');
 
-if fid==-1
-    fclose('all');
-    fid=fopen(file_name,'w+');
-    if fid==-1
-        warning('Could not initialize the .csv logbook file');
-        return;
-    end
-end
-
+docNode = com.mathworks.xml.XMLUtils.createDocument('echo_logbook');
+echo_logbook=docNode.getDocumentElement;
+echo_logbook.setAttribute('version','0.1');
 surv_init=survey_data_cl();
-fprintf(fid,'Voyage,SurveyName,Filename,Snapshot,Stratum,Transect,StartTime,EndTime\n');
+survey_node = docNode.createElement('survey');
+survey_node.setAttribute('SurveyName',surv_init.SurveyName);
+survey_node.setAttribute('Voyage',surv_init.Voyage);
+echo_logbook.appendChild(survey_node);
 
 for i=1:nb_files
     [start_date,end_date]=start_end_time_from_file(fullfile(datapath,list_raw(i,:)));    
-    surv_init.surv_data_to_logbook_str(fid,list_raw(i,:),'StartTime',start_date,'EndTime',end_date);
+    lineNode=surv_init.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_date,'EndTime',end_date);
+    survey_node.appendChild(lineNode);
 end
 
-fclose(fid);
+xmlwrite(xml_file,docNode);
+
+% xsl_file=fullfile(whereisEcho,'echo_logbook.xsl');
+% copyfile(xsl_file,fullfile(datapath,'echo_logbook.xsl'));
 
 
 

@@ -32,7 +32,6 @@ for ifile=1:length(reg_file_str)
        end
     end
     
-    
     xmlwrite(xml_file,docNode);
     %type(xml_file);
 end
