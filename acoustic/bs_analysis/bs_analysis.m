@@ -123,9 +123,11 @@ Heave_r = att_recept.Heave(:)';
 % plot((across_est.slope-nanmean(across_est.slope))/nanmax(abs(across_est.slope-nanmean(across_est.slope))));
 
 Range_mat = repmat(range,1, nb_pings);
+dr=nanmean(diff(range));
 transmit_angles = (pi/2) - atan(sqrt(tand(Roll_r + trans.Config.Angles(2)) .^2 + tand(Pitch_r + trans.Config.Angles(1)) .^2));
 
-BS = sp-10*log10(Range_mat) + 10*log10(cos(repmat(transmit_angles, nb_samples,1))) - eq_beam_angle;
+%BS = sp-10*log10(Range_mat) + 10*log10(cos(repmat(transmit_angles, nb_samples,1))) - eq_beam_angle;
+BS = sp - 10*log10(dr*2*Range_mat*sin(bw_mean).*sin(repmat(transmit_angles, nb_samples,1)))-10*log10(0.7);
 
 bs_bottom=nan(2*ext_len+1,nb_pings);
 extended_time=nan(2*ext_len+1,nb_pings);
@@ -185,50 +187,48 @@ subplot(2,1,1)
 imagesc(bs_bottom_uncomp);
 title('UnCompensated BS(dB)')
 xlabel('Ping Number');
-ylabel('Sample');
+ylabel('Sample Number');
 colormap(gray)
 colorbar;
-caxis([-30 -10]);
+caxis([-30 -15]);
 subplot(2,1,2)
 imagesc(bs_bottom);
 title('Compensated BS(dB)')
 xlabel('Ping Number');
-ylabel('Sample');
+ylabel('Sample Number');
 colormap(gray)
 colorbar;
-caxis([-30 -10]);
+caxis([-30 -15]);
 
 
 alphamap=sv>=-80;
 
 figure();
-ax1=subplot(3,1,1);
+ax1=subplot(1,3,1);
 imagesc(number,range,acrossangle);
 hold on;
-plot(number,bot_range,'r','linewidth',2);
-plot(number,straight_range_bottom,'k','linewidth',2);
+% plot(number,bot_range,'r','linewidth',2);
+plot(number,across_est.range,'k','linewidth',2);
 colormap(jet);
 title('Across Angle (deg.)')
-
-ax2=subplot(3,1,2);
+ylabel('Range (m)')
+ax2=subplot(1,3,2);
 imagesc(number,range,alongangle);
 hold on;
-plot(number,bot_range,'r','linewidth',2);
-plot(number,straight_range_bottom,'k','linewidth',2);
+% plot(number,bot_range,'r','linewidth',2);
+plot(number,along_est.range,'k','linewidth',2);
 colormap(jet);
 title('Along Angle (deg.)')
-
-ax3=subplot(3,1,3);
+xlabel('Ping Number');
+ax3=subplot(1,3,3);
 echo_sv=imagesc(number,range,sv);
 hold on;
-plot(number,bot_range,'r','linewidth',2);
-plot(number,straight_range_bottom,'k','linewidth',2);
+% plot(number,bot_range,'r','linewidth',2);
+plot(number,amp_est.range,'k','linewidth',2);
 set(echo_sv,'AlphaData',alphamap);
 colormap(jet);
 caxis([-80 -40])
 title('Sv (dB)')
-xlabel('Ping Number');
-ylabel('Range (m)')
 
 linkaxes([ax1 ax2 ax3]);
 
@@ -314,8 +314,9 @@ if ray_tray_bool==1
     ylabel('Depth (m)');
     plot(z_c./tan(transmit_angles(end)),z_c,'b');
     plot(r_ray,z_ray,'r');
-    title('Ray tracing for last ping...')
+    title(sprintf('Ray tracing for ping %.0f/%.0f',i,nb_pings))
     legend('Straight','Ray Tracing')
+    
     try
         close(ray_processing);
     end
@@ -330,6 +331,29 @@ else
         extended_range(:,i)=true_range_bottom(i)+(extended_time(:,i)-true_time_bottom(i))*c_at_bottom(i)/2;
     end
 end
+
+
+figure();
+ap1=subplot(2,1,1);
+pcolor(repmat(1:nb_pings,2*ext_len+1,1),extended_range,bs_bottom_uncomp);
+title('UnCompensated BS(dB)')
+shading interp
+xlabel('Ping Number');
+ylabel('Range(m)');
+colormap(gray)
+colorbar;
+caxis([-30 -15]);
+ap2=subplot(2,1,2);
+pcolor(repmat(1:nb_pings,2*ext_len+1,1),extended_range,bs_bottom);
+title('Compensated BS(dB)')
+shading interp
+xlabel('Range(m)');
+ylabel('Sample');
+colormap(gray)
+colorbar;
+caxis([-30 -15]);
+linkaxes([ap1 ap2]);
+
 
 
 
@@ -354,6 +378,7 @@ end
     trans.Config.Angles(2),trans.Config.Angles(1),trans.Config.Position(1),trans.Config.Position(2),trans.Config.Position(3));
 
 pos_mat_extended=nan(size(extended_range,1),nb_pings,3);
+pos_mat_extended_uncorr=nan(size(extended_range,1),nb_pings,3);
 
 [x_center,y_center,z_center]=angles_to_pos_v3(true_range_bottom',zeros(size(straight_range_bottom')),zeros(size(straight_range_bottom')),...
     Heave_r,...
@@ -369,6 +394,14 @@ for ii=1:size(extended_range,1)
         trans.Config.Angles(2),trans.Config.Angles(1),trans.Config.Position(1),trans.Config.Position(2),trans.Config.Position(3));
     
     pos_mat_extended(ii,:,:)=([x_temp-x_center;y_temp-y_center;z_temp-z_center]+pos_mat)';
+    
+    [x_temp,y_temp,z_temp]=angles_to_pos_v3(extended_range(ii,:),-extended_along_angle(ii,:),-extended_across_angle(ii,:),...
+        0,...
+        0,...
+        0,...
+        trans.Config.Angles(2),trans.Config.Angles(1),trans.Config.Position(1),trans.Config.Position(2),trans.Config.Position(3));
+    
+    pos_mat_extended_uncorr(ii,:,:)=([x_temp-x_center;y_temp-y_center;z_temp-z_center]+pos_mat)';
 end
 
 lat_ship=trans.GPSDataPing.Lat;
@@ -378,7 +411,9 @@ z_ext=-pos_mat_extended(:,:,3);
 y_ext=pos_mat_extended(:,:,2);
 x_ext=pos_mat_extended(:,:,1);
 
-
+z_ext_uncorr=-pos_mat_extended_uncorr(:,:,3);
+y_ext_uncorr=pos_mat_extended_uncorr(:,:,2);
+x_ext_uncorr=pos_mat_extended_uncorr(:,:,1);
 
 
 mask_bs=double(bs_bottom_uncomp>-30);
@@ -459,22 +494,28 @@ grid on;
 view(2)
 colormap(gray)
 colorbar;
-caxis([-30 -10])
+caxis([-30 -15])
 set(h3,'alphadata',mask_bs)
 shading interp
 
 
 figure();
+a31=subplot(2,1,1);
 h3=imagesc(z_ext);
 title('Depth')
 colormap jet;
 grid on;
-%axis equal;
 view(2)
 colorbar;
-
 set(h3,'alphadata',mask_bs)
-shading interp
+a32=subplot(2,1,2);
+h32=imagesc(z_ext_uncorr);
+title('Depth')
+colormap jet;
+grid on;
+colorbar;
+set(h32,'alphadata',mask_bs)
+linkaxes([a31 a32])
 
 
 figure();
@@ -490,7 +531,7 @@ axis square;
 colormap(gray)
 colorbar;
 shading interp
-caxis([-30 -10]);
+caxis([-30 -15]);
 %caxis([nanmean(z_ext(mask_bs))-5,nanmean(z_ext(mask_bs))+5])
 set(h1,'alphadata',mask_bs,'FaceAlpha','interp','AlphaDataMapping','scaled')
 shading interp
@@ -509,17 +550,18 @@ set(gca,'fontsize',16);
 colormap jet;
 grid on;
 axis square
-caxis([-30 -10]);
+caxis([-30 -15]);
 colormap(gray)
 colorbar;
 set(h,'alphadata',mask_bs,'FaceAlpha','interp','AlphaDataMapping','scaled')
 shading interp
 
 
+n_p=50;
 figure();
 hold on;
-h1=surf(lat_bot_ext,lon_bot_ext,z_ext);
-title('Depth From Ray Tracing')
+h1=pcolor(lat_bot_ext(:,1:n_p),lon_bot_ext(:,1:n_p),z_ext(:,1:n_p));
+title('Resulting Bathymetry from EK60')
 xlabel('Lat','fontsize',16)
 ylabel('Long','fontsize',16)
 zlabel('Depth(m)')
@@ -532,8 +574,48 @@ colormap(jet)
 colorbar;
 shading interp
 %caxis([nanmean(z_ext(mask_bs))-5,nanmean(z_ext(mask_bs))+5])
-set(h1,'alphadata',mask_bs,'FaceAlpha','interp','AlphaDataMapping','scaled')
+set(h1,'alphadata',mask_bs(:,1:n_p),'FaceAlpha','interp','AlphaDataMapping','scaled')
 shading interp
+
+n_p=50;
+figure();
+hold on;
+scatter3(lat_bot_ext(mask_bs(:,1:n_p)),lon_bot_ext(mask_bs(:,1:n_p)),z_ext(mask_bs(:,1:n_p)),10*ones(size(bs_bottom(mask_bs(:,1:n_p)))),bs_bottom(mask_bs(:,1:n_p)),'filled');
+title('Resulting BS from EK60')
+xlabel('Lat','fontsize',16)
+ylabel('Long','fontsize',16)
+zlabel('Depth(m)')
+set(gca,'fontsize',16)
+colormap gray;
+grid on;
+axis square;
+view(2)
+colorbar;
+caxis([-30 -15]);
+
+
+
+
+
+n_p=50;
+figure();
+hold on;
+scatter3(lat_bot_ext(mask_bs(:,1:n_p)),lon_bot_ext(mask_bs(:,1:n_p)),z_ext(mask_bs(:,1:n_p)),10*ones(size(z_ext(mask_bs(:,1:n_p)))),z_ext(mask_bs(:,1:n_p)),'filled');
+title('Resulting Bathymetry from EK60')
+xlabel('Lat','fontsize',16)
+ylabel('Long','fontsize',16)
+zlabel('Depth(m)')
+set(gca,'fontsize',16)
+colormap jet;
+grid on;
+axis square;
+view(2)
+colormap(jet)
+colorbar;
+caxis([nanmean(z_ext(mask_bs))-5,nanmean(z_ext(mask_bs))+5])
+
+
+
 
 [path_out,file_out,~]=fileparts(layer.Filename{1});
 file_outputs_def=fullfile(path_out,[file_out '_BS.csv']);

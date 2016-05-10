@@ -60,7 +60,7 @@ for uu=idx_to_process
         layer.Transceivers(uu).Data.add_sub_data({'powerdenoised','spdenoised','svdenoised','snr'},{power_unoised Sp_denoised Sv_denoised SNR});
     end
     
-    if reprocess==1||~strcmp(layer.Transceivers(uu).Bottom.Origin,'Algo_v2_bp')
+    if (reprocess==1||~strcmp(layer.Transceivers(uu).Bottom.Origin,'Algo_v2_bp'))
         Sv_denoised=get_datamat(layer.Transceivers(uu).Data,'svdenoised');
         [Bottom,Double_bottom_region,idx_noise_sector]=feval(layer.Transceivers(uu).Algo(idx_algo_bp).Function,Sv_denoised,...
             layer.Transceivers(uu).Data.get_range(),...
@@ -115,8 +115,10 @@ for uu=idx_to_process
                 'vert_link_max',layer.Transceivers(uu).Algo(idx_school_detect).Varargin.vert_link_max);
             end
             
-            layer.Transceivers(uu).create_regions_from_linked_candidates(linked_candidates,'w_unit','pings','h_unit','meters','cell_w',5,'cell_h',5);
+            layer.Transceivers(uu).create_regions_from_linked_candidates(linked_candidates,'w_unit','pings','h_unit','meters','cell_w',50,'cell_h',5);
         end
+    else
+       layer.Transceivers(uu).rm_region_name('School'); 
     end
 end
 

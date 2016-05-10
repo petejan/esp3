@@ -5,7 +5,7 @@ if isempty(layer)
 return;
 end
     
-[~,path_file,~]=fileparts(layer.Filename{1});
+[path_file,~,~]=fileparts(layer.Filename{1});
 [svp_filename,svp_path]= uigetfile( {fullfile(path_file,'*.asvp*')}, 'Pick a Svp file','MultiSelect','off');   
     if svp_filename~=0
         u=importdata(fullfile(svp_path,svp_filename));
@@ -20,7 +20,7 @@ end
         switch choice
             case 'Yes'
                 z_c=1:2*1e4;
-                c=layer.Env.SoundSpeed*ones(size(z_c));
+                c=layer.EnvData.SoundSpeed*ones(size(z_c));
             case 'No'
                 return;
         end
@@ -30,7 +30,7 @@ end
         end
     end
     
-z_interp=z_c(1):1:z_c(end);    
+z_interp=z_c(1):0.5:z_c(end);    
 c_interp=interpn(z_c,c,z_interp,'linear');
 
 figure();

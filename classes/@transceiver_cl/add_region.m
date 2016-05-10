@@ -42,7 +42,7 @@ for i=1:length(regions)
             end
         end
     end
-    
+
     if Split>0
         splitted_reg=regions(i).split_region(trans_obj.Data.FileId);
         trans_obj.Regions=[trans_obj.Regions splitted_reg];

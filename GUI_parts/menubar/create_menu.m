@@ -155,7 +155,10 @@ end
 
 function save_display_config_callback(~,~,main_fig)
 curr_disp=getappdata(main_fig,'Curr_disp');
-write_config_to_xml([],curr_disp);
+layer=getappdata(main_fig,'Layer');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+
+write_config_to_xml([],curr_disp,layer.Transceivers(idx_freq).Algo);
 end
 
 function load_map_fig_callback(~,~,main_fig)

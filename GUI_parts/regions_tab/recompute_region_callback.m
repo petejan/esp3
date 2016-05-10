@@ -53,6 +53,7 @@ active_reg.Cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 active_reg.Cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
 layer.Transceivers(idx_freq).rm_region_id(active_reg.Unique_ID)
+
 layer.Transceivers(idx_freq).add_region(active_reg);
 
 list_reg = layer.Transceivers(idx_freq).regions_to_str();

@@ -47,7 +47,7 @@ while t_ray(end)<=T
     if xi==0 %case where the ray is propagating vertically
         beta_ray(i+1)=beta_ray(i);
         r_ray(i+1)=r_ray(idx);
-        t_ray(i+1)=t_ray(i)+(g(idx))*log(c(idx_plus)/c(idx)*(1+sqrt(1-xi^2*c(idx)^2))/(1+sqrt(1-xi^2*c(idx_plus)^2)));
+        t_ray(i+1)=t_ray(i)+1/(g(idx))*log(c(idx_plus)/c(idx)*(1+sqrt(1-xi^2*c(idx)^2))/(1+sqrt(1-xi^2*c(idx_plus)^2)));
         z_ray(i+1)=z(idx_plus);
     else
         

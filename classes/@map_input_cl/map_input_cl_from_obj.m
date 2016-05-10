@@ -179,7 +179,7 @@ switch class(Ext_obj)
         end
 end
 
-[obj.LatLim,obj.LonLim]=ext_lat_lon_lim(obj.LatLim,obj.LonLim,0.1);
+[obj.LatLim,obj.LonLim]=ext_lat_lon_lim(obj.LatLim,obj.LonLim,0.2);
 
 
 end
