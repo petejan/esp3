@@ -127,10 +127,17 @@ if ~isequal(Filename_cell, 0)
                 'Number',[number(1) number(end)],...
                 'MemapName',curr_name);
             
-
+            main_path=whereisEcho();
+            
+            [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+            if isempty(algo_vec)
+                algo_vec=init_algos(range);
+            else
+                algo_vec=reset_range(algo_vec,range);
+            end
          
          transceiver=transceiver_cl('Data',ac_data_temp,...
-                'Algo',init_algos(range),...
+                'Algo',algo_vec,...
                 'GPSDataPing',gps_data_ping,...
                 'Mode','CW',...
                 'AttitudeNavPing',attitude_data_pings);

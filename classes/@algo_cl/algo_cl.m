@@ -12,24 +12,18 @@ classdef algo_cl
             
             p = inputParser;
             
-            check_function=@(func) isa(func,'function_handle');
-            
             addParameter(p,'Name','',@ischar);
-            addParameter(p,'Varargin',struct(),@isstruct);
-            addParameter(p,'Function',@nan,check_function);
-            
-            
+            addParameter(p,'Varargin',struct(),@isstruct);          
             parse(p,varargin{:});
-            
-            
+                      
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)
-                
-                obj.(props{i})=results.(props{i});
-                
+            for i=1:length(props)   
+                obj.(props{i})=results.(props{i}); 
             end
+            
+            obj.Function=init_func(obj.Name);
         end
         
         

@@ -27,7 +27,7 @@ if ~isdeployed
     update_path(main_path);
 end
 
-[app_path,curr_disp_obj]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+[app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
 
 try
     if ~isdir(app_path.data_temp)
