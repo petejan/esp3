@@ -53,3 +53,4 @@ deploy/config_echo.xml
 deploy/topo.mat
 fileIO/open_ac_data/open_EK60_file-RDZ.m
 fileIO/open_ac_data/open_file-RDZ.m
+config_echo.xml
