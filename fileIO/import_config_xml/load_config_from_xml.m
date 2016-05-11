@@ -7,7 +7,7 @@ parse(p,xml_file);
 if exist(xml_file,'file')==0
     app_path=app_path_create();
     curr_disp=curr_state_disp_cl();
-    write_config_to_xml(app_path,curr_disp);
+    write_config_to_xml(app_path,curr_disp,[]);
     return;
 end
 try

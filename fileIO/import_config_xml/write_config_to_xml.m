@@ -15,7 +15,7 @@ config_file=docNode.getDocumentElement;
 config_file.setAttribute('version','0.1');
 
 if isempty(app_path)
-    [app_path,~]=load_config_from_xml(file_xml);
+    [app_path,~,~]=load_config_from_xml(file_xml);
 end
 
 path_node = docNode.createElement('AppPath');
@@ -26,7 +26,7 @@ end
 config_file.appendChild(path_node);
 
 if isempty(curr_disp)
-    [~,curr_disp]=load_config_from_xml(file_xml);
+    [~,curr_disp,~]=load_config_from_xml(file_xml);
 end
 
 disp_node = docNode.createElement('Display');
@@ -43,6 +43,9 @@ for ifi=1:length(fields)
 end
 config_file.appendChild(disp_node);
 
+if isempty(algos)
+    [~,~,algos]=load_config_from_xml(file_xml);
+end
 
 algo_node = docNode.createElement('algos');
 for ial=1:length(algos)

@@ -37,7 +37,7 @@ try
     end
 catch ME
     delete(fullfile(main_path,'config_echo.xml'));
-    [app_path,curr_disp_obj]=load_config_from_xml(fullfile(main_path,'config_echo.xml')); %#ok<ASGLU>
+    [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config_echo.xml')); %#ok<ASGLU>
     rethrow(ME);
 end
 
