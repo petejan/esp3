@@ -34,9 +34,9 @@ addParameter(p,'BS_std',default_BS_std,check_BS_std);
 addParameter(p,'BS_std_bool',true,@islogical);
 addParameter(p,'thr_spikes_Above',default_spikes,check_spikes);
 addParameter(p,'thr_spikes_Below',default_spikes,check_spikes);
-addParameter(p,'Above',true,@islogical);
-addParameter(p,'Below',true,@islogical);
-addParameter(p,'burst_removal',false,@islogical);
+addParameter(p,'Above',true,@(x) isnumeric(x)||islogical(x));
+addParameter(p,'Below',true,@(x) isnumeric(x)||islogical(x));
+addParameter(p,'burst_removal',false,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'shift_bot',0,check_shift_bot);
 
 parse(p,Sv,Range,Fs,PulseLength,varargin{:});
