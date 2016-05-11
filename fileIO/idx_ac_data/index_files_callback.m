@@ -44,10 +44,27 @@ for i=1:length(Filename)
         mkdir(fullfile(PathToFile,'echoanalysisfiles'));
     end
     fileIdx=fullfile(PathToFile,'echoanalysisfiles',[Filename{i}(1:end-4) '_echoidx.mat']);
+    
+    if exist(fileIdx,'file')==0
+        fprintf('Indexing file: %s\n',Filename{i});
+        idx_raw_obj=idx_from_raw(fileN);
+        save(fileIdx,'idx_raw_obj');
+    else
+        load(fileIdx);
+        [~,et]=start_end_time_from_file(fileN);
+        idx_raw_dg=(strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg);
+        if abs(et-idx_raw_obj.time_dg(end))>2*nanmean(diff(idx_raw_obj.time_dg(idx_raw_dg)))
+            fprintf('Re-Indexing file: %s\n',Filename{i});
+            delete(fileIdx);
+            idx_raw_obj=idx_from_raw(fileN);
+            save(fileIdx,'idx_raw_obj');
+        end
+    end
+    
     if exist(fileIdx,'file')>0
        delete(fileIdx); 
     end
-    idx_raw_obj=idx_from_rawEK60_v2(fileN);
+    
     save(fileIdx,'idx_raw_obj');
 
 end

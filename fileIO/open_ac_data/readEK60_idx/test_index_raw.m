@@ -7,9 +7,7 @@ fileN='tan1505-D20150423-T142040.raw';
 
 profile on;
 
-idx_raw_obj=idx_from_rawEK60_v2(fullfile(path_f,fileN));
-
-
+idx_raw_obj=idx_from_raw(fullfile(path_f,fileN));
 [header_idx,data_idx]=data_from_raw_idx_cl(path_f,idx_raw_obj);
 
 [header, data_ekraw] = readEKRaw(fullfile(path_f,fileN),'gps',0,'RawNMEA',1);
