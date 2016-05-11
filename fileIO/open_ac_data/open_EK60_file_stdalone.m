@@ -129,6 +129,9 @@ if ~isequal(Filename_cell, 0)
         if ~isdir(fullfile(path_f,'echoanalysisfiles'))
             mkdir(fullfile(path_f,'echoanalysisfiles'));
         end
+        
+%         profile on;
+%         
         fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
             fprintf('Indexing file: %s\n',Filename);
@@ -146,7 +149,8 @@ if ~isequal(Filename_cell, 0)
         end
         
         [header,data]=data_from_raw_idx_cl(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly);
-        
+%         profile off;
+%         profile viewer;
         
         if isnumeric(header)
             disp('Could not read file.')
