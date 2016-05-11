@@ -36,8 +36,12 @@ try
         disp(app_path.data_temp)
     end
 catch ME
+    disp('Error: Unable to create Data Folder')
+    disp(app_path.data_temp)
+    disp('Creating new config_echo.xml file')
     delete(fullfile(main_path,'config_echo.xml'));
     [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config_echo.xml')); %#ok<ASGLU>
+    disp('Please re-launch program and change Data Folder path')
     rethrow(ME);
 end
 
@@ -53,7 +57,7 @@ end
 
 if ~isempty(idx_old)
     delete_files=0;
-    choice = questdlg('There is files your EchoAnalysis temp folder, do you want to delete them?', ...
+    choice = questdlg('There are files your EchoAnalysis temp folder, do you want to delete them?', ...
         'Delete files?',...
         'Yes','No', ...
         'No');
