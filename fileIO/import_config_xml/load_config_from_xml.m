@@ -5,10 +5,11 @@ addRequired(p,'xml_file',@(obj) isa(obj,'char'));
 parse(p,xml_file);
 
 if exist(xml_file,'file')==0
+    disp('Could not find XML config file. Creating a standard one');
     app_path=app_path_create();
     curr_disp=curr_state_disp_cl();
-    algo_vec=[];
-    write_config_to_xml(app_path,curr_disp,[]);
+    algo_vec=init_algos();
+    write_config_to_xml(app_path,curr_disp,algo_vec);
     return;
 end
 try
@@ -40,8 +41,8 @@ catch
     disp('Could not read XML config file. Creating a standard one');
     app_path=app_path_create();
     curr_disp=curr_state_disp_cl();
-    algo_vec=[];
-    write_config_to_xml(app_path,curr_disp,[]);
+    algo_vec=init_algos();
+    write_config_to_xml(app_path,curr_disp,algo_vec);
 end
 
 end

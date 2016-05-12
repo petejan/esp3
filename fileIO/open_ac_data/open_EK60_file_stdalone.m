@@ -265,15 +265,15 @@ if ~isequal(Filename_cell, 0)
                 gps_data_ping=gps_data.resample_gps_data(data.pings(i).time);
                 attitude=attitude_full.resample_attitude_nav_data(data.pings(i).time);
                 
-                %algo_vec=init_algos(range);
+                %algo_vec=init_algos();
                 main_path=whereisEcho();
 
                 [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
                 if isempty(algo_vec)
-                    algo_vec=init_algos(range);
-                else
-                    algo_vec=reset_range(algo_vec,range);
+                    algo_vec=init_algos();
                 end
+                algo_vec=reset_range(algo_vec,range);
+
                 bot= bottom_cl('Origin','Simrad','Range',Bottom_sim(i,:),'Sample_idx',Bottom_sim_idx(i,:));
                 
                 transceiver(i)=transceiver_cl('Data',ac_data_temp,...

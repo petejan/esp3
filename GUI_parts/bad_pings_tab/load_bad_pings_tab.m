@@ -34,14 +34,14 @@ set(bad_ping_tab_comp.Thr_bottom_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Th
 set(bad_ping_tab_comp.Thr_bottom_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_bottom_sl,'%.0f'});
 
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Minimum Depth(m)','units','normalized','Position',pos{2,1});
-bad_ping_tab_comp.r_min_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',algo_bad_pings.r_min,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
+bad_ping_tab_comp.r_min_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',nanmax(algo_bad_pings.r_min,range(1)),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
 bad_ping_tab_comp.r_min_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(bad_ping_tab_comp.r_min_sl,'Value'),'%.1f'));
 set(bad_ping_tab_comp.r_min_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.r_min_ed,'%.1f'});
 set(bad_ping_tab_comp.r_min_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.r_min_sl,'%.1f'});
 
 
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Maximum Depth(m)','units','normalized','Position',pos{3,1});
-bad_ping_tab_comp.r_max_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',algo_bad_pings.r_max,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
+bad_ping_tab_comp.r_max_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',nanmin(algo_bad_pings.r_max,range(end)),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
 bad_ping_tab_comp.r_max_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','edit','unit','normalized','position',pos{3,3},'string',num2str(get(bad_ping_tab_comp.r_max_sl,'Value'),'%.1f'));
 set(bad_ping_tab_comp.r_max_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.r_max_ed,'%.1f'});
 set(bad_ping_tab_comp.r_max_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.r_max_sl,'%.1f'});

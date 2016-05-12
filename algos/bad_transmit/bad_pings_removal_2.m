@@ -14,7 +14,7 @@ default_thr_echo=-12;
 check_thr_echo=@(x)(x>=-20&&x<=-3);
 
 default_idx_r_min=Range(1);
-check_idx_r=@(x)(x>=Range(1)&&x<=Range(end));
+
 
 check_spikes=@(x)(x>=0&&x<=20);
 
@@ -28,8 +28,8 @@ addRequired(p,'Fs',@isnumeric);
 addRequired(p,'PulseLength',@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
-addParameter(p,'r_min',default_idx_r_min,check_idx_r);
-addParameter(p,'r_max',default_idx_r_max,check_idx_r);
+addParameter(p,'r_min',default_idx_r_min,@isnumeric);
+addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'BS_std',default_BS_std,check_BS_std);
 addParameter(p,'BS_std_bool',true,@islogical);
 addParameter(p,'thr_spikes_Above',default_spikes,check_spikes);

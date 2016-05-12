@@ -13,6 +13,8 @@ switch name
         function_out=@single_targets_detection;
     case 'TrackTarget'
         function_out=@track_targets_angular;
+    otherwise
+        function_out=[];
         
 end
 

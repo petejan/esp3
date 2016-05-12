@@ -5,10 +5,8 @@ detecting_bottom=msgbox('Detecting Bottom. This box will close when finished...'
 p = inputParser;
 
 default_idx_r_min=Range(1);
-check_idx_r_min=@(x)(x>=Range(1)&&x<=Range(end));
 
 default_idx_r_max=Range(end);
-check_idx_r_max=@(x)(x>0&&x<=Range(end));
 
 default_thr_bottom=-30;
 check_thr_bottom=@(x)(x>=-120&&x<=-10);
@@ -23,8 +21,8 @@ addRequired(p,'Sv',@isnumeric);
 addRequired(p,'Range',@isnumeric);
 addRequired(p,'Fs',@isnumeric);
 addRequired(p,'PulseLength',@isnumeric);
-addParameter(p,'r_min',default_idx_r_min,check_idx_r_min);
-addParameter(p,'r_max',default_idx_r_max,check_idx_r_max);
+addParameter(p,'r_min',default_idx_r_min,@isnumeric);
+addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
 addParameter(p,'shift_bot',0,check_shift_bot);

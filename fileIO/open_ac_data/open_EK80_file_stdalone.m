@@ -206,8 +206,9 @@ if ~isequal(Filename_cell, 0)
                 main_path=whereisEcho();
 
                 [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+                
                 if isempty(algo_vec)
-                    algo_vec=init_algos(r);
+                    algo_vec=init_algos();
                 else
                     algo_vec=reset_range(algo_vec,r);
                 end

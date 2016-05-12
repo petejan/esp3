@@ -33,14 +33,14 @@ set(bottom_tab_comp.Thr_bottom_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_bo
 set(bottom_tab_comp.Thr_bottom_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_bottom_sl,'%.0f'});
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Minimum Depth(m)','units','normalized','Position',pos{2,1});
-bottom_tab_comp.r_min_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',algo_bottom.r_min,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
+bottom_tab_comp.r_min_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',nanmax(algo_bottom.r_min,range(1)),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
 bottom_tab_comp.r_min_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(bottom_tab_comp.r_min_sl,'Value'),'%.1f'));
 set(bottom_tab_comp.r_min_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.r_min_ed,'%.1f'});
 set(bottom_tab_comp.r_min_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.r_min_sl,'%.1f'});
 
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Maximum Depth(m)','units','normalized','Position',pos{3,1});
-bottom_tab_comp.r_max_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',algo_bottom.r_max,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
+bottom_tab_comp.r_max_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',range(1),'Max',range(end),'Value',nanmin(algo_bottom.r_max,range(end)),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
 bottom_tab_comp.r_max_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,3},'string',num2str(get(bottom_tab_comp.r_max_sl,'Value'),'%.1f'));
 set(bottom_tab_comp.r_max_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.r_max_ed,'%.1f'});
 set(bottom_tab_comp.r_max_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.r_max_sl,'%.1f'});
@@ -109,6 +109,7 @@ range=layer.Transceivers(idx_freq).Data.get_range();
 bottom_range=nan(size(Bottom));
 bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
 old_tag=layer.Transceivers(idx_freq).Bottom.Tag;
+
 layer.Transceivers(idx_freq).setBottom(bottom_cl('Origin','Algo_v2',...
     'Range', bottom_range,...
     'Sample_idx',Bottom,...

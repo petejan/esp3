@@ -4,6 +4,7 @@ classdef algo_cl
         Name
         Function
         Varargin
+        Varargout
     end
     
     
@@ -13,17 +14,23 @@ classdef algo_cl
             p = inputParser;
             
             addParameter(p,'Name','',@ischar);
-            addParameter(p,'Varargin',struct(),@isstruct);          
+            addParameter(p,'Varargin',[],@(x) isstruct(x)||isempty(x));
             parse(p,varargin{:});
-                      
-            results=p.Results;
-            props=fieldnames(results);
             
-            for i=1:length(props)   
-                obj.(props{i})=results.(props{i}); 
-            end
+            results=p.Results;
+            
+            
+            obj.Name=results.Name;
+            
             
             obj.Function=init_func(obj.Name);
+            if ~isempty(results.Varargin)
+                obj.Varargin=results.Varargin;
+            else
+                obj.Varargin=init_varargin(obj.Name);
+            end
+            obj.Varargout=init_varargout(obj.Name);
+
         end
         
         
