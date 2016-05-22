@@ -26,11 +26,14 @@ data_disp=layer.Transceivers(idx_freq).Data.get_subdatamat('sv',idx_r_disp,idx_p
 cla(display_tab_comp.mini_ax,'reset');
 axes(display_tab_comp.mini_ax);
 display_tab_comp.mini_echo=imagesc(pings,range,data_disp);
-patch('Faces',f1,'Vertices',v1,'FaceColor','blue','FaceAlpha',.2);
+display_tab_comp.patch_obj=patch('Faces',f1,'Vertices',v1,'FaceColor','blue','FaceAlpha',.2);
+set(display_tab_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
 set(display_tab_comp.mini_ax,'XTickLabels',[],'YTickLabels',[])
 caxis([-80 -45]);
 alpha_map=double(data_disp>=-80);
 set(display_tab_comp.mini_echo,'AlphaData',double(alpha_map));
 colormap(display_tab_comp.mini_ax,'jet');
+setappdata(main_figure,'Display_tab',display_tab_comp);
+
 
 end
