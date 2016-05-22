@@ -6,6 +6,10 @@ if isappdata(main_figure,'Region_tab')
     rmappdata(main_figure,'Region_tab');
 end
 
+app_path_main=whereisEcho();
+icon_dir=fullfile(app_path_main,'icons');
+icon=get_icons_cdata(icon_dir);
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
@@ -88,15 +92,19 @@ ref_idx=find(strcmp(reg_curr.Reference,ref));
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Reference','units','normalized','Position',[0 0.45 0.2 0.1]);
 region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',ref_idx,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
 
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy Regs Across Freq.','TooltipString','Copy All Regions Across Frequencies','units','normalized','pos',[0.45 0.1 0.125 0.15],'callback',{@copy_to_other_freq,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Disp. Reg','units','normalized','pos',[0.575 0.1 0.125 0.15],'callback',{@display_region_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Copy','TooltipString','Copy All Regions Across Frequencies','units','normalized','pos',[0.45 0.1 0.125 0.15],'callback',{@copy_to_other_freq,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Display','units','normalized','pos',[0.575 0.1 0.125 0.15],'callback',{@display_region_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Freq Resp.','TooltipString','Frequency Response (TS(f) of Sv(f))','units','normalized','pos',[0.7 0.1 0.125 0.15],'callback',{@freq_response_reg_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','units','normalized','pos',[0.825 0.1 0.125 0.15],'callback',{@classify_reg_callback,main_figure});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Classify','units','normalized','pos',[0.825 0.1 0.125 0.15],'callback',{@classify_reg_callback,[],main_figure});
 
 
-region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Create','units','normalized','pos',[0.45 0.3 0.125 0.15],'callback',{@create_region_callback,main_figure});
+str_create='<HTML><center><FONT color="Green"><b>Create</b></Font> ';
+str_delete='<HTML><center><FONT color="Red"><b>Delete</b></Font> ';
+region_tab_comp.create_button=uicontrol(region_tab_comp.region_tab,'Style','pushbutton',...
+    'String',str_create,'units','normalized','pos',[0.45 0.3 0.125 0.15],...
+    'callback',{@create_region_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.575 0.3 0.125 0.15],'callback',{@recompute_region_callback,main_figure});
-uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.7 0.3 0.125 0.15],'callback',{@delete_region_callback,main_figure,[]});
+uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String',str_delete,'units','normalized','pos',[0.7 0.3 0.125 0.15],'callback',{@delete_region_callback,main_figure,[]});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Del. Across Freq.','TooltipString','Delete Across Frequencies','units','normalized','pos',[0.825 0.3 0.125 0.15],'callback',{@rm_over_freq_callback,main_figure});
 
 setappdata(main_figure,'Region_tab',region_tab_comp);
@@ -106,50 +114,6 @@ function create_region_callback(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 curr_disp.CursorMode='Create Region';
 setappdata(main_figure,'Curr_disp',curr_disp);
-end
-
-function classify_reg_callback(~,~,main_figure)
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-region_tab_comp=getappdata(main_figure,'Region_tab');
-hfigs=getappdata(main_figure,'ExternalFigures');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-Transceiver=layer.Transceivers(idx_freq);
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
-
-[idx_38,found_38]=find_freq_idx(layer,38000);
-[idx_18,found_18]=find_freq_idx(layer,18000);
-[idx_120,found_120]=find_freq_idx(layer,120000);
-
-if ~found_18||~found_120||~found_38
-    warning('Cannot every frequency!Pass...');
-    return;
-end
-
-
-idx_to_process=[idx_18 idx_38 idx_120];
-
-if ~isempty(list_reg)
-    idx_reg=get(region_tab_comp.tog_reg,'value');
-    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    
-    for i=1:length(layer.Transceivers)
-        if i==idx_freq
-            continue;
-        end
-        layer.Transceivers(i).rm_region_id(active_reg.Unique_ID)
-    end
-    
-    layer.prepare_classification(idx_to_process,0,0);
-    new_fig=layer.apply_classification(idx_freq,idx_reg);
-end
-
-
-hfigs=[hfigs new_fig];
-setappdata(main_figure,'ExternalFigures',hfigs);
-setappdata(main_figure,'Layer',layer);
-display_regions(main_figure);
-update_display(main_figure,0)
 end
 
 

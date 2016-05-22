@@ -14,6 +14,7 @@ end
 
 set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field);
 
+
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

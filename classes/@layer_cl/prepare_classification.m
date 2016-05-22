@@ -60,7 +60,7 @@ for uu=idx_to_process
         layer.Transceivers(uu).Data.add_sub_data({'powerdenoised','spdenoised','svdenoised','snr'},{power_unoised Sp_denoised Sv_denoised SNR});
     end
     
-    if (reprocess==1||~strcmp(layer.Transceivers(uu).Bottom.Origin,'Algo_v2_bp'))
+    if reprocess==1
         Sv_denoised=get_datamat(layer.Transceivers(uu).Data,'svdenoised');
         [Bottom,Double_bottom_region,idx_noise_sector]=feval(layer.Transceivers(uu).Algo(idx_algo_bp).Function,Sv_denoised,...
             layer.Transceivers(uu).Data.get_range(),...

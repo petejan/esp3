@@ -13,14 +13,15 @@ Number=trans.Data.get_numbers();
 Range=trans.Data.get_range();
 Dist=trans.GPSDataPing.Dist;
 
-switch curr_disp.Xaxes
-    case 'Time'
-        xdata=Time;
-    case 'Distance'
-        xdata=Dist;
-    case 'Number'
-        xdata=Number;
-end
+% switch curr_disp.Xaxes
+%     case 'Time'
+%         xdata=Time;
+%     case 'Distance'
+%         xdata=Dist;
+%     case 'Number'
+%     xdata=Number;    
+% end
+xdata=Number;
 ydata=Range;
 
 switch callbackdata.Key

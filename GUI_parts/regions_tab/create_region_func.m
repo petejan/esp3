@@ -12,7 +12,7 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 
-tag=get(region_tab_comp.tag,'string');
+tag='';
 
 shape_types=get(region_tab_comp.shape_type,'string');
 shape_type_idx=get(region_tab_comp.shape_type,'value');

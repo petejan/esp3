@@ -22,4 +22,7 @@ icon.folder = iconRead(fullfile(icon_dir,'folder_small.png'));
 
 icon.del_lay = iconRead(fullfile(icon_dir,'delete.png'));
 
+icon.add = iconRead(fullfile(icon_dir,'add.png'));
+
+
 end

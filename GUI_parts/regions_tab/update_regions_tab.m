@@ -1,5 +1,6 @@
 function update_regions_tab(main_figure)
 region_tab_comp=getappdata(main_figure,'Region_tab');
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);

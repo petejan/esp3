@@ -15,7 +15,10 @@ ydata(idx_nan)=[];
 [xdata,IA,~] = unique(xdata);
 ydata=ydata(IA);
 
-
+if length(ydata)==1
+    ydata_new=repmat(ydata,size(xdata_n,1),size(xdata_n,2));
+     return;
+end
 
 
 switch p.Results.Type

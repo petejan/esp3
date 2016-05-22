@@ -14,6 +14,8 @@ if ~isempty(dist)
     xlabel('Time(s)');
     ylabel('Speed (knot)');
     grid on;
+else
+    h_fig=[];
 end
 
 end

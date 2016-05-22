@@ -8,8 +8,6 @@ if isappdata(main_figure,'Display_tab')
     rmappdata(main_figure,'Display_tab');
 end
 
-axes_panel_comp=getappdata(main_figure,'Axes_panel');
-
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
@@ -78,10 +76,18 @@ display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit',
 display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',cax(1));
 set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_caxis,main_figure});
 
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Attitude','units','normalized','pos',[0.6 0.1 0.15 0.15],'callback',{@display_attitude,main_figure});
+
+
+display_tab_comp.mini_ax=axes('Parent',display_tab_comp.display_tab,'Units','normalized',...
+    'Position',[0.3 0.1 0.35 0.35]);
+
+
+
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Attitude','units','normalized','pos',[0.75 0.25 0.15 0.15],'callback',{@display_attitude,main_figure});
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav. Data','units','normalized','pos',[0.75 0.1 0.15 0.15],'callback',{@display_navigation_callback,main_figure});
 
 setappdata(main_figure,'Display_tab',display_tab_comp);
+
 end
 
 
