@@ -11,8 +11,6 @@ switch listdata.AffectedObject.CursorMode
         toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
     case 'Zoom Out'
         toggle_func(cursor_mode_tool_comp.zoom_out,[],main_figure);
-    case 'Pan'
-        toggle_func(cursor_mode_tool_comp.pan,[],main_figure);
     case 'Bad Transmits'
         toggle_func(cursor_mode_tool_comp.bad_trans,[],main_figure);
     case 'Edit Bottom'

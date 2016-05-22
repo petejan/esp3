@@ -7,8 +7,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 ah=axes_panel_comp.main_axes;
 axes(ah);
-h=zoom;
-h_pan=pan;
+
 
 childs=findall(main_figure,'type','uitoggletool');
 
@@ -17,8 +16,6 @@ for i=1:length(childs)
 end
 
 
-set(h_pan,'Enable','off');
-set(h,'Enable','off');
 set(main_figure,'Pointer','arrow');
 set(main_figure,'WindowButtonDownFcn','');
 create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);

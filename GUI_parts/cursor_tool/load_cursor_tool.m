@@ -1,6 +1,5 @@
 function load_cursor_tool(main_figure)
 
-app_path=getappdata(main_figure,'App_path');
 %curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
@@ -29,7 +28,6 @@ else
 
     cursor_mode_tool_comp.zoom_in=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zin,'TooltipString','Zoom +','Tag','zin');
     cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom -','Tag','zout');
-    cursor_mode_tool_comp.pan=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.pan ,'TooltipString','Pan','Tag','pan');
     cursor_mode_tool_comp.edit_bottom=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.edit_bot ,'TooltipString','Edit Bottom','Tag','ed_bot');
     cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.bad_trans ,'TooltipString','Bad Transmit','Tag','bt');
     
@@ -52,7 +50,7 @@ else
         set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
         set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0));
         set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx}])
-        jToolbar(1).add(cursor_mode_tool_comp.jCombo,6);
+        jToolbar(1).add(cursor_mode_tool_comp.jCombo,5);
         jToolbar(1).repaint;
         jToolbar(1).revalidate;
     end
@@ -98,8 +96,6 @@ if strcmp(src.State,'on')
             curr_disp.CursorMode='Zoom Out';
         case 'zin'
             curr_disp.CursorMode='Zoom In';
-        case 'pan'
-            curr_disp.CursorMode='Pan';
         case 'ed_bot'
             curr_disp.CursorMode='Edit Bottom';  
     end
