@@ -79,7 +79,7 @@ set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_cax
 
 
 display_tab_comp.mini_ax=axes('Parent',display_tab_comp.display_tab,'Units','normalized',...
-    'Position',[0.3 0.1 0.35 0.35]);
+    'Position',[0.3 0.1 0.4 0.45]);
 
 
 

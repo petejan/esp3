@@ -16,9 +16,10 @@ pings=layer.Transceivers(idx_freq).Data.get_numbers();
 range=layer.Transceivers(idx_freq).Data.get_range();
 nb_pings=length(pings);
 nb_samples=length(range);
-
-size_mini=[300 100];
-
+set(display_tab_comp.mini_ax,'units','pixels');
+temp_size=get(display_tab_comp.mini_ax,'position');
+size_mini=temp_size(3:4);
+set(display_tab_comp.mini_ax,'units','normalized');
 idx_r_disp=round(linspace(1,nb_samples,size_mini(2)));
 idx_p_disp=round(linspace(1,nb_pings,size_mini(1)));
 

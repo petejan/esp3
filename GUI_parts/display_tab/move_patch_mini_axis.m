@@ -4,10 +4,8 @@ display_tab_comp=getappdata(main_figure,'Display_tab');
 path_obj=display_tab_comp.patch_obj;
 
 ah=display_tab_comp.mini_ax;
-ae=display_tab_comp.mini_echo;
+
 if evt.Button==1
-    xdata=get(ae,'XData');
-    ydata=get(ae,'YData');
     cp = ah.CurrentPoint;
     x_lim=get(ah,'xlim');
     y_lim=get(ah,'ylim');
