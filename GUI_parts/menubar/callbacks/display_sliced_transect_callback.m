@@ -12,19 +12,34 @@ hfigs=getappdata(main_figure,'ExternalFigures');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-[output,~]=trans_obj.slice_transect2D('Reference','Surface');
+[output_2D,~]=trans_obj.slice_transect2D('Reference','Surface');
+idx_reg=trans_obj.list_regions_type('Data');
+reg_tot=trans_obj.get_reg_spec(idx_reg);               
+output_1D=trans_obj.slice_transect('reg',reg_tot);
 
+figure();
+plot(10*log10(output_1D.slice_abscf));
+hold on;
+plot(10*log10(nansum(output_2D.cell_abscf)));
+grid on;
+xlabel('Slice Number');
+ylabel('Asbcf (dB)');
+legend('1D','2D');
+
+alpha_map=ones(size(output_2D.cell_vbscf));
+alpha_map(10*log10(output_2D.cell_vbscf)<-70)=0;
 new_fig=figure();
-echo=imagesc(output.cell_dist_start,output.cell_range_start,10*log10(output.cell_abscf));
+echo=imagesc(output_2D.cell_dist_start,output_2D.cell_range_start,10*log10(output_2D.cell_vbscf));
 grid on;
 colormap jet;
-set(echo,'AlphaData',double(output.cell_vbscf>0));
+set(echo,'AlphaData',double(output_2D.cell_vbscf>0));
 grid on;
 colormap jet;
 axis ij
 xlabel('Distance (meters)');
 ylabel('Range (meters)')
-
+caxis([-70 -35]);
+set(echo,'alphadata',alpha_map)
 
 hfigs=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs);

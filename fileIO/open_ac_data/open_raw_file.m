@@ -34,7 +34,7 @@ if ~isempty(idx_EK60)
 end
 
 if ~isempty(idx_EK80)
-    new_layers_EK80=open_EK80_file_stdalone(Filename(idx_EK80),'Frequencies',vec_freq_init,'PingRange',[ping_start ping_end],'PathToMemmap',app_path.data_temp);
+    new_layers_EK80=open_EK80_file_stdalone(Filename(idx_EK80),'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'PathToMemmap',app_path.data_temp);
 end
 
 new_layers=[new_layers_EK60 new_layers_EK80];

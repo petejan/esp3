@@ -58,7 +58,6 @@ end
         
         main_figure.WindowButtonMotionFcn = '';
         main_figure.WindowButtonUpFcn = '';
-        main_figure.Pointer = 'arrow';
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
         

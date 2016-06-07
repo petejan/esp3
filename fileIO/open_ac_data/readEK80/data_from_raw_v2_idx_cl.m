@@ -128,10 +128,17 @@ for idg=1:length(idx_raw_obj.type_dg)
             [~,output,type]=read_xml0(t_line);
             switch type
                 case'Configuration'
-                    data.config=output(idx_freq);
+                    if ~isfield(data,'config')
+                        data.config=output(idx_freq);
+                    end
                 case 'Environment'
-                    data.env=output;
+                    if ~isfield(data,'env')
+                        data.env=output;
+                    end
                 case 'Parameter'
+                   if isfield(data,'params')
+                        continue;
+                    end
                     params_temp=output;
                     idx = find(strcmp(deblank(CIDs_freq),deblank(params_temp.ChannelID)));
                     param_dg(idx)=1;
