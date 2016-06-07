@@ -57,13 +57,15 @@ if ~isequal(Filename_cell, 0)
         end
         
         
-        if isempty(vec_freq_init)&&p.Results.GPSOnly==0
+        if isempty(vec_freq_init)&&p.Results.GPSOnly==0&&header_temp.transceivercount>1
             [header_temp,data_temp]=readEK80(curr_Filename,'PingRange',[1 1]);
             
             for ki=1:header_temp.transceivercount
                 vec_freq_temp=[vec_freq_temp data_temp.config(ki).Frequency];
                 list_freq_str=[list_freq_str num2str(data_temp.config(ki).Frequency,'%.0f')];
             end
+            
+           
             
             if length(intersect(vec_freq_temp,vec_freq_tot))~=header_temp.transceivercount
                 vec_freq_tot=vec_freq_temp;

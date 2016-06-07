@@ -4,12 +4,15 @@ display_tab_comp=getappdata(main_figure,'Display_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-
-
-try
-    x=double(get(axes_panel_comp.main_axes,'xlim'));
-    y=double(get(axes_panel_comp.main_axes,'ylim'));
-catch
+if new==0
+    try
+        x=double(get(axes_panel_comp.main_axes,'xlim'));
+        y=double(get(axes_panel_comp.main_axes,'ylim'));
+    catch
+        x=[0 0];
+        y=[0 0];
+    end
+else
     x=[0 0];
     y=[0 0];
 end

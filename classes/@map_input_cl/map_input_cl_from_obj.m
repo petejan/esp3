@@ -115,15 +115,17 @@ switch class(Ext_obj)
             if p.Results.SliceSize>0
                 idx_reg=1:length(layers(i).Transceivers(idx_freq).Regions);
                 idx_bad=zeros(1,length(idx_reg));
+                IDs=layers(i).Transceivers(idx_freq).get_IDs();
                 for ireg=1:length(idx_reg)
                     if strcmpi(layers(i).Transceivers(idx_freq).Regions(ireg).Type,'Bad Data')
                         idx_bad(ireg)=1;
                     end
                 end
                 idx_reg(idx_bad==1)=[];
-                
+                IDs(idx_bad==1)=[];
                 reg=layers(i).Transceivers(idx_freq).get_reg_spec(idx_reg);
                 output=layers(i).Transceivers(idx_freq).slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
+                %output2D=layers(i).Transceivers(idx_freq).slice_transect2D('regIDs',IDs,'cell_w',p.Results.SliceSize);
                 obj.SliceLat{i}=output.slice_lat_esp2;
                 obj.SliceLon{i}=output.slice_lon_esp2;
                 obj.SliceAbscf{i}=output.slice_abscf;
@@ -137,7 +139,7 @@ switch class(Ext_obj)
                 obj.LatLim(1)=nanmin(obj.LatLim(1),nanmin(obj.Lat{it}));
                 obj.LonLim(1)=nanmin(obj.LonLim(1),nanmin(obj.Lon{it}));
                 obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.Lat{it}));
-                obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.Lon{it}));
+                obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.Lon{it}));    
             end
         end
         

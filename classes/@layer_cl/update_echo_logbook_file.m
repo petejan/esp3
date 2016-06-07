@@ -149,6 +149,9 @@ for ilay=1:length(layers_obj)
         
         xml_file=fullfile(path_lay{1},'echo_logbook.xml');
         xmlwrite(xml_file,docNode);
+        htmlfile=fullfile(path_lay{1},'echo_logbook.html');
+        xslt(xml_file, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+        
         
     catch err
         disp(err);

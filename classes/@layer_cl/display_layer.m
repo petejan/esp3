@@ -1,19 +1,20 @@
 function main_echo=display_layer(layer,freq,fieldname,ax,axes_type,x,y,dx,dy,new)
 
 [idx_freq,found]=layer.find_freq_idx(freq);
-
 if found==0
     return;
 end
+set(ax,'units','pixels');
+screensize=get(ax,'position');
+set(ax,'units','normalized');
+
+xdata=layer.Transceivers(idx_freq).Data.get_numbers();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
 
 if isempty(axes_type)
     axes_type='Number';
-    x=layer.Transceivers(idx_freq).Data.get_numbers();
-    y=layer.Transceivers(idx_freq).Data.get_range();
-    dx=(x(end)-x(1))/15;
-    dy=(y(end)-y(1))/15;
-    new=1;
 end
+
 
 switch axes_type
     case 'Time'
@@ -31,8 +32,7 @@ switch axes_type
         xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers();
 end
 
-xdata=layer.Transceivers(idx_freq).Data.get_numbers();
-ydata=layer.Transceivers(idx_freq).Data.get_range();
+
 
 Time=layer.Transceivers(idx_freq).Data.Time;
 idx_start_time=[];
@@ -50,8 +50,6 @@ if length(layer.SurveyData)>=1
 end
 
 
-
-
 if new==0
     [~,idx_ping_min]=nanmin(abs(xdata-x(1)));
     [~,idx_r_min]=nanmin(abs(ydata-y(1)));
@@ -63,14 +61,13 @@ else
     idx_ping=1:length(xdata);
     idx_r=1:length(ydata);
 end
+
+idx_ping=idx_ping(1:floor(nanmin(screensize(3),length(idx_ping))));
 nb_samples=length(idx_r);
 nb_pings=length(idx_ping);
 
-%screensize=get(0,'ScreenSize');
-set(ax,'units','pixels');
-screensize=get(ax,'position');
 outputSize=nanmin(screensize(3:4),[nb_pings nb_samples]);
-set(ax,'units','normalized');
+
 
 dr=nanmax(ceil(nb_samples/outputSize(2)),1);
 dp=nanmax(ceil(nb_pings/outputSize(1)),1);

@@ -26,7 +26,7 @@ ydata=Range;
 
 switch callbackdata.Key
     case {'leftarrow','rightarrow','uparrow','downarrow'}
-        
+        set(main_figure,'KeyPressFcn','');
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
         if ~isfield(axes_panel_comp,'main_echo')
@@ -69,7 +69,7 @@ switch callbackdata.Key
                 end
                 set(main_axes,'ylim',y_lim);
         end
-        
+        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
     case '1'
         
         if isempty(callbackdata.Modifier)

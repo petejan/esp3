@@ -14,7 +14,7 @@ else
 end
 
 
-if iscell(file_id)
+if iscell(file_id)||ischar(file_id)
     Filename=file_id;
 else
     if file_id==0
@@ -112,30 +112,7 @@ if isempty(Filename)
 end
 
 if ~isequal(Filename, 0)
-    fid = fopen(Filename_tmp, 'r');
-    if fid==-1
-        warning('Cannot open file');
-        return;
-    end
-    fread(fid,1, 'int32', 'l');
-    [dgType, ~] =read_dgHeader(fid,0);
-    fclose(fid);
-    switch dgType
-        case 'XML0'
-            ftype='EK80';
-        case 'CON0'
-            ftype='EK60';
-        otherwise
-            fid = fopen(Filename_tmp, 'r','b');
-            dgType=fread(fid,1,'uint16');
-            fclose(fid);
-        if hex2dec('FD02')==dgType
-            ftype='asl';
-        else
-            ftype='dfile';
-        end
-            
-    end
+    ftype=get_ftype(Filename_tmp);
 else
     return
 end
@@ -144,8 +121,6 @@ setappdata(main_figure,'Layer',layer);
 
 %read_all=0;
 
-multi_layer=0;
-join=0;
 
 if ~iscell(Filename)
     Filename={Filename};
@@ -172,7 +147,7 @@ if ~isequal(Filename, 0)
         if ~isempty(idx_incomp)
             choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
                 'Incomplete',...
-                'Yes','No',...'Force Concatenation', ...
+                'Yes','No',...
                 'Yes');
             % Handle response
             switch choice
@@ -190,82 +165,17 @@ if ~isequal(Filename, 0)
         end
     end
     
-    %         if ask_q==1
-    %             choice = questdlg('Do you want to open files as separate layers?', ...
-    %                 'File opening mode',...
-    %                 'Yes','No',...'Force Concatenation', ...
-    %                 'Yes');
-    %             % Handle response
-    %             switch choice
-    %                 case 'Yes'
-    %                     multi_layer=1;
-    %                     %read_all=0;
-    %                 case 'No'
-    %                     multi_layer=0;
-    %                     %read_all=1;
-    %                 case 'Force Concatenation'
-    %                     multi_layer=-1;
-    %                 otherwise
-    %                     return;
-    %             end
-    %
-    %             if isempty(choice)
-    %                 return;
-    %             end
-    %         else
-    %             multi_layer=0;
-    %         end
-    
-    %  if ~strcmp(ftype,'dfile')
-    %         if multi_layer==0&&ID_num~=0&&~isempty(layers)
-    %             choice = questdlg('Do you want to join those new layers to existing ones?', ...
-    %                 'File opening mode',...
-    %                 'Yes','No', ...
-    %                 'No');
-    %             % Handle response
-    %             switch choice
-    %                 case 'Yes'
-    %                     join=1;
-    %                 case 'No'
-    %                     join=0;
-    %             end
-    %             if isempty(choice)
-    %                 return;
-    %             end
-    %         else
-    %             join=0;
-    %         end
-    
-    %         if read_all==0&&join==0
-    %             prompt={'First ping:',...
-    %                 'Last Ping:'};
-    %             name='Pings to load from each files';
-    %             numlines=1;
-    %             defaultanswer={'1','Inf'};
-    %             answer=inputdlg(prompt,name,numlines,defaultanswer);
-    %
-    %             if isempty(answer)
-    %                 return;
-    %             end
-    %
-    %             ping_start= str2double(answer{1});
-    %         %             ping_end= str2double(answer{2});
-    %         %         else
-    %         ping_start=1;
-    %         ping_end=Inf;
-    %         end
-    % end
-    
     ping_start=1;
     ping_end=Inf;
     
     switch ftype
-        case 'EK60'
-            open_EK60_file(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)
-        case 'EK80'
-            open_EK80_files(main_figure,Filename,[],ping_start,ping_end,multi_layer,join)    
+        case {'EK60','EK80'}
+%             profile on;
+            open_raw_file(main_figure,Filename,[],ping_start,ping_end);
+%             profile off;
+%             profile viewer;
         case 'asl'
-            open_asl_files(main_figure,Filename);        
+            open_asl_files(main_figure,Filename);
         case 'dfile'
             choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
                 'd-file/raw_file',...
@@ -274,7 +184,7 @@ if ~isequal(Filename, 0)
             % Handle response
             switch choice
                 case 'raw file'
-                    dfile=0;      
+                    dfile=0;
                 case 'd-file'
                     dfile=1;
             end

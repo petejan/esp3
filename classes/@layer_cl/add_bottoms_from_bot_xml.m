@@ -73,15 +73,15 @@ for i=1:length(xml_file)
         tag_resampled=resample_data_v2(tag(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Data.Time(idx_start_file:idx_end_file),'Opt','Nearest');
         
         if i==1
-        new_bottom{itrans}= bottom_cl(...
+        new_bottom{idx_freq}= bottom_cl(...
             'Range',nan(size(trans_obj.Data.Time)),...
             'Sample_idx',nan(size(trans_obj.Data.Time)),...
             'Tag',nan(size(trans_obj.Data.Time)));
         end
         
-        new_bottom{itrans}.Range(idx_start_file:idx_end_file)=depth_resampled;
-        new_bottom{itrans}.Sample_idx(idx_start_file:idx_end_file)=sample_idx;
-        new_bottom{itrans}.Tag(idx_start_file:idx_end_file)=tag_resampled;
+        new_bottom{idx_freq}.Range(idx_start_file:idx_end_file)=depth_resampled;
+        new_bottom{idx_freq}.Sample_idx(idx_start_file:idx_end_file)=sample_idx;
+        new_bottom{idx_freq}.Tag(idx_start_file:idx_end_file)=tag_resampled;
        
     end
     

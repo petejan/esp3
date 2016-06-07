@@ -49,7 +49,7 @@ switch curr_disp.Cmap
         alpha_map(alpha_map==0)=1;
     case 'ek500'
         cmap=ek500_colormap();
-        alpha_map(alpha_map==0)=1;
+         alpha_map(:,idx_bad_red)=0.5;
 end
 
 Range_mat=repmat(ydata,1,nb_pings);
@@ -62,7 +62,7 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
         if strcmp(curr_disp.Cmap,'esp2')
             alpha_map(idx_bot_red)=0.5;
         else
-        alpha_map(idx_bot_red)=0;
+            alpha_map(idx_bot_red)=0;
         end
     end
 end

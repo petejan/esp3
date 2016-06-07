@@ -38,4 +38,5 @@ end
 layers_obj.add_survey_data(survey_data_struct);
 layers_obj.update_echo_logbook_file();
 
+
 end

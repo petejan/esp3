@@ -20,14 +20,8 @@ x=nanmin(x,x_lim(2));
 % y=nanmax(y,y_lim(1));
 % y=nanmin(y,y_lim(2));
 
-switch curr_disp.Xaxes
-    case 'Time'
-        xdata=trans.Data.Time;
-    case 'Distance'
-        xdata=trans.GPSDataPing.Dist;
-    case 'Number'
-        xdata=trans.Data.get_numbers();
-end
+xdata=trans.Data.get_numbers();
+
 
 [~,idx_ping]=nanmin(abs(xdata-x));
 

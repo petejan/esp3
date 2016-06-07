@@ -38,8 +38,8 @@ if new==1
             x_vec=layer.Transceivers(idx_freq).Data.get_numbers();
     end
     
-    curr_disp.Grid_y=(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))/10;
-    curr_disp.Grid_x=(x_vec(end)-x_vec(1))/15;
+    curr_disp.Grid_y=10^(floor(log10(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))))/10;
+    curr_disp.Grid_x=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
     
 else
     selected_opt_tab=get(main_childs(idx_opt),'SelectedTab');

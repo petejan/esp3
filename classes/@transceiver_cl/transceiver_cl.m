@@ -128,6 +128,14 @@ classdef transceiver_cl < handle
             end
         end
         
+        function IDs=get_IDs(obj)
+            IDs=zeros(1,length(obj.Regions));
+            for i=1:length(IDs)
+                IDs(i)=obj.Regions(i).ID;
+            end
+        end
+        
+        
         function idx=list_regions_ID(obj,ID)
             if isempty(obj.Regions)
                 idx=[];

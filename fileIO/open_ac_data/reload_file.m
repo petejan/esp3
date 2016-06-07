@@ -11,19 +11,14 @@ Filename=layer.Filename;
 vec_freq=layer.Frequencies;
 layers=layers.delete_layers(layer.ID_num);
 setappdata(main_figure,'Layers',layers);
-multi_layer=0;
-join=0;
-
 
 ping_start=1;
 ping_end=Inf;
 
 switch ftype
-    case 'EK60'
-        open_EK60_file(main_figure,Filename,vec_freq,ping_start,ping_end,multi_layer,join)
-    case 'EK80'
-        open_EK80_files(main_figure,Filename,vec_freq,ping_start,ping_end,multi_layer,join)
-    case 'asl'
+    case {'EK60','EK80'}
+        open_raw_file(main_figure,Filename,vec_freq,ping_start,ping_end)
+      case 'asl'
         open_asl_files(main_figure,Filename);
     case 'dfile'
         choice = questdlg('Do you want to open associated Raw File or original d-file?', ...

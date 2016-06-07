@@ -35,7 +35,7 @@ for ix=1:length(xml_file)
         [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
         
         if found==0
-            warning('Could not load regions for frequency %.0fkHz, it is not there...',region_xml.Infos.Freq);
+            warning('Could not load regions for frequency %.0fkHz, there is none...',region_xml.Infos.Freq);
             continue;
         end
         trans_obj=layer_obj.Transceivers(idx_freq);

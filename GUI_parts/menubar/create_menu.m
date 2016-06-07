@@ -96,6 +96,7 @@ uimenu(reg_tools,'Label','Create WC Region','Callback',{@create_reg_dlbox,main_f
 uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callback,main_figure});
+uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_callback,main_figure});
 
 
 bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
@@ -108,7 +109,8 @@ uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callba
 uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});
 
 track_tools=uimenu(mhhh,'Label','Track');
-uimenu(track_tools,'Label','Plot Frequency response from Tracks','Callback',{@plot_freq_resp_tracks_callback,main_figure});
+uimenu(track_tools,'Label','Plot Frequency response from Fish Tracks','Callback',{@plot_freq_resp_tracks_callback,main_figure});
+uimenu(track_tools,'Label','Plot Histogram from Fish Tracks','Callback',{@plot_hist_tracks_callback,main_figure});
 uimenu(track_tools,'Label','Create Exclude Regions from Tracks','Callback',{@create_regs_from_tracks_callback,'Bad Data',main_figure});
 
 
@@ -215,7 +217,9 @@ if exist(xmlfile,'file')==0
     initialize_echo_logbook_file(path_lay{1});
 end
 
-xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+if exist(htmlfile,'file')==0
+    xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+end
 system(sprintf('start "" "%s"',htmlfile));
 
 end

@@ -16,14 +16,8 @@ x=nanmax(x,x_lim(1));
 x=nanmin(x,x_lim(2));
 
 
-switch curr_disp.Xaxes
-    case 'Time'
-        xdata=trans.Data.Time;
-    case 'Distance'
-        xdata=trans.GPSDataPing.Dist;
-    case 'Number'
-        xdata=trans.Data.get_numbers();
-end
+
+xdata=trans.Data.get_numbers();
 
 [~,idx_ping]=nanmin(abs(xdata-x));
 
@@ -56,12 +50,12 @@ else
         end
     end
     
- 
+    
     if ~isempty(surv_to_modif)
         surv{1}=surv_to_modif;
         start_time=surv_to_modif.StartTime;
         end_time=surv_to_modif.EndTime;
-    else  
+    else
         surv{1}=survey_data_cl();
         
         dt_before(dt_before<0)=nan;
@@ -123,7 +117,8 @@ layer.set_survey_data(new_surveydata);
 layer.update_echo_logbook_file();
 
 setappdata(main_figure,'Layer',layer);
+
 load_cursor_tool(main_figure);
-update_display(main_figure,0);
+load_axis_panel(main_figure,0);
 
 end

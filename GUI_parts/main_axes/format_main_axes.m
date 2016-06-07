@@ -14,10 +14,6 @@ if length(ydata)>1
 end
 zoom reset;
 
-% if new==0 && idx_xlim(1)<idx_xlim(2) && idx_ylim(1)<idx_ylim(2)
-%     set(ax,'xlim',xdata_grid(idx_xlim));
-%     set(ax,'ylim',ydata_grid(idx_ylim));
-% end
 
 idx_xticks=(diff(rem(xdata_grid,dx))<0);
 idx_yticks=(diff(rem(ydata_grid,dy))<0);

@@ -37,6 +37,7 @@ if evt.Button==1
     end
     
     path_obj.Vertices=new_vert;
+    drawnow;
     
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
     main_axes=axes_panel_comp.main_axes;

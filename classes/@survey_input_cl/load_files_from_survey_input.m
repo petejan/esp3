@@ -3,9 +3,11 @@ function layers=load_files_from_survey_input(surv_input_obj,varargin)
 p = inputParser;
 
 addRequired(p,'surv_input_obj',@(obj) isa(obj,'survey_input_cl'));
+
 addParameter(p,'PathToMemmap','',@ischar)
 
 parse(p,surv_input_obj,varargin{:});
+
 
 datapath=p.Results.PathToMemmap;
 infos=surv_input_obj.Infos;
@@ -40,7 +42,7 @@ for isn=1:length(snapshots)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 if exist(fileN,'file')==2
                     new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
-                        'PathToMemmap',datapath,'Frequencies',options.Frequency,'EsOffset',options.Es60_correction);
+                        'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
                     [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
                     if found==0
                         warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
@@ -53,7 +55,7 @@ for isn=1:length(snapshots)
                     warning('Cannot Find specified file %s',filenames_cell{ifiles});
                     continue;
                 end
-
+                
             end
             
             if ~isempty(layers_in)
@@ -72,13 +74,13 @@ for isn=1:length(snapshots)
             for i_lay=1:length(layers_out_temp)
                 layer_new=layers_out_temp(i_lay);
                 
-                  if isempty(cal_t)
-                        layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
-                    else
-                        layer_new.Transceivers(idx_freq).apply_cw_cal(cal_t);
-                    end
-                    layer_new.Transceivers(idx_freq).apply_absorption(options.Absorption/1e3);
-
+                if isempty(cal_t)
+                    layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
+                else
+                    layer_new.Transceivers(idx_freq).apply_cw_cal(cal_t);
+                end
+                layer_new.Transceivers(idx_freq).apply_absorption(options.Absorption/1e3);
+                
                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                 layer_new.set_survey_data(surv);
                 
@@ -97,7 +99,7 @@ for isn=1:length(snapshots)
                 end
                 
                 
-                 for ire=1:length(regs)
+                for ire=1:length(regs)
                     if isfield(regs{ire},'ver')
                         if isfield(regs{ire},'IDs')
                             if ischar(regs{ire}.IDs)
@@ -109,15 +111,15 @@ for isn=1:length(snapshots)
                         else
                             layer_new.load_bot_regs('bot_ver',0);
                         end
-                     end
-                 end
+                    end
+                end
                 
                 nb_reg_out=0;
-                for ire=1:length(regs)     
+                for ire=1:length(regs)
                     if isfield(regs{ire},'file')
                         nb_reg_out=nb_reg_out+1;
                         if  exist(fullfile(snapshots{isn}.Folder,regs{ire}.file),'file')>0
-                            new_reg=create_regions_from_evr(fullfile(snapshots{isn}.Folder,regs{ire}.file),layer_new.Transceivers(idx_freq).Data.get_range(),layer_new.Transceivers(idx_freq).Data.Time);                          
+                            new_reg=create_regions_from_evr(fullfile(snapshots{isn}.Folder,regs{ire}.file),layer_new.Transceivers(idx_freq).Data.get_range(),layer_new.Transceivers(idx_freq).Data.Time);
                             if isempty(new_reg)
                                 continue;
                             end
@@ -154,10 +156,10 @@ for isn=1:length(snapshots)
                         end
                     end
                 end
-
+                
                 
                 for ial=1:length(algos)
-                   
+                    
                     switch algos{ial}.Name
                         case 'SingleTarget'
                             ST=feval(init_func(algos{ial}.Name),layer_new.Transceivers(idx_freq),...
@@ -204,24 +206,57 @@ for isn=1:length(snapshots)
                             if options.Remove_tracks
                                 layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
                             end
-                                    
                             
+                        case 'SchoolDetection'
+                            
+                            linked_candidates=feval(init_func(algos{ial}.Name),layer_new.Transceivers(idx_freq),...
+                                'Type',algos{ial}.Varargin.Type,...
+                                'Sv_thr',algos{ial}.Varargin.Sv_thr,...
+                                'l_min_can',algos{ial}.Varargin.l_min_can,...
+                                'h_min_tot',algos{ial}.Varargin.h_min_tot,...
+                                'h_min_can',algos{ial}.Varargin.h_min_can,...
+                                'l_min_tot',algos{ial}.Varargin.l_min_tot,...
+                                'nb_min_sples',algos{ial}.Varargin.nb_min_sples,...
+                                'horz_link_max',algos{ial}.Varargin.horz_link_max,...
+                                'vert_link_max',algos{ial}.Varargin.vert_link_max);
+                            
+                            layer_new.Transceivers(idx_freq).rm_region_name('School');
+                            
+                            w_unit=options.Vertical_slice_units;
+                            switch w_unit
+                                case 'pings'
+                                    cell_w=ceil(options.Vertical_slice_size/4);
+                                case 'meters'
+                                    cell_w=options.Vertical_slice_size/4;
+                            end
+                            
+                            h_unit='meters';
+                            cell_h=options.Horizontal_slice_size;
+                            
+                            layer_new.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
+                            
+                            if options.Classify_schools==1
+                               idx_sch=layer_new.Transceivers(idx_freq).list_regions_name('School');
+                               new_figs=layer_new.apply_classification(idx_freq,idx_sch);
+                               close(new_figs);
+                            end
                     end
-
-                    [idx_algo,~]=layer_new.Transceivers(idx_freq).find_algo_idx(algos{ial}.Name);
-                    layer_new.Transceivers(idx_freq).Algo(idx_algo)=algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin);
                     
-                end 
-                u=u+1;
-                layers(u)=layer_new;
+                    
+                end
+                
+                [idx_algo,~]=layer_new.Transceivers(idx_freq).find_algo_idx(algos{ial}.Name);
+                layer_new.Transceivers(idx_freq).Algo(idx_algo)=algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin);
+                
             end
-            clear layers_out_temp;
+            u=u+1;
+            layers(u)=layer_new;
         end
-        
+        clear layers_out_temp;
     end
     
-    
 end
+
 
 if u==0
     layers=[];

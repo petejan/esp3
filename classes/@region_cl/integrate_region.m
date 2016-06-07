@@ -200,6 +200,8 @@ output.Sample_E=nan(N_y,N_x);
 output.Range_mean=nan(N_y,N_x);
 output.Layer_depth_min=nan(N_y,N_x);
 output.Layer_depth_max=nan(N_y,N_x);
+output.Range_ref_min=nan(N_y,N_x);
+output.Range_ref_max=nan(N_y,N_x);
 output.Layer=nan(N_y,N_x);
 output.Dist_E=nan(N_y,N_x);
 output.Dist_S=nan(N_y,N_x);
@@ -300,6 +302,15 @@ for i=1:N_x
         nb_idx=length(idx_bin);
         if nb_idx>0
             height_se=abs(max(y_mat_red(idx_bin_2))-min(y_mat_red(idx_bin_2)));
+                    switch region.Cell_h_unit
+                        case 'samples'
+                            output.Range_ref_min(j,i)=min(y_mat_red(idx_bin_2)/dr);
+                            output.Range_ref_max(j,i)=max(y_mat_red(idx_bin_2)/dr);
+                        case 'meters'
+                            output.Range_ref_min(j,i)=min(y_mat_red(idx_bin_2));
+                            output.Range_ref_max(j,i)=max(y_mat_red(idx_bin_2));
+                    end
+
             ping_cell=setdiff(x_mat_red(idx_bin),IdxBad_reg);
             %ping_cell=intersect(x_mat_red(idx_bin),IdxGood_reg);
             output.Nb_good_pings_esp2(j,i)=length(ping_cell);

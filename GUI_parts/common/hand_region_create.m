@@ -52,9 +52,9 @@ end
         u=u+1;
         xinit(u) = cp(1,1);
         yinit(u) = cp(1,2);
-        
+        str_txt=sprintf('%.2f m',cp(1,2));
         set(hp,'XData',xinit,'YData',yinit);
-        set(txt,'position',[cp(1,1) cp(1,2) 0]);
+        set(txt,'position',[cp(1,1) cp(1,2) 0],'string',str_txt);
         drawnow;
     end
 

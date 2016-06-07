@@ -31,6 +31,13 @@ xdata=Number;
 x=xdata;
 y=Range;
 
+x_lim=get(main_axes,'xlim');
+y_lim=get(main_axes,'ylim');
+
+rect_lim_x=[x_lim(1) x_lim(2) x_lim(2) x_lim(1) x_lim(1)];
+rect_lim_y=[y_lim(1) y_lim(1) y_lim(2) y_lim(2) y_lim(1)];
+
+
 list_reg = trans.regions_to_str();
 axes(main_axes);
 dr=nanmean(diff(trans.Data.get_range()));
@@ -56,6 +63,10 @@ vis=curr_disp.DispReg;
 
         x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
         y_reg_rect=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
+        
+       if nansum(inpolygon(x_reg_rect,y_reg_rect,rect_lim_x,rect_lim_y))==0
+           continue;
+       end
         
         switch reg_curr.Cell_h_unit
             case 'meters'
@@ -90,7 +101,7 @@ vis=curr_disp.DispReg;
                 y_text=nanmean(y_reg_rect(:));
                 nb_cont=1;
                 reg_plot=gobjects(1,length(x_grid)+length(y_grid)+1);
-                reg_plot(1)=plot(x_reg_rect,y_reg_rect,'color',col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid);
+                reg_plot(1)=plot(x_reg_rect,y_reg_rect,'color',col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID);
             case 'Polygon'
 
                 idx_x=reg_curr.X_cont;
@@ -114,7 +125,7 @@ vis=curr_disp.DispReg;
                         y_text=nanmean(y_reg{jj});
                     end   
                    
-                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},'color',col,'linewidth',1,'tag','region','PickableParts','all','visible',vis); 
+                    reg_plot(jj)=plot(x_reg{jj},y_reg{jj},'color',col,'linewidth',1,'tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID); 
                 end
                 if strcmp(reg_curr.Name,'Track')
                    grid_in=zeros(size(x_grid)); 
@@ -129,10 +140,10 @@ vis=curr_disp.DispReg;
         end
 
             for uui=1:size(X_grid,1)
-                reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+                reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
             end
             for uuj=1:size(X_grid,2)
-                reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis);
+                reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
             end
 
         text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region');

@@ -69,22 +69,21 @@ if isempty(cax)
     cax=[0 1];
 end
 
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Max (dB)','units','normalized','Position',[0 0.3 0.2 0.1]);
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Min (dB)','units','normalized','Position',[0 0.1 0.2 0.1]);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Max (dB)','units','normalized','Position',[0.7 0.8 0.15 0.1]);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Min (dB)','units','normalized','Position',[0.7 0.6 0.15 0.1]);
 
-display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.2 0.3 0.05 0.1],'string',cax(2));
-display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',cax(1));
+display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.8 0.05 0.1],'string',cax(2));
+display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.6 0.05 0.1],'string',cax(1));
 set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_caxis,main_figure});
 
 
 
 display_tab_comp.mini_ax=axes('Parent',display_tab_comp.display_tab,'Units','normalized',...
-    'Position',[0.3 0.1 0.4 0.45]);
+    'Position',[0.05 0.1 0.75 0.45]);
 
 
-
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Attitude','units','normalized','pos',[0.75 0.25 0.15 0.15],'callback',{@display_attitude,main_figure});
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav. Data','units','normalized','pos',[0.75 0.1 0.15 0.15],'callback',{@display_navigation_callback,main_figure});
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.85 0.25 0.1 0.15],'callback',{@display_attitude,main_figure});
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav.','units','normalized','pos',[0.85 0.1 0.1 0.15],'callback',{@display_navigation_callback,main_figure});
 
 setappdata(main_figure,'Display_tab',display_tab_comp);
 

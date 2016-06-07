@@ -14,8 +14,16 @@ if isfield(axes_panel_comp,'track_plot')
     end
 end
 
-axes_panel_comp.track_plot=[];
 if ~isempty(tracks)
+x_lim=get(axes_panel_comp.main_axes,'xlim');
+
+idx_remove=find(cellfun(@(x) ~isempty(find(x<x_lim(1)-diff(x_lim)/10|x>x_lim(2)+diff(x_lim)/10,1)),tracks.target_ping_number));
+
+tracks.target_id(idx_remove)=[];
+tracks.target_ping_number(idx_remove)=[];
+
+axes_panel_comp.track_plot=[];
+
     for k=1:length(tracks.target_id)
         idx_targets=tracks.target_id{k};
         [X_t,idx_sort]=sort(X_st(idx_targets));

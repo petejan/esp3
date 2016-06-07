@@ -22,6 +22,10 @@ for i=1:nb_child
            Cal=get_node_att(xml_struct.Children(i));
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
+           if ~isempty(Options.FrequenciesToLoad)
+                Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
+           end
+
         case 'algos'
             Algos=get_algos(xml_struct.Children(i));
         case 'regions_WC'

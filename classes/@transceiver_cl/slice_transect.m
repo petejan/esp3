@@ -107,9 +107,9 @@ for iuu=1:length(idx_reg)
     regCellInt{i_reg}=reg_curr.integrate_region(trans_obj);
     regs{i_reg}=reg_curr;
     if ~isempty(~isnan([reg(:).id]))
-        regCellIntSub = getCellIntSubSet(regCellInt{iuu},reg(iuu),reg_curr.Reference);
+        regCellIntSub = getCellIntSubSet(regCellInt{i_reg},reg(iuu),reg_curr.Reference);
     else
-        regCellIntSub=regCellInt;
+        regCellIntSub=regCellInt{i_reg};
     end
     Sa_lin = nansum(regCellIntSub.Sa_lin)./nanmax(regCellIntSub.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
     att=zeros(1,length(Sa_lin));

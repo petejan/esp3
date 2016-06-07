@@ -4,6 +4,15 @@ DEBUG=0;
 %set the lookand feel of the figure
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
 
+
+p = inputParser;
+
+addParameter(p,'Filenames',{},@(x) ischar(x)|iscell(x));
+
+parse(p,varargin{:});
+
+
+
 %%%%%%%%%%%%%% main_figure is the handle to the main window of the App %%%%
 %%%%%%%%%%%%%%
 size_max=get(0,'ScreenSize');
@@ -110,6 +119,9 @@ catch err
 end
 
 create_menu(main_figure);
+if ~isempty(p.Results.Filenames)
+   open_file([],[],p.Results.Filenames,main_figure);
+end
 end
 
 
