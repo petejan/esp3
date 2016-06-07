@@ -16,7 +16,21 @@ for j = 1:period
     fit.mean(j) = nanmean( abs(rd_zone - es60_error((1:num_pings) + j)) );
 end
 % Ideally, the minimum standard deviation will give the appropriate zero error ping number
-[~, zero_error_ping] = nanmin(fit.std);
+[val_std, zero_error_ping] = nanmin(fit.std);
+if val_std>0.2
+    disp('It does not look like there is a triangle wave error here...');
+    data_c=data;
+    mean_corrected_value=nanmean(rd_zone);
+    
+    figure();   
+    plot(rd_zone)
+    xlabel('Ping number')
+    ylabel('Third sample received power (dB re 1 W, uncalibrated)')
+    legend('Uncorrected')
+    grid on;
+    
+    return;
+end
 % if there are enough pings to guarantee a change in slope in the
 % error, use the value, otherwise investigate a bit more.
 if num_pings < period/2
@@ -56,20 +70,16 @@ else
     disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
 end
 
-%Show the correction for visual validation.
-% errfig=figure();
-% disp(['The zero error ping number is ' num2str(zero_error_ping)])
-% plot(rd_zone)
-% hold on
-% plot(rd_zone - es60_error((1:num_pings)+zero_error_ping), 'r')
-% xlabel('Ping number')
-% ylabel('First sample received power?? (dB re 1 W, uncalibrated)')
-% legend('Uncorrected', 'Corrected')
-% grid on;
-% pause(2)
-% if open('errfig')
-%     close(errfig)
-% end
+figure();
+disp(['The zero error ping number is ' num2str(zero_error_ping)])
+plot(rd_zone)
+hold on
+plot(rd_zone - es60_error((1:num_pings)+zero_error_ping), 'r')
+xlabel('Ping number')
+ylabel('Third sample received power (dB re 1 W, uncalibrated)')
+legend('Uncorrected', 'Corrected')
+grid on;
+
 data_c=data-repmat(es60_error((1:num_pings)+zero_error_ping),size(data,1),1);
 end
 
