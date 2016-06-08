@@ -198,7 +198,7 @@ layer.add_survey_data(surv_data_struct);
 for ifile=1:length(surv_data_struct.Filename)
     update_echo_logbook_file_manually(fullfile(path_lay{1},surv_data_struct.Filename{ifile}),surv_data_struct.SurvDataObj{ifile});
 end
-update_display(main_figure)
+update_display(main_figure,1)
 xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
 system(sprintf('start "" "%s"',htmlfile));
 

@@ -38,7 +38,7 @@ if new==1
             x_vec=layer.Transceivers(idx_freq).Data.get_numbers();
     end
     
-    curr_disp.Grid_y=10^(floor(log10(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))))/10;
+    curr_disp.Grid_y=10^(floor(log10(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))))/5;
     curr_disp.Grid_x=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
     
 else

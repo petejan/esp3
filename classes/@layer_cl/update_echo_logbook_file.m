@@ -47,12 +47,12 @@ for ilay=1:length(layers_obj)
             f_processed=0;
             file_curr=deblank(list_raw(i,:));
             idx_file=find(strcmpi(file_curr,file_lay),1);
-            idx_file_cvs=find(strcmpi(file_curr,surv_data_struct.Filename));
+            idx_file_xml=find(strcmpi(file_curr,surv_data_struct.Filename));
             
             if isempty(idx_file)
-                if ~isempty(idx_file_cvs)
+                if ~isempty(idx_file_xml)
                     
-                    for is=idx_file_cvs
+                    for is=idx_file_xml
                         
                         survdata_temp=surv_data_struct.SurvDataObj{is};
                         start_time=survdata_temp.StartTime;
