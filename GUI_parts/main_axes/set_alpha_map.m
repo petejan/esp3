@@ -1,11 +1,30 @@
-function set_alpha_map(hObject)
+function set_alpha_map(hObject,varargin)
+
+p = inputParser;
+
+addRequired(p,'hObject',@ishandle);
+addParameter(p,'echo_ax',[]);
+addParameter(p,'echo_im',[]);
+
+parse(p,hObject,varargin{:});
 
 layer=getappdata(hObject,'Layer');
 if isempty(layer)
     return;
 end
 
-axes_panel_comp=getappdata(hObject,'Axes_panel');
+if isempty(p.Results.echo_ax)||isempty(p.Results.echo_im)
+    axes_panel_comp=getappdata(hObject,'Axes_panel');
+    
+    if ~isfield(axes_panel_comp,'main_echo')
+        return;
+    end
+    echo_im=axes_panel_comp.main_echo;
+    echo_ax=axes_panel_comp.main_axes;
+else
+    echo_im=p.Results.echo_im;
+    echo_ax=p.Results.echo_ax;
+end
 
 curr_disp=getappdata(hObject,'Curr_disp');
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
@@ -16,20 +35,15 @@ end
 idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
 min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(1);
 
-if ~isfield(axes_panel_comp,'main_echo')
-    return;
-end
-
-
-data=double(get(axes_panel_comp.main_echo,'CData'));
-xdata=double(get(axes_panel_comp.main_echo,'XData'));
-ydata=double(get(axes_panel_comp.main_echo,'YData'));
+data=double(get(echo_im,'CData'));
+xdata=double(get(echo_im,'XData'));
+ydata=double(get(echo_im,'YData'));
 alpha_map=double(data>=min_axis);
 nb_pings=length(xdata);
 nb_samples=length(ydata);
 
 [~,nb_pings_red]=size(alpha_map);
-[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
+[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im);
 
 idxBad=find(layer.Transceivers(idx_freq).Bottom.Tag==0);
 idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
@@ -49,7 +63,7 @@ switch curr_disp.Cmap
         alpha_map(alpha_map==0)=1;
     case 'ek500'
         cmap=ek500_colormap();
-         alpha_map(:,idx_bad_red)=0.5;
+        alpha_map(:,idx_bad_red)=0.5;
 end
 
 Range_mat=repmat(ydata,1,nb_pings);
@@ -67,15 +81,14 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     end
 end
 
+colormap(echo_ax,cmap);
+caxis(echo_ax,layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay);
 
-
-colormap(axes_panel_comp.main_axes,cmap);
-
-if isa(axes_panel_comp.main_echo,'matlab.graphics.primitive.Surface')
-    set(axes_panel_comp.main_echo,'AlphaData',double(alpha_map),'FaceAlpha','flat',...
+if isa(echo_im,'matlab.graphics.primitive.Surface')
+    set(echo_im,'AlphaData',double(alpha_map),'FaceAlpha','flat',...
         'AlphaDataMapping','scaled');
 else
-    set(axes_panel_comp.main_echo,'AlphaData',double(alpha_map));
+    set(echo_im,'AlphaData',double(alpha_map));
 end
 
 

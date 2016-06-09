@@ -75,6 +75,8 @@ hp=plot(x_bad,[yinit yinit],'color','k','linewidth',1,'marker','x');
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);
+        display_tab_comp=getappdata(main_figure,'Display_tab');
+        set_alpha_map(main_figure,'echo_ax',display_tab_comp.mini_ax,'echo_im',display_tab_comp.mini_echo);
         delete(hp);
     end
 end
