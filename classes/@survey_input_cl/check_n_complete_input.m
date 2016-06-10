@@ -1,4 +1,4 @@
-function valid=check_n_complete_input(surv_input_obj,varargin)
+function [valid,files_to_load]=check_n_complete_input(surv_input_obj,varargin)
 
 p = inputParser;
 
@@ -22,6 +22,7 @@ valid=1;
 
 fprintf('\n\nChecking survey input for %s  Voyage %s:\n',...
     surveyName,voyage);
+files_to_load={};
 
 for isn=1:length(snapshots)
     
@@ -93,13 +94,15 @@ for isn=1:length(snapshots)
                         snap_num,strat_name,trans_num);                    
                     fprintf('%s \n',filenames{:});
                     surv_input_obj.Snapshots{isn}.Stratum{ist}.Transects{itr}.files=filenames;
+                    files_to_load=[files_to_load filenames{:}];
                 else
                     fprintf('!!!!!!!!!!!!No Files found in Snapshot %.0f Stratum %s Transect %.0f:\n',...
                         snap_num,strat_name,trans_num);
                     valid=0;
                 end
+            else
+               files_to_load=[files_to_load surv_input_obj.Snapshots{isn}.Stratum{ist}.Transects{itr}.files{:}]; 
             end
-            
         end
         
     end

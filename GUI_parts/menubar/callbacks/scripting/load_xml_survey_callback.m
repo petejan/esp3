@@ -34,7 +34,7 @@ for i=1:length(Filename)
             continue;
         end
         
-        valid=surv_obj.SurvInput.check_n_complete_input();
+        [valid,~]=surv_obj.SurvInput.check_n_complete_input();
         
         if valid==0
             warning('It looks like there is a problem with XML survey file %s\n',Filename{i});

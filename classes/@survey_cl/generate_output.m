@@ -225,10 +225,7 @@ for isn=1:length(snapshots)
             
             gps_tot=layers(layer_idx(idx_lay(1))).Transceivers(idx_freq).GPSDataPing;
             bot_tot=layers(layer_idx(idx_lay(1))).Transceivers(idx_freq).Bottom;
-            dist_tot = m_lldist([gps_tot.Long(1) gps_tot.Long(end)],[gps_tot.Lat(1) gps_tot.Lat(end)])/1.852;% get distance as esp2 does... Straigth line estimate
-            time_s_tot = gps_tot.Time(1);
-            time_e_tot = gps_tot.Time(end);
-            timediff_tot = (time_e_tot-time_s_tot)*24;
+
             if length(idx_lay)>1
                 for i=2:length(idx_lay)
                     idx_freq=find_freq_idx(layers(idx_lay(i)),38000);
@@ -240,21 +237,16 @@ for isn=1:length(snapshots)
                     gps_add=layers(layer_idx(idx_lay(i))).Transceivers(idx_freq).GPSDataPing;
                     gps_tot=concatenate_GPSData(gps_tot,gps_add);
                     
-                    dist_tot = dist_tot+m_lldist([gps_add.Long(1) gps_add.Long(end)],[gps_add.Lat(1) gps_add.Lat(end)])/1.852;
-                    time_s_add = gps_add.Time(1);
-                    time_e_add = gps_add.Time(end);
-                    timediff_add = (time_e_add-time_s_add)*24;
-                    timediff_tot=timediff_add+timediff_tot;
                 end
             end
             
             gps_tot.Long(gps_tot.Long>180)=gps_tot.Long(gps_tot.Long>180)-360;
-            
-            
+           
             
             idx_pings=1:length(gps_tot.Time);
-            idx_good_pings=intersect(idx_pings,find(bot_tot.Tag>0));
-            
+            idx_good_pings=intersect(idx_pings,find(bot_tot.Tag>0&gps_tot.Time'>=nanmin(start_time(idx_lay))&gps_tot.Time'<=nanmax(end_time(idx_lay))));
+            dist_tot=m_lldist([gps_tot.Long(idx_good_pings(1)) gps_tot.Long(idx_good_pings(end))],[gps_tot.Lat(idx_good_pings(1)) gps_tot.Lat(idx_good_pings(end))])/1.852;
+            timediff_tot=(gps_tot.Time(idx_good_pings(end))-gps_tot.Time(idx_good_pings(1)))*24;
             av_speed_tot=dist_tot/timediff_tot;
             good_bot_tot=nanmean(bot_tot.Range(idx_good_pings));
             %% Transect Summary
@@ -265,12 +257,12 @@ for isn=1:length(snapshots)
             surv_out_obj.transectSum.mean_d(i_trans) = nanmean(good_bot_tot); % mean_d
             surv_out_obj.transectSum.pings(i_trans) = length(idx_good_pings); % pings %
             surv_out_obj.transectSum.av_speed(i_trans) = av_speed_tot; % av_speed
-            surv_out_obj.transectSum.start_lat(i_trans) = gps_tot.Lat(1); % start_lat
-            surv_out_obj.transectSum.start_lon(i_trans) = gps_tot.Long(1); % start_lon
-            surv_out_obj.transectSum.finish_lat(i_trans) = gps_tot.Lat(end); % finish_lat
-            surv_out_obj.transectSum.finish_lon(i_trans) = gps_tot.Long(end); % finish_lon
-            surv_out_obj.transectSum.time_start(i_trans) = gps_tot.Time(1); % finish_lat
-            surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(end); % finish_lon
+            surv_out_obj.transectSum.start_lat(i_trans) = gps_tot.Lat(idx_good_pings(1)); % start_lat
+            surv_out_obj.transectSum.start_lon(i_trans) = gps_tot.Long(idx_good_pings(1)); % start_lon
+            surv_out_obj.transectSum.finish_lat(i_trans) = gps_tot.Lat(idx_good_pings(end)); % finish_lat
+            surv_out_obj.transectSum.finish_lon(i_trans) = gps_tot.Long(idx_good_pings(end)); % finish_lon
+            surv_out_obj.transectSum.time_start(i_trans) = gps_tot.Time(idx_good_pings(1)); % finish_lat
+            surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_good_pings(end)); % finish_lon
             surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
             surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
             
@@ -372,7 +364,7 @@ for is=1:nb_snap
     strat_snap=unique(strat(snap==curr_snap));
     nb_strat(is)=length(strat_snap);
     for ist=1:nb_strat(is)
-        nb_trans(is,ist)=length(unique(trans(strcmp(strat,strat_snap(ist)))));
+        nb_trans(is,ist)=length(unique(trans(strcmp(strat,strat_snap(ist))&snap==curr_snap)));
     end
 end
 end

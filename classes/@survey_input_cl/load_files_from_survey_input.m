@@ -9,20 +9,20 @@ addParameter(p,'PathToMemmap','',@ischar)
 parse(p,surv_input_obj,varargin{:});
 
 datapath=p.Results.PathToMemmap;
-infos=surv_input_obj.Infos;
 options=surv_input_obj.Options;
 regions_wc=surv_input_obj.Regions_WC;
 algos=surv_input_obj.Algos;
 cal=surv_input_obj.Cal;
 
 
+% [~,files_to_load]=surv_input_obj.check_n_complete_input();
+
 snapshots=surv_input_obj.Snapshots;
-u=0;
+
 layers=layer_cl.empty();
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
-    survey_struct=import_survey_data_xml(fullfile(snapshots{isn}.Folder,'echo_logbook.xml'));
     
     for ist=1:length(stratum)
         strat_name=stratum{ist}.Name;
@@ -42,31 +42,31 @@ for isn=1:length(snapshots)
             
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
-                %                 if ~isempty(layers)
-                %                     [idx_lays,found]=layers.find_layer_idx_files_path(filenames_cell{ifiles});
-                %                 else
-                %                     found=0;
-                %                 end
-                %                 if found
-                %                     layers_in=[layers_in layers(idx_lays)];
-                %                     layers(idx_lays)=[];
-                %                 else
-                if exist(fileN,'file')==2
-                    new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
-                        'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
-                    [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
-                    if found==0
-                        warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
+                if ~isempty(layers)
+                    [idx_lays,found]=layers.find_layer_idx_files_path(fileN);
+                else
+                    found=0;
+                end
+                if found
+                    layers_in=[layers_in layers(idx_lays)];
+                    layers(idx_lays)=[];
+                else
+                    if exist(fileN,'file')==2
+                        new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
+                            'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
+                        [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
+                        if found==0
+                            warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
+                            continue;
+                        end
+                        
+                        layers_in=[layers_in new_lay];
+                        clear new_lay;
+                    else
+                        warning('Cannot Find specified file %s',filenames_cell{ifiles});
                         continue;
                     end
-                    
-                    layers_in=[layers_in new_lay];
-                    clear new_lay;
-                else
-                    warning('Cannot Find specified file %s',filenames_cell{ifiles});
-                    continue;
                 end
-                %                 end
             end
             
             if ~isempty(layers_in)
@@ -92,24 +92,9 @@ for isn=1:length(snapshots)
                 end
                 layer_new.Transceivers(idx_freq).apply_absorption(options.Absorption/1e3);
                 
-                surv=survey_struct.SurvDataObj{strcmp(survey_struct.Voyage,infos.Voyage)...
-                    &strcmp(survey_struct.SurveyName,infos.SurveyName)...
-                    &strcmp(survey_struct.Stratum,strat_name)...
-                    &survey_struct.Snapshot==snap_num...
-                    &survey_struct.Transect==trans_num};
- 
-                layer_new.set_survey_data(surv);
+                layer_new.load_echo_logbook();
                 
-                if isfield(bot,'file')
-                    if exist(fullfile(snapshots{isn}.Folder,bot.file),'file')>0
-                        layer_new.Transceivers(idx_freq).setBottom_from_evl(fullfile(snapshots{isn}.Folder,bot.file));
-                    else
-                        warning('Cannot find bottom for file %s',layer_new.Filename{1});
-                    end
-                    layer_new.save_bot_regs('save_regs',0);
-                end
-                
-                
+              
                 if isfield(bot,'ver')
                     layer_new.load_bot_regs('reg_ver',0);
                 end
@@ -123,35 +108,17 @@ for isn=1:length(snapshots)
                             else
                                 IDs=regs{ire}.IDs;
                             end
-                            layer_new.load_bot_regs('bot_ver',0,'IDs',IDs);
+                            if ~isempty(ID)
+                                layer_new.load_bot_regs('bot_ver',0,'IDs',IDs);
+                            else
+                                layer_new.load_bot_regs('bot_ver',0);
+                            end
                         else
                             layer_new.load_bot_regs('bot_ver',0);
                         end
                     end
                 end
                 
-                nb_reg_out=0;
-                for ire=1:length(regs)
-                    if isfield(regs{ire},'file')
-                        nb_reg_out=nb_reg_out+1;
-                        if  exist(fullfile(snapshots{isn}.Folder,regs{ire}.file),'file')>0
-                            new_reg=create_regions_from_evr(fullfile(snapshots{isn}.Folder,regs{ire}.file),layer_new.Transceivers(idx_freq).Data.get_range(),layer_new.Transceivers(idx_freq).Data.Time);
-                            if isempty(new_reg)
-                                continue;
-                            end
-                            for iur=1:length(new_reg)
-                                new_reg(iur).Remove_ST=options.Remove_ST;
-                            end
-                            layer_new.Transceivers(idx_freq).add_region(new_reg);
-                        else
-                            warning('Cannot find region for file %s',layer_new.Filename{:});
-                        end
-                    end
-                end
-                
-                if nb_reg_out>=1
-                    layer_new.save_bot_regs('save_bot',0);
-                end
                 
                 for ire=1:length(regs)
                     if isfield(regs{ire},'name')
@@ -265,7 +232,7 @@ for isn=1:length(snapshots)
                 
                 
             end
-            u=u+1;
+            u=length(layers)+1;
             layers(u)=layer_new;
         end
         clear layers_out_temp;
