@@ -25,7 +25,7 @@ if ~iscell(Filename)
 end
 
 for i=1:length(Filename)
-    try
+%     try
         surv_obj=survey_cl();
         surv_obj.SurvInput=parse_survey_xml(fullfile(PathToFile,Filename{i}));
         
@@ -58,18 +58,18 @@ for i=1:length(Filename)
         
         
         if ~isempty(layers_old)
-           [old_files,ID_nums_old]=layers_old.list_files_layers();
-           [new_files,~]=layers_new.list_files_layers();
-           idx_already_open=cellfun(@(x) nansum(strcmpi(x,new_files))>0,old_files);
-           layers_old=layers_old.delete_layers(ID_nums_old(idx_already_open>0)); 
+            [old_files,ID_nums_old]=layers_old.list_files_layers();
+            [new_files,~]=layers_new.list_files_layers();
+            idx_already_open=cellfun(@(x) nansum(strcmpi(x,new_files))>0,old_files);
+            layers_old=layers_old.delete_layers(ID_nums_old(idx_already_open>0));
         end
         
         layers_old=[layers_old layers_new];
         
-    catch err
-        disp(err.message);
-        warning('Could not process survey described in file %s\n',Filename{i});
-    end
+%     catch err
+%         disp(err.message);
+%         warning('Could not process survey described in file %s\n',Filename{i});
+%     end
 end
 
 layers=layers_old;
@@ -82,11 +82,11 @@ if  found==1
     layers=layers.delete_layers(0);
 end
 
-
-layer=layers(end);
-setappdata(main_figure,'Layer',layer);
-setappdata(main_figure,'Layers',layers);
-
-update_display(main_figure,1);
-
+if ~isempty(layer)
+    layer=layers(end);
+    setappdata(main_figure,'Layer',layer);
+    setappdata(main_figure,'Layers',layers);
+    
+    update_display(main_figure,1);
+end
 end

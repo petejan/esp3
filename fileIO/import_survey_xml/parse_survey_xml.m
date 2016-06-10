@@ -14,6 +14,7 @@ Regions_WC={};
 nb_child=length(xml_struct.Children);
 nb_reg=0;
 nb_snap=0;
+
 for i=1:nb_child
     switch xml_struct.Children(i).Name
         case 'survey'
@@ -22,10 +23,10 @@ for i=1:nb_child
            Cal=get_node_att(xml_struct.Children(i));
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
-           if ~isempty(Options.FrequenciesToLoad)
-                Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
+           if isfield(Options,'FrequenciesToLoad')
+                Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,' '));
+                Options.FrequenciesToLoad(isnan(Options.FrequenciesToLoad))=[];
            end
-
         case 'algos'
             Algos=get_algos(xml_struct.Children(i));
         case 'regions_WC'
@@ -94,7 +95,7 @@ for iu=1:length(trans_nodes)
     end
     transects{iu}=trans_curr;
 end
-
+    
 
 end
 

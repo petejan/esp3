@@ -140,8 +140,6 @@ end
         
         axes_panel_comp=display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom,col);
         set_alpha_map(main_figure);
-        display_tab_comp=getappdata(main_figure,'Display_tab');
-        set_alpha_map(main_figure,'echo_ax',display_tab_comp.mini_ax,'echo_im',display_tab_comp.mini_echo);
 
     end
 end

@@ -5,16 +5,16 @@ lines_tab_comp=getappdata(main_figure,'Lines_tab');
 
 if ~isempty(layer)
     if ~isempty(layer.Filename)
-        [~,path,~]=fileparts(layer.Filename{1});
+        [path_f,~,~]=fileparts(layer.Filename{1});
     else
-        path=pwd;
+        path_f=pwd;
     end
     
 else
     return;
 end
 
-[Filename,path_line]= uigetfile({fullfile(path,'*.evl;*.dat;*.txt;*.mat;*converted.cnv')}, 'Pick a line file','MultiSelect','off');
+[Filename,path_line]= uigetfile({fullfile(path_f,'*.evl;*.dat;*.txt;*.mat;*converted.cnv')}, 'Pick a line file','MultiSelect','off');
 if Filename==0
     return;
 end

@@ -8,7 +8,6 @@ addParameter(p,'PathToMemmap','',@ischar)
 
 parse(p,surv_input_obj,varargin{:});
 
-
 datapath=p.Results.PathToMemmap;
 infos=surv_input_obj.Infos;
 options=surv_input_obj.Options;
@@ -19,9 +18,12 @@ cal=surv_input_obj.Cal;
 
 snapshots=surv_input_obj.Snapshots;
 u=0;
+layers=layer_cl.empty();
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
+    survey_struct=import_survey_data_xml(fullfile(snapshots{isn}.Folder,'echo_logbook.xml'));
+    
     for ist=1:length(stratum)
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
@@ -40,6 +42,15 @@ for isn=1:length(snapshots)
             
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
+                %                 if ~isempty(layers)
+                %                     [idx_lays,found]=layers.find_layer_idx_files_path(filenames_cell{ifiles});
+                %                 else
+                %                     found=0;
+                %                 end
+                %                 if found
+                %                     layers_in=[layers_in layers(idx_lays)];
+                %                     layers(idx_lays)=[];
+                %                 else
                 if exist(fileN,'file')==2
                     new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
                         'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
@@ -55,7 +66,7 @@ for isn=1:length(snapshots)
                     warning('Cannot Find specified file %s',filenames_cell{ifiles});
                     continue;
                 end
-                
+                %                 end
             end
             
             if ~isempty(layers_in)
@@ -81,7 +92,12 @@ for isn=1:length(snapshots)
                 end
                 layer_new.Transceivers(idx_freq).apply_absorption(options.Absorption/1e3);
                 
-                surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.Title,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
+                surv=survey_struct.SurvDataObj{strcmp(survey_struct.Voyage,infos.Voyage)...
+                    &strcmp(survey_struct.SurveyName,infos.SurveyName)...
+                    &strcmp(survey_struct.Stratum,strat_name)...
+                    &survey_struct.Snapshot==snap_num...
+                    &survey_struct.Transect==trans_num};
+ 
                 layer_new.set_survey_data(surv);
                 
                 if isfield(bot,'file')
@@ -236,17 +252,17 @@ for isn=1:length(snapshots)
                             layer_new.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
                             
                             if options.Classify_schools==1
-                               idx_sch=layer_new.Transceivers(idx_freq).list_regions_name('School');
-                               new_figs=layer_new.apply_classification(idx_freq,idx_sch);
-                               close(new_figs);
+                                idx_sch=layer_new.Transceivers(idx_freq).list_regions_name('School');
+                                new_figs=layer_new.apply_classification(idx_freq,idx_sch);
+                                close(new_figs);
                             end
                     end
                     
+                    [idx_algo,~]=layer_new.Transceivers(idx_freq).find_algo_idx(algos{ial}.Name);
+                    layer_new.Transceivers(idx_freq).Algo(idx_algo)=algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin);
                     
                 end
                 
-                [idx_algo,~]=layer_new.Transceivers(idx_freq).find_algo_idx(algos{ial}.Name);
-                layer_new.Transceivers(idx_freq).Algo(idx_algo)=algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin);
                 
             end
             u=u+1;

@@ -15,11 +15,11 @@ end
 
 if new==1
     load_cursor_tool(main_figure);
-    load_display_tab(main_figure,main_childs(idx_opt)); 
+    load_display_tab(main_figure,main_childs(idx_opt));
     load_regions_tab(main_figure,main_childs(idx_opt));
     load_lines_tab(main_figure,main_childs(idx_opt));
     load_calibration_tab(main_figure,main_childs(idx_opt));
-    load_processing_tab(main_figure,main_childs(idx_opt));   
+    load_processing_tab(main_figure,main_childs(idx_opt));
     load_bottom_tab(main_figure,main_childs(idx_algo));
     load_bad_pings_tab(main_figure,main_childs(idx_algo));
     load_denoise_tab(main_figure,main_childs(idx_algo));
@@ -34,7 +34,7 @@ if new==1
             x_vec=layer.Transceivers(idx_freq).Data.Time*(24*60*60);
         case 'Distance'
             x_vec=layer.Transceivers(idx_freq).GPSDataPing.Dist;
-        case 'Number'  
+        case 'Number'
             x_vec=layer.Transceivers(idx_freq).Data.get_numbers();
     end
     
@@ -44,7 +44,7 @@ if new==1
 else
     selected_opt_tab=get(main_childs(idx_opt),'SelectedTab');
     active_opt_tab=selected_opt_tab.Title;
-        
+    
     update_bottom_tab(main_figure)
     update_bad_pings_tab(main_figure)
     update_denoise_tab(main_figure);
@@ -52,11 +52,11 @@ else
     update_single_target_tab(main_figure);
     update_track_target_tab(main_figure);
     update_processing_tab(main_figure);
-    update_display_tab(main_figure); 
+    update_display_tab(main_figure);
     update_regions_tab(main_figure);
     
     load_calibration_tab(main_figure,main_childs(idx_opt));
-   
+    
     opt_tabs=get(main_childs(idx_opt),'children');
     
     for i=1:length(opt_tabs)
@@ -64,12 +64,14 @@ else
             set(main_childs(idx_opt),'SelectedTab',opt_tabs(i));
         end
     end
-
+    
     
 end
 
 load_info_panel(main_figure);
 load_axis_panel(main_figure,new);
+update_mini_ax(main_figure,new);
+
 change_grid_callback([],[],main_figure);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 

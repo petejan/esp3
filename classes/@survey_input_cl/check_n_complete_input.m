@@ -12,7 +12,7 @@ infos=surv_input_obj.Infos;
 % algos=surv_input_obj.Algos;
 % cal=surv_input_obj.Cal;
 
-surveyName=infos.Title;
+surveyName=infos.SurveyName;
 voyage=infos.Voyage;
 
 

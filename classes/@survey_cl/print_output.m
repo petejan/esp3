@@ -12,6 +12,7 @@
                 fprintf(fid,'title: %s\n', surv_obj.SurvInput.Infos.Title);
                 fprintf(fid,'main_species: %s\n', surv_obj.SurvInput.Infos.Main_species);
                 fprintf(fid,'voyage: %s\n', surv_obj.SurvInput.Infos.Voyage);
+                 fprintf(fid,'survey name: %s\n', surv_obj.SurvInput.Infos.SurveyName);
                 fprintf(fid,'areas: %s\n', surv_obj.SurvInput.Infos.Areas);
                 fprintf(fid,'author: %s\n', surv_obj.SurvInput.Infos.Author);
                 fprintf(fid,'created: %s\n', surv_obj.SurvInput.Infos.Created);

@@ -1,5 +1,8 @@
 function [idx_lays,found]=find_layer_idx_files_path(layers,filenames)
 
+if~iscell(filenames)
+    filenames={filenames};
+end
 
 [filenames_lays,layer_IDs]=layers.list_files_layers();
 

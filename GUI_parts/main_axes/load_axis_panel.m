@@ -150,7 +150,6 @@ reverse_y_axis(main_figure);
 display_regions(main_figure)
 display_lines(main_figure)
 set_alpha_map(main_figure);
-update_mini_ax(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
 
 end

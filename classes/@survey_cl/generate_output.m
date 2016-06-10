@@ -34,7 +34,7 @@ for it=1:length(layers)
         end_time(nb_survd)=survd.EndTime;
         start_time(nb_survd)=survd.StartTime;
         idx_freq=find_freq_idx(layers(it),surv_in_obj.Options.Frequency);
-        idx_reg=layers(nb_survd).Transceivers(idx_freq).list_regions_type('Data');
+        idx_reg=layers(it).Transceivers(idx_freq).list_regions_type('Data');
         nb_reg_lay(nb_survd)=length(idx_reg);
         layer_idx(nb_survd)=it;
     end
@@ -46,7 +46,7 @@ nb_reg=nansum(nb_reg_lay);
 
 [~,nb_strat,nb_trans]=get_num_trans(snap_lay,strat_lay,trans_lay);
 
-surv_out_obj=survey_output_cl(nb_strat,nb_trans,nb_reg);
+surv_out_obj=survey_output_cl(nansum(nb_strat(:)),nansum(nb_trans(:)),nb_reg);
 snapshots=surv_in_obj.Snapshots;
 
 i_trans=0;
@@ -55,6 +55,7 @@ for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
     for ist=1:length(stratum)
+
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
         for itr=1:length(transects)
@@ -222,8 +223,8 @@ for isn=1:length(snapshots)
                 end%end of regions iteration for this file
             end%end of layer iteration for this transect
             
-            gps_tot=layers(idx_lay(1)).Transceivers(idx_freq).GPSDataPing;
-            bot_tot=layers(idx_lay(1)).Transceivers(idx_freq).Bottom;
+            gps_tot=layers(layer_idx(idx_lay(1))).Transceivers(idx_freq).GPSDataPing;
+            bot_tot=layers(layer_idx(idx_lay(1))).Transceivers(idx_freq).Bottom;
             dist_tot = m_lldist([gps_tot.Long(1) gps_tot.Long(end)],[gps_tot.Lat(1) gps_tot.Lat(end)])/1.852;% get distance as esp2 does... Straigth line estimate
             time_s_tot = gps_tot.Time(1);
             time_e_tot = gps_tot.Time(end);
@@ -231,12 +232,12 @@ for isn=1:length(snapshots)
             if length(idx_lay)>1
                 for i=2:length(idx_lay)
                     idx_freq=find_freq_idx(layers(idx_lay(i)),38000);
-                    if layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
-                        bot_tot=concatenate_Bottom(bot_tot,layers(idx_lay(i)).Transceivers(idx_freq).Bottom);
+                    if layers(layer_idx(idx_lay(i))).Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
+                        bot_tot=concatenate_Bottom(bot_tot,layers(layer_idx(idx_lay(i))).Transceivers(idx_freq).Bottom);
                     else
-                        bot_tot=concatenate_Bottom(layers(idx_lay(i)).Transceivers(idx_freq).Bottom,bot_tot);
+                        bot_tot=concatenate_Bottom(layers(layer_idx(idx_lay(i))).Transceivers(idx_freq).Bottom,bot_tot);
                     end
-                    gps_add=layers(idx_lay(i)).Transceivers(idx_freq).GPSDataPing;
+                    gps_add=layers(layer_idx(idx_lay(i))).Transceivers(idx_freq).GPSDataPing;
                     gps_tot=concatenate_GPSData(gps_tot,gps_add);
                     
                     dist_tot = dist_tot+m_lldist([gps_add.Long(1) gps_add.Long(end)],[gps_add.Lat(1) gps_add.Lat(end)])/1.852;
@@ -309,51 +310,53 @@ end
 
 %% Stratum Summary (1st mbs Output block)
 
-for isn = 1:length(snap_vec)
+i_strat=0;
+snapshots=unique(snap_vec);
+for isn = 1:length(snapshots)
     % loop over all snapshots and get Data subset
-    ix = find(surv_out_obj.transectSum.snapshot==snap_vec(isn));
+    ix = find(surv_out_obj.transectSum.snapshot==snapshots(isn));
     strats = unique(surv_out_obj.transectSum.stratum(ix));
     
     for j = 1:length(strats)
+        i_strat=i_strat+1;
         % loop over all strata and get Data subset
         jx = strcmpi(surv_out_obj.transectSum.stratum(ix), strats{j});
         idx=ix(jx);
         
-        surv_out_obj.stratumSum.snapshot(j) =surv_out_obj.transectSum.snapshot(ix(1));
-        surv_out_obj.stratumSum.stratum{j} =surv_out_obj.transectSum.stratum{ix(1)};
-        surv_out_obj.stratumSum.time_start(j) = nanmin(surv_out_obj.transectSum.time_start(idx));
-        surv_out_obj.stratumSum.time_end(j) = nanmin(surv_out_obj.transectSum.time_end(idx));
-        surv_out_obj.stratumSum.no_transects(j) = length(surv_out_obj.transectSum.transect(idx));
+        surv_out_obj.stratumSum.snapshot(i_strat) =surv_out_obj.transectSum.snapshot(idx(1));
+        surv_out_obj.stratumSum.stratum{i_strat} =surv_out_obj.transectSum.stratum{idx(1)};
+        surv_out_obj.stratumSum.time_start(i_strat) = nanmin(surv_out_obj.transectSum.time_start(idx));
+        surv_out_obj.stratumSum.time_end(i_strat) = nanmin(surv_out_obj.transectSum.time_end(idx));
+        surv_out_obj.stratumSum.no_transects(i_strat) = length(surv_out_obj.transectSum.transect(idx));
         sum_abscf=nansum(surv_out_obj.transectSum.abscf(idx));
-        surv_out_obj.stratumSum.abscf_mean(j) =sum_abscf/surv_out_obj.stratumSum.no_transects(j) ;
+        surv_out_obj.stratumSum.abscf_mean(i_strat) =sum_abscf/surv_out_obj.stratumSum.no_transects(i_strat) ;
         sum_sq_abscf=nansum((surv_out_obj.transectSum.abscf(idx)).^2);
         
         dist=surv_out_obj.transectSum.dist(idx);
         trans_abscf=surv_out_obj.transectSum.abscf(idx);
-        abscf_mean_j=surv_out_obj.stratumSum.abscf_mean(j);
+        abscf_mean_j=surv_out_obj.stratumSum.abscf_mean(i_strat);
         
-        nb_trans_j=surv_out_obj.stratumSum.no_transects(j);
+        nb_trans_j=surv_out_obj.stratumSum.no_transects(i_strat);
         
-        if surv_out_obj.stratumSum.no_transects(j)>1
-            surv_out_obj.stratumSum.abscf_sd(j) = sqrt((sum_sq_abscf-abscf_mean_j.^2.*nb_trans_j)/(nb_trans_j-1)); %
+        if surv_out_obj.stratumSum.no_transects(i_strat)>1
+            surv_out_obj.stratumSum.abscf_sd(i_strat) = sqrt((sum_sq_abscf-abscf_mean_j.^2.*nb_trans_j)/(nb_trans_j-1)); %
         else
-            surv_out_obj.stratumSum.abscf_sd(j)=0;
+            surv_out_obj.stratumSum.abscf_sd(i_strat)=0;
         end
         
-        surv_out_obj.stratumSum.abscf_wmean(j) = nansum(dist.*trans_abscf)/...
+        surv_out_obj.stratumSum.abscf_wmean(i_strat) = nansum(dist.*trans_abscf)/...
             nansum(dist); % abscf_wmean according to esp2 formula
-        abscf_wmean_j=surv_out_obj.stratumSum.abscf_wmean(j);
+        abscf_wmean_j=surv_out_obj.stratumSum.abscf_wmean(i_strat);
         
         if nb_trans_j>1
-            surv_out_obj.stratumSum.abscf_var(j) = nb_trans_j*(nansum(dist.^2.*trans_abscf.^2)-2*abscf_wmean_j*nansum(dist.^2.*trans_abscf)+abscf_wmean_j^2*nansum(dist.^2))...
+            surv_out_obj.stratumSum.abscf_var(i_strat) = nb_trans_j*(nansum(dist.^2.*trans_abscf.^2)-2*abscf_wmean_j*nansum(dist.^2.*trans_abscf)+abscf_wmean_j^2*nansum(dist.^2))...
                 /((nb_trans_j-1)*nansum(dist.^2)); % abscf_var according to esp2 formula
         else
-            surv_out_obj.stratumSum.abscf_var(j)=0;
+            surv_out_obj.stratumSum.abscf_var(i_strat)=0;
         end
-    end
-    surv_obj.SurvOutput=surv_out_obj;
+    end   
 end
-
+surv_obj.SurvOutput=surv_out_obj;
 
 
 
