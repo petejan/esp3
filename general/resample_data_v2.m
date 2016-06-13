@@ -45,7 +45,7 @@ end
 
 idx_nan=find(isnan(ydata_new));
 idx_nonan_ori=find(~isnan(ydata));
-if ~isempty(idx_nan)&&strcmp(p.Results.Opt,'Linear')&&~isempty(idx_nonan_ori)
+if ~isempty(idx_nan)&&~isempty(idx_nonan_ori)
     idx_nearest=nan(1,length(idx_nan));
     dx=nanmean(diff(xdata_n));
     dx_old=nanmean(diff(xdata));

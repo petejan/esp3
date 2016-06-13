@@ -8,19 +8,10 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
-Time=trans.Data.Time;
+
 Number=trans.Data.get_numbers();
 Range=trans.Data.get_range();
-Dist=trans.GPSDataPing.Dist;
 
-% switch curr_disp.Xaxes
-%     case 'Time'
-%         xdata=Time;
-%     case 'Distance'
-%         xdata=Dist;
-%     case 'Number'
-%     xdata=Number;    
-% end
 xdata=Number;
 ydata=Range;
 
@@ -29,7 +20,9 @@ switch callbackdata.Key
         set(main_figure,'KeyPressFcn','');
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
+        
         if ~isfield(axes_panel_comp,'main_echo')
+            set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
             return;
         end
         
@@ -40,32 +33,36 @@ switch callbackdata.Key
         switch callbackdata.Key
             case 'leftarrow'
                 if x_lim(1)<=xdata(1)
+                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    x_lim=[nanmax(xdata(1),x_lim(1)-dx/4),nanmax(xdata(1),x_lim(1)-dx/4)+dx];
+                    x_lim=[nanmax(xdata(1),x_lim(1)-3*dx/4),nanmax(xdata(1),x_lim(1)-3*dx/4)+dx];
                 end
                 set(main_axes,'xlim',x_lim);
                 set(main_axes,'ylim',y_lim);
             case 'rightarrow'
                 if x_lim(2)>=xdata(end)
+                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    x_lim=[nanmin(xdata(end),x_lim(2)+dx/4)-dx,nanmin(xdata(end),x_lim(2)+dx/4)];
+                    x_lim=[nanmin(xdata(end),x_lim(2)+3*dx/4)-dx,nanmin(xdata(end),x_lim(2)+3*dx/4)];
                 end
                 set(main_axes,'xlim',x_lim);
                 set(main_axes,'ylim',y_lim);
             case 'downarrow'
                 if y_lim(2)>=ydata(end)
+                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    y_lim=[nanmin(ydata(end),y_lim(2)+dy/4)-dy,nanmin(ydata(end),y_lim(2)+dy/4)];
+                    y_lim=[nanmin(ydata(end),y_lim(2)+2*dy/4)-dy,nanmin(ydata(end),y_lim(2)+2*dy/4)];
                 end
                 set(main_axes,'ylim',y_lim);
             case 'uparrow'
                 if y_lim(1)<=ydata(1)
+                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    y_lim=[nanmax(ydata(1),y_lim(1)-dy/4),nanmax(ydata(1),y_lim(1)-dy/4)+dy];
+                    y_lim=[nanmax(ydata(1),y_lim(1)-2*dy/4),nanmax(ydata(1),y_lim(1)-2*dy/4)+dy];
                 end
                 set(main_axes,'ylim',y_lim);
         end

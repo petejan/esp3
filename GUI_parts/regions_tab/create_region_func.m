@@ -12,7 +12,7 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 
-tag='';
+tag=get(region_tab_comp.tag,'string');
 
 shape_types=get(region_tab_comp.shape_type,'string');
 shape_type_idx=get(region_tab_comp.shape_type,'value');
@@ -39,8 +39,8 @@ range=double(Transceiver.Data.get_range());
 samples=(1:length(range))';
 pings=double(Transceiver.Data.get_numbers());
 
-sub_y=samples(idx_r);
-sub_x=pings(idx_pings);
+% sub_y=samples(idx_r);
+% sub_x=pings(idx_pings);
 
 cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));

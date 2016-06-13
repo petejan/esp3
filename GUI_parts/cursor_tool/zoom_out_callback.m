@@ -33,14 +33,15 @@ switch src.SelectionType
         x_lim(x_lim>nanmax(xdata_tot))=nanmax(xdata_tot);
         x_lim(x_lim<nanmin(xdata_tot))=nanmin(xdata_tot);
         
-        if diff(x_lim)>screensize(3)
-           x_lim=[nanmean(x_lim_ori)-screensize(3)/2 nanmean(x_lim_ori)+screensize(3)/2];
-        end
+%         if diff(x_lim)>screensize(3)
+%            x_lim=[nanmean(x_lim_ori)-screensize(3)/2 nanmean(x_lim_ori)+screensize(3)/2];
+%         end
         
         y_lim(y_lim>nanmax(ydata_tot))=nanmax(ydata_tot);
         y_lim(y_lim<nanmin(ydata_tot))=nanmin(ydata_tot);
     case {'alt','open'}
-        x_lim=[nanmin(xdata_tot) nanmin(xdata_tot)+screensize(3)];
+        %x_lim=[nanmin(xdata_tot) nanmin(xdata_tot)+screensize(3)];
+        x_lim=[nanmin(xdata_tot) nanmax(xdata_tot)];
         y_lim=[nanmin(ydata_tot) nanmax(ydata_tot)];
     otherwise
         return;

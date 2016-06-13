@@ -18,13 +18,13 @@ vert_slice = surv_in_obj.Options.Vertical_slice_size;
 % snap_lay=nan(1,length(layers));
 % strat_lay=cell(1,length(layers));
 % trans_lay=nan(1,length(layers));
-% nb_reg_lay=nan(1,length(layers));
+
 nb_survd=0;
 for it=1:length(layers)
     
     for is=1:length(layers(it).SurveyData)
         nb_survd=nb_survd+1;
-        survd=layers(it).get_survey_data('Idx',is);    
+        survd=layers(it).get_survey_data('Idx',is);
         if isempty(survd)
             nb_survd=nb_survd-1;
         end
@@ -35,18 +35,18 @@ for it=1:length(layers)
         start_time(nb_survd)=survd.StartTime;
         idx_freq=find_freq_idx(layers(it),surv_in_obj.Options.Frequency);
         idx_reg=layers(it).Transceivers(idx_freq).list_regions_type('Data');
-        nb_reg_lay(nb_survd)=length(idx_reg);
         layer_idx(nb_survd)=it;
     end
     
 end
 
-nb_reg=nansum(nb_reg_lay);
-[snap_vec,~,~]=surv_in_obj.list_transects();
 
-[~,nb_strat,nb_trans]=get_num_trans(snap_lay,strat_lay,trans_lay);
+[snap_vec,strat_vec,trans_vec,reg_nb_vec]=surv_in_obj.list_transects();
 
-surv_out_obj=survey_output_cl(nansum(nb_strat(:)),nansum(nb_trans(:)),nb_reg);
+[~,~,strat_vec_num]=unique(strat_vec);
+trans_triple=unique([snap_vec;strat_vec_num';trans_vec]','rows');
+strat_couple=unique([snap_vec;strat_vec_num']','rows');
+surv_out_obj=survey_output_cl(size(strat_couple,1),size(trans_triple,1),nansum(reg_nb_vec));
 snapshots=surv_in_obj.Snapshots;
 
 i_trans=0;
@@ -55,7 +55,7 @@ for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
     for ist=1:length(stratum)
-
+        
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
         for itr=1:length(transects)
@@ -90,7 +90,7 @@ for isn=1:length(snapshots)
                 if ~isempty(trans_obj_tr.ST.TS_comp)
                     nb_st=nb_st+length(trans_obj_tr.ST.TS_comp);
                 end
-                                  
+                
                 if ~isempty(trans_obj_tr.Tracks)
                     nb_tracks=nb_tracks+length(trans_obj_tr.Tracks.target_id);
                     lat_st=trans_obj_tr.GPSDataPing.Lat(trans_obj_tr.ST.Ping_number);
@@ -120,10 +120,53 @@ for isn=1:length(snapshots)
                     
                 end
                 
-                idx_reg=trans_obj_tr.list_regions_type('Data');
-                reg_tot=trans_obj_tr.get_reg_spec(idx_reg);
+                regs=transects{itr}.Regions;
+                idx_reg=[];
+                nb_reg=0;
+                reg_tot=[];
+                for ireg=1:length(regs)
+                    idx_temp=[];
+                    if isfield(regs{ireg},'ver')
+                        IDs=strsplit(regs{ireg}.IDs,';');
+                        if nansum(strcmp(IDs,''))>0
+                            idx_temp=trans_obj_tr.list_regions_type('Data');
+                            reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+                            idx_reg=union(idx_reg,idx_temp);
+                            reg_tot=[reg_tot reg_temp];
+                        else
+                            for i_sub_reg=1:length(IDs)
+                                out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
+                                
+                                idx_temp=trans_obj_tr.list_regions_ID(abs(out_cell{1}));
+                                reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+                                if ~isempty(out_cell{2});
+                                    reg_temp.startDepth=out_cell{2};
+                                end
+                                if ~isempty(out_cell{3});
+                                    reg_temp.finishDepth=out_cell{3};
+                                end
+                                reg_tot=[reg_tot reg_temp];
+                                idx_reg=union(idx_reg,idx_temp);
+                            end
+                            
+                        end
+                    elseif isfield(regs{ireg},'WC')
+                        idx_temp=trans_obj_tr.list_regions_name('WC');
+                        reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+                        idx_reg=union(idx_reg,idx_temp);
+                    elseif isfield(regs{ireg},'School')
+                        idx_temp=trans_obj_tr.list_regions_name('School');
+                        reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+                         reg_tot=[reg_tot reg_temp];
+                         idx_reg=union(idx_reg,idx_temp);
+                    end
+                    
+                end
+                
                 
                 [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',start_time(ilay),'EndTime',end_time(ilay));
+                %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',start_time(ilay),'EndTime',end_time(ilay));
+                
                 Output_echo=[Output_echo sliced_output];
                 
                 for j=1:length(regs)
@@ -135,8 +178,9 @@ for isn=1:length(snapshots)
                     stopPing = regCellInt.Ping_E(end);
                     ix = (startPing:stopPing);
                     ix_good=intersect(ix,find(trans_obj_tr.Bottom.Tag>0));
+                    
                     good_bot=bot.Range(ix_good);
-
+                    
                     
                     switch reg_curr.Reference
                         case 'Surface';
@@ -225,7 +269,7 @@ for isn=1:length(snapshots)
             
             gps_tot=layers(layer_idx(idx_lay(1))).Transceivers(idx_freq).GPSDataPing;
             bot_tot=layers(layer_idx(idx_lay(1))).Transceivers(idx_freq).Bottom;
-
+            
             if length(idx_lay)>1
                 for i=2:length(idx_lay)
                     idx_freq=find_freq_idx(layers(idx_lay(i)),38000);
@@ -241,7 +285,7 @@ for isn=1:length(snapshots)
             end
             
             gps_tot.Long(gps_tot.Long>180)=gps_tot.Long(gps_tot.Long>180)-360;
-           
+            
             
             idx_pings=1:length(gps_tot.Time);
             idx_good_pings=intersect(idx_pings,find(bot_tot.Tag>0&gps_tot.Time'>=nanmin(start_time(idx_lay))&gps_tot.Time'<=nanmax(end_time(idx_lay))));
@@ -266,7 +310,7 @@ for isn=1:length(snapshots)
             surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
             surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
             
-           %Tracks/ST transect summary
+            %Tracks/ST transect summary
             surv_out_obj.transectSumTracks.snapshot(i_trans) = snap_num;
             surv_out_obj.transectSumTracks.stratum{i_trans} = strat_name;
             surv_out_obj.transectSumTracks.transect(i_trans) = trans_num;
@@ -346,7 +390,7 @@ for isn = 1:length(snapshots)
         else
             surv_out_obj.stratumSum.abscf_var(i_strat)=0;
         end
-    end   
+    end
 end
 surv_obj.SurvOutput=surv_out_obj;
 

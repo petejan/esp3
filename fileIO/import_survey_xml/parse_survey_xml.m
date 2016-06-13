@@ -14,17 +14,19 @@ Regions_WC={};
 nb_child=length(xml_struct.Children);
 nb_reg=0;
 nb_snap=0;
+nb_cal=0;
 
 for i=1:nb_child
     switch xml_struct.Children(i).Name
         case 'survey'
            Infos=get_node_att(xml_struct.Children(i));
         case 'cal'
-           Cal=get_node_att(xml_struct.Children(i));
+            nb_cal=nb_cal+1;
+           Cal(nb_cal)=get_node_att(xml_struct.Children(i));
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
            if isfield(Options,'FrequenciesToLoad')
-                Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,' '));
+                Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
                 Options.FrequenciesToLoad(isnan(Options.FrequenciesToLoad))=[];
            end
         case 'algos'

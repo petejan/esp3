@@ -82,6 +82,7 @@ classdef survey_input_cl < handle
                         snapshot_vec(nb_trans)=snap_num;
                         stratum_vec{nb_trans}=strat_name;
                         transect_vec(nb_trans)=trans_num;
+                        reg_num_vec(nb_trans)=length(transects{itr}.Regions);
                     end
                 end
                 

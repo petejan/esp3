@@ -42,6 +42,6 @@ end
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,flag);
-
+update_mini_ax(main_figure,0);
 end
 

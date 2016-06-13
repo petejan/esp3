@@ -48,11 +48,6 @@ Range=trans.Data.get_range();
 
 set(display_tab_comp.tog_type,'String',trans.Data.Type,'Value',idx_field);
 
-if isfield(axes_panel_comp,'axes_listener_xlim')
-    delete(axes_panel_comp.axes_listener_xlim);
-    delete(axes_panel_comp.axes_listener_ylim);
-end
-
 if new==1
     delete(allchild(axes_panel_comp.axes_panel));
     

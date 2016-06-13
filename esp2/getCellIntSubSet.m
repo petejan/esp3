@@ -21,7 +21,7 @@ switch refType
                 sd(:,i) = regCellInt.y_node(:,i)-regCellInt.height(:,i)/2 >= reg.startDepth;
             end
             if ~isnan(reg.finishDepth);
-                sd(:,i) = regCellInt.y_node(:,i)+regCellInt.height(:,i)/2 < reg.finishDepth;
+                fd(:,i) = regCellInt.y_node(:,i)+regCellInt.height(:,i)/2 < reg.finishDepth;
             end
         end
 end

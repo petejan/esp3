@@ -39,21 +39,30 @@ for isn=1:length(snapshots)
             bot=transects{itr}.Bottom;
             cal_t=transects{itr}.Cal;
             layers_in=[];
-            
+            new_lays=0;
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
+                
                 if ~isempty(layers)
-                    [idx_lays,found]=layers.find_layer_idx_files_path(fileN);
+                    [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN);
                 else
-                    found=0;
+                    found_lay=0;
+                    new_lays=1;
                 end
-                if found
+                
+                if found_lay>0
                     layers_in=[layers_in layers(idx_lays)];
                     layers(idx_lays)=[];
+                    continue;
                 else
+                    new_lays=1;
                     if exist(fileN,'file')==2
                         new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
                             'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
+                        
+                         new_lay=open_EK80_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
+                              'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                        
                         [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
                         if found==0
                             warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
@@ -74,7 +83,16 @@ for isn=1:length(snapshots)
                 clear layers_in;
             else
                 warning('Could not find any files in this transect...');
-                layers_out_temp=[];
+                continue;
+            end
+            
+            if new_lays==0 
+                for i_lay=1:length(layers_out_temp)
+                    layer_new=layers_out_temp(i_lay);
+                    u=length(layers)+1;
+                    layers(u)=layer_new;
+                end
+                continue;
             end
             
             
@@ -86,38 +104,37 @@ for isn=1:length(snapshots)
                 layer_new=layers_out_temp(i_lay);
                 
                 if isempty(cal_t)
-                    layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
+                    if length(cal)>1
+                        for ifcal=1:length(layer_new.Frequencies)
+                            if ~isempty(find(cal(:).FREQ==layer_new.Frequencies(ifcal), 1))
+                            layer_new.Transceivers(ifcal).apply_cw_cal(cal(cal(:).FREQ==layer_new.Frequencies(ifcal)));
+                            end
+                        end
+                    else
+                        layer_new.Transceivers(idx_freq).apply_cw_cal(cal);
+                    end
                 else
                     layer_new.Transceivers(idx_freq).apply_cw_cal(cal_t);
                 end
+                
                 layer_new.Transceivers(idx_freq).apply_absorption(options.Absorption/1e3);
                 
                 layer_new.load_echo_logbook();
                 
-              
+                
                 if isfield(bot,'ver')
                     layer_new.load_bot_regs('reg_ver',0);
                 end
                 
                 
                 for ire=1:length(regs)
-                    if isfield(regs{ire},'ver')
-                        if isfield(regs{ire},'IDs')
-                            if ischar(regs{ire}.IDs)
-                                IDs=str2double(strsplit(regs{ire}.IDs,';'));
-                            else
-                                IDs=regs{ire}.IDs;
-                            end
-                            if ~isempty(ID)
-                                layer_new.load_bot_regs('bot_ver',0,'IDs',IDs);
-                            else
-                                layer_new.load_bot_regs('bot_ver',0);
-                            end
-                        else
-                            layer_new.load_bot_regs('bot_ver',0);
-                        end
+                    if isfield(regs{ire},'ver')    
+                        layer_new.load_bot_regs('bot_ver',0);
+                    else
+                        layer_new.load_bot_regs('bot_ver',0);
                     end
                 end
+                
                 
                 
                 for ire=1:length(regs)
@@ -229,13 +246,12 @@ for isn=1:length(snapshots)
                     layer_new.Transceivers(idx_freq).Algo(idx_algo)=algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin);
                     
                 end
-                
-                
+                u=length(layers)+1;
+                layers(u)=layer_new;
             end
-            u=length(layers)+1;
-            layers(u)=layer_new;
+            clear layers_out_temp;
         end
-        clear layers_out_temp;
+        
     end
     
 end

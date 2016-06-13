@@ -115,14 +115,8 @@ if ~isempty(survey_input_obj.Snapshots)
                 bot_node = docNode.createElement('bottom');
                 bot=survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.Bottom;
                 
-                
-                if isfield(bot,'name')
-                    bot_node.setAttribute('file',bot.file);
-                end
-                
-                
                 if isfield(bot,'ver')
-                    bot_node.setAttribute('file',num2str(bot.ver));
+                    bot_node.setAttribute('ver',num2str(bot.ver));
                 end
                 
                 trans_node.appendChild(bot_node);

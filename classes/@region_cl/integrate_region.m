@@ -1,4 +1,12 @@
-function output=integrate_region(region,trans_obj)
+function output=integrate_region(region,trans_obj,varargin)
+
+p = inputParser;
+
+addRequired(p,'region',@(x) isa(x,'region_cl'));
+addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
+
+parse(p,region,trans_obj,varargin{:});
+
 
 Sv=trans_obj.Data.get_datamat('svdenoised');
 if isempty(Sv)

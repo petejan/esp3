@@ -109,6 +109,7 @@ for iuu=1:length(idx_reg)
     
     regCellInt{i_reg}=reg_curr.integrate_region(trans_obj);
     regs{i_reg}=reg_curr;
+    
     if ~isempty(~isnan([reg(:).id]))
         regCellIntSub = getCellIntSubSet(regCellInt{i_reg},reg(iuu),reg_curr.Reference);
     else

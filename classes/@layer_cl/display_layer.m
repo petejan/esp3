@@ -60,16 +60,17 @@ if new==0
 else
     idx_ping=1:length(xdata);
     idx_r=1:length(ydata);
+    idx_ping=idx_ping(1:floor(nanmin(screensize(3),length(idx_ping))));
 end
 
-idx_ping=idx_ping(1:floor(nanmin(screensize(3),length(idx_ping))));
+
 nb_samples=length(idx_r);
 nb_pings=length(idx_ping);
 
 outputSize=nanmin(screensize(3:4),[nb_pings nb_samples]);
 
 
-dr=nanmax(ceil(nb_samples/outputSize(2)),1);
+dr=nanmax(ceil(nb_samples/outputSize(2))+1,1);
 dp=nanmax(ceil(nb_pings/outputSize(1)),1);
 % dp=1;
 % dr=1;
