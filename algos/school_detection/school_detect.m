@@ -1,4 +1,4 @@
-function linked_candidates=school_detect(Transceiver,varargin)
+function linked_candidates=school_detect(trans_obj,varargin)
 
 p = inputParser;
 
@@ -32,8 +32,8 @@ default_nb_min_sples=100;
 check_nb_min_sples=@(l)(l>0);
 
 
-addRequired(p,'Transceiver',check_trans_class);
-addParameter(p,'Type','Sv',@ischar);
+addRequired(p,'trans_obj',check_trans_class);
+addParameter(p,'Type','sv',@ischar);
 addParameter(p,'Sv_thr',default_Sv_thr,check_Sv_thr);
 addParameter(p,'Sv_max',default_Sv_max,check_Sv_max);%only affect display
 addParameter(p,'l_min_can',default_l_min_can,check_l_min_can);
@@ -45,22 +45,27 @@ addParameter(p,'vert_link_max',default_vert_link_max,check_vert_link_max);
 addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
 
 
-parse(p,Transceiver,varargin{:});
+parse(p,trans_obj,varargin{:});
 
 
-Sv_mat=Transceiver.Data.get_datamat('sv');
+Sv_mat=trans_obj.Data.get_datamat(p.Results.Type);
+
+if isempty(Sv_mat)
+    Sv_mat=trans_obj.Data.get_datamat('sv');
+end
+
 
    
 [nb_samples,nb_pings]=size(Sv_mat);
-range=Transceiver.Data.get_range();
-dist_pings=Transceiver.GPSDataPing.Dist;
+range=trans_obj.Data.get_range();
+dist_pings=trans_obj.GPSDataPing.Dist;
 
-Bottom=Transceiver.Bottom.Range;
+Bottom=trans_obj.Bottom.Range;
 if isempty(Bottom)
     Bottom=ones(1,nb_pings)*range(end);
 end
 
-[~,Np]=get_pulse_length(Transceiver);
+[~,Np]=get_pulse_length(trans_obj);
 Sv_thr=p.Results.Sv_thr;
 l_min_can=p.Results.l_min_can;
 h_min_can=p.Results.h_min_can;
@@ -79,10 +84,10 @@ dist_pings_mat=repmat(dist_pings',nb_samples,1);
 [nb_samples,nb_pings]=size(Sv_mat);
 mask=zeros(size(Sv_mat));
 
-idx_bad_data=Transceiver.list_regions_type('Bad Data');
+idx_bad_data=trans_obj.list_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
-   curr_reg=Transceiver.Regions(idx_bad_data(jj));
+   curr_reg=trans_obj.Regions(idx_bad_data(jj));
    mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
 end
 

@@ -75,45 +75,10 @@ update_algos(main_figure);
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-bottom_tab_comp=getappdata(main_figure,'Bottom_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-idx_algo_bot=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
+layer.Transceivers(idx_freq).apply_algo('BottomDetection');
 
-if isfield(bottom_tab_comp,'denoised')
-    if get(bottom_tab_comp.denoised,'Value')>0
-        Sv=layer.Transceivers(idx_freq).Data.get_datamat('svdenoised');
-        if isempty(Sv)
-            Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
-        end
-    else
-        Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
-    end
-else
-    Sv=layer.Transceivers(idx_freq).Data.get_datamat('Sv');
-end
-
-algo=layer.Transceivers(idx_freq).Algo(idx_algo_bot);
-
-[Bottom,Double_bottom_region,~,~,~]=feval(algo.Function,Sv,...
-    layer.Transceivers(idx_freq).Data.get_range(),...
-    1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
-    layer.Transceivers(idx_freq).Params.PulseLength(1),...
-    'thr_bottom',algo.Varargin.thr_bottom,...
-    'thr_echo',algo.Varargin.thr_echo,...
-    'shift_bot',algo.Varargin.shift_bot,...
-    'r_min',algo.Varargin.r_min,...
-    'r_max',algo.Varargin.r_max);
-
-range=layer.Transceivers(idx_freq).Data.get_range();
-bottom_range=nan(size(Bottom));
-bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
-old_tag=layer.Transceivers(idx_freq).Bottom.Tag;
-
-layer.Transceivers(idx_freq).setBottom(bottom_cl('Origin','Algo_v2',...
-    'Range', bottom_range,...
-    'Sample_idx',Bottom,...
-    'Double_bot_mask',Double_bottom_region,'Tag',old_tag));
 
 setappdata(main_figure,'Layer',layer);
 load_axis_panel(main_figure,0);

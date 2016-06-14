@@ -24,7 +24,7 @@ check_data_type=@(datatype) ischar(datatype)&&(nansum(strcmp(datatype,{'CW','FM'
 
 addRequired(p,'Transceiver',check_trans_cl);
 addParameter(p,'SoundSpeed',1500,@isnumeric);
-addParameter(p,'Type','Sp',@ischar);
+addParameter(p,'Type','sp',@ischar);
 addParameter(p,'TS_threshold',defaultTsThr,checkTsThr);
 addParameter(p,'PLDL',defaultPLDL,checkPLDL);
 addParameter(p,'MinNormPL',defaultMinNormPL,checkNormPL);
@@ -42,7 +42,10 @@ max_TS=-10;
 
 switch p.Results.DataType
     case 'CW'
-        TS=Transceiver.Data.get_datamat('sp');
+        TS=Transceiver.Data.get_datamat(p.Results.Type);
+        if isempty(TS)
+             TS=Transceiver.Data.get_datamat('sp');
+        end
         if isempty(TS)
             disp('Can''t find single targets with no Sp datagram...');
             single_targets=[];
@@ -54,9 +57,6 @@ switch p.Results.DataType
 end
     
 
-
-[nb_samples,nb_pings]=size(TS);
-nb_samples_ori=nb_samples;
 mask=zeros(size(TS));
 
 idx_bad_data=Transceiver.list_regions_type('Bad Data');

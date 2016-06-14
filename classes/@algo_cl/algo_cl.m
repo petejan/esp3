@@ -24,13 +24,18 @@ classdef algo_cl
             
             
             obj.Function=init_func(obj.Name);
-            if ~isempty(results.Varargin)
-                obj.Varargin=results.Varargin;
-            else
-                obj.Varargin=init_varargin(obj.Name);
+            obj.Varargin=init_varargin(obj.Name);
+            if ~isempty(obj.Varargin)
+                fields_in=fieldnames(obj.Varargin);
+                for i=1:length(fields_in)
+                    if isfield(results.Varargin,fields_in{i})
+                        obj.Varargin.(fields_in{i})=results.Varargin.(fields_in{i});
+                    end
+                end
             end
+            
             obj.Varargout=init_varargout(obj.Name);
-
+            
         end
         
         

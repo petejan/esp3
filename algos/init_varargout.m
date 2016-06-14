@@ -4,9 +4,9 @@ switch name
     case 'BottomDetection'
         varout={'bottom','double_bottom_region','bs_bottom','idx_bottom','idx_ringdown'};
     case 'BadPings'
-        varout={'Bottom','Double_bottom_region','idx_noise_sector'};
+        varout={'bottom','double_bottom_region','idx_noise_sector'};
     case 'Denoise'
-        varout={'power_unoised','Sv_unoised','Sp_unoised,SNR'};
+        varout={'power_unoised','Sv_unoised','Sp_unoised','SNR'};
     case 'SchoolDetection'
         varout={'linked_candidates'};
     case 'SingleTarget'

@@ -17,6 +17,10 @@ if ~isempty(process_list)
     bad_trans_algo=found;
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
     school_detect_algo=found;
+    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SingleTarget');
+    single_target_alg=found;
+    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'TrackTarget');
+    track_target_alg=found;
 else
     
     noise_rem_algo=0;
@@ -27,12 +31,18 @@ else
     
     school_detect_algo=0;
     
+    single_target_alg=0;
+    
+    track_target_alg=0;
 end
 
 set(processing_tab_comp.noise_removal,'Value',noise_rem_algo);
 set(processing_tab_comp.bot_detec,'Value',bot_algo);
 set(processing_tab_comp.bad_transmit,'Value',bad_trans_algo);
 set(processing_tab_comp.school_detec,'Value',school_detect_algo);
+set(processing_tab_comp.single_target,'Value',single_target_alg);
+set(processing_tab_comp.track_target,'Value',track_target_alg);
+
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 

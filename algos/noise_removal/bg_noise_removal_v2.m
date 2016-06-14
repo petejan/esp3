@@ -1,5 +1,6 @@
-function [power_unoised,Sv_unoised,Sp_unoised,SNR]=bg_noise_removal_v2(power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr,varargin)
+function [power_unoised,Sv_unoised,Sp_unoised,SNR]=bg_noise_removal_v2(trans_obj,varargin)
 removing_noise=msgbox('Removing Noise. This box will close when finished...','Removing Noise');
+range=trans_obj.Data.get_range();
 p = inputParser;
 
 defaultVertFilt=5;
@@ -11,23 +12,45 @@ checkNoiseThr=@(NoiseThr)(NoiseThr<=-10&&NoiseThr>=-200);
 defaultSNRThr=10;
 checkSNRThr=@(SNRThr)(SNRThr>=0&&SNRThr<=40);
 
-addRequired(p,'power',@isnumeric);
-addRequired(p,'range',@isnumeric);
-addRequired(p,'c',@isnumeric);
-addRequired(p,'alpha',@isnumeric);
-addRequired(p,'t_eff',@isnumeric);
-addRequired(p,'ptx',@isnumeric);
-addRequired(p,'lambda',@isnumeric);
-addRequired(p,'gain',@isnumeric);
-addRequired(p,'eq_beam_angle',@isnumeric);
-addRequired(p,'sacorr',@isnumeric);
+addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 
 addParameter(p,'VertFilt',defaultVertFilt,checkVertFilt);
 addParameter(p,'HorzFilt',defaultHorzFilt,checkHorzFilt);
 addParameter(p,'NoiseThr',defaultNoiseThr,checkNoiseThr);
 addParameter(p,'SNRThr',defaultSNRThr,checkSNRThr);
 
-parse(p,power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr,varargin{:});
+parse(p,trans_obj,varargin{:});
+
+
+f_s_sig=round(1/(trans_obj.Params.SampleInterval(1)));
+c=1500;
+FreqStart=(trans_obj.Params.FrequencyStart(1));
+FreqEnd=(trans_obj.Params.FrequencyEnd(1));
+Freq=(trans_obj.Config.Frequency);
+ptx=(trans_obj.Params.TransmitPower(1));
+pulse_length=double(trans_obj.Params.PulseLength(1));
+gains=trans_obj.Config.Gain;
+pulse_lengths=trans_obj.Config.PulseLength;
+eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
+[~,idx_pulse]=nanmin(abs(pulse_lengths-pulse_length));
+gain=gains(idx_pulse);
+FreqCenter=(FreqStart+FreqEnd)/2;
+lambda=c/FreqCenter;
+eq_beam_angle=eq_beam_angle+20*log10(Freq/(FreqCenter));
+alpha=double(trans_obj.Params.Absorption);
+sacorr=2*trans_obj.Config.SaCorrection(idx_pulse);
+
+if strcmp(trans_obj.Mode,'FM')
+    [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
+    pulse_auto_corr=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
+    t_eff=nansum(abs(pulse_auto_corr).^2)/(nanmax(abs(pulse_auto_corr).^2)*f_s_sig);
+else
+    t_eff=pulse_length;
+end
+power=trans_obj.Data.get_datamat('Power');
+
+
+
 
 
 h_filt=ceil(nanmin(p.Results.VertFilt,size(power,1))/nanmean(diff(range)));

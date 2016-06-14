@@ -329,6 +329,7 @@ classdef transceiver_cl < handle
             if found==0
                 mean_depth=[];
                 Sa=[];
+                return;
             end
             active_reg=obj.Regions(reg_idx);
             Sv=obj.Data.get_datamat('sv');
@@ -377,8 +378,7 @@ classdef transceiver_cl < handle
             obj.Config.Angles=trans_angle;
         end
         
-        
-        
+             
     end
     
     

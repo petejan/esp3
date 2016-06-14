@@ -94,49 +94,10 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 %school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
-region_tab_comp=getappdata(main_figure,'Region_tab');
 
-bottom_tab_comp=getappdata(main_figure,'Bottom_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_school_detect=find_algo_idx(layer.Transceivers(idx_freq),'SchoolDetection');
 
-if isfield(bottom_tab_comp,'denoised')
-    if get(bottom_tab_comp.denoised,'Value')>0
-        Type='svdenoised';
-    else
-      Type='sv';
-    end
-else
-    Type='sv';
-end
-
-
-linked_candidates=feval(layer.Transceivers(idx_freq).Algo(idx_school_detect).Function,layer.Transceivers(idx_freq),...
-	'Type',Type,...
-    'Sv_thr',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.Sv_thr,...
-    'l_min_can',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.l_min_can,...
-    'h_min_tot',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.h_min_tot,...
-    'h_min_can',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.h_min_can,...
-    'l_min_tot',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.l_min_tot,...
-    'nb_min_sples',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.nb_min_sples,...
-    'horz_link_max',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.horz_link_max,...
-    'vert_link_max',layer.Transceivers(idx_freq).Algo(idx_school_detect).Varargin.vert_link_max);
-
-layer.Transceivers(idx_freq).rm_region_name('School');
-
-w_units=get(region_tab_comp.cell_w_unit,'string');
-w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
-w_unit=w_units{w_unit_idx};
-
-h_units=get(region_tab_comp.cell_h_unit,'string');
-h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
-h_unit=h_units{h_unit_idx};
-
-cell_h=str2double(get(region_tab_comp.cell_h,'string'));
-cell_w=str2double(get(region_tab_comp.cell_w,'string'));
-
-layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
-
+layer.Transceivers(idx_freq).apply_algo('SchoolDetection');
 
 setappdata(main_figure,'Layer',layer);
 

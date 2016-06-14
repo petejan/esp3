@@ -1,5 +1,5 @@
 
-function tracks_out=track_targets_angular(ST,varargin)
+function tracks_out=track_targets_angular(trans_obj,varargin)
 
 %Parse Arguments
 p = inputParser;
@@ -28,7 +28,7 @@ default_Max_Gap_Track=5;
 check_accept=@(st)(st>=0&&st<=100);
 delta_TS_max=30;
 
-addRequired(p,'ST',@isstruct);
+addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'AlphaMajAxis',defaultAlpha,checkAlpha);
 addParameter(p,'AlphaMinAxis',defaultAlpha,checkAlpha);
 addParameter(p,'AlphaRange',defaultAlpha,checkAlpha);
@@ -52,9 +52,9 @@ addParameter(p,'Min_ST_Track',default_min_ST_Track,check_min_ST_track);
 addParameter(p,'Min_Pings_Track',default_Min_Pings_Track,check_accept);
 addParameter(p,'Max_Gap_Track',default_Max_Gap_Track,check_accept);
 
-parse(p,ST,varargin{:});
+parse(p,trans_obj,varargin{:});
 
-
+ST=trans_obj.ST;
 
 nb_targets=length(ST.TS_comp);
 if nb_targets==0

@@ -1,12 +1,12 @@
-function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(Sv,Range,Fs,PulseLength,varargin)
+function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(trans_obj,varargin)
 detecting_bottom=msgbox('Detecting Bottom. This box will close when finished...','Detecting Bottom');
 %profile on;
 %Parse Arguments
 p = inputParser;
 
-default_idx_r_min=Range(1);
+default_idx_r_min=0;
 
-default_idx_r_max=Range(end);
+default_idx_r_max=Inf;
 
 default_thr_bottom=-30;
 check_thr_bottom=@(x)(x>=-120&&x<=-10);
@@ -17,26 +17,34 @@ check_thr_echo=@(x)(x>=-20&&x<=-3);
 check_shift_bot=@(x)(x>=0);
 
 
-addRequired(p,'Sv',@isnumeric);
-addRequired(p,'Range',@isnumeric);
-addRequired(p,'Fs',@isnumeric);
-addRequired(p,'PulseLength',@isnumeric);
+addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
+addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
 addParameter(p,'shift_bot',0,check_shift_bot);
+parse(p,trans_obj,varargin{:});
 
-[nb_samples,nb_pings]=size(Sv);
+if p.Results.denoised>0
+    Sv=trans_obj.Data.get_datamat('svdenoised');
+    if isempty(Sv)
+        Sv=trans_obj.Data.get_datamat('sv');
+    end
+else
+    Sv=trans_obj.Data.get_datamat('sv');
+end
 
-parse(p,Sv,Range,Fs,PulseLength,varargin{:});
-
+Range= trans_obj.Data.get_range();
+Fs=1/trans_obj.Params.SampleInterval(1);
+PulseLength=trans_obj.Params.PulseLength(1);
 
 thr_bottom=p.Results.thr_bottom;
 thr_echo=p.Results.thr_echo;
 r_min=nanmax(p.Results.r_min,2);
 r_max=p.Results.r_max;
 
+[nb_samples,nb_pings]=size(Sv);
 
 Np=round(PulseLength*Fs);
 [~,idx_r_max]=nanmin(abs(r_max-Range));
@@ -217,6 +225,16 @@ end
 try
     close(detecting_bottom);
 end
+
+% bottom_range=nan(size(Bottom));
+% bottom_range(~isnan(Bottom))=Range(Bottom(~isnan(Bottom)));
+% old_tag=trans_obj.Bottom.Tag;
+% 
+% trans_obj.setBottom(bottom_cl('Origin','Algo_v2',...
+%     'Range', bottom_range,...
+%     'Sample_idx',Bottom,...
+%     'Double_bot_mask',Double_bottom_region,'Tag',old_tag));
+
 % 
 % profile off;
 % profile viewer;

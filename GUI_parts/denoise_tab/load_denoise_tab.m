@@ -69,60 +69,11 @@ update_algos(main_figure);
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-denoise_tab_comp=getappdata(main_figure,'Denoise_tab');
+
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
+layer.Transceivers(idx_freq).apply_algo('Denoise');
 
-
-Transceiver=layer.Transceivers(idx_freq);
-
-f_s_sig=round(1/(Transceiver.Params.SampleInterval(1)));
-c=(layer.EnvData.SoundSpeed);
-FreqStart=(Transceiver.Params.FrequencyStart(1));
-FreqEnd=(Transceiver.Params.FrequencyEnd(1));
-Freq=(Transceiver.Config.Frequency);
-ptx=(Transceiver.Params.TransmitPower(1));
-pulse_length=double(Transceiver.Params.PulseLength(1));
-gains=Transceiver.Config.Gain;
-pulse_lengths=Transceiver.Config.PulseLength;
-eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
-[~,idx_pulse]=nanmin(abs(pulse_lengths-pulse_length));
-gain=gains(idx_pulse);
-FreqCenter=(FreqStart+FreqEnd)/2;
-lambda=c/FreqCenter;
-eq_beam_angle_curr=eq_beam_angle+20*log10(Freq/(FreqCenter));
-alpha=double(Transceiver.Params.Absorption);
-sacorr=2*Transceiver.Config.SaCorrection(idx_pulse);
-
-
-if strcmp(Transceiver.Mode,'FM')
-    [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));
-    pulse_auto_corr=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
-    t_eff=nansum(abs(pulse_auto_corr).^2)/(nanmax(abs(pulse_auto_corr).^2)*f_s_sig);
-else
-    t_eff=pulse_length;
-end
-power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
-
-if isempty(power)
-   disp('Cannot find power. Cannot denoise those data');   
-end
-
-[power_unoised,Sv_unoised,Sp_unoised,SNR]=feval(layer.Transceivers(idx_freq).Algo(idx_algo).Function,...
-    power,...
-    layer.Transceivers(idx_freq).Data.get_range(),...
-    c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle_curr,sacorr,...
-    'HorzFilt',round(get(denoise_tab_comp.HorzFilt_sl,'Value')),...
-    'SNRThr',round(get(denoise_tab_comp.SNRThr_sl,'Value')),...
-    'VertFilt',round(get(denoise_tab_comp.VertFilt_sl,'Value')),...
-    'NoiseThr',round(get(denoise_tab_comp.NoiseThr_sl,'Value')));
-
-
-layer.Transceivers(idx_freq).Data.add_sub_data('powerdenoised',power_unoised);
-layer.Transceivers(idx_freq).Data.add_sub_data('spdenoised',Sp_unoised);
-layer.Transceivers(idx_freq).Data.add_sub_data('svdenoised',Sv_unoised);
-layer.Transceivers(idx_freq).Data.add_sub_data('snr',SNR);
 curr_disp.setField('svdenoised');
 
 setappdata(main_figure,'Layer',layer);

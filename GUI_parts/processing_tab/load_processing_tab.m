@@ -92,6 +92,8 @@ for ii=1:length(layer_to_proc)
         
         
         idx_freq=find_freq_idx(layer,process_list(kk).Freq);
+        trans_obj=layer.Transceivers(idx_freq);
+        
         
         [~,idx_algo_denoise,noise_rem_algo]=find_process_algo(process_list,process_list(kk).Freq,'Denoise');
         [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetection');
@@ -100,217 +102,45 @@ for ii=1:length(layer_to_proc)
         [~,idx_single_target,single_target_algo]=find_process_algo(process_list,process_list(kk).Freq,'SingleTarget');
         [~,idx_track_target,single_track_algo]=find_process_algo(process_list,process_list(kk).Freq,'TrackTarget');
         
-        Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
-        
+
         if noise_rem_algo
-            Transceiver=layer.Transceivers(idx_freq);
-            f_s_sig=round(1/(Transceiver.Params.SampleInterval(1)));
-            c=(layer.EnvData.SoundSpeed);
-            FreqStart=(Transceiver.Params.FrequencyStart(1));
-            FreqEnd=(Transceiver.Params.FrequencyEnd(1));
-            Freq=(Transceiver.Config.Frequency);
-            ptx=(Transceiver.Params.TransmitPower(1));
-            pulse_length=double(Transceiver.Params.PulseLength(1));
-            gains=Transceiver.Config.Gain;
-            pulse_lengths=Transceiver.Config.PulseLength;
-            eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
-            [~,idx_pulse]=nanmin(abs(pulse_lengths-pulse_length));
-            gain=gains(idx_pulse);
-            FreqCenter=(FreqStart+FreqEnd)/2;
-            lambda=c/FreqCenter;
-            eq_beam_angle_curr=eq_beam_angle+20*log10(Freq/(FreqCenter));
-            alpha=double(Transceiver.Params.Absorption);
-            sacorr=2*Transceiver.Config.SaCorrection(idx_pulse);
-            
-            if strcmp(Transceiver.Mode,'FM')
-                [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));
-                pulse_auto_corr=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
-                t_eff=nansum(abs(pulse_auto_corr).^2)/(nanmax(abs(pulse_auto_corr).^2)*f_s_sig);
-            else
-                t_eff=pulse_length;
-            end
-            power=layer.Transceivers(idx_freq).Data.get_datamat('Power');
-            
-            
-            [power_unoised,Sv_unoised,Sp_unoised,SNR]=feval(process_list(kk).Algo(idx_algo_denoise).Function,...
-                power,...
-                layer.Transceivers(idx_freq).Data.get_range(),...
-                c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle_curr,sacorr,...
-                'HorzFilt',process_list(kk).Algo(idx_algo_denoise).Varargin.HorzFilt,...
-                'SNRThr',process_list(kk).Algo(idx_algo_denoise).Varargin.SNRThr,...
-                'VertFilt',process_list(kk).Algo(idx_algo_denoise).Varargin.VertFilt,...
-                'NoiseThr',process_list(kk).Algo(idx_algo_denoise).Varargin.NoiseThr);
-            
-            
-            
-            layer.Transceivers(idx_freq).Data.add_sub_data('powerdenoised',power_unoised);
-            layer.Transceivers(idx_freq).Data.add_sub_data('spdenoised',Sp_unoised);
-            layer.Transceivers(idx_freq).Data.add_sub_data('svdenoised',Sv_unoised);
-            layer.Transceivers(idx_freq).Data.add_sub_data('snr',SNR);
-            
-            
-            
+            trans_obj.add_algo(process_list(kk).Algo(idx_algo_denoise));
+            trans_obj.apply_algo('Denoise');
         end
-        
-        denoised=noise_rem_algo;
-        
-        if denoised>0
-            Sv=layer.Transceivers(idx_freq).Data.get_datamat('svdenoised');
-            if isempty(Sv)
-                Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
-                fieldname='sv';
-            end
-        else
-            Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
-            fieldname='svdenoised';
-        end
-        
         
         if bot_algo&&~bad_trans_algo
-            [Bottom,Double_bottom_region,~,~,~]=feval(process_list(kk).Algo(idx_algo_bot).Function,Sv,...
-                layer.Transceivers(idx_freq).Data.get_range(),...
-                1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
-                layer.Transceivers(idx_freq).Params.PulseLength(1),...
-                'thr_bottom',process_list(kk).Algo(idx_algo_bot).Varargin.thr_bottom,...
-                'thr_echo',process_list(kk).Algo(idx_algo_bot).Varargin.thr_echo,...
-                'shift_bot',process_list(kk).Algo(idx_algo_bot).Varargin.shift_bot,...
-                'r_min',process_list(kk).Algo(idx_algo_bot).Varargin.r_min,...
-                'r_max',process_list(kk).Algo(idx_algo_bot).Varargin.r_max);
-            
-            range=layer.Transceivers(idx_freq).Data.get_range();
-            bottom_range=nan(size(Bottom));
-            bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
-            
-            layer.Transceivers(idx_freq).Bottom=bottom_cl('Origin','Algo_v2',...
-                'Range', bottom_range,...
-                'Sample_idx',Bottom,...
-                'Double_bot_mask',Double_bottom_region);
+           trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot));
+            trans_obj.apply_algo('BottomDetection');
         end
         
         
         if bad_trans_algo
-            [Bottom,Double_bottom_region,idx_noise_sector]=feval(process_list(kk).Algo(idx_algo_bp).Function,Sv,...
-                layer.Transceivers(idx_freq).Data.get_range(),...
-                1/layer.Transceivers(idx_freq).Params.SampleInterval(1),...
-                layer.Transceivers(idx_freq).Params.PulseLength(1),...
-                'thr_bottom',process_list(kk).Algo(idx_algo_bp).Varargin.thr_bottom,...
-                'thr_echo',process_list(kk).Algo(idx_algo_bp).Varargin.thr_echo,...
-                'shift_bot',process_list(kk).Algo(idx_algo_bp).Varargin.shift_bot,...
-                'r_min',process_list(kk).Algo(idx_algo_bp).Varargin.r_min,...
-                'r_max',process_list(kk).Algo(idx_algo_bp).Varargin.r_max,...
-                'BS_std',process_list(kk).Algo(idx_algo_bp).Varargin.BS_std,...
-                'thr_spikes_Above',process_list(kk).Algo(idx_algo_bp).Varargin.thr_spikes_Above,...
-                'thr_spikes_Below',process_list(kk).Algo(idx_algo_bp).Varargin.thr_spikes_Below,...
-                'Above',process_list(kk).Algo(idx_algo_bp).Varargin.Above,...
-                'Below',process_list(kk).Algo(idx_algo_bp).Varargin.Below,...
-                'burst_removal',false);
-            
-            range=layer.Transceivers(idx_freq).Data.get_range();
-            bottom_range=nan(size(Bottom));
-            bottom_range(~isnan(Bottom))=range(Bottom(~isnan(Bottom)));
-            
-            tag=layer.Transceivers(idx_freq).Bottom.Tag;
-            tag(idx_noise_sector)=0;
-            layer.Transceivers(idx_freq).Bottom=bottom_cl('Origin','Algo_v2_bp',...
-                'Range', bottom_range,...
-                'Sample_idx',Bottom,...
-                'Double_bot_mask',Double_bottom_region,'Tag',tag);
+             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bp));
+            trans_obj.apply_algo('BadPings');
             
         end
         
         if school_detect_algo
             
-            switch layer.Transceivers(idx_freq).Mode
-                case 'FM'
-                    [simu_pulse,~]=generate_sim_pulse(layer.Transceivers(idx_freq).Params,layer.Transceivers(idx_freq).Filters(1),layer.Transceivers(idx_freq).Filters(2));
-                    y_tx_auto=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
-                    t_eff_c=nansum(abs(y_tx_auto).^2)/(nanmax(abs(y_tx_auto).^2)*1/(layer.Transceivers(idx_freq).Params.SampleInterval(1)));
-                    Np=round(t_eff_c/layer.Transceivers(idx_freq).Params.SampleInterval(1));
-                case 'CW'
-                    Np=round(layer.Transceivers(idx_freq).Params.PulseLength(1)/layer.Transceivers(idx_freq).Params.SampleInterval(1));
-            end
-            
-            if isempty(layer.Transceivers(idx_freq).GPSDataPing.Dist)
+            if isempty(trans_obj.GPSDataPing.Dist)
                 warning('SchoolDetection: No GPS data')
                 return;
             end
             
             
-            
-            linked_candidates=feval(process_list(kk).Algo(idx_school_detect).Function,layer.Transceivers(idx_freq),...
-                'Type','sv',...
-                'Sv_thr',process_list(kk).Algo(idx_school_detect).Varargin.Sv_thr,...
-                'l_min_can',process_list(kk).Algo(idx_school_detect).Varargin.l_min_can,...
-                'h_min_tot',process_list(kk).Algo(idx_school_detect).Varargin.h_min_tot,...
-                'h_min_can',process_list(kk).Algo(idx_school_detect).Varargin.h_min_can,...
-                'l_min_tot',process_list(kk).Algo(idx_school_detect).Varargin.l_min_tot,...
-                'nb_min_sples',process_list(kk).Algo(idx_school_detect).Varargin.nb_min_sples,...
-                'horz_link_max',process_list(kk).Algo(idx_school_detect).Varargin.horz_link_max,...
-                'vert_link_max',process_list(kk).Algo(idx_school_detect).Varargin.vert_link_max);
-            
-            layer.Transceivers(idx_freq).rm_region_name('School');
-            
-            region_tab_comp=getappdata(main_figure,'Region_tab');
-            
-            w_units=get(region_tab_comp.cell_w_unit,'string');
-            w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
-            w_unit=w_units{w_unit_idx};
-            
-            h_units=get(region_tab_comp.cell_h_unit,'string');
-            h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
-            h_unit=h_units{h_unit_idx};
-            
-            cell_h=str2double(get(region_tab_comp.cell_h,'string'));
-            cell_w=str2double(get(region_tab_comp.cell_w,'string'));
-            
-            
-            layer.Transceivers(idx_freq).create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit',h_unit,'cell_w',cell_w,'cell_h',cell_h);
+            trans_obj.add_algo(process_list(kk).Algo(idx_school_detect));
+            trans_obj.apply_algo('SchoolDetection');
             
         end
         
         if single_target_algo
-            ST=feval(process_list(kk).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
-                'Type',process_list(kk).Algo(idx_single_target).Varargin.Type,...
-                'TS_threshold',process_list(kk).Algo(idx_single_target).Varargin.TS_threshold,...
-                'PLDL',process_list(kk).Algo(idx_single_target).Varargin.PLDL,...
-                'MinNormPL',process_list(kk).Algo(idx_single_target).Varargin.MinNormPL,...
-                'MaxNormPL',process_list(kk).Algo(idx_single_target).Varargin.MaxNormPL,...
-                'MaxBeamComp',process_list(kk).Algo(idx_single_target).Varargin.MaxBeamComp,...
-                'MaxStdMinAxisAngle',process_list(kk).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
-                'MaxStdMajAxisAngle',process_list(kk).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle,...
-                'DataType',layer.Transceivers(idx_freq).Mode);
-            
-            layer.Transceivers(idx_freq).set_ST(ST);
-            layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
+             trans_obj.add_algo(process_list(kk).Algo(idx_single_target));
+            trans_obj.apply_algo('SingleTarget');
             
             if single_track_algo
-                tracks=feval(process_list(kk).Algo(idx_track_target).Function,layer.Transceivers(idx_freq).ST,...
-                    'AlphaMajAxis',process_list(kk).Algo(idx_track_target).Varargin.AlphaMajAxis,...
-                    'AlphaMinAxis',process_list(kk).Algo(idx_track_target).Varargin.AlphaMinAxis,...
-                    'AlphaRange',process_list(kk).Algo(idx_track_target).Varargin.AlphaRange,...
-                    'BetaMajAxis',process_list(kk).Algo(idx_track_target).Varargin.BetaMajAxis,...
-                    'BetaMinAxis',process_list(kk).Algo(idx_track_target).Varargin.BetaMinAxis,...
-                    'BetaRange',process_list(kk).Algo(idx_track_target).Varargin.BetaRange,...
-                    'ExcluDistMajAxis',process_list(kk).Algo(idx_track_target).Varargin.ExcluDistMajAxis,...
-                    'ExcluDistMinAxis',process_list(kk).Algo(idx_track_target).Varargin.ExcluDistMinAxis,...
-                    'ExcluDistRange',process_list(kk).Algo(idx_track_target).Varargin.ExcluDistRange,...
-                    'MaxStdMinorAxisAngle',process_list(kk).Algo(idx_track_target).Varargin.MaxStdMinorAxisAngle,...
-                    'MaxStdMajorAxisAngle',process_list(kk).Algo(idx_track_target).Varargin.MaxStdMajorAxisAngle,...
-                    'MissedPingExpMajAxis',process_list(kk).Algo(idx_track_target).Varargin.MissedPingExpMajAxis,...
-                    'MissedPingExpMinAxis',process_list(kk).Algo(idx_track_target).Varargin.MissedPingExpMinAxis,...
-                    'MissedPingExpRange',process_list(kk).Algo(idx_track_target).Varargin.MissedPingExpRange,...
-                    'WeightMajAxis',process_list(kk).Algo(idx_track_target).Varargin.WeightMajAxis,...
-                    'WeightMinAxis',process_list(kk).Algo(idx_track_target).Varargin.WeightMinAxis,...
-                    'WeightRange',process_list(kk).Algo(idx_track_target).Varargin.WeightRange,...
-                    'WeightTS',process_list(kk).Algo(idx_track_target).Varargin.WeightTS,...
-                    'WeightPingGap',process_list(kk).Algo(idx_track_target).Varargin.WeightPingGap,...
-                    'Min_ST_Track',process_list(kk).Algo(idx_track_target).Varargin.Min_ST_Track,...
-                    'Min_Pings_Track',process_list(kk).Algo(idx_track_target).Varargin.Min_Pings_Track,...
-                    'Max_Gap_Track',process_list(kk).Algo(idx_track_target).Varargin.Max_Gap_Track);
-                
-                layer.Transceivers(idx_freq).Tracks=tracks;
-                
-                
+                trans_obj.add_algo(process_list(kk).Algo(idx_track_target));
+                trans_obj.apply_algo('TrackTarget');
+
             end
             
             
@@ -330,38 +160,39 @@ layer=getappdata(main_figure,'Layer');
 process_list=getappdata(main_figure,'Process');
 processing_tab_comp=getappdata(main_figure,'Processing_tab');
 idx_freq=get(processing_tab_comp.tog_freq, 'value');
-
-if isempty(layer.Transceivers(idx_freq).Algo)
+trans_obj=layer.Transceivers(idx_freq);
+if isempty(trans_obj.Algo)
     return;
 end
 
 add=get(processing_tab_comp.noise_removal,'value')==get(processing_tab_comp.noise_removal,'max');
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
+idx_algo=find_algo_idx(trans_obj,'Denoise');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.bot_detec,'value')==get(processing_tab_comp.bot_detec,'max');
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
+idx_algo=find_algo_idx(trans_obj,'BottomDetection');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.bad_transmit,'value')==get(processing_tab_comp.bad_transmit,'max');
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'BadPings');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
+idx_algo=find_algo_idx(trans_obj,'BadPings');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.school_detec,'value')==get(processing_tab_comp.school_detec,'max');
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'SchoolDetection');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
+idx_algo=find_algo_idx(trans_obj,'SchoolDetection');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add_st=get(processing_tab_comp.single_target,'value')==get(processing_tab_comp.single_target,'max');
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add_st);
+idx_algo=find_algo_idx(trans_obj,'SingleTarget');
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add_st);
 
 if add_st==0
     set(processing_tab_comp.track_target,'value',get(processing_tab_comp.track_target,'min'));
 end
 
 add=get(processing_tab_comp.track_target,'value')==get(processing_tab_comp.track_target,'max');
-idx_algo=find_algo_idx(layer.Transceivers(idx_freq),'TrackTarget');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),layer.Transceivers(idx_freq).Algo(idx_algo),add);
+idx_algo=find_algo_idx(trans_obj,'TrackTarget');
+
+process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 setappdata(main_figure,'Process',process_list);
 end

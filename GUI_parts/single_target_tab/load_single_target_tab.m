@@ -83,29 +83,11 @@ function validate(~,~,main_figure)
 update_algos(main_figure);
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-%axes_panel_comp=getappdata(main_figure,'Axes_panel');
-%single_target_tab_comp=getappdata(main_figure,'Single_target_tab');
-%region_tab_comp=getappdata(main_figure,'Region_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_single_target=find_algo_idx(layer.Transceivers(idx_freq),'SingleTarget');
 
+layer.Transceivers(idx_freq).apply_algo('SingleTarget');
 
-ST=feval(layer.Transceivers(idx_freq).Algo(idx_single_target).Function,layer.Transceivers(idx_freq),...
-    'Type',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.Type,...
-    'TS_threshold',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.TS_threshold,...
-    'PLDL',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.PLDL,...
-    'MinNormPL',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MinNormPL,...
-    'MaxNormPL',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxNormPL,...
-    'MaxBeamComp',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxBeamComp,...
-    'MaxStdMinAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMinAxisAngle,...
-    'MaxStdMajAxisAngle',layer.Transceivers(idx_freq).Algo(idx_single_target).Varargin.MaxStdMajAxisAngle,...
-    'DataType',layer.Transceivers(idx_freq).Mode);
-
-layer.Transceivers(idx_freq).set_ST(ST);
-
-layer.Transceivers(idx_freq).Tracks=struct('target_id',{},'target_ping_number',{});
-setappdata(main_figure,'Layer',layer);
 curr_disp.setField('singletarget');
 curr_disp.Freq=curr_disp.Freq;
 setappdata(main_figure,'Curr_disp',curr_disp);

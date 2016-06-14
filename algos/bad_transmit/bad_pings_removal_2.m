@@ -1,4 +1,4 @@
-function [Bottom,Double_bottom_region,idx_noise_sector]=bad_pings_removal_2(Sv,Range,Fs,PulseLength,varargin)
+function [Bottom,Double_bottom_region,idx_noise_sector]=bad_pings_removal_2(trans_obj,varargin)
 global DEBUG
 
 p = inputParser;
@@ -13,25 +13,23 @@ check_thr_bottom=@(x)(x>=-120&&x<=-10);
 default_thr_echo=-12;
 check_thr_echo=@(x)(x>=-20&&x<=-3);
 
-default_idx_r_min=Range(1);
+default_idx_r_min=0;
 
 
 check_spikes=@(x)(x>=0&&x<=20);
 
-default_idx_r_max=Range(end);
+default_idx_r_max=Inf;
 default_spikes=4;
 check_shift_bot=@(x)x>=0;
 
-addRequired(p,'Sv',@isnumeric);
-addRequired(p,'Range',@isnumeric);
-addRequired(p,'Fs',@isnumeric);
-addRequired(p,'PulseLength',@isnumeric);
+addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
+addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'BS_std',default_BS_std,check_BS_std);
-addParameter(p,'BS_std_bool',true,@islogical);
+addParameter(p,'BS_std_bool',true,@(x) islogical(x)||isnumeric(x));
 addParameter(p,'thr_spikes_Above',default_spikes,check_spikes);
 addParameter(p,'thr_spikes_Below',default_spikes,check_spikes);
 addParameter(p,'Above',true,@(x) isnumeric(x)||islogical(x));
@@ -39,7 +37,19 @@ addParameter(p,'Below',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'burst_removal',false,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'shift_bot',0,check_shift_bot);
 
-parse(p,Sv,Range,Fs,PulseLength,varargin{:});
+parse(p,trans_obj,varargin{:});
+
+if p.Results.denoised>0
+    Sv=trans_obj.Data.get_datamat('svdenoised');
+    if isempty(Sv)
+        Sv=trans_obj.Data.get_datamat('sv');
+    end
+else
+    Sv=trans_obj.Data.get_datamat('sv');
+end
+
+Fs=1/trans_obj.Params.SampleInterval(1);
+PulseLength=trans_obj.Params.PulseLength(1);
 
 
 thr_bottom=p.Results.thr_bottom;
@@ -63,10 +73,8 @@ Np=round(PulseLength*Fs);
 %First let's find the bottom...
 
 
-[Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(Sv,...
-    Range,...
-    Fs,...
-    PulseLength,...
+[Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(trans_obj,...
+    'denoised',p.Results.denoised,...
     'thr_bottom',thr_bottom,...
     'thr_echo',thr_echo,...
     'r_min',r_min,...
@@ -81,7 +89,7 @@ Sv(1:start_sample,:)=nan;
 %Quick BS Analysis if asked%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 b_filter=3:2:7;
-if BS_std_bool
+if BS_std_bool>0
     
     BS_bottom(Bottom<start_sample)=nan;
     
