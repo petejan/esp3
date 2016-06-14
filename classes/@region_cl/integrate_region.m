@@ -4,6 +4,9 @@ p = inputParser;
 
 addRequired(p,'region',@(x) isa(x,'region_cl'));
 addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
+addParameter(p,'vertExtend',[0 Inf],@isnumeric);
+addParameter(p,'horiExtend',[0 Inf],@isnumeric);
+
 
 parse(p,region,trans_obj,varargin{:});
 
@@ -134,6 +137,8 @@ switch region.Cell_w_unit
     case 'meters'
         x=sub_dist;
 end
+
+
 [x_mat,y_mat]=meshgrid(x,y);
 [~,sub_r_mat]=meshgrid(sub_bot_r,sub_r);
 [~,sub_samples_mat]=meshgrid(sub_bot_r,sub_samples);
@@ -146,6 +151,7 @@ switch region.Reference
         Mask(:,(bot_int==inf))=0;
 end
 
+[t_mat,~]=meshgrid(sub_time,sub_r);
 [bot_mat,~]=meshgrid(bot_int,sub_r);
 [line_mat,~]=meshgrid(line_ref,sub_r);
 
@@ -153,13 +159,24 @@ end
 y_mat_ori=y_mat;
 y_mat=y_mat-line_mat;
 
+switch region.Reference
+    case 'Bottom'
+       idx_rem=(y_mat<-p.Results.vertExtend(2)|y_mat>p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+    otherwise
+      idx_rem=(y_mat>p.Results.vertExtend(2)|y_mat<-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+end
+
+Mask(idx_rem)=0;
+
 cell_w=region.Cell_w;
 cell_h=region.Cell_h;
-X0=nanmin(x_mat(:));
-X1=nanmax(x_mat(:));
+
+
+X0=nanmin(x_mat(Mask));
+X1=nanmax(x_mat(Mask));
 
 X=X0:cell_w:X1;
-X=[X x(end)];
+X=[X X1];
 X=unique(X);
 x_c=(X(2:end)+X(1:end-1))/2;
 x_res=(X(2:end)-X(1:end-1))/2;
@@ -373,6 +390,7 @@ output.Sv_mean_lin_esp2(idx_nan)=nan;
 
 output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
+output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
 
 
 end

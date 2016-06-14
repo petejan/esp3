@@ -57,12 +57,17 @@ for isn=1:length(snapshots)
                 else
                     new_lays=1;
                     if exist(fileN,'file')==2
-                        new_lay=open_EK60_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
-                            'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
                         
-                        new_lay=open_EK80_file_stdalone(fullfile(snapshots{isn}.Folder,filenames_cell{ifiles}),...
-                            'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                        fType=get_ftype(fileN);
                         
+                        switch fType
+                            case 'EK60'
+                                new_lay=open_EK60_file_stdalone(fileN,...
+                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
+                            case 'EK80'
+                                new_lay=open_EK80_file_stdalone(fileN,...
+                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                        end
                         [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
                         if found==0
                             warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});

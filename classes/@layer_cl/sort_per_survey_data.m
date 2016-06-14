@@ -1,47 +1,37 @@
 function layers_out_cell=sort_per_survey_data(layers_in)
 
-survey_data_str={};
-idx_lay=[];
-str_null=sprintf('Snap %d, Strat. %s, Trans. %d',...
-                0,' ',0); 
-i_str=0;
-for il=1:length(layers_in)
-    surv_data_cell=layers_in(il).SurveyData;
-    for ic=1:length(surv_data_cell)
-        i_str=i_str+1;
-        if ~isempty(surv_data_cell{ic})
-            survey_data_str{i_str}=surv_data_cell{ic}.print_survey_data();
-        else
-            survey_data_str{i_str}=num2str(il);
-        end
-        
-        if strcmpi('',survey_data_str{i_str})
-             survey_data_str{i_str}=num2str(il);
-         end
-        
-        idx_lay(i_str)=il;
-    end
+
+output=layers_in.list_layers_survey_data();
+
+[~,~,strat_vec_num]=unique(output.Stratum);
+[~,~,voy_vec_num]=unique(output.Voyage);
+[~,~,surv_name_vec_num]=unique(output.SurveyName);
+
+mat_surv_data=[surv_name_vec_num';voy_vec_num';output.Snapshot;strat_vec_num';output.Transect]';
+[~,unique_trans,trans_ids]=unique(mat_surv_data,'rows');
+
+id_lays_out_cell=cell(1,length(unique_trans));
+
+for i_out=1:length(id_lays_out_cell)
+    id_lays_out_cell{i_out}=output.Layer_idx(trans_ids==unique_trans(i_out));
+end
+
+nb_cell_out=0;
+cell_out={};
+while ~isempty(id_lays_out_cell)
+nb_cell_out=nb_cell_out+1;
+idx_temp=cellfun(@(x) ~isempty(intersect(id_lays_out_cell{1},x)),id_lays_out_cell);
+cell_out{nb_cell_out}=unique([id_lays_out_cell{idx_temp}]);
+id_lays_out_cell(idx_temp)=[];
 end
 
 
-id_lay=ones(1,length(layers_in));
-layers_out_cell=cell(1,length(layers_in));
-for ilay=1:length(layers_in)
-    ilay_other=find(idx_lay~=ilay);
-    ilay_current=(idx_lay==ilay);
-    if id_lay(ilay)==1
-        layers_out_cell{ilay}=layers_in(ilay);
-        id_lay(ilay)=0;
-    end
-    for istr=ilay_other
-        id_str=find(strcmp(survey_data_str(istr),survey_data_str(ilay_current)),1);
-        if ~isempty(id_str)>0&&id_lay(idx_lay(istr))==1;
-            layers_out_cell{ilay}=[layers_out_cell{ilay} layers_in(idx_lay(istr))];
-            id_lay(idx_lay(istr))=0;
-        end
-    end
+layers_out_cell=cell(1,length(cell_out));
+
+for ilay=1:length(layers_out_cell)
+    layers_out_cell{ilay}=layers_in(cell_out{ilay});
 end
 
-layers_out_cell(cellfun(@isempty,layers_out_cell))=[];
+
 
 end
