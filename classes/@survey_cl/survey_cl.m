@@ -5,13 +5,13 @@ classdef survey_cl < handle
     end
     
     methods
-        function obj=mbs_cl(varargin)
+        function obj=survey_cl(varargin)
             
             p = inputParser;
             def_in=survey_input_cl();
-            def_out=survey_output_cl();
-            addParameter(p,'SurvInput',def_in,@(obj) isa(obj,'survey_input_cl'));
-            addParameter(p,'SurvOutput',def_out,@(obj) isa(obj,'survey_output_cl'));
+            def_out=[];
+            addParameter(p,'SurvInput',def_in,@(obj) iempty(obj)|isa(obj,'survey_input_cl'));
+            addParameter(p,'SurvOutput',def_out,@(obj) iempty(obj)|isa(obj,'survey_output_cl'));
             
             parse(p,varargin{:});
             

@@ -161,7 +161,7 @@ y_mat=y_mat-line_mat;
 
 switch region.Reference
     case 'Bottom'
-       idx_rem=(y_mat<-p.Results.vertExtend(2)|y_mat>p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+       idx_rem=(y_mat<-p.Results.vertExtend(2)|y_mat>-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
     otherwise
       idx_rem=(y_mat>p.Results.vertExtend(2)|y_mat<-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
 end

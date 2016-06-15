@@ -23,11 +23,26 @@ for i=1:nb_child
         case 'cal'
             nb_cal=nb_cal+1;
            Cal(nb_cal)=get_node_att(xml_struct.Children(i));
+           if ~isfield(Cal(nb_cal),'FREQ')
+               Cal(nb_cal).FREQ=Options.Frequency;
+           end
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
            if isfield(Options,'FrequenciesToLoad')
                 Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
-                Options.FrequenciesToLoad(isnan(Options.FrequenciesToLoad))=[];
+                if isnan(Options.FrequenciesToLoad)
+                    Options.FrequenciesToLoad=Options.Frequency;
+                end
+                abs_ori=Options.Absorption;
+                Options.Absorption=nan(1,length(Options.FrequenciesToLoad));
+                if ischar(abs_ori)
+                    abs_temp=str2double(strsplit(abs_ori,';'));
+                    if length(abs_temp)==length(Options.FrequenciesToLoad)
+                        Options.Absorption=abs_temp;
+                    end
+                else
+                   Options.Absorption(Options.FrequenciesToLoad==Options.Frequency)=abs_ori;
+                end
            end
         case 'algos'
             Algos=get_algos(xml_struct.Children(i));
@@ -84,10 +99,8 @@ transects=cell(1,length(trans_nodes));
 for iu=1:length(trans_nodes)
     trans_curr=get_node_att(trans_nodes(iu));
     bott_curr=get_childs(trans_nodes(iu),'bottom');
-    cal_curr=get_childs(trans_nodes(iu),'cal');
     reg_curr=get_childs(trans_nodes(iu),'region'); 
     trans_curr.Bottom=get_node_att(bott_curr);
-    trans_curr.Cal=get_node_att(cal_curr);
     trans_curr.Regions=cell(1,length(reg_curr));
     for iiu=1:length(reg_curr)
         trans_curr.Regions{iiu}=get_node_att(reg_curr(iiu));

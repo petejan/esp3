@@ -112,7 +112,6 @@ for isn=1:length(snapshots)
                         else
                             for i_sub_reg=1:length(IDs)
                                 out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
-                                
                                 idx_temp=trans_obj_tr.list_regions_ID(abs(out_cell{1}));
                                 reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
                                 if ~isempty(out_cell{2});
@@ -120,19 +119,17 @@ for isn=1:length(snapshots)
                                 end
                                 if ~isempty(out_cell{3});
                                     reg_temp.finishDepth=out_cell{3};
+                                elseif isempty(out_cell{3})&&~isempty(out_cell{2});
+                                    reg_temp.startDepth=0;
+                                    reg_temp.finishDepth=-out_cell{2};
                                 end
                                 reg_tot=[reg_tot reg_temp];
                                 idx_reg=union(idx_reg,idx_temp);
                             end
                             
                         end
-                    elseif isfield(regs{ireg},'WC')
-                        idx_temp=trans_obj_tr.list_regions_name('WC');
-                        reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-                        reg_tot=[reg_tot reg_temp];
-                        idx_reg=union(idx_reg,idx_temp);
-                    elseif isfield(regs{ireg},'School')
-                        idx_temp=trans_obj_tr.list_regions_name('School');
+                    elseif isfield(regs{ireg},'name')
+                        idx_temp=trans_obj_tr.list_regions_name(regs{ireg}.name);
                         reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
                         reg_tot=[reg_tot reg_temp];
                         idx_reg=union(idx_reg,idx_temp);
@@ -261,7 +258,7 @@ for isn=1:length(snapshots)
             
             
             idx_pings=1:length(gps_tot.Time);
-            idx_good_pings=intersect(idx_pings,find(bot_tot.Tag>0&gps_tot.Time'>=nanmin(output.StartTime(idx_lay))&gps_tot.Time'<=nanmax(output.EndTime(idx_lay))));
+            idx_good_pings=intersect(idx_pings,find(bot_tot.Tag(:)>0&gps_tot.Time(:)>=nanmin(output.StartTime(idx_lay(1)))&gps_tot.Time(:)<=nanmax(output.EndTime(idx_lay(end)))));
             dist_tot=m_lldist([gps_tot.Long(idx_good_pings(1)) gps_tot.Long(idx_good_pings(end))],[gps_tot.Lat(idx_good_pings(1)) gps_tot.Lat(idx_good_pings(end))])/1.852;
             timediff_tot=(gps_tot.Time(idx_good_pings(end))-gps_tot.Time(idx_good_pings(1)))*24;
             av_speed_tot=dist_tot/timediff_tot;
@@ -358,15 +355,17 @@ for isn = 1:length(snapshots)
         abscf_wmean_j=surv_out_obj.stratumSum.abscf_wmean(i_strat);
         
         if nb_trans_j>1
-            surv_out_obj.stratumSum.abscf_var(i_strat) = nb_trans_j*(nansum(dist.^2.*trans_abscf.^2)-2*abscf_wmean_j*nansum(dist.^2.*trans_abscf)+abscf_wmean_j^2*nansum(dist.^2))...
-                /((nb_trans_j-1)*nansum(dist.^2)); % abscf_var according to esp2 formula
+            surv_out_obj.stratumSum.abscf_var(i_strat) = (nansum(dist.^2.*trans_abscf.^2)...
+                -2*abscf_wmean_j*nansum(dist.^2.*trans_abscf)+...
+                abscf_wmean_j^2*nansum(dist.^2))*...
+                nb_trans_j/((nb_trans_j-1)*nansum(dist)^2); % abscf_var according to esp2 formula
         else
             surv_out_obj.stratumSum.abscf_var(i_strat)=0;
         end
+            
     end
 end
 surv_obj.SurvOutput=surv_out_obj;
-
 
 
 

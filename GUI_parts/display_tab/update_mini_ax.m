@@ -35,6 +35,7 @@ cla(display_tab_comp.mini_ax,'reset');
 axes(display_tab_comp.mini_ax);
 display_tab_comp.mini_echo=imagesc(pings,range,data_disp);
 display_tab_comp.patch_obj=patch('Faces',f1,'Vertices',v1,'FaceColor','red','FaceAlpha',.2);
+uistack(display_tab_comp.patch_obj,'top');
 set(display_tab_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_figure});
 set(display_tab_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
 set(display_tab_comp.mini_ax,'XTickLabels',[],'YTickLabels',[]);

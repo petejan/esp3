@@ -1,5 +1,5 @@
-function load_mbs_fig(hObject_main,mbsSummary)
-hfigs=getappdata(hObject_main,'ExternalFigures');
+function load_mbs_fig(main_figure,mbsSummary)
+hfigs=getappdata(main_figure,'ExternalFigures');
 % Column names and column format
 columnname = {'Title','Species','Voyage','Areas','Author','MbsId','Created'};
 columnformat = {'char','char','char','char','char','char','char'};
@@ -8,7 +8,7 @@ mbs_figure = figure('Position',[100 100 800 600],'Resize','off',...
     'Name','MBSing','NumberTitle','off',...
     'MenuBar','none');%No Matlab Menu)
 hfigs_new=[hfigs mbs_figure];
-setappdata(hObject_main,'ExternalFigures',hfigs_new);
+setappdata(main_figure,'ExternalFigures',hfigs_new);
 
 uicontrol(mbs_figure,'style','text','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
 mbs_table.search_box=uicontrol(mbs_figure,'style','edit','units','normalized','position',[0.2 0.96 0.3 0.03],'HorizontalAlignment','left','Callback',{@search_callback,mbs_figure});
@@ -35,10 +35,12 @@ set(mbs_table.table_main,'CellSelectionCallback',{@store_selected_mbs_callback,m
 
 rc_menu = uicontextmenu;
 mbs_table.table_main.UIContextMenu =rc_menu;
-uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','crest');
-uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','raw');
-uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,hObject_main},'tag','sch');
-uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,hObject_main});
+uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','crest');
+uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','raw');
+uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','sch');
+uimenu(rc_menu,'Label','Run using new integration on Crest','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','crest');
+uimenu(rc_menu,'Label','Run using new integration on Raw','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','raw');
+uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,main_figure});
 selected_mbs={''};
 
 setappdata(mbs_figure,'SelectedMbs',selected_mbs);
@@ -48,12 +50,12 @@ setappdata(mbs_figure,'DataOri',mbsSummary);
 end
 
 
-function run_mbs_callback(src,~,hObject,hObject_main)
+function run_mbs_callback(src,~,hObject,main_figure)
 
 selected_mbs=getappdata(hObject,'SelectedMbs');
-app_path=getappdata(hObject_main,'App_path');
-curr_disp=getappdata(hObject_main,'Curr_disp');
-layers_old=getappdata(hObject_main,'Layers');
+app_path=getappdata(main_figure,'App_path');
+curr_disp=getappdata(main_figure,'Curr_disp');
+layers_old=getappdata(main_figure,'Layers');
 mbs_vec=[];
 
 for i=1:length(selected_mbs)
@@ -83,7 +85,7 @@ for i=1:length(selected_mbs)
     
     mbs.print_output;
     fprintf(1,'Results save to %s \n',mbs.OutputFile);
-
+    
     
     %     catch ME
     %         disp(ME.identifier);
@@ -112,16 +114,85 @@ end
 
 layer=layers(end);
 
-setappdata(hObject_main,'Layer',layer);
-setappdata(hObject_main,'Layers',layers);
-setappdata(hObject_main,'Curr_disp',curr_disp);
-update_display(hObject_main,1);
-load_map_fig(hObject_main,mbs_vec);
+setappdata(main_figure,'Layer',layer);
+setappdata(main_figure,'Layers',layers);
+setappdata(main_figure,'Curr_disp',curr_disp);
+update_display(main_figure,1);
+load_map_fig(main_figure,mbs_vec);
 
 end
 
-function edit_mbs_callback(~,~,hObject,hObject_main)
-app_path=getappdata(hObject_main,'App_path');
+
+function run_mbs_callback_v2(src,~,hObject,main_figure)
+
+selected_mbs=getappdata(hObject,'SelectedMbs');
+app_path=getappdata(main_figure,'App_path');
+
+layers_old=getappdata(main_figure,'Layers');
+
+
+for i=1:length(selected_mbs)
+    %try
+    curr_mbs=selected_mbs{i};
+    if~strcmp(curr_mbs,'')
+        [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
+    end
+    
+    mbs=mbs_cl();
+    mbs.readMbsScript(app_path.data_root,fileNames{1});
+    rmdir(outDir,'s');
+    
+    surv_obj=survey_cl();
+    
+    surv_obj.SurvInput=mbs.mbs_to_survey_obj('type',src.Tag);
+    
+    layers_new=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data_temp,'cvsroot',app_path.cvs_root,'origin','mbs');
+    surv_obj.generate_output(layers_new);
+    
+    %     profile off;
+    %     profile viewer;
+    %
+    save(fullfile(surv_obj.SurvInput.Snapshots{1}.Folder,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
+    outputFile=fullfile(surv_obj.SurvInput.Snapshots{1}.Folder,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
+    surv_obj.print_output(outputFile);
+    
+    if ~isempty(layers_old)
+        [old_files,ID_nums_old]=layers_old.list_files_layers();
+        [new_files,~]=layers_new.list_files_layers();
+        idx_already_open=cellfun(@(x) nansum(strcmpi(x,new_files))>0,old_files);
+        layers_old=layers_old.delete_layers(ID_nums_old(idx_already_open>0));
+    end
+    
+    layers_old=[layers_old layers_new];
+    
+    %     catch err
+    %         disp(err.message);
+    %         warning('Could not process survey described in file %s\n',Filename{i});
+    %     end
+end
+
+layers=layers_old;
+if ~isempty(layers)
+    [~,found]=find_layer_idx(layers,0);
+else
+    found=0;
+end
+if  found==1
+    layers=layers.delete_layers(0);
+end
+
+if ~isempty(layers)
+    layer=layers(end);
+    setappdata(main_figure,'Layer',layer);
+    setappdata(main_figure,'Layers',layers);
+    
+    update_display(main_figure,1);
+end
+
+end
+
+function edit_mbs_callback(~,~,hObject,main_figure)
+app_path=getappdata(main_figure,'App_path');
 selected_mbs=getappdata(hObject,'SelectedMbs');
 if~strcmp(selected_mbs,'')
     [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',selected_mbs{end},'Rev',[]);

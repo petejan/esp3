@@ -2,7 +2,7 @@ function survey_input_to_survey_xml(survey_input_obj,varargin)
 
 p = inputParser;
 
-addRequired(p,'survey_input_obj');
+addRequired(p,'survey_input_obj',@(x) isa(x,'survey_input_cl'));
 addParameter(p,'xml_filename',fullfile(pwd,'survey_xml.xml'),@ischar);
 addParameter(p,'open_file',true,@islogical);
 

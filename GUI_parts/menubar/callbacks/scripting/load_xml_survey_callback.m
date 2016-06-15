@@ -82,7 +82,7 @@ if  found==1
     layers=layers.delete_layers(0);
 end
 
-if ~isempty(layer)
+if ~isempty(layers)
     layer=layers(end);
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Layers',layers);

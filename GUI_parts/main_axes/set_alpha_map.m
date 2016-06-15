@@ -26,6 +26,9 @@ else
     echo_ax=p.Results.echo_ax;
 end
 
+obj_del=findall(echo_ax,'tag','imtemp');
+delete(obj_del);
+
 curr_disp=getappdata(hObject,'Curr_disp');
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
 
@@ -74,7 +77,13 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     
     if strcmpi(curr_disp.DispUnderBottom,'off')==1
         if strcmp(curr_disp.Cmap,'esp2')
-            alpha_map(idx_bot_red)=0.5;
+            axes(echo_ax);
+            hold on;
+            imtemp=imagesc(xdata,ydata,-999*ones(size(alpha_map)),'tag','imtemp');
+            uistack(imtemp,'bottom');
+            uistack(imtemp,'up');
+            set(imtemp,'AlphaData',double(idx_bot_red));
+
         else
             alpha_map(idx_bot_red)=0;
         end
