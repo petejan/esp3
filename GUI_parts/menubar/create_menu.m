@@ -1,13 +1,13 @@
 function create_menu(main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-m_files = uimenu(main_figure,'Label','File','Tag','menufile');
+m_files = uimenu(main_figure,'Label','File(s)','Tag','menufile');
 uimenu(m_files,'Label','Open file','Callback',{@open_file,0,main_figure});
 uimenu(m_files,'Label','Open next file','Callback',{@open_file,1,main_figure});
 uimenu(m_files,'Label','Open previous file','Callback',{@open_file,2,main_figure});
 uimenu(m_files,'Label','Reload Current file(s)','Callback',{@reload_file,main_figure});
 uimenu(m_files,'Label','Index Files','Callback',{@index_files_callback,main_figure});
-
+uimenu(m_files,'Label','Clean temp. files','Callback',{@clean_temp_files_callback,main_figure});
 
 m_bot_reg = uimenu(main_figure,'Label','Bottom/Regions','Tag','menufile');
 % m_bot_reg_old = uimenu(m_bot_reg,'Label','Old b-r_files','Tag','menuold');
@@ -134,6 +134,31 @@ setappdata(main_figure,'main_menu',main_menu);
 
 end
 
+function clean_temp_files_callback(src,~,main_figure)
+layers=getappdata(main_figure,'Layers');
+
+temp_files_in_use=layers.list_memaps();
+app_path=getappdata(main_figure,'App_path');
+
+files_in_temp=dir(app_path.data_temp);
+
+idx_delete=[];
+for uu=1:length(files_in_temp)
+    if nansum(strcmpi(fullfile(app_path.data_temp,files_in_temp(uu).name),temp_files_in_use))==0&&files_in_temp(uu).isdir==0
+        idx_delete=[idx_delete uu];
+    end
+end
+
+for i=1:length(idx_delete)
+    if exist(fullfile(app_path.data_temp,files_in_temp(idx_delete(i)).name),'file')==2
+        delete(fullfile(app_path.data_temp,files_in_temp(idx_delete(i)).name));
+    end
+end
+
+fprintf('%d files deleted, %.0f Mb\n',length(idx_delete),nansum([files_in_temp(idx_delete).bytes])/1e6);
+
+end
+
 function change_cmap_callback(src,~,main_fig)
 curr_disp=getappdata(main_fig,'Curr_disp');
 curr_disp.Cmap=src.Tag;
@@ -214,6 +239,7 @@ end
 
 xmlfile=fullfile(path_lay{1},'echo_logbook.xml');
 htmlfile=fullfile(path_lay{1},'echo_logbook.html');
+
 if exist(xmlfile,'file')==0
     initialize_echo_logbook_file(path_lay{1});
 end

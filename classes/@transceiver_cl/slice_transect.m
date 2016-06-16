@@ -8,7 +8,7 @@ addParameter(p,'reg',init_reg,@(x) isstruct(x)||isempty(x));
 addParameter(p,'Slice_w',100,@(x) x>0);
 addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'StartTime',0,@(x) x>0);
-addParameter(p,'EndTime',1,@(x) x>0);
+addParameter(p,'EndTime',Inf,@(x) x>0);
 
 parse(p,trans_obj,varargin{:});
 
@@ -113,6 +113,10 @@ for iuu=1:length(idx_reg)
     i_reg=i_reg+1;
     reg_param=reg(iuu);
     regCellInt=reg_curr.integrate_region(trans_obj,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime]);
+    if isempty(regCellInt.Sv_mean_lin)
+        i_reg=i_reg-1;
+        continue;
+    end
     regs{i_reg}=reg_curr;
     
     Sa_lin = nansum(regCellInt.Sa_lin)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice

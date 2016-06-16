@@ -20,6 +20,7 @@ switch listdata.AffectedObject.CursorMode
         set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
     case 'Normal'
         reset_mode(0,0,main_figure);
+        set_alpha_map(main_figure);
 end
 
 end

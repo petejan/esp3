@@ -80,6 +80,20 @@ classdef layer_cl < handle
             end
         end
         
+        function memap_files=list_memaps(layers)
+            memap_files={};
+            ifile=0;
+           for ilay=1:length(layers)
+              for itr=1:length(layers(ilay).Transceivers)
+                 for i_sub_data=1:length(layers(ilay).Transceivers(itr).Data.SubData) 
+                     for imap=1:length(layers(ilay).Transceivers(itr).Data.SubData(i_sub_data).Memap)
+                         ifile=ifile+1;
+                         memap_files{ifile}=layers(ilay).Transceivers(itr).Data.SubData(i_sub_data).Memap{imap}.Filename;
+                     end
+                 end
+              end
+           end
+        end
         
         
         function rm_region_across_id(layer,ID)

@@ -29,10 +29,12 @@ for i=1:nb_child
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
            if isfield(Options,'FrequenciesToLoad')
-                Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
-                if isnan(Options.FrequenciesToLoad)
-                    Options.FrequenciesToLoad=Options.Frequency;
-                end
+               if ischar(Options.FrequenciesToLoad)
+                   Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
+                   if isnan(Options.FrequenciesToLoad)
+                       Options.FrequenciesToLoad=Options.Frequency;
+                   end
+               end
                 abs_ori=Options.Absorption;
                 Options.Absorption=nan(1,length(Options.FrequenciesToLoad));
                 if ischar(abs_ori)

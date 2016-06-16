@@ -35,11 +35,11 @@ set(mbs_table.table_main,'CellSelectionCallback',{@store_selected_mbs_callback,m
 
 rc_menu = uicontextmenu;
 mbs_table.table_main.UIContextMenu =rc_menu;
-uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','crest');
-uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','raw');
-uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','sch');
-uimenu(rc_menu,'Label','Run using new integration on Crest','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','crest');
-uimenu(rc_menu,'Label','Run using new integration on Raw','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','raw');
+% uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','crest');
+% uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','raw');
+% uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','sch');
+uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','crest');
+uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','raw');
 uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,main_figure});
 selected_mbs={''};
 
@@ -93,13 +93,7 @@ for i=1:length(selected_mbs)
     %     end
     
     layers_old=[layers_old layers];
-    if ~isempty(mbs_vec)
-        idx=find_mbs(mbs_vec,mbs.Header.MbsId);
-        if ~isempty(idx)
-            mbs_vec(idx)=[];
-        end
-    end
-    mbs_vec=[mbs_vec mbs];
+   
 end
 
 layers=layers_old;
@@ -118,7 +112,7 @@ setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,1);
-load_map_fig(main_figure,mbs_vec);
+
 
 end
 
@@ -128,7 +122,7 @@ function run_mbs_callback_v2(src,~,hObject,main_figure)
 selected_mbs=getappdata(hObject,'SelectedMbs');
 app_path=getappdata(main_figure,'App_path');
 
-layers_old=getappdata(main_figure,'Layers');
+layers=getappdata(main_figure,'Layers');
 
 
 for i=1:length(selected_mbs)
@@ -146,8 +140,8 @@ for i=1:length(selected_mbs)
     
     surv_obj.SurvInput=mbs.mbs_to_survey_obj('type',src.Tag);
     
-    layers_new=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data_temp,'cvsroot',app_path.cvs_root,'origin','mbs');
-    surv_obj.generate_output(layers_new);
+    layers=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data_temp,'cvsroot',app_path.cvs_root,'origin','mbs','layers',layers,'Fieldnames',{'power','sv'});
+    surv_obj.generate_output(layers);
     
     %     profile off;
     %     profile viewer;
@@ -155,15 +149,8 @@ for i=1:length(selected_mbs)
     save(fullfile(surv_obj.SurvInput.Snapshots{1}.Folder,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
     outputFile=fullfile(surv_obj.SurvInput.Snapshots{1}.Folder,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
     surv_obj.print_output(outputFile);
-    
-    if ~isempty(layers_old)
-        [old_files,ID_nums_old]=layers_old.list_files_layers();
-        [new_files,~]=layers_new.list_files_layers();
-        idx_already_open=cellfun(@(x) nansum(strcmpi(x,new_files))>0,old_files);
-        layers_old=layers_old.delete_layers(ID_nums_old(idx_already_open>0));
-    end
-    
-    layers_old=[layers_old layers_new];
+    fprintf(1,'Results save to %s \n',outputFile);
+
     
     %     catch err
     %         disp(err.message);
@@ -171,7 +158,6 @@ for i=1:length(selected_mbs)
     %     end
 end
 
-layers=layers_old;
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);
 else
@@ -184,8 +170,7 @@ end
 if ~isempty(layers)
     layer=layers(end);
     setappdata(main_figure,'Layer',layer);
-    setappdata(main_figure,'Layers',layers);
-    
+    setappdata(main_figure,'Layers',layers); 
     update_display(main_figure,1);
 end
 

@@ -3,9 +3,11 @@ function layers=load_files_from_survey_input(surv_input_obj,varargin)
 p = inputParser;
 
 addRequired(p,'surv_input_obj',@(obj) isa(obj,'survey_input_cl'));
-addParameter(p,'origin','xml',@ischar)
-addParameter(p,'cvsroot','',@ischar)
-addParameter(p,'PathToMemmap','',@ischar)
+addParameter(p,'layers',layer_cl.empty(),@(obj) isa(obj,'layer_cl'));
+addParameter(p,'origin','xml',@ischar);
+addParameter(p,'cvsroot','',@ischar);
+addParameter(p,'PathToMemmap','',@ischar);
+addParameter(p,'FieldNames',{},@iscell);
 
 parse(p,surv_input_obj,varargin{:});
 
@@ -19,7 +21,8 @@ cal=surv_input_obj.Cal;
 
 snapshots=surv_input_obj.Snapshots;
 u=0;
-layers=layer_cl.empty();
+layers=p.Results.layers;
+
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
@@ -62,11 +65,11 @@ for isn=1:length(snapshots)
                         switch fType
                             case 'EK60'
                                 new_lay=open_EK60_file_stdalone(fileN,...
-                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'EsOffset',options.Es60_correction);
+                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames);
                             case 'EK80'
                                 new_lay=open_EK80_file_stdalone(fileN,...
-                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));          
-                            case 'dfile'   
+                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames);
+                            case 'dfile'
                                 new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
                         end
                         [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
@@ -77,12 +80,12 @@ for isn=1:length(snapshots)
                         
                         switch p.Results.origin
                             case 'mbs'
-                            new_lay.OriginCrest=transects{itr}.OriginCrest{ifiles};
-                            new_lay.CVS_BottomRegions(p.Results.cvsroot); 
-                            if ~strcmp(new_lay.Filetype,'CREST')
+                                new_lay.OriginCrest=transects{itr}.OriginCrest{ifiles};
+                                new_lay.CVS_BottomRegions(p.Results.cvsroot);
+                                %if ~strcmp(new_lay.Filetype,'CREST')
                                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                 new_lay.set_survey_data(surv);
-                            end
+                                %end
                         end
                         
                         layers_in=[layers_in new_lay];
@@ -129,18 +132,18 @@ for isn=1:length(snapshots)
                             fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                         end
                     end
-
-                        if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
-                            layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
-                        else
-                            fprintf('No absorption specified for Frequency %.0fkHz\n. Using file value',layer_new.Frequencies(i_freq)/1e3);
-                        end
+                    
+                    if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
+                        layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
+                    else
+                        fprintf('No absorption specified for Frequency %.0fkHz\n. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                    end
                 end
                 
                 
                 switch p.Results.origin
                     case 'xml'
-                          
+                        
                         layer_new.load_echo_logbook();
                         
                         if isfield(bot,'ver')
@@ -181,7 +184,7 @@ for isn=1:length(snapshots)
                 
                 for ial=1:length(algos)
                     layer(u).Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                    layer(u).Transceivers(idx_freq).apply_algo(algos{ial}.Name); 
+                    layer(u).Transceivers(idx_freq).apply_algo(algos{ial}.Name);
                 end
                 u=length(layers)+1;
                 layers(u)=layer_new;

@@ -91,6 +91,12 @@ Idx_samples_lin(idx_r_max:end,:)=[];
 [nb_samples,nb_pings]=size(TS);
 along=Transceiver.Data.get_subdatamat('AlongAngle',1:nb_samples,1:nb_pings);
 athwart=Transceiver.Data.get_subdatamat('AcrossAngle',1:nb_samples,1:nb_pings);
+if isempty(along)||isempty(along)
+   disp('Cannot compute single targets.... No angles');
+   single_targets=[];
+   return;
+end
+
 Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
 Samples=repmat((1:nb_samples)',1,nb_pings);
 Ping=repmat(Transceiver.Data.get_numbers(),nb_samples,1);

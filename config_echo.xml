@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.1">
    <AppPath cvs_root=":local:Z:\" data="X:\" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo"/>
-   <Display Cmap="jet" DispBadTrans="on" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="on" Freq="38000" Grid_x="100" Grid_y="100" Xaxes="Number"/>
+   <Display Cmap="esp2" DispBadTrans="on" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="on" Freq="38000" Grid_x="100" Grid_y="200" Xaxes="Number"/>
    <algos>
-      <BottomDetection denoised="0.000000" r_max="Inf" r_min="0.000000" shift_bot="0.000000" thr_bottom="-35.000000" thr_echo="-12.000000"/>
-      <BadPings Above="1.000000" BS_std="6.000000" BS_std_bool="1.000000" Below="0.000000" burst_removal="0.000000" denoised="0.000000" r_max="Inf" r_min="0.000000" shift_bot="0.000000" thr_bottom="-35.000000" thr_echo="-12.000000" thr_spikes_Above="3.000000" thr_spikes_Below="3.000000"/>
+      <BottomDetection denoised="0.000000" r_max="1299.707150" r_min="0.191218" shift_bot="0.000000" thr_bottom="-35.000000" thr_echo="-12.000000"/>
+      <BadPings Above="1.000000" BS_std="6.000000" BS_std_bool="1.000000" Below="0.000000" burst_removal="0.000000" denoised="0.000000" r_max="1299.707150" r_min="0.191218" shift_bot="0.000000" thr_bottom="-35.000000" thr_echo="-12.000000" thr_spikes_Above="3.000000" thr_spikes_Below="3.000000"/>
       <Denoise HorzFilt="50.000000" NoiseThr="-125.000000" SNRThr="10.000000" VertFilt="10.000000"/>
       <SchoolDetection Sv_thr="-65.000000" Type="Sv" h_min_can="10.000000" h_min_tot="20.000000" horz_link_max="5.000000" l_min_can="10.000000" l_min_tot="50.000000" nb_min_sples="100.000000" vert_link_max="5.000000"/>
       <SingleTarget MaxBeamComp="12.000000" MaxNormPL="1.500000" MaxStdMajAxisAngle="1.000000" MaxStdMinAxisAngle="1.000000" MinNormPL="0.600000" PLDL="6.000000" TS_threshold="-65.000000" Type="Sp"/>

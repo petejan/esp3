@@ -92,7 +92,7 @@ if ~isempty(idx_old)
 end
 
 
-layer_obj=[];
+layer_obj=layer_cl.empty;
 
 process_obj=process_cl.empty;
 

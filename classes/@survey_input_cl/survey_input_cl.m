@@ -62,13 +62,14 @@ classdef survey_input_cl < handle
             
         end
         
-        function [snapshot_vec,stratum_vec,transect_vec,reg_num_vec]=list_transects(surv_in_obj)
+        function [snapshot_vec,stratum_vec,transect_vec,reg_num_vec,files]=list_transects(surv_in_obj)
             snapshots=surv_in_obj.Snapshots;
             nb_trans=0;
             snapshot_vec=[];
             stratum_vec={};
             transect_vec=[];
             reg_num_vec=[];
+            files={};
             
             for isn=1:length(snapshots)
                 snap_num=snapshots{isn}.Number;
@@ -82,6 +83,7 @@ classdef survey_input_cl < handle
                         snapshot_vec(nb_trans)=snap_num;
                         stratum_vec{nb_trans}=strat_name;
                         transect_vec(nb_trans)=trans_num;
+                        files{nb_trans}=transects{itr}.files;
                         reg_num_vec(nb_trans)=length(transects{itr}.Regions);
                     end
                 end

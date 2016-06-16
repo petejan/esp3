@@ -1,4 +1,14 @@
-function computeSpSv(trans_obj,env_data_obj)
+function computeSpSv(trans_obj,env_data_obj,varargin)
+
+
+p = inputParser;
+
+addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
+addRequired(p,'env_data_obj',@(obj) isa(obj,'env_data_cl'));
+addParameter(p,'FieldNames',{},@iscell);
+
+
+parse(p,trans_obj,env_data_obj,varargin{:});
 
 f = trans_obj.Config.Frequency(1);
 c = env_data_obj.SoundSpeed;
@@ -21,24 +31,30 @@ switch trans_obj.Mode
         range = double((trans_obj.Data.get_samples() - 1) * dR);
         
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
-        [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr);
         
+        trans_obj.Data.Range=[range(1) range(end)];
 
-        trans_obj.Data.Range=[range(1) range(end)];        
-        trans_obj.Data.add_sub_data('sv',Sv);
-        trans_obj.Data.add_sub_data('sp',Sp);
-        trans_obj.Data.add_sub_data('spunmatched',Sp_un);
+            if nansum(strcmpi(p.Results.FieldNames,'sp'))>0||isempty(p.Results.FieldNames)
+                [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr);
+                trans_obj.Data.add_sub_data('spunmatched',Sp_un);
+            end
+
+        
     case 'CW'
         range = double((trans_obj.Data.get_samples() - 1) * dR);
         
         [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
-       
+        
         trans_obj.Data.Range=[range(1) range(end)];
-        trans_obj.Data.add_sub_data('sv',Sv);
-        trans_obj.Data.add_sub_data('sp',Sp);
+        
 end
 
-
+    if nansum(strcmpi(p.Results.FieldNames,'sv'))>0||isempty(p.Results.FieldNames)
+        trans_obj.Data.add_sub_data('sv',Sv);
+    end
+    if nansum(strcmpi(p.Results.FieldNames,'sp'))>0||isempty(p.Results.FieldNames)
+        trans_obj.Data.add_sub_data('sp',Sp);
+    end
 
 
 end

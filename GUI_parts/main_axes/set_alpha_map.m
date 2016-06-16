@@ -1,20 +1,20 @@
-function set_alpha_map(hObject,varargin)
+function set_alpha_map(main_figure,varargin)
 
 p = inputParser;
 
-addRequired(p,'hObject',@ishandle);
+addRequired(p,'main_figure',@ishandle);
 addParameter(p,'echo_ax',[]);
 addParameter(p,'echo_im',[]);
 
-parse(p,hObject,varargin{:});
+parse(p,main_figure,varargin{:});
 
-layer=getappdata(hObject,'Layer');
+layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
 
 if isempty(p.Results.echo_ax)||isempty(p.Results.echo_im)
-    axes_panel_comp=getappdata(hObject,'Axes_panel');
+    axes_panel_comp=getappdata(main_figure,'Axes_panel');
     
     if ~isfield(axes_panel_comp,'main_echo')
         return;
@@ -29,7 +29,7 @@ end
 obj_del=findall(echo_ax,'tag','imtemp');
 delete(obj_del);
 
-curr_disp=getappdata(hObject,'Curr_disp');
+curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
 
 if found==0
@@ -72,7 +72,7 @@ end
 Range_mat=repmat(ydata,1,nb_pings);
 if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),nb_samples,1);
-    idx_bot=Range_mat>bot_mat;
+    idx_bot=Range_mat>=bot_mat;
     idx_bot_red=imresize(idx_bot,size(alpha_map));
     
     if strcmpi(curr_disp.DispUnderBottom,'off')==1
@@ -83,7 +83,9 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
             uistack(imtemp,'bottom');
             uistack(imtemp,'up');
             set(imtemp,'AlphaData',double(idx_bot_red));
-
+            if strcmpi(curr_disp.CursorMode,'Normal')
+                create_context_menu_main_echo(main_figure,imtemp);
+            end
         else
             alpha_map(idx_bot_red)=0;
         end

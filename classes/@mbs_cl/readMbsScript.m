@@ -25,7 +25,7 @@ else
     else
         i = 1;  tline = fgetl(fid);
         while 1
-  
+            
             if ~ischar(tline)
                 break; % end of file
             end
@@ -57,8 +57,12 @@ else
                 continue;
             end
             
-            if strfind(tline,'absorption');
-                ab = tline(strfind(tline,':')+2:end);
+            if ~isempty(strfind(tline,'absorption'))&&isempty(strfind(tline,'default_absorption'));
+                if isempty(strfind(tline,'#'))
+                    ab = tline(strfind(tline,':')+2:end);
+                else
+                    ab = tline(strfind(tline,':')+2:strfind(tline,'#')-1);
+                end
                 tline = fgetl(fid);
                 continue;
             end
@@ -118,7 +122,7 @@ else
                     expr='\d*\([\-]*\d*\)';
                     RegCVS = regexp(str_rem,expr,'match');
                     for uuk=1:length(RegCVS)
-                    mbs.Input.reg{i}(uuk) = getRegSpecFromRegString(RegCVS{uuk});
+                        mbs.Input.reg{i}(uuk) = getRegSpecFromRegString(RegCVS{uuk});
                     end
                     
                     expr='alg';
@@ -133,20 +137,20 @@ else
                 mbs.Input.crestDir{i}=fullfile(dataroot,mbs.Input.dfileDir{i});
                 
                 ifile_info=parse_ifile(fullfile(mbs.Input.crestDir{i},sprintf('i%07d', mbs.Input.dfileNum(i))));
-              
+                
                 mbs.Input.rawDir{i}=fullfile(mbs.Input.crestDir{i},ifile_info.rawSubDir);
                 mbs.Input.rawFileName{i}=ifile_info.rawFileName;
                 mbs.Input.rawSubDir{i}=ifile_info.rawSubDir;
                 mbs.Input.calCrest(i)=ifile_info.Cal_crest;
                 mbs.Input.calRaw{i}=struct('G0',ifile_info.G0,'SACORRECT',ifile_info.SACORRECT);
-                                
+                
                 i = i+1;
                 
                 tline = fgetl(fid);
                 if ~ischar(tline)
                     break; % end of file
                 end
-      
+                
             else
                 tline = fgetl(fid);
             end

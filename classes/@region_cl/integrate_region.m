@@ -23,6 +23,7 @@ idx_r=region.Idx_r;
 
 if isempty(Sv)
     warning('No Sv, cannot integrate');
+    output=[];
     return;
 end
 
@@ -161,9 +162,9 @@ y_mat=y_mat-line_mat;
 
 switch region.Reference
     case 'Bottom'
-       idx_rem=(y_mat<-p.Results.vertExtend(2)|y_mat>-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+       idx_rem=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
     otherwise
-      idx_rem=(y_mat>p.Results.vertExtend(2)|y_mat<-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+      idx_rem=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
 end
 
 Mask(idx_rem)=0;

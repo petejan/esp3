@@ -1,12 +1,10 @@
 function inter_region_create(src,main_figure,mode,func)
 
-obj=gco;
-
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 src.Pointer = 'ibeam';
 ah=axes_panel_comp.main_axes;
 
-if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
+if strcmp(src.SelectionType,'normal')
     
     clear_lines(ah)
 

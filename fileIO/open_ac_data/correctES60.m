@@ -69,16 +69,16 @@ else
     mean_corrected_value = nanmean(rd_zone - es60_error((1:num_pings)+zero_error_ping));
     disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
 end
-
-figure();
-disp(['The zero error ping number is ' num2str(zero_error_ping)])
-plot(rd_zone)
-hold on
-plot(rd_zone - es60_error((1:num_pings)+zero_error_ping), 'r')
-xlabel('Ping number')
-ylabel('Third sample received power (dB re 1 W, uncalibrated)')
-legend('Uncorrected', 'Corrected')
-grid on;
+% 
+% figure();
+% disp(['The zero error ping number is ' num2str(zero_error_ping)])
+% plot(rd_zone)
+% hold on
+% plot(rd_zone - es60_error((1:num_pings)+zero_error_ping), 'r')
+% xlabel('Ping number')
+% ylabel('Third sample received power (dB re 1 W, uncalibrated)')
+% legend('Uncorrected', 'Corrected')
+% grid on;
 
 data_c=data-repmat(es60_error((1:num_pings)+zero_error_ping),size(data,1),1);
 end

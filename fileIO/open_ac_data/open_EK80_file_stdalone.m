@@ -287,10 +287,10 @@ if ~isequal(Filename_cell, 0)
                 
                 switch data.config(i).TransceiverType
                     case 'WBT'
-                        transceiver(i).computeSpSv(envdata);
+                        transceiver(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
                     case 'GPT'
                         transceiver(i).computeAngles();
-                        transceiver(i).computeSpSv(envdata);
+                        transceiver(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
                 end
                 %transceiver(i).computeSp_comp();
             end

@@ -17,7 +17,7 @@ vert_slice = surv_in_obj.Options.Vertical_slice_size;
 
 output=layers.list_layers_survey_data();
 
-[snap_vec,strat_vec,trans_vec,reg_nb_vec]=surv_in_obj.list_transects();
+[snap_vec,strat_vec,trans_vec,reg_nb_vec,~]=surv_in_obj.list_transects();
 
 [~,~,strat_vec_num]=unique(strat_vec);
 trans_triple=unique([snap_vec;strat_vec_num';trans_vec]','rows');
@@ -103,7 +103,11 @@ for isn=1:length(snapshots)
                 reg_tot=[];
                 for ireg=1:length(regs)
                     if isfield(regs{ireg},'ver')
-                        IDs=strsplit(regs{ireg}.IDs,';');
+                        if ischar(regs{ireg}.IDs)
+                            IDs=strsplit(regs{ireg}.IDs,';');
+                        else
+                            IDs={regs{ireg}.IDs};
+                        end
                         if nansum(strcmp(IDs,''))>0
                             idx_temp=trans_obj_tr.list_regions_type('Data');
                             reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
@@ -111,20 +115,27 @@ for isn=1:length(snapshots)
                             reg_tot=[reg_tot reg_temp];
                         else
                             for i_sub_reg=1:length(IDs)
-                                out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
+                                if ischar(IDs{i_sub_reg})
+                                    out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
+                                else
+                                    out_cell={IDs{i_sub_reg},[],[]};
+                                end
+                                
                                 idx_temp=trans_obj_tr.list_regions_ID(abs(out_cell{1}));
-                                reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-                                if ~isempty(out_cell{2});
-                                    reg_temp.startDepth=out_cell{2};
+                                for i_temp=1:length(idx_temp)
+                                    reg_temp=trans_obj_tr.get_reg_spec(idx_temp(i_temp));
+                                    if ~isempty(out_cell{2});
+                                        reg_temp.startDepth=out_cell{2};
+                                    end
+                                    if ~isempty(out_cell{3});
+                                        reg_temp.finishDepth=out_cell{3};
+                                    elseif isempty(out_cell{3})&&~isempty(out_cell{2});
+                                        reg_temp.startDepth=0;
+                                        reg_temp.finishDepth=-out_cell{2};
+                                    end
+                                    reg_tot=[reg_tot reg_temp];
+                                    idx_reg=union(idx_reg,idx_temp(i_temp));
                                 end
-                                if ~isempty(out_cell{3});
-                                    reg_temp.finishDepth=out_cell{3};
-                                elseif isempty(out_cell{3})&&~isempty(out_cell{2});
-                                    reg_temp.startDepth=0;
-                                    reg_temp.finishDepth=-out_cell{2};
-                                end
-                                reg_tot=[reg_tot reg_temp];
-                                idx_reg=union(idx_reg,idx_temp);
                             end
                             
                         end

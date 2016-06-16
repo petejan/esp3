@@ -23,19 +23,19 @@ while 1
         sd = str2double(depths(1:ix-1));
         fd = str2double(depths(ix+1:end));
     else
-        sd = NaN; fd = NaN;
+        sd = 0; fd = Inf;
     end
     if ~isempty(slices)
         ix =  strfind(slices, '-');
         ss = str2double(slices(1:ix-1));
         fs = str2double(slices(ix+1:end));
     else
-        ss = NaN; fs = NaN;
+        ss = 0; fs = Inf;
     end
-    if isempty(sd); sd = NaN; end
-    if isempty(fd); fd = NaN; end
-    if isempty(ss); ss = NaN; end
-    if isempty(fs); fs = NaN; end
+    if isempty(sd); sd = 0; end
+    if isempty(fd); fd = Inf; end
+    if isempty(ss); ss = 0; end
+    if isempty(fs); fs = Inf; end
     regout(i).startDepth = sd;
     regout(i).finishDepth = fd;
     regout(i) .startSlice= ss;

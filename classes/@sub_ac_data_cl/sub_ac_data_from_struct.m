@@ -11,7 +11,9 @@ end
 subacdata_vec=[];
 
 for uuu=1:length(ff)
-    subacdata_vec=[subacdata_vec sub_ac_data_cl(ff{uuu},curr_name,data_struct.(ff{uuu}))];
+    if isfield(data_struct,ff{uuu})
+        subacdata_vec=[subacdata_vec sub_ac_data_cl(ff{uuu},curr_name,data_struct.(ff{uuu}))];
+    end
 end
 
 end

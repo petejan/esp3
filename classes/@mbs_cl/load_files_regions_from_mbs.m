@@ -89,9 +89,7 @@ for i=idx_trans
         layer(u).Transceivers(idx_freq).apply_absorption(absorption(i)/1e3);
     end
     
-    
-    Transceiver =layer(u).Transceivers(idx_freq);
-    
+   
     switch mode
         case 'normal'
             
