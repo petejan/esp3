@@ -32,16 +32,13 @@ list_freq_str={};
 
 if ~isequal(Filename_cell, 0)
     
-    
-    
+      
     nb_layers=length(Filename_cell);
     
-    
+
     prev_ping_end=0;
     prev_ping_start=1;
-    [~,file_currN,~]=fileparts(Filename_cell{1});
-    
-    opening_file=waitbar(1/nb_layers,sprintf('Opening file: %s ',file_currN),'Name','Opening files','WindowStyle','Modal');
+
     nb_lay=0;
     for uuu=1:nb_layers
         vec_freq_temp=[];
@@ -49,8 +46,7 @@ if ~isequal(Filename_cell, 0)
         
         curr_Filename=Filename_cell{uuu};
         [path_f,fileN,~]=fileparts(curr_Filename);
-        
-        
+        fprintf('(%.0f/%.0f) Opening file: %s\n',uu,length(Filename_cell),fileN);
         
         if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
             break;
@@ -134,19 +130,10 @@ if ~isequal(Filename_cell, 0)
             
             
             if ~isstruct(header)
-                if exist('opening_file','var')
-                    close(opening_file);
-                end
-                return;
+                continue;
             end
             
-            try
-                waitbar(uuu/nb_layers,opening_file,['Opening file: ',fileN],'WindowStyle','Modal');
-            catch
-                opening_file=waitbar(uuu/nb_layers,['Opening file: ',fileN],'Name','Opening files','WindowStyle','Modal');
-            end
-            
-            
+
             if length(curr_Filename)>1
                 data=reorder_ping(data);
             end
@@ -252,17 +239,6 @@ if ~isequal(Filename_cell, 0)
                     end
                 end
                 
-                %             default_absorption=[2.7 9.8 22.8 37.4 52.7]/1e3;
-                %             default_absorption_f=[18000 38000 70000 120000 200000];
-                %             i_f=find(default_absorption_f==freq(i));
-                %
-                %             if isempty(i_f)
-                %
-                %                 transceiver(i).Params.Absorption=  sw_absorption(freq(i)/1e3, (envdata.Salinity), (envdata.Temperature), 1,'fandg')/1e3;
-                %             else
-                %                 transceiver(i).Params.Absorption=default_absorption(i_f);
-                %             end
-                
                 switch data.config(i).TransceiverType
                     case 'WBT'
                         
@@ -292,7 +268,7 @@ if ~isequal(Filename_cell, 0)
                         transceiver(i).computeAngles();
                         transceiver(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
                 end
-                %transceiver(i).computeSp_comp();
+
             end
         else
             freq=[];
@@ -310,10 +286,7 @@ if ~isequal(Filename_cell, 0)
         layers=[];
         return;
     end
-    
-    try
-        close(opening_file);
-    end
+
     
 end
 

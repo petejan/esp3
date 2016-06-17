@@ -32,7 +32,11 @@ classdef survey_data_cl
             obj.Voyage=results.Voyage;
             obj.SurveyName=results.SurveyName;
             obj.Snapshot=results.Snapshot;
-            obj.Stratum=results.Stratum;
+            if ~ischar(obj.Stratum)
+                obj.Stratum=num2str(results.Stratum,'%.0f');
+            else
+                obj.Stratum=results.Stratum;
+            end
             obj.Transect=results.Transect;
             obj.StartTime=results.StartTime;
             obj.EndTime=results.EndTime;

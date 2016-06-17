@@ -1,7 +1,17 @@
 function load_survey_data_fig(main_figure)
 hfigs=getappdata(main_figure,'ExternalFigures');
 layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+   return; 
+end
+
 surv_data_struct=layer.get_logbook_struct();
+
+if isempty(surv_data_struct.Voyage)
+   return; 
+end
+
 [path_f,~]=layer.get_path_files();
 
 survDataSummary=cell(length(surv_data_struct.Filename),8);
@@ -24,7 +34,7 @@ columnname = {'' 'Filename','Snapshot','Stratum','Transect','Start Time','End Ti
 columnformat = {'logical' 'char','numeric','char','numeric','char','char'};
 
 surv_data_fig = figure('Position',[100 100 800 600],'Resize','off',...
-    'Name','SurveyData','NumberTitle','off','tag','logbook','WindowStyle','modal',...
+    'Name','SurveyData','NumberTitle','off','tag','logbook',...
     'MenuBar','none');%No Matlab Menu)
 hfigs_new=[hfigs surv_data_fig];
 setappdata(main_figure,'ExternalFigures',hfigs_new);
@@ -63,7 +73,9 @@ rc_menu = uicontextmenu;
 surv_data_table.table_main.UIContextMenu =rc_menu;
 uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
 uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig});
-uimenu(rc_menu,'Label','Invert Selection','Callback',{@invert_selection_callback,surv_data_fig});
+uimenu(rc_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
+uimenu(rc_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
+uimenu(rc_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
 setappdata(surv_data_fig,'surv_data_struct',surv_data_struct);
 setappdata(surv_data_fig,'path_data',path_f{1});
 setappdata(surv_data_fig,'surv_data_table',surv_data_table);
@@ -114,18 +126,24 @@ import_survey_data_callback([],[],main_figure);
 end
 
 
-function invert_selection_callback(~,~,surv_data_fig)
+function selection_callback(src,~,surv_data_fig)
     surv_data_table=getappdata(surv_data_fig,'surv_data_table');
     data_ori=getappdata(surv_data_fig,'data_ori');
     data=get(surv_data_table.table_main,'Data');
     for i=1:size(data,1)
-        data{i,1}=~data{i,1};
+        switch src.Tag
+            case 'se'
+                data{i,1}=1;
+            case 'de'
+                 data{i,1}=0;
+            case 'inv'
+                 data{i,1}=~data{i,1};
+        end
         data_ori{data{i,8},1}=data{i,1};
     end
     set(surv_data_table.table_main,'Data',data);
     setappdata(surv_data_fig,'data_ori',data_ori);
 end
-
 
 
 function open_files_callback(~,~,surv_data_fig,main_figure)
@@ -174,7 +192,16 @@ for isnap=1:length(snapshots)
     
 end
 survey_input_obj.check_n_complete_input();
-survey_input_obj.survey_input_to_survey_xml('xml_filename',fullfile(path_f,[survey_input_obj.Infos.Voyage '.xml']));
+
+[filename, pathname] = uiputfile('*.xml',...
+                       'Save survey XML file',...
+                       fullfile(path_f,[survey_input_obj.Infos.Voyage '.xml']));
+                   
+if isequal(filename,0) || isequal(pathname,0)
+   return;
+end
+
+survey_input_obj.survey_input_to_survey_xml('xml_filename',fullfile(pathname,filename));
 
 end
 

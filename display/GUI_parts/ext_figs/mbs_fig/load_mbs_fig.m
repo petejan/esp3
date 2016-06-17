@@ -124,43 +124,7 @@ app_path=getappdata(main_figure,'App_path');
 
 layers=getappdata(main_figure,'Layers');
 
-
-for i=1:length(selected_mbs)
-    try
-    curr_mbs=selected_mbs{i};
-    if~strcmp(curr_mbs,'')
-        [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
-    end
-    
-    mbs=mbs_cl();
-    mbs.readMbsScript(app_path.data_root,fileNames{1});
-    rmdir(outDir,'s');
-    
-    surv_obj=survey_cl();
-    
-    surv_obj.SurvInput=mbs.mbs_to_survey_obj('type',src.Tag);
-    
-    layers=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data_temp,'cvsroot',app_path.cvs_root,'origin','mbs','layers',layers,'Fieldnames',{'power','sv'});
-     catch err
-        disp(err.message);
-        warning('Problem loading files from %s\n',fileNames{i});
-        continue;
-    end
-    
-    
-    surv_obj.generate_output(layers);
-    
-    try
-        save(fullfile(surv_obj.SurvInput.Snapshots{1}.Folder,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
-        outputFile=fullfile(surv_obj.SurvInput.Snapshots{1}.Folder,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
-        surv_obj.print_output(outputFile);
-        fprintf(1,'Results save to %s \n',outputFile);
-
-    catch err
-        disp(err.message);
-        warning('Could not process survey described in file %s\n',fileNames{i});
-    end
-end
+[layers,~]=process_surveys(selected_mbs,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','mbs','cvs_root',app_path.cvs_root,'data_root',app_path.data_root,'tag',src.Tag);
 
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);

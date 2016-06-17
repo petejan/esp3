@@ -24,46 +24,10 @@ if ~iscell(Filename)
     Filename={Filename};
 end
 
-for i=1:length(Filename)
-    try
-        surv_obj=survey_cl();
-        surv_obj.SurvInput=parse_survey_xml(fullfile(PathToFile,Filename{i}));
-        
-        if isempty(surv_obj.SurvInput)
-            warning('Could not parse the File describing the survey...');
-            continue;
-        end
-        
-        [valid,~]=surv_obj.SurvInput.check_n_complete_input();
-        
-        if valid==0
-            warning('It looks like there is a problem with XML survey file %s\n',Filename{i});
-            continue;
-        end
-        
- 
-        
-        layers=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',app_path.data_temp,'layers',layers,'Fieldnames',{'power','sv'});
-    catch err
-        disp(err.message);
-        warning('Problem loading files from %s\n',Filename{i});
-        continue;
-    end
-        
-    try
-        surv_obj.generate_output(layers);
+Filenames=cellfun(@(x) fullfile(PathToFile,x),Filename);
 
-        save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
-        outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
-        surv_obj.print_output(outputFile);
-        fprintf(1,'Results save to %s \n',outputFile);
-        
-        
-    catch err
-        disp(err.message);
-        warning('Could not process survey described in file %s\n',Filename{i});
-    end
-end
+[layers,~]=process_surveys(Filenames,varargin,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','xml');
+
 
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);

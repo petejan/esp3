@@ -5,7 +5,7 @@ p = inputParser;
 addRequired(p,'surv_input_obj',@(obj) isa(obj,'survey_input_cl'));
 addParameter(p,'layers',layer_cl.empty(),@(obj) isa(obj,'layer_cl'));
 addParameter(p,'origin','xml',@ischar);
-addParameter(p,'cvsroot','',@ischar);
+addParameter(p,'cvs_root','',@ischar);
 addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'FieldNames',{},@iscell);
 
@@ -41,7 +41,7 @@ for isn=1:length(snapshots)
             regs=transects{itr}.Regions;
             bot=transects{itr}.Bottom;
             layers_in=[];
-            new_lays=0;
+
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 
@@ -49,7 +49,7 @@ for isn=1:length(snapshots)
                     [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN);
                 else
                     found_lay=0;
-                    new_lays=1;
+
                 end
                 
                 if found_lay>0
@@ -81,11 +81,16 @@ for isn=1:length(snapshots)
                         switch p.Results.origin
                             case 'mbs'
                                 new_lay.OriginCrest=transects{itr}.OriginCrest{ifiles};
-                                new_lay.CVS_BottomRegions(p.Results.cvsroot);
+                                new_lay.CVS_BottomRegions(p.Results.cvs_root);
                                 %if ~strcmp(new_lay.Filetype,'CREST')
                                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                 new_lay.set_survey_data(surv);
                                 %end
+                                switch fType
+                                    case {'EK60','EK80'}
+                                        new_lay.update_echo_logbook_file();
+                                end
+                                
                         end
                         
                         layers_in=[layers_in new_lay];
@@ -105,14 +110,7 @@ for isn=1:length(snapshots)
                 continue;
             end
             
-%             if new_lays==0
-%                 for i_lay=1:length(layers_out_temp)
-%                     layer_new=layers_out_temp(i_lay);
-%                     u=length(layers)+1;
-%                     layers(u)=layer_new;
-%                 end
-%                 continue;
-%             end
+
             
             
             if length(layers_out_temp)>1

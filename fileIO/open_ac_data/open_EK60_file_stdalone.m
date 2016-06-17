@@ -33,7 +33,6 @@ vec_freq_tot=[];
 
 if ~isequal(Filename_cell, 0)
     
-    
     prev_ping_end=0;
     prev_ping_start=1;
     nb_lay=0;
@@ -41,23 +40,10 @@ if ~isequal(Filename_cell, 0)
         
         Filename=Filename_cell{uu};
         [path_f,fileN,~]=fileparts(Filename);
-        
+        fprintf('(%.0f/%.0f) Opening file: %s\n',uu,length(Filename_cell),fileN);
         
         if isempty(vec_freq_init)
-            %             try
-            %                 [header_temp,data_temp, ~]=readEKRaw(fullfile(path_f,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0);
-            %                 AllowModeChange=false;
-            %             catch err
-            %                 if (strcmp(err.identifier,'readEKRaw:ModeChange'))
-            %                     [header_temp,data_temp, ~]=readEKRaw(fullfile(path_f,Filename),'PingRange',[1 1],'SampleRange',[1 1],'GPS',0,'AllowModeChange',true);
-            %                     AllowModeChange=true;
-            %                 else
-            %                     disp(['Cannot open file ' Filename]);
-            %                     continue;
-            %                 end
-            %             end
-            
-            
+
             fid=fopen(Filename,'r');
             [~, frequency] = readEKRaw_ReadHeader(fid);
             fclose(fid);
@@ -102,11 +88,9 @@ if ~isequal(Filename_cell, 0)
         end
         
         
-        try
-            waitbar(uu/length(Filename_cell),opening_file,sprintf('Opening file: %s',fileN), 'WindowStyle', 'modal');
-        catch
-            opening_file=waitbar(uu/length(Filename_cell),sprintf('Opening file: %s',fileN),'Name','Opening files', 'WindowStyle', 'modal');
-        end
+        
+       
+        
         
         pings_range(1)=pings_range(1)-prev_ping_start+1;
         if pings_range(2)~=Inf
@@ -154,7 +138,6 @@ if ~isequal(Filename_cell, 0)
         
         if isnumeric(header)
             disp('Could not read file.')
-            
             continue;
         end
         nb_lay=nb_lay+1;
@@ -174,10 +157,7 @@ if ~isequal(Filename_cell, 0)
             prev_ping_end=data.pings(1).number(end);
             
             if  ~isstruct(header)
-                if exist('opening_file','var')
-                    close(opening_file);
-                end
-                return;
+                continue;
             end
             
             if ~isempty(cal)
@@ -293,7 +273,6 @@ if ~isequal(Filename_cell, 0)
                 transceiver(i).computeAngles();
                 
                 transceiver(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
-                %transceiver(i).computeSp_comp();
                 
             end
             
@@ -304,9 +283,7 @@ if ~isequal(Filename_cell, 0)
         end
         
         layers_temp(nb_lay)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',transceiver,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
-        
-        %layers_temp(uu).create_motion_comp_subdata(3);
-        
+                
     end
     
     if exist('layers_temp','var')
@@ -315,11 +292,7 @@ if ~isequal(Filename_cell, 0)
         layers=[];
         return;
     end
-    if exist('opening_file','var')
-        try
-            close(opening_file);
-        end
-    end
+
     clear data transceiver
     
     

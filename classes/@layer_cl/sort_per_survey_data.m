@@ -16,13 +16,15 @@ for i_out=1:length(id_lays_out_cell)
     id_lays_out_cell{i_out}=output.Layer_idx(trans_ids==unique_trans(i_out));
 end
 
+id_lays_out_cell(isempty(id_lays_out_cell))=[];
+
 nb_cell_out=0;
 cell_out={};
 while ~isempty(id_lays_out_cell)
-nb_cell_out=nb_cell_out+1;
-idx_temp=cellfun(@(x) ~isempty(intersect(id_lays_out_cell{1},x)),id_lays_out_cell);
-cell_out{nb_cell_out}=unique([id_lays_out_cell{idx_temp}]);
-id_lays_out_cell(idx_temp)=[];
+    nb_cell_out=nb_cell_out+1;
+    idx_temp=cellfun(@(x) ~isempty(intersect(id_lays_out_cell{1},x)),id_lays_out_cell);
+    cell_out{nb_cell_out}=unique([id_lays_out_cell{idx_temp}]);
+    id_lays_out_cell(idx_temp)=[];
 end
 
 
