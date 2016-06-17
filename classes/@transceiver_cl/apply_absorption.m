@@ -2,6 +2,10 @@ function apply_absorption(trans,alpha)
 
 alpha_ori=trans.Params.Absorption;
 
+if alpha_ori==alpha
+    return;
+end
+
 Sv=trans.Data.get_datamat('sv');
 
 if ~isempty(Sv)

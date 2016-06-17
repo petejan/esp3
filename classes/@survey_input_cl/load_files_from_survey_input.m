@@ -105,14 +105,14 @@ for isn=1:length(snapshots)
                 continue;
             end
             
-            if new_lays==0
-                for i_lay=1:length(layers_out_temp)
-                    layer_new=layers_out_temp(i_lay);
-                    u=length(layers)+1;
-                    layers(u)=layer_new;
-                end
-                continue;
-            end
+%             if new_lays==0
+%                 for i_lay=1:length(layers_out_temp)
+%                     layer_new=layers_out_temp(i_lay);
+%                     u=length(layers)+1;
+%                     layers(u)=layer_new;
+%                 end
+%                 continue;
+%             end
             
             
             if length(layers_out_temp)>1

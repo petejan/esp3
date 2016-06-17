@@ -97,6 +97,7 @@ for isnap=1:length(snap_numbers)
                     for sub_i_trans=idx_trans
                         i_ori=i_ori+1;
                         trans_curr.files{i_ori}=sprintf('d%07d', mbs_obj.Input.dfileNum(sub_i_trans));
+                        trans_curr.OriginCrest{i_ori}=fullfile(mbs_obj.Input.crestDir{sub_i_trans},sprintf('d%07d', mbs_obj.Input.dfileNum(sub_i_trans)));
                     end
             end
             

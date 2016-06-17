@@ -25,7 +25,6 @@ else
 end
 
 
-
 for ilay=1:length(layers_obj)
     layer_obj=layers_obj(ilay);
     surv_data_struct=layer_obj.get_logbook_struct();
