@@ -24,9 +24,9 @@ if ~iscell(Filename)
     Filename={Filename};
 end
 
-Filenames=cellfun(@(x) fullfile(PathToFile,x),Filename);
+Filenames=cellfun(@(x) fullfile(PathToFile,x),Filename,'UniformOutput',0);
 
-[layers,~]=process_surveys(Filenames,varargin,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','xml');
+[layers,~]=process_surveys(Filenames,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','xml');
 
 
 if ~isempty(layers)

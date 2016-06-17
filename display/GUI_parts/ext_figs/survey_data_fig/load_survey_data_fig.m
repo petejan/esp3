@@ -133,9 +133,9 @@ function selection_callback(src,~,surv_data_fig)
     for i=1:size(data,1)
         switch src.Tag
             case 'se'
-                data{i,1}=1;
+                data{i,1}=true;
             case 'de'
-                 data{i,1}=0;
+                 data{i,1}=false;
             case 'inv'
                  data{i,1}=~data{i,1};
         end
