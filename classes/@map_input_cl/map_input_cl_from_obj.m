@@ -23,8 +23,7 @@ switch class(Ext_obj)
         mbs_out=mbs.Output.slicedTransectSum.Data;
         mbs_out_reg=mbs.Output.regionSum.Data;
         mbs_head=mbs.Header;
-        nb_trans=size(mbs_out,1);
-        
+        nb_trans=size(mbs_out,1);   
     case 'survey_cl'
         survey_obj=Ext_obj;
         nb_trans=length(survey_obj.SurvOutput.transectSum.snapshot);

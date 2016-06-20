@@ -7,11 +7,7 @@ app_path=getappdata(hObject,'App_path');
 sple_start=1;
 sple_end=inf;
 
-new_layers_EK60=[];
-new_layers_EK80=[];
 
-
-ftype=cell(1,length(Filename));
 
 if ~isempty(layers)
     [old_files,~]=layers.list_files_layers();
@@ -20,28 +16,10 @@ if ~isempty(layers)
     Filename(idx_already_open)=[];
 end
 
-for i=1:length(Filename)
-   ftype{i}=get_ftype(Filename{i}); 
-end
 
-idx_EK60=find(strcmpi(ftype,'EK60'));
-idx_EK80=find(strcmpi(ftype,'EK80'));
+new_layers=open_raw_file_standalone(Filename,...
+    'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
 
-
-if ~isempty(idx_EK60)
-    new_layers_EK60=open_EK60_file_stdalone(Filename(idx_EK60),...
-        'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
-end
-
-if ~isempty(idx_EK80)
-    new_layers_EK80=open_EK80_file_stdalone(Filename(idx_EK80),'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'PathToMemmap',app_path.data_temp);
-end
-
-new_layers=[new_layers_EK60 new_layers_EK80];
-
-if exist('opening_file','var')
-    close(opening_file);
-end
 
 if ~isempty(new_layers)
     for i=1:length(new_layers)
@@ -59,7 +37,7 @@ disp('Shuffling layers');
 layers_out=[];
 
 for icell=1:length(new_layers_sorted)
-    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
+    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
 end
 
 id_lay=layers_out(end).ID_num;
@@ -73,8 +51,6 @@ layer=layers(idx);
 
 % profile off
 % profile viewer;
-
-
 
 setappdata(hObject,'Layer',layer);
 setappdata(hObject,'Layers',layers);

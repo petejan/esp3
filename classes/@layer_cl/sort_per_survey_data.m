@@ -13,7 +13,7 @@ mat_surv_data=[surv_name_vec_num';voy_vec_num';output.Snapshot;strat_vec_num';ou
 id_lays_out_cell=cell(1,length(unique_trans));
 
 for i_out=1:length(id_lays_out_cell)
-    id_lays_out_cell{i_out}=output.Layer_idx(trans_ids==unique_trans(i_out));
+    id_lays_out_cell{i_out}=output.Layer_idx(trans_ids==i_out);
 end
 
 id_lays_out_cell(isempty(id_lays_out_cell))=[];

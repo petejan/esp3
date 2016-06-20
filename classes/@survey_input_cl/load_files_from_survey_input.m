@@ -57,19 +57,15 @@ for isn=1:length(snapshots)
                     layers(idx_lays)=[];
                     continue;
                 else
-                    new_lays=1;
                     if exist(fileN,'file')==2
                         
                         fType=get_ftype(fileN);
                         
                         switch fType
-                            case 'EK60'
-                                new_lay=open_EK60_file_stdalone(fileN,...
+                            case {'EK60','EK80'}
+                                new_lay=open_raw_file_stdalone(fileN,...
                                     'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames);
-                            case 'EK80'
-                                new_lay=open_EK80_file_stdalone(fileN,...
-                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames);
-                            case 'dfile'
+                           case 'dfile'
                                 new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
                         end
                         [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);

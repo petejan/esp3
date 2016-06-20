@@ -95,7 +95,13 @@ else
     % read in and parse the data
     for i = 1: header.num_regions
         line = fgetl(fid);
+        
+        if isempty(line)
+            continue;
+        end
+        
         all_words = words(line,',');
+       
         data{i,1} = str2double(all_words(1,:));
         data{i,2} = strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3} = str2double(all_words(3,:));
@@ -172,7 +178,10 @@ else
     % read in and parse the data
     for i = 1: header.num_regions
         line = fgetl(fid);
+        
+        
         all_words = words(line,',');
+        
         data{i,1} = str2double(all_words(1,:));
         data{i,2} = strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3} = str2double(all_words(3,:));
@@ -264,6 +273,7 @@ else
         line = fgetl(fid);
         
         all_words = words(line,',');
+        %all_words=strsplit(line,',');
         
         data{i,1}   = str2double(all_words(1,:));
         data{i,2}  = strcat(all_words(2,:)); % strcat removes trailing spaces

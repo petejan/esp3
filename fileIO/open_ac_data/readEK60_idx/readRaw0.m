@@ -34,7 +34,7 @@ if data.pings(idx_data).count(i_ping) > 0
         if SampleRange(1)>1
             fread(fid,SampleRange(1)-1,'int16', 'l');
         end
-        data.pings(idx_data).power(SampleRange(1):len_load,i_ping)=(fread(fid,len_load,'int16', 'l') * 0.011758984205624);
+        data.pings(idx_data).power(SampleRange(1):len_load,i_ping)=(0.011758984205624*fread(fid,len_load,'int16', 'l') );
         if len_tot>len_load
             fread(fid,len_tot-len_load,'int16', 'l');
         end

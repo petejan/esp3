@@ -3,13 +3,13 @@ hfigs=getappdata(main_figure,'ExternalFigures');
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
-   return; 
+    return;
 end
 
 surv_data_struct=layer.get_logbook_struct();
 
 if isempty(surv_data_struct.Voyage)
-   return; 
+    return;
 end
 
 [path_f,~]=layer.get_path_files();
@@ -38,7 +38,7 @@ surv_data_fig = figure('Position',[100 100 800 600],'Resize','off',...
     'MenuBar','none');%No Matlab Menu)
 hfigs_new=[hfigs surv_data_fig];
 setappdata(main_figure,'ExternalFigures',hfigs_new);
-% 
+%
 uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',surv_data_struct.Voyage{1},surv_data_struct.SurveyName{1}));
 uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
 
@@ -49,7 +49,7 @@ surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','norma
 % surv_data_table.species_box=uicontrol(surv_data_fig,'style','checkbox','units','normalized','position',[0.75 0.96 0.1 0.03],'String','Species','Value',1,'Callback',{@search_callback,surv_data_fig});
 % surv_data_table.voyage_box=uicontrol(surv_data_fig,'style','checkbox','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,surv_data_fig});
 
- 
+
 surv_data_table.save_button=uicontrol(surv_data_fig,'style','pushbutton','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Save','Value',1,'Callback',{@save_logbook_callback,surv_data_fig,main_figure});
 
 
@@ -76,16 +76,84 @@ uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@ge
 uimenu(rc_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
 uimenu(rc_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
 uimenu(rc_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
+uimenu(rc_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
+
 setappdata(surv_data_fig,'surv_data_struct',surv_data_struct);
 setappdata(surv_data_fig,'path_data',path_f{1});
 setappdata(surv_data_fig,'surv_data_table',surv_data_table);
 setappdata(surv_data_fig,'data_ori',survDataSummary);
 end
 
+function plot_bad_pings_callback(src,~,surv_data_fig,main_figure)
+hfigs=getappdata(main_figure,'ExternalFigures');
+surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+data_ori=get(surv_data_table.table_main,'Data');
+selected_files=unique(data_ori([data_ori{:,1}],2));
+path_f=getappdata(surv_data_fig,'path_data');
+files=fullfile(path_f,selected_files);
+
+[nb_bad_pings,nb_pings,files_out,freq_vec]=get_bad_ping_number_from_bottom_xml(files);
+
+[filename, pathname]=uiputfile({'*.txt','Text File'},'Save Bad Ping file',...
+    fullfile(path_f,'bad_pings_f'));
+
+if isequal(filename,0) || isequal(pathname,0)
+    fid=1;
+else
+    fid_f=fopen(fullfile(pathname,filename),'w+');
+    if fid_f~=-1
+        fid=[1 fid_f];
+    end
+end
+
+for ifreq=1:length(freq_vec)
+    fig_temp=figure();
+    plot_temp=plot(nb_bad_pings{ifreq}./nb_pings{ifreq}*100,'--+');
+    grid on;
+    %set(ax,'XTick',1:length(files_out{ifreq}),'XTickLabels',files_out{ifreq},'XTickLabelRotation',45);
+    ylabel('%')
+    title(sprintf('Bad pings percentage for %.0fkHz',freq_vec(ifreq)/1e3));
+    set(plot_temp,'ButtonDownFcn',{@display_filename_callback,files_out{ifreq}});
+    hfigs=[hfigs fig_temp];
+    
+    for i=1:length(fid)
+        
+        fprintf(fid(i),'Bad Pings for frequency %.0fkHz\n',freq_vec(ifreq)/1e3);
+        for i_sub=1:length(nb_bad_pings{ifreq})
+            fprintf(fid(i),'%s %.2f\n',files_out{ifreq}{i_sub},nb_bad_pings{ifreq}(i_sub)./nb_pings{ifreq}(i_sub)*100);
+        end
+        fprintf(fid(i),'\n');
+
+    end
+
+end
+
+for i=1:length(fid)
+    if fid(i)~=1
+        fclose(fid(i));
+    end
+end
+
+setappdata(main_figure,'ExternalFigures',hfigs);
+end
+function display_filename_callback(src,evt,file_list)
+
+ax=src.Parent;
+
+text_obj=findall(ax,'Tag','fname');
+delete(text_obj);
+
+[~,idx]=nanmin((src.XData-evt.IntersectionPoint(1)).^2+(src.YData-evt.IntersectionPoint(2)).^2);
+axes(ax);
+text(evt.IntersectionPoint(1),evt.IntersectionPoint(2),file_list{idx},'Tag','fname');
+
+
+end
+
 
 function update_surv_data_struct(src,evt,surv_data_fig)
 if isempty(evt.Indices)
-   return; 
+    return;
 end
 surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
 data_ori=getappdata(surv_data_fig,'data_ori');
@@ -127,32 +195,32 @@ end
 
 
 function selection_callback(src,~,surv_data_fig)
-    surv_data_table=getappdata(surv_data_fig,'surv_data_table');
-    data_ori=getappdata(surv_data_fig,'data_ori');
-    data=get(surv_data_table.table_main,'Data');
-    for i=1:size(data,1)
-        switch src.Tag
-            case 'se'
-                data{i,1}=true;
-            case 'de'
-                 data{i,1}=false;
-            case 'inv'
-                 data{i,1}=~data{i,1};
-        end
-        data_ori{data{i,8},1}=data{i,1};
+surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+data_ori=getappdata(surv_data_fig,'data_ori');
+data=get(surv_data_table.table_main,'Data');
+for i=1:size(data,1)
+    switch src.Tag
+        case 'se'
+            data{i,1}=true;
+        case 'de'
+            data{i,1}=false;
+        case 'inv'
+            data{i,1}=~data{i,1};
     end
-    set(surv_data_table.table_main,'Data',data);
-    setappdata(surv_data_fig,'data_ori',data_ori);
+    data_ori{data{i,8},1}=data{i,1};
+end
+set(surv_data_table.table_main,'Data',data);
+setappdata(surv_data_fig,'data_ori',data_ori);
 end
 
 
 function open_files_callback(~,~,surv_data_fig,main_figure)
-    surv_data_table=getappdata(surv_data_fig,'surv_data_table');
-    data_ori=get(surv_data_table.table_main,'Data');
-  selected_files=unique(data_ori([data_ori{:,1}],2));
-  path_f=getappdata(surv_data_fig,'path_data');
-    files=fullfile(path_f,selected_files);
-    open_file([],[],files,main_figure);
+surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+data_ori=get(surv_data_table.table_main,'Data');
+selected_files=unique(data_ori([data_ori{:,1}],2));
+path_f=getappdata(surv_data_fig,'path_data');
+files=fullfile(path_f,selected_files);
+open_file([],[],files,main_figure);
 end
 
 function generate_xml_callback(~,~,surv_data_fig)
@@ -193,12 +261,34 @@ for isnap=1:length(snapshots)
 end
 survey_input_obj.check_n_complete_input();
 
+
+prompt={'Title',...
+    'Areas',...
+    'Author',...
+    'Main species',...
+    'Comment'};
+
+defaultanswer={'','','','',''};
+
+answer=inputdlg(prompt,'XML survey informations',[1;1;1;1;5],defaultanswer);
+
+if isempty(answer)
+    
+    return;
+end
+
+survey_input_obj.Title=answer{1};
+survey_input_obj.Areas=answer{2};
+survey_input_obj.Author=answer{3};
+survey_input_obj.Main_species=answer{4};
+survey_input_obj.Comment=answer{5};
+
 [filename, pathname] = uiputfile('*.xml',...
-                       'Save survey XML file',...
-                       fullfile(path_f,[survey_input_obj.Infos.Voyage '.xml']));
-                   
+    'Save survey XML file',...
+    fullfile(path_f,[survey_input_obj.Infos.Voyage '.xml']));
+
 if isequal(filename,0) || isequal(pathname,0)
-   return;
+    return;
 end
 
 survey_input_obj.survey_input_to_survey_xml('xml_filename',fullfile(pathname,filename));
@@ -215,7 +305,7 @@ if isempty(text_search)
     data=data_ori;
 else
     
-
+    
     strat=regexprep(data_ori(:,4),'[^\w'']','');
     out_strat=regexpi(strat,text_search);
     idx_strat=cellfun(@(x) ~isempty(x),out_strat);
@@ -223,7 +313,7 @@ else
     files=regexprep(data_ori(:,2),'[^\w'']','');
     out_files=regexpi(files,text_search);
     idx_files=cellfun(@(x) ~isempty(x),out_files);
-
+    
     data=data_ori(idx_strat|idx_files,:);
 end
 

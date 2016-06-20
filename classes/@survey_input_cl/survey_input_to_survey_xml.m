@@ -4,6 +4,10 @@ p = inputParser;
 
 addRequired(p,'survey_input_obj',@(x) isa(x,'survey_input_cl'));
 addParameter(p,'xml_filename',fullfile(pwd,'survey_xml.xml'),@ischar);
+% addParameter(p,'Author','',@ischar);
+% addParameter(p,'Comment','',@ischar);
+% addParameter(p,'Main_species','',@ischar);
+% addParameter(p,'Title','',@ischar);
 addParameter(p,'open_file',true,@islogical);
 
 parse(p,survey_input_obj,varargin{:});
@@ -13,9 +17,20 @@ docNode = com.mathworks.xml.XMLUtils.createDocument('survey_processing');
 main_node=docNode.getDocumentElement;
 survey_node = docNode.createElement('survey');
 fields_infos=fields(survey_input_obj.Infos);
+% 
+% for i=1:length(fields_infos)
+%     if isfield(p.Results,fields_infos{i})
+%         survey_input_obj.Infos.(fields_infos{i})=p.Results.(fields_infos{i});
+%     end
+% end
+survey_input_obj.Infos.Created=datestr(now);
+
 for i=1:length(fields_infos)
     survey_node.setAttribute(fields_infos{i},survey_input_obj.Infos.(fields_infos{i}));
 end
+
+
+
 main_node.appendChild(survey_node);
 
 options_node = docNode.createElement('options');
