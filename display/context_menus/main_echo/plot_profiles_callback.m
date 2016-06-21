@@ -40,8 +40,8 @@ end
 ydata=trans.Data.get_range();
 [~,idx_ping]=nanmin(abs(xdata-x));
 [~,idx_r]=nanmin(abs(ydata-y));
-vert_val=trans.Data.get_subdatamat(curr_disp.Fieldname,1:length(ydata),idx_ping);
-horz_val=trans.Data.get_subdatamat(curr_disp.Fieldname,idx_r,1:length(xdata));
+vert_val=trans.Data.get_subdatamat(1:length(ydata),idx_ping,'field',curr_disp.Fieldname);
+horz_val=trans.Data.get_subdatamat(idx_r,1:length(xdata),'field',curr_disp.Fieldname);
 
 switch lower(deblank(curr_disp.Fieldname))
     case{'alongangle','acrossangle'}

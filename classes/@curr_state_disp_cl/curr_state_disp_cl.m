@@ -8,6 +8,7 @@ classdef curr_state_disp_cl <handle
         Cax
         DispBottom
         DispUnderBottom
+        DispBotHighVis
         DispTracks
         DispBadTrans
         DispReg
@@ -27,6 +28,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Freq',38000,@isnumeric);
             addParameter(p,'Fieldname','sv',@ischar);
             addParameter(p,'DispBottom','on',@ischar);
+            addParameter(p,'DispBotHighVis','off',@ischar);
             addParameter(p,'DispUnderBottom','on',@ischar);
             addParameter(p,'DispTracks','on',@ischar);
             addParameter(p,'DispBadTrans','on',@ischar);

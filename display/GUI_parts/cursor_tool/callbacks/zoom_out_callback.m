@@ -8,7 +8,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 trans=layer.Transceivers(idx_freq);
 
 set(axes_panel_comp.main_axes,'units','pixels');
-screensize=get(axes_panel_comp.main_axes,'position');
+
 set(axes_panel_comp.main_axes,'units','normalized');
 
 
@@ -48,4 +48,5 @@ switch src.SelectionType
         
 end
 set(ah,'XLim',x_lim,'YLim',y_lim);
+reset_disp_info(main_figure);
 end

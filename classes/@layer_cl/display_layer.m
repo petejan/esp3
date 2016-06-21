@@ -75,12 +75,17 @@ dp=nanmax(ceil(nb_pings/outputSize(1)),1);
 % dp=1;
 % dr=1;
 
-data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
+data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+
+switch lower(fieldname)
+    case {'sv','sp','power'}
+        
+end
 
 
 if isempty(data)
     fieldname= layer.Transceivers(idx_freq).Data.Fieldname{1};
-    data=layer.Transceivers(idx_freq).Data.get_subdatamat(fieldname,idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end));
+    data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
 end
 
 if isempty(data)
@@ -111,8 +116,6 @@ axes(ax);
 switch axes_type
     case {'Time','Distance'}
         main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat));
-        view(2)
-        shading(ax,'flat');
     case 'Number'
         main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat));
     otherwise

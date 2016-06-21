@@ -23,7 +23,7 @@ axis ij;
 set(ax,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top');
 xlabel_out=format_label(xdata_grid(idx_xticks),ax_type);
 ylabel_out=format_label(ydata_grid(idx_yticks),'distance');
-set(ax,'XtickLabel',xlabel_out,'YtickLabel',ylabel_out,'XTickLabelRotation',90,'box','on');
+set(ax,'XtickLabel',xlabel_out,'YtickLabel',ylabel_out,'XTickLabelRotation',90,'box','on','visible','on');
 
 
 end

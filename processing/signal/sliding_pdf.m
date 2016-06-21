@@ -13,7 +13,6 @@ else
     y_value=nan(length(bins),nb_pings);
     nb_pings_in_pdf=nan(1,nb_pings);
 end
- %h = waitbar(0,sprintf('Ping %i/%i',1,nb_pings),'Name','Sliding Pdf Processing');
 
 for i=1:nb_pings
     idx_num=(abs(double(x_data)-double(x_data(1+(i-1)*spc)))<(win+1)/2);
@@ -43,8 +42,8 @@ for i=1:nb_pings
     s_pdf(:,i)=s_pdf_temp';
     y_value(:,i)=y_value_temp';
     x_value(:,i)=x_data(1+(i-1)*spc);
-    %waitbar(i/nb_pings,h,sprintf('Ping %i/%i',i,nb_pings))
+   
 end
-%close(h);
+
 end
 

@@ -10,13 +10,13 @@ if~isempty(idx_bottom)&&~isempty(xdata)&&~isempty(ydata)
     if isfield(axes_panel_comp,'bottom_plot')
         if ishandle(axes_panel_comp.bottom_plot)
             delete(axes_panel_comp.bottom_plot);
-            axes_panel_comp.bottom_plot=plot(x,y,col,'linewidth',2,'tag','bottom','visible',vis);
+            axes_panel_comp.bottom_plot=plot(x,y,col,'linewidth',1,'tag','bottom','visible',vis);
             set(axes_panel_comp.bottom_plot,'visible',vis);
         else
-            axes_panel_comp.bottom_plot=plot(x,y,col,'linewidth',2,'tag','bottom','visible',vis);
+            axes_panel_comp.bottom_plot=plot(x,y,col,'linewidth',1,'tag','bottom','visible',vis);
         end
     else
-        axes_panel_comp.bottom_plot=plot(x,y,col,'linewidth',2,'tag','bottom','visible',vis);
+        axes_panel_comp.bottom_plot=plot(x,y,col,'linewidth',1,'tag','bottom','visible',vis);
     end
 end
 

@@ -277,11 +277,11 @@ if isempty(answer)
     return;
 end
 
-survey_input_obj.Title=answer{1};
-survey_input_obj.Areas=answer{2};
-survey_input_obj.Author=answer{3};
-survey_input_obj.Main_species=answer{4};
-survey_input_obj.Comment=answer{5};
+survey_input_obj.Infos.Title=answer{1};
+survey_input_obj.Infos.Areas=answer{2};
+survey_input_obj.Infos.Author=answer{3};
+survey_input_obj.Infos.Main_species=answer{4};
+survey_input_obj.Infos.Comment=answer{5};
 
 [filename, pathname] = uiputfile('*.xml',...
     'Save survey XML file',...

@@ -90,7 +90,13 @@ layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
+% profile on;
+
 layer.Transceivers(idx_freq).apply_algo('BadPings');
+
+% 
+% profile off;
+% profile viewer;
 
 
 setappdata(main_figure,'Layer',layer);

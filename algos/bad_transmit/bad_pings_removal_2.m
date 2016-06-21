@@ -189,7 +189,49 @@ if Above||Below
     
     Norm_Val(Norm_Val==Inf)=nan;
     
+    thr_min_above=nan(1,nb_pings);
+    thr_max_above=nan(1,nb_pings);
+    thr_min_below=nan(1,nb_pings);
+    thr_max_below=nan(1,nb_pings);
     
+    
+%     %%%%%%%%Version without sliding pdf%%%%%%%%%%
+%      
+% 
+%     bins=200;
+% 
+%     if Above
+%         [pdf_above,y_above]=pdf_perso(Norm_Val.*idx_noise_analysis_above,'bin',bins,'win_type','gauss');
+%         
+%         if min(size(y_above))>1
+%             [~,grad_y_above]=gradient(y_above);
+%         else
+%             grad_y_above=gradient(y_above);
+%         end
+%         [~,idx_min_above]=(nanmin(abs(cumsum(pdf_above.*grad_y_above)-thr_spikes_Above/100)));
+%         [~,idx_max_above]=(nanmin(abs(cumsum(pdf_above.*grad_y_above)-(1-thr_spikes_Above/100))));
+% 
+%             thr_min_above=y_above(idx_min_above)*ones(1,nb_pings);
+%             thr_max_above=y_above(idx_max_above)*ones(1,nb_pings);
+% 
+%     end
+%     
+%     if Below
+%        [pdf_below,y_below]=pdf_perso(Norm_Val.*idx_noise_analysis_below,'bin',bins,'win_type','gauss');
+%         
+%         if min(size(y_below))>1
+%             [~,grad_y_below]=gradient(y_below);
+%         else
+%             grad_y_below=gradient(y_below);
+%         end
+%         [~,idx_min_below]=(nanmin(abs(cumsum(pdf_below.*grad_y_below)-thr_spikes_below/100)));
+%         [~,idx_max_below]=(nanmin(abs(cumsum(pdf_below.*grad_y_below)-(1-thr_spikes_below/100))));
+% 
+%             thr_min_below=y_below(idx_min_below)*ones(1,nb_pings);
+%             thr_max_below=y_below(idx_max_below)*ones(1,nb_pings);
+% 
+%     end
+
     %%%%%%%%Version with sliding pdf%%%%%
     win=nanmin(300,nb_pings);
     bins=120;

@@ -79,7 +79,6 @@ BS(:,~idx_ringdown)=nan;
 BS_lin=10.^(BS/10);
 BS_lin(isnan(BS_lin))=0;
 
-
 b_filter=nanmin(ceil(nb_pings/10),15);
 B_filter=gausswin(heigh_b_filter)*gausswin(b_filter)';
 BS_filtered_bot_lin=(abs(filter2_perso(B_filter,BS_lin)));

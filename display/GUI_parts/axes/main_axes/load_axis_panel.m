@@ -101,14 +101,26 @@ axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname
 
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 
+switch lower(curr_disp.Cmap)
+    case 'esp2'
+        col='y'; % ESP2's colormap is 'black background' so the bottom line is drawn in yellow
+        col_lab=[0.8 0.8 0.8];
+    case 'ek500'
+        col='g'; % Simrad sounders use a green bottom line
+        col_lab='k';
+    otherwise
+        col='k';
+        col_lab='k';
+end
 
 xticks=get(axes_panel_comp.main_axes,'XTick');
 yticks=get(axes_panel_comp.main_axes,'YTick');
 xticks_label=get(axes_panel_comp.main_axes,'XtickLabel');
 yticks_label=get(axes_panel_comp.main_axes,'YtickLabel');
 
-set(axes_panel_comp.vaxes,'YTick',yticks);
-set(axes_panel_comp.haxes,'XTick',xticks);
+set(axes_panel_comp.vaxes,'YTick',yticks,'YColor',col_lab);
+set(axes_panel_comp.haxes,'XTick',xticks,'XColor',col_lab);
+
 set(axes_panel_comp.vaxes,'YtickLabel',yticks_label);
 set(axes_panel_comp.haxes,'XtickLabel',xticks_label,'XTickLabelRotation',90,'box','on');
 
@@ -121,13 +133,7 @@ set(display_tab_comp.caxis_up,'String',num2str(axes_panel_comp.main_axes.CLim(2)
 set(display_tab_comp.caxis_down,'String',num2str(axes_panel_comp.main_axes.CLim(1),'%.0f'));
 
 idx_bottom=trans.Bottom.Sample_idx;
-        if strcmp(curr_disp.Cmap,'esp2')
-            col='y'; % ESP2's colormap is 'black background' so the bottom line is drawn in yellow
-        elseif strcmp(curr_disp.Cmap,'ek500')
-            col='g'; % Simrad sounders use a green bottom line
-        else
-            col='k';
-        end
+
 xdata_real=Number;
 axes_panel_comp=display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom,col);
 axes_panel_comp=display_tracks(xdata_real,trans.ST,trans.Tracks,axes_panel_comp,curr_disp.DispTracks);

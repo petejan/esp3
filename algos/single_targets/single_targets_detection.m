@@ -89,8 +89,8 @@ idx_r_max=find(Transceiver.Data.get_range()==nanmax(Range(TS>-999)));%%TODO but
 TS(idx_r_max:end,:)=[];
 Idx_samples_lin(idx_r_max:end,:)=[];
 [nb_samples,nb_pings]=size(TS);
-along=Transceiver.Data.get_subdatamat('AlongAngle',1:nb_samples,1:nb_pings);
-athwart=Transceiver.Data.get_subdatamat('AcrossAngle',1:nb_samples,1:nb_pings);
+along=Transceiver.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AlongAngle');
+athwart=Transceiver.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AcrossAngle');
 if isempty(along)||isempty(along)
    disp('Cannot compute single targets.... No angles');
    single_targets=[];

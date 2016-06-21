@@ -24,10 +24,10 @@ idx_p_disp=round(linspace(1,nb_pings,size_mini(1)));
 
 switch curr_disp.Fieldname
     case 'power'
-        data_disp=10*log10(layer.Transceivers(idx_freq).Data.get_subdatamat(curr_disp.Fieldname,idx_r_disp,idx_p_disp));
+        data_disp=10*log10(layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp),'field',curr_disp.Fieldname);
         
     otherwise
-        data_disp=layer.Transceivers(idx_freq).Data.get_subdatamat(curr_disp.Fieldname,idx_r_disp,idx_p_disp);
+        data_disp=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);
         
 end
 

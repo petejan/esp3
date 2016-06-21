@@ -52,21 +52,25 @@ idxBad=find(layer.Transceivers(idx_freq).Bottom.Tag==0);
 idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
 idx_bad_red(idx_bad_red==0)=[];
 
-if strcmp(curr_disp.DispBadTrans,'on')
-    alpha_map(:,idx_bad_red)=0.5;
-end
 
-switch curr_disp.Cmap
+
+switch lower(curr_disp.Cmap)
     case 'jet'
         cmap='jet';
+        echo_ax.Color='w';
     case 'hsv'
         cmap='hsv';
+        echo_ax.Color='w';
     case 'esp2'
         cmap=esp2_colormap();
-        alpha_map(alpha_map==0)=1;
+        echo_ax.Color='k';
     case 'ek500'
         cmap=ek500_colormap();
-        alpha_map(:,idx_bad_red)=0.5;
+        echo_ax.Color='w';
+end
+
+if strcmp(curr_disp.DispBadTrans,'on')
+    alpha_map(:,idx_bad_red)=0.2;
 end
 
 Range_mat=repmat(ydata,1,nb_pings);
@@ -76,20 +80,12 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     idx_bot_red=imresize(idx_bot,size(alpha_map));
     
     if strcmpi(curr_disp.DispUnderBottom,'off')==1
-        if strcmp(curr_disp.Cmap,'esp2')
-            axes(echo_ax);
-            hold on;
-            imtemp=imagesc(xdata,ydata,-999*ones(size(alpha_map)),'tag','imtemp');
-            uistack(imtemp,'bottom');
-            uistack(imtemp,'up');
-            set(imtemp,'AlphaData',double(idx_bot_red));
-            if strcmpi(curr_disp.CursorMode,'Normal')
-                create_context_menu_main_echo(main_figure,imtemp);
-            end
-        else
-            alpha_map(idx_bot_red)=0;
-        end
+        curr_disp.DispBottom='off';
+        alpha_map(idx_bot_red)=0;
+    else
+        curr_disp.DispBottom='on';
     end
+    
 end
 
 colormap(echo_ax,cmap);

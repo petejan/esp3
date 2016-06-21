@@ -1,6 +1,7 @@
 function zoom_in_callback(src,~,main_figure)
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
+curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
 switch src.SelectionType
@@ -39,9 +40,17 @@ end
 x_box=xinit;
 y_box=yinit;
 
+switch curr_disp.Cmap
+    case 'esp2'
+        col_line='w';
+    otherwise
+        col_line='k';
+end
+
+
 axes(ah);
 hold on;
-hp=line(x_box,y_box,'color','k','linewidth',1);
+hp=line(x_box,y_box,'color',col_line,'linewidth',1);
 
 
 src.WindowButtonMotionFcn = @wbmcb;

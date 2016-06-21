@@ -49,7 +49,7 @@ if strcmp(Transceiver.Mode,'FM')
     idx_r=round((idx_r1+idx_r2)/2);
     N_w=length(idx_r1:idx_r2);
     
-    y_c=Transceiver.Data.get_subdatamat('y_real',idx_r1:idx_r2,iPing)+1i*Transceiver.Data.get_subdatamat('y_imag',idx_r1:idx_r2,iPing);
+    y_c=Transceiver.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_real')+1i*Transceiver.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_imag');
     y_spread=y_c.*range_mat(idx_r1:idx_r2,iPing);
     
     w_h=hann(N_w)/(nansum(hann(N_w))/sqrt(N_w));

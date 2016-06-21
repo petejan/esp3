@@ -28,7 +28,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 trans=layer.Transceivers(idx_freq);
-data=trans.Data.get_subdatamat(curr_disp.Fieldname,reg_curr.Idx_r,reg_curr.Idx_pings);
+data=trans.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field',curr_disp.Fieldname);
 
 sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
 idxBad=find(trans.Bottom.Tag==0);
