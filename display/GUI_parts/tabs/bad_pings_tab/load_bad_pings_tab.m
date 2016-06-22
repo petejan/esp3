@@ -90,16 +90,12 @@ layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-% profile on;
 
 layer.Transceivers(idx_freq).apply_algo('BadPings');
-
-% 
-% profile off;
-% profile viewer;
 
 
 setappdata(main_figure,'Layer',layer);
 load_axis_panel(main_figure,0);
+update_mini_ax(main_figure,0);
 
 end

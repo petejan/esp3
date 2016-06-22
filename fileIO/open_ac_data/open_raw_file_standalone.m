@@ -34,12 +34,12 @@ new_layers_EK80=[];
 if ~isempty(idx_EK60)
     new_layers_EK60=open_EK60_file_stdalone(Filename_cell(idx_EK60),...
         'PathToMemmap',p.Results.PathToMemmap,'Frequencies',p.Results.Frequencies,...
-        'PingRange',p.Results.PingRange,'SampleRange',p.Results.SampleRange,'EsOffset',p.Results.EsOffset);
+        'PingRange',p.Results.PingRange,'SampleRange',p.Results.SampleRange,'EsOffset',p.Results.EsOffset,'FieldNames',p.Results.FieldNames,'GPSOnly',p.Results.GPSOnly);
 end
 
 if ~isempty(idx_EK80)
     new_layers_EK80=open_EK80_file_stdalone(Filename_cell(idx_EK80),...
-        'PathToMemmap',p.Results.PathToMemmap,'Frequencies',p.Results.Frequencies,'PingRange',p.Results.PingRange);
+        'PathToMemmap',p.Results.PathToMemmap,'Frequencies',p.Results.Frequencies,'PingRange',p.Results.PingRange,'FieldNames',p.Results.FieldNames,'GPSOnly',p.Results.GPSOnly);
 end
 
 new_layers=[new_layers_EK60 new_layers_EK80];

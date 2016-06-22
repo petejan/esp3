@@ -2,7 +2,7 @@ function function_out=init_func(name)
 
 switch name
     case 'BottomDetection'
-        function_out=@detec_bottom_algo_v2;
+        function_out=@detec_bottom_algo_v3;
     case 'BadPings'
         function_out=@bad_pings_removal_2;
     case 'Denoise'

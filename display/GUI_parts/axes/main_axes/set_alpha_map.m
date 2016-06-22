@@ -42,8 +42,8 @@ data=double(get(echo_im,'CData'));
 xdata=double(get(echo_im,'XData'));
 ydata=double(get(echo_im,'YData'));
 alpha_map=double(data>=min_axis);
+
 nb_pings=length(xdata);
-nb_samples=length(ydata);
 
 [~,nb_pings_red]=size(alpha_map);
 [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im);
@@ -51,8 +51,6 @@ nb_samples=length(ydata);
 idxBad=find(layer.Transceivers(idx_freq).Bottom.Tag==0);
 idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
 idx_bad_red(idx_bad_red==0)=[];
-
-
 
 switch lower(curr_disp.Cmap)
     case 'jet'
@@ -70,20 +68,37 @@ switch lower(curr_disp.Cmap)
 end
 
 if strcmp(curr_disp.DispBadTrans,'on')
-    alpha_map(:,idx_bad_red)=0.2;
+    alpha_map(:,idx_bad_red)=1;
 end
 
-Range_mat=repmat(ydata,1,nb_pings);
+
 if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
-    bot_mat=repmat(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),nb_samples,1);
-    idx_bot=Range_mat>=bot_mat;
-    idx_bot_red=imresize(idx_bot,size(alpha_map));
-    
+
+
+        bot_vec_red=imresize(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),[1,size(alpha_map,2)],'nearest'); 
+        ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest'); 
+        idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);  
+
+        
     if strcmpi(curr_disp.DispUnderBottom,'off')==1
         curr_disp.DispBottom='off';
         alpha_map(idx_bot_red)=0;
     else
         curr_disp.DispBottom='on';
+    end
+    
+    if strcmp(curr_disp.DispBadTrans,'on')
+        axes(echo_ax);
+        hold on;
+        data_temp=nan(size(alpha_map));
+        data_temp(:,idx_bad_red)=Inf;
+        imtemp=imagesc(xdata,ydata,data_temp,'tag','imtemp');
+        uistack(imtemp,'bottom');
+        uistack(imtemp,'up');
+        set(imtemp,'AlphaData',(~isnan(data_temp))-0.2);
+        if strcmpi(curr_disp.CursorMode,'Normal')
+            create_context_menu_main_echo(main_figure,imtemp);
+        end
     end
     
 end

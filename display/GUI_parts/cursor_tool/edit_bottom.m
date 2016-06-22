@@ -1,19 +1,19 @@
-function edit_bottom(src,~,main_figure)
+function edit_bottom(src,evt,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
+clear_lines(ah)
 
-u=get(ah,'children');
-for ii=1:length(u)
-    if (isa(u(ii),'matlab.graphics.primitive.Line')||isa(u(ii),'matlab.graphics.chart.primitive.Line'))...
-            &&~strcmp(get(u(ii),'tag'),'bottom')...
-            &&~strcmp(get(u(ii),'tag'),'track')...
-            &&~strcmp(get(u(ii),'tag'),'region')
-        delete(u(ii));
-    end
+
+switch lower(curr_disp.Cmap)
+    case 'esp2'
+        line_col='g';
+    otherwise
+        line_col='r';
+
 end
 
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
@@ -43,7 +43,7 @@ if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
 end
 axes(ah);
 hold on;
-hp=plot(xinit,xinit,'color','r','linewidth',1);
+hp=plot(xinit,xinit,'color',line_col,'linewidth',1);
 src.WindowButtonMotionFcn = @wbmcb;
 if strcmp(src.SelectionType,'normal')
     src.WindowButtonUpFcn = @wbucb;

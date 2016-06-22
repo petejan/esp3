@@ -14,7 +14,7 @@ switch src.SelectionType
 end
 
 
-clear_lines(ah)
+clear_lines(ah);
 
 xdata=get(axes_panel_comp.main_echo,'XData');
 ydata=get(axes_panel_comp.main_echo,'YData');

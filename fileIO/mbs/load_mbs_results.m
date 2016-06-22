@@ -288,7 +288,7 @@ else
         data{i,11}  = str2double(all_words(11,:));
         data{i,12}  = str2double(all_words(12,:));
         data{i,13}  = str2double(all_words(13,:));
-        data{i,14}  = str2double(all_words(14,:));
+        %data{i,14}  = str2double(all_words(14,:));
         
     end
 end

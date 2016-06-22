@@ -1,11 +1,9 @@
-function mark_bad_transmit(src,~,main_figure)
+function mark_bad_transmit_single(src,evt,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
-
-clear_lines(ah);
 
 [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
@@ -69,22 +67,20 @@ hp=plot(x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
     end
 
     function wbucb(src,~)
-        
-        delete(hp);
+      
+
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
         [~,idx_start]=min(abs(xdata-min(x_bad)));
         [~,idx_end]=min(abs(xdata-max(x_bad)));
         idx_f=idx_pings(idx_start:idx_end);
-        
         layer.Transceivers(idx_freq).Bottom.Tag(idx_f)=set_val;
-        
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);
-        
-        
+        delete(hp);
+
     end
 end
