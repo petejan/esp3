@@ -32,20 +32,28 @@ w_tot=sum(weight_idx);
 
 if length(bin)==1
     N=max(bin,2);
-    pdf=zeros(1,N);
+   
     maxi=max(X(:));
     mini=min(X(:));
     x=linspace(mini,maxi,N);
-    dx=x(2:end)-x(1:end-1);
-    dx=[dx(1) dx];
- 
-    
+    dx=(maxi-mini)/(N-1);
+%     
+%     switch win_type
+%         case 'box'
+%             bin_mat=bsxfun(@(u,v) (u-v)/dx<=1/2&(u-v)/dx>-1/2,X(:),x(:)');
+%         case 'gauss'
+%             bin_mat=(1/(sqrt(2*pi))*exp(-(bsxfun(@minus,X(:),x(:)')).^2/(2*dx^2)));
+%             %bin_mat=bsxfun(@(u,v) (1/(sqrt(2*pi))*exp(-(u-v).^2/(2*dx^2))),X(:),x(:)');
+%     end
+%     pdf=sum(bsxfun(@times,weight_idx(:),bin_mat/(dx*w_tot)));
+%  
+    pdf=zeros(1,N);
     for i=1:N
         if strcmp(win_type,'box')
-            idx_bin=((X-x(i))/dx(i)<=1/2&(X-x(i))/dx(i)>-1/2);
-            pdf(i)=sum(weight_idx(idx_bin))/(dx(i)*w_tot);
+            idx_bin=((X-x(i))/dx<=1/2&(X-x(i))/dx>-1/2);
+            pdf(i)=sum(weight_idx(idx_bin))/(dx*w_tot);
         elseif strcmp(win_type,'gauss')
-            pdf(i)=sum(weight_idx.*(1/(dx(i)*sqrt(2*pi))*exp(-(X-x(i)).^2/(2*dx(i)^2))))/(w_tot);
+            pdf(i)=sum(weight_idx.*(1/(dx*sqrt(2*pi))*exp(-(X-x(i)).^2/(2*dx^2))))/(w_tot);
         end
         
     end
@@ -57,11 +65,10 @@ else
     x=bin;
     
 
-    
     for i=1:N
         if strcmp(win_type,'box')
             idx_bin=(X>=bin(i)-grad_bin(i)/2&X<bin(i)+grad_bin(i)/2);
-            pdf(i)=sum(weight_idx(idx_bin))/(nanmean(grad_bin)*w_tot);
+            pdf(i)=sum(weight_idx(idx_bin)./grad_bin(i))/w_tot;
         elseif strcmp(win_type,'gauss')
             parz_win=1/(grad_bin(i)*sqrt(2*pi))*exp(-(X-bin(i)).^2/(2*grad_bin(i)^2));
             pdf(i)=sum(weight_idx.*parz_win)/(w_tot);
