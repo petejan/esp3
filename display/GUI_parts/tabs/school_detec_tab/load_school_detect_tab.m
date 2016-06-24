@@ -22,7 +22,8 @@ algo_school_detect=algo_obj.Varargin;
 
 school_detect_tab_comp.school_detect_tab=uitab(algo_tab_panel,'Title','School Detection');
 
-pos=create_pos_algo();
+
+pos=create_pos_algo_new(5,2);
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Candidate Minimum length(m)','units','normalized','Position',pos{1,1});
 school_detect_tab_comp.l_min_can_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',500,'Value',algo_school_detect.l_min_can,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});

@@ -25,7 +25,7 @@ algo_bad_pings=algo_obj.Varargin;
 
 bad_ping_tab_comp.bad_ping_tab=uitab(algo_tab_panel,'Title','Bad Transmit');
 
-pos=create_pos_algo();
+pos=create_pos_algo_new(5,3);
 
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','BS Thr(dB)','units','normalized','Position',pos{1,1});
 bad_ping_tab_comp.Thr_bottom_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',-50,'Max',-10,'Value',algo_bad_pings.thr_bottom,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
@@ -46,11 +46,11 @@ bad_ping_tab_comp.r_max_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','edi
 set(bad_ping_tab_comp.r_max_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.r_max_ed,'%.1f'});
 set(bad_ping_tab_comp.r_max_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.r_max_sl,'%.1f'});
 
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Around Echo Thr (dB)','units','normalized','Position',pos{4,1});
-bad_ping_tab_comp.Thr_echo_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',-20,'Max',-3,'Value',algo_bad_pings.thr_echo,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
-bad_ping_tab_comp.Thr_echo_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(bad_ping_tab_comp.Thr_echo_sl,'Value'),'%.0f'));
-set(bad_ping_tab_comp.Thr_echo_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_echo_ed,'%.0f'});
-set(bad_ping_tab_comp.Thr_echo_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_echo_sl,'%.0f'});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Backstep Thr (dB)','units','normalized','Position',pos{4,1});
+bad_ping_tab_comp.Thr_backstep_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',-12,'Max',0,'Value',algo_bad_pings.thr_backstep,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
+bad_ping_tab_comp.Thr_backstep_ed=uicontrol(bad_ping_tab_comp.bad_ping_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(bad_ping_tab_comp.Thr_backstep_sl,'Value'),'%.0f'));
+set(bad_ping_tab_comp.Thr_backstep_sl,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_backstep_ed,'%.0f'});
+set(bad_ping_tab_comp.Thr_backstep_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.Thr_backstep_sl,'%.0f'});
 
 bad_ping_tab_comp.Above=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',algo_bad_pings.Above,'String','Above bottom PDF threshold (%)','units','normalized','Position',pos{1,4});
 bad_ping_tab_comp.thr_spikes_Above_sl=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','slider','Min',0,'Max',20,'Value',algo_bad_pings.thr_spikes_Above,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});

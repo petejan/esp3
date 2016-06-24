@@ -24,7 +24,8 @@ algo_bottom=algo_obj.Varargin;
 
 bottom_tab_comp.bottom_tab=uitab(algo_tab_panel,'Title','Bottom Detect Option');
 
-pos=create_pos_algo();
+
+pos=create_pos_algo_new(5,3);
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','BS Thr(dB)','units','normalized','Position',pos{1,1});
 bottom_tab_comp.Thr_bottom_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-50,'Max',-10,'Value',algo_bottom.thr_bottom,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
@@ -45,18 +46,22 @@ bottom_tab_comp.r_max_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','un
 set(bottom_tab_comp.r_max_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.r_max_ed,'%.1f'});
 set(bottom_tab_comp.r_max_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.r_max_sl,'%.1f'});
 
-uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Around Echo Thr (dB)','units','normalized','Position',pos{4,1});
-bottom_tab_comp.Thr_echo_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-20,'Max',-3,'Value',algo_bottom.thr_echo,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
-bottom_tab_comp.Thr_echo_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(bottom_tab_comp.Thr_echo_sl,'Value'),'%.0f'));
-set(bottom_tab_comp.Thr_echo_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_echo_ed,'%.0f'});
-set(bottom_tab_comp.Thr_echo_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_echo_sl,'%.0f'});
+uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Backstep Thr (dB)','units','normalized','Position',pos{4,1});
+bottom_tab_comp.Thr_backstep_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-12,'Max',0,'Value',algo_bottom.thr_backstep,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
+bottom_tab_comp.Thr_backstep_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(bottom_tab_comp.Thr_backstep_sl,'Value'),'%.0f'));
+set(bottom_tab_comp.Thr_backstep_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_backstep_ed,'%.0f'});
+set(bottom_tab_comp.Thr_backstep_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_backstep_sl,'%.0f'});
 
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{1,4});
-bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',500,'Value',algo_bottom.shift_bot,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
-bottom_tab_comp.Shift_bot_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.0f'));
-set(bottom_tab_comp.Shift_bot_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Shift_bot_ed,'%.0f'});
-set(bottom_tab_comp.Shift_bot_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Shift_bot_sl,'%.0f'});
+bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',100,'Value',algo_bottom.shift_bot,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{1,5});
+bottom_tab_comp.Shift_bot_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.1f'));
+set(bottom_tab_comp.Shift_bot_sl,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
+    {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_comp.Shift_bot_ed,'%.1f'),...
+    @(src,evtdata) shift_bottom_callback(src,evtdata,main_figure)})));
+set(bottom_tab_comp.Shift_bot_ed,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
+    {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_comp.Shift_bot_sl,'%.1f'),...
+    @(src,evtdata) shift_bottom_callback(src,evtdata,main_figure)})));
 
 
 bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,'Style','checkbox','Value',algo_bottom.denoised,'String','Compute on Denoised data','units','normalized','Position',[0.5 0.3 0.3 0.1]);

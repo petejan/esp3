@@ -25,7 +25,8 @@ algo_denoise_var=algo_obj.Varargin;
 
 denoise_tab_comp.denoise_tab=uitab(algo_tab_panel,'Title','Denoise');
 
-pos=create_pos_algo();
+
+pos=create_pos_algo_new(5,2);
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','Horizontal Filter (nb pings)','units','normalized','Position',pos{1,1});
 denoise_tab_comp.HorzFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',1,'Max',ceil(nb_pings/2),'Value',nanmin(algo_denoise_var.HorzFilt,nb_pings/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});

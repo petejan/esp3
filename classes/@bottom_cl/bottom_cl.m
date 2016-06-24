@@ -1,11 +1,11 @@
 
 classdef bottom_cl 
     properties
-        Origin
-        Range
-        Sample_idx
-        Double_bot_mask
-        Tag         
+        Origin='';
+        Range=[];
+        Sample_idx=[];
+        Tag=[];
+        Shifted=0;
     end
     
     
@@ -16,8 +16,8 @@ classdef bottom_cl
             addParameter(p,'Origin','',@ischar);
             addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'Sample_idx',[],@isnumeric);
-            addParameter(p,'Double_bot_mask',[],@(x) isempty(x)||islogical(x));
             addParameter(p,'Tag',[],@(x) isnumeric(x)||islogical(x));
+            addParameter(p,'Shifted',0,@(x) isnumeric(x));
           
             parse(p,varargin{:});
             

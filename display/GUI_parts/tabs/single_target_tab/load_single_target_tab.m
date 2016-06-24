@@ -22,7 +22,8 @@ algo_single_target=algo_obj.Varargin;
 
 single_target_tab_comp.single_target_tab=uitab(algo_tab_panel,'Title','Single Target Detection');
 
-pos=create_pos_algo();
+
+pos=create_pos_algo_new(5,2);
 
 uicontrol(single_target_tab_comp.single_target_tab,'Style','Text','String','TS Threshold (dB)','units','normalized','Position',pos{1,1});
 single_target_tab_comp.TS_threshold_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',-120,'Max',-20,'Value',algo_single_target.TS_threshold,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});

@@ -136,6 +136,9 @@ idx_bottom=trans.Bottom.Sample_idx;
 
 xdata_real=Number;
 axes_panel_comp=display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom,col);
+if strcmpi(curr_disp.CursorMode,'Normal')
+    create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
+end
 axes_panel_comp=display_tracks(xdata_real,trans.ST,trans.Tracks,axes_panel_comp,curr_disp.DispTracks);
 
 hold(axes_panel_comp.haxes,'on');

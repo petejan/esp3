@@ -7,6 +7,6 @@ end
 bottom_obj=obj.Bottom;
 tag=ones(size(bottom_obj.Range));
 tag(IdxBad)=0;
-obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Range',bottom_obj.Range,'Sample_idx',bottom_obj.Sample_idx,'Double_bot_mask',bottom_obj.Double_bot_mask,'Tag',tag);
+obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Range',bottom_obj.Range,'Sample_idx',bottom_obj.Sample_idx,'Tag',tag);
 
 end

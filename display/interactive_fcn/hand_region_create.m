@@ -26,7 +26,6 @@ if strcmp(src.SelectionType,'normal')
     if isempty(bot.Range)
         bot.Range=nan(1,nb_pings);
         bot.Sample_idx=nan(1,nb_pings);
-        bot.Double_bot_mask=zeros(nb_samples,nb_pings);
     end
     
     cp = ah.CurrentPoint;

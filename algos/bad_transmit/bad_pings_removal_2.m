@@ -10,8 +10,8 @@ check_BS_std=@(x)(x>=3)&&(x<=20);
 default_thr_bottom=-56;
 check_thr_bottom=@(x)(x>=-120&&x<=-10);
 
-default_thr_echo=-12;
-check_thr_echo=@(x)(x>=-20&&x<=-3);
+default_thr_backstep=-12;
+check_thr_backstep=@(x)(x>=-12&&x<=0);
 
 default_idx_r_min=0;
 
@@ -25,7 +25,7 @@ check_shift_bot=@(x)x>=0;
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
-addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
+addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'BS_std',default_BS_std,check_BS_std);
@@ -51,9 +51,8 @@ end
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
 
-
 thr_bottom=p.Results.thr_bottom;
-thr_echo=p.Results.thr_echo;
+thr_backstep=p.Results.thr_backstep;
 r_min=p.Results.r_min;
 r_max=p.Results.r_max;
 BS_std=p.Results.BS_std;
@@ -75,7 +74,7 @@ Np=round(PulseLength*Fs);
 [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v3(trans_obj,...
     'denoised',p.Results.denoised,...
     'thr_bottom',thr_bottom,...
-    'thr_echo',thr_echo,...
+    'thr_backstep',thr_backstep,...
     'r_min',r_min,...
     'r_max',r_max,...
     'shift_bot',shift_bot);

@@ -1,6 +1,6 @@
 function single_targets=single_targets_detection(Transceiver,varargin)
 %SINGLE_TARGET_DETECTION
-
+tic;
 %Parse Arguments
 p = inputParser;
 
@@ -79,6 +79,8 @@ if isempty(Bottom)
 end
 
 Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
+
+
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;
 
@@ -379,7 +381,7 @@ single_targets.Pitch=pitch_mat(idx_target_lin);
 single_targets.Heave=heave_mat(idx_target_lin);
 single_targets.Heading=heading_mat(idx_target_lin);
 
-
+toc;
 
 end
 

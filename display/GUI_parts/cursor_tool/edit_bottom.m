@@ -29,7 +29,6 @@ bot=layer.Transceivers(idx_freq).Bottom;
 if isempty(bot.Range)
     bot.Range=nan(1,nb_pings);
     bot.Sample_idx=nan(1,nb_pings);
-    bot.Double_bot_mask=zeros(nb_samples,nb_pings);
 end
 xinit=nan(1,nb_pings);
 yinit=nan(1,nb_pings);

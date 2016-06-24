@@ -1,6 +1,8 @@
 function function_out=init_func(name)
 
 switch name
+    case 'BottomDetectionOld'
+        function_out=@detec_bottom_algo_v2;
     case 'BottomDetection'
         function_out=@detec_bottom_algo_v3;
     case 'BadPings'

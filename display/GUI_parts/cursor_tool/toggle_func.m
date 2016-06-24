@@ -26,6 +26,7 @@ end
 switch src.State
     case'on'
         axes_panel_comp.main_echo.UIContextMenu=[];
+        axes_panel_comp.bottom_plot.UIContextMenu=[];
         switch type
             case 'zin'
                 setptr(main_figure,'glassplus');
@@ -67,9 +68,10 @@ switch src.State
                 set(main_figure,'Pointer','arrow');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)disp_loc(src,envdata,main_figure));
         end
-        axes_panel_comp.main_echo.UIContextMenu=[];
     case 'off'
         set(main_figure,'Pointer','arrow');
         set(main_figure,'WindowButtonDownFcn','');
         create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);
+        create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
+end
 end

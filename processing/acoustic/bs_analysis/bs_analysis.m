@@ -56,7 +56,7 @@ algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
 [PulseLength,~] = trans.get_pulse_length();
 [amp_est, across_est, along_est] = detec_bottom_bathymetric(sv, alongphi, acrossphi, ...
-    layer.Transceivers(idx_freq).Data.get_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, algo.Varargin.thr_echo, algo.Varargin.r_min);
+    layer.Transceivers(idx_freq).Data.get_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
 z_max = nanmax(amp_est.range) * cos(t_angle);
 ext_len = floor(z_max*(tan(t_angle+bw_mean) - tan(t_angle-bw_mean)) / dr/2);
 
@@ -246,7 +246,7 @@ if isempty(z_temp)
     switch choice
         case 'Yes'
             z_temp=range';
-            c_temp=layer.Env.SoundSpeed*ones(size(z_temp));
+            c_temp=layer.EnvData.SoundSpeed*ones(size(z_temp));
         case 'No'
             return;
     end

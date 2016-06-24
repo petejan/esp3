@@ -9,11 +9,11 @@ default_idx_r_min=0;
 
 default_idx_r_max=Inf;
 
-default_thr_bottom=-30;
+default_thr_bottom=-35;
 check_thr_bottom=@(x)(x>=-120&&x<=-10);
 
-default_thr_echo=-12;
-check_thr_echo=@(x)(x>=-20&&x<=-3);
+default_thr_backstep=-12;
+check_thr_backstep=@(x)(x>=-12&&x<=0);
 
 check_shift_bot=@(x)(x>=0);
 
@@ -23,7 +23,7 @@ addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
-addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
+addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'shift_bot',0,check_shift_bot);
 parse(p,trans_obj,varargin{:});
 
@@ -41,9 +41,11 @@ Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
 
 thr_bottom=p.Results.thr_bottom;
-thr_echo=p.Results.thr_echo;
+thr_backstep=p.Results.thr_backstep;
 r_min=nanmax(p.Results.r_min,2);
 r_max=p.Results.r_max;
+
+thr_echo=-12;
 
 [nb_samples,nb_pings]=size(Sv);
 
@@ -59,17 +61,16 @@ idx_r_min=nanmin(idx_r_min,nb_samples);
 RingDown=Sv(3,:);
 Sv(1:idx_r_min,:)=nan;
 
-Samples=(1:nb_samples)';
 
 %First let's find the bottom...
-heigh_b_filter=20*Np+1;
+heigh_b_filter=10*Np+1;
 
 idx_ringdown=analyse_ringdown(RingDown);
 
 BS=bsxfun(@plus,Sv,10*log10(Range));
 
 BS(isnan(BS))=-999;
-BS_mask_ori=((filter2(ones(3,3),BS>-900,'same'))<=2);
+BS_mask_ori=((filter2(ones(3,3),BS>=-999,'same'))<=2);
 BS(BS_mask_ori)=-999;
 BS_ori=BS;
 
@@ -81,12 +82,13 @@ b_filter=nanmin(ceil(nb_pings/10),15);
   
 filter_fun = @(block_struct) nanmean(block_struct.data(:));
 BS_filtered_bot_lin=blockproc(BS_lin,[heigh_b_filter b_filter],filter_fun);
-BS_filtered_bot_lin(1:floor(idx_r_min/heigh_b_filter),:)=nan;
-BS_filtered_bot_lin(ceil(idx_r_max/heigh_b_filter):end,:)=nan;
+[nb_samples_red,~]=size(BS_filtered_bot_lin);
+BS_filtered_bot_lin(1:floor(idx_r_min/nb_samples*nb_samples_red),:)=nan;
+BS_filtered_bot_lin(ceil(idx_r_max/nb_samples*nb_samples_red):end,:)=nan;
 BS_filtered_bot=10*log10(BS_filtered_bot_lin);
 BS_filtered_bot_lin(isnan(BS_filtered_bot_lin))=0;
 
-[nb_samples_red,~]=size(BS_filtered_bot_lin);
+
 cumsum_BS=cumsum((BS_filtered_bot_lin));
 cumsum_BS(cumsum_BS<0)=nan;
 diff_cum_BS=diff(10*log10(cumsum_BS));
@@ -101,19 +103,23 @@ idx_end=nanmin(idx_max_diff_cum_BS+3,idx_r_max/heigh_b_filter);
 Bottom_region=bsxfun(@ge,(1:nb_samples_red)',idx_start)&bsxfun(@le,(1:nb_samples_red)',idx_end);
 
 Max_BS_reg=bsxfun(@gt,BS_filtered_bot,nanmax(BS_filtered_bot)+thr_echo);
-Bottom_region=find_cluster((Bottom_region&Max_BS_reg)|Max_BS_reg,1);
+Bottom_region=find_cluster((Bottom_region&BS_filtered_bot>=thr_bottom&Max_BS_reg),1);
+
 Bottom_region=ceil(filter2_perso(ones(1,3),Bottom_region));
 
 Bottom_region=imresize(Bottom_region,[nb_samples nb_pings],'nearest');
 
+
+n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
+Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
+
+Bottom_region=Bottom_region(Permut,:);
+Bottom_region(1:n_permut,:)=0;
+
 Bottom_region(:,nansum(Bottom_region)<=Np)=0;
 
 
-% n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
-% Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
-% 
-% Bottom_region=Bottom_region(Permut,:);
-% Bottom_region(1:n_permut,:)=0;
+
 
 idx_bottom=repmat((1:nb_samples)',1,nb_pings);
 idx_bottom(~Bottom_region)=nan;
@@ -147,13 +153,14 @@ BS_lin_cumsum=(cumsum(Bottom_region_bis.*BS_lin_norm_bis,1)./repmat(nansum(Botto
  
 Bottom_temp_2=nanmin(idx_bottom);
 Bottom=nanmax(Bottom_temp,Bottom_temp_2);
+
 backstep=nanmax([1 Np]);
 
 for i=1:nb_pings
     if Bottom(i)>2*backstep
         Bottom(i)=Bottom(i)-backstep;
         
-        while nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-3,i))>=BS_ori(Bottom(i),i)-1 &&...
+        while nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i))>=BS_ori(Bottom(i),i)+thr_backstep &&...
             Bottom(i)>backstep &&...
             nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i))>=-999
             [~,idx_max_tmp]=nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i));
@@ -182,14 +189,6 @@ if p.Results.shift_bot>0
 end
 
 
-% bottom_range=nan(size(Bottom));
-% bottom_range(~isnan(Bottom))=Range(Bottom(~isnan(Bottom)));
-% old_tag=trans_obj.Bottom.Tag;
-%
-% trans_obj.setBottom(bottom_cl('Origin','Algo_v2',...
-%     'Range', bottom_range,...
-%     'Sample_idx',Bottom,...
-%     'Double_bot_mask',Double_bottom_region,'Tag',old_tag));
 
 %
 % profile off;

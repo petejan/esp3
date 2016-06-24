@@ -49,8 +49,7 @@ switch p.Results.Ref
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
         [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
-    case 'Bottom'
-        
+    case 'Bottom' 
         name='WC';
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;

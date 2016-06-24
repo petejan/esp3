@@ -5,6 +5,11 @@ if ~iscell(Filename_cell)
     Filename_cell={Filename_cell};
 end
 
+if isempty(Filename_cell)
+    new_layers=[];
+    return;
+end
+
 [def_path_m,~,~]=fileparts(Filename_cell{1});
 
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
