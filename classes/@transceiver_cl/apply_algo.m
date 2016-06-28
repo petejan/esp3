@@ -73,7 +73,7 @@ switch algo_name
         
     case 'SchoolDetection'
          trans_obj.rm_region_name('School');   
-         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',algo_obj.Varargin.l_min_can/2,'cell_h',algo_obj.Varargin.h_min_can/2);
+         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',algo_obj.Varargin.l_min_tot/2,'cell_h',algo_obj.Varargin.h_min_tot/2);
 
     case 'SingleTarget' 
         trans_obj.set_ST(single_targets);

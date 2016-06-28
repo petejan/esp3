@@ -6,6 +6,7 @@ for ii=1:length(reg_plot)
     reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure};
 end
 
+uimenu(context_menu,'Label','Display Region','Callback',{@display_region_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
@@ -18,8 +19,9 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 layer.copy_region_across(idx_freq,reg_curr,[]);
- 
 end
+
+
 
 function disp_hist_region_callback(~,~,reg_curr,main_figure)
 extfig=getappdata(main_figure,'ExternalFigures');

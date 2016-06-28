@@ -8,6 +8,7 @@ sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
 
 
 if isempty(find(~isnan(sv_disp(:)), 1))
+    h_fig=[];
     return;
 end
 %sv_disp(sv_disp<cax(1))=nan;

@@ -20,12 +20,15 @@ check_spikes=@(x)(x>=0&&x<=20);
 
 default_idx_r_max=Inf;
 default_spikes=4;
+check_filt=@(x)(x>=0);
 check_shift_bot=@(x)x>=0;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
+addParameter(p,'vert_filt',10,check_filt);
+addParameter(p,'horz_filt',50,check_filt);
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'BS_std',default_BS_std,check_BS_std);
@@ -34,7 +37,6 @@ addParameter(p,'thr_spikes_Above',default_spikes,check_spikes);
 addParameter(p,'thr_spikes_Below',default_spikes,check_spikes);
 addParameter(p,'Above',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Below',true,@(x) isnumeric(x)||islogical(x));
-addParameter(p,'burst_removal',false,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'shift_bot',0,check_shift_bot);
 
 parse(p,trans_obj,varargin{:});
@@ -61,7 +63,6 @@ thr_spikes_Above=p.Results.thr_spikes_Above;
 thr_spikes_Below=p.Results.thr_spikes_Below;
 Above=p.Results.Above;
 Below=p.Results.Below;
-burst_removal=p.Results.burst_removal;
 shift_bot=p.Results.shift_bot;
 
 Np=round(PulseLength*Fs);
@@ -75,6 +76,8 @@ Np=round(PulseLength*Fs);
     'denoised',p.Results.denoised,...
     'thr_bottom',thr_bottom,...
     'thr_backstep',thr_backstep,...
+    'horz_filt',p.Results.horz_filt,...
+    'vert_filt',p.Results.vert_filt,...
     'r_min',r_min,...
     'r_max',r_max,...
     'shift_bot',shift_bot);
@@ -304,56 +307,9 @@ if Above||Below
 
 end
 
-%%%%%%%% Morpho Analysis for removal of short burst of noise%%%%%%%%%%%%%
-idx_noise_burst=zeros(1,nb_pings);
-
-if burst_removal
-    heigh_burst=10*Np;
-    B_filter_2=ones(heigh_burst,1);
-    Sv_temp=Sv;
-    Sv_temp(bsxfun(@gt,(1:nb_samples)',nanmin(idx_bottom)))=nan;
-    
-    Sv_filtered=20*log10(abs(filter2(B_filter_2,10.^(Sv_temp/20),'same'))./filter2(B_filter_2,ones(size(Sv)),'same'));
-    
-    Sv_filtered_unmean=Sv_filtered-repmat(20*log10(nanmean(10.^(Sv_filtered/20))),nb_samples,1);
-    
-    thr_burst_vect=10:2:20;
-    thr_rem_vect=10.^linspace(log10(3*heigh_burst),log10(heigh_burst),length(thr_burst_vect));
-    
-    for  i=1:length(thr_burst_vect)
-        thr_burst=thr_burst_vect(i);
-        thr_rem=thr_rem_vect(i);
-        mask_sv_ori=Sv_filtered_unmean>thr_burst;
-        mask_sv=ceil(filter2(ones(heigh_burst,1),mask_sv_ori,'same')./filter2(ones(heigh_burst,1),ones(size(Sv)),'same'));
-        mask_sv=floor(filter2(ones(heigh_burst,1),mask_sv,'same')./filter2(ones(heigh_burst,1),ones(size(Sv)),'same'));
-        mask_sv_erode=floor(filter2(ones(1,2),mask_sv,'same')./filter2(ones(1,2),ones(size(Sv)),'same'));
-        mask_sv_dilate=ceil(filter2(ones(2,3),mask_sv_erode,'same')./filter2(ones(2,3),ones(size(Sv)),'same'));
-        mask_sv_f=mask_sv_ori&~mask_sv_dilate;
-        %mask_sv_f=floor(filter2(ones(heigh_burst,1),mask_sv_f,'same')./filter2(ones(heigh_burst,1),ones(size(Sv)),'same'));
-        idx_noise_burst=nansum(mask_sv_f)<thr_rem&idx_noise_burst;
-        
-        if DEBUG
-            figure();
-            plot(nansum(mask_sv_ori),'g')
-            hold on;
-            plot(nansum(mask_sv_f));
-            hold on;
-            plot(thr_rem*ones(1,nb_pings),'r')
-            grid on;
-            set(gca,'fontsize',16);
-            xlabel('Ping Number')
-            ylabel('Number of "bad" samples')
-            pause
-            close (gcf)
-        end
-    end
-else
-    idx_noise_burst=ones(1,nb_pings);
-end
-
 
 %%%%%%And compile the final vector designing the bad pings%%%%%%%%%%%%%%%%
-idx_noise_sector=~(idx_spikes_Below&idx_spikes_Above&idx_bottom_bs_eval&idx_ringdown&idx_noise_burst);
+idx_noise_sector=~(idx_spikes_Below&idx_spikes_Above&idx_bottom_bs_eval&idx_ringdown);
 %%%%%%%%%%%%%Remove isolated "good" pings%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 idx_noise_sector_filter=filter2(ones(1,9),idx_noise_sector)./filter2(ones(1,9),ones(size(idx_noise_sector)));
 idx_noise_sector(idx_noise_sector_filter>=7/9)=1;
@@ -372,11 +328,10 @@ disp([num2str(bad_pings_percent) '% of bad pings']);
 % plot((1:nb_pings),~idx_ringdown,'-go','linewidth',2,'linewidth',2);
 % plot((1:nb_pings),~idx_spikes_Above,'-cx','linewidth',2);
 % plot((1:nb_pings),~idx_spikes_Below,'-kv','linewidth',2);
-% plot((1:nb_pings),idx_noise_burst,'-bs','linewidth',2);
 % grid on;
 % set (gca,'fontsize',14);
 % xlabel('Ping Number');
-% legend('From BS','From RD zone','From WaterColumn Level Above','From WaterColumn Level Below','Noise burst','Location', 'SouthEast');
+% legend('From BS','From RD zone','From WaterColumn Level Above','From WaterColumn Level Below','Location', 'SouthEast');
 % ylim([-0.2 1.2])
 % close(bad_trans);
 

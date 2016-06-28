@@ -1,4 +1,4 @@
-function linked_candidates=link_candidates_v2(candidates,dist_pings_mat,range_mat,horz_link_max,vert_link_max,l_min_tot,h_min_tot)
+function linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot)
 
 if nansum(candidates(:))==0
     linked_candidates=candidates;
@@ -6,7 +6,12 @@ if nansum(candidates(:))==0
 end
 candidates_ori=candidates;
 
-%[nb_samples,nb_pings]=size(candidates);
+[nb_samples,nb_pings]=size(candidates);
+
+range_mat=bsxfun(@times,range,ones(1,nb_pings));
+dist_pings_mat=bsxfun(@times,dist_pings(:)',ones(nb_samples,1));
+
+
 vec_candidates=double(unique(candidates(candidates>0)))';
 vec_candidates(vec_candidates==0)=[];
 nb_candidates=length(vec_candidates);
@@ -20,7 +25,7 @@ candidates(mask)=0;
 
 
 linking_mat=nan(nb_candidates,nb_candidates);
-h=waitbar(0/(nb_candidates-1),sprintf('Processing Linking %i/%i',0,nb_candidates),'Name','Processing Linking');
+fprintf(1,'Processing Linking %i/%i\n',1,nb_candidates);
 u=0;
 
 while u<=length(vec_candidates(1:end-1))
@@ -31,11 +36,7 @@ while u<=length(vec_candidates(1:end-1))
     curr_candidates=(candidates==i);
     
     if nansum(curr_candidates(:))==0
-        try
-            waitbar(u/(nb_candidates-1),h,sprintf('Processing Linking %i/%i',u,nb_candidates));
-        catch
-            h=waitbar(u/(nb_candidates-1),sprintf('Processing Linking %i/%i',u,nb_candidates),'Name','Processing Linking');
-        end
+        fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
         continue;
     end
     
@@ -46,27 +47,22 @@ while u<=length(vec_candidates(1:end-1))
         other_candidates(candidates==idx_already_unlinked(jj))=0;
     end
     
-    K_red=reduce_matrice(dist_pings_mat,range_mat,candidates,curr_candidates,other_candidates,horz_link_max,vert_link_max);
+    idx_other_candidates=find(other_candidates);
+    
+    K_red=reduce_matrice_v2(dist_pings,range,find(curr_candidates),find(other_candidates),horz_link_max,vert_link_max);
     k_other=K_red(other_candidates(K_red));
     k_curr=K_red(curr_candidates(K_red));
-    
-    
+
     if isempty(k_other)|| isempty(k_curr)
-        try
-            waitbar(u/(nb_candidates-1),h,sprintf('Processing Linking %i/%i',u,nb_candidates));
-        catch
-            h=waitbar(u/(nb_candidates-1),sprintf('Processing Linking %i/%i',u,nb_candidates),'Name','Processing Linking');
-        end
+        fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
         continue;
     end
-    
-    %[k_curr,~]=sort(abs(k_other-k_curr(1)));
     
     j=0;
     while j<length(k_curr) && ~isempty(k_other)
         j=j+1;
         
-        
+
         dist_curr=dist_pings_mat(k_curr(j));
         range_curr=range_mat(k_curr(j));
         
@@ -90,16 +86,6 @@ while u<=length(vec_candidates(1:end-1))
                 candidates(link_candidate)=i;
             end
             
-            alpha_map=candidates>0;
-            
-%             figure(259);
-%             plot_sch=imagesc(dist_pings_mat(1,:),range_mat(:,1),candidates);
-%             set(plot_sch,'alphadata',alpha_map);
-%             set(gcf,'ColorMap',jet)
-%             axis ij
-% %             xlim([nanmin(dist_pings_mat(K_red)) nanmax(dist_pings_mat(K_red))]);
-% %             ylim([nanmin(range_mat(K_red)) nanmax(range_mat(K_red))]);
-%             drawnow;
             
             other_candidates=(candidates~=i)&(candidates>0);
             idx_already_unlinked=find(linking_mat(i,:)==0);
@@ -111,17 +97,12 @@ while u<=length(vec_candidates(1:end-1))
             
             curr_candidates=(candidates==i);
             
-            K_red=reduce_matrice(dist_pings_mat,range_mat,candidates,curr_candidates,other_candidates,horz_link_max,vert_link_max);
+            K_red=reduce_matrice_v2(dist_pings,range,find(curr_candidates),find(other_candidates),horz_link_max,vert_link_max);
             k_other=K_red(other_candidates(K_red));
             k_curr=K_red(curr_candidates(K_red));
             
-            
             if isempty(k_other)|| isempty(k_curr)
-                try
-                    waitbar(u/(nb_candidates-1),h,sprintf('Processing Linking %i/%i',u,nb_candidates));
-                catch
-                    h=waitbar(u/(nb_candidates-1),sprintf('Processing Linking %i/%i',u,nb_candidates),'Name','Processing Linking');
-                end
+               fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
                 continue;
             end
             
@@ -130,36 +111,15 @@ while u<=length(vec_candidates(1:end-1))
             
         else
             candidates(k_curr(j))=0;
-            %             alpha_map=candidates>0;
-            %             figure(1);
-            %             plot_sch=imagesc(dist_pings_mat(1,:),range_mat(:,1),candidates);
-            %             set(plot_sch,'alphadata',alpha_map);
-            %             set(gcf,'ColorMap',jet)
-            %             axis ij
-            %             xlim([nanmin(dist_pings_mat(K_red)) nanmax(dist_pings_mat(K_red))]);
-            %             ylim([nanmin(range_mat(K_red)) nanmax(range_mat(K_red))]);
-            %             drawnow;
+            
         end
     end
+    linking_mat(isnan(linking_mat(:,i)),i)=0;
+    linking_mat(isnan(linking_mat(i,:)),i)=0;
     
-    %     linking_mat(i,isnan(linking_mat(i,:)))=0;
-    %     linking_mat(isnan(linking_mat(:,i)),i)=0;
-    
-%     alpha_map=candidates_ori>0;
-%     figure(2);
-%     plot_sch=imagesc(dist_pings_mat(1,:),range_mat(:,1),candidates_ori);
-%     set(plot_sch,'alphadata',alpha_map);
-%     set(gcf,'ColorMap',jet)
-%     axis ij
-%     drawnow;
-%     
-    try
-        waitbar(u/(nb_candidates-1),h,sprintf('Processing Linking %i/%i',u,nb_candidates));
-    catch
-        h=waitbar(u/(nb_candidates-1),sprintf('Processing Linking %i/%i',u,nb_candidates),'Name','Processing Linking');
-    end
+        fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
 end
-close(h)
+
 linked_candidates=zeros(size(candidates));
 id=0;
 u=unique(candidates_ori(:));

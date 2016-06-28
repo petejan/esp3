@@ -7,8 +7,11 @@ bottom_tab_comp=getappdata(main_figure,'Bottom_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 [idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
 if found==0
-     return
+    return
 end
+
+dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+range=layer.Transceivers(idx_freq).Data.get_range();
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo=algo_obj.Varargin;
@@ -17,13 +20,22 @@ algo=algo_obj.Varargin;
 set(bottom_tab_comp.Thr_bottom_sl,'value',algo.thr_bottom);
 set(bottom_tab_comp.Thr_bottom_ed,'string',num2str(get(bottom_tab_comp.Thr_bottom_sl,'Value'),'%.0f'));
 
-set(bottom_tab_comp.r_min_sl,'value',nanmax(algo.r_min,layer.Transceivers(idx_freq).Data.Range(1)));
+set(bottom_tab_comp.r_min_sl,'value',nanmax(algo.r_min,range(1)));
 set(bottom_tab_comp.r_min_ed,'string',num2str(get(bottom_tab_comp.r_min_sl,'Value'),'%.1f'));
 
-
 set(bottom_tab_comp.r_max_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
-set(bottom_tab_comp.r_max_sl,'value',nanmin(algo.r_max,layer.Transceivers(idx_freq).Data.Range(end)));
+set(bottom_tab_comp.r_max_sl,'value',nanmin(algo.r_max,range(end)));
 set(bottom_tab_comp.r_max_ed,'string',num2str(get(bottom_tab_comp.r_max_sl,'Value'),'%.1f'));
+
+if isfield(bottom_tab_comp,'horz_filt_sl')
+    set(bottom_tab_comp.horz_filt_sl,'max',dist(end)/4);
+    set(bottom_tab_comp.horz_filt_sl,'value',nanmin(algo.horz_filt,dist(end)/4));
+    set(bottom_tab_comp.horz_filt_ed,'string',num2str(get(bottom_tab_comp.horz_filt_sl,'Value'),'%.1f'));
+end
+
+set(bottom_tab_comp.vert_filt_sl,'max',layer.Transceivers(idx_freq).Data.Range(end)/4);
+set(bottom_tab_comp.vert_filt_sl,'value',nanmin(algo.vert_filt,range(end)/4));
+set(bottom_tab_comp.vert_filt_ed,'string',num2str(get(bottom_tab_comp.vert_filt_sl,'Value'),'%.1f'));
 
 set(bottom_tab_comp.Thr_backstep_sl,'value',algo.thr_backstep);
 set(bottom_tab_comp.Thr_backstep_ed,'string',num2str(get(bottom_tab_comp.Thr_backstep_sl,'Value'),'%.0f'));

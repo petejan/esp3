@@ -1,12 +1,20 @@
 function inter_region_create(src,main_figure,mode,func)
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
+curr_disp=getappdata(main_figure,'Curr_disp');
 src.Pointer = 'ibeam';
 ah=axes_panel_comp.main_axes;
 
 if strcmp(src.SelectionType,'normal')
+    switch curr_disp.Cmap
+        case 'esp2'
+            col_line='w';
+        otherwise
+            col_line='k';
+    end
     
-    clear_lines(ah)
+    
+    clear_lines(ah);
 
     drawnow;
     xdata=get(axes_panel_comp.main_echo,'XData');
@@ -41,8 +49,8 @@ if strcmp(src.SelectionType,'normal')
     
     axes(ah);
     hold on;
-    hp=plot(x_box,y_box,'color','r','linewidth',1);
-   txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
+    hp=plot(x_box,y_box,'color',col_line,'linewidth',1);
+   txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
     
 else
     src.WindowButtonMotionFcn = '';
@@ -103,7 +111,7 @@ end
         
         
         layer=getappdata(main_figure,'Layer');
-        curr_disp=getappdata(main_figure,'Curr_disp');
+        
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
 
         [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);

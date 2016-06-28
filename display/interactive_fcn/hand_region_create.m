@@ -10,6 +10,12 @@ ah=axes_panel_comp.main_axes;
 if strcmp(src.SelectionType,'normal')
     
     clear_lines(ah);
+        switch curr_disp.Cmap
+        case 'esp2'
+            col_line='w';
+        otherwise
+            col_line='k';
+    end
     
     xdata=double(get(axes_panel_comp.main_echo,'XData'));
     ydata=double(get(axes_panel_comp.main_echo,'YData'));
@@ -19,8 +25,6 @@ if strcmp(src.SelectionType,'normal')
     bot=trans.Bottom;
 
     Number=trans.Data.get_numbers();
-    Range=trans.Data.get_range();
-    nb_samples=length(Range);
     nb_pings=length(Number);
     
     if isempty(bot.Range)
@@ -40,8 +44,8 @@ if strcmp(src.SelectionType,'normal')
     end
     axes(ah);
     hold on;
-    hp=line(xinit,yinit,'color','r','linewidth',1);
-    txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)));
+    hp=line(xinit,yinit,'color',col_line,'linewidth',1);
+    txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
     
     src.WindowButtonMotionFcn = @wbmcb;
     src.WindowButtonUpFcn = @wbucb;

@@ -1,7 +1,5 @@
 function [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr)
 
-[~,nb_pings]=size(power);
-
 
 [TVG_Sp,TVG_Sv]=computeTVG(range);
 
@@ -17,11 +15,11 @@ end
 range_tvg=range-(r_corr);
 range_tvg(range_tvg<0)=0;
 
-tmp=10*log10(power)-2*gain-10*log10(ptx*lambda^2/(16*pi^2))+repmat(2*alpha*range_tvg,1,nb_pings);
+tmp=bsxfun(@plus,10*log10(power)-2*gain-10*log10(ptx*lambda^2/(16*pi^2)),2*alpha*range_tvg);
 
-Sp=tmp+repmat(TVG_Sp,1,nb_pings);
+Sp=bsxfun(@plus,tmp,TVG_Sp);
 
-Sv=tmp-10*log10(c*t_eff/2)-eq_beam_angle-2*sacorr+repmat(TVG_Sv,1,nb_pings);
+Sv=bsxfun(@plus,tmp-10*log10(c*t_eff/2)-eq_beam_angle-2*sacorr,TVG_Sv);
 
 end
 

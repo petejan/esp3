@@ -100,6 +100,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 layer.Transceivers(idx_freq).apply_algo('SchoolDetection');
 
+
 setappdata(main_figure,'Layer',layer);
 
 update_display(main_figure,0);

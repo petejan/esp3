@@ -10,6 +10,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 range=layer.Transceivers(idx_freq).Data.get_range();
+dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
 
 
@@ -53,9 +54,23 @@ set(bottom_tab_comp.Thr_backstep_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_
 set(bottom_tab_comp.Thr_backstep_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_backstep_sl,'%.0f'});
 
 
-uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{1,4});
-bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',100,'Value',algo_bottom.shift_bot,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{1,5});
-bottom_tab_comp.Shift_bot_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.1f'));
+uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Vertical Resolution(m)','units','normalized','Position',pos{1,4});
+bottom_tab_comp.vert_filt_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',1,'Max',range(end)/4,'Value',nanmin(algo_bottom.vert_filt,range(end)/4),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
+bottom_tab_comp.vert_filt_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_comp.vert_filt_sl,'Value'),'%.0f'));
+set(bottom_tab_comp.vert_filt_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.vert_filt_ed,'%.1f'});
+set(bottom_tab_comp.vert_filt_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.vert_filt_sl,'%.1f'});
+
+if ~isempty(dist)
+    uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Horizontal Resolution(m)','units','normalized','Position',pos{2,4});
+    bottom_tab_comp.horz_filt_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',1,'Max',dist(end)/4,'Value',nanmin(algo_bottom.horz_filt,dist(end)/4),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
+    bottom_tab_comp.horz_filt_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{2,6},'string',num2str(get(bottom_tab_comp.horz_filt_sl,'Value'),'%.0f'));
+    set(bottom_tab_comp.horz_filt_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.horz_filt_ed,'%.1f'});
+    set(bottom_tab_comp.horz_filt_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.horz_filt_sl,'%.1f'});
+end
+
+uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{3,4});
+bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',100,'Value',algo_bottom.shift_bot,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{3,5});
+bottom_tab_comp.Shift_bot_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.1f'));
 set(bottom_tab_comp.Shift_bot_sl,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
     {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_comp.Shift_bot_ed,'%.1f'),...
     @(src,evtdata) shift_bottom_callback(src,evtdata,main_figure)})));
@@ -64,7 +79,7 @@ set(bottom_tab_comp.Shift_bot_ed,'callback',@(src,evtdata)(cellfun(@(x)feval(x,s
     @(src,evtdata) shift_bottom_callback(src,evtdata,main_figure)})));
 
 
-bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,'Style','checkbox','Value',algo_bottom.denoised,'String','Compute on Denoised data','units','normalized','Position',[0.5 0.3 0.3 0.1]);
+bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,'Style','checkbox','Value',algo_bottom.denoised,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.3 0.3 0.1]);
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BottomDetection'});

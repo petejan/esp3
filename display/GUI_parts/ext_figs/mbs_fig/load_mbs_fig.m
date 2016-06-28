@@ -35,9 +35,7 @@ set(mbs_table.table_main,'CellSelectionCallback',{@store_selected_mbs_callback,m
 
 rc_menu = uicontextmenu;
 mbs_table.table_main.UIContextMenu =rc_menu;
-% uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','crest');
-% uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','raw');
-% uimenu(rc_menu,'Label','Run with school detection','Callback',{@run_mbs_callback,mbs_figure,main_figure},'tag','sch');
+
 uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','crest');
 uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_mbs_callback_v2,mbs_figure,main_figure},'tag','raw');
 uimenu(rc_menu,'Label','Edit','Callback',{@edit_mbs_callback,mbs_figure,main_figure});
@@ -49,72 +47,6 @@ setappdata(mbs_figure,'DataOri',mbsSummary);
 
 end
 
-
-function run_mbs_callback(src,~,hObject,main_figure)
-
-selected_mbs=getappdata(hObject,'SelectedMbs');
-app_path=getappdata(main_figure,'App_path');
-curr_disp=getappdata(main_figure,'Curr_disp');
-layers_old=getappdata(main_figure,'Layers');
-mbs_vec=[];
-
-for i=1:length(selected_mbs)
-    %try
-    curr_mbs=selected_mbs{i};
-    if~strcmp(curr_mbs,'')
-        [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',curr_mbs,'Rev',[]);
-    end
-    
-    mbs=mbs_cl();
-    mbs.readMbsScript(app_path.data_root,fileNames{1});
-    rmdir(outDir,'s');
-    idx_trans=[];
-    
-    switch src.Tag
-        case 'crest'
-            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data_temp,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans);
-        case 'raw'
-            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data_temp,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'type','raw');
-        case 'sch'
-            layers=load_files_regions_from_mbs(mbs,'PathToMemmap',app_path.data_temp,'CVSroot',app_path.cvs_root,'idx_trans',idx_trans,'mode','sch');
-    end
-    
-    mbs.generate_output(layers,'idx_trans',idx_trans);
-    output_filename=sprintf('mbs_output_%s_%s_%s.txt',regexprep(mbs.Header.voyage,'[^\w'']',''),regexprep(mbs.Header.title,'[^\w'']',''),src.Tag);
-    mbs.OutputFile=fullfile(mbs.Input.crestDir{1},output_filename);
-    
-    mbs.print_output;
-    fprintf(1,'Results save to %s \n',mbs.OutputFile);
-    
-    
-    %     catch ME
-    %         disp(ME.identifier);
-    %         continue;
-    %     end
-    
-    layers_old=[layers_old layers];
-   
-end
-
-layers=layers_old;
-if ~isempty(layers)
-    [~,found]=find_layer_idx(layers,0);
-else
-    found=0;
-end
-if  found==1
-    layers=layers.delete_layers(0);
-end
-
-layer=layers(end);
-
-setappdata(main_figure,'Layer',layer);
-setappdata(main_figure,'Layers',layers);
-setappdata(main_figure,'Curr_disp',curr_disp);
-update_display(main_figure,1);
-
-
-end
 
 
 function run_mbs_callback_v2(src,~,hObject,main_figure)
@@ -149,7 +81,7 @@ app_path=getappdata(main_figure,'App_path');
 selected_mbs=getappdata(hObject,'SelectedMbs');
 if~strcmp(selected_mbs,'')
     [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',selected_mbs{end},'Rev',[]);
-    edit(fileNames{1});
+    system(['start ' fileNames{1}]);
     rmdir(outDir,'s');
 end
 end

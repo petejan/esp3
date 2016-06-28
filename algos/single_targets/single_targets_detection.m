@@ -1,6 +1,6 @@
 function single_targets=single_targets_detection(Transceiver,varargin)
 %SINGLE_TARGET_DETECTION
-tic;
+
 %Parse Arguments
 p = inputParser;
 
@@ -381,7 +381,6 @@ single_targets.Pitch=pitch_mat(idx_target_lin);
 single_targets.Heave=heave_mat(idx_target_lin);
 single_targets.Heading=heading_mat(idx_target_lin);
 
-toc;
 
 end
 

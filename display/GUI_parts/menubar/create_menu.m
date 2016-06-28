@@ -91,7 +91,7 @@ mhhh = uimenu(main_figure,'Label','Tools','Tag','menutools');
 
 reg_tools=uimenu(mhhh,'Label','Regions Tools');
 uimenu(reg_tools,'Label','Create WC Region','Callback',{@create_reg_dlbox,main_figure});
-uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,main_figure});
+uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_callback,[],main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callback,main_figure});
 uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_callback,main_figure});

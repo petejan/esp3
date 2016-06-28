@@ -50,9 +50,6 @@ end
 power=trans_obj.Data.get_datamat('Power');
 
 
-
-
-
 h_filt=ceil(nanmin(p.Results.VertFilt,size(power,1))/nanmean(diff(range)));
 w_filt=nanmin(p.Results.HorzFilt,size(power,2));
 noise_thr=p.Results.NoiseThr;
@@ -67,7 +64,7 @@ power_filt=filter2_perso(ones(h_filt,w_filt),power);
 
 [noise_db,~]=nanmin(10*log10(power_filt(range>nanmean(range)/2,:)),[],1);
 
-power_noise_db=repmat(noise_db,size(power,1),1);
+power_noise_db=bsxfun(@times,noise_db,ones(size(power,1),1));
 power_noise_db(power<0)=nan;
 power_noise_db(power_noise_db>noise_thr)=noise_thr;
 

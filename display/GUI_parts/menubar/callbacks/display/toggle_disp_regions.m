@@ -9,7 +9,13 @@ u=get(main_axes,'children');
 
 for ii=1:length(u)
     if strcmp(get(u(ii),'tag'),'region')
-        set(u(ii),'visible',curr_disp.DispReg);
+       set(u(ii),'visible',curr_disp.DispReg);
+        switch lower(curr_disp.DispReg)
+            case 'off'
+                uistack(u(ii),'bottom');
+            case 'on'
+                uistack(u(ii),'top');
+        end
     end
 end
     

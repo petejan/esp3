@@ -138,6 +138,14 @@ switch callbackdata.Key
             case 'on'
                 curr_disp.DispUnderBottom='off';
         end
+    case 'r'
+        
+        switch curr_disp.DispReg
+            case 'off'
+                curr_disp.DispReg='on';
+            case 'on'
+                curr_disp.DispReg='off';
+        end
         
     case 'c'
         cmaps={'jet' 'hsv' 'esp2' 'ek500'};

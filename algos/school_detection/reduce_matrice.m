@@ -1,6 +1,6 @@
-function K_red=reduce_matrice(dist_pings_mat,range_mat,candidates,curr_candidates,other_candidates,horz_link_max,vert_link_max)
+function K_red=reduce_matrice(dist_pings_mat,range_mat,curr_candidates,other_candidates,horz_link_max,vert_link_max)
 
-K=reshape(find(ones(size(candidates))),size(candidates,1),size(candidates,2));
+K=reshape(find(ones(size(dist_pings_mat))),size(dist_pings_mat,1),size(dist_pings_mat,2));
 
 idx_red_row=(dist_pings_mat(1,:)>=(nanmin(dist_pings_mat(curr_candidates))-horz_link_max))&(dist_pings_mat(1,:)<=(nanmax(dist_pings_mat(curr_candidates))+horz_link_max));
 idx_red_cols=(range_mat(:,1)>=(nanmin(range_mat(curr_candidates))-vert_link_max)&(range_mat(:,1))<=(nanmax(range_mat(curr_candidates))+vert_link_max));

@@ -1,25 +1,10 @@
 
-function display_regions(main_figure)
+function display_regions_grid(main_figure)
 
 layer=getappdata(main_figure,'Layer');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-
-switch curr_disp.Cmap
-    
-    case 'esp2'
-        ac_data_col='g';
-        in_data_col='r';
-        empty_data_col='k';
-        bad_data_col=[0.5 0.5 0.5];
-    otherwise
-        ac_data_col='g';
-        in_data_col='r';
-        empty_data_col='w';
-        bad_data_col=[0.5 0.5 0.5];
-        
-end
 
 main_axes=axes_panel_comp.main_axes;
 
@@ -65,13 +50,13 @@ vis=curr_disp.DispReg;
 for i=1:length(list_reg)
     reg_curr=trans.Regions(i);
     if i==active_reg
-        col=ac_data_col;
+        col='r';
     else
         switch lower(reg_curr.Type)
             case 'data'
-                col=in_data_col;
+                col='b';
             case 'bad data'
-                col=bad_data_col;
+                col=[0.5 0.5 0.5];
         end
     end
     x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
@@ -85,7 +70,29 @@ for i=1:length(list_reg)
         continue;
     end
     
+    switch reg_curr.Cell_h_unit
+        case 'meters'
+            dy=ceil(reg_curr.Cell_h/dr);
+        otherwise
+            dy=reg_curr.Cell_h;
+    end
     
+    switch reg_curr.Cell_w_unit
+        case 'meters'
+            dx=ceil(reg_curr.Cell_w/dp);
+        otherwise
+            dx=reg_curr.Cell_w;
+    end
+    
+    
+    if strcmp(reg_curr.Name,'Track')
+        x_grid=[];
+        y_grid=[];
+    else
+        x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
+        y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
+    end
+    [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
     
     
     switch reg_curr.Shape
@@ -94,8 +101,9 @@ for i=1:length(list_reg)
             vis_grid=vis;
             x_text=nanmean(x_reg_rect(:));
             y_text=nanmean(y_reg_rect(:));
-
-            reg_plot=patch(x_reg_rect,y_reg_rect,col,'FaceAlpha',.4,'EdgeColor',col,'tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID);
+            nb_cont=1;
+            reg_plot=gobjects(1,length(x_grid)+length(y_grid)+1);
+            reg_plot(1)=plot(x_reg_rect,y_reg_rect,'color',col,'linewidth',1,'linestyle','-','tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID);
         case 'Polygon'
             
             idx_x=reg_curr.X_cont;
@@ -104,26 +112,40 @@ for i=1:length(list_reg)
             y_reg=cell(1,length(idx_x));
             
             nb_cont=length(idx_x);
-
-            for jj=1:nb_cont
+            reg_plot=gobjects(1,length(x_grid)+length(y_grid)+nb_cont);
+            
+            for jj=1:length(idx_x)
                 
                 idx_x{jj}=idx_x{jj}+reg_curr.Idx_pings(1);
                 idx_y{jj}=idx_y{jj}+reg_curr.Idx_r(1);
                 
                 x_reg{jj}=x(idx_x{jj});
-                y_reg{jj}=y(idx_y{jj})';
+                y_reg{jj}=y(idx_y{jj});
                 
                 if ~isempty(idx_x)>0
                     x_text=nanmean(x_reg{jj});
                     y_text=nanmean(y_reg{jj});
                 end
-             
+                
+                reg_plot(jj)=plot(x_reg{jj},y_reg{jj},'color',col,'linewidth',1,'tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
             end
-            [x_reg,y_reg]=poly2cw(x_reg,y_reg);
-            [f, v] = poly2fv(x_reg,y_reg);
-            reg_plot=patch('Faces', f, 'Vertices', v, 'FaceColor',col,'FaceAlpha',0.4,'EdgeColor','none','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
-           
-                    
+            if strcmp(reg_curr.Name,'Track')
+                grid_in=zeros(size(x_grid));
+            else
+                grid_in=grid_mask_from_cont(Y_grid,X_grid,y_reg,x_reg);
+            end
+            
+            X_grid(~grid_in)=nan;
+            Y_grid(~grid_in)=nan;
+            
+            
+    end
+    
+    for uui=1:size(X_grid,1)
+        reg_plot(uui+nb_cont)=plot(X_grid(uui,:),Y_grid(uui,:),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
+    end
+    for uuj=1:size(X_grid,2)
+        reg_plot(uuj+size(X_grid,1)+nb_cont)=plot(X_grid(:,uuj),Y_grid(:,uuj),'color',col,'linewidth',0.1,'linestyle','-','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
     end
     
     

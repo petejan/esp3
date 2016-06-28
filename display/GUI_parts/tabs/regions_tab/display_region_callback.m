@@ -1,4 +1,4 @@
-function display_region_callback(~,~,main_figure)
+function display_region_callback(~,~,reg_curr,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
@@ -6,22 +6,24 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-region_tab_comp=getappdata(main_figure,'Region_tab');
 hfigs=getappdata(main_figure,'ExternalFigures');
-
-
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-list_reg = trans_obj.regions_to_str();
 
-
-if ~isempty(list_reg)
-    active_reg=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
-    new_fig=active_reg.display_region(trans_obj);
-else
-    return;
+if isempty(reg_curr)
+    region_tab_comp=getappdata(main_figure,'Region_tab');
+    list_reg = trans_obj.regions_to_str();
+    if ~isempty(list_reg)
+        reg_curr=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
+    else
+        return;
+    end
 end
+
+
+new_fig=reg_curr.display_region(trans_obj);
+
 
 
 hfigs=[hfigs new_fig];

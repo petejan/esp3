@@ -186,6 +186,13 @@ classdef transceiver_cl < handle
             obj.Regions=reg_new;
         end
         
+        function rm_regions(obj)
+            reg_curr=obj.Regions;
+            reg_new=[];
+            
+            obj.Regions=reg_new;
+        end
+        
         function rm_region_name_id(obj,name,ID)
             reg_curr=obj.Regions;
             reg_new=[];

@@ -16,7 +16,7 @@ default_thr_backstep=-12;
 check_thr_backstep=@(x)(x>=-12&&x<=0);
 
 check_shift_bot=@(x)(x>=0);
-
+check_filt=@(x)(x>0)||isempty(x);
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
@@ -24,6 +24,8 @@ addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
+addParameter(p,'vert_filt',10,check_filt);
+addParameter(p,'horz_filt',50,check_filt);
 addParameter(p,'shift_bot',0,check_shift_bot);
 parse(p,trans_obj,varargin{:});
 
@@ -37,6 +39,7 @@ else
 end
 
 Range= trans_obj.Data.get_range();
+dr=nanmean(diff(Range));
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
 
@@ -63,7 +66,15 @@ Sv(1:idx_r_min,:)=nan;
 
 
 %First let's find the bottom...
-heigh_b_filter=10*Np+1;
+
+dist=trans_obj.GPSDataPing.Dist;
+heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
+
+if ~isempty(dist)&&nb_pings>1
+    b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
+else
+    b_filter=nanmin(15,nb_pings/10);
+end
 
 idx_ringdown=analyse_ringdown(RingDown);
 
@@ -78,7 +89,7 @@ BS_ori=BS;
 BS(:,~idx_ringdown)=nan;
 BS_lin=10.^(BS/10);
 BS_lin(isnan(BS_lin))=0;
-b_filter=nanmin(ceil(nb_pings/10),15);
+
   
 filter_fun = @(block_struct) nanmean(block_struct.data(:));
 BS_filtered_bot_lin=blockproc(BS_lin,[heigh_b_filter b_filter],filter_fun);
@@ -119,14 +130,13 @@ Bottom_region(1:n_permut,:)=0;
 Bottom_region(:,nansum(Bottom_region)<=Np)=0;
 
 
-
-
-idx_bottom=repmat((1:nb_samples)',1,nb_pings);
+idx_bottom=bsxfun(@times,Bottom_region,(1:nb_samples)');
 idx_bottom(~Bottom_region)=nan;
 idx_bottom(end,(nansum(idx_bottom)==0))=nb_samples;
+
+
+
 Bottom_region(Bottom_region==0)=nan;
-
-
 [I_bottom,J_bottom]=find(~isnan(idx_bottom));
 
 I_bottom(I_bottom>nb_samples)=nb_samples;

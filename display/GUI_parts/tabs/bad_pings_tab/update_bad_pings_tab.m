@@ -18,19 +18,6 @@ algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo=algo_obj.Varargin;
 
 
-set(bad_ping_tab_comp.Thr_bottom_sl,'value',algo.thr_bottom);
-set(bad_ping_tab_comp.Thr_bottom_ed,'string',num2str(get(bad_ping_tab_comp.Thr_bottom_sl,'Value'),'%.0f'));
-
-set(bad_ping_tab_comp.r_min_sl,'value',nanmax(algo.r_min,layer.Transceivers(idx_freq).Data.Range(1)));
-set(bad_ping_tab_comp.r_min_ed,'string',num2str(get(bad_ping_tab_comp.r_min_sl,'Value'),'%.1f'));
-
-set(bad_ping_tab_comp.r_max_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
-set(bad_ping_tab_comp.r_max_sl,'value',nanmin(algo.r_max,layer.Transceivers(idx_freq).Data.Range(end)));
-set(bad_ping_tab_comp.r_max_ed,'string',num2str(get(bad_ping_tab_comp.r_max_sl,'Value'),'%.1f'));
-
-set(bad_ping_tab_comp.Thr_backstep_sl,'value',algo.thr_backstep);
-set(bad_ping_tab_comp.Thr_backstep_ed,'string',num2str(get(bad_ping_tab_comp.Thr_backstep_sl,'Value'),'%.0f'));
-
 set(bad_ping_tab_comp.Above,'value',algo.Above);
 
 set(bad_ping_tab_comp.thr_spikes_Above_sl,'value',algo.thr_spikes_Above);

@@ -74,14 +74,11 @@ h_min_tot=p.Results.h_min_tot;
 horz_link_max=p.Results.horz_link_max;
 vert_link_max=p.Results.vert_link_max;
 nb_min_sples=p.Results.nb_min_sples;
-
-sample_mat=repmat((1:nb_samples)',1,nb_pings);
-range_mat=repmat(range,1,nb_pings);
-dist_pings_mat=repmat(dist_pings',nb_samples,1);
 % 
+
 % alpha_map=double(Sv_mat>=Sv_thr);
 
-[nb_samples,nb_pings]=size(Sv_mat);
+[nb_samples,~]=size(Sv_mat);
 mask=zeros(size(Sv_mat));
 
 idx_bad_data=trans_obj.list_regions_type('Bad Data');
@@ -93,10 +90,11 @@ end
 
 
 if nansum(~isnan(Bottom))==0
-    Sv_mask_ori=double(Sv_mat>=Sv_thr&sample_mat>3*Np&(mask<1));
+    Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np));
 else
     Bottom(isnan(Bottom))=nb_samples;
-    Sv_mask_ori=double(Sv_mat>=Sv_thr&range_mat<repmat(Bottom,nb_samples,1)&sample_mat>3*Np&(mask<1));
+    Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np)&(bsxfun(@lt,range,Bottom)));
+
 end
 
 h_filter=2*Np;
@@ -106,38 +104,19 @@ Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);
 Sv_mask=floor(filter2(ones(h_filter,1),double(Sv_mask>0),'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
 Sv_mask=ceil(filter2(ones(h_filter,1),Sv_mask,'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
 
+% profile on
+candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'mat');
+linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
 
-% figure()
-% plot_mask=imagesc(dist_pings,range,Sv_mask);
-% set(plot_mask,'alphadata',alpha_map);
-% axis ij
-% xlabel('Distance (m)')
-% ylabel('Depth (m)')
 % 
-% tic
-% regs_cleaned=find_candidates(sparse(Sv_mask),range_mat,dist_pings_mat,l_min_can,h_min_can,nb_min_sples);
-% toc
+% candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'cell');%to modify to output cell of idx when link_candidates_v3 will be finished
+% linked_candidates=link_candidates_v3(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
+% %link candidate_v3 still does not work as I want... Too slow...
 
-regs_cleaned=find_candidates_v2(Sv_mask,range_mat,dist_pings_mat,l_min_can,h_min_can,nb_min_sples);
+% profile off;
+% profile viewer;
 
-
-candidates=regs_cleaned;
-%proceed with the linking
-linked_candidates=link_candidates_v2(candidates,dist_pings_mat,range_mat,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
-
-
-% alpha_map_can=double(linked_candidates>0);
-
-
-% figure()
-% plot_sch=imagesc(dist_pings,range,linked_candidates);
-% shading interp
-% axis ij
-% set(gcf,'ColorMap',jet)
-% set(plot_sch,'alphadata',alpha_map_can);
-% grid on;
-% xlabel('Distance (m)')
-% ylabel('Depth (m)')
+%linked_candidates=link_candidates_v3(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
 
 
 
