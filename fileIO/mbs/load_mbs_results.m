@@ -100,7 +100,11 @@ else
             continue;
         end
         
+                line=strrep(line,'NaN','');
         all_words = words(line,',');
+        if isempty(all_words)
+            return;
+        end;
        
         data{i,1} = str2double(all_words(1,:));
         data{i,2} = strcat(all_words(2,:)); % strcat removes trailing spaces
@@ -144,7 +148,11 @@ else
     % read in and parse the data
     for i = 1: header.num_transects
         line = fgetl(fid);
+        line=strrep(line,'NaN','');
         all_words = words(line,',');
+        if isempty(all_words)
+            return;
+        end
         data{i,1}= str2double(all_words(1,:));
         data{i,2}= strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3}= str2double(all_words(3,:));
@@ -179,8 +187,11 @@ else
     for i = 1: header.num_regions
         line = fgetl(fid);
         
-        
+        line=strrep(line,'NaN','');
         all_words = words(line,',');
+        if isempty(all_words)
+            return;
+        end
         
         data{i,1} = str2double(all_words(1,:));
         data{i,2} = strcat(all_words(2,:)); % strcat removes trailing spaces
@@ -213,7 +224,11 @@ else
     % read in and parse the data
     for i = 1: header.num_strata
         line = fgetl(fid);
+                line=strrep(line,'NaN','');
         all_words = words(line,',');
+        if isempty(all_words)
+            return;
+        end
         data{i,1} = str2double(all_words(1,:));
         data{i,2} = strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3} = str2double(all_words(3,:));
@@ -237,7 +252,11 @@ else
     % read in and parse the data
     for i = 1: header.num_transects
         line = fgetl(fid);
+                line=strrep(line,'NaN','');
         all_words = words(line,',');
+        if isempty(all_words)
+            return;
+        end
         data{i,1}   = str2double(all_words(1,:));
         data{i,2}    = strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3}   = str2double(all_words(3,:));
@@ -271,10 +290,13 @@ else
     % read in and parse the data
     for i = 1: header.num_regions
         line = fgetl(fid);
-        
+        line=strrep(line,'NaN','');
         all_words = words(line,',');
+        if isempty(all_words)
+            return;
+        end
         %all_words=strsplit(line,',');
-        
+
         data{i,1}   = str2double(all_words(1,:));
         data{i,2}  = strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3}  = str2double(all_words(3,:));

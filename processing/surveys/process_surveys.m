@@ -11,13 +11,13 @@ addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'tag','raw',@(x) ischar(x));
 
 parse(p,Filenames,varargin{:});
-
+layers=[];
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
 
 for i=1:length(Filenames)
-    try
+     try
         surv_obj=survey_cl();
         
         switch p.Results.origin
@@ -37,6 +37,7 @@ for i=1:length(Filenames)
                 
             case 'xml'
                 surv_obj.SurvInput=parse_survey_xml(Filenames{i});
+                
                 if isempty(surv_obj.SurvInput)
                     warning('Could not parse the File describing the survey...');
                     continue;
@@ -66,7 +67,7 @@ for i=1:length(Filenames)
         
     try
         surv_obj.generate_output(layers);
-        [PathToFile,~,~]=fileparts(layers(1).Filename{1});
+        [PathToFile,~,~]=fileparts(layers(end).Filename{1});
         save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
         outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
         surv_obj.print_output(outputFile);

@@ -50,8 +50,11 @@ for isn=1:length(snapshots)
     file_name=fullfile(snapshots{isn}.Folder,'echo_logbook.xml');
     
     if exist(file_name,'file')==0
-        initialize_echo_logbook_file(snapshots{isn}.Folder);
+        fprintf('No logbook in for %s \n',snapshots{isn}.Folder);
+        valid=0;
+        continue;
     end
+    
     surv_data_struct=import_survey_data_xml(file_name);
     
     for ist=1:length(stratum)

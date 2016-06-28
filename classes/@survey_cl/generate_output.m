@@ -103,10 +103,14 @@ for isn=1:length(snapshots)
                 reg_tot=[];
                 for ireg=1:length(regs)
                     if isfield(regs{ireg},'ver')
-                        if ischar(regs{ireg}.IDs)
-                            IDs=strsplit(regs{ireg}.IDs,';');
+                        if isfield(regs{ireg},'IDs')
+                            if ischar(regs{ireg}.IDs)
+                                IDs=strsplit(regs{ireg}.IDs,';');
+                            else
+                                IDs={regs{ireg}.IDs};
+                            end
                         else
-                            IDs={regs{ireg}.IDs};
+                            IDs='';
                         end
                         if nansum(strcmp(IDs,''))>0
                             idx_temp=trans_obj_tr.list_regions_type('Data');

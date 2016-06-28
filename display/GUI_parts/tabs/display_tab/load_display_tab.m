@@ -79,7 +79,7 @@ set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_cax
 
 
 display_tab_comp.mini_ax=axes('Parent',display_tab_comp.display_tab,'Units','normalized',...
-    'Position',[0.05 0.1 0.75 0.45]);
+    'Position',[0.05 0.1 0.75 0.45],'visible','off');
 
 
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.85 0.25 0.1 0.15],'callback',{@display_attitude,main_figure});

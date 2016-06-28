@@ -20,7 +20,7 @@ classdef survey_input_cl < handle
             default_info=struct('Script','','XmlId','','Title','','Main_species','','Areas','','Voyage','','SurveyName','','Author','','Created','','Comments','');
             default_cal=struct('G0',25.10,'SACORRECT',0.0,'FREQ',38000);
             default_options=struct('Use_exclude_regions',1,'Absorption',nan,'Es60_correction',0,'Motion_correction',0,...
-                'Vertical_slice_size',100,'Vertical_slice_units','pings','Horizontal_slice_size',10,'Remove_tracks',0,'Remove_ST',0,'Frequency',38000,'FrequenciesToLoad',38000,'FileType','Raw');
+                'Vertical_slice_size',100,'Vertical_slice_units','pings','Horizontal_slice_size',10,'Remove_tracks',0,'Remove_ST',0,'Frequency',38000,'FrequenciesToLoad',[],'FileType','Raw');
             default_absorption=[2.7 9.8 22.8 37.4 52.7];
             default_absorption_f=[18000 38000 70000 120000 200000];
             

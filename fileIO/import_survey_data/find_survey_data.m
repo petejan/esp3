@@ -61,12 +61,12 @@ for i=1:length(idx_missing)
             strat_miss=num2str(strat_miss,'%.0f');
         end
         
-        fprintf('Layer seem to be containing incomplete transects... You should load the other files as well...\n');
-        fprintf('Incomplete : Snap %.0f Strat %s Trans %.0f \n',snap_miss,strat_miss,trans_miss);
-        fprintf('Files loaded :\n')
-        fprintf('%s \n', survey_data_struct.Filename{idx_loaded{i}});
-        fprintf('Files to load :\n')
-        fprintf('%s \n', survey_data_struct.Filename{idx_missing{i}});
+%         fprintf('Layer seem to be containing incomplete transects... You should load the other files as well...\n');
+%         fprintf('Incomplete : Snap %.0f Strat %s Trans %.0f \n',snap_miss,strat_miss,trans_miss);
+%         fprintf('Files loaded :\n')
+%         fprintf('%s \n', survey_data_struct.Filename{idx_loaded{i}});
+%         fprintf('Files to load :\n')
+%         fprintf('%s \n', survey_data_struct.Filename{idx_missing{i}});
     end
 end
 

@@ -47,9 +47,20 @@ for isn=1:length(snapshots)
                 
                 if ~isempty(layers)
                     [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN);
+                    
                 else
                     found_lay=0;
-
+                    
+                end
+                if ~isempty(layers_in)
+                    [~,found_lay_in]=layers_in.find_layer_idx_files_path(fileN);
+                else
+                    found_lay_in=0;
+                end
+                
+                
+                if found_lay_in==1
+                    continue;
                 end
                 
                 if found_lay>0
@@ -68,7 +79,7 @@ for isn=1:length(snapshots)
                            case 'dfile'
                                 new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
                         end
-                        [idx_freq,found]=new_lay.find_freq_idx(options.Frequency);
+                       
                         if found==0
                             warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
                             continue;
@@ -115,7 +126,7 @@ for isn=1:length(snapshots)
             
             for i_lay=1:length(layers_out_temp)
                 layer_new=layers_out_temp(i_lay);
-                
+                [idx_freq,found]=layer_new.find_freq_idx(options.Frequency);
                 for i_freq=1:length(layer_new.Frequencies)
                     curr_freq=layer_new.Frequencies(i_freq);
                     
@@ -130,7 +141,7 @@ for isn=1:length(snapshots)
                     if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
                         layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
                     else
-                        fprintf('No absorption specified for Frequency %.0fkHz\n. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                        fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                     end
                 end
                 
@@ -177,9 +188,14 @@ for isn=1:length(snapshots)
                 
                 
                 for ial=1:length(algos)
-                    layer(u).Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                    layer(u).Transceivers(idx_freq).apply_algo(algos{ial}.Name);
+                    layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
+                    layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name);
                 end
+                
+                if options.Remove_tracks
+                    layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
+                end
+                
                 u=length(layers)+1;
                 layers(u)=layer_new;
             end
