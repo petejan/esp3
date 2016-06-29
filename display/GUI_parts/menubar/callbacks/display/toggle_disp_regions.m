@@ -5,19 +5,10 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 main_axes=axes_panel_comp.main_axes;
 
-u=get(main_axes,'children');
+u=findobj(main_axes,'tag','region','-or','tag','region_text');
+set(u,'visible',curr_disp.DispReg);
+order_stack(main_axes);
 
-for ii=1:length(u)
-    if strcmp(get(u(ii),'tag'),'region')
-       set(u(ii),'visible',curr_disp.DispReg);
-        switch lower(curr_disp.DispReg)
-            case 'off'
-                uistack(u(ii),'bottom');
-            case 'on'
-                uistack(u(ii),'top');
-        end
-    end
-end
     
 end
 

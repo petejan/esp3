@@ -26,7 +26,7 @@ else
     echo_ax=p.Results.echo_ax;
 end
 
-obj_del=findall(echo_ax,'tag','imtemp');
+obj_del=findall(echo_ax,'tag','bad_transmits');
 delete(obj_del);
 
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -92,9 +92,7 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
         hold on;
         data_temp=nan(size(alpha_map));
         data_temp(:,idx_bad_red)=Inf;
-        imtemp=imagesc(xdata,ydata,data_temp,'tag','imtemp');
-        uistack(imtemp,'bottom');
-        uistack(imtemp,'up');
+        imtemp=imagesc(xdata,ydata,data_temp,'tag','bad_transmits');
         set(imtemp,'AlphaData',(~isnan(data_temp))-0.2);
         if strcmpi(curr_disp.CursorMode,'Normal')
             create_context_menu_main_echo(main_figure,imtemp);
@@ -102,6 +100,8 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     end
     
 end
+
+order_stack(echo_ax);
 
 colormap(echo_ax,cmap);
 caxis(echo_ax,layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay);

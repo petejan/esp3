@@ -42,9 +42,8 @@ end
 
 cla(display_tab_comp.mini_ax,'reset');
 axes(display_tab_comp.mini_ax);
-display_tab_comp.mini_echo=imagesc(pings,range,data_disp);
-display_tab_comp.patch_obj=patch('Faces',f1,'Vertices',v1,'FaceColor',patch_col,'FaceAlpha',.2,'EdgeColor',patch_col);
-uistack(display_tab_comp.patch_obj,'top');
+display_tab_comp.mini_echo=imagesc(pings,range,data_disp,'tag','echo');
+display_tab_comp.patch_obj=patch('Faces',f1,'Vertices',v1,'FaceColor',patch_col,'FaceAlpha',.2,'EdgeColor',patch_col,'Tag','zoom_area');
 set(display_tab_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_figure});
 set(display_tab_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
 set(display_tab_comp.mini_ax,'XTickLabels',[],'YTickLabels',[]);

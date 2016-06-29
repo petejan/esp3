@@ -10,26 +10,21 @@ switch curr_disp.Cmap
     
     case 'esp2'
         ac_data_col='g';
-        in_data_col='r';
-        empty_data_col='k';
-        bad_data_col=[0.5 0.5 0.5];
+        in_data_col='b';
+        bad_data_col=[0.6 0.6 0.6];
     otherwise
         ac_data_col='g';
-        in_data_col='r';
-        empty_data_col='w';
+        in_data_col='b';
         bad_data_col=[0.5 0.5 0.5];
         
 end
 
 main_axes=axes_panel_comp.main_axes;
 
-u=get(main_axes,'children');
+u=findobj(main_axes,'tag','region','-or','tag','region_text');
 
-for ii=1:length(u)
-    if strcmp(get(u(ii),'tag'),'region')
-        delete(u(ii));
-    end
-end
+delete(u);
+
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
@@ -127,7 +122,7 @@ for i=1:length(list_reg)
     end
     
     
-    text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region');
+    text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region_text');
     
     
     create_region_context_menu(reg_plot,main_figure,reg_curr);

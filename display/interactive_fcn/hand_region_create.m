@@ -1,16 +1,20 @@
-function hand_region_create(src,main_figure,func)
+function hand_region_create(main_figure,func)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-src.Pointer = 'ibeam';
+
 ah=axes_panel_comp.main_axes;
 
 
-if strcmp(src.SelectionType,'normal')
-    
+switch main_figure.SelectionType
+    case 'normal'
+
+    otherwise
+        curr_disp.CursorMode='Normal';
+end
     clear_lines(ah);
-        switch curr_disp.Cmap
+    switch curr_disp.Cmap
         case 'esp2'
             col_line='w';
         otherwise
@@ -23,7 +27,7 @@ if strcmp(src.SelectionType,'normal')
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
     bot=trans.Bottom;
-
+    
     Number=trans.Data.get_numbers();
     nb_pings=length(Number);
     
@@ -47,10 +51,10 @@ if strcmp(src.SelectionType,'normal')
     hp=line(xinit,yinit,'color',col_line,'linewidth',1);
     txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
     
-    src.WindowButtonMotionFcn = @wbmcb;
-    src.WindowButtonUpFcn = @wbucb;
-end
-    function wbmcb(~,~)  
+    main_figure.WindowButtonMotionFcn = @wbmcb;
+    main_figure.WindowButtonUpFcn = @wbucb;
+
+    function wbmcb(~,~)
         cp = ah.CurrentPoint;
         u=u+1;
         xinit(u) = cp(1,1);
@@ -61,12 +65,11 @@ end
         drawnow;
     end
 
-    function wbucb(src,~)
+    function wbucb(main_figure,~)
         
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
-        src.Pointer = 'arrow';
-        delete(txt);
+        main_figure.WindowButtonMotionFcn = '';
+        main_figure.WindowButtonUpFcn = '';
+       
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
@@ -90,11 +93,13 @@ end
         poly_r=[poly_r poly_r(1)];
         reset_disp_info(main_figure);
         clear_lines(ah)
-        
+        delete(txt);
         [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
         
         feval(func,main_figure,poly_r+idx_r_ori-1,poly_pings+idx_ping_ori-1);
-        
+        curr_disp.CursorMode='Normal';
+        set_alpha_map(main_figure);
 
+        
     end
 end

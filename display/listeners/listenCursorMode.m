@@ -17,7 +17,8 @@ switch listdata.AffectedObject.CursorMode
         toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
     case 'Create Region'
         reset_mode(0,0,main_figure);
-        set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
+        main_figure.Pointer = 'cross';
+        set(main_figure,'WindowButtonDownFcn',@create_region);
     case 'Normal'
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);

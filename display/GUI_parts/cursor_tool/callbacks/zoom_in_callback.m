@@ -12,6 +12,13 @@ switch src.SelectionType
     otherwise
         return;
 end
+switch curr_disp.Cmap
+    case 'esp2'
+        col_line='w';
+    otherwise
+        col_line='k';
+end
+
 
 
 clear_lines(ah);
@@ -39,13 +46,6 @@ end
 
 x_box=xinit;
 y_box=yinit;
-
-switch curr_disp.Cmap
-    case 'esp2'
-        col_line='w';
-    otherwise
-        col_line='k';
-end
 
 
 axes(ah);

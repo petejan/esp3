@@ -30,12 +30,14 @@ for i=1:length(obj_vec)
     
     for i_reg=1:length(obj_vec(i).SurvOutput.regionsIntegrated.snapshot)
         out=obj_vec(i).SurvOutput.regionsIntegrated.RegOutput{i_reg};
-        depth=out.Layer_depth_min;
-        nb_idx(:,i)=nb_idx(:,i)+nansum(nanmax(out.Nb_good_pings_esp2));
-        for i_d=1:(length(strat_lim)-1)
-            idx_depth=depth>=strat_lim(i_d)&depth<strat_lim(i_d+1);
-            if ~isempty(idx_depth)
-                abscf_strat(i_d,i)=nansum([abscf_strat(i_d,i) nansum(out.Sa_lin(idx_depth))]);
+        if ~isempty(out)
+            depth=out.Layer_depth_min;
+            nb_idx(:,i)=nb_idx(:,i)+nansum(nanmax(out.Nb_good_pings_esp2));
+            for i_d=1:(length(strat_lim)-1)
+                idx_depth=depth>=strat_lim(i_d)&depth<strat_lim(i_d+1);
+                if ~isempty(idx_depth)
+                    abscf_strat(i_d,i)=nansum([abscf_strat(i_d,i) nansum(out.Sa_lin(idx_depth))]);
+                end
             end
         end
     end

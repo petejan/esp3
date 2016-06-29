@@ -79,7 +79,7 @@ for isn=1:length(snapshots)
                            case 'dfile'
                                 new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
                         end
-                       
+                       [~,found]=new_lay.find_freq_idx(options.Frequency);
                         if found==0
                             warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
                             continue;
@@ -118,15 +118,15 @@ for isn=1:length(snapshots)
             end
             
 
-            
-            
+             
             if length(layers_out_temp)>1
                 warning('Non continuous files in Snapshot %.0f Stratum %s Transect %.0f',snap_num,strat_name,trans_num);
             end
             
             for i_lay=1:length(layers_out_temp)
                 layer_new=layers_out_temp(i_lay);
-                [idx_freq,found]=layer_new.find_freq_idx(options.Frequency);
+                [idx_freq,~]=layer_new.find_freq_idx(options.Frequency);
+                
                 for i_freq=1:length(layer_new.Frequencies)
                     curr_freq=layer_new.Frequencies(i_freq);
                     

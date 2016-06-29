@@ -115,11 +115,11 @@ dt=nanmean(diff(xdata));
 axes(ax);
 switch axes_type
     case {'Time','Distance'}
-        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat));
+        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat),'tag','echo');
     case 'Number'
-        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat));
+        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat),'tag','echo');
     otherwise
-        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat));
+        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat),'tag','echo');
 end
 
 idx_change_file=find(diff(layer.Transceivers(idx_freq).Data.FileId)>0);
