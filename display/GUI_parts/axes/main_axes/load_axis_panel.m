@@ -45,60 +45,13 @@ trans=layer.Transceivers(idx_freq);
 Number=trans.Data.get_numbers();
 Range=trans.Data.get_range();
 
-
 set(display_tab_comp.tog_type,'String',trans.Data.Type,'Value',idx_field);
+delete(axes_panel_comp.listeners);
 
-if new==1
-    delete(allchild(axes_panel_comp.axes_panel));
-    
-    axes_panel_comp.vaxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fontweight','Bold','Units','normalized',...
-        'Position',[0 0 0 0],...
-        'XAxisLocation','Top',...
-        'YAxisLocation','right',...
-        'TickLength',[0 0],...
-        'visible','on',...
-        'box','on',...
-        'XTickLabel',{[]},...
-        'Xgrid','on',...
-        'Ygrid','on',...
-        'YDir','reverse');
-    
-    
-    axes_panel_comp.haxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fontweight','Bold','Units','normalized',...
-        'Position',[0 0 0 0],...
-        'XAxisLocation','bottom',...
-        'YAxisLocation','left',...
-        'TickLength',[0 0],...
-        'visible','on',...
-        'box','on',...
-        'YTickLabel',{[]},...
-        'Xgrid','on',...
-        'Ygrid','on');
-    
-    
-    
-    axes_panel_comp.main_axes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Units','normalized',...
-        'Position',[0 0 1 1],...
-        'Xlimmode','manual',...
-        'Ylimmode','manual',...
-        'XAxisLocation','bottom',...
-        'TickDir','in',...
-        'XTickLabel',{[]},...
-        'YTickLabel',{[]},...
-        'box','on',...
-        'SortMethod','childorder',...
-        'YDir','reverse');%'TickDir','in');
-else
-   delete(axes_panel_comp.main_echo); 
-   delete(axes_panel_comp.listeners);
-end
-
-hold(axes_panel_comp.main_axes,'on')
 clear_lines(axes_panel_comp.main_axes);
-axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes,'PickableParts','none');
 axes_panel_comp.colorbar.Position=axes_panel_comp.colorbar.Position+[0 0.01 -axes_panel_comp.colorbar.Position(3)/2 -0.02];
 
-axes_panel_comp.main_echo=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
+layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,curr_disp.Xaxes,x,y,curr_disp.Grid_x,curr_disp.Grid_y,new);
 
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 
@@ -106,14 +59,17 @@ switch lower(curr_disp.Cmap)
     case 'esp2'
         col='y'; % ESP2's colormap is 'black background' so the bottom line is drawn in yellow
         col_lab=[0.8 0.8 0.8];
+        col_grid=[1 1 1];
     case 'ek500'
         col='g'; % Simrad sounders use a green bottom line
         col_lab='k';
+        col_grid=[0 0 0];
     otherwise
         col='k';
         col_lab='k';
+        col_grid=[0 0 0];
 end
-
+axes_panel_comp.main_axes.GridColor=col_grid;
 xticks=get(axes_panel_comp.main_axes,'XTick');
 yticks=get(axes_panel_comp.main_axes,'YTick');
 xticks_label=get(axes_panel_comp.main_axes,'XtickLabel');
@@ -129,21 +85,18 @@ if strcmpi(curr_disp.CursorMode,'Normal')
     create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);
 end
 
-
 set(display_tab_comp.caxis_up,'String',num2str(axes_panel_comp.main_axes.CLim(2),'%.0f'));
 set(display_tab_comp.caxis_down,'String',num2str(axes_panel_comp.main_axes.CLim(1),'%.0f'));
 
 idx_bottom=trans.Bottom.Sample_idx;
 
 xdata_real=Number;
-axes_panel_comp=display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom,col);
+display_bottom(xdata_real,Range,idx_bottom,axes_panel_comp,curr_disp.DispBottom,col);
 if strcmpi(curr_disp.CursorMode,'Normal')
     create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
 end
 axes_panel_comp=display_tracks(xdata_real,trans.ST,trans.Tracks,axes_panel_comp,curr_disp.DispTracks);
 
-hold(axes_panel_comp.haxes,'on');
-hold(axes_panel_comp.vaxes,'on');
 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 setappdata(main_figure,'Layer',layer);
@@ -156,5 +109,5 @@ display_regions(main_figure)
 display_lines(main_figure)
 set_alpha_map(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
-
+order_axes(main_figure);
 end

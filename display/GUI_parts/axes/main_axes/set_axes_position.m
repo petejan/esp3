@@ -60,10 +60,15 @@ switch state_vaxes
         pos=pos+[vpos(3) 0 -vpos(3) 0];
                
 end
-if isfield(axes_panel_comp,'colorbar')
-    pos_colorbar(3)=pos_colorbar(3)*1/2;
-    set(axes_panel_comp.colorbar,'Position',pos_colorbar);
-end
+
+width_colorbar=pos_colorbar(3);
+pos_colorbar(3)=width_colorbar*1/3;
+pos_colorbar(1)=pos_colorbar(1)+width_colorbar*1/3;
+height_col=pos_colorbar(4);
+pos_colorbar(2)=height_col*0.05;
+pos_colorbar(4)=height_col*0.9;
+set(axes_panel_comp.colorbar,'Position',pos_colorbar);
+
 
 set(axes_panel_comp.main_axes,'Position',pos);
 set(axes_panel_comp.vaxes,'Position',vpos);

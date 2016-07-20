@@ -46,7 +46,7 @@ if ~isequal(Filename_cell, 0)
         
         curr_Filename=Filename_cell{uuu};
         [path_f,fileN,~]=fileparts(curr_Filename);
-        fprintf('(%.0f/%.0f) Opening file: %s\n',uu,length(Filename_cell),fileN);
+        fprintf('(%.0f/%.0f) Opening file: %s\n',uuu,length(Filename_cell),fileN);
         
         if ping_end-prev_ping_end<=ping_start-prev_ping_start+1
             break;

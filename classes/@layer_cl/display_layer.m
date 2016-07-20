@@ -1,4 +1,4 @@
-function main_echo=display_layer(layer,freq,fieldname,ax,axes_type,x,y,dx,dy,new)
+function display_layer(layer,freq,fieldname,ax,main_echo,axes_type,x,y,dx,dy,new)
 
 [idx_freq,found]=layer.find_freq_idx(freq);
 if found==0
@@ -90,7 +90,7 @@ end
 
 if isempty(data)
     axes(ax);
-    main_echo=imagesc(ones(1,1));
+    set(main_echo,'XData',1,'YData',1,'CData',1);
     return;
 end
 
@@ -107,20 +107,9 @@ switch lower(deblank(fieldname))
 end
 data_mat=single(data_mat);
 
-% if nansum(outputSize==size(data))<2
-%     data_mat = imresize(data_mat,outputSize,'nearest');
-% end
 dt=nanmean(diff(xdata));
 
-axes(ax);
-switch axes_type
-    case {'Time','Distance'}
-        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat),'tag','echo');
-    case 'Number'
-        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat),'tag','echo');
-    otherwise
-        main_echo=imagesc(xdata(idx_ping),ydata(idx_r),real(data_mat),'tag','echo');
-end
+set(main_echo,'XData',xdata(idx_ping),'YData',ydata(idx_r),'CData',real(data_mat));
 
 idx_change_file=find(diff(layer.Transceivers(idx_freq).Data.FileId)>0);
 

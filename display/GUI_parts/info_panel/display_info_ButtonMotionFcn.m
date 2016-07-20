@@ -22,9 +22,6 @@ Number=trans.Data.get_numbers();
 
 ax_main=axes_panel_comp.main_axes;
 
-% xdata=get(axes_panel_comp.main_echo,'XData');
-% ydata=get(axes_panel_comp.main_echo,'YData');
-
 
 x_lim=double(get(ax_main,'xlim'));
 y_lim=double(get(ax_main,'ylim'));
@@ -116,8 +113,7 @@ if ~isempty(cdata)
             end
         end
     end
-    
-     
+         
     
     xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
     if ~isempty(Lat)
@@ -149,27 +145,34 @@ if ~isempty(cdata)
     set(info_panel_comp.value,'string',val_str);
     
     axh=axes_panel_comp.haxes;
-    axv=axes_panel_comp.vaxes;
-    delete(findall(axv,'Type','Line'));
-    delete(findall(axv,'Type','Text'));
+    axh_plot=axes_panel_comp.h_axes_plot;
+    axh_text=axes_panel_comp.h_axes_text;
     
-    axes(axv);
-    plot(vert_val,ydata_red,'k');
-    hold on;
-    plot(bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b');
-    plot(bot_x_val,[bot_val bot_val],'r');
+    axv=axes_panel_comp.vaxes;
+    axv_plot=axes_panel_comp.v_axes_plot;
+    axv_text=axes_panel_comp.v_axes_text;
+    
+    delete(findobj(axh,'Tag','curr_val'));
+    delete(findobj(axv,'Tag','curr_val'));
+
+    
+    set(axv_plot,'XData',vert_val,'YData',ydata_red);
+    
+    plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
+    plot(axv,bot_x_val,[bot_val bot_val],'k','Tag','curr_val');
     if length(Bottom.Range)>=idx_ping
-        text(nanmean(bot_x_val),bot_val,{sprintf('%.2fm',Bottom.Range(idx_ping))},'Color','r','VerticalAlignment','bottom','fontsize',10);
+        axv_text.Position=[nanmean(bot_x_val) bot_val 0];
+        axv_text.String=sprintf('%.2fm',Bottom.Range(idx_ping));
+    else
+        axv_text.String='';
     end
     set(axv,'ylim',y_lim)
     set(allchild(axv),'visible',get(axv,'visible'))
     y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];
-    delete(findall(axh,'Type','Line'));
     
-    axes(axh);
-    plot(xdata_red,horz_val,'r');
-    hold on;
-    plot([xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b');
+    set(axh_plot,'XData',xdata_red,'YData',horz_val);
+
+    plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
     set(axh,'xlim',x_lim)
     set(allchild(axh), 'visible',get(axh,'visible'))
     

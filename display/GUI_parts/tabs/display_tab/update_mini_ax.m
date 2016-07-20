@@ -27,8 +27,7 @@ switch curr_disp.Fieldname
         data_disp=10*log10(layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp),'field',curr_disp.Fieldname);
         
     otherwise
-        data_disp=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);
-        
+        data_disp=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);      
 end
 
 switch lower(curr_disp.Cmap)

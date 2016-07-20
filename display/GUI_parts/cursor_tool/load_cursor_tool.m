@@ -104,8 +104,10 @@ if strcmp(src.State,'on')
 else
     curr_disp.CursorMode='Normal';
 end
-
 setappdata(main_figure,'Curr_disp',curr_disp);
+order_axes(main_figure);
+%axes_panel_comp=getappdata(main_figure,'Axes_panel');
+%order_stack(axes_panel_comp.main_axes);
 end
 
 

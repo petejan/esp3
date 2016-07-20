@@ -82,7 +82,7 @@ for usnap=1:length(snap)
     catch
         disp('No Geographical data available...')
     end
-    
+    obj.Depth_Contour=10;
     if obj.Depth_Contour>0
         try
             [Cs,hs]=m_elev('contour',-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on');

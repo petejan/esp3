@@ -137,8 +137,7 @@ end
             col='k';
         end
         
-        axes_panel_comp=display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom,col);
-        setappdata(main_figure,'Axes_panel',axes_panel_comp);
+        display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom,col);
         set_alpha_map(main_figure);
 
     end

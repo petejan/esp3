@@ -4,7 +4,7 @@ if ~isempty(cax)
     if cax(2)<=cax(1)
         cax(2)=cax(1)+10*abs(cax(1))/100;
     end
-    caxis(cax);
+    set(ax,'CLim',cax);
 end
 if length(xdata)>1
     set(ax,'xlim',[xdata(1) xdata(end)]);
