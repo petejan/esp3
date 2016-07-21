@@ -28,7 +28,7 @@ linking_mat=nan(nb_candidates,nb_candidates);
 fprintf(1,'Processing Linking %i/%i\n',1,nb_candidates);
 u=0;
 
-while u<=length(vec_candidates(1:end-1))
+while u<length(vec_candidates(1:end-1))
     u=u+1;
     nb_candidates=length(vec_candidates(1:end));
     i=vec_candidates(u);
@@ -48,8 +48,9 @@ while u<=length(vec_candidates(1:end-1))
     end
     
     idx_other_candidates=find(other_candidates);
+   
     
-    K_red=reduce_matrice_v2(dist_pings,range,find(curr_candidates),find(other_candidates),horz_link_max,vert_link_max);
+    K_red=reduce_matrice_v2(dist_pings,range,find(curr_candidates),idx_other_candidates,horz_link_max,vert_link_max);
     k_other=K_red(other_candidates(K_red));
     k_curr=K_red(curr_candidates(K_red));
 
@@ -96,8 +97,12 @@ while u<=length(vec_candidates(1:end-1))
             end
             
             curr_candidates=(candidates==i);
+            other_can=find(other_candidates);
+            if isempty(other_can)
+                break;
+            end
             
-            K_red=reduce_matrice_v2(dist_pings,range,find(curr_candidates),find(other_candidates),horz_link_max,vert_link_max);
+            K_red=reduce_matrice_v2(dist_pings,range,find(curr_candidates),other_can,horz_link_max,vert_link_max);
             k_other=K_red(other_candidates(K_red));
             k_curr=K_red(curr_candidates(K_red));
             
@@ -105,13 +110,10 @@ while u<=length(vec_candidates(1:end-1))
                fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
                 continue;
             end
-            
-            
-            j=0;
-            
+                 
+            j=0;  
         else
-            candidates(k_curr(j))=0;
-            
+            candidates(k_curr(j))=0;   
         end
     end
     linking_mat(isnan(linking_mat(:,i)),i)=0;

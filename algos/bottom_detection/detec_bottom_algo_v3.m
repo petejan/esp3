@@ -16,7 +16,7 @@ default_thr_backstep=-12;
 check_thr_backstep=@(x)(x>=-12&&x<=0);
 
 check_shift_bot=@(x)(x>=0);
-check_filt=@(x)(x>0)||isempty(x);
+check_filt=@(x)(x>=0)||isempty(x);
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
@@ -70,7 +70,7 @@ Sv(1:idx_r_min,:)=nan;
 dist=trans_obj.GPSDataPing.Dist;
 heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
 
-if ~isempty(dist)&&nb_pings>1
+if ~isempty(dist)&&nb_pings>1&&p.Results.horz_filt>0
     b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
 else
     b_filter=nanmin(15,nb_pings/10);

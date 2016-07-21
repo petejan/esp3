@@ -36,4 +36,5 @@ set(single_target_tab_comp.MaxStdMajAxisAngle_sl,'value',algo.MaxStdMajAxisAngle
 set(single_target_tab_comp.MaxStdMajAxisAngle_ed,'string',num2str(get(single_target_tab_comp.MaxStdMajAxisAngle_sl,'Value'),'%.1f'));
 
 
+set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'on');
 end

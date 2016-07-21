@@ -1,27 +1,12 @@
 function load_lines_tab(main_figure,option_tab_panel)
 
-if isappdata(main_figure,'Lines_tab')
-    lines_tab_comp=getappdata(main_figure,'Lines_tab');
-    delete(lines_tab_comp.lines_tab);
-    rmappdata(main_figure,'Lines_tab');
-end
-
-layer=getappdata(main_figure,'Layer');
-
-
 
 lines_tab_comp.lines_tab=uitab(option_tab_panel,'Title','Lines');
 
-list_lines = layer.list_lines();
 
-if ~isempty(list_lines)
-    utc_str=num2str(layer.Lines(1).UTC_diff,'%.2f');
-    dist_diff_str=num2str(layer.Lines(1).Dist_diff,'%.0f');
-else
     list_lines={'--'};
     utc_str=0;
     dist_diff_str=0;
-end
 
 
 
@@ -37,9 +22,8 @@ lines_tab_comp.Dist_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit
 
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
-%uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Recompute','units','normalized','pos',[0.65 0.3 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
 
-
+set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Lines_tab',lines_tab_comp);
 end
 

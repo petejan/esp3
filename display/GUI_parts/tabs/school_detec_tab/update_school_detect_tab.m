@@ -38,5 +38,5 @@ set(school_detect_tab_comp.nb_min_sples_ed,'string',num2str(get(school_detect_ta
 set(school_detect_tab_comp.sv_thr_sl,'value',algo.Sv_thr);
 set(school_detect_tab_comp.sv_thr_ed,'string',num2str(get(school_detect_tab_comp.sv_thr_sl,'Value'),'%.0f'));
 
-
+set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'on');
 end

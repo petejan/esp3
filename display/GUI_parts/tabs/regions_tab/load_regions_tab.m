@@ -1,37 +1,12 @@
 function load_regions_tab(main_figure,option_tab_panel)
 
-if isappdata(main_figure,'Region_tab')
-    region_tab_comp=getappdata(main_figure,'Region_tab');
-    delete(region_tab_comp.region_tab);
-    rmappdata(main_figure,'Region_tab');
-end
 
-app_path_main=whereisEcho();
-icon_dir=fullfile(app_path_main,'icons');
-icon=get_icons_cdata(icon_dir);
+dist=[];
 
-curr_disp=getappdata(main_figure,'Curr_disp');
-layer=getappdata(main_figure,'Layer');
-
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
-    dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
-else
-    dist=[];
-end
-
-
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
 region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 
-if isempty(list_reg)
-    list_reg={'--'};
-    reg_curr=region_cl();
-else
-    reg_curr=layer.Transceivers(idx_freq).Regions(1);
-end
-
-
+list_reg={'--'};
+reg_curr=region_cl();
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Regions','units','normalized','Position',[0.45 0.8 0.1 0.1]);
 region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',1,'units','normalized','Position', [0.55 0.8 0.2 0.1],'callback',{@tog_reg_callback,main_figure});
@@ -54,7 +29,6 @@ region_tab_comp.cell_w=uicontrol(region_tab_comp.region_tab,'Style','edit','unit
 region_tab_comp.cell_h=uicontrol(region_tab_comp.region_tab,'Style','edit','unit','normalized','position',[0.2 0.1 0.05 0.1],'string',reg_curr.Cell_h,'Tag','h');
 
 set([region_tab_comp.cell_w region_tab_comp.cell_h],'callback',{@check_cell,main_figure})
-
 
 if ~isempty(dist)
     units_w= {'pings','meters'};
@@ -109,6 +83,7 @@ uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String',str_delete,'u
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String',str_delete_all,'units','normalized','pos',[0.7+0.0625 0.3 0.0625 0.15],'callback',{@delete_all_region_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Del. Across Freq.','TooltipString','Delete Across Frequencies','units','normalized','pos',[0.825 0.3 0.125 0.15],'callback',{@rm_over_freq_callback,main_figure});
 
+set(findall(region_tab_comp.region_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Region_tab',region_tab_comp);
 end
 
@@ -117,11 +92,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 curr_disp.CursorMode='Create Region';
 setappdata(main_figure,'Curr_disp',curr_disp);
 end
-
-
-
-
-
 
 
 function freq_response_reg_callback(~,~,main_figure)

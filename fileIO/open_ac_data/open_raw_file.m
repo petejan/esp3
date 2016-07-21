@@ -30,17 +30,14 @@ if ~isempty(new_layers)
 end
 
 new_layers=[layers new_layers];
-
 new_layers_sorted=new_layers.sort_per_survey_data();
-
+id_lay=new_layers(end).ID_num;
 disp('Shuffling layers');
 layers_out=[];
 
 for icell=1:length(new_layers_sorted)
     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
 end
-
-id_lay=layers_out(end).ID_num;
 
 layers=layers_out;
 

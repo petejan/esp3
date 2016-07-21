@@ -43,7 +43,6 @@ set(processing_tab_comp.school_detec,'Value',school_detect_algo);
 set(processing_tab_comp.single_target,'Value',single_target_alg);
 set(processing_tab_comp.track_target,'Value',track_target_alg);
 
-
-setappdata(main_figure,'Curr_disp',curr_disp);
+set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'on');
 
 end

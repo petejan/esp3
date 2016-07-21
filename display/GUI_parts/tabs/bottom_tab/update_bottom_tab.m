@@ -10,7 +10,11 @@ if found==0
     return
 end
 
-dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
+    dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+else
+    dist=[];
+end
 range=layer.Transceivers(idx_freq).Data.get_range();
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
@@ -20,6 +24,7 @@ algo=algo_obj.Varargin;
 set(bottom_tab_comp.Thr_bottom_sl,'value',algo.thr_bottom);
 set(bottom_tab_comp.Thr_bottom_ed,'string',num2str(get(bottom_tab_comp.Thr_bottom_sl,'Value'),'%.0f'));
 
+set(bottom_tab_comp.r_min_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
 set(bottom_tab_comp.r_min_sl,'value',nanmax(algo.r_min,range(1)));
 set(bottom_tab_comp.r_min_ed,'string',num2str(get(bottom_tab_comp.r_min_sl,'Value'),'%.1f'));
 
@@ -27,7 +32,7 @@ set(bottom_tab_comp.r_max_sl,'max',layer.Transceivers(idx_freq).Data.Range(end))
 set(bottom_tab_comp.r_max_sl,'value',nanmin(algo.r_max,range(end)));
 set(bottom_tab_comp.r_max_ed,'string',num2str(get(bottom_tab_comp.r_max_sl,'Value'),'%.1f'));
 
-if isfield(bottom_tab_comp,'horz_filt_sl')
+if ~isempty(dist)
     set(bottom_tab_comp.horz_filt_sl,'max',dist(end)/4);
     set(bottom_tab_comp.horz_filt_sl,'value',nanmin(algo.horz_filt,dist(end)/4));
     set(bottom_tab_comp.horz_filt_ed,'string',num2str(get(bottom_tab_comp.horz_filt_sl,'Value'),'%.1f'));
@@ -44,5 +49,10 @@ set(bottom_tab_comp.Shift_bot_sl,'value',algo.shift_bot);
 set(bottom_tab_comp.Shift_bot_ed,'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.0f'));
 
 set(bottom_tab_comp.denoised,'value',algo.denoised);
+set(findall(bottom_tab_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'on');
+
+if isempty(dist)
+    set([bottom_tab_comp.horz_filt_sl bottom_tab_comp.horz_filt_ed], 'Enable', 'off');
+end
 
 end

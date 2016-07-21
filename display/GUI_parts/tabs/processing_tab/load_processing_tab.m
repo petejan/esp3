@@ -1,56 +1,19 @@
 function load_processing_tab(main_figure,option_tab_panel)
 
-if isappdata(main_figure,'Processing_tab')
-    processing_tab_comp=getappdata(main_figure,'Processing_tab');
-    delete(processing_tab_comp.processing_tab);
-    rmappdata(main_figure,'Processing_tab');
-end
-
-
-process_list=getappdata(main_figure,'Process');
-curr_disp=getappdata(main_figure,'Curr_disp');
-layer=getappdata(main_figure,'Layer');
-
 processing_tab_comp.processing_tab=uitab(option_tab_panel,'Title','Processing');
 
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Frequency','units','normalized','Position',[0.05 0.85 0.1 0.1]);
-processing_tab_comp.tog_freq=uicontrol(processing_tab_comp.processing_tab,'Style','popupmenu','String',num2str(layer.Frequencies'),'Value',idx_freq,'units','normalized','Position', [0.05 0.7 0.2 0.1],'Callback',{@tog_freq,main_figure});
+processing_tab_comp.tog_freq=uicontrol(processing_tab_comp.processing_tab,'Style','popupmenu','String','--','Value',1,'units','normalized','Position', [0.05 0.7 0.2 0.1],'Callback',{@tog_freq,main_figure});
 
-
-if ~isempty(process_list)
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'Denoise');
-    noise_rem_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BottomDetection');
-    bot_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
-    bad_trans_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
-    school_detect_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SingleTarget');
-    st_detect_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'TrackTarget');
-    track_algo=found;
-else
-    
-    noise_rem_algo=0;
-    bot_algo=0;
-    bad_trans_algo=0;
-    school_detect_algo=0;
-    st_detect_algo=0;
-    track_algo=0;
-    
-end
 
 uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Algorithms','units','normalized','Position',[0.3 0.85 0.2 0.1]);
-processing_tab_comp.noise_removal=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',noise_rem_algo,'String','Noise Removal','units','normalized','Position',[0.3 0.75 0.3 0.1]);
-processing_tab_comp.bot_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',bot_algo,'String','Bottom Detection','units','normalized','Position',[0.3 0.65 0.3 0.1]);
-processing_tab_comp.bad_transmit=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',bad_trans_algo,'String','Bad Transmit Removal','units','normalized','Position',[0.3 0.55 0.3 0.1]);
-processing_tab_comp.school_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',school_detect_algo,'String','School detection','units','normalized','Position',[0.3 0.45 0.3 0.1]);
-processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',st_detect_algo,'String','Single Target Detection','units','normalized','Position',[0.3 0.35 0.3 0.1]);
-processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',track_algo,'String','Track Targets','units','normalized','Position',[0.3 0.25 0.3 0.1]);
-
+processing_tab_comp.noise_removal=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Noise Removal','units','normalized','Position',[0.3 0.75 0.3 0.1]);
+processing_tab_comp.bot_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Bottom Detection','units','normalized','Position',[0.3 0.65 0.3 0.1]);
+processing_tab_comp.bad_transmit=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Bad Transmit Removal','units','normalized','Position',[0.3 0.55 0.3 0.1]);
+processing_tab_comp.school_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','School detection','units','normalized','Position',[0.3 0.45 0.3 0.1]);
+processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Single Target Detection','units','normalized','Position',[0.3 0.35 0.3 0.1]);
+processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Track Targets','units','normalized','Position',[0.3 0.25 0.3 0.1]);
 
 
 set([processing_tab_comp.track_target processing_tab_comp.single_target processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bad_transmit processing_tab_comp.school_detec],'Callback',{@update_process_list,main_figure})
@@ -59,9 +22,9 @@ uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','File Selec
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.3 0.15],'callback',{@process,main_figure,0});
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all current layers','units','normalized','pos',[0.6 0.50 0.3 0.15],'callback',{@process,main_figure,1});
 
-
+set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Processing_tab',processing_tab_comp);
-setappdata(main_figure,'Process',process_list);
+
 end
 
 function process(~,~,main_figure,mode)

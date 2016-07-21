@@ -13,7 +13,6 @@ else
     set(lines_tab_comp.Dist_diff,'string',0)
 end
 
-
-setappdata(main_figure,'Lines_tab',lines_tab_comp);
+set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'on');
 
 end

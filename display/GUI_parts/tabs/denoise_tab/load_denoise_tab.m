@@ -1,54 +1,31 @@
 function load_denoise_tab(main_figure,algo_tab_panel)
 
-if isappdata(main_figure,'Denoise_tab')
-    denoise_tab_comp=getappdata(main_figure,'Denoise_tab');
-    delete(denoise_tab_comp.denoise_tab);
-    rmappdata(main_figure,'Denoise_tab');
-end
-
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.get_range();
-nb_samples=length(range);
-nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
-[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'Denoise');
-
-f_s_sig=round(1/(layer.Transceivers(idx_freq).Params.SampleInterval(1)));
-c=(layer.EnvData.SoundSpeed);
-if ~found
-    return;
-end
-
-algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
-algo_denoise_var=algo_obj.Varargin;
-
 denoise_tab_comp.denoise_tab=uitab(algo_tab_panel,'Title','Denoise');
 
 
 pos=create_pos_algo_new(5,2);
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','Horizontal Filter (nb pings)','units','normalized','Position',pos{1,1});
-denoise_tab_comp.HorzFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',1,'Max',ceil(nb_pings/2),'Value',nanmin(algo_denoise_var.HorzFilt,nb_pings/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
+denoise_tab_comp.HorzFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',1,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
 denoise_tab_comp.HorzFilt_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(denoise_tab_comp.HorzFilt_sl,'Value'),'%.0f'));
 set(denoise_tab_comp.HorzFilt_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.HorzFilt_ed,'%.0f'});
 set(denoise_tab_comp.HorzFilt_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.HorzFilt_sl,'%.0f'});
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','Vertical Filter (m)','units','normalized','Position',pos{2,1});
-denoise_tab_comp.VertFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',nanmean(diff(range)),'Max',range(end)/2,'Value',nanmin(algo_denoise_var.VertFilt,range(end)/2),'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
+denoise_tab_comp.VertFilt_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',1,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
 denoise_tab_comp.VertFilt_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(denoise_tab_comp.VertFilt_sl,'Value'),'%.1f'));
-set(denoise_tab_comp.VertFilt_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.VertFilt_ed,'%.0f'});
-set(denoise_tab_comp.VertFilt_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.VertFilt_sl,'%.0f'});
+set(denoise_tab_comp.VertFilt_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.VertFilt_ed,'%.1f'});
+set(denoise_tab_comp.VertFilt_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.VertFilt_sl,'%.1f'});
 
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','Noise Level Thr (db)','units','normalized','Position',pos{3,1});
-denoise_tab_comp.NoiseThr_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',-180,'Max',-80,'Value',algo_denoise_var.NoiseThr,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
+denoise_tab_comp.NoiseThr_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',-180,'Max',-80,'Value',-120,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
 denoise_tab_comp.NoiseThr_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit','unit','normalized','position',pos{3,3},'string',num2str(get(denoise_tab_comp.NoiseThr_sl,'Value'),'%.0f'));
 set(denoise_tab_comp.NoiseThr_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.NoiseThr_ed,'%.0f'});
 set(denoise_tab_comp.NoiseThr_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.NoiseThr_sl,'%.0f'});
 
 uicontrol(denoise_tab_comp.denoise_tab,'Style','Text','String','SNR Thr','units','normalized','Position',pos{4,1});
-denoise_tab_comp.SNRThr_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',0,'Max',30,'Value',algo_denoise_var.SNRThr,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
+denoise_tab_comp.SNRThr_sl=uicontrol(denoise_tab_comp.denoise_tab,'Style','slider','Min',0,'Max',30,'Value',10,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
 denoise_tab_comp.SNRThr_ed=uicontrol(denoise_tab_comp.denoise_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(denoise_tab_comp.SNRThr_sl,'Value'),'%.0f'));
 set(denoise_tab_comp.SNRThr_sl,'callback',{@sync_Sl_ed,denoise_tab_comp.SNRThr_ed,'%.0f'});
 set(denoise_tab_comp.SNRThr_ed,'callback',{@sync_Sl_ed,denoise_tab_comp.SNRThr_sl,'%.0f'});
@@ -58,7 +35,7 @@ uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','uni
 uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
 
-
+set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Denoise_tab',denoise_tab_comp);
 
 end

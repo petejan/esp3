@@ -140,6 +140,10 @@ if ~isequal(Filename_cell, 0)
             disp('Could not read file.')
             continue;
         end
+        if isempty(data.pings(1).power)
+            disp('Could not read file.')
+            continue;
+        end
         nb_lay=nb_lay+1;
         
         idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(data.NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));

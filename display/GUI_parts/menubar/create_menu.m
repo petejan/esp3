@@ -67,7 +67,7 @@ main_menu.colormap=uimenu(m_colormap,'Label','HSV','Callback',{@change_cmap_call
 main_menu.colormap=uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
 main_menu.colormap=uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
 
-main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
+main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
 main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
 main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axh');
 
@@ -122,10 +122,6 @@ uimenu(mbs,'Label','Plot survey results from Survey Output files','Callback',{@p
 options = uimenu(main_figure,'Label','Options','Tag','options');
 uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
 uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_display_config_callback,main_figure});
-
-
-uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');
-uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3],'tag','algo_tab_panel');
 
 setappdata(main_figure,'main_menu',main_menu);
 

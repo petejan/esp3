@@ -21,5 +21,6 @@ for i=1:length(algo_fields)
     end
 end
 
+set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'on');
 
 end

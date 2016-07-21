@@ -8,6 +8,9 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 calibration_tab_comp.calibration_tab=uitab(option_tab_panel,'Title','Calibration');

@@ -101,7 +101,7 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     
 end
 
-order_stack(echo_ax);
+
 
 colormap(echo_ax,cmap);
 caxis(echo_ax,layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay);
@@ -112,7 +112,7 @@ if isa(echo_im,'matlab.graphics.primitive.Surface')
 else
     set(echo_im,'AlphaData',double(alpha_map));
 end
-
-
+order_axes(main_figure);
+order_stack(echo_ax);
 
 end

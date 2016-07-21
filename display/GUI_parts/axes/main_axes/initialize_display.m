@@ -1,18 +1,34 @@
 function initialize_display(main_figure)
 
+
+opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');
+algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3],'tag','algo_tab_panel');
+
+load_display_tab(main_figure,opt_panel);
+load_regions_tab(main_figure,opt_panel);
+load_lines_tab(main_figure,opt_panel);
+load_calibration_tab(main_figure,opt_panel);
+load_processing_tab(main_figure,opt_panel);
+load_bottom_tab(main_figure,algo_panel);
+load_bad_pings_tab(main_figure,algo_panel);
+load_denoise_tab(main_figure,algo_panel);
+load_school_detect_tab(main_figure,algo_panel);
+load_single_target_tab(main_figure,algo_panel);
+load_track_target_tab(main_figure,algo_panel);
+
 axes_panel_comp.axes_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0.05 1 .65],'BackgroundColor',[1 1 1],'tag','axes_panel');
 axes_panel_comp.main_axes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Units','normalized',...
     'Position',[0 0 1 1],...
-    'Xlimmode','manual',...
-    'Ylimmode','manual',...
     'XAxisLocation','bottom',...
+    'XLimMode','manual',...
+    'YLimMode','manual',...
     'TickDir','in',...
     'XTickLabel',{[]},...
     'YTickLabel',{[]},...
     'box','on',...
     'SortMethod','childorder',...
     'YDir','reverse',...
-    'visible','off');
+    'visible','on');
 
 axes_panel_comp.vaxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fontweight','Bold','Units','normalized',...
     'Position',[0 0 0 0],...
@@ -49,14 +65,17 @@ axes_panel_comp.h_axes_plot=plot(nan,'k');
 axes_panel_comp.h_axes_text=text(nan,nan,'','Color','r','VerticalAlignment','bottom','fontsize',10);
 
 axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes,'PickableParts','none','visible','off');
+axes_panel_comp.main_axes.Position=[0 0 1 1];
 
+
+echo_init=imread(fullfile(whereisEcho,'EchoAnalysis.png'));
 axes(axes_panel_comp.main_axes);
 hold on;
-axes_panel_comp.main_echo=imagesc(ones(1,1),'tag','echo');
+axes_panel_comp.main_echo=imagesc(1:size(echo_init,1),1:size(echo_init,2),echo_init,'tag','echo');
+set(axes_panel_comp.main_axes,'xlim',[1 size(echo_init,1)],'ylim',[1 size(echo_init,2)]);
 axes_panel_comp.bottom_plot=plot(nan,'tag','bottom');
 axes_panel_comp.track_plot=[];
 axes_panel_comp.listeners=[];
-
 
 info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','axes_panel');
 
