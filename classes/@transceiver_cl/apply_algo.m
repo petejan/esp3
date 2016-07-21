@@ -10,7 +10,7 @@ parse(p,trans_obj,algo_name,varargin{:});
 
 [idx_alg,alg_found]=find_algo_idx(trans_obj,algo_name);
 if alg_found==0
-    algo_obj=init_algos(algo_name); 
+    algo_obj=init_algos(algo_name);
     trans_obj.add_algo(algo_obj);
 else
     algo_obj=trans_obj.Algo(idx_alg);
@@ -32,7 +32,7 @@ str_output=[];
 fields_algo_out=algo_obj.Varargout;
 
 for i=1:length(fields_algo_out)
-        str_output=[str_output sprintf('%s ',fields_algo_out{i})]; 
+    str_output=[str_output sprintf('%s ',fields_algo_out{i})];
 end
 str_output(end)=[];
 
@@ -40,7 +40,7 @@ str_output(end)=[];
 eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,' str_eval ');']);
 
 for i=1:length(fields_algo_out)
-        output_struct.(fields_algo_out{i})=eval(fields_algo_out{i}); 
+    output_struct.(fields_algo_out{i})=eval(fields_algo_out{i});
 end
 
 switch algo_name
@@ -60,22 +60,23 @@ switch algo_name
         bottom_range(~isnan(bottom))=range(bottom(~isnan(bottom)));
         
         tag=double(idx_noise_sector==0);
-
+        
         trans_obj.Bottom=bottom_cl('Origin','Algo_v2_bp',...
             'Range', bottom_range,...
             'Sample_idx',bottom,...
             'Tag',tag,'Shifted',algo_obj.Varargin.shift_bot);
     case 'Denoise'
-        trans_obj.Data.add_sub_data('powerdenoised',power_unoised);
-        trans_obj.Data.add_sub_data('spdenoised',Sp_unoised);
-        trans_obj.Data.add_sub_data('svdenoised',Sv_unoised);
-        trans_obj.Data.add_sub_data('snr',SNR);
-        
+        if ~isempty(power_unoised)
+            trans_obj.Data.add_sub_data('powerdenoised',power_unoised);
+            trans_obj.Data.add_sub_data('spdenoised',Sp_unoised);
+            trans_obj.Data.add_sub_data('svdenoised',Sv_unoised);
+            trans_obj.Data.add_sub_data('snr',SNR);
+        end
     case 'SchoolDetection'
-         trans_obj.rm_region_name('School');   
-         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',algo_obj.Varargin.l_min_tot/2,'cell_h',algo_obj.Varargin.h_min_tot/2);
-
-    case 'SingleTarget' 
+        trans_obj.rm_region_name('School');
+        trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',algo_obj.Varargin.l_min_tot/2,'cell_h',algo_obj.Varargin.h_min_tot/2);
+        
+    case 'SingleTarget'
         trans_obj.set_ST(single_targets);
     case 'TrackTarget'
         trans_obj.Tracks=tracks_out;

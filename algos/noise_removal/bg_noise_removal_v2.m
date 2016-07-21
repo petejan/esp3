@@ -48,6 +48,9 @@ else
     t_eff=pulse_length;
 end
 power=trans_obj.Data.get_datamat('Power');
+if isempty(power)
+    power_unoised=[];Sv_unoised=[];Sp_unoised=[];SNR=[];
+end
 
 
 h_filt=ceil(nanmin(p.Results.VertFilt,size(power,1))/nanmean(diff(range)));
