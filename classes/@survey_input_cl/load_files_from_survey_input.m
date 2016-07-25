@@ -46,14 +46,13 @@ for isn=1:length(snapshots)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 
                 if ~isempty(layers)
-                    [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN);
-                    
+                    [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));    
                 else
                     found_lay=0;
                     
                 end
                 if ~isempty(layers_in)
-                    [~,found_lay_in]=layers_in.find_layer_idx_files_path(fileN);
+                    [~,found_lay_in]=layers_in.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                 else
                     found_lay_in=0;
                 end
@@ -74,8 +73,11 @@ for isn=1:length(snapshots)
                         
                         switch fType
                             case {'EK60','EK80'}
+%                                 profile on;
                                 new_lay=open_raw_file_standalone(fileN,...
                                     'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames);
+%                                 profile off;
+%                                 profile viewer
                            case 'dfile'
                                 new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
                         end
@@ -118,7 +120,6 @@ for isn=1:length(snapshots)
             end
             
 
-             
             if length(layers_out_temp)>1
                 warning('Non continuous files in Snapshot %.0f Stratum %s Transect %.0f',snap_num,strat_name,trans_num);
             end
@@ -152,15 +153,13 @@ for isn=1:length(snapshots)
                         layer_new.load_echo_logbook();
                         
                         if isfield(bot,'ver')
-                            layer_new.load_bot_regs('reg_ver',0);
+                            layer_new.load_bot_regs('reg_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                         end
                         
                         
                         for ire=1:length(regs)
                             if isfield(regs{ire},'ver')
-                                layer_new.load_bot_regs('bot_ver',0);
-                            else
-                                layer_new.load_bot_regs('bot_ver',0);
+                                layer_new.load_bot_regs('bot_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                             end
                         end
                 end

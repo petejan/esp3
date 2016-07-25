@@ -34,6 +34,12 @@ set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_cax
 
 display_tab_comp.mini_ax=axes('Parent',display_tab_comp.display_tab,'Units','normalized',...
     'Position',[0.05 0.1 0.75 0.45],'visible','off');
+display_tab_comp.mini_echo=imagesc(1,1,1,'tag','echo');
+display_tab_comp.patch_obj=patch('Faces',[],'Vertices',[],'FaceColor','r','FaceAlpha',.2,'EdgeColor','r','Tag','zoom_area');
+set(display_tab_comp.mini_ax,'XTickLabels',[],'YTickLabels',[]);
+set(display_tab_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_figure});
+set(display_tab_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
+
 
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.85 0.25 0.1 0.15],'callback',{@display_attitude,main_figure});
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav.','units','normalized','pos',[0.85 0.1 0.1 0.15],'callback',{@display_navigation_callback,main_figure});

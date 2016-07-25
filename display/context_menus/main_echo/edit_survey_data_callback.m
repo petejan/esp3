@@ -119,6 +119,6 @@ layer.update_echo_logbook_file();
 setappdata(main_figure,'Layer',layer);
 
 load_cursor_tool(main_figure);
-load_axis_panel(main_figure,0);
+update_axis_panel(main_figure,0);
 
 end

@@ -37,7 +37,7 @@ if Ring_down_thr==0
     return;
 end;
 
-[s_pdf,x_value,y_value,~]= sliding_pdf((1:nb_pings),RingDownMean,win,bin,spc,1);
+[s_pdf,~,y_value,~]= sliding_pdf((1:nb_pings),RingDownMean,win,bin,spc,1);
 
 % shading interp
 
@@ -54,8 +54,9 @@ y_value_sorted=y_value(idx_sort);
 % pcolor(x_value(idx_sort),y_value(idx_sort),s_pdf_sorted);
 % shading interp
 
+
 RingDownMPV=nanmean(y_value_sorted(1:3,:));
-idx_ringdown=(abs(RingDownMean-RingDownMPV)<Ring_down_thr)&idx_ringdown_1;
+idx_ringdown=((abs(RingDownMean-RingDownMPV)<Ring_down_thr)&idx_ringdown_1)|nansum(bsxfun(@eq,RingDownMean,y_value_sorted(1:3,:)))>0;
 
 
 

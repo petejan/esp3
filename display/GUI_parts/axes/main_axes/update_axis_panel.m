@@ -1,4 +1,4 @@
-function load_axis_panel(main_figure,new)
+function update_axis_panel(main_figure,new)
 layer=getappdata(main_figure,'Layer');
 display_tab_comp=getappdata(main_figure,'Display_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

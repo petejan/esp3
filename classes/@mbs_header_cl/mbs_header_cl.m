@@ -1,4 +1,3 @@
-
 classdef mbs_header_cl
     properties         
         Script='';

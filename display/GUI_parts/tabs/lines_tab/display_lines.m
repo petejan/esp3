@@ -30,8 +30,6 @@ if isempty(layer.Lines)
     return; 
 end
 
-axes(main_axes)
-
 active_line_idx=get(lines_tab_comp.tog_line,'value');
 
 if curr_disp.DispLines>0
@@ -70,7 +68,7 @@ for i=1:length(list_line)
     else
         color='g';
     end
-    plot(x_line,y_line,color,'linewidth',2,'tag','lines','visible',vis);
+    plot(main_axes,x_line,y_line,color,'linewidth',2,'tag','lines','visible',vis);
     %text(nanmean(x_line(:)),nanmean(y_line(:)),line_curr.Tag,'visible',vis,'FontAngle','italic','Fontsize',10,'tag','line')
 end
 

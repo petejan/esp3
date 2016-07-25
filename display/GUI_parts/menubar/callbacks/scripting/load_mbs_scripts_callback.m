@@ -24,7 +24,7 @@ for i=1:length(mbs_files)
 end
 rmdir(outDir,'s');
 
-load_mbs_fig(hObject,mbsSummary)
-
+%load_mbs_fig(hObject,mbsSummary)
+load_scripts_fig(hObject,mbsSummary,'mbs')
 
 end

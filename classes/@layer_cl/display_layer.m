@@ -89,7 +89,6 @@ if isempty(data)
 end
 
 if isempty(data)
-    axes(ax);
     set(main_echo,'XData',1,'YData',1,'CData',1);
     return;
 end
@@ -123,18 +122,18 @@ end
 
 
 for ifile=1:length(idx_change_file)
-    plot(xdata(idx_change_file(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'k','tag','file_id');
+    plot(ax,xdata(idx_change_file(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'k','tag','file_id');
 end
 
 for ifile=1:length(idx_start_time)
     if ~isempty(idx_start_time(ifile))
-        plot(xdata(idx_start_time(ifile)).*ones(size(ydata(idx_r)))+dt,ydata(idx_r),'g','tag','surv_id');
+        plot(ax,xdata(idx_start_time(ifile)).*ones(size(ydata(idx_r)))+dt,ydata(idx_r),'g','tag','surv_id');
     end
 end
 
 for ifile=1:length(idx_end_time)
     if ~isempty(idx_end_time(ifile))
-        plot(xdata(idx_end_time(ifile)).*ones(size(ydata(idx_r)))-dt,ydata(idx_r),'r','tag','surv_id');
+        plot(ax,xdata(idx_end_time(ifile)).*ones(size(ydata(idx_r)))-dt,ydata(idx_r),'r','tag','surv_id');
     end
 end
 

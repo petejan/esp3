@@ -48,6 +48,8 @@ end
 
 survey_in_obj.Options.Absorption=mbs_obj.Header.default_absorption;
 
+survey_in_obj.Options.FrequenciesToLoad=survey_in_obj.Options.Frequency;
+
 snap_numbers=unique(mbs_obj.Input.snapshot);
 snapshots=cell(1,length(snap_numbers));
 for isnap=1:length(snap_numbers)

@@ -6,19 +6,17 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
     curr_disp=getappdata(main_figure,'Curr_disp');
     
     switch curr_disp.Cmap
-    
-    case 'esp2'
-        ac_data_col='g';
-        in_data_col='r';
-        empty_data_col='k';
-        bad_data_col=[0.5 0.5 0.5];
-    otherwise
-        ac_data_col='g';
-        in_data_col='r';
-        empty_data_col='w';
-        bad_data_col=[0.5 0.5 0.5];
         
-end
+        case 'esp2'
+            ac_data_col='g';
+            in_data_col='r';
+            bad_data_col=[0.5 0.5 0.5];
+        otherwise
+            ac_data_col='g';
+            in_data_col='r';
+            bad_data_col=[0.5 0.5 0.5];
+            
+    end
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     trans_obj=layer.Transceivers(idx_freq);
@@ -74,6 +72,10 @@ end
         end
         setappdata(main_figure,'Layer',layer);
         update_regions_tab(main_figure);
+        order_axes(main_figure);
+        axes_panel_comp=getappdata(main_figure,'Axes_panel');
+        echo_ax=axes_panel_comp.main_axes;
+        order_stack(echo_ax);
     else
         return
     end

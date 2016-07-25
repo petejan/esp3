@@ -72,8 +72,7 @@ for i=1:length(Filenames)
         outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
         surv_obj.print_output(outputFile);
         fprintf(1,'Results save to %s \n',outputFile);
-        
-        
+         
     catch err
         disp(err.message);
         warning('Could not process survey described in file %s\n',Filenames{i});

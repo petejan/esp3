@@ -43,8 +43,8 @@ update_regions_tab(main_figure);
 load_calibration_tab(main_figure,main_childs(idx_opt));
 
 load_info_panel(main_figure);
-load_axis_panel(main_figure,new);
-update_mini_ax(main_figure,new);
+update_axis_panel(main_figure,new);
+update_mini_ax(main_figure);
 
 change_grid_callback([],[],main_figure);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});

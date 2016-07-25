@@ -4,7 +4,6 @@ layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
 
-
 if ~isempty(layer)
     if ~isempty(layer(1).Filename)
         [path_f,~,~]=fileparts(layer.Filename{1});

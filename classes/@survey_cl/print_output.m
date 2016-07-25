@@ -1,4 +1,4 @@
-        function print_SurvOutput(surv_obj,file) % print the whole SurvOutput on the screen
+        function print_output(surv_obj,file) % print the whole SurvOutput on the screen
             % and if defined in surv_obj.SurvOutput into a text file
             fids{1} = 1;
             if ~isempty(file)
@@ -12,7 +12,7 @@
                 fprintf(fid,'title: %s\n', surv_obj.SurvInput.Infos.Title);
                 fprintf(fid,'main_species: %s\n', surv_obj.SurvInput.Infos.Main_species);
                 fprintf(fid,'voyage: %s\n', surv_obj.SurvInput.Infos.Voyage);
-                 fprintf(fid,'survey name: %s\n', surv_obj.SurvInput.Infos.SurveyName);
+                fprintf(fid,'survey name: %s\n', surv_obj.SurvInput.Infos.SurveyName);
                 fprintf(fid,'areas: %s\n', surv_obj.SurvInput.Infos.Areas);
                 fprintf(fid,'author: %s\n', surv_obj.SurvInput.Infos.Author);
                 fprintf(fid,'created: %s\n', surv_obj.SurvInput.Infos.Created);
@@ -26,9 +26,11 @@
                 %% Usage summary
                 fprintf(fid,'\n# Usage summary\n');
                 fprintf(fid,'processing_completed: %s\n', datestr(now, 'yyyy-mm-ddTHH:MM:SS'));
-                fprintf(fid,'computer: %s\n', '?');
-                fprintf(fid,'user: %s\n', '?');
-                fprintf(fid,'MBS_version: %s\n', '?');
+                [~,cmp_out]=system('echo %computername%');
+                fprintf(fid,'computer: %s\n',cmp_out);
+                [~,usr_out]=system('echo %username%');
+                fprintf(fid,'user: %s\n', usr_out);
+
                 
                 %% Stratum Summary              
                 str=surv_obj.SurvOutput.sprint_stratumSum();

@@ -1,4 +1,13 @@
-function [idx_lays,found]=find_layer_idx_files_path(layers,filenames)
+function [idx_lays,found]=find_layer_idx_files_path(layers,filenames,varargin)
+
+p = inputParser;
+
+addRequired(p,'layers',@(obj) isa(obj,'layer_cl'));
+addRequired(p,'filenames',@(x) iscell(x)||ischar(x));
+addParameter(p,'Frequencies',[]);
+
+parse(p,layers,filenames,varargin{:});
+
 
 if~iscell(filenames)
     filenames={filenames};
@@ -15,8 +24,22 @@ for ifi=1:length(filenames)
     id_lays=unique(layer_IDs(idx_f));
     for i=1:length(id_lays)
         [idx_tmp,found_id]=layers.find_layer_idx(id_lays(i));
+        
         if found_id==1
-            idx_lays=[idx_tmp idx_lays];
+            if isempty(p.Results.Frequencies)
+                idx_lays=[idx_tmp idx_lays];
+            else
+                freq_bool=1;
+                for ifreq=1:length(p.Results.Frequencies)
+                    [~,found_freq]=find_freq_idx(layers(idx_tmp),p.Results.Frequencies(ifreq));
+                    if found_freq==0
+                        freq_bool=0;
+                    end
+                end
+                if freq_bool>0
+                    idx_lays=[idx_tmp idx_lays];
+                end
+            end
         end
     end
     

@@ -17,6 +17,6 @@ end
 layer.Transceivers(idx_freq).setBottom_from_evl(fullfile(PathToFile,Filename))
 
 setappdata(main_figure,'Layer',layer);
-load_axis_panel(main_figure,0);
+update_axis_panel(main_figure,0);
 
 end

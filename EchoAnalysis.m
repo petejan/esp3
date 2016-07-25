@@ -26,7 +26,6 @@ main_figure=figure('Visible','on',...
     'CloseRequestFcn',@closefcn_clean);
 
 
-
 set(0,'DefaultUicontrolFontSize',10);%Default font size for Controls
 set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
 

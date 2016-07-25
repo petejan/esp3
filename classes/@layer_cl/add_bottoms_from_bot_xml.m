@@ -1,12 +1,12 @@
-function add_bottoms_from_bot_xml(layer_obj,xml_file)
+function add_bottoms_from_bot_xml(layer_obj,xml_file,varargin)
 
 p = inputParser;
 
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
 addRequired(p,'xml_file',@iscell);
+addParameter(p,'Frequencies',[]);
 
-
-parse(p,layer_obj,xml_file);
+parse(p,layer_obj,xml_file,varargin{:});
 
 new_bottom=cell(1,length(layer_obj.Transceivers));
 
@@ -27,6 +27,10 @@ for i=1:length(xml_file)
     for itrans=1:length(bottom_xml_tot)
          
         bottom_xml=bottom_xml_tot{itrans};
+        if ~isempty(p.Results.Frequencies)&&nansum(bottom_xml.Infos.Freq==p.Results.Frequencies)==0
+            continue;
+        end
+        
         [idx_freq,found]=find_freq_idx(layer_obj,bottom_xml.Infos.Freq);
         
         if found==0

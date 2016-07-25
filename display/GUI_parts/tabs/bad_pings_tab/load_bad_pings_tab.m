@@ -50,7 +50,7 @@ layer.Transceivers(idx_freq).apply_algo('BadPings');
 
 
 setappdata(main_figure,'Layer',layer);
-load_axis_panel(main_figure,0);
-update_mini_ax(main_figure,0);
+update_axis_panel(main_figure,0);
+update_mini_ax(main_figure);
 
 end

@@ -6,17 +6,17 @@ if ~isempty(cax)
     end
     set(ax,'CLim',cax);
 end
+
 if length(xdata)>1
     set(ax,'xlim',[xdata(1) xdata(end)]);
 end
+
 if length(ydata)>1
     set(ax,'ylim',[ydata(1) ydata(end)]);
 end
-zoom reset;
 
-
-idx_xticks=(diff(rem(xdata_grid,dx))<0);
-idx_yticks=(diff(rem(ydata_grid,dy))<0);
+idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
+idx_yticks=find((diff(rem(ydata_grid,dy))<0))+1;
 
 grid on;
 axis ij;

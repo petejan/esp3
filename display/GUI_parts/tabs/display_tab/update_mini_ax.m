@@ -1,4 +1,4 @@
-function update_mini_ax(main_figure,new)
+function update_mini_ax(main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -19,8 +19,8 @@ set(display_tab_comp.mini_ax,'units','pixels');
 temp_size=get(display_tab_comp.mini_ax,'position');
 size_mini=temp_size(3:4);
 set(display_tab_comp.mini_ax,'units','normalized');
-idx_r_disp=round(linspace(1,nb_samples,size_mini(2)));
-idx_p_disp=round(linspace(1,nb_pings,size_mini(1)));
+idx_r_disp=unique(round(linspace(1,nb_samples,size_mini(2))));
+idx_p_disp=unique(round(linspace(1,nb_pings,size_mini(1))));
 
 switch curr_disp.Fieldname
     case 'power'
@@ -39,14 +39,9 @@ switch lower(curr_disp.Cmap)
 
 end
 
-cla(display_tab_comp.mini_ax,'reset');
-axes(display_tab_comp.mini_ax);
-display_tab_comp.mini_echo=imagesc(pings,range,data_disp,'tag','echo');
-display_tab_comp.patch_obj=patch('Faces',f1,'Vertices',v1,'FaceColor',patch_col,'FaceAlpha',.2,'EdgeColor',patch_col,'Tag','zoom_area');
-set(display_tab_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_figure});
-set(display_tab_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
-set(display_tab_comp.mini_ax,'XTickLabels',[],'YTickLabels',[]);
-
+set(display_tab_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[range(1) range(end)])
+set(display_tab_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
+set(display_tab_comp.patch_obj,'Faces',f1,'Vertices',v1,'FaceColor',patch_col,'EdgeColor',patch_col);
 
 set_alpha_map(main_figure,'echo_ax',display_tab_comp.mini_ax,'echo_im',display_tab_comp.mini_echo);
 setappdata(main_figure,'Display_tab',display_tab_comp);

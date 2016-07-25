@@ -23,4 +23,5 @@ layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay=cax;
 curr_disp.setCax(cax);
 
 setappdata(main_figure,'Layer',layer);
+order_axes(main_figure);
 end

@@ -8,5 +8,5 @@ if ~isempty(listdata.AffectedObject.Cax)
     caxis(listdata.AffectedObject.Cax);
 end
 
-update_mini_ax(main_figure,0);
+update_mini_ax(main_figure);
 end

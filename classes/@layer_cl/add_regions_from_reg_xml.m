@@ -1,12 +1,13 @@
-function add_regions_from_reg_xml(layer_obj,xml_file,IDs)
+function add_regions_from_reg_xml(layer_obj,xml_file,IDs,varargin)
 
 p = inputParser;
 
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
 addRequired(p,'xml_file',@iscell);
 addRequired(p,'IDs',@isnumeric);
+addParameter(p,'Frequencies',[]);
 
-parse(p,layer_obj,xml_file,IDs);
+parse(p,layer_obj,xml_file,IDs,varargin{:});
 
 for idx_freq=1:length(layer_obj.Transceivers)
     trans_obj=layer_obj.Transceivers(idx_freq);
@@ -32,6 +33,11 @@ for ix=1:length(xml_file)
     
     for itrans=1:length(region_xml_tot)
         region_xml=region_xml_tot{itrans};
+        
+        if ~isempty(p.Results.Frequencies)&&nansum(region_xml.Infos.Freq==p.Results.Frequencies)==0
+            continue;
+        end
+        
         [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
         
         if found==0

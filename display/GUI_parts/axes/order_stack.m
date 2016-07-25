@@ -12,8 +12,8 @@ uistack(echo_im,'top');
 uistack(bt_im,'top');
 uistack(regions,'top');
 uistack(region_text,'top');
+uistack(zoom_area,'top');
 uistack(lines,'top');
 
-uistack(zoom_area,'top');
 
 end
