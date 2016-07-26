@@ -17,4 +17,4 @@
 *.RTF	 diff=astextplain
 
 # Versionning
-EchoAnalysis.m ident export-subst
+*.m ident export-subst
