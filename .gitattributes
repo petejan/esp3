@@ -17,4 +17,4 @@
 *.RTF	 diff=astextplain
 
 # Versionning
-EchoAnalysis.m indent
+EchoAnalysis.m ident
