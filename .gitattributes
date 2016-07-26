@@ -1,8 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
-# Custom for Visual Studio
-*.cs     diff=csharp
+# Custom for Matlab
+*.m     diff=matlab
 
 # Standard to msysgit
 *.doc	 diff=astextplain
@@ -15,3 +15,6 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
+
+# Versionning
+EchoAnalysis.m ident
