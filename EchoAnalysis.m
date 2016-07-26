@@ -26,7 +26,10 @@ main_figure=figure('Visible','on',...
     'CloseRequestFcn',@closefcn_clean);
 
 git_ver='$Id$';
-
+git_ver = regexprep(git_ver, '[^\d]', '');
+if isempty(git_ver)
+    git_ver = 'unknown';
+end
 fprintf('Version %s\n',git_ver);
 
 
