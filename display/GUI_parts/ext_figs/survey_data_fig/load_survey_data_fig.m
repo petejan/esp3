@@ -1,6 +1,7 @@
 function load_survey_data_fig(main_figure)
 hfigs=getappdata(main_figure,'ExternalFigures');
 layer=getappdata(main_figure,'Layer');
+app_path=getappdata(main_figure,'App_path');
 
 if isempty(layer)
     return;
@@ -72,7 +73,7 @@ set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct
 rc_menu = uicontextmenu;
 surv_data_table.table_main.UIContextMenu =rc_menu;
 uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
-uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig});
+uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig,app_path.scripts});
 uimenu(rc_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
 uimenu(rc_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
 uimenu(rc_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
@@ -223,7 +224,7 @@ files=fullfile(path_f,selected_files);
 open_file([],[],files,main_figure);
 end
 
-function generate_xml_callback(~,~,surv_data_fig)
+function generate_xml_callback(~,~,surv_data_fig,path_scripts)
 surv_data_table=getappdata(surv_data_fig,'surv_data_table');
 surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
 data_ori=get(surv_data_table.table_main,'Data');
@@ -272,8 +273,7 @@ defaultanswer={'','','','',''};
 
 answer=inputdlg(prompt,'XML survey informations',[1;1;1;1;5],defaultanswer);
 
-if isempty(answer)
-    
+if isempty(answer)   
     return;
 end
 
@@ -283,9 +283,13 @@ survey_input_obj.Infos.Author=answer{3};
 survey_input_obj.Infos.Main_species=answer{4};
 survey_input_obj.Infos.Comment=answer{5};
 
+if ~isdir(path_scripts)
+    path_scripts=path_f;
+end
+
 [filename, pathname] = uiputfile('*.xml',...
     'Save survey XML file',...
-    fullfile(path_f,[survey_input_obj.Infos.Voyage '.xml']));
+    fullfile(path_scripts,[survey_input_obj.Infos.Voyage '.xml']));
 
 if isequal(filename,0) || isequal(pathname,0)
     return;

@@ -121,7 +121,7 @@ while u<length(vec_candidates(1:end-1))
     
         fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
 end
-
+fprintf(1,'Processing Linking %i/%i\n',nb_candidates,nb_candidates);
 linked_candidates=zeros(size(candidates));
 id=0;
 u=unique(candidates_ori(:));

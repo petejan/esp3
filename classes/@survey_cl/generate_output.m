@@ -57,21 +57,21 @@ for isn=1:length(snapshots)
             time_track=[];
             TS_mean_track=[];
             
-            layer_obj_tr=layers(output.Layer_idx(1));
+            layer_obj_tr=layers(output.Layer_idx(idx_lay(1)));
             idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-            gps_tot=layers(output.Layer_idx(idx_lay(1))).Transceivers(idx_freq).GPSDataPing;
-            bot_tot=layers(output.Layer_idx(idx_lay(1))).Transceivers(idx_freq).Bottom;
+            gps_tot=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
+            bot_tot=layer_obj_tr.Transceivers(idx_freq).Bottom;
             
             if length(idx_lay)>1
                 for i=2:length(idx_lay)
-                    layer_obj_tr=layers(output.Layer_idx(i));
+                    layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
                     idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-                    if layers(output.Layer_idx(idx_lay(i))).Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
-                        bot_tot=concatenate_Bottom(bot_tot,layers(output.Layer_idx(idx_lay(i))).Transceivers(idx_freq).Bottom);
+                    if layer_obj_tr.Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
+                        bot_tot=concatenate_Bottom(bot_tot,layer_obj_tr.Transceivers(idx_freq).Bottom);
                     else
-                        bot_tot=concatenate_Bottom(layers(output.Layer_idx(idx_lay(i))).Transceivers(idx_freq).Bottom,bot_tot);
+                        bot_tot=concatenate_Bottom(layer_obj_tr.Transceivers(idx_freq).Bottom,bot_tot);
                     end
-                    gps_add=layers(output.Layer_idx(idx_lay(i))).Transceivers(idx_freq).GPSDataPing;
+                    gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
                     gps_tot=concatenate_GPSData(gps_tot,gps_add);
                     
                 end
@@ -204,8 +204,8 @@ for isn=1:length(snapshots)
                     switch reg_curr.Reference
                         case 'Surface';
                             refType = 's';
-                            start_d = trans_obj_tr.Data.get_range(regCellInt.Sample_S(1));
-                            finish_d = trans_obj_tr.Data.get_range(regCellInt.Sample_S(1));
+                            start_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
+                            finish_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
                         case 'Bottom';
                             refType = 'b';
                             start_d = 0;

@@ -5,13 +5,15 @@ Z_st=ST.Target_range_disp;
 
 uu=0;
 if isfield(axes_panel_comp,'track_plot')
-    for i=1:length(axes_panel_comp.track_plot)
-        if ishandle(axes_panel_comp.track_plot(i-uu))
-            delete(axes_panel_comp.track_plot(i-uu));
-        end
-            axes_panel_comp.track_plot(i-uu)=[];
-            uu=uu+1;
-    end
+%     for i=1:length(axes_panel_comp.track_plot)
+%         if ishandle(axes_panel_comp.track_plot(i-uu))
+%             delete(axes_panel_comp.track_plot(i-uu));
+%         end
+%             axes_panel_comp.track_plot(i-uu)=[];
+%             uu=uu+1;
+%     end
+    delete(axes_panel_comp.track_plot);
+    axes_panel_comp.track_plot=[];
 end
 
 if ~isempty(tracks)
@@ -29,7 +31,7 @@ axes_panel_comp.track_plot=[];
         [X_t,idx_sort]=sort(X_st(idx_targets));
         Z_t=Z_st(idx_targets);
         Z_t=Z_t(idx_sort);
-        plot_handle=plot(X_t,Z_t,'r','linewidth',2,'tag','track','visible',vis);
+        plot_handle=plot(axes_panel_comp.main_axes,X_t,Z_t,'r','linewidth',2,'tag','track','visible',vis);
         axes_panel_comp.track_plot=[axes_panel_comp.track_plot plot_handle];
     end
 else

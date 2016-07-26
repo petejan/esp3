@@ -40,9 +40,8 @@ u=1;
 if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
     return
 end
-axes(ah);
-hold on;
-hp=plot(xinit,xinit,'color',line_col,'linewidth',1);
+
+hp=plot(ah,xinit,xinit,'color',line_col,'linewidth',1);
 src.WindowButtonMotionFcn = @wbmcb;
 if strcmp(src.SelectionType,'normal')
     src.WindowButtonUpFcn = @wbucb;

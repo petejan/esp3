@@ -20,7 +20,7 @@ else
    idx_reg=layer.Transceivers(idx_freq).list_regions_Unique_ID(reg_curr.Unique_ID);
 end
 
-new_fig=layer.apply_classification(idx_freq,idx_reg);
+new_fig=layer.apply_classification(idx_freq,idx_reg,1);
 
 
 hfigs=[hfigs new_fig];

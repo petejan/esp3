@@ -49,9 +49,6 @@ rect_lim_y=[y_lim(1) y_lim(1) y_lim(2) y_lim(2) y_lim(1)];
 
 
 list_reg = trans.regions_to_str();
-axes(main_axes);
-dr=nanmean(diff(trans.Data.get_range()));
-dp=nanmean(diff(trans.GPSDataPing.Dist));
 
 active_reg=get(region_tab_comp.tog_reg,'value');
 vis=curr_disp.DispReg;
@@ -90,7 +87,7 @@ for i=1:length(list_reg)
             x_text=nanmean(x_reg_rect(:));
             y_text=nanmean(y_reg_rect(:));
 
-            reg_plot=patch(x_reg_rect,y_reg_rect,col,'FaceAlpha',.4,'EdgeColor',col,'tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID);
+            reg_plot=patch(x_reg_rect,y_reg_rect,col,'FaceAlpha',.4,'EdgeColor',col,'tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID,'parent',main_axes);
         case 'Polygon'
             
             idx_x=reg_curr.X_cont;
@@ -116,13 +113,13 @@ for i=1:length(list_reg)
             end
             [x_reg,y_reg]=poly2cw(x_reg,y_reg);
             [f, v] = poly2fv(x_reg,y_reg);
-            reg_plot=patch('Faces', f, 'Vertices', v, 'FaceColor',col,'FaceAlpha',0.4,'EdgeColor','none','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID);
+            reg_plot=patch('Faces', f, 'Vertices', v, 'FaceColor',col,'FaceAlpha',0.4,'EdgeColor','none','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID,'parent',main_axes);
            
                     
     end
     
     
-    text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region_text');
+    text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region_text','parent',main_axes);
     
     
     create_region_context_menu(reg_plot,main_figure,reg_curr);

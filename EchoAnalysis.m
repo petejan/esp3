@@ -25,6 +25,10 @@ main_figure=figure('Visible','on',...
     'visible','off',...
     'CloseRequestFcn',@closefcn_clean);
 
+git_ver='$Id$';
+
+fprintf('Version %s\n',git_ver);
+
 
 set(0,'DefaultUicontrolFontSize',10);%Default font size for Controls
 set(0,'DefaultUipanelFontSize',10);%Default font size for Panels

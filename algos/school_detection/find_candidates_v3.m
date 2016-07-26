@@ -14,8 +14,8 @@ switch output
     case 'cell'
         candidates=cell(1,num_can);
 end
-k=1;
-fprintf(1,'Processing Segmentation %.0f/%i\n',k/num_can*100,100);
+
+fprintf(1,'Processing Segmentation %.0f/%i\n',1/num_can*100,100);
 region_number=1;
 for i=1:num_can
     curr_candidate=candidates_idx{i};
@@ -34,13 +34,14 @@ for i=1:num_can
                 case 'cell'
                     candidates{i}=curr_candidate;
             end
-            
             fprintf(1,'Processing Segmentation %.0f/%i\n',i/num_can*100,100);
+            
             
         end
     end
+    
 end
-
+fprintf(1,'Processing Segmentation %.0f/%i\n',100,100);
 switch output
     case 'cell'
         candidates(cellfun(@isempty,candidates))=[];

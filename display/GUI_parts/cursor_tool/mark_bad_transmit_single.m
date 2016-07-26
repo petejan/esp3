@@ -44,9 +44,8 @@ x_bad=[xinit xinit];
 
 src.WindowButtonMotionFcn = @wbmcb;
 src.WindowButtonUpFcn = @wbucb;
-axes(ah);
-hold on;
-hp=plot(x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
+
+hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
 
     function wbmcb(~,~)
         

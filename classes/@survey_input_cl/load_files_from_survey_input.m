@@ -132,8 +132,8 @@ for isn=1:length(snapshots)
                     curr_freq=layer_new.Frequencies(i_freq);
                     
                     if ~strcmp(layer_new.Filetype,'CREST')
-                        if ~isempty(find(cal(:).FREQ==curr_freq, 1))
-                            layer_new.Transceivers(i_freq).apply_cw_cal(cal(cal(:).FREQ==layer_new.Frequencies(i_freq)));
+                        if ~isempty(find([cal(:).FREQ]==curr_freq, 1))
+                            layer_new.Transceivers(i_freq).apply_cw_cal(cal([cal(:).FREQ]==layer_new.Frequencies(i_freq)));
                         else
                             fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                         end
@@ -187,8 +187,28 @@ for isn=1:length(snapshots)
                 
                 
                 for ial=1:length(algos)
-                    layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                    layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name);
+                    if isempty(algos{ial}.Varargin.Frequencies)
+                        layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
+                        layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name);
+                    else
+                        for i_freq_al=1:length(algos{ial}.Varargin.Frequencies)
+                           [idx_freq_al,found_freq_al]=layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al)); 
+                           if found_freq_al>0
+                               layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
+                               layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name);
+                           else
+                                fprintf('Could not find Frequency %.0fkHz. Algo %s not applied on it\n',algos{ial}.Varargin.Frequencies(i_freq_al)/1e3,algos{ial}.Name);
+                           end
+                        end
+                    end
+                end
+                
+                if options.ClassifySchool>0
+                    idx_schools=layer_new.Transceivers(idx_freq).list_regions_name('School');
+                    if ~isempty(idx_schools)
+                        layer_new.apply_classification(idx_freq,idx_schools,0);
+                    end
+                    
                 end
                 
                 if options.Remove_tracks

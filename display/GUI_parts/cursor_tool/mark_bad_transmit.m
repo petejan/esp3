@@ -5,6 +5,10 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
+if gca~=ah
+    return;
+end
+
 clear_lines(ah);
 
 [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
@@ -46,9 +50,8 @@ x_bad=[xinit xinit];
 
 src.WindowButtonMotionFcn = @wbmcb;
 src.WindowButtonUpFcn = @wbucb;
-axes(ah);
-hold on;
-hp=plot(x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
+
+hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
 
     function wbmcb(~,~)
         

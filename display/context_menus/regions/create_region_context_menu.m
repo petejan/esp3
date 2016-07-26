@@ -1,6 +1,6 @@
 function create_region_context_menu(reg_plot,main_figure,reg_curr)
 
-context_menu=uicontextmenu;
+context_menu=uicontextmenu(main_figure);
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
     reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure};

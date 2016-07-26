@@ -43,7 +43,7 @@ set(display_tab_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[range(1) range
 set(display_tab_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
 set(display_tab_comp.patch_obj,'Faces',f1,'Vertices',v1,'FaceColor',patch_col,'EdgeColor',patch_col);
 
-set_alpha_map(main_figure,'echo_ax',display_tab_comp.mini_ax,'echo_im',display_tab_comp.mini_echo);
+set_alpha_map(main_figure,'main_or_mini','mini');
 setappdata(main_figure,'Display_tab',display_tab_comp);
 
 

@@ -6,5 +6,16 @@ for i=1:nb_algos
     for j=1:length(algo_node.Children(i).Attributes)
         algo_cell{i}.Varargin.(algo_node.Children(i).Attributes(j).Name)=algo_node.Children(i).Attributes(j).Value;
     end
+    
+    if isfield(algo_cell{i}.Varargin,'Frequencies')
+        if ischar(algo_cell{i}.Varargin.Frequencies)
+            algo_cell{i}.Varargin.Frequencies=str2double(strsplit(algo_cell{i}.Varargin.Frequencies,';'));
+            if isnan(algo_cell{i}.Varargin.Frequencies)
+                algo_cell{i}.Varargin.Frequencies=[];
+            end
+        end
+    else
+        algo_cell{i}.Varargin.Frequencies=[];
+    end
 end
 end

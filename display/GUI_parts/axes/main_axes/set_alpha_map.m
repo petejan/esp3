@@ -3,8 +3,7 @@ function set_alpha_map(main_figure,varargin)
 p = inputParser;
 
 addRequired(p,'main_figure',@ishandle);
-addParameter(p,'echo_ax',[]);
-addParameter(p,'echo_im',[]);
+addParameter(p,'main_or_mini','main');
 
 parse(p,main_figure,varargin{:});
 
@@ -13,21 +12,19 @@ if isempty(layer)
     return;
 end
 
-if isempty(p.Results.echo_ax)||isempty(p.Results.echo_im)
-    axes_panel_comp=getappdata(main_figure,'Axes_panel');
-    
-    if ~isfield(axes_panel_comp,'main_echo')
-        return;
-    end
-    echo_im=axes_panel_comp.main_echo;
-    echo_ax=axes_panel_comp.main_axes;
-else
-    echo_im=p.Results.echo_im;
-    echo_ax=p.Results.echo_ax;
+switch p.Results.main_or_mini
+    case 'main'
+        axes_panel_comp=getappdata(main_figure,'Axes_panel');
+        echo_im=axes_panel_comp.main_echo;
+        echo_ax=axes_panel_comp.main_axes;
+        echo_im_bt=axes_panel_comp.bad_transmits;
+    case 'mini'
+        display_tab_comp=getappdata(main_figure,'Display_tab');
+        echo_im=display_tab_comp.mini_echo;
+        echo_ax=display_tab_comp.mini_ax;
+        echo_im_bt=display_tab_comp.mini_echo_bt;
 end
 
-obj_del=findall(echo_ax,'tag','bad_transmits');
-delete(obj_del);
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
@@ -54,10 +51,10 @@ idx_bad_red(idx_bad_red==0)=[];
 
 switch lower(curr_disp.Cmap)
     case 'jet'
-        cmap='jet';
+        cmap=colormap('jet');
         echo_ax.Color='w';
     case 'hsv'
-        cmap='hsv';
+        cmap=colormap('hsv');
         echo_ax.Color='w';
     case 'esp2'
         cmap=esp2_colormap();
@@ -88,20 +85,19 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
     end
     
     if strcmp(curr_disp.DispBadTrans,'on')
-        axes(echo_ax);
-        hold on;
         data_temp=nan(size(alpha_map));
         data_temp(:,idx_bad_red)=Inf;
-        imtemp=imagesc(xdata,ydata,data_temp,'tag','bad_transmits');
-        set(imtemp,'AlphaData',(~isnan(data_temp))-0.2);
+        set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',(~isnan(data_temp))-0.2);
         if strcmpi(curr_disp.CursorMode,'Normal')
-            create_context_menu_main_echo(main_figure,imtemp);
+            create_context_menu_main_echo(main_figure,echo_im_bt);
         end
     end
     
 end
 
+
 colormap(echo_ax,cmap);
+
 set(echo_ax,'CLim',layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay);
 
 if isa(echo_im,'matlab.graphics.primitive.Surface')

@@ -1,11 +1,11 @@
-function h_figs=apply_classification(layer,idx_freq,idx_schools)
+function h_figs=apply_classification(layer,idx_freq,idx_schools,disp_level)
 
 [idx_38,found_38]=find_freq_idx(layer,38000);
 [idx_18,found_18]=find_freq_idx(layer,18000);
 [idx_120,found_120]=find_freq_idx(layer,120000);
 
 if ~found_18||~found_120||~found_38
-    warning('Cannot find every frequencies! Pass...');
+    warning('Cannot find every frequencies! Cannot apply classification here....');
     h_figs=[];
     return;
 end
@@ -37,33 +37,33 @@ for idx_school=idx_schools
     delta_120_38=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_38.Sv_mean_lin);
     
     
-    
-    h_figs=figure('Name',sprintf('School %d',idx_school_38),'NumberTitle','off','tag','classif');
-    ax1=subplot(2,1,1);
-    pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_38);
-    colormap(jet);
-    grid on;
-    xlabel(school_38_reg.Cell_w_unit)
-    ylabel('Depth(m)')
-    hold on;
-    axis ij;
-    caxis([-10 10]);
-    colorbar;
-    title(sprintf('\\Delta 120-38 dB difference of school %.0f',idx_school_38));
-    
-    ax2=subplot(2,1,2);
-    pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_18);
-    xlabel(school_38_reg.Cell_w_unit)
-    ylabel('Depth(m)')
-    colormap(jet)
-    grid on;
-    hold on;
-    axis ij;
-    title(sprintf('\\Delta 120-18 dB difference of school %.0f',idx_school_38));
-    caxis([-10 10]);
-    colorbar;
-    linkaxes([ax1 ax2],'xy')
-    
+    if disp_level>0
+        h_figs=figure('Name',sprintf('School %d',idx_school_38),'NumberTitle','off','tag','classif');
+        ax1=subplot(2,1,1);
+        pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_38);
+        colormap(jet);
+        grid on;
+        xlabel(school_38_reg.Cell_w_unit)
+        ylabel('Depth(m)')
+        hold on;
+        axis ij;
+        caxis([-10 10]);
+        colorbar;
+        title(sprintf('\\Delta 120-38 dB difference of school %.0f',idx_school_38));
+        
+        ax2=subplot(2,1,2);
+        pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_18);
+        xlabel(school_38_reg.Cell_w_unit)
+        ylabel('Depth(m)')
+        colormap(jet)
+        grid on;
+        hold on;
+        axis ij;
+        title(sprintf('\\Delta 120-18 dB difference of school %.0f',idx_school_38));
+        caxis([-10 10]);
+        colorbar;
+        linkaxes([ax1 ax2],'xy')
+    end
     
     school_struct.nb_cell=length(~isnan(delta_120_18(:)));
     school_struct.delta_sv_120_18_mean=nanmean(delta_120_18(:));
