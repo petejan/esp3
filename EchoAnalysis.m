@@ -25,8 +25,7 @@ main_figure=figure('Visible','on',...
     'visible','off',...
     'CloseRequestFcn',@closefcn_clean);
 
-git_ver='$Id$';
-test='$Format:%ci$ ($Format:%h$)';
+git_ver='$Id:$';
 
 git_ver = regexprep(git_ver, '[^\d]', '');
 if isempty(git_ver)
