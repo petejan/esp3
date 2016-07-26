@@ -258,6 +258,7 @@ for isn=1:length(snapshots)
                     surv_out_obj.regionSum.av_speed(i_reg)=av_speed_tot;
                     surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_esp2));
                     surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2));%Abscf Region
+                    surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
                     
                     %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
                     surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end,:);
