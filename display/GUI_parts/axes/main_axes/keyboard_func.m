@@ -126,7 +126,7 @@ switch callbackdata.Key
     case '4'
         curr_disp.CursorMode='Create Region';
         reset_mode(0,0,main_figure);
-        set(main_figure,'WindowButtonDownFcn',{@create_region,main_figure});
+        set(main_figure,'WindowButtonDownFcn',@create_region);
     case '5'
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);
@@ -145,6 +145,14 @@ switch callbackdata.Key
                 curr_disp.DispReg='on';
             case 'on'
                 curr_disp.DispReg='off';
+        end
+    case 't'
+        
+        switch curr_disp.DispBadTrans
+            case 'off'
+                curr_disp.DispBadTrans='on';
+            case 'on'
+                curr_disp.DispBadTrans='off';
         end
         
     case 'c'

@@ -35,8 +35,7 @@ for i=1:num_can
                     candidates{i}=curr_candidate;
             end
             fprintf(1,'Processing Segmentation %.0f/%i\n',i/num_can*100,100);
-            
-            
+ 
         end
     end
     

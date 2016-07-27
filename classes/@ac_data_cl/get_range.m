@@ -6,8 +6,12 @@ range=(samples-1)*dR;
 
 if nargin>=2
     idx=varargin{1};
-    idx(idx>length(range))=[];
-    range=range(idx);
+    if ~isnan(idx)
+        idx(idx>length(range))=[];
+        range=range(idx);
+    else
+        range=0;
+    end
 end
-    
+
 end

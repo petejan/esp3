@@ -36,7 +36,7 @@ for i=1:length(fields_algo_out)
 end
 str_output(end)=[];
 
-
+fprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3);
 eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,' str_eval ');']);
 
 for i=1:length(fields_algo_out)
@@ -74,7 +74,7 @@ switch algo_name
         end
     case 'SchoolDetection'
         trans_obj.rm_region_name('School');
-        trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',algo_obj.Varargin.l_min_tot/10,'cell_h',algo_obj.Varargin.h_min_tot/10);
+        trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',algo_obj.Varargin.l_min_tot/5,'cell_h',algo_obj.Varargin.h_min_tot/5);
         
     case 'SingleTarget'
         trans_obj.set_ST(single_targets);
@@ -82,7 +82,7 @@ switch algo_name
         trans_obj.Tracks=tracks_out;
 end
 
-
+fprintf('Done\n\n');
 
 end
 

@@ -17,9 +17,9 @@ for uu=idx_to_process
     end
     
     if reprocess==1
-        layer.Transceivers(uu).apply_algo('BadPings');     
-        
+        layer.Transceivers(uu).apply_algo('BadPings');           
     end
+    
     if uu==idx_38
         if reprocess==1
             

@@ -91,6 +91,8 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
         if strcmpi(curr_disp.CursorMode,'Normal')
             create_context_menu_main_echo(main_figure,echo_im_bt);
         end
+    else
+        set(echo_im_bt,'AlphaData',0);
     end
     
 end

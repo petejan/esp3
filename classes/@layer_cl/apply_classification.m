@@ -29,9 +29,9 @@ for idx_school=idx_schools
     school_38_reg=layer.Transceivers(idx_38).Regions(idx_school_38);
     school_120_reg=layer.Transceivers(idx_120).Regions(idx_school_120);
     
-    output_reg_38=school_38_reg.integrate_region(layer.Transceivers(idx_38));
-    output_reg_18=school_18_reg.integrate_region(layer.Transceivers(idx_18));
-    output_reg_120=school_120_reg.integrate_region(layer.Transceivers(idx_120));
+    output_reg_38=school_38_reg.integrate_region(layer.Transceivers(idx_38),'denoised',0);
+    output_reg_18=school_18_reg.integrate_region(layer.Transceivers(idx_18),'denoised',0);
+    output_reg_120=school_120_reg.integrate_region(layer.Transceivers(idx_120),'denoised',1);
     
     delta_120_18=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_18.Sv_mean_lin);
     delta_120_38=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_38.Sv_mean_lin);

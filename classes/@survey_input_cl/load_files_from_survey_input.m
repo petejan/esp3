@@ -156,10 +156,15 @@ for isn=1:length(snapshots)
                             layer_new.load_bot_regs('reg_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                         end
                         
-                        
-                        for ire=1:length(regs)
-                            if isfield(regs{ire},'ver')
-                                layer_new.load_bot_regs('bot_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                        if ~isempty(regs)
+                            for ire=1:length(regs)
+                                if isfield(regs{ire},'ver')
+                                    layer_new.load_bot_regs('bot_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                                end
+                            end
+                        else
+                            for idx_freq=1:length(layer_new.Transceivers)
+                                layer_new.Transceivers(idx_freq).rm_all_region();
                             end
                         end
                 end
@@ -208,7 +213,6 @@ for isn=1:length(snapshots)
                     if ~isempty(idx_schools)
                         layer_new.apply_classification(idx_freq,idx_schools,0);
                     end
-                    
                 end
                 
                 if options.Remove_tracks

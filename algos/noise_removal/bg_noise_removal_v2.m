@@ -1,5 +1,5 @@
 function [power_unoised,Sv_unoised,Sp_unoised,SNR]=bg_noise_removal_v2(trans_obj,varargin)
-removing_noise=msgbox('Removing Noise. This box will close when finished...','Removing Noise');
+
 range=trans_obj.Data.get_range();
 p = inputParser;
 
@@ -109,9 +109,6 @@ power_unoised(isnan(power_unoised))=0;
 Sp_unoised(isnan(Sp_unoised))=-999;
 Sv_unoised(isnan(Sv_unoised))=-999;
 
-try 
-    close(removing_noise)
-end
 
 end
 

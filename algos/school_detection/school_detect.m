@@ -48,6 +48,7 @@ addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
 parse(p,trans_obj,varargin{:});
 
 
+
 Sv_mat=trans_obj.Data.get_datamat(p.Results.Type);
 
 if isempty(Sv_mat)
@@ -56,7 +57,7 @@ end
 
 
    
-[nb_samples,nb_pings]=size(Sv_mat);
+[~,nb_pings]=size(Sv_mat);
 range=trans_obj.Data.get_range();
 dist_pings=trans_obj.GPSDataPing.Dist;
 
@@ -80,6 +81,7 @@ nb_min_sples=p.Results.nb_min_sples;
 
 [nb_samples,~]=size(Sv_mat);
 mask=zeros(size(Sv_mat));
+idx_bad=(trans_obj.Bottom.Tag==0);
 
 idx_bad_data=trans_obj.list_regions_type('Bad Data');
 
@@ -87,14 +89,13 @@ for jj=1:length(idx_bad_data)
    curr_reg=trans_obj.Regions(idx_bad_data(jj));
    mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
 end
-
+mask(:,idx_bad)=1;
 
 if nansum(~isnan(Bottom))==0
     Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np));
 else
     Bottom(isnan(Bottom))=nb_samples;
     Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np)&(bsxfun(@lt,range,Bottom)));
-
 end
 
 h_filter=2*Np;
@@ -115,9 +116,6 @@ linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,v
 
 % profile off;
 % profile viewer;
-
-%linked_candidates=link_candidates_v3(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
-
 
 
 end

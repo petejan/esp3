@@ -11,11 +11,13 @@ switch curr_disp.Cmap
     case 'esp2'
         ac_data_col='g';
         in_data_col='b';
+        txt_col='w';
         bad_data_col=[0.6 0.6 0.6];
     otherwise
-        ac_data_col='g';
-        in_data_col='b';
+        ac_data_col='r';
+        in_data_col='g';
         bad_data_col=[0.5 0.5 0.5];
+        txt_col='k';
         
 end
 
@@ -86,8 +88,7 @@ for i=1:length(list_reg)
             vis_grid=vis;
             x_text=nanmean(x_reg_rect(:));
             y_text=nanmean(y_reg_rect(:));
-
-            reg_plot=patch(x_reg_rect,y_reg_rect,col,'FaceAlpha',.4,'EdgeColor',col,'tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID,'parent',main_axes);
+            reg_plot=patch(x_reg_rect,y_reg_rect,col,'FaceAlpha',.4,'EdgeColor',col,'LineWidth',2,'tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID,'parent',main_axes);
         case 'Polygon'
             
             idx_x=reg_curr.X_cont;
@@ -113,13 +114,13 @@ for i=1:length(list_reg)
             end
             [x_reg,y_reg]=poly2cw(x_reg,y_reg);
             [f, v] = poly2fv(x_reg,y_reg);
-            reg_plot=patch('Faces', f, 'Vertices', v, 'FaceColor',col,'FaceAlpha',0.4,'EdgeColor','none','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID,'parent',main_axes);
+            reg_plot=patch('Faces', f, 'Vertices', v, 'FaceColor',col,'LineWidth',2,'FaceAlpha',0.6,'EdgeColor','none','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID,'parent',main_axes);
            
                     
     end
     
     
-    text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region_text','parent',main_axes);
+    text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region_text','color',txt_col,'parent',main_axes);
     
     
     create_region_context_menu(reg_plot,main_figure,reg_curr);

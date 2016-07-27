@@ -1,6 +1,5 @@
 function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v3(trans_obj,varargin)
 
-disp('Detecting Bottom.');
 %profile on;
 %Parse Arguments
 p = inputParser;
@@ -53,9 +52,13 @@ thr_echo=-12;
 [nb_samples,nb_pings]=size(Sv);
 
 Np=round(PulseLength*Fs);
-[~,idx_r_max]=nanmin(abs(r_max-Range));
-idx_r_max=nanmin(idx_r_max,nb_samples-1);
-idx_r_max=nanmax(idx_r_max,10);
+if r_max==Inf
+    idx_r_max=nb_samples;
+else
+    [~,idx_r_max]=nanmin(abs(r_max-Range));
+    idx_r_max=nanmin(idx_r_max,nb_samples);
+    idx_r_max=nanmax(idx_r_max,10);
+end
 
 [~,idx_r_min]=nanmin(abs(r_min-Range));
 idx_r_min=nanmax(idx_r_min,10);
@@ -199,7 +202,6 @@ if p.Results.shift_bot>0
 end
 
 
-disp('Done.');
 %
 % profile off;
 % profile viewer;

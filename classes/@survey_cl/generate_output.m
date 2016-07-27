@@ -31,21 +31,22 @@ i_reg=0;
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
+    fprintf('Integrating Snapshot %.0f:\n',snap_num);
     for ist=1:length(stratum)
-        
+       
         strat_name=stratum{ist}.Name;
-        transects=stratum{ist}.Transects;
+        transects=stratum{ist}.Transects; 
+        fprintf('Stratum %s:\n',strat_name);
         for itr=1:length(transects)
             i_trans=i_trans+1;
             trans_num=transects{itr}.number;
             idx_lay=find(trans_num==output.Transect&snap_num==output.Snapshot&strcmpi(strat_name,output.Stratum));
-            
+            fprintf('Transect %d\n',trans_num);
             if isempty(idx_lay)
                 warning('Could not find layers for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
                 continue;
             end
-            fprintf('Integrating Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
-            
+   
             Output_echo=[];
             eint=0;
             nb_tracks=0;

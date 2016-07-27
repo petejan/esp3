@@ -1,8 +1,6 @@
 function load_regions_tab(main_figure,option_tab_panel)
 
 
-dist=[];
-
 region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 
 list_reg={'--'};
@@ -30,13 +28,11 @@ region_tab_comp.cell_h=uicontrol(region_tab_comp.region_tab,'Style','edit','unit
 
 set([region_tab_comp.cell_w region_tab_comp.cell_h],'callback',{@check_cell,main_figure})
 
-if ~isempty(dist)
-    units_w= {'pings','meters'};
-else
-    units_w= {'pings'};
-end
+
+units_w= {'pings','meters'};
 
 units_h={'meters','samples'};
+
 h_unit_idx=find(strcmp(reg_curr.Cell_h_unit,units_h));
 w_unit_idx=find(strcmp(reg_curr.Cell_w_unit,units_w));
 

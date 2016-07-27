@@ -39,6 +39,7 @@ update_track_target_tab(main_figure);
 update_processing_tab(main_figure);
 update_display_tab(main_figure);
 update_regions_tab(main_figure);
+update_lines_tab(main_figure)
 
 load_calibration_tab(main_figure,main_childs(idx_opt));
 

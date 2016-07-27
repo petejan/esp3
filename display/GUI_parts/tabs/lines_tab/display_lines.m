@@ -51,7 +51,7 @@ for i=1:length(list_line)
     
     
     
-    [y_line,~]=resample_data_v2(active_line.Range,active_line.Time+dt_trawl,curr_time);
+    y_line=resample_data_v2(active_line.Range,active_line.Time+dt_trawl,curr_time);
     
     [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,main_echo);
     if isempty(y_line)

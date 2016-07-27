@@ -6,6 +6,7 @@ addRequired(p,'region',@(x) isa(x,'region_cl'));
 addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
 addParameter(p,'vertExtend',[0 Inf],@isnumeric);
 addParameter(p,'horiExtend',[0 Inf],@isnumeric);
+addParameter(p,'denoised',0,@isnumeric)
 
 
 parse(p,region,trans_obj,varargin{:});
@@ -18,9 +19,12 @@ parse(p,region,trans_obj,varargin{:});
 idx_pings=region.Idx_pings;
 idx_r=region.Idx_r;
 
-
-Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
-if isempty(Sv_reg)
+if p.Results.denoised>0
+    Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
+    if isempty(Sv_reg)
+        Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
+    end
+else
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
 
@@ -180,8 +184,8 @@ cell_w=region.Cell_w;
 cell_h=region.Cell_h;
 
 
-X0=nanmin(x_mat(Mask));
-X1=nanmax(x_mat(Mask));
+X0=nanmin(x_mat(:));
+X1=nanmax(x_mat(:));
 
 X=X0:cell_w:X1;
 X=[X X1];
@@ -192,14 +196,14 @@ N_x=length(X)-1;
 
 switch region.Reference
     case 'Surface'
-        Y0=nanmin(y_mat(Mask));
-        Y1=nanmax(y_mat(Mask));
+        Y0=nanmin(y_mat(:));
+        Y1=nanmax(y_mat(:));
         Y=Y0:cell_h:Y1;
         Y=[Y Y1];                
         y_c=(Y(2:end)+Y(1:end-1))/2;
         y_res=abs(Y(2:end)-Y(1:end-1))/2;
     otherwise
-        Y1=nanmin(y_mat(Mask));
+        Y1=nanmin(y_mat(:));
         Y=0:-cell_h:Y1;
         Y=[Y Y1];
         Y=unique(Y);
@@ -280,7 +284,7 @@ for i=1:N_x
         output.VL_S(:,i)=sub_dist(idx_bin_x(1));
         output.VL_E(:,i)=sub_dist(idx_bin_x(end));
     else
-        break;
+        continue;
     end
     
     Sv_lin_red=Sv_reg_lin(idx_red);

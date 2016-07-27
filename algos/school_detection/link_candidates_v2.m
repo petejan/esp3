@@ -36,7 +36,6 @@ while u<length(vec_candidates(1:end-1))
     curr_candidates=(candidates==i);
     
     if nansum(curr_candidates(:))==0
-        fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
         continue;
     end
     
@@ -55,7 +54,6 @@ while u<length(vec_candidates(1:end-1))
     k_curr=K_red(curr_candidates(K_red));
 
     if isempty(k_other)|| isempty(k_curr)
-        fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
         continue;
     end
     
@@ -107,7 +105,6 @@ while u<length(vec_candidates(1:end-1))
             k_curr=K_red(curr_candidates(K_red));
             
             if isempty(k_other)|| isempty(k_curr)
-               fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
                 continue;
             end
                  
@@ -118,18 +115,17 @@ while u<length(vec_candidates(1:end-1))
     end
     linking_mat(isnan(linking_mat(:,i)),i)=0;
     linking_mat(isnan(linking_mat(i,:)),i)=0;
-    
-        fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
+    fprintf(1,'Processing Linking %i/%i\n',u,nb_candidates);
 end
 fprintf(1,'Processing Linking %i/%i\n',nb_candidates,nb_candidates);
+
 linked_candidates=zeros(size(candidates));
 id=0;
 u=unique(candidates_ori(:));
 
 for ii=1:length(u)
     idx_curr=(candidates_ori==u(ii));
-    if ((nanmax(dist_pings_mat(idx_curr))-nanmin(dist_pings_mat(idx_curr)))>=l_min_tot )&&((nanmax(range_mat(idx_curr))-nanmin(range_mat(idx_curr)))>=h_min_tot)
-        
+    if ((nanmax(dist_pings_mat(idx_curr))-nanmin(dist_pings_mat(idx_curr)))>=l_min_tot )&&((nanmax(range_mat(idx_curr))-nanmin(range_mat(idx_curr)))>=h_min_tot)   
         linked_candidates(candidates_ori==u(ii))=id;
         id=id+1;
     else

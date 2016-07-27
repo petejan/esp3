@@ -140,7 +140,7 @@ end
 Bottom(nansum(Double_bottom_region)==0)=nan;
 idx_bottom(nansum(Double_bottom_region)==0)=nan;
 
-disp('Removal of noisy pings.');
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Removal of noisy pings%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -317,6 +317,7 @@ idx_noise_sector(idx_noise_sector_filter>=7/9)=1;
 
 bad_pings_percent=nansum(idx_noise_sector)/nb_pings*100;
 disp([num2str(bad_pings_percent) '% of bad pings']);
+
 
 % 
 % 

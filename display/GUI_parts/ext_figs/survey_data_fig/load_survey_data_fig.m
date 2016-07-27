@@ -166,10 +166,9 @@ idx_struct=src.Data{evt.Indices(1),8};
 
 switch evt.Indices(2)
     case 1
-        data_ori{idx_struct,1}=src.Data{evt.Indices(1),evt.Indices(2)};
+        data_ori{idx_struct,1}=src.Data{evt.Indices(1),1};
     case 2
-        data_ori{idx_struct,1}=~data_ori{idx_struct,1};
-        src.Data{evt.Indices(1),1}=data_ori{idx_struct,1};
+
     case 3
         surv_data_struct.Snapshot(idx_struct)=src.Data{evt.Indices(1),evt.Indices(2)};
         surv_data_struct.SurvDataObj{idx_struct}.Snapshot=src.Data{evt.Indices(1),evt.Indices(2)};
@@ -267,7 +266,7 @@ prompt={'Title',...
     'Areas',...
     'Author',...
     'Main species',...
-    'Comment'};
+    'Comments'};
 
 defaultanswer={'','','','',''};
 
@@ -281,7 +280,7 @@ survey_input_obj.Infos.Title=answer{1};
 survey_input_obj.Infos.Areas=answer{2};
 survey_input_obj.Infos.Author=answer{3};
 survey_input_obj.Infos.Main_species=answer{4};
-survey_input_obj.Infos.Comment=answer{5};
+survey_input_obj.Infos.Comments=answer{5};
 
 if ~isdir(path_scripts)
     path_scripts=path_f;
