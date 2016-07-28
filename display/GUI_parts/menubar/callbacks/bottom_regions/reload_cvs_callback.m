@@ -17,5 +17,9 @@ for i=1:length(layers)
     layers(i).CVS_BottomRegions(app_path.cvs_root)
 end
 setappdata(main_figure,'Layers',layers);
-update_display(main_figure,0);
+display_bottom(main_figure);
+display_regions(main_figure);
+update_regions_tab(main_figure);
+order_stacks_fig(main_figure);
+set_alpha_map(main_figure);
 end

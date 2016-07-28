@@ -101,7 +101,7 @@ layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 layer.Transceivers(idx_freq).apply_algo('TrackTarget');
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,0);
+display_tracks(main_figure);
 
 end
 

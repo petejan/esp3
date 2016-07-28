@@ -14,11 +14,10 @@ if found==0
 end
 
 trans_obj=layer.Transceivers(idx_freq);
-
 trans_obj.create_track_regs('Type',type);
 
-update_display(main_figure,0);
-
+display_tracks(main_figure);
+order_stacks_fig(main_figure);
 
 
 

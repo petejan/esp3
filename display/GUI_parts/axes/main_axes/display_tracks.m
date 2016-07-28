@@ -1,17 +1,18 @@
-function axes_panel_comp=display_tracks(xdata,ST,tracks,axes_panel_comp,vis)
+function axes_panel_comp=display_tracks(main_figure)
+
+layer=getappdata(main_figure,'Layer');
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+curr_disp=getappdata(main_figure,'Curr_disp');
+[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+ST=trans_obj.ST;
+tracks=trans_obj.Tracks;
+xdata=trans_obj.Data.get_numbers();
 
 X_st=xdata(ST.Ping_number);
 Z_st=ST.Target_range_disp;
 
-uu=0;
 if isfield(axes_panel_comp,'track_plot')
-%     for i=1:length(axes_panel_comp.track_plot)
-%         if ishandle(axes_panel_comp.track_plot(i-uu))
-%             delete(axes_panel_comp.track_plot(i-uu));
-%         end
-%             axes_panel_comp.track_plot(i-uu)=[];
-%             uu=uu+1;
-%     end
     delete(axes_panel_comp.track_plot);
     axes_panel_comp.track_plot=[];
 end
@@ -31,7 +32,7 @@ axes_panel_comp.track_plot=[];
         [X_t,idx_sort]=sort(X_st(idx_targets));
         Z_t=Z_st(idx_targets);
         Z_t=Z_t(idx_sort);
-        plot_handle=plot(axes_panel_comp.main_axes,X_t,Z_t,'r','linewidth',2,'tag','track','visible',vis);
+        plot_handle=plot(axes_panel_comp.main_axes,X_t,Z_t,'r','linewidth',2,'tag','track','visible',curr_disp.DispTracks);
         axes_panel_comp.track_plot=[axes_panel_comp.track_plot plot_handle];
     end
 else

@@ -34,5 +34,7 @@ set(denoise_tab_comp.SNRThr_sl,'value',algo_denoise_var.SNRThr);
 set(denoise_tab_comp.SNRThr_ed,'string',num2str(get(denoise_tab_comp.SNRThr_sl,'Value'),'%.0f'));
 
 set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'on');
+
+setappdata(main_figure,'Denoise_tab',denoise_tab_comp);
 end
 

@@ -5,16 +5,14 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 main_axes=axes_panel_comp.main_axes;
 
-u=get(main_axes,'children');
+u=findobj(main_axes,'tag',lines);
 
-for ii=1:length(u)
-    if strcmp(get(u(ii),'tag'),'lines')
-        if curr_disp.DispLines>0
-        set(u(ii),'visible','on');
-        else
-            set(u(ii),'visible','off');
-        end
-    end
+if curr_disp.DispLines>0
+    set(u,'visible','on');
+else
+    set(u,'visible','off');
 end
+
+
     
 end

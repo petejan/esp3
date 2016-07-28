@@ -27,6 +27,8 @@ if get(region_tab_comp.tog_reg,'value')>length(list_reg)
     set(region_tab_comp.tog_reg,'value',1)
 end
 set(findall(region_tab_comp.region_tab, '-property', 'Enable'), 'Enable', 'on');
-tog_reg_callback([],[],main_figure)
+tog_reg_callback([],[],main_figure);
+
+setappdata(main_figure,'Region_tab',region_tab_comp);
 
 end

@@ -83,7 +83,11 @@ layer.Transceivers(idx_freq).apply_algo('SchoolDetection');
 
 setappdata(main_figure,'Layer',layer);
 
-update_display(main_figure,0);
+
+display_regions(main_figure);
+set_alpha_map(main_figure);
+update_regions_tab(main_figure);
+order_stacks_fig(main_figure);
 end
 
 

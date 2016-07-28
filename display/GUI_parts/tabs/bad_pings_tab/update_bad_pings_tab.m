@@ -1,7 +1,5 @@
 function update_bad_pings_tab(main_figure)
 
-
-
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
@@ -33,4 +31,6 @@ set(bad_ping_tab_comp.BS_std_sl,'value',algo.BS_std);
 set(bad_ping_tab_comp.BS_std_ed,'string',num2str(get(bad_ping_tab_comp.BS_std_sl,'Value'),'%.0f'));
 
 set(findall(bad_ping_tab_comp.bad_ping_tab, '-property', 'Enable'), 'Enable', 'on');
+
+setappdata(main_figure,'Bad_ping_tab',bad_ping_tab_comp);
 end

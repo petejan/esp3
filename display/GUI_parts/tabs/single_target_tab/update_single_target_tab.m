@@ -37,4 +37,6 @@ set(single_target_tab_comp.MaxStdMajAxisAngle_ed,'string',num2str(get(single_tar
 
 
 set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'on');
+
+setappdata(main_figure,'Single_target_tab',single_target_tab_comp);
 end

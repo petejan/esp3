@@ -39,4 +39,7 @@ set(school_detect_tab_comp.sv_thr_sl,'value',algo.Sv_thr);
 set(school_detect_tab_comp.sv_thr_ed,'string',num2str(get(school_detect_tab_comp.sv_thr_sl,'Value'),'%.0f'));
 
 set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'on');
+
+setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
+
 end

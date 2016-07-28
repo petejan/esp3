@@ -136,7 +136,7 @@ end
             col='k';
         end
         
-        display_bottom(xdata_real,ydata_real,layer.Transceivers(idx_freq).Bottom.Sample_idx,axes_panel_comp,curr_disp.DispBottom,col);
+        display_bottom(main_figure);
         set_alpha_map(main_figure);
 
     end

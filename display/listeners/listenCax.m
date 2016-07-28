@@ -1,12 +1,8 @@
-function listenCax(~,listdata,main_figure)
-
+function listenCax(~,~,main_figure)
+update_display_tab(main_figure);
+set_alpha_map(main_figure,'main_or_min','mini');
 set_alpha_map(main_figure);
 
-if ~isempty(listdata.AffectedObject.Cax)
-    axes_panel_comp=getappdata(main_figure,'Axes_panel');
-    axes(axes_panel_comp.main_axes);
-    caxis(listdata.AffectedObject.Cax);
-end
+order_axes(main_figure);
 
-update_mini_ax(main_figure);
 end

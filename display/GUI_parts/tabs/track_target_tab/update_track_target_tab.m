@@ -22,5 +22,5 @@ for i=1:length(algo_fields)
 end
 
 set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'on');
-
+setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
 end

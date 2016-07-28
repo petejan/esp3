@@ -137,7 +137,9 @@ for idg=1:length(idx_raw_obj.type_dg)
                     end
                 case 'Parameter'
                    if isfield(data,'params')
-                        continue;
+                       if length(data.params)==length(idx_freq)
+                            continue;
+                       end
                     end
                     params_temp=output;
                     idx = find(strcmp(deblank(CIDs_freq),deblank(params_temp.ChannelID)));

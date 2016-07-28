@@ -50,7 +50,7 @@ pings=double(Transceiver.Data.get_numbers()-Transceiver.Data.get_numbers(1)+1);
 idx_r=find(samples>=nanmin(poly_r)&samples<=nanmax(poly_r));
 idx_pings=find(pings>=nanmin(poly_pings)&pings<=nanmax(poly_pings));
 
-MaskReg=poly2mask(poly_pings-nanmin(poly_pings)+1,poly_r-nanmin(poly_r)+1,length(idx_r),length(idx_pings));
+MaskReg=poly2mask(poly_pings-nanmin(poly_pings),poly_r-nanmin(poly_r),length(idx_r),length(idx_pings));
 
 if isempty(idx_r)||isempty(idx_pings)
     return;

@@ -98,7 +98,9 @@ end
         
         feval(func,main_figure,poly_r+idx_r_ori-1,poly_pings+idx_ping_ori-1);
         curr_disp.CursorMode='Normal';
+        
         set_alpha_map(main_figure);
+        display_regions(main_figure);
 
         
     end

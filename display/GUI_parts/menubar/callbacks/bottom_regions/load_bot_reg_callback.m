@@ -15,5 +15,11 @@ end
 layer.CVS_BottomRegions(app_path.cvs_root)
 
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,0);
+
+display_bottom(main_figure);
+display_regions(main_figure);
+set_alpha_map(main_figure);
+update_regions_tab(main_figure);
+order_stacks_fig(main_figure);
+
 end

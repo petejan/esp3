@@ -10,7 +10,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-Transceiver=layer.Transceivers(idx_freq);
 
 tag=get(region_tab_comp.tag,'string');
 
@@ -34,13 +33,6 @@ h_units=get(region_tab_comp.cell_h_unit,'string');
 h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
 h_unit=h_units{h_unit_idx};
 
-
-range=double(Transceiver.Data.get_range());
-samples=(1:length(range))';
-pings=double(Transceiver.Data.get_numbers());
-
-% sub_y=samples(idx_r);
-% sub_x=pings(idx_pings);
 
 cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));
@@ -72,6 +64,10 @@ else
 end
 setappdata(main_figure,'Region_tab',region_tab_comp);
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,0)
+
+display_regions(main_figure);
+set_alpha_map(main_figure);
+update_regions_tab(main_figure);
+order_stacks_fig(main_figure);
 
 end

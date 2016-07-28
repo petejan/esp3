@@ -8,6 +8,7 @@ region_text=findobj(echo_ax,'tag','region_text','-and','visible','on');
 zoom_area=findobj(echo_ax,'tag','zoom_area');
 
 
+
 uistack(echo_im,'top');
 uistack(bt_im,'top');
 uistack(regions,'top');

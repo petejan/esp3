@@ -15,4 +15,5 @@ end
 
 set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'on');
 
+setappdata(main_figure,'Lines_tab',lines_tab_comp);
 end

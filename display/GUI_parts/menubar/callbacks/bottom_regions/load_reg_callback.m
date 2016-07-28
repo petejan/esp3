@@ -16,5 +16,8 @@ end
 layer.CVS_BottomRegions(app_path.cvs_root,'BotCVS',0,'RegCVS',1);
 
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,0);
+
+display_regions(main_figure);
+update_regions_tab(main_figure);
+order_stacks_fig(main_figure);
 end

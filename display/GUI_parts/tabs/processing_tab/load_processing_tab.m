@@ -113,7 +113,11 @@ for ii=1:length(layer_to_proc)
     
 end
 setappdata(main_figure,'Layers',layers);
-update_display(main_figure,0);
+display_bottom(main_figure);
+display_regions(main_figure);
+set_alpha_map(main_figure);
+update_regions_tab(main_figure);
+order_stacks_fig(main_figure);
 
 end
 

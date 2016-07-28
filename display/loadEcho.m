@@ -1,5 +1,6 @@
-function listenEcho(~,~,main_figure)
-%disp('ListenEcho')
+function loadEcho(main_figure)
+set(main_figure,'WindowButtonMotionFcn','');
+rm_listeners(main_figure)
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
 nb_layers=length(layers);
@@ -42,5 +43,7 @@ end
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,flag);
+init_listeners(main_figure);
+set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 end
 

@@ -159,11 +159,20 @@ switch callbackdata.Key
         cmaps={'jet' 'hsv' 'esp2' 'ek500'};
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
+        curr_disp.Freq=curr_disp.Freq;
     case 'f'
         if length(layer.Frequencies)>1
             id_freq=layer.find_freq_idx(curr_disp.Freq);
             curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
         end
+    case 'e'
+        if length(layer.Frequencies)>1
+            curr_disp=getappdata(main_figure,'Curr_disp');
+            idx_freq=layer.find_freq_idx(curr_disp.Freq);
+            fields=layer.Transceivers(idx_freq).Data.Fieldname;
+            id_field=find(strcmp(curr_disp.Fieldname,fields));
+            curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
+        end
 end
-
+order_axes(main_figure);
 end

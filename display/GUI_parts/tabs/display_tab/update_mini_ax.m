@@ -21,17 +21,22 @@ size_mini=temp_size(3:4);
 set(display_tab_comp.mini_ax,'units','normalized');
 idx_r_disp=unique(round(linspace(1,nb_samples,size_mini(2))));
 idx_p_disp=unique(round(linspace(1,nb_pings,size_mini(1))));
+data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);    
 
-switch curr_disp.Fieldname
-    case 'power'
-        data_disp=10*log10(layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp),'field',curr_disp.Fieldname);
-        
+switch lower(deblank(curr_disp.Fieldname))
+    case {'y','y_imag','y_real'}
+        data_disp=10*log10(abs(data));
+    case {'power','powerdenoised','powerunmatched'}
+        data(data<=0)=nan;
+        data_disp=10*log10(data);
     otherwise
-        data_disp=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);      
+        data_disp=data;
 end
 
-switch lower(curr_disp.Cmap)
+data_disp=single(data_disp);
 
+
+switch lower(curr_disp.Cmap)
     case 'esp2'
         patch_col='g';
     otherwise
@@ -44,7 +49,6 @@ set(display_tab_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
 set(display_tab_comp.patch_obj,'Faces',f1,'Vertices',v1,'FaceColor',patch_col,'EdgeColor',patch_col);
 
 set_alpha_map(main_figure,'main_or_mini','mini');
-setappdata(main_figure,'Display_tab',display_tab_comp);
 
 
 end

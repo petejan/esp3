@@ -45,4 +45,6 @@ set(processing_tab_comp.track_target,'Value',track_target_alg);
 
 set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'on');
 
+setappdata(main_figure,'Processing_tab',processing_tab_comp);
+
 end

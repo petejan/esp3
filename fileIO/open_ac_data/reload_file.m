@@ -62,7 +62,6 @@ switch ftype
         end
         
 end
-
-listenEcho([],[],main_figure);
+loadEcho(main_figure);
 
 end

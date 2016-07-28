@@ -55,7 +55,7 @@ hp=line(x_box,y_box,'color',col_line,'linewidth',1);
 
 src.WindowButtonMotionFcn = @wbmcb;
 src.WindowButtonUpFcn = @wbucb;
-
+order_axes(main_figure);
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;

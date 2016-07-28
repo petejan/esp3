@@ -139,6 +139,6 @@ layer.update_echo_logbook_file();
 
 setappdata(main_figure,'Layer',layer);
 load_cursor_tool(main_figure);
-update_display(main_figure,0);
+display_survdata_lines(main_figure);
 
 end

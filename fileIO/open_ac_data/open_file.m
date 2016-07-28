@@ -219,7 +219,7 @@ if ~isequal(Filename, 0)
             
     end
     
-    listenEcho([],[],main_figure);
+    loadEcho(main_figure);
     
 end
 end

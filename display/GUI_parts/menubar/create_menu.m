@@ -77,7 +77,7 @@ main_menu.disp_reg=uimenu(m_display,'checked',curr_disp.DispReg,'Label','Display
 main_menu.disp_tracks=uimenu(m_display,'checked',curr_disp.DispTracks,'Label','Display_tracks');
 main_menu.disp_lines=uimenu(m_display,'checked',curr_disp.DispLines,'Label','Display Lines');
 main_menu.disp_under_bot=uimenu(m_display,'checked',curr_disp.DispUnderBottom,'Label','Display Under Bottom data');
-main_menu.display_file_lines=uimenu(m_display,'checked','off','Label','Display File Lines','Callback',{@checkbox_callback,main_figure,@display_file_lines});
+main_menu.display_file_lines=uimenu(m_display,'checked','off','Label','Display File Lines','Callback',{@checkbox_callback,main_figure,@toggle_display_file_lines});
 main_menu.reverse_y_axis=uimenu(m_display,'checked','off','Label','Reverse Y-Axis','Callback',{@checkbox_callback,main_figure,@reverse_y_axis});
 
 
@@ -171,7 +171,7 @@ if folder==0
 end
 layer.load_bottom_regions_from_folder(folder,'bot',bot,'reg',reg);
 setappdate(main_figure,'Layer',layer);
-update_display(main_figure)
+update_display(main_figure,0);
 
 end
 

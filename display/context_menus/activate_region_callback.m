@@ -73,9 +73,7 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
         setappdata(main_figure,'Layer',layer);
         update_regions_tab(main_figure);
         order_axes(main_figure);
-        axes_panel_comp=getappdata(main_figure,'Axes_panel');
-        echo_ax=axes_panel_comp.main_axes;
-        order_stack(echo_ax);
+        order_stacks_fig(main_figure);
     else
         return
     end

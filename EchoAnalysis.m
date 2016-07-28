@@ -112,7 +112,7 @@ setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',[]);
 movegui(main_figure,'center')
 initialize_display(main_figure);
-init_listeners(main_figure);
+
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 drawnow;
 

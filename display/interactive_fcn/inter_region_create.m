@@ -138,7 +138,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
         curr_disp.CursorMode='Normal';
         set_alpha_map(main_figure);
-        
+        display_regions(main_figure);
     end
 
 end

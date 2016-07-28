@@ -23,5 +23,5 @@ switch listdata.AffectedObject.CursorMode
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);
 end
-
+order_axes(main_figure);
 end

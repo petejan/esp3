@@ -29,8 +29,6 @@ switch curr_disp.Xaxes
         curr_disp.Grid_x=dp;
 end
 
-
 setappdata(main_figure,'Curr_disp',curr_disp);
-update_axis_panel(main_figure,0);
-change_grid_callback([],[],main_figure);
+update_grid(main_figure);
 end
