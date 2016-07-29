@@ -27,7 +27,13 @@ set(hfig,'Name','Navigation','NumberTitle','off','tag','nav');
 LonLim=[nan nan];
 LatLim=[nan nan];
 
-snap=unique(obj.Snapshot);
+if ~strcmp(field,'Tag')
+    snap=unique(obj.Snapshot);
+else
+    %[tag,snap]=unique(obj.Regions.Tag);
+    tag={'EUP','GYP','MMU','DIA','ELC','LHE'};
+    snap=ones(1,length(tag));
+end
 
 LonLim(1)=nanmin(LonLim(1),obj.LonLim(1));
 LonLim(2)=nanmax(LonLim(2),obj.LonLim(2));
@@ -82,7 +88,7 @@ for usnap=1:length(snap)
     catch
         disp('No Geographical data available...')
     end
-
+    
     if obj.Depth_Contour>0
         try
             try
@@ -90,7 +96,7 @@ for usnap=1:length(snap)
                 [Cs,hs]=m_contour(lon_c,lat_c,bathy,-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
             catch
                 disp('Cannot find Etopo1 data...')
-                 [Cs,hs]=m_elev('contour',-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
+                [Cs,hs]=m_elev('contour',-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
             end
             clabel(Cs,hs,'fontsize',8);
         catch
@@ -99,59 +105,70 @@ for usnap=1:length(snap)
     end
 end
 
-u_plot=gobjects(1,length(obj.Snapshot));
-u_plot_slice=gobjects(1,length(obj.Snapshot));
-
-for usnap=1:length(snap)
-    if p.Results.oneMap==0
-        idx_snap=find(obj.Snapshot==snap(usnap));
-        if isempty(idx_snap)
-            continue;
+if ~strcmp(field,'Tag')
+    u_plot=gobjects(1,length(obj.Snapshot));
+    u_plot_slice=gobjects(1,length(obj.Snapshot));
+    
+    for usnap=1:length(snap)
+        if p.Results.oneMap==0
+            idx_snap=find(obj.Snapshot==snap(usnap));
+            
+            if isempty(idx_snap)
+                continue;
+            end
+            title(n_ax(usnap),sprintf('%s\n Snapshot %d',obj.Voyage{idx_snap(1)},snap(usnap)));
+        else
+            idx_snap=1:length(obj.Snapshot);
+            title(n_ax(usnap),sprintf('%s\n',obj.Voyage{idx_snap(1)}));
         end
-        title(n_ax(usnap),sprintf('%s\n Snapshot %d',obj.Voyage{idx_snap(1)},snap(usnap)));
-    else
-        idx_snap=1:length(obj.Snapshot);
-        title(n_ax(usnap),sprintf('%s\n',obj.Voyage{idx_snap(1)}));
+        
+        for uui=1:length(idx_snap)
+            if ~isempty(obj.Lon{idx_snap(uui)})
+                u_plot(n_ax(usnap),idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
+                set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
+                m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
+                if~isempty(main_figure)
+                    create_context_menu_track(main_figure,hfig,u_plot(idx_snap(uui)));
+                end
+            end
+            
+            if ~isempty(obj.SliceLon{idx_snap(uui)})
+                if isempty(obj.Lon{idx_snap(uui)})
+                    m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
+                end
+                u_plot_slice(idx_snap(uui))=m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'xk','Tag','Nav');
+                set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
+                
+                if ~strcmp(field,'Tag')
+                    ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
+                    idx_rings=find(ring_size>0);
+                    for uuj=idx_rings
+                        m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
+                    end
+                    
+                    if~isempty(main_figure)
+                        create_context_menu_track(main_figure,hfig,u_plot_slice(idx_snap(uui)));
+                    end
+                end
+            end
+        end
+        
+        
     end
     
-    for uui=1:length(idx_snap)
-        if ~isempty(obj.Lon{idx_snap(uui)})
-            u_plot(n_ax(usnap),idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
-            set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
-            m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
-            if~isempty(main_figure)
-                create_context_menu_track(main_figure,hfig,u_plot(idx_snap(uui)));
-            end
-        end
-        
-        if ~isempty(obj.SliceLon{idx_snap(uui)})
-            if isempty(obj.Lon{idx_snap(uui)})
-                m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
-            end
-            u_plot_slice(idx_snap(uui))=m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'xk','Tag','Nav');
-            set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
-            
-            if ~strcmp(field,'Tag')
-                ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
-                idx_rings=find(ring_size>0);
-                for uuj=idx_rings
-                    m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
-                end
-                
-                if~isempty(main_figure)
-                    create_context_menu_track(main_figure,hfig,u_plot_slice(idx_snap(uui)));
-                end
+    
+else
+    
+    for utag=1:length(tag)
+        title(n_ax(utag),sprintf('%s: %s\n',obj.Voyage{1},tag{utag}));       
+        if strcmp(field,'Tag')
+            ireg_snap=find(strcmp(obj.Regions.Tag,tag{utag}));
+            for ireg=ireg_snap
+                m_text(obj.Regions.Lon_m(ireg),obj.Regions.Lat_m(ireg),obj.Regions.Tag{ireg},'parent',n_ax(utag),'color','r');
             end
         end
         
     end
-    if strcmp(field,'Tag')
-        ireg_snap=find(obj.Regions.Snapshot==snap(usnap));
-        for ireg=ireg_snap
-            m_text(obj.Regions.Lon_m(ireg),obj.Regions.Lat_m(ireg),obj.Regions.Tag{ireg},'parent',n_ax(usnap),'color','r');
-        end
-    end
-
 end
 
 

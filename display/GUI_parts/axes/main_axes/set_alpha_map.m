@@ -75,7 +75,7 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
         data_temp(:,idx_bad_red)=Inf;
         set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',(~isnan(data_temp))-0.2);
         if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
-            create_context_menu_main_echo(main_figure,echo_im_bt);
+            create_context_menu_main_echo(main_figure);
         end
     else
         set(echo_im_bt,'AlphaData',0);

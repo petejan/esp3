@@ -44,7 +44,7 @@ clear_lines(axes_panel_comp.main_axes);
 layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
 
 if strcmpi(curr_disp.CursorMode,'Normal')  
-    create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);
+    create_context_menu_main_echo(main_figure);
 end
 
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 

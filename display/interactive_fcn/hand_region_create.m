@@ -9,50 +9,53 @@ ah=axes_panel_comp.main_axes;
 
 switch main_figure.SelectionType
     case 'normal'
-
+        
     otherwise
         curr_disp.CursorMode='Normal';
+        return;
 end
-    clear_lines(ah);
-    switch curr_disp.Cmap
-        case 'esp2'
-            col_line='w';
-        otherwise
-            col_line='k';
-    end
-    
-    xdata=double(get(axes_panel_comp.main_echo,'XData'));
-    ydata=double(get(axes_panel_comp.main_echo,'YData'));
-    
-    idx_freq=find_freq_idx(layer,curr_disp.Freq);
-    trans=layer.Transceivers(idx_freq);
-    bot=trans.Bottom;
-    
-    Number=trans.Data.get_numbers();
-    nb_pings=length(Number);
-    
-    if isempty(bot.Range)
-        bot.Range=nan(1,nb_pings);
-        bot.Sample_idx=nan(1,nb_pings);
-    end
-    
-    cp = ah.CurrentPoint;
-    u=1;
-    xinit=nan(1,1e4);
-    yinit=nan(1,1e4);
-    xinit(1) = cp(1,1);
-    yinit(1)=cp(1,2);
-    
-    if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
-        return
-    end
-    axes(ah);
-    hold on;
-    hp=line(xinit,yinit,'color',col_line,'linewidth',1);
-    txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
-    
-    main_figure.WindowButtonMotionFcn = @wbmcb;
-    main_figure.WindowButtonUpFcn = @wbucb;
+axes_panel_comp.bad_transmits.UIContextMenu=[];
+axes_panel_comp.bottom_plot.UIContextMenu=[];
+clear_lines(ah);
+switch curr_disp.Cmap
+    case 'esp2'
+        col_line='w';
+    otherwise
+        col_line='k';
+end
+
+xdata=double(get(axes_panel_comp.main_echo,'XData'));
+ydata=double(get(axes_panel_comp.main_echo,'YData'));
+
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans=layer.Transceivers(idx_freq);
+bot=trans.Bottom;
+
+Number=trans.Data.get_numbers();
+nb_pings=length(Number);
+
+if isempty(bot.Range)
+    bot.Range=nan(1,nb_pings);
+    bot.Sample_idx=nan(1,nb_pings);
+end
+
+cp = ah.CurrentPoint;
+u=1;
+xinit=nan(1,1e4);
+yinit=nan(1,1e4);
+xinit(1) = cp(1,1);
+yinit(1)=cp(1,2);
+
+if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
+    return
+end
+axes(ah);
+hold on;
+hp=line(xinit,yinit,'color',col_line,'linewidth',1);
+txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+
+main_figure.WindowButtonMotionFcn = @wbmcb;
+main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -69,7 +72,7 @@ end
         
         main_figure.WindowButtonMotionFcn = '';
         main_figure.WindowButtonUpFcn = '';
-       
+        
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
@@ -101,7 +104,8 @@ end
         
         set_alpha_map(main_figure);
         display_regions(main_figure);
-
-        
+        create_context_menu_main_echo(main_figure);
+        create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
+        main_figure.Pointer = 'cross';
     end
 end

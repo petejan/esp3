@@ -25,7 +25,7 @@ end
 
 switch src.State
     case'on'
-        axes_panel_comp.main_echo.UIContextMenu=[];
+        axes_panel_comp.bad_transmits.UIContextMenu=[];
         axes_panel_comp.bottom_plot.UIContextMenu=[];
         switch type
             case 'zin'
@@ -71,7 +71,8 @@ switch src.State
     case 'off'
         set(main_figure,'Pointer','arrow');
         set(main_figure,'WindowButtonDownFcn','');
-        create_context_menu_main_echo(main_figure,axes_panel_comp.main_echo);
+        create_context_menu_main_echo(main_figure);
         create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
 end
+
 end

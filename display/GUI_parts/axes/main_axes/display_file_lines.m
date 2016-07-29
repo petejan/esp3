@@ -7,9 +7,13 @@ layer=getappdata(main_figure,'Layer');
 idx_change_file=find(diff(layer.Transceivers(idx_freq).Data.FileId)>0);
 
 state_file_lines=get(main_menu.display_file_lines,'checked');
+trans_obj=layer.Transceivers(idx_freq);
+xdata=trans_obj.Data.get_numbers();
+ydata=trans_obj.Data.get_range();
+
 
 for ifile=1:length(idx_change_file)
-    plot(ax,xdata(idx_change_file(ifile)).*ones(size(ydata(idx_r))),ydata(idx_r),'k','tag','file_id');
+    plot(axes_panel_comp.main_axes,xdata(idx_change_file(ifile)).*ones(size(ydata)),ydata,'k','tag','file_id');
 end
 
 obj_line=findobj(axes_panel_comp.main_axes,'Tag','file_id');

@@ -11,6 +11,8 @@ switch main_figure.SelectionType
         curr_disp.CursorMode='Normal';
         return;
 end
+axes_panel_comp.bad_transmits.UIContextMenu=[];
+axes_panel_comp.bottom_plot.UIContextMenu=[];
 switch curr_disp.Cmap
     case 'esp2'
         col_line='w';
@@ -139,6 +141,9 @@ main_figure.WindowButtonUpFcn = @wbucb;
         curr_disp.CursorMode='Normal';
         set_alpha_map(main_figure);
         display_regions(main_figure);
+        create_context_menu_main_echo(main_figure);
+        create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
+       
     end
 
 end

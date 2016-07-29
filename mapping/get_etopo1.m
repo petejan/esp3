@@ -41,6 +41,7 @@ etopo_file='ETOPO1_Bed_g_gmt4.grd';
 lon_etopo=ncread(etopo_file,'x');
 lat_etopo=ncread(etopo_file,'y');
 
+lonlim(lonlim>180)=lonlim(lonlim>180)-360;
 
 if latlim(1)<=latlim(2)
     idx_lat=find(lat_etopo>=latlim(1)&lat_etopo<=latlim(2));
@@ -86,7 +87,7 @@ end
 
 if latlim(1)>=latlim(2)
     lat_temp=lat;
-    lat_temp(lat_temp<0)=lat_temp(lat_temp<0)+90;
+    lat_temp(lat_temp<0)=lat_temp(lat_temp<0)+180;
     [~,idx_order_lat]=sort(lat_temp);
     lat=lat(idx_order_lat);bathy=bathy(:,idx_order_lat);
 end
@@ -97,8 +98,6 @@ if lonlim(1)>=lonlim(2)
     [~,idx_order_lon]=sort(lon_temp);
     lon=lon(idx_order_lon);bathy=bathy(idx_order_lon,:);
 end
-
-
-
+lon(lon<0)=lon(lon<0)+360;
 bathy=flipud(bathy');
 end

@@ -121,23 +121,13 @@ end
     end
 
     function end_bottom_edit()
-
-        xdata_real=layer.Transceivers(idx_freq).Data.get_numbers();
-        ydata_real=layer.Transceivers(idx_freq).Data.get_range();
-        
+ 
         layer.Transceivers(idx_freq).Bottom=bot;
         setappdata(main_figure,'Layer',layer);
         reset_disp_info(main_figure);
-        if strcmp(curr_disp.Cmap,'esp2')
-            col='y'; % ESP2's colormap is 'black background' so the bottom line is drawn in yellow
-        elseif strcmp(curr_disp.Cmap,'ek500')
-            col='g'; % Simrad sounders use a green bottom line
-        else
-            col='k';
-        end
-        
         display_bottom(main_figure);
         set_alpha_map(main_figure);
+        set_alpha_map(main_figure,'main_or_mini','mini');
 
     end
 end

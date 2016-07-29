@@ -20,6 +20,7 @@ switch listdata.AffectedObject.CursorMode
         main_figure.Pointer = 'cross';
         set(main_figure,'WindowButtonDownFcn',@create_region);
     case 'Normal'
+         main_figure.Pointer = 'arrow';
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);
 end

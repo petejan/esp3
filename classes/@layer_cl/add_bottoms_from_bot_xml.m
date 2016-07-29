@@ -76,6 +76,8 @@ for i=1:length(xml_file)
         sample_idx=resample_data_v2((1:length(trans_obj.Data.get_range())),trans_obj.Data.get_range(),depth_resampled,'Opt','Nearest');
         tag_resampled=resample_data_v2(tag(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Data.Time(idx_start_file:idx_end_file),'Opt','Nearest');
         
+        sample_idx(sample_idx==1)=nan;
+        
         if i==1
         new_bottom{idx_freq}= bottom_cl(...
             'Range',nan(size(trans_obj.Data.Time)),...
