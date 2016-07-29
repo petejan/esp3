@@ -1,6 +1,5 @@
 function layers_out_cell=sort_per_survey_data(layers_in)
 
-
 output=layers_in.list_layers_survey_data();
 
 [~,~,strat_vec_num]=unique(output.Stratum);

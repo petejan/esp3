@@ -1,6 +1,6 @@
 function output=list_layers_survey_data(layers)
 
-
+output=[];
 nb_survd=0;
 for it=1:length(layers)
     for is=1:length(layers(it).SurveyData)

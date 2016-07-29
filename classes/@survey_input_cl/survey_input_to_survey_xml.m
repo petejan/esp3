@@ -17,7 +17,7 @@ docNode = com.mathworks.xml.XMLUtils.createDocument('survey_processing');
 main_node=docNode.getDocumentElement;
 survey_node = docNode.createElement('survey');
 fields_infos=fields(survey_input_obj.Infos);
-% 
+%
 % for i=1:length(fields_infos)
 %     if isfield(p.Results,fields_infos{i})
 %         survey_input_obj.Infos.(fields_infos{i})=p.Results.(fields_infos{i});
@@ -150,6 +150,11 @@ if ~isempty(survey_input_obj.Snapshots)
     %type(xml_file);
     if p.Results.open_file
         open(p.Results.xml_filename);
+        [stat,~]=system(['start notepad++ ' p.Results.xml_filename]);
+        if stat~=0
+            disp('You should install Notepad++...');
+            system(['start ' p.Results.xml_filename]);
+        end
     end
     
     

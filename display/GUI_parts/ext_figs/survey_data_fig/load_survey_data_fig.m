@@ -214,12 +214,15 @@ setappdata(surv_data_fig,'data_ori',data_ori);
 end
 
 
-function open_files_callback(~,~,surv_data_fig,main_figure)
+function open_files_callback(src,evt,surv_data_fig,main_figure)
 surv_data_table=getappdata(surv_data_fig,'surv_data_table');
 data_ori=get(surv_data_table.table_main,'Data');
 selected_files=unique(data_ori([data_ori{:,1}],2));
 path_f=getappdata(surv_data_fig,'path_data');
 files=fullfile(path_f,selected_files);
+if isempty(files)
+   return;
+end
 open_file([],[],files,main_figure);
 end
 

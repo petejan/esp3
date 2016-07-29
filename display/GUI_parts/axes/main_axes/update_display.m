@@ -15,19 +15,8 @@ end
 
 if new==1
     load_cursor_tool(main_figure);
-    curr_disp=getappdata(main_figure,'Curr_disp');
-    [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-    switch curr_disp.Xaxes
-        case 'Time'
-            x_vec=layer.Transceivers(idx_freq).Data.Time*(24*60*60);
-        case 'Distance'
-            x_vec=layer.Transceivers(idx_freq).GPSDataPing.Dist;
-        case 'Number'
-            x_vec=layer.Transceivers(idx_freq).Data.get_numbers();
-    end    
-    curr_disp.Grid_y=10^(floor(log10(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))))/5;
-    curr_disp.Grid_x=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
     
+    init_grid_val(main_figure);
     update_bottom_tab(main_figure)
     update_bad_pings_tab(main_figure)
     update_denoise_tab(main_figure);

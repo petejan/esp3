@@ -35,18 +35,11 @@ end
 
 data_disp=single(data_disp);
 
-
-switch lower(curr_disp.Cmap)
-    case 'esp2'
-        patch_col='g';
-    otherwise
-        patch_col='r';
-
-end
-
+patch_col='b';
+ 
 set(display_tab_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[range(1) range(end)])
 set(display_tab_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
-set(display_tab_comp.patch_obj,'Faces',f1,'Vertices',v1,'FaceColor',patch_col,'EdgeColor',patch_col);
+set(display_tab_comp.patch_obj,'Faces',f1,'Vertices',v1,'FaceColor',patch_col,'EdgeColor',patch_col,'LineWidth',2);
 
 set_alpha_map(main_figure,'main_or_mini','mini');
 

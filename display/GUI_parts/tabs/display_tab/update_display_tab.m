@@ -21,6 +21,18 @@ idx_axes=find(strcmp(curr_disp.Xaxes,Axes_type));
 
 set(display_tab_comp.grid_x,'String',num2str(curr_disp.Grid_x,'%.0f'));
 set(display_tab_comp.grid_y,'String',num2str(curr_disp.Grid_y,'%.0f'));
+
+switch curr_disp.Xaxes
+    case 'Number'
+        str_ax='';
+    case 'Time'
+        str_ax='sec'
+    case 'Distance'
+        str_ax='m'
+    
+end
+
+set(display_tab_comp.grid_x_unit,'string',str_ax);
 set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
 set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field);
 set(display_tab_comp.tog_axes,'String',Axes_type,'Value',idx_axes);

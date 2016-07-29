@@ -6,24 +6,6 @@ display_tab_comp=getappdata(main_figure,'Display_tab');
 
 
 switch lower(curr_disp.Cmap)
-    case 'esp2'
-        
-    case 'ek500'
-        
-    otherwise
-        
-end
-
-switch lower(curr_disp.Cmap)
-    case 'esp2'
-        
-    case 'ek500'
-        
-    otherwise
-        
-end
-
-switch lower(curr_disp.Cmap)
     case 'jet'
         cmap=colormap('jet');
         col_ax='w';

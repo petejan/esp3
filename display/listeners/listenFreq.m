@@ -23,6 +23,6 @@ display_tracks(main_figure);
 display_regions(main_figure);
 set_alpha_map(main_figure);
 order_axes(main_figure);
-
+order_stacks_fig(main_figure);
 end
 

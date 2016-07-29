@@ -73,7 +73,7 @@ switch class(obj_vec)
     case 'mbs_cl'
         field_str={'SliceAbscf'};
     case 'survey_cl'
-        field_str={'SliceAbscf','Nb_ST','Nb_Tracks'};
+        field_str={'SliceAbscf','Nb_ST','Nb_Tracks','Tag'};
     otherwise
         field_str={'SliceAbscf','Nb_ST','Nb_Tracks'};
 end
@@ -133,6 +133,7 @@ if ~isempty(obj_vec)
             
     end
 end
+
 str_field=get(box.field,'string');
 str_field=str_field{get(box.field,'value')};
 
@@ -310,9 +311,8 @@ for ui=1:4
     end
 end
 delete(box.plot);
-axes(box.lim_axes);
 [lon,lat]=create_box(box.lon_box,box.lat_box,box.nb_pts);
-box.plot=m_line(lon,lat,'Color','b','linewidth',2,'tag','box');
+box.plot=m_line(lon,lat,'Color','b','linewidth',2,'tag','box','parent',box.lim_axes);
 setappdata(map_fig,'Box',box);
 create_box_impoints(map_fig,i);
 end
@@ -332,6 +332,8 @@ switch (str_field)
        box.val_max=20;
     case 'Nb_Tracks'
        box.val_max=10;
+    case 'Tag'
+        box.val_max=0.00001;
 end
 
 set(box.val_max_box,'string',num2str(box.val_max,'%.6f'));

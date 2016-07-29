@@ -49,6 +49,7 @@ end
 [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
 
 
+
 cp = ax_main.CurrentPoint;
 x=cp(1,1);
 y=cp(1,2);

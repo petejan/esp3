@@ -23,7 +23,7 @@ end
 
 
 line_node = docNode.createElement('line');
-line_node.setAttribute('Filename',strrep(filename,' ',''));
+line_node.setAttribute('Filename',deblank(filename));
 line_node.setAttribute('Snapshot',num2str(surv_data_obj.Snapshot,'%.0f'));
 if ~ischar(surv_data_obj.Stratum)
     line_node.setAttribute('Stratum',num2str(surv_data_obj.Stratum,'%.0f'));

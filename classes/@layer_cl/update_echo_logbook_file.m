@@ -29,8 +29,8 @@ for ilay=1:length(layers_obj)
     layer_obj=layers_obj(ilay);
     surv_data_struct=layer_obj.get_logbook_struct();
     [path_lay,file_lay]=layer_obj.get_path_files();
-    list_raw=ls(fullfile(path_lay{1},'*.raw'));
-    
+    dir_raw=dir(fullfile(path_lay{1},'*.raw'));
+    list_raw={dir_raw(:).name};
     
     docNode = com.mathworks.xml.XMLUtils.createDocument('echo_logbook');
     echo_logbook=docNode.getDocumentElement;
@@ -38,13 +38,13 @@ for ilay=1:length(layers_obj)
     survey_node = docNode.createElement('survey');
     echo_logbook.appendChild(survey_node);
     
-    nb_files=size(list_raw,1);
+    nb_files=length(list_raw);
     survdata_temp=survey_data_cl();
     try
                
         for i=1:nb_files
             f_processed=0;
-            file_curr=deblank(list_raw(i,:));
+            file_curr=deblank(list_raw{i});
             idx_file=find(strcmpi(file_curr,file_lay),1);
             idx_file_xml=find(strcmpi(file_curr,surv_data_struct.Filename));
             
@@ -63,7 +63,7 @@ for ilay=1:length(layers_obj)
                         end
                         
                         if isnan(end_time)||(end_time==1)
-                            [~,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
+                            [~,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw{i}));
                         end
                         
                         
@@ -76,14 +76,14 @@ for ilay=1:length(layers_obj)
                         end
                         
                         f_processed=1;
-                        lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                        lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw{i},'StartTime',start_time,'EndTime',end_time);
                         survey_node.appendChild(lineNode);
                     end
                     
                 else  
-                    [start_time,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw(i,:)));
+                    [start_time,end_time]=start_end_time_from_file(fullfile(path_lay{1},list_raw{i}));
                     survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
-                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw{i},'StartTime',start_time,'EndTime',end_time);
                     survey_node.appendChild(lineNode);
                     f_processed=1;
                 end
@@ -124,7 +124,7 @@ for ilay=1:length(layers_obj)
                         end
                         
                         f_processed=1;
-                        lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                        lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw{i},'StartTime',start_time,'EndTime',end_time);
                         survey_node.appendChild(lineNode);
                     end
                
@@ -134,7 +134,7 @@ for ilay=1:length(layers_obj)
                     end_time=layer_obj.Transceivers(1).Data.Time(end);
                     start_time=layer_obj.Transceivers(1).Data.Time(1);
                     f_processed=1;
-                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw(i,:),'StartTime',start_time,'EndTime',end_time);
+                    lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw{i},'StartTime',start_time,'EndTime',end_time);
                     survey_node.appendChild(lineNode);
                 end
             end

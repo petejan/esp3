@@ -166,7 +166,6 @@ switch class(Ext_obj)
             obj.LonLim(1)=nanmin(obj.LonLim(1),nanmin(obj.SliceLon{i}));
             obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.SliceLat{i}));
             obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.SliceLon{i}));
-            
             idx_file=find(obj.Snapshot(i)==survey_obj.SurvOutput.regionSum.snapshot...
                 &strcmpi(obj.Stratum(i),survey_obj.SurvOutput.regionSum.stratum)...
                 &obj.Transect(i)==survey_obj.SurvOutput.regionSum.transect,1);
@@ -178,6 +177,17 @@ switch class(Ext_obj)
             end
             
         end
+        
+        for ireg=1:length(survey_obj.SurvOutput.regionSum.tag)
+            obj.Regions.Tag{ireg}=survey_obj.SurvOutput.regionSum.tag{ireg};
+            obj.Regions.abscf(ireg)=survey_obj.SurvOutput.regionSum.abscf(ireg);
+            obj.Regions.Snapshot(ireg)=survey_obj.SurvOutput.regionSum.snapshot(ireg);
+            obj.Regions.Stratum{ireg}=survey_obj.SurvOutput.regionSum.stratum(ireg);
+            obj.Regions.Transect(ireg)=survey_obj.SurvOutput.regionSum.transect(ireg);
+            obj.Regions.Lat_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.latitude{ireg});
+            obj.Regions.Lon_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.longitude{ireg});
+        end
+            
 end
 
 [obj.LatLim,obj.LonLim]=ext_lat_lon_lim(obj.LatLim,obj.LonLim,0.2);

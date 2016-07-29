@@ -16,9 +16,9 @@ for ip=1:length(pathtofile)
     end
     survey_data_struct_temp=import_survey_data_xml(fileN);
     
-    list_raw=ls(fullfile(pathtofile{ip},'*.raw'));
-    list_raw=mat2cell(list_raw,ones(1,size(list_raw,1)),size(list_raw,2));
-    
+    dir_raw=dir(fullfile(pathtofile{ip},'*.raw'));
+    list_raw={dir_raw(:).name};
+
     if nansum(cellfun(@(x) nansum(strcmpi(survey_data_struct_temp.Filename,strtrim(x))),list_raw)==0)>0
         incomplete=1;
         fprintf('%s incomplete, we''ll update it\n',fileN);

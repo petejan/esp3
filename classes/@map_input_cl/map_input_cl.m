@@ -14,6 +14,7 @@ classdef map_input_cl
         SliceTime_S
         SliceTime_E
         SliceAbscf
+        Regions
         Nb_ST
         Nb_Tracks
         LatLim
@@ -45,6 +46,7 @@ classdef map_input_cl
             addParameter(p,'SliceAbscf',{},@iscell);
             addParameter(p,'SliceTime_E',{},@iscell);
             addParameter(p,'SliceTime_S',{},@iscell)
+            addParameter(p,'Regions',struct(),@isstruct);
             addParameter(p,'Nb_ST',{},@iscell);
             addParameter(p,'Nb_Tracks',{},@iscell);
             addParameter(p,'LatLim',[nan nan],@isnumeric);
