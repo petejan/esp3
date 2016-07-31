@@ -8,7 +8,7 @@ folders{4}=fullfile(path, 'algos');
 folders{5}=fullfile(path, 'display');
 folders{7}=fullfile(path, 'fileIO');
 folders{8}=fullfile(path, 'mapping');
-folders{9}=path;
+
 
 folders(cellfun(@isempty, folders))=[];
 
