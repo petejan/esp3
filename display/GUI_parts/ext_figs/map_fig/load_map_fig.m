@@ -471,8 +471,8 @@ else
 end
 str_field=get(box.field,'string');
 str_field=str_field{get(box.field,'value')};
-hfig=figure();
-map_input.display_map_input_cl('hfig',hfig,'main_figure',main_fig,'field',str_field);
+
+hfig=map_input.display_map_input_cl('main_figure',main_fig,'field',str_field);
 
 hfigs_new=[hfigs hfig];
 setappdata(main_fig,'ExternalFigures',hfigs_new);

@@ -1,10 +1,17 @@
-function help_menu(~,~)
+function help_menu(~,~,main_figure)
+
+hfigs=getappdata(main_figure,'ExternalFigures');
+    hfigs(~isvalid(hfigs))=[];
+    if ~isempty(find(strcmp({hfigs(:).Tag},'shortcuts'), 1))
+       return; 
+    end
+
 dialog_fig=figure('Visible','on',...
     'Units','pixels','Position',[500 300 400 300],...                                      
     'Name','Shortcuts','NumberTitle','off',...   
     'Resize','on',...
     'MenuBar','none',...
-    'visible','on');
+    'visible','on','tag','shortcuts');
 
 labelStr = ['<html><ul>Shortcuts:'...
     '<li><i>1</i> : Zoom In (right click for vertical zoom)</li>'...
@@ -20,4 +27,7 @@ labelStr = ['<html><ul>Shortcuts:'...
     '</ul></html>'];
 jLabel = javaObjectEDT('javax.swing.JLabel',labelStr);
 [~,~] = javacomponent(jLabel,[0,0,360,300],dialog_fig);
+
+hfigs_new=[hfigs dialog_fig];
+setappdata(main_figure,'ExternalFigures',hfigs_new);
 end

@@ -26,9 +26,9 @@ switch curr_disp.Xaxes
     case 'Number'
         str_ax='';
     case 'Time'
-        str_ax='sec'
+        str_ax='sec';
     case 'Distance'
-        str_ax='m'
+        str_ax='m';
     
 end
 
