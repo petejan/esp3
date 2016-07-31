@@ -76,8 +76,10 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 layer.Transceivers(idx_freq).apply_algo('BottomDetection');
 
 setappdata(main_figure,'Layer',layer);
-update_axis_panel(main_figure,0);
-update_mini_ax(main_figure);
+set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_mini','mini');
+display_bottom(main_figure);
+order_stacks_fig(main_figure);
 
 end
 

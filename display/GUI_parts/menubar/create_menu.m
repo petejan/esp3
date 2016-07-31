@@ -124,7 +124,7 @@ options = uimenu(main_figure,'Label','Options','Tag','options');
 uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
 uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_display_config_callback,main_figure});
 
-uimenu(main_figure,'Label','Shortcuts','Callback',@help_menu);
+uimenu(main_figure,'Label','Shortcuts','Callback',{@help_menu,main_figure});
 
 setappdata(main_figure,'main_menu',main_menu);
 
