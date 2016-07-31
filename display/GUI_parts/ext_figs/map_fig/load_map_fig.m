@@ -198,6 +198,33 @@ while sucess==0&&i<length(box.list_proj_str);
     end
 end
 m_grid('box','fancy','tickdir','in');
+
+
+
+
+box.plot=m_line(lon,lat,'Color','b ','linewidth',2,'tag','box','parent',box.lim_axes);
+[lat_c,lon_c,bathy]=get_etopo1(box.lat_lim,box.lon_lim);
+
+try
+    
+    if get(box.depth_box,'Value')>0
+        vis='on';
+    else
+        vis='off';
+    end
+    if length(lon_c)>=2&&length(lat_c)>=2
+        [box.Cs,box.hs]=m_contour(lon_c,lat_c,bathy,-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible',vis);
+    else
+        box.Cs=[];
+        box.hs=[];
+    end
+    
+catch
+    box.Cs=[];
+    box.hs=[];
+    disp('No Geographical data available...');
+end
+
 try
     if get(box.coast_box,'value')>=1
         m_gshhs_h('patch',[.5 .5 .5],'edgecolor','k','visible','on');
@@ -207,23 +234,6 @@ try
     
 catch
     disp('No Geographical data available...')
-end
-
-
-box.plot=m_line(lon,lat,'Color','b ','linewidth',2,'tag','box');
-
-try
-
-if get(box.depth_box,'Value')>0
-    [box.Cs,box.hs]=m_elev('contour',-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible','on');
-else
-    [box.Cs,box.hs]=m_elev('contour',-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible','off');
-end
-    
-catch
-    box.Cs=[];
-    box.hs=[];
-    disp('No Geographical data available...');
 end
 
 index_selected = get(box.listbox,'Value');

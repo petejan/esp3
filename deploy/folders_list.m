@@ -6,8 +6,7 @@ folders{3}=fullfile(path, 'classes');
 folders{4}=fullfile(path, 'algos');
 folders{5}=fullfile(path, 'display');
 folders{7}=fullfile(path, 'fileIO');
-%folders{8}=fullfile(path, 'icons');
-folders{10}=fullfile(path, 'mapping');
+folders{8}=fullfile(path, 'mapping');
 
 folders(cellfun(@isempty, folders))=[];
 

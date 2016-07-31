@@ -81,27 +81,26 @@ for usnap=1:length(snap)
         return;
     end
     
-    try
+   
+    
+    if obj.Depth_Contour>0
+        try
+            [lat_c,lon_c,bathy]=get_etopo1(LatLim,LonLim);
+            if length(lon_c)>=2&&length(lat_c)>=2
+                [Cs,hs]=m_contour(lon_c,lat_c,bathy,-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
+                clabel(Cs,hs,'fontsize',8);
+            end
+        catch
+            disp('Cannot find Etopo1 data...')
+        end 
+    end
+    
+     try
         if obj.Coast>0
             m_gshhs_h('patch',[.5 .5 .5],'edgecolor','k');
         end
     catch
         disp('No Geographical data available...')
-    end
-    
-    if obj.Depth_Contour>0
-        try
-            try
-                [lat_c,lon_c,bathy]=get_etopo1(LatLim,LonLim);
-                [Cs,hs]=m_contour(lon_c,lat_c,bathy,-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
-            catch
-                disp('Cannot find Etopo1 data...')
-                [Cs,hs]=m_elev('contour',-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
-            end
-            clabel(Cs,hs,'fontsize',8);
-        catch
-            disp('No Bathymetric data available...')
-        end
     end
 end
 
@@ -124,7 +123,7 @@ if ~strcmp(field,'Tag')
         
         for uui=1:length(idx_snap)
             if ~isempty(obj.Lon{idx_snap(uui)})
-                u_plot(n_ax(usnap),idx_snap(uui))=m_plot(obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
+                u_plot(idx_snap(uui))=m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
                 set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
                 m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
                 if~isempty(main_figure)

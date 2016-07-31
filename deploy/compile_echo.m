@@ -28,7 +28,6 @@ end
 for i= 1:(length(folders))
     str{end+1}=sprintf('-a %s ',folders{i});
 end
-
 str{end+1}='-w enable ';
 
 str_mcc =[str{:}];

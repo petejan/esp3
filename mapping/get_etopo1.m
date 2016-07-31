@@ -35,8 +35,7 @@ function [lat,lon,bathy]=get_etopo1(latlim,lonlim)
 %                        long_name    = 'z'
 %                        _FillValue   = -2147483648
 %                        actual_range = [-10898   8271]
-etopo_file='ETOPO1_Bed_g_gmt4.grd';
-
+etopo_file=fullfile(whereisEcho,'private','ETOPO1_Bed_g_gmt4.grd');
 
 lon_etopo=ncread(etopo_file,'x');
 lat_etopo=ncread(etopo_file,'y');
