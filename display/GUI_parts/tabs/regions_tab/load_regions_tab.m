@@ -109,9 +109,9 @@ if ~isempty(list_reg)
     idx_r=active_reg.Idx_r;
     
     switch(curr_disp.Fieldname)
-        case {'sp','spunmatched'}
+        case {'sp','spdenoised','spunmatched'}
             TS_freq_response_func(main_figure,idx_r,idx_pings)
-        case 'sv'
+        case {'sv','svdenoised'}
             Sv_freq_response_func(main_figure,idx_r,idx_pings)
     end
 end

@@ -53,7 +53,8 @@ set(region_tab_comp.cell_w,'string',cell_w);
 
 cell_h=reg_curr.Cell_h;
 set(region_tab_comp.cell_h,'string',cell_h);
+setappdata(main_figure,'Region_tab',region_tab_comp);
 
-display_regions(main_figure);
+activate_region_callback([],[],reg_curr,main_figure)
 end
 

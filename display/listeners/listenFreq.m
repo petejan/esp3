@@ -24,5 +24,6 @@ display_regions(main_figure);
 set_alpha_map(main_figure);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
+display_info_ButtonMotionFcn([],[],main_figure,1);
 end
 

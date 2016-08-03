@@ -106,6 +106,6 @@ main_figure.WindowButtonUpFcn = @wbucb;
         display_regions(main_figure);
         create_context_menu_main_echo(main_figure);
         create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
-        main_figure.Pointer = 'cross';
+        main_figure.Pointer = 'arrow';
     end
 end

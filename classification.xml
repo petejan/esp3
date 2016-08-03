@@ -13,7 +13,7 @@
 
 
 <nodes>
-	<node id="0" true_target="2" false_target="10">
+	<node id="0" true_target="1" false_target="10">
         <condition>gt(school.nb_cell,50)</condition>
     </node>
 	<node id="1" true_target="11" false_target="2">

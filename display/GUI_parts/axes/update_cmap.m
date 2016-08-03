@@ -38,6 +38,7 @@ set(axes_panel_comp.haxes,'XColor',col_lab);
 set(axes_panel_comp.main_axes,'Color',col_ax);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
 set(display_tab_comp.mini_ax,'Color',col_ax);
+tog_reg_callback([],[],main_figure)
 
 colormap(display_tab_comp.mini_ax,cmap);
 colormap(axes_panel_comp.main_axes,cmap);

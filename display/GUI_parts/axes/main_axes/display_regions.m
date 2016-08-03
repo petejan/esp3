@@ -4,20 +4,32 @@ function display_regions(main_figure)
 layer=getappdata(main_figure,'Layer');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-display_tab_comp=getappdata(main_figure,'Display_tab');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-ac_data_col='r';
-in_data_col='g';
-bad_data_col=[0.5 0.5 0.5];
-txt_col='k';
+
+switch curr_disp.Cmap
+    
+    case 'esp2'
+        ac_data_col=[0 1 0];
+        in_data_col=[1 0 0];
+        bad_data_col=[0.5 0.5 0.5];
+        txt_col='w';
+    otherwise
+        ac_data_col=[1 0 0];
+        in_data_col=[0 1 0];
+        bad_data_col=[0.5 0.5 0.5];
+        txt_col='k';
+end
+
+
+
 
 %main_axes_tot=[axes_panel_comp.main_axes display_tab_comp.mini_ax];
 main_axes_tot=axes_panel_comp.main_axes;
 
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
-    u=findobj(main_axes,'tag','region','-or','tag','region_text');
+    u=findobj(main_axes,'tag','region','-or','tag','region_text','-or','tag','region_cont');
     
     delete(u);
     
@@ -31,6 +43,9 @@ for iax=1:length(main_axes_tot)
     
     Number=trans.Data.get_numbers();
     Range=trans.Data.get_range();
+    
+    dr=nanmean(diff(Range));
+    dp=nanmean(diff(trans.GPSDataPing.Dist));
     
     xdata=Number;
     
@@ -47,11 +62,35 @@ for iax=1:length(main_axes_tot)
     list_reg = trans.regions_to_str();
     
     active_reg=get(region_tab_comp.tog_reg,'value');
-    vis=curr_disp.DispReg;
-    
-    
+
     for i=1:length(list_reg)
         reg_curr=trans.Regions(i);
+        
+        switch reg_curr.Cell_h_unit
+            case 'meters'
+                dy=ceil(reg_curr.Cell_h/dr);
+            otherwise
+                dy=reg_curr.Cell_h;
+        end
+        
+        switch reg_curr.Cell_w_unit
+            case 'meters'
+                dx=ceil(reg_curr.Cell_w/dp);
+            otherwise
+                dx=reg_curr.Cell_w;
+        end
+
+         if  strcmp(reg_curr.Name,'Track')
+            x_grid=[];
+            y_grid=[];
+        else
+            x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
+
+            y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
+        end
+        
+        [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
+       
         if i==active_reg
             col=ac_data_col;
         else
@@ -74,51 +113,60 @@ for iax=1:length(main_axes_tot)
         end
         
         
-        
-        
+        reg_plot=gobjects(2);
+        cdata=zeros(length(reg_curr.Idx_pings),length(reg_curr.Idx_r));
+        reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',0);
         switch reg_curr.Shape
             case 'Rectangular'
                 
-                vis_grid=vis;
                 x_text=nanmean(x_reg_rect(:));
                 y_text=nanmean(y_reg_rect(:));
-                reg_plot=patch(x_reg_rect,y_reg_rect,col,'FaceAlpha',.4,'EdgeColor',col,'LineWidth',1,'tag','region','PickableParts','all','visible',vis_grid,'UserData',reg_curr.Unique_ID,'parent',main_axes);
+                plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
             case 'Polygon'
                 
                 idx_x=reg_curr.X_cont;
                 idx_y=reg_curr.Y_cont;
+                idx_x_out=cell(1,length(idx_x));
+                idx_y_out=cell(1,length(idx_x));
+                
                 x_reg=cell(1,length(idx_x));
                 y_reg=cell(1,length(idx_x));
                 
                 nb_cont=length(idx_x);
-                
                 for jj=1:nb_cont
                     
-                    idx_x{jj}=idx_x{jj}+reg_curr.Idx_pings(1);
-                    idx_y{jj}=idx_y{jj}+reg_curr.Idx_r(1);
+                    idx_x_out{jj}=idx_x{jj}+reg_curr.Idx_pings(1)-1;
+                    idx_y_out{jj}=idx_y{jj}+reg_curr.Idx_r(1);
                     
-                    x_reg{jj}=x(idx_x{jj});
-                    y_reg{jj}=y(idx_y{jj})';
+                    x_reg{jj}=x(idx_x_out{jj});
+                    y_reg{jj}=y(idx_y_out{jj})';
                     
                     if ~isempty(idx_x)>0
                         x_text=nanmean(x_reg{jj});
                         y_text=nanmean(y_reg{jj});
                     end
                     
+                    line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                 end
-                [x_reg,y_reg]=poly2cw(x_reg,y_reg);
-                [f, v] = poly2fv(x_reg,y_reg);
-                reg_plot=patch('Faces', f, 'Vertices', v, 'FaceColor',col,'LineWidth',2,'FaceAlpha',0.6,'EdgeColor','none','tag','region','PickableParts','all','visible',vis,'UserData',reg_curr.Unique_ID,'parent',main_axes);
                 
+                 mask=imresize(reg_curr.MaskReg==0,size(X_grid));
+                 X_grid(mask)=nan;
+                 Y_grid(mask)=nan;
+
+                 
+                 plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                 plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
                 
         end
         
         
-        text(x_text,y_text,reg_curr.Tag,'visible',vis,'FontWeight','Bold','Fontsize',10,'tag','region_text','color',txt_col,'parent',main_axes);
-        
+        reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes);
         
         create_region_context_menu(reg_plot,main_figure,reg_curr);
     end
+    
 end
 
 end

@@ -33,14 +33,17 @@ for idx_school=idx_schools
     output_reg_18=school_18_reg.integrate_region(layer.Transceivers(idx_18),'denoised',0);
     output_reg_120=school_120_reg.integrate_region(layer.Transceivers(idx_120),'denoised',1);
     
-    delta_120_18=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_18.Sv_mean_lin);
-    delta_120_38=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_38.Sv_mean_lin);
+    delta_120_18_cell=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_18.Sv_mean_lin);
+    delta_120_38_cell=pow2db_perso(output_reg_120.Sv_mean_lin)-pow2db_perso(output_reg_38.Sv_mean_lin);
+    
+    delta_120_18=pow2db_perso(nanmean(output_reg_120.Sv_mean_lin(:)))-pow2db_perso(nanmean(output_reg_18.Sv_mean_lin(:)));
+    delta_120_38=pow2db_perso(nanmean(output_reg_120.Sv_mean_lin(:)))-pow2db_perso(nanmean(output_reg_38.Sv_mean_lin(:)));
     
     
     if disp_level>0
         h_figs=figure('Name',sprintf('School %d',idx_school_38),'NumberTitle','off','tag','classif');
         ax1=subplot(2,1,1);
-        pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_38);
+        pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_38_cell);
         colormap(jet);
         grid on;
         xlabel(school_38_reg.Cell_w_unit)
@@ -52,7 +55,7 @@ for idx_school=idx_schools
         title(sprintf('\\Delta 120-38 dB difference of school %.0f',idx_school_38));
         
         ax2=subplot(2,1,2);
-        pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_18);
+        pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_18_cell);
         xlabel(school_38_reg.Cell_w_unit)
         ylabel('Depth(m)')
         colormap(jet)
@@ -65,9 +68,9 @@ for idx_school=idx_schools
         linkaxes([ax1 ax2],'xy')
     end
     
-    school_struct.nb_cell=length(~isnan(delta_120_18(:)));
-    school_struct.delta_sv_120_18_mean=nanmean(delta_120_18(:));
-    school_struct.delta_sv_120_38_mean=nanmean(delta_120_38(:));
+    school_struct.nb_cell=length(~isnan(output_reg_120.Sv_mean_lin(:)));
+    school_struct.delta_sv_120_18_mean=delta_120_18;
+    school_struct.delta_sv_120_38_mean=delta_120_38;
     school_struct.aggregation_depth_mean=nanmean(output_reg_38.Range_mean(:));
     school_struct.aggregation_depth_min=nanmax(output_reg_38.Range_mean(:));
     school_struct.bottom_depth=nanmean(layer.Transceivers(idx_18).Bottom.Range);

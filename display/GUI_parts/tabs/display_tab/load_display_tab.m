@@ -42,7 +42,6 @@ set(display_tab_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_
 set(display_tab_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
 set(display_tab_comp.mini_echo_bt,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
 
-
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.85 0.25 0.1 0.15],'callback',{@display_attitude,main_figure});
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav.','units','normalized','pos',[0.85 0.1 0.1 0.15],'callback',{@display_navigation_callback,main_figure});
 

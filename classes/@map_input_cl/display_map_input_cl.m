@@ -48,10 +48,9 @@ nb_row=ceil(length(snap)/3);
 nb_col=nanmin(length(snap),3);
 
 n_ax=gobjects(length(snap),1);
-figure(hfig);
 
 for usnap=1:length(snap)
-    n_ax(usnap)=subplot(nb_row,nb_col,usnap);
+    n_ax(usnap)=subplot(nb_row,nb_col,usnap,'parent',hfig);
     hold on;
     proj=m_getproj;
     list_proj_str={proj(:).name};
@@ -74,7 +73,7 @@ for usnap=1:length(snap)
     end
     
     try
-        m_grid('box','fancy','tickdir','in');
+        m_grid('box','fancy','tickdir','in','parent',n_ax(usnap));
     catch
         fprintf(1,'Area to small to display Navigation\n');
         close(hfig);
@@ -97,7 +96,7 @@ for usnap=1:length(snap)
     
      try
         if obj.Coast>0
-            m_gshhs_h('patch',[.5 .5 .5],'edgecolor','k');
+            m_gshhs_h('patch',[.5 .5 .5],'edgecolor','k','parent',n_ax(usnap));
         end
     catch
         disp('No Geographical data available...')
@@ -161,9 +160,17 @@ else
     for utag=1:length(tag)
         title(n_ax(utag),sprintf('%s: %s\n',obj.Voyage{1},tag{utag}));       
         if strcmp(field,'Tag')
-            ireg_snap=find(strcmp(obj.Regions.Tag,tag{utag}));
-            for ireg=ireg_snap
-                m_text(obj.Regions.Lon_m(ireg),obj.Regions.Lat_m(ireg),obj.Regions.Tag{ireg},'parent',n_ax(utag),'color','r');
+            ireg_tag=find(strcmp(obj.Regions.Tag,tag{utag}));
+            if isempty(ireg_tag)
+                continue;
+            end
+            [~,~,strat_vec_num]=unique([obj.Regions.Stratum{ireg_tag}]);
+            mat_surv_data=[obj.Regions.Snapshot(ireg_tag);strat_vec_num';obj.Regions.Transect(ireg_tag)]';
+            [~,unique_trans,trans_ids]=unique(mat_surv_data,'rows');
+            for itrans=1:length(unique_trans)
+                itrans_curr=find(trans_ids==itrans);
+                m_text(nanmean(obj.Regions.Lon_m(ireg_tag(itrans_curr))),nanmean(obj.Regions.Lat_m(ireg_tag(itrans_curr))),tag{utag},'parent',n_ax(utag),'color','r');
+                m_text(nanmean(obj.Regions.Lon_m(ireg_tag(itrans_curr))),nanmean(obj.Regions.Lat_m(ireg_tag(itrans_curr))),sprintf('\n,%.0f',obj.Regions.Transect(ireg_tag(itrans_curr(1)))),'parent',n_ax(utag),'color','b');
             end
         end
         
@@ -192,7 +199,7 @@ end
 
 function disp_line_name_callback(src,~,hfig,idx_obj)
 
-ax=gca;
+ax=get(src,'parent');
 idx_selected=getappdata(hfig,'Idx_select');
 obj=getappdata(hfig,'Map_input');
 
@@ -207,8 +214,7 @@ switch hfig.SelectionType
         u = findobj(ax,'Tag','name');
         delete(u);
         
-        axes(ax);
-        text(x,y,str{1},'Interpreter','None','Tag','name');
+        text(x,y,str{1},'Interpreter','None','Tag','name','parent',ax);
         
         %dim = [0.1 0.1 0.2 0.3];
         

@@ -321,6 +321,7 @@ for ui=1:4
     end
 end
 delete(box.plot);
+
 [lon,lat]=create_box(box.lon_box,box.lat_box,box.nb_pts);
 box.plot=m_line(lon,lat,'Color','b','linewidth',2,'tag','box','parent',box.lim_axes);
 setappdata(map_fig,'Box',box);
@@ -471,11 +472,11 @@ else
 end
 str_field=get(box.field,'string');
 str_field=str_field{get(box.field,'value')};
-
+close(map_fig);
 hfig=map_input.display_map_input_cl('main_figure',main_fig,'field',str_field);
-
 hfigs_new=[hfigs hfig];
 setappdata(main_fig,'ExternalFigures',hfigs_new);
+
 
 end
 

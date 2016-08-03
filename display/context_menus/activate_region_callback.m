@@ -1,57 +1,44 @@
 
-function activate_region_callback(src,evt,reg_curr,main_figure)
+function activate_region_callback(~,~,reg_curr,main_figure)
 
-if strcmpi(get(gcf,'SelectionType'),'normal')
     layer=getappdata(main_figure,'Layer');
     curr_disp=getappdata(main_figure,'Curr_disp');
     
-    switch curr_disp.Cmap
-        
-        case 'esp2'
-            ac_data_col='g';
-            in_data_col='r';
-            bad_data_col=[0.5 0.5 0.5];
-        otherwise
-            ac_data_col='g';
-            in_data_col='r';
-            bad_data_col=[0.5 0.5 0.5];
-            
-    end
+switch curr_disp.Cmap
+    
+    case 'esp2'
+        ac_data_col=[0 1 0];
+        in_data_col=[1 0 0];
+        bad_data_col=[0.5 0.5 0.5];
+        txt_col='w';
+    otherwise
+        ac_data_col=[1 0 0];
+        in_data_col=[0 1 0];
+        bad_data_col=[0.5 0.5 0.5];
+        txt_col='k';
+end
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
     trans_obj=layer.Transceivers(idx_freq);
-    
+
     [idx_reg,found]=trans_obj.find_reg_idx(reg_curr.Unique_ID);
     
     if found==0
         return;
     end
     region_tab_comp=getappdata(main_figure,'Region_tab');
-    if get(region_tab_comp.tog_reg,'value')==idx_reg
-        return;
-    end
+
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
     ah=axes_panel_comp.main_axes;
-    reg_lines=findobj(ah,'Tag','region');
     
-    for i_line=1:length(reg_lines)
-        if reg_lines(i_line).UserData==reg_curr.Unique_ID
-            col=ac_data_col;
-        else
-            switch lower(reg_curr.Type)
-                case 'data'
-                    col=in_data_col;
-                case 'bad data'
-                    col=bad_data_col;
-            end
-        end
-        switch class(reg_lines(i_line))
-            case 'matlab.graphics.primitive.Line'
-                set(reg_lines(i_line),'color',col);
-            case 'matlab.graphics.primitive.Patch'
-                set(reg_lines(i_line),'FaceColor',col,'EdgeColor',col);
-        end
-    end
+    reg_text=findobj(ah,'Tag','region_text');
+    set(reg_text,'color',txt_col);
+    
+    reg_lines_ac=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','line');
+    reg_lines_in=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','line');
+    set(reg_lines_ac,'color',ac_data_col);
+    set(reg_lines_in,'color',in_data_col);
+
     
     list_reg = regions_to_str(layer.Transceivers(idx_freq));
     
@@ -70,6 +57,7 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
             set(region_tab_comp.tog_reg,'value',1)
             set(region_tab_comp.tog_reg,'string',{'--'});
         end
+        
         setappdata(main_figure,'Layer',layer);
         update_regions_tab(main_figure);
         order_axes(main_figure);
@@ -77,8 +65,6 @@ if strcmpi(get(gcf,'SelectionType'),'normal')
     else
         return
     end
-else
-    return;
-end
+
 
 
