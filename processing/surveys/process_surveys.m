@@ -15,7 +15,7 @@ layers=[];
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
-
+%profile on
 for i=1:length(Filenames)
      try
         surv_obj=survey_cl();
@@ -65,7 +65,7 @@ for i=1:length(Filenames)
         continue;
     end
         
-    try
+     try
         surv_obj.generate_output(layers);
         [PathToFile,~,~]=fileparts(layers(end).Filename{1});
         save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
@@ -78,5 +78,6 @@ for i=1:length(Filenames)
         warning('Could not process survey described in file %s\n',Filenames{i});
     end
 end
-
+% profile off;
+% profile viewer;
 end

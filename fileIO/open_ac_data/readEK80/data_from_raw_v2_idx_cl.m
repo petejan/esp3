@@ -137,7 +137,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                     end
                 case 'Parameter'
                    if isfield(data,'params')
-                       if length(data.params)==length(idx_freq)
+                       if length([data.params(:).time])==length(idx_freq)
                             continue;
                        end
                     end
@@ -209,7 +209,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                     data.pings(idx).channelID=channelID;
                     data.pings(idx).datatype=datatype;
                     data.pings(idx).offset=offset;
-                    data.pings(idx).sampleCount=sampleCount;
+                    data.pings(idx).sampleCount(i_ping(idx)-p.Results.PingRange(1)+1)=sampleCount;
                     data.pings(idx).number(i_ping(idx)-p.Results.PingRange(1)+1)=number;
                     data.pings(idx).time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                     
@@ -220,10 +220,10 @@ for idg=1:length(idx_raw_obj.type_dg)
                             end
                             
                             if (sampleCount > 0)
-                                data.pings(idx).comp_sig_1(1:data.pings(idx).sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
-                                data.pings(idx).comp_sig_2(1:data.pings(idx).sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
-                                data.pings(idx).comp_sig_3(1:data.pings(idx).sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
-                                data.pings(idx).comp_sig_4(1:data.pings(idx).sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
+                                data.pings(idx).comp_sig_1(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
+                                data.pings(idx).comp_sig_2(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
+                                data.pings(idx).comp_sig_3(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
+                                data.pings(idx).comp_sig_4(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
                             end
                             
                         case 'GPT'

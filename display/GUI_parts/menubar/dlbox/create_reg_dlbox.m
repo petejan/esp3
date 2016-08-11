@@ -129,7 +129,7 @@ close(reg_fig);
 
 display_regions(main_figure);
 set_alpha_map(main_figure);
-update_regions_tab(main_figure);
+update_regions_tab(main_figure,length(trans_obj.Regions));
 order_stacks_fig(main_figure);
 
 end

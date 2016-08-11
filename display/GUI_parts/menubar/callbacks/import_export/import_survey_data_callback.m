@@ -20,6 +20,5 @@ else
 end
 setappdata(main_figure,'Layers',layers);
 load_cursor_tool(main_figure);
-update_display(main_figure,0);
 
 end

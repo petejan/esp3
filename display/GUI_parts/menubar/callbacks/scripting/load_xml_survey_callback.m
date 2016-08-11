@@ -41,7 +41,6 @@ if ~isempty(layers)
     layer=layers(end);
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Layers',layers);
-    
-    update_display(main_figure,1);
+    loadEcho(main_figure);
 end
 end

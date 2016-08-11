@@ -1,6 +1,5 @@
 function load_regions_tab(main_figure,option_tab_panel)
 
-
 region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 
 list_reg={'--'};
@@ -146,8 +145,9 @@ if ~isempty(list_reg)
 end
 
 setappdata(main_figure,'Layer',layer);
+update_regions_tab(main_figure,1)
 display_regions(main_figure);
-update_regions_tab(main_figure)
+
 end
 
 

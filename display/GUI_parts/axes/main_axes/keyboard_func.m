@@ -161,17 +161,47 @@ switch callbackdata.Key
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
     case 'f'
         if length(layer.Frequencies)>1
+            set(main_figure,'KeyPressFcn','');
             id_freq=layer.find_freq_idx(curr_disp.Freq);
             curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
+            set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         end
     case 'e'
         if length(layer.Frequencies)>1
+            set(main_figure,'KeyPressFcn','');
             curr_disp=getappdata(main_figure,'Curr_disp');
             idx_freq=layer.find_freq_idx(curr_disp.Freq);
             fields=layer.Transceivers(idx_freq).Data.Fieldname;
             id_field=find(strcmp(curr_disp.Fieldname,fields));
             curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
+            set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         end
+        
+    case 'n'
+        change_layer_callback([],[],main_figure,'next');
+    case 'p'
+        change_layer_callback([],[],main_figure,'prev');
+    case 'add'
+        curr_disp=getappdata(main_figure,'Curr_disp');
+        curr_disp.setCax(curr_disp.Cax+1);
+    case 'subtract'
+        curr_disp=getappdata(main_figure,'Curr_disp');
+        curr_disp.setCax(curr_disp.Cax-1);
+    case 'delete'
+        if ~isempty(get(gco,'Tag'))
+            switch get(gco,'Tag')
+                case {'region','region_text'}
+                    curr_disp=getappdata(main_figure,'Curr_disp');
+                    idx_freq=layer.find_freq_idx(curr_disp.Freq);
+                    layer.Transceivers(idx_freq).rm_region_id(get(gco,'Userdata'));
+                    update_regions_tab(main_figure,[]);
+                    display_regions(main_figure);
+                    order_stacks_fig(main_figure);order_axes(main_figure);
+            end
+        end
+    case 'l'
+        logbook_dispedit_callback([],[],main_figure)
+        
 end
 order_axes(main_figure);
 end

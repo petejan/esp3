@@ -18,7 +18,7 @@ end
 
 
 new_layers=open_raw_file_standalone(Filename,...
-    'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end]);
+    'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'LoadEKbot',1);
 
 
 if ~isempty(new_layers)

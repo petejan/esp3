@@ -13,11 +13,10 @@ if layer.ID_num==0
     return;
 end
 
-    layer.CVS_BottomRegions(app_path.cvs_root,'BotCVS',1,'RegCVS',0);
-    setappdata(main_figure,'Layer',layer);
+layer.CVS_BottomRegions(app_path.cvs_root,'BotCVS',1,'RegCVS',0);
+setappdata(main_figure,'Layer',layer);
 display_bottom(main_figure);
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
-update_regions_tab(main_figure);
 order_stacks_fig(main_figure);
 end

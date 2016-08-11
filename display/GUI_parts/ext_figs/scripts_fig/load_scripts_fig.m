@@ -34,7 +34,7 @@ pos_t=get(script_table.table_main,'Position');
 set(script_table.table_main,'ColumnWidth',{2*pos_t(3)/10, pos_t(3)/10, pos_t(3)/10, pos_t(3)/10, pos_t(3)/10, 2*pos_t(3)/10, 2*pos_t(3)/10});
 set(script_table.table_main,'CellSelectionCallback',{@store_selected_script_callback,script_fig})
 
-rc_menu = uicontextmenu;
+rc_menu = uicontextmenu(script_fig);
 script_table.table_main.UIContextMenu =rc_menu;
 switch flag
     case 'mbs'
@@ -86,7 +86,7 @@ if ~isempty(layers)
     layer=layers(end);
     setappdata(main_figure,'Layer',layer);
     setappdata(main_figure,'Layers',layers);
-    update_display(main_figure,1);
+    loadEcho(main_figure);
 end
 
 end

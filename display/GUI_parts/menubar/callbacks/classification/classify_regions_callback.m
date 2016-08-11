@@ -80,17 +80,7 @@ if isempty(idx_school_38)
     return;
 end
     
-id_to_remove=[];
-for ii=1:length(idx_school_38)
-    output_reg_38=layer.Transceivers(idx_38).Regions(idx_school_38(ii)).integrate_region(layer.Transceivers(idx_38));
-    if length(output_reg_38.Sv_mean_lin(:))<50
-        id_to_remove=[id_to_remove layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Unique_ID];
-    end
-end
 
-for uuu=id_to_remove
-    layer.Transceivers(idx_38).rm_region_id(uuu);
-end
 
 idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
 
@@ -105,7 +95,7 @@ setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 display_regions(main_figure);
-update_regions_tab(main_figure);
+update_regions_tab(main_figure,[]);
 order_stacks_fig(main_figure);
 
 end

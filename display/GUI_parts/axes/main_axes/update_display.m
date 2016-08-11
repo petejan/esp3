@@ -15,7 +15,6 @@ end
 
 if new==1
     load_cursor_tool(main_figure);
-    
     init_grid_val(main_figure);
     update_bottom_tab(main_figure)
     update_bad_pings_tab(main_figure)
@@ -25,7 +24,7 @@ if new==1
     update_track_target_tab(main_figure);
     update_processing_tab(main_figure);
     update_display_tab(main_figure);
-    update_regions_tab(main_figure);
+    update_regions_tab(main_figure,1);
     update_lines_tab(main_figure);
     load_calibration_tab(main_figure,main_childs(idx_opt));
     load_info_panel(main_figure);

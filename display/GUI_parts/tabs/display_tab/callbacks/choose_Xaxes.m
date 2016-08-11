@@ -15,6 +15,6 @@ end
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 
-update_display_tab(main_figure);
 update_grid(main_figure);
+
 end

@@ -35,8 +35,7 @@ if found==0
     curr_disp.Freq=layer.Frequencies(idx_freq);
 end
 
-idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
-min_axis=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(1);
+min_axis=curr_disp.Cax(1);
 
 data=double(get(echo_im,'CData'));
 xdata=double(get(echo_im,'XData'));
@@ -84,7 +83,7 @@ if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
 end
 
 
-set(echo_ax,'CLim',layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay);
+set(echo_ax,'CLim',curr_disp.Cax);
 set(echo_im,'AlphaData',double(alpha_map));
 
 order_stack(echo_ax);

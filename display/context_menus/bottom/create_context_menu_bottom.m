@@ -1,6 +1,6 @@
 function create_context_menu_bottom(main_figure,bottom_line)
 
-context_menu=uicontextmenu;
+context_menu=uicontextmenu(main_figure);
 bottom_line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Display Bottom Region','Callback',{@display_bottom_region_callback,main_figure});
 

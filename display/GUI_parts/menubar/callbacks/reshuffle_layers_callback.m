@@ -26,5 +26,5 @@ layer_out=layers_out(idx);
 setappdata(main_figure,'Layers',layers_out);
 setappdata(main_figure,'Layer',layer_out);
 
-update_display(main_figure,1);
+loadEcho(main_figure);
 end

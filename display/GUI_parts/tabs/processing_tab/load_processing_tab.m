@@ -116,7 +116,7 @@ setappdata(main_figure,'Layers',layers);
 display_bottom(main_figure);
 display_regions(main_figure);
 set_alpha_map(main_figure);
-update_regions_tab(main_figure);
+update_regions_tab(main_figure,[]);
 order_stacks_fig(main_figure);
 
 end

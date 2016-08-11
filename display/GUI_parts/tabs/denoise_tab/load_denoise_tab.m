@@ -56,6 +56,6 @@ curr_disp.setField('svdenoised');
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
-update_display(main_figure,0);
+loadEcho(main_figure);
 
 end

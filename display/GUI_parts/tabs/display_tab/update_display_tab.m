@@ -36,8 +36,8 @@ set(display_tab_comp.grid_x_unit,'string',str_ax);
 set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
 set(display_tab_comp.tog_type,'String',layer.Transceivers(idx_freq).Data.Type,'Value',idx_field);
 set(display_tab_comp.tog_axes,'String',Axes_type,'Value',idx_axes);
-set(display_tab_comp.caxis_up,'String',num2str(layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(2),'%.0f'));
-set(display_tab_comp.caxis_down,'String',num2str(layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay(1),'%.0f'));
+set(display_tab_comp.caxis_up,'String',num2str(curr_disp.Cax(2),'%.0f'));
+set(display_tab_comp.caxis_down,'String',num2str(curr_disp.Cax(1),'%.0f'));
 
 set(findall(display_tab_comp.display_tab, '-property', 'Enable'), 'Enable', 'on');
 

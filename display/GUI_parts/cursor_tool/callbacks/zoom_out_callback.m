@@ -11,7 +11,6 @@ set(axes_panel_comp.main_axes,'units','pixels');
 
 set(axes_panel_comp.main_axes,'units','normalized');
 
-
 xdata_tot=trans.Data.get_numbers();       
 ydata_tot=trans.Data.get_range();
 

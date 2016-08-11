@@ -4,16 +4,23 @@ layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
 if isempty(layer)
-    return;
+    path_f = uigetdir(app_path.data,'Choose Data Folder');
+    
+    if path_f==0
+        return;
+    end
+    surv_data_struct=load_logbook_to_struct(path_f);
+else
+    [path_lay,~]=get_path_files(layer);
+    path_f=path_lay{1};
+    surv_data_struct=layer.get_logbook_struct();
 end
 
-surv_data_struct=layer.get_logbook_struct();
 
 if isempty(surv_data_struct.Voyage)
     return;
 end
 
-[path_f,~]=layer.get_path_files();
 
 survDataSummary=cell(length(surv_data_struct.Filename),8);
 
@@ -70,7 +77,7 @@ set(surv_data_table.table_main,'CellEditCallback',{@update_surv_data_struct,surv
 set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
 
 
-rc_menu = uicontextmenu;
+rc_menu = uicontextmenu(surv_data_fig);
 surv_data_table.table_main.UIContextMenu =rc_menu;
 uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
 uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig,app_path.scripts});
@@ -80,7 +87,7 @@ uimenu(rc_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_d
 uimenu(rc_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
 
 setappdata(surv_data_fig,'surv_data_struct',surv_data_struct);
-setappdata(surv_data_fig,'path_data',path_f{1});
+setappdata(surv_data_fig,'path_data',path_f);
 setappdata(surv_data_fig,'surv_data_table',surv_data_table);
 setappdata(surv_data_fig,'data_ori',survDataSummary);
 end

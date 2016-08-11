@@ -66,7 +66,8 @@ else
 end
 setappdata(main_figure,'Region_tab',region_tab_comp);
 setappdata(main_figure,'Layer',layer);
-update_regions_tab(main_figure);
+update_regions_tab(main_figure,[]);
 display_regions(main_figure);
+order_stacks_fig(main_figure);
 
 end

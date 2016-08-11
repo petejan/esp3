@@ -54,20 +54,10 @@ reg_temp=region_cl(...
 
 layer.Transceivers(idx_freq).add_region(reg_temp);
 
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
-if ~isempty(list_reg)
-    set(region_tab_comp.tog_reg,'string',list_reg);
-    set(region_tab_comp.tog_reg,'value',length(list_reg));
-else
-    set(region_tab_comp.tog_reg,'string',{'--'});
-end
-setappdata(main_figure,'Region_tab',region_tab_comp);
-setappdata(main_figure,'Layer',layer);
-
+update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
+order_axes(main_figure);
 display_regions(main_figure);
-set_alpha_map(main_figure);
-update_regions_tab(main_figure);
 order_stacks_fig(main_figure);
 
 end

@@ -46,7 +46,21 @@ for isn=1:length(snapshots)
                 warning('Could not find layers for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
                 continue;
             end
-   
+            
+            nb_bad_trans=0;
+            nb_ping_tot=0;
+            for i_test_bt=idx_lay   
+                layer_obj_tr=layers(output.Layer_idx(i_test_bt));
+                idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
+                [perc_temp,nb_ping_temp]=layer_obj_tr.Transceivers(idx_freq).get_badtrans_perc();
+                nb_bad_trans=nb_bad_trans+nb_ping_temp*perc_temp/100;
+                nb_ping_tot=nb_ping_tot+nb_ping_temp;
+            end
+            
+            if nb_bad_trans/nb_ping_tot>surv_in_obj.Options.BadTransThr/100
+                fprintf('Too much bad pings on Snapshot %.0f Stratum %s Transect %d. Removing it.\n',snap_num,strat_name,trans_num);
+                continue;
+            end
             Output_echo=[];
             eint=0;
             nb_tracks=0;
@@ -178,9 +192,11 @@ for isn=1:length(snapshots)
                         end
                     elseif isfield(regs{ireg},'name')
                         idx_temp=trans_obj_tr.list_regions_name(regs{ireg}.name);
-                        reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-                        reg_tot=[reg_tot reg_temp];
-                        idx_reg=union(idx_reg,idx_temp);
+                        if ~isempty(idx_temp)
+                            reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+                            reg_tot=[reg_tot reg_temp];
+                            idx_reg=union(idx_reg,idx_temp);
+                        end
                     end
                     
                 end
@@ -396,18 +412,5 @@ surv_obj.clean_output();
 
 end
 
-function [nb_snap,nb_strat,nb_trans]=get_num_trans(snap,strat,trans)
-snap_un=unique(snap);
-nb_snap=length(snap_un);
-nb_strat=zeros(1,nb_snap);
-for is=1:nb_snap
-    curr_snap=snap_un(is);
-    strat_snap=unique(strat(snap==curr_snap));
-    nb_strat(is)=length(strat_snap);
-    for ist=1:nb_strat(is)
-        nb_trans(is,ist)=length(unique(trans(strcmp(strat,strat_snap(ist))&snap==curr_snap)));
-    end
-end
-end
 
 

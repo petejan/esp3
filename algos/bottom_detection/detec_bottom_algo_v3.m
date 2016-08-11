@@ -172,13 +172,19 @@ backstep=nanmax([1 Np]);
 for i=1:nb_pings
     if Bottom(i)>2*backstep
         Bottom(i)=Bottom(i)-backstep;
-        
-        while nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i))>=BS_ori(Bottom(i),i)+thr_backstep &&...
-            Bottom(i)>backstep &&...
-            nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i))>=-999
-            [~,idx_max_tmp]=nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i));
+        if Bottom(i)>backstep
+            [bs_val,idx_max_tmp]=nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i));
+        else
+            continue;
+        end
+        while bs_val>=BS_ori(Bottom(i),i)+thr_backstep &&bs_val>-999
             if Bottom(i)-(backstep-idx_max_tmp+1)>0
                 Bottom(i)=Bottom(i)-(backstep-idx_max_tmp+1);
+            end
+            if Bottom(i)>backstep
+                [bs_val,idx_max_tmp]=nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i));
+            else
+                break;
             end
         end
     end

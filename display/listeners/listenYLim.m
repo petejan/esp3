@@ -1,3 +1,3 @@
-function listenYLim(src,~,main_figure)
-update_display(main_figure,0);
+function listenYLim(~,~,main_figure)
+loadEcho(main_figure);
 end

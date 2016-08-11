@@ -27,6 +27,7 @@ if found_field==0
         field='sv';
     end
     curr_disp.setField(field);
+    curr_disp.setCax(field);
 end
 setappdata(main_figure,'Curr_disp',curr_disp);
 

@@ -6,24 +6,41 @@ addRequired(p,'surv_obj',@(obj) isa(obj,'survey_cl'));
 addParameter(p,'PathToMemmap','',@ischar);
 parse(p,surv_obj,varargin{:});
 
-nb_reg=length(surv_obj.SurvOutput.regionSum.snapshot);
+reg_to_clean={'regionSum','regionSumAbscf','regionSumVbscf','regionsIntegrated'};
 
-to_clean={'regionSum','regionSumAbscf','regionSumVbscf','regionsIntegrated'};
+for ifi=1:length(reg_to_clean)
+    
+    fields=fieldnames(surv_obj.SurvOutput.(reg_to_clean{ifi}));
+    iregnan=isnan(surv_obj.SurvOutput.(reg_to_clean{ifi}).snapshot);
+    for iu=1:length(fields)
+        surv_obj.SurvOutput.(reg_to_clean{ifi}).(fields{iu})(iregnan)=[];
+    end
+    
+end
 
-for ireg=1:nb_reg
-    for ifi=1:length(to_clean)
-        fields=fieldnames(surv_obj.SurvOutput.(to_clean{ifi}));
+strat_to_clean={'stratumSum'};
 
-        if isnan(surv_obj.SurvOutput.(to_clean{ifi}).snapshot)
-            for iu=1:length(fields)
-                    surv_obj.SurvOutput.(to_clean{ifi}).(fields{iu})=[];
-            end
-        end
-        
+for ifi=1:length(strat_to_clean)
+    
+    fields=fieldnames(surv_obj.SurvOutput.(strat_to_clean{ifi}));
+    istratnan=isnan(surv_obj.SurvOutput.(strat_to_clean{ifi}).snapshot);
+    for iu=1:length(fields)
+        surv_obj.SurvOutput.(strat_to_clean{ifi}).(fields{iu})(istratnan)=[];
     end
     
 end
 
 
+trans_to_clean={'transectSum','transectSumTracks','slicedTransectSum'};
+
+for ifi=1:length(trans_to_clean)
+    
+    fields=fieldnames(surv_obj.SurvOutput.(trans_to_clean{ifi}));
+    itrans_nan=isnan(surv_obj.SurvOutput.(trans_to_clean{ifi}).snapshot);
+    for iu=1:length(fields)
+        surv_obj.SurvOutput.(trans_to_clean{ifi}).(fields{iu})(itrans_nan)=[];
+    end
+    
+end
 
 end

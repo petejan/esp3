@@ -85,10 +85,17 @@ for i=idx
     [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
     [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
     
-    mask=curr_reg.create_mask();
-    Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
-    Sv_temp(mask(idx_r_from_curr,idx_pings_from_curr)>0)=NaN;
+    switch curr_reg.Shape
+        
+        case 'Polygon'
+            mask=curr_reg.MaskReg;
+            Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
+            Sv_temp(mask(idx_r_from_curr,idx_pings_from_curr)>0)=NaN;
+        otherwise
+            Sv_temp=nan(length(idx_r_from_reg),length(idx_pings_from_reg));
+    end
     Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
+    
 end
 
 
@@ -118,8 +125,12 @@ bot_r(isnan(bot_r))=inf;
 bot_sple(isnan(bot_sple))=inf;
 
 
-mask=region.create_mask();
-Sv_reg(mask==0)=NaN;
+
+switch region.Shape
+    case 'Polygon'
+        mask=region.MaskReg;
+        Sv_reg(mask==0)=NaN; 
+end
 
 
 Mask=~isnan(Sv_reg);
@@ -158,9 +169,11 @@ end
 switch region.Reference
     case 'Surface'
         line_ref=zeros(size(x));
-    otherwise
+    case 'Bottom'
         line_ref=bot_int;
         Mask(:,(bot_int==inf))=0;
+    case 'Line'
+        line_ref=zeros(size(x));
 end
 
 [t_mat,~]=meshgrid(sub_time,sub_r);
@@ -174,6 +187,8 @@ y_mat=y_mat-line_mat;
 switch region.Reference
     case 'Bottom'
        idx_rem=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+    case 'Line'
+         idx_rem=(y_mat<=p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
     otherwise
       idx_rem=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
 end

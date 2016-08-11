@@ -63,7 +63,6 @@ classdef curr_state_disp_cl <handle
         
         function setField(obj,field)
             obj.Fieldname=field;
-            [~,obj.Type]=init_cax(obj.Fieldname);
             obj.setTypeCax();
         end
         

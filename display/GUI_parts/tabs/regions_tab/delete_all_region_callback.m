@@ -12,7 +12,7 @@ clear_lines(ah);
 if ~isempty(list_reg)
     layer.Transceivers(idx_freq).rm_regions();
     setappdata(main_figure,'Layer',layer);
-    update_regions_tab(main_figure);
+    update_regions_tab(main_figure,[]);
     display_regions(main_figure);
 else
     return

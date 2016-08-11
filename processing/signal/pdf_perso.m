@@ -37,7 +37,7 @@ if length(bin)==1
     mini=min(X(:));
     x=linspace(mini,maxi,N);
     dx=(maxi-mini)/(N-1);
-%     
+    
 %     switch win_type
 %         case 'box'
 %             bin_mat=bsxfun(@(u,v) (u-v)/dx<=1/2&(u-v)/dx>-1/2,X(:),x(:)');
@@ -46,7 +46,7 @@ if length(bin)==1
 %             %bin_mat=bsxfun(@(u,v) (1/(sqrt(2*pi))*exp(-(u-v).^2/(2*dx^2))),X(:),x(:)');
 %     end
 %     pdf=sum(bsxfun(@times,weight_idx(:),bin_mat/(dx*w_tot)));
-%  
+ 
     pdf=zeros(1,N);
     for i=1:N
         if strcmp(win_type,'box')

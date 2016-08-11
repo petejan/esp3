@@ -13,7 +13,7 @@ for ial=1:length(algo_obj)
     nb_algos=length(trans_obj.Algo);
     [idx_alg,alg_found]=find_algo_idx(trans_obj,algo_obj(ial).Name);
     if alg_found==0
-        trans_obj.Algo(nb_algos+1)=algo_cl('Name',algo_obj(ial).Name);
+        trans_obj.Algo(nb_algos+1)=algo_obj(ial);
     else
         trans_obj.Algo(idx_alg)=algo_obj(ial);
     end 

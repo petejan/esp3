@@ -18,11 +18,9 @@ classdef algo_cl
             parse(p,varargin{:});
             
             results=p.Results;
-            
-            
+             
             obj.Name=results.Name;
-            
-            
+                     
             obj.Function=init_func(obj.Name);
             obj.Varargin=init_varargin(obj.Name);
             if ~isempty(obj.Varargin)

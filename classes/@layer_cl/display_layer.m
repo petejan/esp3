@@ -66,19 +66,8 @@ switch lower(deblank(fieldname))
 end
 data_mat=single(data_mat);
 
-
 set(main_echo,'XData',xdata(idx_ping),'YData',ydata(idx_r),'CData',real(data_mat));
 
-
-cax=layer.Transceivers(idx_freq).Data.get_caxis(fieldname);
-
-if ~isempty(cax)
-    axes(ax);
-    if cax(2)<=cax(1)
-        cax(2)=cax(1)+10*abs(cax(1))/100;
-    end
-    set(ax,'CLim',cax);
-end
 
 if length(xdata(idx_ping))>1
     set(ax,'xlim',[xdata(idx_ping(1)) xdata(idx_ping(end))]);

@@ -15,7 +15,6 @@ switch output
         candidates=cell(1,num_can);
 end
 
-fprintf(1,'Processing Segmentation %.0f/%i\n',1/num_can*100,100);
 region_number=1;
 for i=1:num_can
     curr_candidate=candidates_idx{i};
@@ -24,23 +23,24 @@ for i=1:num_can
         row_idx(row_idx==0)=nb_row;
         col_idx=ceil(curr_candidate/nb_row);
         
-        
         if abs(nanmax(dist_pings(col_idx))-nanmin(dist_pings(col_idx)))>=l_min_can...
                 &&abs(nanmax(range(row_idx))-nanmin(range(row_idx)))>=h_min_can
             
             switch output
                 case 'mat'
-                    candidates(curr_candidate)=region_number;region_number=region_number+1;
+                    candidates(curr_candidate)=region_number;
+                    region_number=region_number+1;
                 case 'cell'
                     candidates{i}=curr_candidate;
             end
-            fprintf(1,'Processing Segmentation %.0f/%i\n',i/num_can*100,100);
- 
+            if mod(num_can,i)==10
+
+            end
         end
     end
     
 end
-fprintf(1,'Processing Segmentation %.0f/%i\n',100,100);
+
 switch output
     case 'cell'
         candidates(cellfun(@isempty,candidates))=[];

@@ -1,9 +1,8 @@
 function h_fig=display_region(reg_obj,trans_obj)
 output_reg=reg_obj.integrate_region(trans_obj);
-idx_field=find_field_idx(trans_obj.Data,'sv');
-cax=trans_obj.Data.SubData(idx_field).CaxisDisplay;
-%     profile off;
-%     profile viewer;
+
+[cax,~]=init_cax('sv');
+
 sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
 
 
@@ -11,7 +10,6 @@ if isempty(find(~isnan(sv_disp(:)), 1))
     h_fig=[];
     return;
 end
-%sv_disp(sv_disp<cax(1))=nan;
 
 tt=sprintf('Region: %.0f',reg_obj.ID);
 if size(sv_disp,1)>1&&size(sv_disp,2)>1

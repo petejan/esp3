@@ -15,5 +15,4 @@ switch shape
         inter_region_create(main_figure,mode,@create_region_func)
 end
 order_axes(main_figure);
-
 end

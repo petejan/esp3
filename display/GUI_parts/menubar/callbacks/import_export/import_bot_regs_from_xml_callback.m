@@ -26,12 +26,13 @@ switch choice
 end
 
 layer.load_bot_regs('bot_ver',bot,'reg_ver',reg);
+disp('Bottom and regions imported');
 
 display_bottom(main_figure);
 display_regions(main_figure);
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
-update_regions_tab(main_figure);
+update_regions_tab(main_figure,1);
 order_stacks_fig(main_figure);
 
 

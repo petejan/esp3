@@ -6,12 +6,14 @@ p = inputParser;
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addRequired(p,'regions',@(obj) isa(obj,'region_cl')||isempty(obj));
 addParameter(p,'Tag','',@(x) ischar(x)||iscell(x));
+addParameter(p,'IDs',[],@(x) isnumeric(x)||isempty(x));
 addParameter(p,'Split',1,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Origin','',@ischar);
 
 
 parse(p,trans_obj,regions,varargin{:});
 
+IDs=p.Results.IDs;
 Tag=p.Results.Tag;
 Origin=p.Results.Origin;
 Split=p.Results.Split;
@@ -29,6 +31,10 @@ for i=1:length(regions)
                 regions(i).Tag=Tag{length(Tag)};
             end
         end 
+    end
+    
+    if ~isempty(IDs)&&length(IDs)==length(regions)
+        regions(i).ID=IDs(i);
     end
     
     if ~strcmpi(Origin,'')

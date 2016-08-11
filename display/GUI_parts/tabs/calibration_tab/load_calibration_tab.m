@@ -56,12 +56,12 @@ end
 
 function reprocess_TS_calibration(~,~,main_figure)
 TS_calibration_curves_func(main_figure);
-update_display(main_figure,0);
+loadEcho(main_figure);
 end
 
 function reprocess_EBA_calibration(~,~,main_figure)
 beamwidth_calibration_curves_func(main_figure);
-update_display(main_figure,0);
+loadEcho(main_figure);
 end
 
 function apply_absorption(~,~,main_figure)
@@ -74,7 +74,7 @@ if~isnan(str2double(get(calibration_tab_comp.sal,'string')))
     layer.Transceivers(idx_freq).apply_absorption(str2double(get(calibration_tab_comp.att,'string'))/1e3)
 end
 set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.1f'));
-update_display(main_figure,0);
+loadEcho(main_figure);
 end
 
 function save_envdata_callback(~,~,main_figure)
@@ -117,7 +117,7 @@ if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
 end
 
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,0);
+loadEcho(main_figure);
 
 end
 

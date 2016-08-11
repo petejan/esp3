@@ -1,5 +1,5 @@
 
-classdef region_cl < handle
+classdef region_cl
     properties 
         Name
         ID
@@ -33,10 +33,10 @@ classdef region_cl < handle
             check_reference=@(ref) ~isempty(strcmp(ref,{'Surface','Bottom'}));
             check_w_unit=@(unit) ~isempty(strcmp(unit,{'pings','meters'}));
             check_h_unit=@(unit) ~isempty(strcmp(unit,{'samples','meters'}));
-            
+            pause(1e-3);
             unique_ID=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
             %num2str(unique_ID,'%.0f')
-            pause(1e-3);
+            
             
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);

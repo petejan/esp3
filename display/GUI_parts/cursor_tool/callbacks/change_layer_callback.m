@@ -28,6 +28,5 @@ end
 
 setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Layer',layer);
-
-update_display(main_figure,1);
+loadEcho(main_figure);
 end

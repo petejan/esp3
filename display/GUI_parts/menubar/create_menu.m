@@ -95,6 +95,8 @@ uimenu(reg_tools,'Label','Display current region','Callback',{@display_region_ca
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callback,main_figure});
 uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_callback,main_figure});
+uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
+
 
 
 bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
@@ -161,21 +163,6 @@ curr_disp.Cmap=src.Tag;
 setappdata(main_fig,'Curr_disp',curr_disp);
 end
 
-function load_bottom_reg_old_files_callback(~,~,main_figure,bot,reg)
-layer=getappdata(main_figure,'Layer');
-if isempty(layer)
-    return;
-end
-[path_f,~]=layer.get_path_files();
-folder = uigetdir(path_f{1},'Select folder containing b and r files');
-if folder==0
-    return
-end
-layer.load_bottom_regions_from_folder(folder,'bot',bot,'reg',reg);
-setappdate(main_figure,'Layer',layer);
-update_display(main_figure,0);
-
-end
 
 function save_display_config_callback(~,~,main_fig)
 curr_disp=getappdata(main_fig,'Curr_disp');
@@ -201,23 +188,23 @@ if isempty(layer)
     return;
 end
 [path_lay,~]=layer.get_path_files();
-
-xmlfile=fullfile(path_lay{1},'echo_logbook.xml');
-htmlfile=fullfile(path_lay{1},'echo_logbook.html');
-csvfile=fullfile(path_lay{1},'echo_logbook.csv');
+path_f=path_lay{1};
+xmlfile=fullfile(path_f,'echo_logbook.xml');
+htmlfile=fullfile(path_f,'echo_logbook.html');
+csvfile=fullfile(path_f,'echo_logbook.csv');
 
 if exist(csvfile,'file')==0
     return;
 end
 
 if exist(xmlfile,'file')==0
-   initialize_echo_logbook_file(path_lay{1});
+   initialize_echo_logbook_file(path_f);
 end
 
 surv_data_struct=import_survey_data(csvfile);
 layer.add_survey_data(surv_data_struct);
 for ifile=1:length(surv_data_struct.Filename)
-    update_echo_logbook_file_manually(fullfile(path_lay{1},surv_data_struct.Filename{ifile}),surv_data_struct.SurvDataObj{ifile});
+    update_echo_logbook_file_manually(fullfile(path_f,surv_data_struct.Filename{ifile}),surv_data_struct.SurvDataObj{ifile});
 end
 update_display(main_figure,1)
 xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
@@ -227,29 +214,34 @@ end
 
 function logbook_display_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
+app_path=getappdata(main_figure,'App_path');
 
 if isempty(layer)
-    return;
+    path_f = uigetdir(app_path.data,'Choose data folder');
+    if path_f==0
+        return;
+    end
+else
+    [path_lay,~]=layer.get_path_files();
+    path_f=path_lay{1};
 end
-[path_lay,~]=layer.get_path_files();
 
-xmlfile=fullfile(path_lay{1},'echo_logbook.xml');
-htmlfile=fullfile(path_lay{1},'echo_logbook.html');
+xmlfile=fullfile(path_f,'echo_logbook.xml');
+htmlfile=fullfile(path_f,'echo_logbook.html');
 
 if exist(xmlfile,'file')==0
-    initialize_echo_logbook_file(path_lay{1});
+    initialize_echo_logbook_file(path_f);
 end
 
 if exist(htmlfile,'file')==0
     xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
 end
+
 system(sprintf('start "" "%s"',htmlfile));
 
 end
 
-function logbook_dispedit_callback(~,~,main_figure)
-load_survey_data_fig(main_figure);
-end
+
 
 function set_curr_disp(src,~,main_figure)
 main_menu=getappdata(main_figure,'main_menu');

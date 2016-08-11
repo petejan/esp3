@@ -43,6 +43,7 @@ addParameter(p,'h_min_tot',default_h_min_tot,check_h_min_tot);
 addParameter(p,'horz_link_max',default_horz_link_max,check_horz_link_max);
 addParameter(p,'vert_link_max',default_vert_link_max,check_vert_link_max);
 addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
+addParameter(p,'depth_max',15000,@isnumeric);
 
 
 parse(p,trans_obj,varargin{:});
@@ -98,6 +99,8 @@ else
     Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np)&(bsxfun(@lt,range,Bottom)));
 end
 
+Sv_mask_ori(range>=p.Results.depth_max,:)=0;
+
 h_filter=2*Np;
 
 Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);
@@ -105,17 +108,14 @@ Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);
 Sv_mask=floor(filter2(ones(h_filter,1),double(Sv_mask>0),'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
 Sv_mask=ceil(filter2(ones(h_filter,1),Sv_mask,'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
 
-% profile on
+
 candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'mat');
 linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
+  
+%linked_candidates=link_candidates_v3(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
+% % %link candidate_v3 still does not work as I want... Too slow...
 
-% 
-% candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'cell');%to modify to output cell of idx when link_candidates_v3 will be finished
-% linked_candidates=link_candidates_v3(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
-% %link candidate_v3 still does not work as I want... Too slow...
 
-% profile off;
-% profile viewer;
 
 
 end

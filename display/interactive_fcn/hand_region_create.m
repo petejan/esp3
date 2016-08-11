@@ -102,10 +102,6 @@ main_figure.WindowButtonUpFcn = @wbucb;
         feval(func,main_figure,poly_r+idx_r_ori-1,poly_pings+idx_ping_ori-1);
         curr_disp.CursorMode='Normal';
         
-        set_alpha_map(main_figure);
-        display_regions(main_figure);
-        create_context_menu_main_echo(main_figure);
-        create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
         main_figure.Pointer = 'arrow';
     end
 end

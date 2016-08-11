@@ -33,6 +33,6 @@ for i=1:length(layers)
 end
 
 setappdata(main_figure,'Layer',layer);
-load_cursor_tool(main_figure);
-update_display(main_figure,0);
+
+loadEcho(main_figure);
 end

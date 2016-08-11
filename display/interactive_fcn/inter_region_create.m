@@ -139,10 +139,6 @@ main_figure.WindowButtonUpFcn = @wbucb;
         feval(func,main_figure,idx_r,idx_pings);
         
         curr_disp.CursorMode='Normal';
-        set_alpha_map(main_figure);
-        display_regions(main_figure);
-        create_context_menu_main_echo(main_figure);
-        create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
        
     end
 

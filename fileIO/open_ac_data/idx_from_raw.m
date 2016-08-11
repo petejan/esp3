@@ -1,9 +1,35 @@
 function raw_idx_obj=idx_from_raw(filename)
-fid=fopen(filename);
 raw_idx_obj=raw_idx_cl();
+raw_idx_obj.raw_type= get_ftype(filename);
+fid=fopen(filename);
+
 if fid==-1
     return;
 end
+
+switch raw_idx_obj.raw_type
+    case 'EK80'
+        [~,config]=read_EK80_config(filename);
+        
+        freq=nan(1,length(config));
+        CIDs=cell(1,length(config));
+        for uif=1:length(freq)
+            freq(uif)=config(uif).Frequency;
+            CIDs{uif}=config(uif).ChannelID;
+        end
+        
+    case 'EK60'
+        [tmp, ~] = readEKRaw_ReadHeader(fid);
+         freq=nan(1,length(tmp.transceiver));
+        CIDs=cell(1,length(tmp.transceiver));
+        for uif=1:length(freq)
+            freq(uif)=tmp.transceiver(uif).frequency;
+            CIDs{uif}=tmp.transceiver(uif).channelid;
+        end
+        frewind(fid);
+end
+
+
 
 file_comp=fread(fid,'*char', 'l')';
 
@@ -28,7 +54,7 @@ MAX_DG_SIZE=length(idx_dg);
 [~,fileN,ext]=fileparts(filename);
 
 raw_idx_obj.filename=[fileN ext];
-raw_idx_obj.raw_type='EK60';
+
 raw_idx_obj.nb_samples=nan(1,MAX_DG_SIZE);
 raw_idx_obj.time_dg=nan(1,MAX_DG_SIZE);
 raw_idx_obj.type_dg=cell(1,MAX_DG_SIZE);
@@ -36,7 +62,8 @@ raw_idx_obj.pos_dg=nan(1,MAX_DG_SIZE);
 raw_idx_obj.len_dg=nan(1,MAX_DG_SIZE);
 raw_idx_obj.chan_dg=nan(1,MAX_DG_SIZE);
 dgTime_ori = datenum(1601, 1, 1, 0, 0, 0);
-CIDs={};
+
+
 
 for i=1:length(idx_dg)
     
@@ -70,14 +97,8 @@ for i=1:length(idx_dg)
         case 'RAW3'
            channelID = (fread(fid,128,'*char', 'l')');
            fread(fid,4,'int16', 'l');
-           id_chan=find(strcmp(channelID,CIDs));
-           if isempty(id_chan)
-              id_chan=length(CIDs)+1;
-              CIDs=[CIDs,channelID];
-           end
-
+           id_chan=find(strcmp(deblank(channelID),deblank(CIDs)));
            raw_idx_obj.chan_dg(i)=id_chan;
-
            raw_idx_obj.nb_samples(i) = fread(fid,1,'int32', 'l');
     end
     

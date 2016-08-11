@@ -164,7 +164,7 @@ classdef transceiver_cl < handle
             else
                 idx=[];
                 for i=1:length(obj.Regions)
-                    if strcmp(obj.Regions(i).Name,name)
+                    if strcmpi(obj.Regions(i).Name,name)
                         idx=[idx i];
                     end
                 end
@@ -187,7 +187,6 @@ classdef transceiver_cl < handle
         end
         
         function rm_regions(obj)
-            reg_curr=obj.Regions;
             reg_new=[];
             
             obj.Regions=reg_new;
@@ -298,7 +297,7 @@ classdef transceiver_cl < handle
             found=0;
             for i=1:length(reg_curr)
                 if (strcmpi((reg_curr(i).Name),(name))&&((reg_curr(i).ID)==ID))
-                    idx=i;
+                    idx=[idx i];
                     found=found+1;
                 end
             end
@@ -368,10 +367,8 @@ classdef transceiver_cl < handle
                     Sv_reg=Sv(idx_r,idx_pings);
             end
             Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(obj.Data.get_range(idx_r),1,size(Sv_reg,2)))=NaN;
-            idx_field=find_field_idx(obj.Data,'sv');
-            cax=obj.Data.SubData(idx_field).CaxisDisplay;
-            
-            Sv_reg(Sv_reg<cax(1))=nan;
+
+            Sv_reg(Sv_reg<-70)=nan;
             range=double(obj.Data.get_range(idx_r));
             Sa=10*log10(nansum(10.^(Sv_reg/10).*nanmean(diff(range))));
             

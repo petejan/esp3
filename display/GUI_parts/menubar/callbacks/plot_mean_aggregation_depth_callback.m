@@ -10,9 +10,12 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
 list_reg = layer.Transceivers(idx_freq).regions_to_str();
-idx_field=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
-cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
 
+if strcmp(curr_disp.Fieldname,'sv')
+    cax=curr_disp.Cax;
+else
+    [cax,~]=init_cax('sv');
+end
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));

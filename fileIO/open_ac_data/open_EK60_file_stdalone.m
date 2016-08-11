@@ -18,6 +18,7 @@ addParameter(p,'SampleRange',[1 inf]);
 addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'GPSOnly',0);
+addParameter(p,'LoadEKbot',0);
 
 parse(p,Filename_cell,varargin{:});
 
@@ -185,20 +186,7 @@ if ~isequal(Filename_cell, 0)
             
             calParms = readEKRaw_GetCalParms(header,data);
             
-            Filename_bot=[Filename(1:end-4) '.bot'];
             
-            if exist(Filename_bot,'file')
-                [~,temp, ~] = readEKBot(Filename_bot, calParms,'Frequencies',vec_freq);
-                
-                
-                if pings_range(2)==Inf
-                    Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):end));
-                else
-                    Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):pings_range(2)));
-                end
-            else
-                Bottom_sim=nan(header.transceivercount,size( data.pings(1).power,1));
-            end
             
             c = [calParms.soundvelocity];
             t = [calParms.sampleinterval];
@@ -214,13 +202,24 @@ if ~isequal(Filename_cell, 0)
                     sample_end(i)=sample_range(2);
                 end
             end
-            
-            
             dR = double(c .* t / 2)';
             
-            Bottom_sim_idx=round(Bottom_sim./repmat(dR,1,size(Bottom_sim,2))-repmat(sample_start,1,size(Bottom_sim,2)))+1;
-            Bottom_sim_idx(Bottom_sim_idx<=1)=nan;
-            
+            if p.Results.LoadEKbot>0;
+                Filename_bot=[Filename(1:end-4) '.bot'];
+                if exist(Filename_bot,'file')
+                    [~,temp, ~] = readEKBot(Filename_bot, calParms,'Frequencies',vec_freq);
+                    if pings_range(2)==Inf
+                        Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):end));
+                    else
+                        Bottom_sim=double(temp.pings.bottomdepth(:,pings_range(1):pings_range(2)));
+                    end
+                else
+                    Bottom_sim=nan(header.transceivercount,size( data.pings(1).power,1));
+                end
+               
+                Bottom_sim_idx=round(Bottom_sim./repmat(dR,1,size(Bottom_sim,2))-repmat(sample_start,1,size(Bottom_sim,2)))+1;
+                Bottom_sim_idx(Bottom_sim_idx<=1)=nan;
+            end
             
             
             freq=nan(1,header.transceivercount);
@@ -258,15 +257,16 @@ if ~isequal(Filename_cell, 0)
                 end
                 algo_vec=reset_range(algo_vec,range);
 
-                bot= bottom_cl('Origin','Simrad','Range',Bottom_sim(i,:),'Sample_idx',Bottom_sim_idx(i,:));
-                
                 transceiver(i)=transceiver_cl('Data',ac_data_temp,...
                     'Algo',algo_vec,...
                     'GPSDataPing',gps_data_ping,...
                     'Mode','CW',...
                     'AttitudeNavPing',attitude);
-                transceiver(i).setBottom(bot);
                 
+                if p.Results.LoadEKbot>0;
+                    bot= bottom_cl('Origin','Simrad','Range',Bottom_sim(i,:),'Sample_idx',Bottom_sim_idx(i,:));
+                    transceiver(i).setBottom(bot);
+                end
                 
                 freq(i)=data.config(i).frequency(1);
                 

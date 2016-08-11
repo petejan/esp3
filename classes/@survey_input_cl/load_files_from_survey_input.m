@@ -48,9 +48,9 @@ for isn=1:length(snapshots)
                 if ~isempty(layers)
                     [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));    
                 else
-                    found_lay=0;
-                    
+                    found_lay=0; 
                 end
+                
                 if ~isempty(layers_in)
                     [~,found_lay_in]=layers_in.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                 else
@@ -163,8 +163,8 @@ for isn=1:length(snapshots)
                                 end
                             end
                         else
-                            for idx_freq=1:length(layer_new.Transceivers)
-                                layer_new.Transceivers(idx_freq).rm_all_region();
+                            for idx_freq_reg=1:length(layer_new.Transceivers)
+                                layer_new.Transceivers(idx_freq_reg).rm_all_region();
                             end
                         end
                 end
@@ -199,7 +199,7 @@ for isn=1:length(snapshots)
                         for i_freq_al=1:length(algos{ial}.Varargin.Frequencies)
                            [idx_freq_al,found_freq_al]=layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al)); 
                            if found_freq_al>0
-                               layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
+                               layer_new.Transceivers(idx_freq_al).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
                                layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name);
                            else
                                 fprintf('Could not find Frequency %.0fkHz. Algo %s not applied on it\n',algos{ial}.Varargin.Frequencies(i_freq_al)/1e3,algos{ial}.Name);
@@ -209,6 +209,20 @@ for isn=1:length(snapshots)
                 end
                 
                 if options.ClassifySchool>0
+                    [idx_120,found_120]=find_freq_idx(layer_new,120000);
+                    if found_120>0
+                        idx_school_120 = layer_new.Transceivers(idx_120).list_regions_name('School');
+                        if ~isempty(idx_school_120)
+                            if idx_freq~=idx_120
+                                layer_new.copy_region_across(idx_120,layer_new.Transceivers(idx_120).Regions,idx_freq);
+                                layer_new.Transceivers(idx_120).rm_region_name('School')
+                                new_regions=layer_new.Transceivers(idx_freq).Regions.merge_regions();
+                                layer_new.Transceivers(idx_freq).rm_all_region();
+                                layer_new.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
+                            end
+                        end
+                    end
+                    
                     idx_schools=layer_new.Transceivers(idx_freq).list_regions_name('School');
                     if ~isempty(idx_schools)
                         layer_new.apply_classification(idx_freq,idx_schools,0);
@@ -219,6 +233,7 @@ for isn=1:length(snapshots)
                     layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
                 end
                 
+                
                 u=length(layers)+1;
                 layers(u)=layer_new;
             end
@@ -228,7 +243,6 @@ for isn=1:length(snapshots)
     end
     
 end
-
 
 if u==0
     layers=[];

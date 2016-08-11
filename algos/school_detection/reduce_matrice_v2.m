@@ -18,6 +18,15 @@ idx_row=(range>=(nanmin(range(I_curr_can))-vert_link_max))&(range<=(nanmax(range
 
 idx_col_other=(dist_pings>=(nanmin(dist_pings(J_other_can))-horz_link_max))&(dist_pings<=(nanmax(dist_pings(J_other_can))+horz_link_max));
 idx_row_other=(range>=(nanmin(range(I_other_can))-vert_link_max))&(range<=(nanmax(range(I_other_can))+vert_link_max));
+% tic
+% idx_row_tot_first=find(idx_row&idx_row_other,1);
+% idx_col_tot_first=find(idx_col&idx_col_other,1);
+% idx_row_tot_last=find(idx_row&idx_row_other,1,'last');
+% idx_col_tot_last=find(idx_col&idx_col_other,1,'last');
+% 
+% 
+% K=(idx_row_tot_first+(idx_col_tot_first-1)*nb_samples):(idx_row_tot_last+(idx_col_tot_last-1)*nb_samples);
+% toc
 
 idx_row_tot=unique(find(idx_row&idx_row_other));
 idx_col_tot=unique(find(idx_col&idx_col_other));

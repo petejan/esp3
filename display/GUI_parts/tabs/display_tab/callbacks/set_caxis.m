@@ -15,11 +15,11 @@ end
 
 cax=str2double(get([display_tab_comp.caxis_down display_tab_comp.caxis_up],'String'));
 if cax(2)<cax(1)||isnan(cax(1))||isnan(cax(2))
-    cax=layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay;
+    cax=curr_disp.Cax;
     set(display_tab_comp.caxis_up,'String',num2str(cax(1),'%.0f'));
     set(display_tab_comp.caxis_down,'String',num2str(cax(2),'%.0f'));
 end
-layer.Transceivers(idx_freq).Data.SubData(idx_field).CaxisDisplay=cax;
+
 curr_disp.setCax(cax);
 
 setappdata(main_figure,'Layer',layer);

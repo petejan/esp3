@@ -11,7 +11,7 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 Transceiver=layer.Transceivers(idx_freq);
-% 
+%
 % shape_types=get(region_tab_comp.shape_type,'string');
 % shape_type_idx=get(region_tab_comp.shape_type,'value');
 %shape_type=shape_types{shape_type_idx};
@@ -78,15 +78,11 @@ reg_temp=region_cl(...
 
 layer.Transceivers(idx_freq).add_region(reg_temp);
 
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
-
-if ~isempty(list_reg)
-    set(region_tab_comp.tog_reg,'string',list_reg);
-    set(region_tab_comp.tog_reg,'value',length(list_reg));
-else
-    set(region_tab_comp.tog_reg,'string',{'--'});
-end
-setappdata(main_figure,'Region_tab',region_tab_comp);
 setappdata(main_figure,'Layer',layer);
-update_axis_panel(main_figure,0)
+
+
+update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
+order_axes(main_figure);
+display_regions(main_figure);
+order_stacks_fig(main_figure);
 end

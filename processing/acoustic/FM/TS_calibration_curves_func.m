@@ -123,8 +123,8 @@ for uui=1:length(layer.Frequencies)
     disp(['mean sound speed = ' num2str(c) ' m/s'])
     disp(['sphere TS = ' num2str(sphere_ts) ' dB'])
     
-    layer.Transceivers(uui).apply_soundspeed(layer.EnvData.SoundSpeed,c);
-    layer.EnvData.SoundSpeed=c;
+%     layer.Transceivers(uui).apply_soundspeed(layer.EnvData.SoundSpeed,c);
+%     layer.EnvData.SoundSpeed=c;
     layer.Transceivers(uui).apply_absorption(alpha/1e3);
     
     compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
@@ -213,8 +213,8 @@ for uui=1:length(layer.Frequencies)
             drawnow;
         end
         
-        if isempty(idx_peak)
-            
+        if isempty(idx_peak)     
+            disp('Not enough central echoes');
             continue;
         end
         
@@ -281,6 +281,6 @@ end
 
 
 setappdata(main_figure,'Layer',layer);
-update_display(main_figure,0);
+loadEcho(main_figure);
 
 end
