@@ -21,6 +21,7 @@ classdef mbs_input_cl
         transducer={};
         dfileNum=[];
         rawDir={};
+        EsError=[];
     end
     
     

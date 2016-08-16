@@ -42,22 +42,9 @@ else
 end
 
 if ~isequal(Filename, 0)
-    fid = fopen(fullfile(Filename_tmp), 'r');
-    if fid==-1
-        warning('Cannot open file');
-        return;
-    end
-    fread(fid,1, 'int32', 'l');
-    [dgType, ~] =read_dgHeader(fid,0);
-    fclose(fid);
-    switch dgType
-        case 'XML0'
-            open_EK80_file_GPS_only(main_figure,Filename);
-        case 'CON0'
-           open_EK60_file_GPS_only(main_figure,Filename);
-        otherwise
-            return
-    end
+    
+    open_EK_file_GPS_only(main_figure,Filename);
+     
 else
     return
 end

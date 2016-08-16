@@ -38,7 +38,7 @@ f_s_dec(1)=f_s_ori/D_1;
 f_s_dec(2)=f_s_dec(1)/D_2;
 
 if f_s_dec(2)~=f_s_sig
-    disp('Decimated pulse sample rate not macthing signal sampling rate')
+    disp('Decimated pulse sample rate not matching signal sampling rate')
 end
 
 %     t_filt_1=1/f_s_ori*(0:(length(filt_1)-1))';

@@ -117,10 +117,10 @@ order_axes(main_figure);
             dx=abs(diff(x_lim));
             dy=diff(y_lim);
             
-            x_lim(1)=x_lim(1)+dx/2;
-            y_lim(1)=y_lim(1)+dy/2;
-            x_lim(2)=x_lim(2)-dx/2;
-            y_lim(2)=y_lim(2)-dy/2;
+            x_lim(1)=x_lim(1)+dx/4;
+            y_lim(1)=y_lim(1)+dy/4;
+            x_lim(2)=x_lim(2)-dx/4;
+            y_lim(2)=y_lim(2)-dy/4;
             
         else
             x_lim=[x_min x_max];

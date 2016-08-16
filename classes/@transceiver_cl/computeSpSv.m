@@ -13,7 +13,7 @@ parse(p,trans_obj,env_data_obj,varargin{:});
 f = trans_obj.Config.Frequency(1);
 c = env_data_obj.SoundSpeed;
 t = trans_obj.Params.SampleInterval(1);
-alpha = trans_obj.Params.Absorption;
+alpha = trans_obj.Params.Absorption(1);
 cal=get_cal(trans_obj);
 G=cal.G0;
 eq_beam_angle = trans_obj.Config.EquivalentBeamAngle;

@@ -35,7 +35,7 @@ if ~isequal(Filename_cell, 0)
             cal=[];
         end
         
-        layer_temp(uu)=open_EK60_file_stdalone(fullfile(PathToRawFile{1},RawFilename),...
+        layer_temp(uu)=open_EK_file_stdalone(fullfile(PathToRawFile{1},RawFilename),...
             'PathToMemmap',app_path.data_temp,'Frequencies',[],'Calibration',cal);
         layer_temp(uu).OriginCrest=origin;
         

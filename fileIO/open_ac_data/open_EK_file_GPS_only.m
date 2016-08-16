@@ -1,6 +1,7 @@
-function  open_EK80_file_GPS_only(hObject,Filename)
 
-new_layers=open_EK80_file_stdalone(Filename,'GPSOnly',1);
+function  open_EK_file_GPS_only(hObject,Filename)
+
+new_layers=open_EK_file_stdalone(Filename,'GPSOnly',1);
         
 
 if isempty(new_layers)
@@ -9,15 +10,6 @@ end
 
 
 new_layers.load_echo_logbook();
-
-% new_layers_sorted=new_layers.sort_per_survey_data();
-% 
-% disp('Shuffling layers');
-% layers_out=[];
-% 
-% for icell=1:length(new_layers_sorted)
-%     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
-% end
 
 
 map_obj=map_input_cl.map_input_cl_from_obj(new_layers);

@@ -18,7 +18,6 @@ regions_wc=surv_input_obj.Regions_WC;
 algos=surv_input_obj.Algos;
 cal=surv_input_obj.Cal;
 
-
 snapshots=surv_input_obj.Snapshots;
 u=0;
 layers=p.Results.layers;
@@ -34,6 +33,9 @@ for isn=1:length(snapshots)
             
             filenames_cell=transects{itr}.files;
             trans_num=transects{itr}.number;
+            
+            
+            
             fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             if ~iscell(filenames_cell)
                 filenames_cell={filenames_cell};
@@ -44,6 +46,24 @@ for isn=1:length(snapshots)
 
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
+                
+                if isfield(transects{itr},'EsError')
+                    es_offset=transects{itr}.EsError(ifiles);
+                else
+                    es_offset=options.Es60_correction;
+                end
+                if isfield(transects{itr},'Cal')%
+                    cal_temp=transects{itr}.Cal{ifiles};
+                    cal_temp.FREQ=options.Frequency;
+                    
+                    if ~isempty(find([cal(:).FREQ]==options.Frequency, 1))
+                          cal([cal(:).FREQ]==options.Frequency)=cal_temp;
+                    else
+                        cal(length(cal)+1)=cal_temp;
+                    end
+                else
+                    cal=surv_input_obj.Cal;
+                end
                 
                 if ~isempty(layers)
                     [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));    
@@ -74,8 +94,12 @@ for isn=1:length(snapshots)
                         switch fType
                             case {'EK60','EK80'}
 %                                 profile on;
-                                new_lay=open_raw_file_standalone(fileN,...
-                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames);
+
+                                new_lay=open_raw_file_standalone_v2(fileN,...
+                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames,'EsOffset',es_offset);
+%                                  new_lay=open_raw_file_standalone(fileN,...
+%                                     'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames,'EsOffset',es_offset);
+% %                             
 %                                 profile off;
 %                                 profile viewer
                            case 'dfile'

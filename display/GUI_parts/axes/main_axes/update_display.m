@@ -46,7 +46,7 @@ set_alpha_map(main_figure);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 update_mini_ax(main_figure);
-
+update_grid(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 

@@ -5,6 +5,7 @@ classdef params_cl
         BandWidth
         ChannelID
         ChannelMode
+        Frequency
         FrequencyEnd
         FrequencyStart
         PulseForm

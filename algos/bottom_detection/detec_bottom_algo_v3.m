@@ -76,7 +76,7 @@ heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
 if ~isempty(dist)&&nb_pings>1&&p.Results.horz_filt>0
     b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
 else
-    b_filter=nanmin(15,nb_pings/10);
+    b_filter=ceil(nanmin(15,nb_pings/10));
 end
 
 idx_ringdown=analyse_ringdown(RingDown);

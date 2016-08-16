@@ -1,6 +1,6 @@
 function apply_absorption(trans,alpha)
 
-alpha_ori=trans.Params.Absorption;
+alpha_ori=trans.Params.Absorption(1);
 
 if alpha_ori==alpha
     return;

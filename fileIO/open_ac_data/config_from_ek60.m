@@ -1,19 +1,19 @@
-function [config_obj,params_obj]=config_from_ek60(config,calParms)
+function [config_obj,params_obj]=config_from_ek60(pings,config)
 config_obj=config_cl();
 params_obj=params_cl();
 
 config_obj.EthernetAddress='';
 config_obj.IPAddress='';
 config_obj.SerialNumber='';
-config_obj.TransceiverName=calParms.soundername;
+config_obj.TransceiverName=config.soundername;
 config_obj.TransceiverNumber=[];
 config_obj.TransceiverSoftwareVersion='';
-config_obj.TransceiverType='';
+config_obj.TransceiverType='GPT';
 config_obj.ChannelID=config.channelid;
 config_obj.ChannelIdShort=config.channelid;
 config_obj.ChannelNumber=[];
 config_obj.HWChannelConfiguration=[];
-config_obj.MaxTxPowerTransceiver=calParms.transmitpower;
+config_obj.MaxTxPowerTransceiver=[];
 config_obj.PulseLength=config.pulselengthtable;
 config_obj.AngleOffsetAlongship=config.anglesoffsetalongship;
 config_obj.AngleOffsetAthwartship=config.angleoffsetathwartship;
@@ -28,22 +28,27 @@ config_obj.Frequency=config.frequency;
 config_obj.FrequencyMaximum=config.frequency;
 config_obj.FrequencyMinimum=config.frequency;
 config_obj.Gain=config.gaintable;
-config_obj.MaxTxPowerTransducer=calParms.transmitpower;
+config_obj.MaxTxPowerTransducer=0;
 config_obj.SaCorrection=config.sacorrectiontable;
 config_obj.TransducerName='';
 
-params_obj.Time=[];
-params_obj.BandWidth=[];
-params_obj.ChannelID={config.channelid};
-params_obj.ChannelMode={};
-params_obj.FrequencyEnd=calParms.frequency;
-params_obj.FrequencyStart=calParms.frequency;
-params_obj.PulseForm=[];
-params_obj.PulseLength=calParms.pulselength;
-params_obj.SampleInterval=calParms.sampleinterval;
-params_obj.Slope=[];
-params_obj.TransducerDepth=calParms.transducerdepth;
-params_obj.TransmitPower=calParms.transmitpower;
-params_obj.Absorption=double(calParms.absorptioncoefficient);
+if ~isempty(pings)
+    params_obj.Time=pings.time;
+    params_obj.BandWidth=pings.bandwidth;
+    params_obj.ChannelID=cell(1,length(pings.time));
+    params_obj.ChannelID(:)={config.channelid};
+    params_obj.ChannelMode=pings.mode;
+    params_obj.FrequencyEnd=pings.frequency;
+    params_obj.FrequencyStart=pings.frequency;
+    params_obj.PulseForm=[];
+    params_obj.PulseLength=pings.pulselength;
+    params_obj.SampleInterval=pings.sampleinterval;
+    params_obj.Slope=[];
+    params_obj.TransducerDepth=zeros(size(pings.transmitpower));
+    params_obj.TransmitPower=pings.transmitpower;
+    params_obj.Absorption=double(pings.absorptioncoefficient);
+end
+
+
 
 end

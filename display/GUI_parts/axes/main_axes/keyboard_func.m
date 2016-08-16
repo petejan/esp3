@@ -167,15 +167,17 @@ switch callbackdata.Key
             set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         end
     case 'e'
-        if length(layer.Frequencies)>1
-            set(main_figure,'KeyPressFcn','');
-            curr_disp=getappdata(main_figure,'Curr_disp');
-            idx_freq=layer.find_freq_idx(curr_disp.Freq);
+        
+        set(main_figure,'KeyPressFcn','');
+        curr_disp=getappdata(main_figure,'Curr_disp');
+        idx_freq=layer.find_freq_idx(curr_disp.Freq);
+        if length(layer.Transceivers(idx_freq).Data.Fieldname)>1
             fields=layer.Transceivers(idx_freq).Data.Fieldname;
             id_field=find(strcmp(curr_disp.Fieldname,fields));
             curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
-            set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         end
+        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        
         
     case 'n'
         change_layer_callback([],[],main_figure,'next');

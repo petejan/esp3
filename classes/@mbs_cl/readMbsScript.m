@@ -143,7 +143,7 @@ else
                 mbs.Input.rawSubDir{i}=ifile_info.rawSubDir;
                 mbs.Input.calCrest(i)=ifile_info.Cal_crest;
                 mbs.Input.calRaw{i}=struct('G0',ifile_info.G0,'SACORRECT',ifile_info.SACORRECT);
-                
+                mbs.Input.EsError(i)=ifile_info.es60error_offset;
                 i = i+1;
                 
                 tline = fgetl(fid);

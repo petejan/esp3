@@ -15,5 +15,4 @@ switch curr_disp.Xaxes
 end
 curr_disp.Grid_y=10^(floor(log10(layer.Transceivers(idx_freq).Data.Range(2)-layer.Transceivers(idx_freq).Data.Range(1))))/5;
 
-
 end

@@ -6,6 +6,8 @@ classdef curr_state_disp_cl <handle
         Type
         Xaxes
         Cax
+        Fieldnames
+        Caxes
         DispBottom
         DispUnderBottom
         DispBotHighVis
@@ -50,6 +52,9 @@ classdef curr_state_disp_cl <handle
                 obj.(props{i})=results.(props{i});
             end
             
+            obj.Fieldnames={'sv','sp','power','angle','target','snr','phi','y'};
+            obj.Caxes={[-70 -35],[-60 -30],[-200 0],[-10 10],[-60 -30],[0 30],[-180 180],[-200 0]};
+
             obj.setTypeCax();
             
         end
@@ -57,21 +62,34 @@ classdef curr_state_disp_cl <handle
     
     methods
         
+         function setCax(obj,cax)
+             if cax(2)>cax(1)
+                 idx_field=find(cellfun(@(x) ~isempty(strfind(obj.Fieldname,x)),obj.Fieldnames));
+                 if ~isempty(idx_field)
+                     obj.Caxes{idx_field}=cax;
+                     obj.Cax=cax;
+                 else
+                     obj.Cax=cax;
+                 end
+             end
+        end
+          
         function setTypeCax(obj)
-            [obj.Cax,obj.Type]=init_cax(obj.Fieldname);  
+            [cax,obj.Type]=init_cax(obj.Fieldname);  
+            
+            idx_field=find(cellfun(@(x) ~isempty(strfind(obj.Fieldname,x)),obj.Fieldnames));
+            if ~isempty(idx_field)
+                obj.Cax=obj.Caxes{idx_field};
+            else
+                obj.Cax=cax;
+            end
         end
         
         function setField(obj,field)
             obj.Fieldname=field;
             obj.setTypeCax();
         end
-        
-        function setCax(obj,cax)
-           if cax(2)>cax(1)
-              obj.Cax=[cax(1) cax(2)]; 
-           end
-        end
-        
+                
     end
     
 end

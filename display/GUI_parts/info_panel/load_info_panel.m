@@ -25,7 +25,9 @@ else
 end
 
 [~,file_curr,~]=fileparts(layer.Filename{1});
-summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
+try
+    summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower(1),layer.Transceivers(idx_freq).Params.PulseLength(1)*1e3);
+end
 cur_str=sprintf('Cursor mode: %s',curr_disp.CursorMode);
 
 

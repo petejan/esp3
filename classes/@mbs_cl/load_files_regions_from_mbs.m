@@ -57,7 +57,7 @@ for i=idx_trans
         case 'raw'
             if exist(fullfile(rawPathToFile{i},rawFilename{i}),'file')==2
                 ifileInfo=parse_ifile(fullfile(dPathToFile{i},sprintf('i%07d', dFileNum(i))));
-                layer(u)=open_EK60_file_stdalone(fullfile(rawPathToFile{i},rawFilename{i}),...
+                layer(u)=open_EK_file_stdalone(fullfile(rawPathToFile{i},rawFilename{i}),...
                     'PathToMemmap',datapath,'Frequencies',38000,'EsOffset',ifileInfo.es60error_offset);
             else
                 continue;

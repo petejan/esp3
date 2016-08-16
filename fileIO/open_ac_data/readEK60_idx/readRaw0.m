@@ -14,14 +14,7 @@ data.pings(idx_data).bandwidth(i_ping) = fread(fid,1,'float32', 'l');
 data.pings(idx_data).sampleinterval(i_ping) = fread(fid,1,'float32', 'l');
 data.pings(idx_data).soundvelocity(i_ping) = fread(fid,1,'float32', 'l');
 data.pings(idx_data).absorptioncoefficient(i_ping) = fread(fid,1,'float32', 'l');
-% data.pings(idx_data).heave(i_ping) = fread(fid,1,'float32', 'l');
-% data.pings(idx_data).roll(i_ping) = fread(fid,1,'float32', 'l');
-% data.pings(idx_data).pitch(i_ping) = fread(fid,1,'float32', 'l');
-% data.pings(idx_data).temperature(i_ping) = fread(fid,1,'float32', 'l');
-% data.pings(idx_data).trawlupperdepthvalid(i_ping) = fread(fid,1,'int16', 'l');
-% data.pings(idx_data).trawlopeningvalid(i_ping) = fread(fid,1,'int16', 'l');
-% data.pings(idx_data).trawlupperdepth(i_ping) = fread(fid,1,'float32', 'l');
-% data.pings(idx_data).trawlopening(i_ping) = fread(fid,1,'float32', 'l');
+
 fread(fid,28,'uint8','l');
 data.pings(idx_data).offset(i_ping) = fread(fid,1,'int32', 'l');
 data.pings(idx_data).count(i_ping) = fread(fid,1,'int32', 'l');

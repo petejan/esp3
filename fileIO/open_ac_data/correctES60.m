@@ -20,7 +20,7 @@ end
 if val_std>0.2
     disp('It does not look like there is a triangle wave error here...');
     data_c=data;
-    mean_corrected_value=nanmean(rd_zone);
+    mean_corrected_value=0;
     
     figure();   
     plot(rd_zone)
