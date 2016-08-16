@@ -39,10 +39,8 @@ end
 idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
 idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
 
-grid on;
-axis ij;
 
-set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top');
+set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on','YDir','reverse');
 xlabel_out=format_label(xdata_grid(idx_xticks),curr_disp.Xaxes);
 ylabel_out=format_label(ydata_grid(idx_yticks),'distance');
 set(axes_panel_comp.main_axes,'XtickLabel',xlabel_out,'YtickLabel',ylabel_out,'XTickLabelRotation',90,'box','on','visible','on');

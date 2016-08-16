@@ -37,7 +37,7 @@ if ~strcmp(layer.Filetype,'CREST')
         
     end
     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0.1 0.4 0.2 0.1]);
-    calibration_tab_comp.att=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
+    calibration_tab_comp.att=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
     
     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Temp. (degC)','units','normalized','Position',[0.1 0.25 0.2 0.1]);
     calibration_tab_comp.temp=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.25 0.1 0.1],'string',num2str(layer.EnvData.Temperature,'%.1f'),'callback',{@save_envdata_callback,main_figure});

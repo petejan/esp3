@@ -117,8 +117,7 @@ if ~isequal(Filename_cell, 0)
             mkdir(fullfile(path_f,'echoanalysisfiles'));
         end
         
-%         profile on;
-%         
+       
         fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
             fprintf('Indexing file: %s\n',Filename);
@@ -134,11 +133,12 @@ if ~isequal(Filename_cell, 0)
                 save(fileIdx,'idx_raw_obj');
             end
         end
-        
+        profile on;
+         
         [trans_obj,envdata,NMEA]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap);
         
-%         profile off;
-%         profile viewer;
+        profile off;
+        profile viewer;
         
         if ~isa(trans_obj,'transceiver_cl')
             disp('Could not read file.')
@@ -187,9 +187,10 @@ if ~isequal(Filename_cell, 0)
                     Bottom_sim.depth=Bottom_sim.depth(ia1,:);
                     
                     for itrans=1:length(trans_obj)
+                        curr_range=trans_obj(itrans).Data.get_range();
                         depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Data.Time);
                         depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth(1);
-                        sample_idx=resample_data_v2(1:length(trans_obj(itrans).Data.get_range()),trans_obj(itrans).Data.get_range(),depth_resampled,'Opt','Nearest');
+                        sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
                         trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Range',depth_resampled,'Sample_idx',sample_idx));
                     end
                 end

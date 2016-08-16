@@ -199,7 +199,7 @@ for idg=1:length(idx_raw_obj.type_dg)
             %fseek(fid,idx_raw_obj.pos_dg(idg),'bof');
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
-            NMEA.string{i_nmea}=char(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'uchar', 'l')');
+            NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*uchar', 'l')';
             
         case 'FIL1'
             if fil_process==0
@@ -335,6 +335,7 @@ if p.Results.GPSOnly==0
                 [trans_obj(i).Config,trans_obj(i).Params]=config_from_ek60(data.pings(i),config_EK60(idx_freq(i)));
             end
             envdata=env_data_cl();
+            envdata.SoundSpeed=data.pings(1).soundvelocity(1);
     end
     
     sample_start=nan(nb_trans,1);
@@ -352,8 +353,7 @@ if p.Results.GPSOnly==0
     c = envdata.SoundSpeed;
     
     for i =1:nb_trans
-        t = trans_obj(i).Params.SampleInterval(end);
-        dR = double(c .* t / 2)';
+       
         trans_obj(i).Mode=mode{i};
         switch trans_obj(i).Config.TransceiverType
             case {'WBT','WBT Tube'}
@@ -384,8 +384,9 @@ if p.Results.GPSOnly==0
             trans_obj(i).Params.Absorption=alpha;
         end
         
-        
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);
+        t = trans_obj(i).Params.SampleInterval(end);
+        dR = double(c .* t / 2)';
         samples=double([sample_start(i) sample_end(i)]);
         range=double(samples-1)*dR;
         
@@ -395,7 +396,6 @@ if p.Results.GPSOnly==0
             'Time',double(data.pings(i).time),...
             'Number',[double(data.pings(i).number(1)) double(data.pings(i).number(end))],...
             'MemapName',curr_name);
-        
     end
     
 else

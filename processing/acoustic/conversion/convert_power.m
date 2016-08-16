@@ -3,7 +3,6 @@ function [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam
 
 [TVG_Sp,TVG_Sv]=computeTVG(range);
 
-
 dr=nanmean(diff(range(:)));
 r_corr = 2*dr;
 %r_corr=0;

@@ -1,23 +1,26 @@
 function data=readRaw0(data,idx_data,i_ping,PingRange,SampleRange,fid)
-
-fread(fid,2,'uchar', 'l');
-mode_low = fread(fid,1,'int8', 'l');
-mode_high = fread(fid,1,'int8', 'l');
+% fread(fid,2,'uchar', 'l');
+% mode_low = fread(fid,1,'int8', 'l');
+% mode_high = fread(fid,1,'int8', 'l');
+temp=fread(fid,4,'int8', 'l');
 
 data.pings(idx_data).number(i_ping) = i_ping+PingRange(1)-1;
-data.pings(idx_data).mode(i_ping) = 256 * mode_high + mode_low;
-data.pings(idx_data).transducerdepth(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).frequency(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).transmitpower(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).pulselength(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).bandwidth(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).sampleinterval(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).soundvelocity(i_ping) = fread(fid,1,'float32', 'l');
-data.pings(idx_data).absorptioncoefficient(i_ping) = fread(fid,1,'float32', 'l');
+data.pings(idx_data).mode(i_ping) = 256 * temp(3) + temp(4);
+
+temp=fread(fid,8,'float32', 'l');
+data.pings(idx_data).transducerdepth(i_ping) = temp(1);
+data.pings(idx_data).frequency(i_ping) = temp(2);
+data.pings(idx_data).transmitpower(i_ping) = temp(3);
+data.pings(idx_data).pulselength(i_ping) = temp(4);
+data.pings(idx_data).bandwidth(i_ping) = temp(5);
+data.pings(idx_data).sampleinterval(i_ping) = temp(6);
+data.pings(idx_data).soundvelocity(i_ping) = temp(7);
+data.pings(idx_data).absorptioncoefficient(i_ping) = temp(8);
 
 fread(fid,28,'uint8','l');
-data.pings(idx_data).offset(i_ping) = fread(fid,1,'int32', 'l');
-data.pings(idx_data).count(i_ping) = fread(fid,1,'int32', 'l');
+temp=fread(fid,2,'int32', 'l');
+data.pings(idx_data).offset(i_ping) = temp(1);
+data.pings(idx_data).count(i_ping) = temp(2);
 
 if data.pings(idx_data).count(i_ping) > 0
     len_load=min(SampleRange(2),data.pings(idx_data).count(i_ping))-SampleRange(1)+1;
