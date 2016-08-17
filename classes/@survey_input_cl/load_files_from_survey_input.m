@@ -168,6 +168,10 @@ for isn=1:length(snapshots)
                     else
                         fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                     end
+                    
+                    if ~isnan(options.Soundspeed)
+                        layer_new.apply_soundspeed(options.Soundspeed);
+                    end
                 end
                 
                 

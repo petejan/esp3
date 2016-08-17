@@ -14,7 +14,7 @@ end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 calibration_tab_comp.calibration_tab=uitab(option_tab_panel,'Title','Calibration');
- uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed: %.0f(m/s)',curr_disp.Freq/1e3,layer.EnvData.SoundSpeed),'units','normalized','Position',[0.1 0.85 0.7 0.1]);
+calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed: %.0f(m/s)',curr_disp.Freq/1e3,layer.EnvData.SoundSpeed),'units','normalized','Position',[0.1 0.85 0.7 0.1]);
        
 if ~strcmp(layer.Filetype,'CREST')
     if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
@@ -54,6 +54,7 @@ setappdata(main_figure,'Calibration_tab',calibration_tab_comp);
 end
 
 
+
 function reprocess_TS_calibration(~,~,main_figure)
 TS_calibration_curves_func(main_figure);
 loadEcho(main_figure);
@@ -70,10 +71,12 @@ layer=getappdata(main_figure,'Layer');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-if~isnan(str2double(get(calibration_tab_comp.sal,'string')))
-    layer.Transceivers(idx_freq).apply_absorption(str2double(get(calibration_tab_comp.att,'string'))/1e3)
+new_abs=str2double(get(calibration_tab_comp.att,'string'));
+if~isnan(new_abs)&&new_abs>0&&new_abs<100
+    layer.Transceivers(idx_freq).apply_absorption(new_abs/1e3)
 end
-set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.1f'));
+set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.2f'));
+
 loadEcho(main_figure);
 end
 
@@ -83,17 +86,37 @@ layer=getappdata(main_figure,'Layer');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 
 
-if~isnan(str2double(get(calibration_tab_comp.sal,'string')))
-    layer.EnvData.Salinity=str2double(get(calibration_tab_comp.sal,'string'));
+new_sal=str2double(get(calibration_tab_comp.sal,'string'));
+if~isnan(new_sal)&&new_sal>=0&&new_sal<=50
+    layer.EnvData.Salinity=new_sal;
+else
+    new_sal=layer.EnvData.Salinity;
 end
-set(calibration_tab_comp.sal,'string',num2str(layer.EnvData.Salinity,'%.1f'));
+set(calibration_tab_comp.sal,'string',num2str(new_sal,'%.1f'));
 
-if~isnan(str2double(get(calibration_tab_comp.temp,'string')))
-    layer.EnvData.Temperature=str2double(get(calibration_tab_comp.temp,'string'));
+new_temp=str2double(get(calibration_tab_comp.temp,'string'));
+if~isnan(new_temp)&&new_temp>=-5&&new_temp<=90
+    layer.EnvData.Temperature=new_temp;
+else
+    new_temp=layer.EnvData.Temperature;
 end
-set(calibration_tab_comp.temp,'string',num2str(layer.EnvData.Temperature,'%.1f'));
+set(calibration_tab_comp.temp,'string',num2str(new_temp,'%.1f'));
     
-    
+
+c = sw_svel(layer.EnvData.Salinity,layer.EnvData.Temperature,1);
+layer.apply_soundspeed(c);
+update_axis_panel(main_figure,0);
+update_calibration_tab(main_figure);
+display_bottom(main_figure);
+display_tracks(main_figure);
+display_file_lines(main_figure);
+display_regions(main_figure);
+display_lines(main_figure);
+display_survdata_lines(main_figure);
+set_alpha_map(main_figure);
+order_axes(main_figure);
+order_stacks_fig(main_figure);
+
 setappdata(main_figure,'Layer',layer);
 
 

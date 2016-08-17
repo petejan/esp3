@@ -122,15 +122,14 @@ for uui=1:length(layer.Frequencies)
     disp(['mean Absorption = ' num2str(alpha) ' dB/km'])
     disp(['mean sound speed = ' num2str(c) ' m/s'])
     disp(['sphere TS = ' num2str(sphere_ts) ' dB'])
-    layer.EnvData.SoundSpeed=c;
-    layer.Transceivers(uui).apply_soundspeed(layer.EnvData.SoundSpeed,c);  
+    for it=1:length(layer.Transceivers)
+        layer.Transceivers(it).apply_soundspeed(layer.EnvData.SoundSpeed,c);  
+    end
+    layer.apply_soundspeed(c);
     layer.Transceivers(uui).apply_absorption(alpha/1e3);
     
     update_axis_panel(main_figure,0);
-    main_childs=get(main_figure,'children');
-    tags=get(main_childs,'Tag');
-    idx_opt=strcmp(tags,'option_tab_panel');
-    load_calibration_tab(main_figure,main_childs(idx_opt));
+    update_calibration_tab(main_figure);
     display_bottom(main_figure);
     display_tracks(main_figure);
     display_file_lines(main_figure);
@@ -140,7 +139,7 @@ for uui=1:length(layer.Frequencies)
     set_alpha_map(main_figure);
     order_axes(main_figure);
     order_stacks_fig(main_figure);
-    update_mini_ax(main_figure);
+
 
     compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
     

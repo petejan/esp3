@@ -56,7 +56,7 @@ for i=1:length(Filenames)
         else
             fields_req={};
         end
-        
+         %surv_obj.SurvInput.Options.Soundspeed=1450;
          layers=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,'layers',p.Results.layers,'Fieldnames',fields_req);
 
     catch err

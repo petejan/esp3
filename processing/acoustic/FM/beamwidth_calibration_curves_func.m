@@ -66,9 +66,9 @@ for uui=1:length(layer.Frequencies)
     
     
     Freq=(layer.Transceivers(uui).Config.Frequency);
-    eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
+    %eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
     
-    [nb_samples,nb_pings]=size(AcrossAngle);
+    [nb_samples,~]=size(AcrossAngle);
     
     Sp_red=Sp(idx_r,idx_pings);
     [~,idx_peak]=nanmax(Sp_red,[],1);
@@ -149,7 +149,7 @@ for uui=1:length(layer.Frequencies)
         end
         
         try
-            close(h)
+            close(h);
         end
         
         
