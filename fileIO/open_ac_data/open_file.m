@@ -136,6 +136,7 @@ if ~isequal(Filename, 0)
     if ~isempty(survey_struct)
         
         [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
+        
         for ic=1:length(files_lay)
             files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
         end

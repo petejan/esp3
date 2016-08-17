@@ -1,7 +1,7 @@
 function tag=apply_classification_tree(tree_obj,school_struct)
 
 tag='';
-if(nansum(cellfun(@(x) nansum(strcmp(x,fields(school_struct)))>0,tree_obj.Variables))<length(tree_obj.Variables))
+if(any(cellfun(@(x) ~any(strcmp(x,fields(school_struct))),tree_obj.Variables)))
     warning('All Variables not defined, cannot classify');
     return;
 end
@@ -15,7 +15,7 @@ classified=0;
 
 while classified==0  
     node=tree_obj.get_node(ID_goto);    
-    if ~isempty(find(ID_goto==IDs_cond,1))
+    if any(ID_goto==IDs_cond)
         try
             output=eval(node.Condition);
         catch

@@ -123,6 +123,7 @@ if ~isequal(Filename_cell, 0)
             fprintf('Indexing file: %s\n',Filename);
             idx_raw_obj=idx_from_raw(Filename);
             save(fileIdx,'idx_raw_obj');
+            disp('Done');
         else
             load(fileIdx);
             [~,et]=start_end_time_from_file(Filename);
@@ -131,12 +132,13 @@ if ~isequal(Filename_cell, 0)
                 delete(fileIdx);
                 idx_raw_obj=idx_from_raw(Filename);
                 save(fileIdx,'idx_raw_obj');
+                 disp('Done')
             end
         end
         profile on;
-         
+        tic 
         [trans_obj,envdata,NMEA]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap);
-        
+        toc
         profile off;
         profile viewer;
         
@@ -191,6 +193,8 @@ if ~isequal(Filename_cell, 0)
                         depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Data.Time);
                         depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth(1);
                         sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
+                        depth_resampled(sample_idx==1)=nan;
+                        sample_idx(sample_idx==1)=nan;
                         trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Range',depth_resampled,'Sample_idx',sample_idx));
                     end
                 end

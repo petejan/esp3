@@ -203,9 +203,11 @@ end
 
 surv_data_struct=import_survey_data(csvfile);
 layer.add_survey_data(surv_data_struct);
+
 for ifile=1:length(surv_data_struct.Filename)
-    update_echo_logbook_file_manually(fullfile(path_f,surv_data_struct.Filename{ifile}),surv_data_struct.SurvDataObj{ifile});
+    layer_cl.empty.update_echo_logbook_file('Filename',fullfile(path_f,surv_data_struct.Filename{ifile}),'SurveyData',surv_data_struct.SurvDataObj{ifile});
 end
+
 update_display(main_figure,1)
 xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
 system(sprintf('start "" "%s"',htmlfile));

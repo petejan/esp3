@@ -33,7 +33,7 @@ switch trans_obj.Mode
         
         trans_obj.Data.Range=[range(1) range(end)];
 
-            if nansum(strcmpi(p.Results.FieldNames,'sp'))>0||isempty(p.Results.FieldNames)
+            if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
                 [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr);
                 trans_obj.Data.add_sub_data('spunmatched',Sp_un);
             end
@@ -47,10 +47,10 @@ switch trans_obj.Mode
         
 end
 
-    if nansum(strcmpi(p.Results.FieldNames,'sv'))>0||isempty(p.Results.FieldNames)
+    if any(strcmpi(p.Results.FieldNames,'sv'))||isempty(p.Results.FieldNames)
         trans_obj.Data.add_sub_data('sv',Sv);
     end
-    if nansum(strcmpi(p.Results.FieldNames,'sp'))>0||isempty(p.Results.FieldNames)
+    if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
         trans_obj.Data.add_sub_data('sp',Sp);
     end
 

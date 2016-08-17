@@ -149,7 +149,7 @@ for iax=1:length(main_axes_tot)
                     x_reg{jj}=x(idx_x_out{jj});
                     y_reg{jj}=y(idx_y_out{jj})';
                     
-                    if ~isempty(idx_x)>0
+                    if ~isempty(idx_x)
                         x_text=nanmean(x_reg{jj});
                         y_text=nanmean(y_reg{jj});
                     end

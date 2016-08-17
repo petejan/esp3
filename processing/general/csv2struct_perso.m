@@ -36,7 +36,7 @@ end
 for ifi=1:nb_fields
     temp=cellfun(@str2double,struct_out.(fields{ifi}));
     idx_valid=~isnan(temp);
-    if nansum(idx_valid)>0
+    if any(idx_valid)
         struct_out.(fields{ifi})=temp;
     end
     

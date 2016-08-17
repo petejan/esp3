@@ -30,12 +30,15 @@ survDataSummary(:,2)=surv_data_struct.Filename;
 survDataSummary(:,3)=num2cell(surv_data_struct.Snapshot);
 survDataSummary(:,4)=surv_data_struct.Stratum;
 survDataSummary(:,5)=num2cell(surv_data_struct.Transect);
+
 for i=1:length(surv_data_struct.SurvDataObj)
     survDataSummary{i,1}=false;
     survDataSummary{i,6}=datestr(surv_data_struct.SurvDataObj{i}.StartTime,'dd-mmm-yyyy HH:MM:SS');
     survDataSummary{i,7}=datestr(surv_data_struct.SurvDataObj{i}.EndTime,'dd-mmm-yyyy HH:MM:SS');
     survDataSummary{i,8}=i;
 end
+
+
 
 % Column names and column format
 columnname = {'' 'Filename','Snapshot','Stratum','Transect','Start Time','End Time' 'id'};

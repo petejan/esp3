@@ -1,26 +1,19 @@
 function [header,output,type]=read_xml0(t_line)
 header=[];
 output=[];
-type='';
-% fid_xml=fopen(fullfile(tempdir,'xml0.xml'),'w');
-% fprintf(fid_xml,'%s',t_line);
-% fclose(fid_xml);
-% 
-% xstruct=parseXMLStr(fullfile(tempdir,'xml0.xml'));
-% 
-% delete(fullfile(tempdir,'xml0.xml'));
 
-xstruct=parseXMLStr(t_line);
-type=xstruct.Name;
+
+xstruct=xml2struct(t_line);
+type_tmp=fields(xstruct);
+type=type_tmp{1};
 switch type
     case'Configuration'
-        [header,output]=read_config_xstruct(xstruct);
+        [header,output]=read_config_xstruct_v2(xstruct);
     case 'Environment'
-        env_temp=read_env_xstruct(xstruct);
-        output=env_temp;
+        output=read_env_xstruct_v2(xstruct);
     case 'Parameter'
-        output=read_params_xstruct(xstruct);
-
+        output=read_params_xstruct_v2(xstruct);
 end
+
 
 end

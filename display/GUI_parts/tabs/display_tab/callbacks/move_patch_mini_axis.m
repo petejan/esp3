@@ -23,19 +23,19 @@ if evt.Button==1
     
     new_vert=patch_obj.Vertices+repmat(d_move,4,1);
     
-    if nansum(new_vert(:,1)<x_lim(1))>0
+    if any(new_vert(:,1)<x_lim(1))
         new_vert(:,1)=[x_lim(1) x_lim(1)+dx_patch x_lim(1)+dx_patch x_lim(1)];
     end
     
-    if nansum(new_vert(:,1)>x_lim(2))>0
+    if any(new_vert(:,1)>x_lim(2))
         new_vert(:,1)=[x_lim(2)-dx_patch x_lim(2) x_lim(2) x_lim(2)-dx_patch];
     end
     
-    if nansum(new_vert(:,2)<y_lim(1))>0
+    if any(new_vert(:,2)<y_lim(1))
         new_vert(:,2)=[y_lim(1) y_lim(1) y_lim(1)+dy_patch y_lim(1)+dy_patch];
     end
     
-    if nansum(new_vert(:,2)>y_lim(2))>0
+    if any(new_vert(:,2)>y_lim(2))
         new_vert(:,2)=[y_lim(2)-dy_patch y_lim(2)-dy_patch y_lim(2) y_lim(2)];
     end
     

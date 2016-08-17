@@ -74,9 +74,9 @@ for uui=1:length(layer.Frequencies)
     [~,idx_peak]=nanmax(Sp_red,[],1);
     idx_peak=idx_peak+idx_r(1)-1;
     
-    AcrossAngle_sph=AcrossAngle(idx_peak+nb_samples*(0:nb_pings-1));
-    AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(0:nb_pings-1));
-    Sp_sph=Sp(idx_peak+nb_samples*(0:nb_pings-1));
+    AcrossAngle_sph=AcrossAngle(idx_peak+nb_samples*(idx_pings-1));
+    AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(idx_pings-1));
+    Sp_sph=Sp(idx_peak+nb_samples*(idx_pings-1));
     
     compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
     

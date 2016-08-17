@@ -11,7 +11,7 @@ sple_end=inf;
 
 if ~isempty(layers)
     [old_files,~]=layers.list_files_layers();
-    idx_already_open=cellfun(@(x) nansum(strcmpi(x,old_files))>0,Filename);
+    idx_already_open=cellfun(@(x) any(strcmpi(x,old_files)),Filename);
     fprintf('File %s already open in existing layer\n',Filename{idx_already_open});
     Filename(idx_already_open)=[];
 end
@@ -27,6 +27,8 @@ if ~isempty(new_layers)
     end
     
     new_layers.load_echo_logbook();
+else
+    return;
 end
 
 new_layers=[layers new_layers];

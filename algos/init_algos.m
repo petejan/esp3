@@ -7,22 +7,22 @@ if nargin==0
     name=name_vec;
 end
 
-if nansum(strcmpi(name,'BottomDetection'))>0
+if any(strcmpi(name,'BottomDetection'))
     algo_vec=[algo_vec algo_cl('Name','BottomDetection')];
 end
-if nansum(strcmpi(name,'BadPings'))>0
+if any(strcmpi(name,'BadPings'))
     algo_vec=[algo_vec algo_cl('Name','BadPings')];
 end
-if nansum(strcmpi(name,'Denoise'))>0
+if any(strcmpi(name,'Denoise'))
     algo_vec=[algo_vec algo_cl('Name','Denoise')];
 end
-if nansum(strcmpi(name,'SchoolDetection'))>0
+if any(strcmpi(name,'SchoolDetection'))
     algo_vec=[algo_vec algo_cl('Name','SchoolDetection')];
 end
-if nansum(strcmpi(name,'SingleTarget'))>0
+if any(strcmpi(name,'SingleTarget'))
     algo_vec=[algo_vec algo_cl('Name','SingleTarget')];
 end
-if nansum(strcmpi(name,'TrackTarget'))>0
+if any(strcmpi(name,'TrackTarget'))
     algo_vec=[algo_vec algo_cl('Name','TrackTarget')];
 end
 

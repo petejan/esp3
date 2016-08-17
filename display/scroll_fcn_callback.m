@@ -12,7 +12,7 @@ ah=axes_panel_comp.main_axes;
 
 pos=ah.CurrentPoint(1,1:2);
 
-if nansum(pos<0)>0
+if any(pos<0)
     return;
 end
 

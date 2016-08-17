@@ -123,6 +123,7 @@ fil_process=0;
 conf_dg=0;
 env_dg=0;
 
+prop_params=properties(params_cl);
 
 fid=fopen(filename,'r');
 
@@ -147,7 +148,9 @@ for idg=1:length(idx_raw_obj.type_dg)
                     continue;
                 end
             end
-            [~,output,type]=read_xml0(t_line);
+            
+            %[~,output,type]=read_xml0_OLD2(t_line);
+            [~,output,type]=read_xml0(t_line);%50% faster than the old version!
             switch type
                 case'Configuration'
                     config_temp=output;
@@ -174,6 +177,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                     params_temp=output;
                     idx = find(strcmp(deblank(CIDs_freq),deblank(params_temp.ChannelID)));
                     fields_params=fieldnames(params_temp);
+                    
                     dgTime=idx_raw_obj.time_dg(idg);
                     
                     if ~isempty(idx)
@@ -186,7 +190,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                                     case 'PulseDuration'
                                         trans_obj(idx).Params.PulseLength(i_ping(idx)-p.Results.PingRange(1)+1)=(params_temp.(fields_params{jj}));
                                     otherwise
-                                        if isprop(trans_obj(idx).Params,(fields_params{jj}))
+                                        if any(strcmpi(prop_params,fields_params{jj}))
                                             trans_obj(idx).Params.(fields_params{jj})(i_ping(idx)-p.Results.PingRange(1)+1)=(params_temp.(fields_params{jj}));
                                         end
                                 end
@@ -199,7 +203,7 @@ for idg=1:length(idx_raw_obj.type_dg)
             %fseek(fid,idx_raw_obj.pos_dg(idg),'bof');
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
-            NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*uchar', 'l')';
+            NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
             
         case 'FIL1'
             if fil_process==0
@@ -325,7 +329,7 @@ if p.Results.GPSOnly==0
             data_ori=data;
             [data,mode]=match_filter_data_v2(trans_obj,data);
             data=compute_PwEK80_v2(trans_obj,data);
-            %data=computesPhasesAngles_v2(trans_obj,data);
+            data=computesPhasesAngles_v2(trans_obj,data);
             data_ori=compute_PwEK80_v2(trans_obj,data_ori);
             data_ori=computesPhasesAngles_v2(trans_obj,data_ori);
         case 'EK60'
@@ -362,8 +366,8 @@ if p.Results.GPSOnly==0
                     curr_data.power=single(data.pings(i).power);
                     curr_data.y_real=single(real(data.pings(i).y));
                     curr_data.y_imag=single(imag(data.pings(i).y));
-                    curr_data.acrossangle=single(data_ori.pings(i).AcrossAngle);
-                    curr_data.alongangle=single(data_ori.pings(i).AlongAngle);
+                    curr_data.acrossangle=single(data.pings(i).AcrossAngle);
+                    curr_data.alongangle=single(data.pings(i).AlongAngle);
                 else
                     curr_data.power=single(data_ori.pings(i).power);
                     curr_data.acrossangle=single(data_ori.pings(i).AcrossAngle);

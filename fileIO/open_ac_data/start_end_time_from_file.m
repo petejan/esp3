@@ -54,12 +54,15 @@ end
 % idx_dg=union(idx_raw0,idx_raw3);
 % idx_start_old=idx_dg(1)-1;
 % idx_end_old=idx_dg(end)-1;
+
 start_time=0;
 end_time=0;
+
 if~isempty(idx_start)
     fseek(fid,idx_start,-1);
     [~,start_time]=readEK60Header(fid);
 end
+
 if~isempty(idx_end)
     fseek(fid,idx_end,-1);
     [~,end_time]=readEK60Header(fid);

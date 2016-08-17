@@ -36,7 +36,7 @@ idx_s_tot=[];
 idx_missing={};
 
 for ii=1:length(idx_files)
-    if nansum(idx_files(ii)==idx_s_tot)>0
+    if any(idx_files(ii)==idx_s_tot)
         continue;
     end
     i_trans=i_trans+1;

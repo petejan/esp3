@@ -1,5 +1,6 @@
 function theStruct = parseXMLStr(xmlstr)
 % PARSEXML Convert XML file to a MATLAB structure.
+
 try
     tree = xmlreadstring(xmlstr);
 catch
@@ -11,6 +12,7 @@ end
 %try
     [theStruct,datatext] = parseChildNodes(tree);
     theStruct.Data=datatext;
+
 % catch
 %     error('Unable to parse XML file %s.',filename);
 % end
@@ -50,13 +52,20 @@ end
 function nodeStruct = makeStructFromNode(theNode)
 % Create structure of node info.
 [child,datatext]=parseChildNodes(theNode);
-nodeStruct = struct(                        ...
-    'Name', char(theNode.getNodeName),       ...
-    'Attributes', parseAttributes(theNode),  ...
-    'Data', '',                              ...
-    'Children', child);
 
-if any(strcmp(methods(theNode),'getData'))
+nodeStruct.Name=char(theNode.getNodeName);
+nodeStruct.Attributes=parseAttributes(theNode);
+nodeStruct.Data='';
+nodeStruct.Children=child;
+
+% nodeStruct = struct(                        ...
+%     'Name', char(theNode.getNodeName),       ...
+%     'Attributes', parseAttributes(theNode),  ...
+%     'Data', '',                              ...
+%     'Children', child);
+
+%if any(strcmp(methods(theNode),'getData'))
+if ismember('getData',methods(theNode))
     nodeStruct.Data = char(theNode.getData());
 else
     nodeStruct.Data = datatext;
@@ -77,8 +86,11 @@ if theNode.hasAttributes
     for count = 1:numAttributes
         attrib = theAttributes.item(count-1);
         attributes(count).Name = char(attrib.getName);
-        if ~isnan(str2double(attrib.getValue))
-            attributes(count).Value = str2double(attrib.getValue);
+
+        val_temp=str2double(attrib.getValue);
+
+        if ~isnan(val_temp)
+            attributes(count).Value = val_temp;
         else
             attributes(count).Value = char(attrib.getValue);
         end
