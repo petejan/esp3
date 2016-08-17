@@ -56,20 +56,7 @@ for ilay=1:length(pathtofile)
     survdata_temp=survey_data_cl();
     
     try
-        new_files=setdiff(list_raw,surv_data_struct.Filename);
-        
-        for i=1:length(new_files)
-            fprintf('Adding file %s to logbook\n',new_files{i});
-            [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},new_files{i}));
-            if strcmp(fullfile(pathtofile{ilay},new_files{i}),p.Results.Filename)
-                survdata_temp=p.Results.SurveyData;
-            else
-                survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
-            end
-            lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,new_files{i},'StartTime',start_time,'EndTime',end_time);
-            survey_node.appendChild(lineNode);
-        end
-        
+       
         old_files=intersect(list_raw,surv_data_struct.Filename);
         nb_files=length(old_files);
         
@@ -184,6 +171,21 @@ for ilay=1:length(pathtofile)
         
         survey_node.setAttribute('SurveyName',survdata_temp.SurveyName);
         survey_node.setAttribute('Voyage',survdata_temp.Voyage);
+        
+         new_files=setdiff(list_raw,surv_data_struct.Filename);
+        
+        for i=1:length(new_files)
+            fprintf('Adding file %s to logbook\n',new_files{i});
+            [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},new_files{i}));
+            if strcmp(fullfile(pathtofile{ilay},new_files{i}),p.Results.Filename)
+                survdata_temp=p.Results.SurveyData;
+            else
+                survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
+            end
+            lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,new_files{i},'StartTime',start_time,'EndTime',end_time);
+            survey_node.appendChild(lineNode);
+        end
+        
         
         xml_file=fullfile(pathtofile{ilay},'echo_logbook.xml');
         xmlwrite(xml_file,docNode);

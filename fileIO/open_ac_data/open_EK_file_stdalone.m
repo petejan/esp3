@@ -135,12 +135,9 @@ if ~isequal(Filename_cell, 0)
                  disp('Done')
             end
         end
-        profile on;
-        tic 
+
         [trans_obj,envdata,NMEA]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap);
-        toc
-        profile off;
-        profile viewer;
+
         
         if ~isa(trans_obj,'transceiver_cl')
             disp('Could not read file.')

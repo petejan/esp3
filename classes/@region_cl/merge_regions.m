@@ -71,7 +71,6 @@ for ireg_1=1:length(regions)
         Mask_common=MaskReg_1_tot&MaskReg_2_tot;
         
         
-        
         if p.Results.overlap_only>0
             if nansum(Mask_common(:))==0
                 continue;
@@ -106,10 +105,18 @@ end
 for ireg=1:length(regions)
     if ~strcmp(regions(ireg).Name,'')
         ireg_merge=find(reg_comp_mat(ireg,:));
-        i_merge_tot=ireg_merge;
-        for i_merge=ireg_merge
-            j_merge=find(reg_comp_mat(i_merge,:));
-            i_merge_tot=union(i_merge_tot,j_merge);
+        i_merge_tot=ireg_merge; 
+        added=1;
+        while added==1
+            for i_merge=ireg_merge
+                j_merge=find(reg_comp_mat(i_merge,:));
+                i_merge_tot=union(i_merge_tot,j_merge);
+            end
+            if length(i_merge_tot)>length(ireg_merge)
+                ireg_merge=i_merge_tot;
+            else
+                added=0;
+            end
         end
                
         for i=i_merge_tot
