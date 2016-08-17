@@ -32,7 +32,7 @@ end
 disp_node = docNode.createElement('Display');
 fields=properties(curr_disp);
 for ifi=1:length(fields)
-    if nansum(strcmp(fields{ifi},{'Type','Fieldname','CursorMode','NbLayers','Cax','CurrLayerID'}))==0
+    if ~ismember(fields{ifi},{'Type','Fieldname','CursorMode','NbLayers','Cax','CurrLayerID','Fieldnames','Caxes'})
         val=curr_disp.(fields{ifi});
         if ~isnan(num2str(val,'%.0f'))
             disp_node.setAttribute(fields{ifi},num2str(val,'%.0f'));
