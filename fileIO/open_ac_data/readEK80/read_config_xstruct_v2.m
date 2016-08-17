@@ -11,7 +11,11 @@ header.transceivercount=nb_transceivers;
 
 
 for i=1:nb_transceivers
-    Transceiver=Transceivers.Transceiver{i};
+    if nb_transceivers>1
+        Transceiver=Transceivers.Transceiver{i};
+    else
+        Transceiver=Transceivers.Transceiver;
+    end
 
     config_temp=Transceiver.Attributes;
 
