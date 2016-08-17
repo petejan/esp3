@@ -12,22 +12,12 @@ if isempty(info_panel_comp)
     info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','axes_panel');
 end
 
-
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','axes_panel');
 
-if ~isempty(layer.get_survey_data())
-    i_str=layer.get_survey_data().print_survey_data();
-else
-    i_str='';
-end
+i_str='';
 
-[~,file_curr,~]=fileparts(layer.Filename{1});
-
-summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower(1),layer.Transceivers(idx_freq).Params.PulseLength(1)*1e3);
-
+summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms','','',38,1000,1.024);
+curr_disp=getappdata(main_figure,'Curr_disp');
 cur_str=sprintf('Cursor mode: %s',curr_disp.CursorMode);
 
 
