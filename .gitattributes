@@ -17,4 +17,4 @@
 *.RTF	 diff=astextplain
 
 # Versionning
-EchoAnalysis.m filter=add_version_number
+EchoAnalysis.m ident

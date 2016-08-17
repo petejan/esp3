@@ -78,12 +78,10 @@ if hasChildNodes(theNode)
                 
                 textfields = fieldnames(text);
                 if~isempty(textfields)
-                    if(~isempty(fieldnames(textfields)))
                         for ii = 1:length(textfields)
                             children.(name){index}.(textfields{ii}) = ...
                                 text.(textfields{ii});
                         end
-                    end
                 end
                 if(~isempty(attr)) 
                     children.(name){index}.('Attributes') = attr; 

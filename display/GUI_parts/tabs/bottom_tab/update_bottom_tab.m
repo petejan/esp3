@@ -34,12 +34,13 @@ set(bottom_tab_comp.r_max_ed,'string',num2str(get(bottom_tab_comp.r_max_sl,'Valu
 
 if ~isempty(dist)
     set(bottom_tab_comp.horz_filt_sl,'max',dist(end)/4);
-    set(bottom_tab_comp.horz_filt_sl,'value',nanmin(algo.horz_filt,dist(end)/4));
+    set(bottom_tab_comp.horz_filt_sl,'min',0);
+    set(bottom_tab_comp.horz_filt_sl,'value',nanmin(algo.horz_filt,(dist(end)-dist(1))/10));
     set(bottom_tab_comp.horz_filt_ed,'string',num2str(get(bottom_tab_comp.horz_filt_sl,'Value'),'%.1f'));
 end
 
 set(bottom_tab_comp.vert_filt_sl,'max',layer.Transceivers(idx_freq).Data.Range(end)/4);
-set(bottom_tab_comp.vert_filt_sl,'value',nanmin(algo.vert_filt,range(end)/4));
+set(bottom_tab_comp.vert_filt_sl,'value',nanmin(algo.vert_filt,range(end)/10));
 set(bottom_tab_comp.vert_filt_ed,'string',num2str(get(bottom_tab_comp.vert_filt_sl,'Value'),'%.1f'));
 
 set(bottom_tab_comp.Thr_backstep_sl,'value',algo.thr_backstep);

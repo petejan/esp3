@@ -16,7 +16,6 @@ dt_ori=nanmean(diff(time_ori));
 mask_reg_ori=active_reg.get_mask();
 
 [nb_samples_ori,nb_pings_ori]=size(mask_reg_ori);
-[P_ori,S_ori]=meshgrid(1:nb_pings_ori,1:nb_samples_ori);
 regs=[];
 
 for i=1:length(layer.Transceivers)
@@ -27,8 +26,6 @@ for i=1:length(layer.Transceivers)
     layer.Transceivers(i)=layer.Transceivers(i);
     new_range=layer.Transceivers(i).Data.get_range();
     new_time=layer.Transceivers(i).Data.Time;
-    
-
     
     r_factor=dr_ori/nanmean(diff(new_range));
     t_factor=dt_ori/nanmean(diff(new_time));
@@ -43,14 +40,14 @@ for i=1:length(layer.Transceivers)
     
     switch active_reg.Cell_w_unit
         case 'pings'
-            cell_w=nanmax(round(active_reg.Cell_w*t_factor),1);
+            cell_w=nanmax(floor(active_reg.Cell_w*t_factor),1);
         case 'meters'
             cell_w=active_reg.Cell_w;
     end
     
     switch active_reg.Cell_h_unit
         case 'samples'
-            cell_h=nanmax(round(active_reg.Cell_h*r_factor),1);
+            cell_h=nanmax(floor(active_reg.Cell_h*r_factor),1);
         case 'meters'
             cell_h=active_reg.Cell_h;
             
@@ -61,9 +58,7 @@ for i=1:length(layer.Transceivers)
                 nb_samples=length(idx_r);
                 nb_pings=length(idx_pings);
             if nb_samples~=nb_samples_ori||nb_pings~=nb_pings_ori
-                [P,S]=meshgrid((1:nb_pings),(1:nb_samples));
-                F=scatteredInterpolant(S_ori(:),P_ori(:),double(mask_reg_ori(:)),'nearest','nearest');
-                MaskReg=F(S,P);
+                MaskReg=imresize(mask_reg_ori,[nb_samples nb_pings],'nearest');
             else
                 MaskReg=mask_reg_ori;
             end

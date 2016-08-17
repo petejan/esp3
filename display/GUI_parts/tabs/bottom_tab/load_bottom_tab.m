@@ -31,14 +31,14 @@ set(bottom_tab_comp.Thr_backstep_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_
 
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Vertical Resolution(m)','units','normalized','Position',pos{1,4});
-bottom_tab_comp.vert_filt_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',1,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
+bottom_tab_comp.vert_filt_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
 bottom_tab_comp.vert_filt_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_comp.vert_filt_sl,'Value'),'%.0f'));
 set(bottom_tab_comp.vert_filt_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.vert_filt_ed,'%.1f'});
 set(bottom_tab_comp.vert_filt_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.vert_filt_sl,'%.1f'});
 
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Horizontal Resolution(m)','units','normalized','Position',pos{2,4});
-bottom_tab_comp.horz_filt_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',1,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
+bottom_tab_comp.horz_filt_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
 bottom_tab_comp.horz_filt_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{2,6},'string',num2str(get(bottom_tab_comp.horz_filt_sl,'Value'),'%.0f'));
 set(bottom_tab_comp.horz_filt_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.horz_filt_ed,'%.1f'});
 set(bottom_tab_comp.horz_filt_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.horz_filt_sl,'%.1f'});
