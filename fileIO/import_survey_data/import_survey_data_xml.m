@@ -52,6 +52,8 @@ if exist(FileN,'file')==2
     end
     
     surv_data_struct.SurvDataObj=cell(1,length(surv_data_struct.Stratum));
+   
+    
     for i=1:length(surv_data_struct.Stratum)
                     if surv_data_struct.StartTime(i)==0
                         st=0;
@@ -76,5 +78,12 @@ if exist(FileN,'file')==2
             'EndTime',et);
         
     end
+    
+     [~,idx_struct]=sort(surv_data_struct.StartTime);
+     field_struct=fieldnames(surv_data_struct);
+     for ifi=1:length(field_struct)
+         surv_data_struct.(field_struct{ifi})=surv_data_struct.(field_struct{ifi})(idx_struct);
+     end
+     
     
 end
