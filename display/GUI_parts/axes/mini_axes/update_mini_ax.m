@@ -45,5 +45,5 @@ set(mini_axes_comp.patch_obj,'Faces',f1,'Vertices',v1,'FaceColor',patch_col,'Edg
 update_grid_mini_ax(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
 set(findall(set(findall(mini_axes_comp.mini_ax, '-property', 'Enable'), 'Enable', 'on'), '-property', 'Enable'), 'Enable', 'on')
-
+uistack(mini_axes_comp.mini_ax,'top');
 end

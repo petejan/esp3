@@ -7,7 +7,7 @@ if isappdata(main_figure,'Mini_axes')
 end
 
 mini_axes_comp.mini_ax=axes('Parent',parent,'Units','normalized','box','on',...
-    'Position',pos_in_parent,'visible','on','NextPlot','add');
+    'Position',pos_in_parent,'visible','on','NextPlot','add','box','on');
 mini_axes_comp.mini_echo=imagesc(1,1,1,'Parent',mini_axes_comp.mini_ax,'tag','echo','AlphaData',0);
 mini_axes_comp.mini_echo_bt=image(1,1,1,'Parent',mini_axes_comp.mini_ax,'tag','bad_transmits','AlphaData',0);
 mini_axes_comp.patch_obj=patch('Faces',[],'Vertices',[],'FaceColor','r','FaceAlpha',.2,'EdgeColor','r','Tag','zoom_area','Parent',mini_axes_comp.mini_ax);

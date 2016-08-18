@@ -55,36 +55,35 @@ idx_bad_red(idx_bad_red==0)=[];
 if strcmp(curr_disp.DispBadTrans,'on')
     alpha_map(:,idx_bad_red)=1;
 end
+data_temp=nan(size(alpha_map));
+data_temp(:,idx_bad_red)=Inf;
 
 
 if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
-
-
-        bot_vec_red=imresize(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),[1,size(alpha_map,2)],'nearest'); 
-        ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest'); 
-        idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);  
-
-        
-        if strcmpi(curr_disp.DispUnderBottom,'off')==1
-            alpha_map(idx_bot_red)=0;
-        end
-            
-    if strcmp(curr_disp.DispBadTrans,'on')
-        data_temp=nan(size(alpha_map));
-        data_temp(:,idx_bad_red)=Inf;
-        set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',(~isnan(data_temp))-0.2);
-        if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
-            create_context_menu_main_echo(main_figure);
-        end
-    else
-        set(echo_im_bt,'AlphaData',0);
+    
+    bot_vec_red=imresize(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),[1,size(alpha_map,2)],'nearest');
+    ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest');
+    idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
+    
+    
+    if strcmpi(curr_disp.DispUnderBottom,'off')==1
+        alpha_map(idx_bot_red)=0;
     end
     
 end
+if strcmp(curr_disp.DispBadTrans,'on')
+    alpha_map_bt=(~isnan(data_temp))-0.2;
+else
+    alpha_map_bt=zeros(size(data_temp));
+end
 
-
+set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
 set(echo_ax,'CLim',curr_disp.Cax);
 set(echo_im,'AlphaData',double(alpha_map));
+
+if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
+    create_context_menu_main_echo(main_figure);
+end
 
 order_stack(echo_ax);
 order_axes(main_figure);
