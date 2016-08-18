@@ -14,7 +14,12 @@ mini_axes_comp.patch_obj=patch('Faces',[],'Vertices',[],'FaceColor','r','FaceAlp
 set(mini_axes_comp.mini_ax,'XTickLabels',[],'YTickLabels',[]);
 set(mini_axes_comp.mini_ax,'ButtonDownFcn',{@move_mini_axis_grab,main_figure});
 set(mini_axes_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_figure});
-set(mini_axes_comp.mini_echo,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
-set(mini_axes_comp.mini_echo_bt,'ButtonDownFcn',{@move_patch_mini_axis,main_figure});
+set(mini_axes_comp.mini_echo,'ButtonDownFcn',{@zoom_in_callback_mini_ax,main_figure});
+set(mini_axes_comp.mini_echo_bt,'ButtonDownFcn',{@zoom_in_callback_mini_ax,main_figure});
+
+if isgraphics(parent,'figure')
+    set(parent,'ResizeFcn',{@resize_mini_ax,main_figure});
+end
+
 setappdata(main_figure,'Mini_axes',mini_axes_comp);
 end

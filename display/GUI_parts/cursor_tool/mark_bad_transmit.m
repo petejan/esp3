@@ -86,7 +86,7 @@ hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);
-        update_mini_ax(main_figure);
+        update_mini_ax(main_figure,0);
         
         
     end

@@ -36,7 +36,7 @@ end
                'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure},...
                'KeyPressFcn',{@keyboard_func,main_figure});
             load_mini_axes(main_figure,h,[0 0 1 1]);
-            update_mini_ax(main_figure);
+            update_mini_ax(main_figure,1);
             update_cmap(main_figure)
         else  
             h=[];

@@ -16,7 +16,7 @@ load_calibration_tab(main_figure,main_childs(idx_opt));
 load_info_panel(main_figure);
 
 update_axis_panel(main_figure,0);
-update_mini_ax(main_figure);
+update_mini_ax(main_figure,1);
 
 display_bottom(main_figure);
 display_tracks(main_figure);

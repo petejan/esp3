@@ -1,9 +1,11 @@
-function zoom_in_callback(src,~,main_figure)
-axes_panel_comp=getappdata(main_figure,'Axes_panel');
+function zoom_in_callback_mini_ax(src,~,main_figure)
+mini_ax_comp=getappdata(main_figure,'Mini_axes');
 curr_disp=getappdata(main_figure,'Curr_disp');
-ah=axes_panel_comp.main_axes;
+ah=mini_ax_comp.mini_ax;
 
-switch src.SelectionType
+current_fig=gcf;
+
+switch current_fig.SelectionType
     case 'normal'
         mode='rectangular';
     case 'alt'
@@ -22,8 +24,8 @@ end
 
 clear_lines(ah);
 
-xdata=get(axes_panel_comp.main_echo,'XData');
-ydata=get(axes_panel_comp.main_echo,'YData');
+xdata=get(mini_ax_comp.mini_echo,'XData');
+ydata=get(mini_ax_comp.mini_echo,'YData');
 cp = ah.CurrentPoint;
 
 switch mode
@@ -50,8 +52,8 @@ y_box=yinit;
 hp=line(x_box,y_box,'color',col_line,'linewidth',1,'parent',ah);
 
 
-src.WindowButtonMotionFcn = @wbmcb;
-src.WindowButtonUpFcn = @wbucb;
+current_fig.WindowButtonMotionFcn = @wbmcb;
+current_fig.WindowButtonUpFcn = @wbucb;
 order_axes(main_figure);
 
     function wbmcb(~,~)
@@ -93,8 +95,8 @@ order_axes(main_figure);
 
     function wbucb(src,~)
         delete(hp);
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
+        current_fig.WindowButtonMotionFcn = '';
+        current_fig.WindowButtonUpFcn = '';
         
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
@@ -125,7 +127,8 @@ order_axes(main_figure);
             y_lim=[y_min y_max];
         end
         
-        set(ah,'XLim',x_lim,'YLim',y_lim);
+        axes_panel_comp=getappdata(main_figure,'Axes_panel');
+        set(axes_panel_comp.main_axes,'XLim',x_lim,'YLim',y_lim);
         reset_disp_info(main_figure);
         
     end
