@@ -4,6 +4,7 @@ function display_regions(main_figure)
 layer=getappdata(main_figure,'Layer');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
+%mini_ax_comp=getappdata(main_figure,'Mini_axes');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 
@@ -24,7 +25,7 @@ end
 
 
 
-%main_axes_tot=[axes_panel_comp.main_axes display_tab_comp.mini_ax];
+%main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
 main_axes_tot=axes_panel_comp.main_axes;
 
 for iax=1:length(main_axes_tot)
@@ -41,14 +42,14 @@ for iax=1:length(main_axes_tot)
         continue;
     end
     
-
-     alpha_in=0.4;
-
-     Number=trans.Data.get_numbers();
-     Range=trans.Data.get_range();
-%     
-%     dr=nanmean(diff(Range));
-%     dp=nanmean(diff(trans.GPSDataPing.Dist));
+    
+    alpha_in=0.4;
+    
+    Number=trans.Data.get_numbers();
+    Range=trans.Data.get_range();
+    %
+    %     dr=nanmean(diff(Range));
+    %     dp=nanmean(diff(trans.GPSDataPing.Dist));
     
     xdata=Number;
     
@@ -65,35 +66,35 @@ for iax=1:length(main_axes_tot)
     list_reg = trans.regions_to_str();
     
     active_reg=get(region_tab_comp.tog_reg,'value');
-
+    
     for i=1:length(list_reg)
         reg_curr=trans.Regions(i);
-%         
-%         switch reg_curr.Cell_h_unit
-%             case 'meters'
-%                 dy=ceil(reg_curr.Cell_h/dr);
-%             otherwise
-%                 dy=reg_curr.Cell_h;
-%         end
-%         
-%         switch reg_curr.Cell_w_unit
-%             case 'meters'
-%                 dx=ceil(reg_curr.Cell_w/dp);
-%             otherwise
-%                 dx=reg_curr.Cell_w;
-%         end
-% 
-%          if  strcmp(reg_curr.Name,'Track')
-%             x_grid=[];
-%             y_grid=[];
-%         else
-%             x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
-% 
-%             y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
-%         end
-%         
-%         [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
-       
+        %
+        %         switch reg_curr.Cell_h_unit
+        %             case 'meters'
+        %                 dy=ceil(reg_curr.Cell_h/dr);
+        %             otherwise
+        %                 dy=reg_curr.Cell_h;
+        %         end
+        %
+        %         switch reg_curr.Cell_w_unit
+        %             case 'meters'
+        %                 dx=ceil(reg_curr.Cell_w/dp);
+        %             otherwise
+        %                 dx=reg_curr.Cell_w;
+        %         end
+        %
+        %          if  strcmp(reg_curr.Name,'Track')
+        %             x_grid=[];
+        %             y_grid=[];
+        %         else
+        %             x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
+        %
+        %             y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
+        %         end
+        %
+        %         [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
+        
         if i==active_reg
             col=ac_data_col;
         else
@@ -121,14 +122,14 @@ for iax=1:length(main_axes_tot)
         cdata(:,:,1)=col(1);
         cdata(:,:,2)=col(2);
         cdata(:,:,3)=col(3);
-         switch reg_curr.Shape
+        switch reg_curr.Shape
             case 'Rectangular'
-            reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in,'visible',curr_disp.DispReg);
- 
+                reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in,'visible',curr_disp.DispReg);
+                
                 x_text=nanmean(x_reg_rect(:));
                 y_text=nanmean(y_reg_rect(:));
-%                 plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
-%                 plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                %                 plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                %                 plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
                 plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
             case 'Polygon'
                 
@@ -157,24 +158,25 @@ for iax=1:length(main_axes_tot)
                     %line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                 end
                 
-%                  mask=imresize(reg_curr.MaskReg==0,size(X_grid));
-%                  X_grid(mask)=nan;
-%                  Y_grid(mask)=nan;
-
-                 reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
- 
-%                  plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
-%                  plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                %                  mask=imresize(reg_curr.MaskReg==0,size(X_grid));
+                %                  X_grid(mask)=nan;
+                %                  Y_grid(mask)=nan;
+                
+                reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
+                
+                %                  plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
+                %                  plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
                 
         end
         
         
         reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
         
-        create_region_context_menu(reg_plot,main_figure,reg_curr);
+        if main_axes==axes_panel_comp.main_axes
+            create_region_context_menu(reg_plot,main_figure,reg_curr);
+        end
+        
     end
     
-end
-
 end
 

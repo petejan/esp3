@@ -1,4 +1,4 @@
-function keyboard_func(~,callbackdata,main_figure)
+function keyboard_func(src,callbackdata,main_figure)
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
@@ -17,12 +17,12 @@ ydata=Range;
 
 switch callbackdata.Key
     case {'leftarrow','rightarrow','uparrow','downarrow'}
-        set(main_figure,'KeyPressFcn','');
+        set(src,'KeyPressFcn','');
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
         
         if ~isfield(axes_panel_comp,'main_echo')
-            set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+            set(src,'KeyPressFcn',{@keyboard_func,main_figure});
             return;
         end
         
@@ -33,7 +33,7 @@ switch callbackdata.Key
         switch callbackdata.Key
             case 'leftarrow'
                 if x_lim(1)<=xdata(1)
-                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
                     x_lim=[nanmax(xdata(1),x_lim(1)-3*dx/4),nanmax(xdata(1),x_lim(1)-3*dx/4)+dx];
@@ -42,7 +42,7 @@ switch callbackdata.Key
                 set(main_axes,'ylim',y_lim);
             case 'rightarrow'
                 if x_lim(2)>=xdata(end)
-                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
                     x_lim=[nanmin(xdata(end),x_lim(2)+3*dx/4)-dx,nanmin(xdata(end),x_lim(2)+3*dx/4)];
@@ -51,7 +51,7 @@ switch callbackdata.Key
                 set(main_axes,'ylim',y_lim);
             case 'downarrow'
                 if y_lim(2)>=ydata(end)
-                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
                     y_lim=[nanmin(ydata(end),y_lim(2)+2*dy/4)-dy,nanmin(ydata(end),y_lim(2)+2*dy/4)];
@@ -59,14 +59,14 @@ switch callbackdata.Key
                 set(main_axes,'ylim',y_lim);
             case 'uparrow'
                 if y_lim(1)<=ydata(1)
-                    set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
                     y_lim=[nanmax(ydata(1),y_lim(1)-2*dy/4),nanmax(ydata(1),y_lim(1)-2*dy/4)+dy];
                 end
                 set(main_axes,'ylim',y_lim);
         end
-        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        set(src,'KeyPressFcn',{@keyboard_func,main_figure});
     case '1'
         
         if isempty(callbackdata.Modifier)
@@ -161,14 +161,14 @@ switch callbackdata.Key
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
     case 'f'
         if length(layer.Frequencies)>1
-            set(main_figure,'KeyPressFcn','');
+            set(src,'KeyPressFcn','');
             id_freq=layer.find_freq_idx(curr_disp.Freq);
             curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
-            set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+            set(src,'KeyPressFcn',{@keyboard_func,main_figure});
         end
     case 'e'
         
-        set(main_figure,'KeyPressFcn','');
+        set(src,'KeyPressFcn','');
         curr_disp=getappdata(main_figure,'Curr_disp');
         idx_freq=layer.find_freq_idx(curr_disp.Freq);
         if length(layer.Transceivers(idx_freq).Data.Fieldname)>1
@@ -176,7 +176,7 @@ switch callbackdata.Key
             id_field=find(strcmp(curr_disp.Fieldname,fields));
             curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
         end
-        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        set(src,'KeyPressFcn',{@keyboard_func,main_figure});
         
         
     case 'n'
