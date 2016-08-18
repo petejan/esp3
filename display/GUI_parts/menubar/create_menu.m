@@ -64,6 +64,12 @@ m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
 m_colormap=uimenu(m_display,'Label','Colormap');
 main_menu.colormap=uimenu(m_colormap,'Label','Jet','Callback',{@change_cmap_callback,main_figure},'Tag','jet');
 main_menu.colormap=uimenu(m_colormap,'Label','HSV','Callback',{@change_cmap_callback,main_figure},'Tag','hsv');
+main_menu.colormap=uimenu(m_colormap,'Label','Hot','Callback',{@change_cmap_callback,main_figure},'Tag','hot');
+main_menu.colormap=uimenu(m_colormap,'Label','Cool','Callback',{@change_cmap_callback,main_figure},'Tag','cool');
+main_menu.colormap=uimenu(m_colormap,'Label','Parula','Callback',{@change_cmap_callback,main_figure},'Tag','parula');
+main_menu.colormap=uimenu(m_colormap,'Label','Autumn','Callback',{@change_cmap_callback,main_figure},'Tag','autumn');
+main_menu.colormap=uimenu(m_colormap,'Label','Winter','Callback',{@change_cmap_callback,main_figure},'Tag','winter');
+main_menu.colormap=uimenu(m_colormap,'Label','Spring','Callback',{@change_cmap_callback,main_figure},'Tag','spring');
 main_menu.colormap=uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
 main_menu.colormap=uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
 

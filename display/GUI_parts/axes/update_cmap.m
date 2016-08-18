@@ -6,18 +6,12 @@ mini_axes_comp=getappdata(main_figure,'Mini_axes');
 
 
 switch lower(curr_disp.Cmap)
-    case 'jet'
-        cmap=colormap('jet');
+    case {'parula' 'jet' 'hsv' 'winter' 'autumn' 'spring' 'hot' 'cool'}
+        cmap=colormap(curr_disp.Cmap);
         col_ax='w';
         col_lab='k';
         col_grid=[0 0 0];
-        col_bot='k';
-    case 'hsv'
-        cmap=colormap('hsv');
-        col_ax='w';
-        col_lab='k';
-        col_grid=[0 0 0];
-        col_bot='k';
+        col_bot='k'; 
     case 'esp2'
         cmap=esp2_colormap();
         col_ax='k';

@@ -1,4 +1,4 @@
-function edit_bottom(src,evt,main_figure)
+function edit_bottom(src,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

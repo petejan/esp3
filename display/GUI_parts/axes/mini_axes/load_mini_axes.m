@@ -19,6 +19,10 @@ set(mini_axes_comp.mini_echo_bt,'ButtonDownFcn',{@zoom_in_callback_mini_ax,main_
 
 if isgraphics(parent,'figure')
     set(parent,'ResizeFcn',{@resize_mini_ax,main_figure});
+    hfigs=getappdata(main_figure,'ExternalFigures');
+    
+    hfigs=[parent hfigs];
+    setappdata(main_figure,'ExternalFigures',hfigs);
 end
 
 setappdata(main_figure,'Mini_axes',mini_axes_comp);
