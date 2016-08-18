@@ -1,8 +1,5 @@
 function display_info_ButtonMotionFcn(~,~,main_figure,force_update)
 
-if gcf~=main_figure
-    return;
-end
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

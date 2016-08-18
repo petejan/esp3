@@ -1,4 +1,5 @@
 function loadEcho(main_figure)
+
 set(main_figure,'WindowButtonMotionFcn','');
 rm_listeners(main_figure)
 layer=getappdata(main_figure,'Layer');

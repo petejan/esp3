@@ -7,6 +7,9 @@ selection = questdlg('Close The Program?',...
     'Yes','No','Yes');
 switch selection,
     case 'Yes'
+        hfigs=getappdata(src,'ExternalFigures');
+        delete(hfigs);
+        
         layers=getappdata(src,'Layers');
         
         i=length(layers);

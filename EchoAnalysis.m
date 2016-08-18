@@ -15,18 +15,18 @@ parse(p,varargin{:});
 
 %%%%%%%%%%%%%% main_figure is the handle to the main window of the App %%%%
 %%%%%%%%%%%%%%
-size_max=get(0,'ScreenSize');
+size_max = get(0, 'MonitorPositions');
 main_figure=figure('Visible','on',...
-    'Units','pixels','Position',[0 100 size_max(3) size_max(4)/8*7],...       %Position and size normalized to the screen size ([left, bottom, width, height])
+    'Units','pixels','Position',[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3) size_max(1,4)/8*7],...       %Position and size normalized to the screen size ([left, bottom, width, height])
     'Color','White',...                                         %Background color
     'Name','Echo Analysis','NumberTitle','off',...    %GUI Name
     'Resize','on',...
     'MenuBar','none',...'%No Matlab Menu
     'visible','off',...
-    'WindowScrollWheelFcn',@scroll_fcn_callback,...
     'CloseRequestFcn',@closefcn_clean);
 
-git_ver='$Id:$';
+set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
+git_ver='$Id$';
 
 git_ver = regexprep(git_ver, '[^\d]', '');
 if isempty(git_ver)
@@ -40,7 +40,7 @@ set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
 
 main_path=whereisEcho();
 
-if ~isdeployed    
+if ~isdeployed
     update_path(main_path);
 end
 
@@ -123,12 +123,12 @@ try
     jProx.setMinimumSize(java.awt.Dimension(size_max(3)/4*3,size_max(4)/4*3));
     setappdata(main_figure,'javaWindow',jProx);
 catch err
-   disp(err.message);
+    disp(err.message);
 end
 
 create_menu(main_figure);
 if ~isempty(p.Results.Filenames)
-   open_file([],[],p.Results.Filenames,main_figure);
+    open_file([],[],p.Results.Filenames,main_figure);
 end
 end
 

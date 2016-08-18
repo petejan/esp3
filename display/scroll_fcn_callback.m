@@ -1,5 +1,5 @@
-function scroll_fcn_callback(src,callbackdata)
-main_figure=src;
+function scroll_fcn_callback(src,callbackdata,main_figure)
+
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
@@ -7,17 +7,25 @@ if isempty(layer)
 end
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-
 ah=axes_panel_comp.main_axes;
 
-pos=ah.CurrentPoint(1,1:2);
+
+x_lim=get(ah,'XLim');
+y_lim=get(ah,'YLim');
+if src==main_figure
+    set(ah,'units','pixels');
+    pos=ah.CurrentPoint(1,1:2);
+    set(ah,'units','normalized');
+else
+    pos=[nanmean(x_lim) nanmean(y_lim)];
+end
+
 
 if any(pos<0)
     return;
 end
 
-x_lim=get(ah,'XLim');
-y_lim=get(ah,'YLim');
+
 
 
 dx=abs(diff(x_lim));
@@ -30,9 +38,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
-set(axes_panel_comp.main_axes,'units','pixels');
 
-set(axes_panel_comp.main_axes,'units','normalized');
 
 xdata_tot=trans.Data.get_numbers();
 ydata_tot=trans.Data.get_range();
@@ -46,11 +52,6 @@ if callbackdata.VerticalScrollCount>0
     x_lim(2)=x_lim(2)+dx/2;
     y_lim(2)=y_lim(2)+dy/2;
     
-    x_lim(x_lim>nanmax(xdata_tot))=nanmax(xdata_tot);
-    x_lim(x_lim<nanmin(xdata_tot))=nanmin(xdata_tot);
-    
-    y_lim(y_lim>nanmax(ydata_tot))=nanmax(ydata_tot);
-    y_lim(y_lim<nanmin(ydata_tot))=nanmin(ydata_tot);
 else
     
     x_lim(1)=pos(1)-dx/4;

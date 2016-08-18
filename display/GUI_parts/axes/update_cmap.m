@@ -2,7 +2,7 @@ function update_cmap(main_figure)
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-display_tab_comp=getappdata(main_figure,'Display_tab');
+mini_axes_comp=getappdata(main_figure,'Mini_axes');
 
 
 switch lower(curr_disp.Cmap)
@@ -37,10 +37,10 @@ set(axes_panel_comp.vaxes,'YColor',col_lab);
 set(axes_panel_comp.haxes,'XColor',col_lab);
 set(axes_panel_comp.main_axes,'Color',col_ax);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
-set(display_tab_comp.mini_ax,'Color',col_ax);
+set(mini_axes_comp.mini_ax,'Color',col_ax);
 tog_reg_callback([],[],main_figure)
 
-colormap(display_tab_comp.mini_ax,cmap);
+colormap(mini_axes_comp.mini_ax,cmap);
 colormap(axes_panel_comp.main_axes,cmap);
 
 end

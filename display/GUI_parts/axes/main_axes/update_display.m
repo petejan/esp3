@@ -8,7 +8,6 @@ idx_opt=strcmp(tags,'option_tab_panel');
 %idx_algo=strcmp(tags,'algo_tab_panel');
 layer=getappdata(main_figure,'Layer');
 
-
 if isempty(layer)
     return;
 end

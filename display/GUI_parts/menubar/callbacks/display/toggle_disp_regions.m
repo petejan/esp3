@@ -4,7 +4,6 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 
-%main_axes_tot=[axes_panel_comp.main_axes display_tab_comp.mini_ax];
 main_axes_tot=axes_panel_comp.main_axes;
 
 for iax=1:length(main_axes_tot)

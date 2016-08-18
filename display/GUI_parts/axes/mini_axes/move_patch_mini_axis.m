@@ -1,12 +1,12 @@
 function move_patch_mini_axis(src,evt,main_figure)
 
-display_tab_comp=getappdata(main_figure,'Display_tab');
-patch_obj=display_tab_comp.patch_obj;
+mini_axes_comp=getappdata(main_figure,'Mini_axes');
+patch_obj=mini_axes_comp.patch_obj;
 if isempty(patch_obj.Vertices)
     return;
 end
 
-ah=display_tab_comp.mini_ax;
+ah=mini_axes_comp.mini_ax;
 
 if evt.Button==1
     cp = ah.CurrentPoint;

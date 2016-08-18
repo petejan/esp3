@@ -1,15 +1,9 @@
 function load_info_panel(main_figure)
 
-info_panel_comp=getappdata(main_figure,'Info_panel');
-
 if isappdata(main_figure,'Info_panel')
     info_panel_comp=getappdata(main_figure,'Info_panel');
     delete(info_panel_comp.info_panel);
     rmappdata(main_figure,'Info_panel');
-end
-
-if isempty(info_panel_comp)
-    info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','axes_panel');
 end
 
 info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','axes_panel');

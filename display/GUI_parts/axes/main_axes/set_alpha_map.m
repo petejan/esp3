@@ -21,10 +21,10 @@ switch p.Results.main_or_mini
         echo_im_bt=axes_panel_comp.bad_transmits;
         set(axes_panel_comp.bottom_plot,'vis',curr_disp.DispUnderBottom);
     case 'mini'
-        display_tab_comp=getappdata(main_figure,'Display_tab');
-        echo_im=display_tab_comp.mini_echo;
-        echo_ax=display_tab_comp.mini_ax;
-        echo_im_bt=display_tab_comp.mini_echo_bt;
+        mini_axes_comp=getappdata(main_figure,'Mini_axes');
+        echo_im=mini_axes_comp.mini_echo;
+        echo_ax=mini_axes_comp.mini_ax;
+        echo_im_bt=mini_axes_comp.mini_echo_bt;
 end
 
 

@@ -6,7 +6,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
-xdata=get(axes_panel_comp.main_echo,'XData');
+xdata=get(axes_panel_comp.main_echo,'XData')
 ydata=get(axes_panel_comp.main_echo,'YData');
 
 [idx_r,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
@@ -53,6 +53,7 @@ yticks_label=get(axes_panel_comp.main_axes,'YtickLabel');
 
 set(axes_panel_comp.vaxes,'YTick',yticks);
 set(axes_panel_comp.haxes,'XTick',xticks);
+xticks
 set(axes_panel_comp.vaxes,'YtickLabel',yticks_label);
 set(axes_panel_comp.haxes,'XtickLabel',xticks_label,'XTickLabelRotation',90,'box','on');
 order_axes(main_figure);

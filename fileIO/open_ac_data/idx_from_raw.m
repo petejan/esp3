@@ -17,7 +17,14 @@ switch raw_idx_obj.raw_type
             freq(uif)=config(uif).Frequency;
             CIDs{uif}=config(uif).ChannelID;
         end
-        
+        file_comp=fread(fid,'*char', 'l')';
+        idx_nme0=strfind(file_comp,'NME0');
+        idx_xml0=strfind(file_comp,'XML0');
+        idx_raw3=strfind(file_comp,'RAW3');
+        idx_tag0=strfind(file_comp,'TAG0');
+        idx_mru0=strfind(file_comp,'MRU0');
+        idx_fil1=strfind(file_comp,'FIL1');
+        [idx_dg,~]=sort([idx_nme0 idx_xml0 idx_raw3 idx_tag0 idx_mru0 idx_fil1]);
     case 'EK60'
         [tmp, ~] = readEKRaw_ReadHeader(fid);
          freq=nan(1,length(tmp.transceiver));
@@ -27,26 +34,14 @@ switch raw_idx_obj.raw_type
             CIDs{uif}=tmp.transceiver(uif).channelid;
         end
         frewind(fid);
+        file_comp=fread(fid,'*char', 'l')';
+        idx_con0=strfind(file_comp,'CON0');
+        idx_raw0=strfind(file_comp,'RAW0');
+        idx_nme0=strfind(file_comp,'NME0');
+        idx_tag0=strfind(file_comp,'TAG0');
+        [idx_dg,~]=sort([idx_con0 idx_raw0 idx_nme0  idx_tag0]);
 end
 
-
-
-file_comp=fread(fid,'*char', 'l')';
-
-
-idx_con0=strfind(file_comp,'CON0');
-idx_raw0=strfind(file_comp,'RAW0');
-idx_nme0=strfind(file_comp,'NME0');
-idx_xml0=strfind(file_comp,'XML0');
-idx_raw3=strfind(file_comp,'RAW3');
-idx_tag0=strfind(file_comp,'TAG0');
-idx_mru0=strfind(file_comp,'MRU0');
-idx_fil1=strfind(file_comp,'FIL1');
-
-[idx_dg,~]=sort([idx_con0 idx_raw0 idx_nme0 idx_xml0 idx_raw3 idx_tag0 idx_mru0 idx_fil1]);
-
-% idx_test=regexp(file_comp,'(XML0|CON0|RAW0|RAW3|NME0|TAG0|MRU0|FIL1)');
-% 
 
 HEADER_LEN=12;
 MAX_DG_SIZE=length(idx_dg);
@@ -98,8 +93,10 @@ for i=1:length(idx_dg)
            channelID = (fread(fid,128,'*char', 'l')');
            fread(fid,4,'int16', 'l');
            id_chan=find(strcmp(deblank(channelID),deblank(CIDs)));
-           raw_idx_obj.chan_dg(i)=id_chan;
-           raw_idx_obj.nb_samples(i) = fread(fid,1,'int32', 'l');
+           if ~isempty(id_chan)
+               raw_idx_obj.chan_dg(i)=id_chan;
+               raw_idx_obj.nb_samples(i) = fread(fid,1,'int32', 'l');
+           end
     end
     
 end
