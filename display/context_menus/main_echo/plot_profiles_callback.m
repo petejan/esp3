@@ -25,17 +25,9 @@ x=nanmin(x,x_lim(2));
 y=nanmax(y,y_lim(1));
 y=nanmin(y,y_lim(2));
 
-switch curr_disp.Xaxes
-    case 'Time'
-        xlab_str='Time';
-        xdata=trans.Data.Time;
-    case 'Distance'
-        xlab_str='Distance (m)';
-        xdata=trans.GPSDataPing.Dist;
-    case 'Number'
-        xlab_str='Ping Number';
-        xdata=trans.Data.get_numbers();
-end
+
+xlab_str='Ping Number';
+xdata=trans.Data.get_numbers();
 
 ydata=trans.Data.get_range();
 [~,idx_ping]=nanmin(abs(xdata-x));
@@ -57,9 +49,12 @@ switch lower(deblank(curr_disp.Fieldname))
 end
 
 
-
-if ~isnan(Bottom.Sample_idx(idx_ping))
-    bot_val=ydata(Bottom.Sample_idx(idx_ping));
+if ~isempty(Bottom.Sample_idx)
+    if ~isnan(Bottom.Sample_idx(idx_ping))
+        bot_val=ydata(Bottom.Sample_idx(idx_ping));
+    else
+        bot_val=nan;
+    end
 else
     bot_val=nan;
 end

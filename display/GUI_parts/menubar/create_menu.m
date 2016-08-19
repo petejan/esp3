@@ -44,6 +44,7 @@ uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,
 uimenu(m_survey,'Label','Display logbook','Callback',{@logbook_display_callback,main_figure});
 uimenu(m_survey,'Label','Edit/Display logbook','Callback',{@logbook_dispedit_callback,main_figure});
 uimenu(m_survey,'Label','Convert Csv Logbook to Xml (current layer)','Callback',{@convert_csv_logbook_to_xml_callback,main_figure});
+uimenu(m_survey,'Label','Look for new files in current folder','Callback',{@look_for_new_files_callback,main_figure})
 
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
@@ -186,6 +187,22 @@ function load_map_fig_callback(~,~,main_fig)
 load_map_fig(main_fig,[]);
 end
 
+
+function look_for_new_files_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
+layer.update_echo_logbook_file();
+hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmp({hfigs(:).Tag},'logbook'), 1);
+
+if ~isempty(idx_tag)
+    load_survey_data_fig(main_figure);
+end
+
+end
 
 function convert_csv_logbook_to_xml_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');

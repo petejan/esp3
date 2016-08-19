@@ -13,12 +13,12 @@ switch curr_disp.Cmap
     case 'esp2'
         ac_data_col=[0 1 0];
         in_data_col=[1 0 0];
-        bad_data_col=[0.5 0.5 0.5];
+        %bad_data_col=[0.5 0.5 0.5];
         txt_col='w';
     otherwise
         ac_data_col=[1 0 0];
         in_data_col=[0 1 0];
-        bad_data_col=[0.5 0.5 0.5];
+        %bad_data_col=[0.5 0.5 0.5];
         txt_col='k';
 end
 
@@ -47,9 +47,7 @@ for iax=1:length(main_axes_tot)
     
     Number=trans.Data.get_numbers();
     Range=trans.Data.get_range();
-    %
-    %     dr=nanmean(diff(Range));
-    %     dp=nanmean(diff(trans.GPSDataPing.Dist));
+
     
     xdata=Number;
     
@@ -69,41 +67,18 @@ for iax=1:length(main_axes_tot)
     
     for i=1:length(list_reg)
         reg_curr=trans.Regions(i);
-        %
-        %         switch reg_curr.Cell_h_unit
-        %             case 'meters'
-        %                 dy=ceil(reg_curr.Cell_h/dr);
-        %             otherwise
-        %                 dy=reg_curr.Cell_h;
-        %         end
-        %
-        %         switch reg_curr.Cell_w_unit
-        %             case 'meters'
-        %                 dx=ceil(reg_curr.Cell_w/dp);
-        %             otherwise
-        %                 dx=reg_curr.Cell_w;
-        %         end
-        %
-        %          if  strcmp(reg_curr.Name,'Track')
-        %             x_grid=[];
-        %             y_grid=[];
-        %         else
-        %             x_grid=x([reg_curr.Idx_pings(1):dx:reg_curr.Idx_pings(end) reg_curr.Idx_pings(end)]);
-        %
-        %             y_grid=y([reg_curr.Idx_r(1):dy:reg_curr.Idx_r(end) reg_curr.Idx_r(end)]);
-        %         end
-        %
-        %         [X_grid,Y_grid]=meshgrid(x_grid,y_grid);
+        
         
         if i==active_reg
             col=ac_data_col;
         else
-            switch lower(reg_curr.Type)
-                case 'data'
-                    col=in_data_col;
-                case 'bad data'
-                    col=bad_data_col;
-            end
+            col=in_data_col;
+%             switch lower(reg_curr.Type)
+%                 case 'data'
+%                     
+%                 case 'bad data'
+%                     col=bad_data_col;
+%             end
         end
         x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
         y_reg_rect=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
@@ -128,9 +103,7 @@ for iax=1:length(main_axes_tot)
                 
                 x_text=nanmean(x_reg_rect(:));
                 y_text=nanmean(y_reg_rect(:));
-                %                 plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
-                %                 plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
-                plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
+                  plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
             case 'Polygon'
                 
                 idx_x=reg_curr.X_cont;
@@ -157,16 +130,8 @@ for iax=1:length(main_axes_tot)
                     
                     %line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                 end
-                
-                %                  mask=imresize(reg_curr.MaskReg==0,size(X_grid));
-                %                  X_grid(mask)=nan;
-                %                  Y_grid(mask)=nan;
-                
-                reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
-                
-                %                  plot(main_axes,X_grid,Y_grid,'color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
-                %                  plot(main_axes,X_grid',Y_grid','color',col,'Tag','region','visible',curr_disp.DispReg,'UserData',reg_curr.Unique_ID);
-                
+                         reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
+                     
         end
         
         

@@ -1,7 +1,14 @@
 function load_survey_data_fig(main_figure)
-hfigs=getappdata(main_figure,'ExternalFigures');
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
+
+hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmp({hfigs(:).Tag},'logbook'));
+
+if ~isempty(idx_tag)
+    delete(figure(hfigs(idx_tag)))
+end
 
 if isempty(layer)
     path_f = uigetdir(app_path.data,'Choose Data Folder');
@@ -147,6 +154,7 @@ end
 
 setappdata(main_figure,'ExternalFigures',hfigs);
 end
+
 function display_filename_callback(src,evt,file_list)
 
 ax=src.Parent;

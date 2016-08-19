@@ -74,8 +74,9 @@ TS(mask>=1)=-999;
 Idx_samples_lin=reshape(1:nb_samples*nb_pings,nb_samples,nb_pings);
 
 Bottom=Transceiver.Bottom.Range;
+range=Transceiver.Data.get_range();
 if isempty(Bottom)
-    Bottom=ones(1,nb_pings)*Range(end);
+    Bottom=ones(1,nb_pings)*range(end);
 end
 
 Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
@@ -125,7 +126,7 @@ Pulse_length_max_sample=ceil(Pulse_length_sample.*p.Results.MaxNormPL);
 Pulse_length_min_sample=floor(Pulse_length_sample.*p.Results.MinNormPL);
 
 c=p.Results.SoundSpeed;
-alpha=Transceiver.Params.Absorption;
+alpha=Transceiver.Params.Absorption(1);
 
 %Calculate simradBeamCompensation
 simradBeamCompensation = 6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2);
