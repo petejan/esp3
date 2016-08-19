@@ -3,7 +3,10 @@ function update_grid_mini_ax(main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 mini_axes_comp=getappdata(main_figure,'Mini_axes');
-mini_axes_comp.mini_ax;
+
+if ~isgraphics(mini_axes_comp.mini_ax.Parent,'figure')
+    return;
+end
 
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
@@ -38,6 +41,7 @@ switch curr_disp.Xaxes
 end
 idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
 idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
+
 set(mini_axes_comp.mini_ax,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on','YDir','reverse');
 
 end

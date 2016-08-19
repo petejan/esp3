@@ -15,6 +15,7 @@ Z_st=ST.Target_range_disp;
 if isfield(axes_panel_comp,'track_plot')
     delete(axes_panel_comp.track_plot);
     axes_panel_comp.track_plot=[];
+    delete(findobj(axes_panel_comp.main_axes,'Tag','track'));
 end
 
 if ~isempty(tracks)
