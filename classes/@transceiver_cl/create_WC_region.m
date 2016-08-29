@@ -9,6 +9,7 @@ check_dataType=@(data) ~isempty(strcmp(data,{'Data','Bad Data'}));
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'y_min',10,@isnumeric)
+addParameter(p,'y_max',inf,@isnumeric)
 addParameter(p,'Type','Data',check_dataType);
 addParameter(p,'Ref','Surface',check_ref);
 addParameter(p,'Cell_w',10,@isnumeric);
@@ -38,8 +39,8 @@ switch p.Results.Cell_h_unit
         ydata=trans_obj.Data.get_range();
         bot_data=trans_obj.Bottom.Range;
 end
-
-idx_pings=1:length(xdata);
+nb_pings=length(xdata);
+idx_pings=1:nb_pings;
 
 
 switch p.Results.Ref
@@ -48,15 +49,27 @@ switch p.Results.Ref
         [~,idx_r_min]=nanmin(abs(ydata-p.Results.y_min));
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
-        [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
+        if nansum(isnan(bot_data))<nb_pings
+            [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
+        else
+            idx_r_max=length(ydata);
+        end
+
     case 'Bottom' 
         name='WC';
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
-        [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
+        if nansum(isnan(bot_data))<nb_pings
+            [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
+        else
+            idx_r_max=length(ydata);
+        end
         [~,idx_r_min]=nanmin(abs(ydata-nanmin(bot_data+p.Results.Cell_h-p.Results.y_min)));
 end
-   
+
+[~,idx_r_y_max]=nanmin(abs(ydata-p.Results.y_max));
+idx_r_max=nanmin(idx_r_max,idx_r_y_max);
+
 trans_obj.rm_region_name(name);
 
  idx_r=idx_r_min:idx_r_max;

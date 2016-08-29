@@ -77,6 +77,7 @@ if ~isempty(dist)&&nb_pings>1&&p.Results.horz_filt>0
     b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
 else
     b_filter=ceil(nanmin(15,nb_pings/10));
+    %b_filter=nb_pings;
 end
 
 idx_ringdown=analyse_ringdown(RingDown);

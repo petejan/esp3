@@ -3,7 +3,7 @@ global DEBUG;
 DEBUG=0;
 %set the lookand feel of the figure
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
-
+warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
 p = inputParser;
 

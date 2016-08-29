@@ -38,7 +38,9 @@ surv.EndTime=end_time;
 if cancel>0
     return;
 end
+
 layer_cl.empty.update_echo_logbook_file('Filename',layer.Filename{trans.Data.FileId(idx_ping)},'SurveyData',surv);
+layer.load_echo_logbook();
 import_survey_data_callback([],[],main_figure);
 
 load_cursor_tool(main_figure);

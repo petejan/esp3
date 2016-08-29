@@ -1,7 +1,7 @@
 function [data_c,mean_corrected_value] = correctES60(data,offset)
 
 period = 2721;
-if isempty(offset)
+if isempty(offset)||ischar(offset)
 offset=nan;
 end
 

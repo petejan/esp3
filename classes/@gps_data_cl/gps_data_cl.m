@@ -18,38 +18,48 @@ classdef gps_data_cl <handle
             addParameter(p,'NMEA','',@ischar);
             parse(p,varargin{:});
             
-            results=p.Results;
-            props=fieldnames(results);
-            
-            for i=1:length(props)
-                if size(results.(props{i}),2)==1
-                    obj.(props{i})=results.(props{i});
-                else
-                    obj.(props{i})=results.(props{i})';
+            if ~isempty(p.Results.Lat)
+                results=p.Results;
+                props=fieldnames(results);
+                
+                for i=1:length(props)
+                    if isprop(obj,props{i})
+                        if size(results.(props{i}),2)==1
+                            obj.(props{i})=results.(props{i});
+                        else
+                            obj.(props{i})=results.(props{i})';
+                        end
+                    end
                 end
-            end
-            
-            obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
-            
-            idx_nan=(isnan(obj.Lat)+isnan(obj.Long)+isnan(obj.Time))>0;
-            obj.Long(idx_nan)=[];
-            obj.Lat(idx_nan)=[];
-            obj.Time(idx_nan)=[];
-            [~,idx_sort]=sort(obj.Time);
-            
-            obj.Long=obj.Long(idx_sort);
-            obj.Lat=obj.Lat(idx_sort);
-            obj.Time=obj.Time(idx_sort);
-            
-            if length(obj.Long)>=2
-                dist_disp=[0;cumsum(m_lldist(obj.Long,obj.Lat))]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
-                obj.Dist=dist_disp;
+                
+                obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
+                idx_nan=(isnan(obj.Lat)+isnan(obj.Long)+isnan(obj.Time))>0;
+                obj.Long(idx_nan)=[];
+                obj.Lat(idx_nan)=[];
+                obj.Time(idx_nan)=[];
+                [~,idx_sort]=sort(obj.Time);
+                
+                obj.Long=obj.Long(idx_sort);
+                obj.Lat=obj.Lat(idx_sort);
+                obj.Time=obj.Time(idx_sort);
+                
+                if length(obj.Long)>=2
+                    dist_disp=[0;cumsum(m_lldist(obj.Long,obj.Lat))]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
+                    obj.Dist=dist_disp;
+                else
+                    obj.Dist=[];
+                end
+                
+                if size(obj.Dist,2)>1
+                    obj.Dist=obj.Dist';
+                end
             else
-                obj.Dist=[];
-            end
-            
-            if size(obj.Dist,2)>1
-                obj.Dist=obj.Dist';
+                nb_pings=length(p.Results.Time);
+                obj.Long=zeros(nb_pings,1);
+                obj.Lat=zeros(nb_pings,1);
+                obj.Time=p.Results.Time;
+                obj.Dist=zeros(nb_pings,1);
+                obj.NMEA='';
             end
             
             

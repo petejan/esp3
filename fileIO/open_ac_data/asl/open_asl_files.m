@@ -62,9 +62,16 @@ fprintf('Openning %.0f day(s), that is %d files\n',length(idx_out),length(idx_to
 new_layers=read_asl(Filename_out,...
     'PathToMemmap',app_path.data_temp);
         
-if isempty(new_layers)
+if ~isempty(new_layers)
+    for i=1:length(new_layers)
+        new_layers(i).load_bot_regs();
+    end
+    
+    new_layers.load_echo_logbook();
+else
     return;
 end
+
 max_load_days=7;
 i_cell=1;
 new_layers_sorted{i_cell}=[];
@@ -90,12 +97,14 @@ for i_file=1:length(dates_out)
     
 end
 
-
 disp('Shuffling layers');
 layers_out=[];
 
 for icell=1:length(new_layers_sorted)
-    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
+    new_layers_sorted_tmp=new_layers_sorted{icell}.sort_per_survey_data();
+    for icell_tmp=1:length(new_layers_sorted_tmp)
+            layers_out=[layers_out shuffle_layers(new_layers_sorted_tmp{icell_tmp},'multi_layer',-1)];
+    end
 end
 
 id_lay=layers_out(end).ID_num;

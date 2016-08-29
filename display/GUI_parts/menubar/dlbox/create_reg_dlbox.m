@@ -21,20 +21,8 @@ uicontrol(reg_fig,'Style','text',...
     'fontsize',14,...
     'String','Create WC Region');
 
+units_w= {'pings','meters'};
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
-    dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
-else
-    dist=[];
-end
-
-
-if ~isempty(dist)
-    units_w= {'pings','meters'};
-else
-    units_w= {'pings'};
-end
 
 units_h={'meters','samples'};
 h_unit_idx=1;

@@ -17,7 +17,9 @@ for ip=1:length(pathtofile)
     survey_data_struct_temp=import_survey_data_xml(fileN);
     
     dir_raw=dir(fullfile(pathtofile{ip},'*.raw'));
-    list_raw={dir_raw(:).name};
+    dir_asl=dir(fullfile(pathtofile{ip},'*A'));
+    
+    list_raw=union({dir_raw(:).name},{dir_asl(:).name});
 
     if nansum(cellfun(@(x) nansum(strcmpi(survey_data_struct_temp.Filename,strtrim(x))),list_raw)==0)>0
         incomplete=1;

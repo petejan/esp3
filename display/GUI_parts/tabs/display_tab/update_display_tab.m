@@ -6,15 +6,8 @@ display_tab_comp=getappdata(main_figure,'Display_tab');
 
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
-if isempty(layer.Transceivers(idx_freq).GPSDataPing)
-    Axes_type={'Number','Time'};
-else
-    if ~isempty(layer.Transceivers(idx_freq).GPSDataPing.Dist)
-        Axes_type={'Number','Time','Distance'};
-    else
-        Axes_type={'Number','Time'};
-    end
-end
+Axes_type={'Number','Time','Distance'};
+
 idx_axes=find(strcmp(curr_disp.Xaxes,Axes_type));
 [idx_field,~]=layer.Transceivers(idx_freq).Data.find_field_idx(curr_disp.Fieldname);
 

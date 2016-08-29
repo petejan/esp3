@@ -1,4 +1,4 @@
-function generate_output(surv_obj,layers,varargin)
+    function generate_output(surv_obj,layers,varargin)
 
 p = inputParser;
 
@@ -99,17 +99,22 @@ for isn=1:length(snapshots)
             dist_tot=m_lldist([gps_tot.Long(idx_good_pings(1)) gps_tot.Long(idx_good_pings(end))],[gps_tot.Lat(idx_good_pings(1)) gps_tot.Lat(idx_good_pings(end))])/1.852;
             timediff_tot=(gps_tot.Time(idx_good_pings(end))-gps_tot.Time(idx_good_pings(1)))*24;
             av_speed_tot=dist_tot/timediff_tot;
+            
             good_bot_tot=nanmean(bot_tot.Range(idx_good_pings));
             
             
-            
             for ilay=idx_lay
+                
                 layer_obj_tr=layers(output.Layer_idx(ilay));
                 idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
                 gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
                 bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
                 gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
                 trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
+                
+                if isnan(good_bot_tot)
+                    good_bot_tot= trans_obj_tr.Data.Range(end);
+                end
                 
                 if ~isempty(trans_obj_tr.ST.TS_comp)
                     nb_st=nb_st+length(trans_obj_tr.ST.TS_comp);
@@ -204,9 +209,8 @@ for isn=1:length(snapshots)
                 
                 [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
                 %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
-                
+
                 Output_echo=[Output_echo sliced_output];
-                mean_d=nanmean(bot.Range(trans_obj_tr.Bottom.Tag>0));
                 
                 for j=1:length(regs)
                     i_reg=i_reg+1;

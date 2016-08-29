@@ -37,15 +37,17 @@ end
 
 if ~strcmp(p.Results.Filename,'')
     [new_path,~,~]=fileparts(p.Results.Filename);
-     pathtofile=union(pathtofile,new_path);
+    pathtofile=union(pathtofile,new_path);
 end
 
 for ilay=1:length(pathtofile)
     
     surv_data_struct=load_logbook_to_struct(pathtofile{ilay});
-
+    
     dir_raw=dir(fullfile(pathtofile{ilay},'*.raw'));
-    list_raw={dir_raw(:).name};
+    dir_asl=dir(fullfile(pathtofile{ilay},'*A'));
+    list_raw=union({dir_raw(:).name},{dir_asl(:).name});
+    
     
     docNode = com.mathworks.xml.XMLUtils.createDocument('echo_logbook');
     echo_logbook=docNode.getDocumentElement;
@@ -56,11 +58,14 @@ for ilay=1:length(pathtofile)
     survdata_temp=survey_data_cl();
     
     try
-       
+        
         old_files=intersect(list_raw,surv_data_struct.Filename);
         nb_files=length(old_files);
         
         for i=1:nb_files
+            
+            
+            
             f_processed=0;
             file_curr=fullfile(pathtofile{ilay},old_files{i});
             idx_file=find(strcmpi(file_curr,files_lays),1);
@@ -68,6 +73,7 @@ for ilay=1:length(pathtofile)
             
             if isempty(idx_file)
                 for is=idx_file_xml
+                    
                     if strcmp(file_curr,p.Results.Filename)
                         survdata_temp=p.Results.SurveyData;
                     else
@@ -76,13 +82,9 @@ for ilay=1:length(pathtofile)
                     start_time=survdata_temp.StartTime;
                     end_time=survdata_temp.EndTime;
                     
-                    if isnan(start_time)||(start_time==0)
-                        start_time=get_start_date_from_raw(surv_data_struct.Filename{is});
-                    end
-                    
-                    if isnan(end_time)||(end_time==1)
+                    if isnan(end_time)||(end_time==1)||isnan(start_time)||(start_time==0)
+                        [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},list_raw{i}));
                         
-                        [~,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},list_raw{i}));
                     end
                     
                     if ~strcmp(voy,'')
@@ -172,11 +174,15 @@ for ilay=1:length(pathtofile)
         survey_node.setAttribute('SurveyName',survdata_temp.SurveyName);
         survey_node.setAttribute('Voyage',survdata_temp.Voyage);
         
-         new_files=setdiff(list_raw,surv_data_struct.Filename);
+        new_files=setdiff(list_raw,surv_data_struct.Filename);
         
         for i=1:length(new_files)
             fprintf('Adding file %s to logbook\n',new_files{i});
+            
+            
             [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},new_files{i}));
+            
+            
             if strcmp(fullfile(pathtofile{ilay},new_files{i}),p.Results.Filename)
                 survdata_temp=p.Results.SurveyData;
             else

@@ -17,7 +17,7 @@ if ~iscell(Filenames)
 end
 %profile on
 for i=1:length(Filenames)
-     try
+    % try
         surv_obj=survey_cl();
         
         switch p.Results.origin
@@ -58,14 +58,14 @@ for i=1:length(Filenames)
         end
          %surv_obj.SurvInput.Options.Soundspeed=1450;
          layers=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,'layers',p.Results.layers,'Fieldnames',fields_req);
-
-    catch err
-        disp(err.message);  
-        warning('Problem loading files from %s\n',Filenames{i});
-        continue;
-    end
+% 
+%     catch err
+%         disp(err.message);  
+%         warning('Problem loading files from %s\n',Filenames{i});
+%         continue;
+%     end
         
-     try
+    % try
         surv_obj.generate_output(layers);
         [PathToFile,~,~]=fileparts(layers(end).Filename{1});
         save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
@@ -73,10 +73,10 @@ for i=1:length(Filenames)
         surv_obj.print_output(outputFile);
         fprintf(1,'Results save to %s \n',outputFile);
          
-    catch err
-        disp(err.message);
-        warning('Could not process survey described in file %s\n',Filenames{i});
-    end
+%     catch err
+%         disp(err.message);
+%         warning('Could not process survey described in file %s\n',Filenames{i});
+%     end
 end
 % profile off;
 % profile viewer;

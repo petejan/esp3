@@ -42,28 +42,28 @@ classdef transceiver_cl < handle
             p = inputParser;
             
             
-            check_data_class=@(obj) isa(obj,'ac_data_cl')||isempty(obj);
+            check_data_class=@(obj) isa(obj,'ac_data_cl');
             check_bottom_class=@(obj) isa(obj,'bottom_cl');
-            check_region_class=@(obj) isa(obj,'region_cl')||isempty(obj);
+            check_region_class=@(obj) isa(obj,'region_cl');
             check_param_class=@(obj) isa(obj,'params_cl');
             check_config_class=@(obj) isa(obj,'config_cl');
             check_filter_class=@(obj) isa(obj,'filter_cl');
             check_gps_class=@(obj) isa(obj,'gps_data_cl');
             check_att_class=@(obj) isa(obj,'attitude_nav_cl');
-            check_algo_class=@(obj) isa(obj,'algo_cl')||isempty(obj);
+            check_algo_class=@(obj) isa(obj,'algo_cl');
             
             
-            addParameter(p,'Data',[],check_data_class);
+            addParameter(p,'Data',ac_data_cl.empty(),check_data_class);
             addParameter(p,'Bottom',bottom_cl(),check_bottom_class);
             addParameter(p,'ST',init_st_struct(),@isstruct);
             addParameter(p,'Tracks',struct('target_id',{},'target_ping_number',{}),@isstruct);
-            addParameter(p,'Regions',[],check_region_class);
+            addParameter(p,'Regions',region_cl.empty(),check_region_class);
             addParameter(p,'Params',params_cl(),check_param_class);
             addParameter(p,'Config',config_cl(),check_config_class);
             addParameter(p,'Filters',filter_cl.empty(),check_filter_class);
-            addParameter(p,'GPSDataPing',gps_data_cl(),check_gps_class);
+            addParameter(p,'GPSDataPing',gps_data_cl.empty(),check_gps_class);
             addParameter(p,'AttitudeNavPing',attitude_nav_cl.empty(),check_att_class);
-            addParameter(p,'Algo',[],check_algo_class);
+            addParameter(p,'Algo',init_algos,check_algo_class);
             addParameter(p,'Mode','CW',@ischar);
             parse(p,varargin{:});
             
@@ -75,9 +75,15 @@ classdef transceiver_cl < handle
                 obj.(props{i})=results.(props{i});
             end
             
-            %             if isempty(p.Results.Data)
-            %                 obj.Data=ac_data_cl();
-            %             end
+            if ~isempty(p.Results.Data)
+               if isempty(p.Results.GPSDataPing)
+                   obj.GPSDataPing=gps_data_cl('Time',p.Results.Data.Time);
+               end
+               if isempty(p.Results.AttitudeNavPing)
+                   obj.AttitudeNavPing=attitude_nav_cl('Time',p.Results.Data.Time);
+               end
+            end
+            
             
         end
         

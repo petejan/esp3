@@ -35,7 +35,6 @@ for isn=1:length(snapshots)
             trans_num=transects{itr}.number;
             
             
-            
             fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             if ~iscell(filenames_cell)
                 filenames_cell={filenames_cell};
@@ -43,10 +42,10 @@ for isn=1:length(snapshots)
             regs=transects{itr}.Regions;
             bot=transects{itr}.Bottom;
             layers_in=[];
+            fType=cell(1,length(filenames_cell));
 
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
-                
                 if isfield(transects{itr},'EsError')
                     es_offset=transects{itr}.EsError(ifiles);
                 else
@@ -57,7 +56,7 @@ for isn=1:length(snapshots)
                     cal_temp.FREQ=options.Frequency;
                     
                     if ~isempty(find([cal(:).FREQ]==options.Frequency, 1))
-                          cal([cal(:).FREQ]==options.Frequency)=cal_temp;
+                        cal([cal(:).FREQ]==options.Frequency)=cal_temp;
                     else
                         cal(length(cal)+1)=cal_temp;
                     end
@@ -66,46 +65,49 @@ for isn=1:length(snapshots)
                 end
                 
                 if ~isempty(layers)
-                    [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));    
+                    [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                 else
-                    found_lay=0; 
+                    found_lay=0;
                 end
                 
                 if ~isempty(layers_in)
-                    [~,found_lay_in]=layers_in.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                    [idx_lay_in,found_lay_in]=layers_in.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                 else
                     found_lay_in=0;
                 end
                 
                 
                 if found_lay_in==1
+                    fType{ifiles}=layers_in(idx_lay_in(1)).Filetype;
                     continue;
                 end
                 
                 if found_lay>0
                     layers_in=[layers_in layers(idx_lays(1))];
-                    layers(idx_lays(1))=[];
+                    fType{ifiles}=layers(idx_lays(1)).Filetype;
+                    layers(idx_lays(1))=[];     
                     continue;
                 else
                     if exist(fileN,'file')==2
                         
-                        fType=get_ftype(fileN);
+                        fType{ifiles}=get_ftype(fileN);
                         
-                        switch fType
-                            case {'EK60','EK80'}
-%                                 profile on;
-
+                        switch lower(fType{ifiles})
+                            case {'ek60','ek80','raw'}
+                                %                                 profile on;
+                                
                                 new_lay=open_raw_file_standalone_v2(fileN,...
                                     'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames,'EsOffset',es_offset);
-%                                  new_lay=open_raw_file_standalone(fileN,...
-%                                     'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames,'EsOffset',es_offset);
-% %                             
-%                                 profile off;
-%                                 profile viewer
-                           case 'dfile'
+                                
+                                %                                 profile off;
+                                %                                 profile viewer
+                            case 'asl'
+                                new_lay=read_asl(fileN,...
+                                    'PathToMemmap',datapath);
+                            case 'dfile'
                                 new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
                         end
-                       [~,found]=new_lay.find_freq_idx(options.Frequency);
+                        [~,found]=new_lay.find_freq_idx(options.Frequency);
                         if found==0
                             warning('Cannot file required Frequency in file %s',filenames_cell{ifiles});
                             continue;
@@ -115,12 +117,11 @@ for isn=1:length(snapshots)
                             case 'mbs'
                                 new_lay.OriginCrest=transects{itr}.OriginCrest{ifiles};
                                 new_lay.CVS_BottomRegions(p.Results.cvs_root);
-                                %if ~strcmp(new_lay.Filetype,'CREST')
                                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                 new_lay.set_survey_data(surv);
-                                %end
-                                switch fType
-                                    case {'EK60','EK80'}
+                                
+                                switch lower(fType{ifiles})
+                                    case {'ek60','ek80','asl'}
                                         new_lay.update_echo_logbook_file();
                                 end
                                 
@@ -135,15 +136,65 @@ for isn=1:length(snapshots)
                 end
             end
             
-            if ~isempty(layers_in)
-                layers_out_temp=shuffle_layers(layers_in,'multi_layer',0);
-                clear layers_in;
-            else
+            
+            if isempty(layers_in)
                 warning('Could not find any files in this transect...');
                 continue;
             end
+            fType_in=cell(1,length(layers_in));
+             dates_out=nan(1,length(layers_in));
+            for ilay_in=1:length(layers_in)
+                fType_in{ilay_in}=layers_in(ilay_in).Filetype;
+                dates_out(ilay_in)=layers_in(ilay_in).Transceivers(1).Data.Time(1);
+            end
             
-
+            [fTypes,idx_unique,idx_out]=unique(fType_in);
+            
+            for itype=1:length(fTypes)
+                switch lower(fTypes{itype})
+                    case 'asl'
+                        
+                        max_load_days=7;
+                        i_cell=1;
+                        new_layers_sorted{i_cell}=[];
+                        date_ori=dates_out(1);
+                        
+                        for i_file=1:length(dates_out)
+                            if i_file>1
+                                if dates_out(i_file)-dates_out(i_file-1)>=1
+                                    i_cell=i_cell+1;
+                                    new_layers_sorted{i_cell}= layers_in(i_file);
+                                    date_ori=dates_out(i_file);
+                                    continue;
+                                end
+                            end
+                            
+                            if dates_out(i_file)-date_ori<=max_load_days
+                                new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} layers_in(i_file)];
+                            else
+                                i_cell=i_cell+1;
+                                new_layers_sorted{i_cell}= layers_in(i_file);
+                                date_ori=dates_out(i_file);
+                            end
+                            
+                        end
+                        
+                        disp('Shuffling layers');
+                        layers_out_temp=[];
+                        
+                        for icell=1:length(new_layers_sorted)
+                            layers_out_temp=[layers_out_temp shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
+                        end
+                        clear layers_in;
+                        clear new_layers_sorted;
+                    otherwise
+                        
+                        layers_out_temp=shuffle_layers(layers_in(idx_unique(itype)==idx_out),'multi_layer',0);
+                        clear layers_in;
+                        
+                end
+            end
+            
             if length(layers_out_temp)>1
                 warning('Non continuous files in Snapshot %.0f Stratum %s Transect %.0f',snap_num,strat_name,trans_num);
             end
@@ -155,7 +206,8 @@ for isn=1:length(snapshots)
                 for i_freq=1:length(layer_new.Frequencies)
                     curr_freq=layer_new.Frequencies(i_freq);
                     
-                    if ~strcmp(layer_new.Filetype,'CREST')
+                   switch layer_new.Filetype
+                       case {'ek60','ek80'}
                         if ~isempty(find([cal(:).FREQ]==curr_freq, 1))
                             layer_new.Transceivers(i_freq).apply_cw_cal(cal([cal(:).FREQ]==layer_new.Frequencies(i_freq)));
                         else
@@ -204,7 +256,14 @@ for isn=1:length(snapshots)
                             case 'WC'
                                 layer_new.Transceivers(idx_freq).rm_region_name('WC');
                                 for irewc=1:length(regions_wc)
-                                    reg_wc=layer_new.Transceivers(idx_freq).create_WC_region('y_min',regions_wc{irewc}.y_min,...
+                                    if isfield(regions_wc{irewc},'y_max')
+                                        y_max=regions_wc{irewc}.y_max;
+                                    else 
+                                        y_max=inf;
+                                    end
+                                    reg_wc=layer_new.Transceivers(idx_freq).create_WC_region(...
+                                        'y_max',y_max,...
+                                        'y_min',regions_wc{irewc}.y_min,...
                                         'Type','Data',...
                                         'Ref',regions_wc{irewc}.Ref,...
                                         'Cell_w',regions_wc{irewc}.Cell_w,...
@@ -225,13 +284,13 @@ for isn=1:length(snapshots)
                         layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name);
                     else
                         for i_freq_al=1:length(algos{ial}.Varargin.Frequencies)
-                           [idx_freq_al,found_freq_al]=layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al)); 
-                           if found_freq_al>0
-                               layer_new.Transceivers(idx_freq_al).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                               layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name);
-                           else
+                            [idx_freq_al,found_freq_al]=layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al));
+                            if found_freq_al>0
+                                layer_new.Transceivers(idx_freq_al).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
+                                layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name);
+                            else
                                 fprintf('Could not find Frequency %.0fkHz. Algo %s not applied on it\n',algos{ial}.Varargin.Frequencies(i_freq_al)/1e3,algos{ial}.Name);
-                           end
+                            end
                         end
                     end
                 end

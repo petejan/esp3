@@ -1,7 +1,10 @@
 function survey_data_struct_to_xml(path_f,surv_data_struct)
 
 dir_raw=dir(fullfile(path_f,'*.raw'));
-list_raw={dir_raw(:).name};
+
+dir_asl=dir(fullfile(path_f,'*A'));
+
+list_raw=union({dir_raw(:).name},{dir_asl(:).name});
 nb_files=length(list_raw);
 
 xml_file=fullfile(path_f,'echo_logbook.xml');

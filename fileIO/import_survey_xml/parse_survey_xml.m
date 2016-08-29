@@ -10,7 +10,7 @@ end
 
 Algos={};
 Regions_WC={};
-
+Cal=[];
 nb_child=length(xml_struct.Children);
 nb_reg=0;
 nb_snap=0;
@@ -22,10 +22,11 @@ for i=1:nb_child
            Infos=get_node_att(xml_struct.Children(i));
         case 'cal'
             nb_cal=nb_cal+1;
-           Cal(nb_cal)=get_node_att(xml_struct.Children(i));
-           if ~isfield(Cal(nb_cal),'FREQ')
-               Cal(nb_cal).FREQ=Options.Frequency;
+           cal_temp=get_node_att(xml_struct.Children(i));
+           if ~isfield(cal_temp,'FREQ')
+               cal_temp.FREQ=Options.Frequency;
            end
+           Cal=[Cal cal_temp];
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
            if isfield(Options,'FrequenciesToLoad')
@@ -46,6 +47,8 @@ for i=1:nb_child
                    Options.Absorption(Options.FrequenciesToLoad==Options.Frequency)=abs_ori;
                 end
            end
+
+           
         case 'algos'
             Algos=get_algos(xml_struct.Children(i));
         case 'regions_WC'
@@ -73,6 +76,13 @@ nb_att=length(node.Attributes);
 node_atts=[];
 for j=1:nb_att
     node_atts.(node.Attributes(j).Name)=node.Attributes(j).Value;
+
+    if ischar(node_atts.(node.Attributes(j).Name))
+        if strcmpi(node_atts.(node.Attributes(j).Name),'nan')
+            node_atts.(node.Attributes(j).Name)=nan;
+        end
+    end
+    
 end
 end
 
