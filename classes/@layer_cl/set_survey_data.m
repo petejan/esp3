@@ -11,7 +11,11 @@ if isempty(surv_data_cell)
     return;
 end
 
-dt=nanmean(diff(layer_obj.Transceivers(1).Data.Time));
+if ~isempty(layer_obj.Transceivers)
+    dt=nanmean(diff(layer_obj.Transceivers(1).Data.Time));
+else
+    dt=0;
+end
 
 start_time=nan(1,length(surv_data_cell));
 
@@ -50,14 +54,14 @@ for i_cell=1:length(surv_data_cell)
         
         for isame=1:length(idx_same)
             
-            if (surv_data_cell{idx_same(isame)}.StartTime<=surv_data_cell{i_cell}.EndTime+dt*5)&&(surv_data_cell{idx_same(isame)}.StartTime>=surv_data_cell{i_cell}.EndTime)
+            if (surv_data_cell{idx_same(isame)}.StartTime<=surv_data_cell{i_cell}.EndTime+dt*10)&&(surv_data_cell{idx_same(isame)}.StartTime>=surv_data_cell{i_cell}.EndTime)
                 surv_data_cell{i_cell}.EndTime=surv_data_cell{idx_same(isame)}.EndTime;
                 surv_data_cell{idx_same(isame)}=[];
                 str_surv_data_cell{idx_same(isame)}=[];
                 continue;
             end
             
-            if (surv_data_cell{idx_same(isame)}.EndTime>=surv_data_cell{i_cell}.StartTime-dt*5)&&surv_data_cell{idx_same(isame)}.EndTime<=surv_data_cell{i_cell}.StartTime
+            if (surv_data_cell{idx_same(isame)}.EndTime>=surv_data_cell{i_cell}.StartTime-dt*10)&&surv_data_cell{idx_same(isame)}.EndTime<=surv_data_cell{i_cell}.StartTime
                 surv_data_cell{i_cell}.StartTime=surv_data_cell{idx_same(isame)}.StartTime;
                 surv_data_cell{idx_same(isame)}=[];
                 str_surv_data_cell{idx_same(isame)}=[];

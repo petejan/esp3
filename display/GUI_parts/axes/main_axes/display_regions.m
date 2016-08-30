@@ -92,7 +92,7 @@ for iax=1:length(main_axes_tot)
         end
         
         
-        reg_plot=gobjects(2);
+        reg_plot=gobjects(1,2);
         cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
         cdata(:,:,1)=col(1);
         cdata(:,:,2)=col(2);
@@ -137,7 +137,7 @@ for iax=1:length(main_axes_tot)
         
         reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
         
-        if main_axes==axes_panel_comp.main_axes
+            if main_axes==axes_panel_comp.main_axes
             create_region_context_menu(reg_plot,main_figure,reg_curr);
         end
         

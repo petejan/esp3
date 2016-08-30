@@ -87,7 +87,7 @@ if ~isequal(Filename_cell, 0)
                         vec_freq=vec_freq_tot(select);
                     end
                 else
-                    vec_freq=[];
+                    vec_freq=vec_freq_temp;
                 end
             else
                 vec_freq=[];

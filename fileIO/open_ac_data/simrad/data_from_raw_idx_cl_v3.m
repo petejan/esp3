@@ -57,7 +57,7 @@ end
 if isempty(Frequencies)
     idx_freq=(1:length(freq))';
 else
-    [~,~,idx_freq] = intersect(Frequencies,freq);
+    [~,~,idx_freq] = intersect(Frequencies,freq,'stable');
 end
 
 if isempty(idx_freq)
@@ -71,8 +71,8 @@ CIDs_freq=CIDs(idx_freq);
 trans_obj(length(CIDs_freq))=transceiver_cl();
 
 if p.Results.GPSOnly>0
-    nb_pings=0;
-    nb_samples=0;
+    nb_pings=zeros(1,length(CIDs_freq));
+    nb_samples=zeros(1,length(CIDs_freq));
 else
     nb_pings=idx_raw_obj.get_nb_pings_per_channels();
     nb_pings=nb_pings(idx_freq);
@@ -129,10 +129,11 @@ fid=fopen(filename,'r');
 
 for idg=1:length(idx_raw_obj.type_dg)
     pos=ftell(fid);
-    
+
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'
             %disp(dgType);
+
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             t_line=(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char','l'))';
             t_line=deblank(t_line);
@@ -237,7 +238,7 @@ for idg=1:length(idx_raw_obj.type_dg)
             dgTime=idx_raw_obj.time_dg(idg);
             channelID = (fread(fid,128,'*char', 'l')');
             idx = find(strcmp(deblank(CIDs_freq),deblank(channelID)));
-            
+
             
             if isempty(idx)
                 fseek(fid, idx_raw_obj.len_dg(idg) - HEADER_LEN -128 , 0);
@@ -385,7 +386,7 @@ if p.Results.GPSOnly==0
             FreqEnd=(trans_obj(i).Params.FrequencyEnd(1));
             FreqCenter=(FreqStart+FreqEnd)/2;
             alpha= sw_absorption(FreqCenter/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
-            trans_obj(i).Params.Absorption=alpha;
+            trans_obj(i).Params.Absorption=alpha*ones(1,size(curr_data.power,2));
         end
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);
@@ -400,6 +401,7 @@ if p.Results.GPSOnly==0
             'Time',double(data.pings(i).time),...
             'Number',[double(data.pings(i).number(1)) double(data.pings(i).number(end))],...
             'MemapName',curr_name);
+        clear curr_data;
     end
     
 else

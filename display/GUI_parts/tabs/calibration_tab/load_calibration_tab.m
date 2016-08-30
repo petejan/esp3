@@ -75,7 +75,7 @@ new_abs=str2double(get(calibration_tab_comp.att,'string'));
 if~isnan(new_abs)&&new_abs>0&&new_abs<100
     layer.Transceivers(idx_freq).apply_absorption(new_abs/1e3)
 end
-set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption*1e3,'%.2f'));
+set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.2f'));
 
 loadEcho(main_figure);
 end

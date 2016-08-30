@@ -126,9 +126,15 @@ order_axes(main_figure);
             x_lim=[x_min x_max];
             y_lim=[y_min y_max];
         end
+        patch_obj=mini_ax_comp.patch_obj;
+        new_vert=patch_obj.Vertices;
+        new_vert(:,1)=[x_lim(1) x_lim(2) x_lim(2) x_lim(1)];
+        new_vert(:,2)=[y_lim(1) y_lim(1) y_lim(2) y_lim(2)];
         
+        set(patch_obj,'Vertices',new_vert);
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         set(axes_panel_comp.main_axes,'XLim',x_lim,'YLim',y_lim);
+       
         reset_disp_info(main_figure);
         
     end

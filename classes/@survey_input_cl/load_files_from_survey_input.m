@@ -154,7 +154,7 @@ for isn=1:length(snapshots)
                 switch lower(fTypes{itype})
                     case 'asl'
                         
-                        max_load_days=7;
+                        max_load_days=1;
                         i_cell=1;
                         new_layers_sorted{i_cell}=[];
                         date_ori=dates_out(1);

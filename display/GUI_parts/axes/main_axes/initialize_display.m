@@ -7,7 +7,6 @@ algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3],'tag','algo_tab_pan
 load_display_tab(main_figure,opt_panel);
 display_tab_comp=getappdata(main_figure,'Display_tab');
 load_mini_axes(main_figure,display_tab_comp.display_tab,[0.05 0.1 0.75 0.45]);
-%load_mini_axes(main_figure,figure('units','normalized','position',[0.1 0.2 0.7 0.5]),[0 0 1 1]);
 load_regions_tab(main_figure,opt_panel);
 load_lines_tab(main_figure,opt_panel);
 load_calibration_tab(main_figure,opt_panel);

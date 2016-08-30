@@ -9,8 +9,8 @@ end
 IdxBad=find(bottom_obj.Tag==0);
 
 IdxBad(IdxBad<=0)=[];
-new_bot_sple=nan(size(pings));
-new_bot_r=nan(size(pings));
+new_bot_sple=nan(size(pings'));
+new_bot_r=nan(size(pings'));
 
 bot_sple=bottom_obj.Sample_idx;
 
@@ -38,7 +38,7 @@ end
 tag=ones(size(new_bot_r));
 tag(IdxBad)=0;
 new_bot_r(isnan(new_bot_r)&tag==1)=range(end);
-new_bot_sple(isnan(new_bot_sple)&tag==1)=length(range);
+new_bot_sple(isnan(new_bot_sple(:))&tag(:)==1)=length(range);
 obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Range',new_bot_r,'Sample_idx',new_bot_sple,'Tag',tag,'Shifted',bottom_obj.Shifted);
 
 end

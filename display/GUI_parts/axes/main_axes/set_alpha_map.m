@@ -85,6 +85,5 @@ if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
     create_context_menu_main_echo(main_figure);
 end
 
-order_stack(echo_ax);
 order_axes(main_figure);
 end
