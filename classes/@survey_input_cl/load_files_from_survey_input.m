@@ -54,11 +54,14 @@ for isn=1:length(snapshots)
                 if isfield(transects{itr},'Cal')%
                     cal_temp=transects{itr}.Cal{ifiles};
                     cal_temp.FREQ=options.Frequency;
-                    
-                    if ~isempty(find([cal(:).FREQ]==options.Frequency, 1))
-                        cal([cal(:).FREQ]==options.Frequency)=cal_temp;
+                    if isfield(cal_temp,'G0')
+                        if ~isempty(find([cal(:).FREQ]==options.Frequency, 1))
+                            cal([cal(:).FREQ]==options.Frequency)=cal_temp;
+                        else
+                            cal(length(cal)+1)=cal_temp;
+                        end
                     else
-                        cal(length(cal)+1)=cal_temp;
+                       cal=surv_input_obj.Cal; 
                     end
                 else
                     cal=surv_input_obj.Cal;
@@ -206,7 +209,7 @@ for isn=1:length(snapshots)
                 for i_freq=1:length(layer_new.Frequencies)
                     curr_freq=layer_new.Frequencies(i_freq);
                     
-                   switch layer_new.Filetype
+                   switch lower(layer_new.Filetype)
                        case {'ek60','ek80'}
                         if ~isempty(find([cal(:).FREQ]==curr_freq, 1))
                             layer_new.Transceivers(i_freq).apply_cw_cal(cal([cal(:).FREQ]==layer_new.Frequencies(i_freq)));
