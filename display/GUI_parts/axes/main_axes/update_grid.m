@@ -39,23 +39,34 @@ end
 idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
 idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
 
-
 set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on','YDir','reverse');
-xlabel_out=format_label(xdata_grid(idx_xticks),curr_disp.Xaxes);
-ylabel_out=format_label(ydata_grid(idx_yticks),'distance');
-set(axes_panel_comp.main_axes,'XtickLabel',xlabel_out,'YtickLabel',ylabel_out,'XTickLabelRotation',90,'box','on','visible','on');
 
-xticks=get(axes_panel_comp.main_axes,'XTick');
-yticks=get(axes_panel_comp.main_axes,'YTick');
+set(axes_panel_comp.vaxes,'YTick',ydata(idx_yticks));
+set(axes_panel_comp.haxes,'XTick',xdata(idx_xticks));
+axes_panel_comp.vaxes.YAxis.TickLabelFormat = '  %.0f m';
+set(axes_panel_comp.vaxes,'box','on');
+set(axes_panel_comp.haxes,'XTickLabelRotation',-90,'box','on');
+str_start='  ';
 
-xticks_label=get(axes_panel_comp.main_axes,'XtickLabel');
-yticks_label=get(axes_panel_comp.main_axes,'YtickLabel');
+switch lower(curr_disp.Xaxes)
+    case 'time'
+        h_fmt='  HH:MM:SS';
+        labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+    case 'number'
+        fmt=[str_start '%.0f'];
+        axes_panel_comp.haxes.XTickLabelMode='auto';
+        labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+    case 'distance'
+        axes_panel_comp.haxes.XTickLabelMode='auto';
+        fmt=[str_start '%.0f m'];
+       labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+    otherwise
+        axes_panel_comp.haxes.XTickLabelMode='auto';
+        fmt=[str_start '%.0f'];
+       labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+end
+set(axes_panel_comp.haxes,'xticklabels',labels);
 
-set(axes_panel_comp.vaxes,'YTick',yticks);
-set(axes_panel_comp.haxes,'XTick',xticks);
-
-set(axes_panel_comp.vaxes,'YtickLabel',yticks_label);
-set(axes_panel_comp.haxes,'XtickLabel',xticks_label,'XTickLabelRotation',90,'box','on');
 order_axes(main_figure);
 
 end

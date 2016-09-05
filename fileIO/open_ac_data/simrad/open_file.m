@@ -1,6 +1,9 @@
 function  open_file(~,~,file_id,main_figure)
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
+if isempty(file_id)
+    return;
+end
 
 if ~isempty(layer)
     [path_lay,~]=layer.get_path_files();
@@ -128,42 +131,44 @@ end
 
 
 if ~isequal(Filename, 0)
-    
-    [path_tmp,~,~]=fileparts(Filename{1});
-    
-    survey_struct=import_survey_data_xml(fullfile(path_tmp,'echo_logbook.xml'));
-    
-    if ~isempty(survey_struct)
-        
-        [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
-        
-        for ic=1:length(files_lay)
-            files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
-        end
-        
-        [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
-        
-        idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
-        
-        if ~isempty(idx_incomp)
-            choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
-                'Incomplete',...
-                'Yes','No',...
-                'Yes');
-            % Handle response
-            switch choice
-                case 'Yes'
-                    for ifile_miss=idx_incomp
-                        miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
-                        Filename=[Filename miss_files];
-                    end
-                case 'No'
-                otherwise
-                    return;
-            end
-            Filename=unique(Filename);
+    switch ftype
+        case {'EK60','EK80','dfile'} 
+            [path_tmp,~,~]=fileparts(Filename{1});
             
-        end
+            survey_struct=import_survey_data_xml(fullfile(path_tmp,'echo_logbook.xml'));
+            
+            if ~isempty(survey_struct)
+                
+                [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
+                
+                for ic=1:length(files_lay)
+                    files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
+                end
+                
+                [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
+                
+                idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
+                
+                if ~isempty(idx_incomp)
+                    choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
+                        'Incomplete',...
+                        'Yes','No',...
+                        'Yes');
+                    % Handle response
+                    switch choice
+                        case 'Yes'
+                            for ifile_miss=idx_incomp
+                                miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
+                                Filename=[Filename miss_files];
+                            end
+                        case 'No'
+                        otherwise
+                            return;
+                    end
+                    Filename=unique(Filename);
+                    
+                end
+            end
     end
     
     ping_start=1;

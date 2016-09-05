@@ -10,7 +10,6 @@ if found==0
     return
 end
 
-
 dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
 range=layer.Transceivers(idx_freq).Data.get_range();

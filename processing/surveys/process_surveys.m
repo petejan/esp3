@@ -1,4 +1,4 @@
-function [layers,surv_obj]=process_surveys(Filenames,varargin)
+function [layers_out,surv_obj]=process_surveys(Filenames,varargin)
 
 p = inputParser;
 
@@ -11,13 +11,14 @@ addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'tag','raw',@(x) ischar(x));
 
 parse(p,Filenames,varargin{:});
-layers=[];
+layers_out=p.Results.layers;
+
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
 %profile on
 for i=1:length(Filenames)
-    % try
+    try
         surv_obj=survey_cl();
         
         switch p.Results.origin
@@ -56,27 +57,29 @@ for i=1:length(Filenames)
         else
             fields_req={};
         end
-         %surv_obj.SurvInput.Options.Soundspeed=1450;
-         layers=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,'layers',p.Results.layers,'Fieldnames',fields_req);
-% 
-%     catch err
-%         disp(err.message);  
-%         warning('Problem loading files from %s\n',Filenames{i});
-%         continue;
-%     end
-        
-    % try
-        surv_obj.generate_output(layers);
-        [PathToFile,~,~]=fileparts(layers(end).Filename{1});
+        %surv_obj.SurvInput.Options.Soundspeed=1450;
+        [layers_new,layers_old]=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,'layers',layers_out,'Fieldnames',fields_req);
+ 
+    catch err
+        disp(err.message);
+        warning('Problem loading files from %s\n',Filenames{i});
+        continue;
+    end
+    try
+        surv_obj.generate_output(layers_new);
+        [PathToFile,~,~]=fileparts(layers_new(end).Filename{1});
         save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
         outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
         surv_obj.print_output(outputFile);
         fprintf(1,'Results save to %s \n',outputFile);
-         
-%     catch err
-%         disp(err.message);
-%         warning('Could not process survey described in file %s\n',Filenames{i});
-%     end
+        
+        layers_out=[layers_old layers_new];
+        
+    catch err
+        disp(err.message);
+        warning('Could not process survey described in file %s\n',Filenames{i});
+    end
+    
 end
 % profile off;
 % profile viewer;

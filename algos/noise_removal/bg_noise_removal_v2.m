@@ -58,7 +58,6 @@ w_filt=nanmin(p.Results.HorzFilt,size(power,2));
 noise_thr=p.Results.NoiseThr;
 SNR_thr=p.Results.SNRThr;
 
-
 power_filt=filter2_perso(ones(h_filt,w_filt),power);
 
 % idx_valid=(power>0);
@@ -75,32 +74,21 @@ power_noise=10.^(power_noise_db/10);
 power_unoised=power-power_noise;
 power_unoised(power_unoised<=0)=nan;
 
-[Sp,Sv]=convert_power(power,range,c,alpha,t_eff,double(ptx),lambda,gain,eq_beam_angle,sacorr);  
-[Sp_noise,Sv_noise]=convert_power(power_noise,range,c,alpha,t_eff,double(ptx),lambda,gain,eq_beam_angle,sacorr);
 
+[sp,sv]=convert_power_lin(power,range,c,alpha,t_eff,double(ptx),lambda,gain,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);  
+[sp_noise,sv_noise]=convert_power_lin(power_noise,range,c,alpha,t_eff,double(ptx),lambda,gain,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
 
-% [Sp_unoised,Sv_unoised]=convert_power(power_unoised,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr);
-
-Sp_unoised_lin=(10.^(Sp/10)-10.^(Sp_noise/10));
+Sp_unoised_lin=sp-sp_noise;
 Sp_unoised_lin(Sp_unoised_lin<=0)=nan;
 Sp_unoised=10*log10(Sp_unoised_lin);
 
-Sv_unoised_lin=(10.^(Sv/10)-10.^(Sv_noise/10));
+
+Sv_unoised_lin=sv-sv_noise;
 Sv_unoised_lin(Sv_unoised_lin<=0)=nan;
 Sv_unoised=10*log10(Sv_unoised_lin);
 
 
-% figure();
-% plot(range,Sv(:,200),'.-b');
-% hold on
-% plot(range,Sv_noise(:,200),'.-r');
-% plot(range,Sv_unoised(:,200),'.-k');
-% grid on;
-% xlabel('Range (m)')
-% ylabel('Sv (dB)')
-
-
-SNR=Sv_unoised-Sv_noise;
+SNR=Sv_unoised-pow2db_perso(sv_noise);
 power_unoised(SNR<SNR_thr)=0;
 Sp_unoised(SNR<SNR_thr)=-999;
 Sv_unoised(SNR<SNR_thr)=-999;

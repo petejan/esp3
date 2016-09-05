@@ -376,7 +376,7 @@ if p.Results.GPSOnly==0
                 end
                 
             case 'GPT'
-                curr_data.power=single(db2pow_perso(data.pings(i).power));
+                curr_data.power=db2pow_perso(single(data.pings(i).power));
                 curr_data.acrossphi=single(data.pings(i).athwartship_e);
                 curr_data.alongphi=single(data.pings(i).alongship_e);
         end
@@ -401,6 +401,7 @@ if p.Results.GPSOnly==0
             'Time',double(data.pings(i).time),...
             'Number',[double(data.pings(i).number(1)) double(data.pings(i).number(end))],...
             'MemapName',curr_name);
+        trans_obj(i).setBottom([]);
         clear curr_data;
     end
     

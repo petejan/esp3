@@ -172,7 +172,7 @@ for i_cell=1:length(Filename_cell)
         
         data_struct.sv = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(20*log10(range)+2*params_obj.Absorption*range,1,nb_pings) - 10*log10(c* config_obj.PulseLength/2)-config_obj.EquivalentBeamAngle;
         data_struct.sp = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(40*log10(range)+2*params_obj.Absorption*range,1,nb_pings);
-        
+        data_struct.power=remove_TVG_from_Sp(data_struct.sp,range,params_obj.Absorption);
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(data_struct,dir_data,{});
         

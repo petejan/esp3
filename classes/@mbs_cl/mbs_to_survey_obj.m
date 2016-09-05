@@ -50,25 +50,43 @@ survey_in_obj.Options.Absorption=mbs_obj.Header.default_absorption;
 
 survey_in_obj.Options.FrequenciesToLoad=survey_in_obj.Options.Frequency;
 
-snap_numbers=unique(mbs_obj.Input.snapshot);
-snapshots=cell(1,length(snap_numbers));
-for isnap=1:length(snap_numbers)
-    snap_num=snap_numbers(isnap);
+
+switch p.Results.type
+    case 'raw'
+        folders=mbs_obj.Input.rawDir;
+    case 'crest'
+        folders=mbs_obj.Input.crestDir;
+end
+
+[folders_unique,~,folder_vec_num]=unique(folders);
+
+mat_snap_data=[mbs_obj.Input.snapshot;folder_vec_num']';
+
+[snap_numbers,unique_snap,snap_ids]=unique(mat_snap_data,'rows');
+
+snapshots=cell(1,length(unique_snap));
+
+for isnap=1:size(snap_numbers,1)
+    snap_num=snap_numbers(isnap,1);
+    snap_curr.Folder=folders_unique{snap_numbers(isnap,2)};
     snap_curr.Number=snap_num;
-    idx_snap=find(snap_num==mbs_obj.Input.snapshot);
+    
+    idx_snap=find(snap_ids==isnap);
+    
     switch p.Results.type
         case 'raw'
             snap_curr.Folder=mbs_obj.Input.rawDir{idx_snap(1)};
         case 'crest'
             snap_curr.Folder=mbs_obj.Input.crestDir{idx_snap(1)};
     end
-    
+    snap_curr.Cal=mbs_obj.Input.calRaw{idx_snap(1)};
+    snap_curr.Cal.FREQ=38000;
     stratum_names=unique(mbs_obj.Input.stratum(idx_snap));
     stratum=cell(1,length(stratum_names));
     for istrat=1:length(stratum_names)
         strat_name=stratum_names{istrat};
         strat_curr.Name=strat_name;
-        
+        strat_curr.Cal=[];
         idx_strat=intersect(idx_snap,find(strcmp(strat_name,mbs_obj.Input.stratum)));
         trans_numbers=unique(mbs_obj.Input.transect(idx_strat));
         transects=cell(1,length(trans_numbers));
@@ -77,7 +95,7 @@ for isnap=1:length(snap_numbers)
             trans_curr.number=trans_num;
             
             idx_trans=intersect(idx_strat,find(mbs_obj.Input.transect==trans_num));
-            
+            idx_trans=idx_trans(:)';
             bot_curr.ver=1;
             trans_curr.Bottom=bot_curr;
             trans_curr.files={};
@@ -91,9 +109,11 @@ for isnap=1:length(snap_numbers)
                     trans_curr.files=mbs_obj.Input.rawFileName(idx_trans);
                     trans_curr.EsError=mbs_obj.Input.EsError(idx_trans);
                     trans_curr.Cal=mbs_obj.Input.calRaw(idx_trans);
+                   
                     i_ori=0;
                     for sub_i_trans=idx_trans
                         i_ori=i_ori+1;
+                        trans_curr.Cal{i_ori}.FREQ=38000;
                         trans_curr.OriginCrest{i_ori}=fullfile(mbs_obj.Input.crestDir{sub_i_trans},sprintf('d%07d', mbs_obj.Input.dfileNum(sub_i_trans)));
                     end
                 case 'crest'

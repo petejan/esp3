@@ -63,6 +63,7 @@ range=trans_obj.Data.get_range();
 dist_pings=trans_obj.GPSDataPing.Dist;
 
 Bottom=trans_obj.Bottom.Range;
+Bottom=Bottom(:)';
 if isempty(Bottom)
     Bottom=ones(1,nb_pings)*range(end);
 end

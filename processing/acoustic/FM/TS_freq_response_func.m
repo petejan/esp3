@@ -14,9 +14,6 @@ r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
 
 
-xdata=get(axes_panel_comp.main_echo,'XData');
-ydata=get(axes_panel_comp.main_echo,'YData');
-
 f_vec_save=[];
 
 TS_f=[];
@@ -24,8 +21,7 @@ TS_f=[];
 [cal_path,~,~]=fileparts(layer.Filename{1});
 
 [~,idx_sort]=sort(layer.Frequencies);
-angle_fig=figure();
-hold on;
+
 leg_fig=cell(1,length(idx_sort));
 i_leg=1;
 
@@ -41,25 +37,13 @@ for uui=idx_sort
     
     
     Sp=layer.Transceivers(uui).Data.get_datamat('sp');
-    AcrossAngle=layer.Transceivers(uui).Data.get_datamat('acrossangle');
-    AlongAngle=layer.Transceivers(uui).Data.get_datamat('alongangle');
-    
-    
-    
+
+
     Sp_red=Sp(idx_r,idx_pings);
     
     [Sp_max,idx_peak]=nanmax(Sp_red,[],1);
     idx_peak=idx_peak+idx_r(1)-1;
-    [x_along,y_across,~]=angles_to_pos_v3(range(idx_peak),AlongAngle(idx_peak+(idx_pings-1)*size(AlongAngle,1)),AcrossAngle(idx_peak+(idx_pings-1)*size(AlongAngle,1)),0,0,0,0,0,0,0,0);
-    
-    figure(angle_fig);
-    plot(x_along,y_across,'linewidth',2);
-    
-%     if idx_freq==uui
-%         axes(ah);
-%         hold on;
-%         plot(xdata(idx_pings),ydata(idx_peak),'color','r','linewidth',2);
-%     end
+
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
         
@@ -75,8 +59,10 @@ for uui=idx_sort
         
         
         for kk=1:length(idx_pings)
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),cal);
+            %[Sp_f_old(:,kk),Compensation_f_old(:,kk),f_vec_old(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),cal);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,cal);
         end
+
         TS_f=[TS_f; Sp_f+Compensation_f];
         
         f_vec_save=[f_vec_save; f_vec(:,1)];
@@ -98,11 +84,7 @@ for uui=idx_sort
     end
 end
 
-figure(angle_fig);
-grid on;
-xlabel('Along Distance(m)');
-ylabel('Across Distance(m)');
-legend(leg_fig);
+
 
 
 if ~isempty(f_vec_save)
@@ -120,7 +102,6 @@ if ~isempty(f_vec_save)
     plot(f_vec_save/1e3,TS_f,'b','linewidth',0.2);
     hold on;
     plot(f_vec_save/1e3,TS_f_mean,'r','linewidth',2)
-    plot(f_vec_save/1e3,10*log10(filter2_perso(ones(1,nanmin(10,length(f_vec_save))),10.^(TS_f_mean/10))),'k','linewidth',2)
     grid on;
     xlabel('kHz')
     ylabel('TS(dB)')

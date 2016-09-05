@@ -4,7 +4,12 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
+    dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+else
+    dist=0;
+end
+
 list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 if isempty(idx_reg)

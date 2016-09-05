@@ -32,9 +32,11 @@ classdef sub_ac_data_cl < handle
   
            [~,obj.Type]=init_cax(obj.Fieldname);
             obj.Memap={};
+
             for icell=1:length(data)
                 if ~isempty(data{icell})
                     curr_name=[memapname{icell} field '.bin'];
+                   
                     fileID = fopen(curr_name,'w+');
                     while fileID==-1
                         continue;
@@ -44,12 +46,13 @@ classdef sub_ac_data_cl < handle
                     fclose(fileID);
                     
                     obj.Memap{icell} = memmapfile(curr_name,...
-                        'Format',format,'repeat',1,'writable',false);
+                        'Format',format,'repeat',1,'writable',true);
 
                 end
             end
             
 
+            
         end
 
     end

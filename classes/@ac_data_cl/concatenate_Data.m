@@ -16,6 +16,7 @@ for uuu=1:length(ff_1)
     if found
         new_sub_data=[new_sub_data concatenate_SubData(data_1.SubData(uuu),data_2.SubData(idx))];
     else
+        data_1.remove_sub_data(ff_1{uuu});
         warning('Cannot find field. This field will not be added.');
     end
 end

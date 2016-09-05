@@ -26,6 +26,7 @@ addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'vert_filt',10,check_filt);
 addParameter(p,'horz_filt',50,check_filt);
 addParameter(p,'shift_bot',0,check_shift_bot);
+addParameter(p,'rm_rd',0);
 parse(p,trans_obj,varargin{:});
 
 if p.Results.denoised>0
@@ -55,18 +56,18 @@ Np=round(PulseLength*Fs);
 if r_max==Inf
     idx_r_max=nb_samples;
 else
-    [~,idx_r_max]=nanmin(abs(r_max-Range));
+    [~,idx_r_max]=nanmin(abs(r_max+p.Results.vert_filt-Range));
     idx_r_max=nanmin(idx_r_max,nb_samples);
     idx_r_max=nanmax(idx_r_max,10);
 end
 
-[~,idx_r_min]=nanmin(abs(r_min-Range));
+[~,idx_r_min]=nanmin(abs(r_min-p.Results.vert_filt-Range));
 idx_r_min=nanmax(idx_r_min,10);
 idx_r_min=nanmin(idx_r_min,nb_samples);
 
 RingDown=Sv(3,:);
 Sv(1:idx_r_min,:)=nan;
-
+Sv(idx_r_max:end,:)=nan;
 
 %First let's find the bottom...
 
@@ -79,13 +80,16 @@ else
     b_filter=ceil(nanmin(15,nb_pings/10));
     %b_filter=nb_pings;
 end
-
-idx_ringdown=analyse_ringdown(RingDown);
+if p.Results.rm_rd
+    idx_ringdown=analyse_ringdown(RingDown);
+else
+    idx_ringdown=ones(size(RingDown));
+end
 
 BS=bsxfun(@plus,Sv,10*log10(Range));
 
 BS(isnan(BS))=-999;
-BS_mask_ori=((filter2(ones(3,3),BS>=-999,'same'))<=2);
+BS_mask_ori=sparse(filter2(ones(3,3),BS>=-999,'same')<=2);
 BS(BS_mask_ori)=-999;
 BS_ori=BS;
 
@@ -94,36 +98,37 @@ BS(:,~idx_ringdown)=nan;
 BS_lin=10.^(BS/10);
 BS_lin(isnan(BS_lin))=0;
 
+BS_lin_red=BS_lin(idx_r_min:idx_r_max,:);
+
   
 filter_fun = @(block_struct) nanmean(block_struct.data(:));
-BS_filtered_bot_lin=blockproc(BS_lin,[heigh_b_filter b_filter],filter_fun);
+BS_filtered_bot_lin=blockproc(BS_lin_red,[heigh_b_filter b_filter],filter_fun);
 [nb_samples_red,~]=size(BS_filtered_bot_lin);
-BS_filtered_bot_lin(1:floor(idx_r_min/nb_samples*nb_samples_red),:)=nan;
-BS_filtered_bot_lin(ceil(idx_r_max/nb_samples*nb_samples_red):end,:)=nan;
+
 BS_filtered_bot=10*log10(BS_filtered_bot_lin);
 BS_filtered_bot_lin(isnan(BS_filtered_bot_lin))=0;
-
 
 cumsum_BS=cumsum((BS_filtered_bot_lin));
 cumsum_BS(cumsum_BS<0)=nan;
 diff_cum_BS=diff(10*log10(cumsum_BS));
-diff_cum_BS(1:nanmin(floor(idx_r_min/heigh_b_filter)+1,nb_samples_red),:)=0;
 diff_cum_BS(isnan(diff_cum_BS))=0;
 
 [~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS);
 
-idx_start=nanmax(idx_max_diff_cum_BS,idx_r_min/heigh_b_filter);
-idx_end=nanmin(idx_max_diff_cum_BS+3,idx_r_max/heigh_b_filter);
+idx_start=idx_max_diff_cum_BS-1;
+idx_end=idx_max_diff_cum_BS+3;
 
-Bottom_region=bsxfun(@ge,(1:nb_samples_red)',idx_start)&bsxfun(@le,(1:nb_samples_red)',idx_end);
+Bottom_region=sparse(bsxfun(@ge,(1:nb_samples_red)',idx_start)&bsxfun(@le,(1:nb_samples_red)',idx_end));
 
-Max_BS_reg=bsxfun(@gt,BS_filtered_bot,nanmax(BS_filtered_bot)+thr_echo);
-Bottom_region=find_cluster((Bottom_region&BS_filtered_bot>=thr_bottom&Max_BS_reg),1);
+Max_BS_reg=sparse(bsxfun(@gt,BS_filtered_bot,nanmax(BS_filtered_bot)+thr_echo));
+
+Bottom_region=find_cluster(sparse(Bottom_region>0&BS_filtered_bot>=thr_bottom|Max_BS_reg),1);
 
 Bottom_region=ceil(filter2_perso(ones(1,3),Bottom_region));
-
-Bottom_region=imresize(Bottom_region,[nb_samples nb_pings],'nearest');
-
+Bottom_region_red=imresize(Bottom_region,size(BS_lin_red))>0.1;
+Bottom_region=zeros(size(BS_lin));
+Bottom_region(idx_r_min:idx_r_max,:)=Bottom_region_red;
+%Bottom_region=sparse(Bottom_region);
 
 n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
 Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
@@ -139,8 +144,6 @@ idx_bottom(~Bottom_region)=nan;
 idx_bottom(end,(nansum(idx_bottom)==0))=nb_samples;
 
 
-
-Bottom_region(Bottom_region==0)=nan;
 [I_bottom,J_bottom]=find(~isnan(idx_bottom));
 
 I_bottom(I_bottom>nb_samples)=nb_samples;
@@ -156,14 +159,13 @@ Double_bottom_region=~isnan(Double_bottom);
 %%%%%%%%%%%%%%%%%%%%%Bottom detection and BS analysis%%%%%%%%%%%%%%%%%%%%%%
 
 
-BS_lin_norm=bsxfun(@rdivide,BS_lin,nansum(BS_lin));
+BS_lin_norm=bsxfun(@rdivide,Bottom_region.*BS_lin,nansum(Bottom_region.*BS_lin));
 
-Bottom_region_bis=Bottom_region;
-Bottom_region_bis(isnan(Bottom_region))=0;
+
 BS_lin_norm_bis=BS_lin_norm;
 BS_lin_norm_bis(isnan(BS_lin_norm))=0;
-BS_lin_cumsum=(cumsum(Bottom_region_bis.*BS_lin_norm_bis,1)./repmat(nansum(Bottom_region.*BS_lin_norm_bis),size(Bottom_region,1),1));
-[~,Bottom_temp]=nanmin((abs(BS_lin_cumsum-0.01)));
+BS_lin_cumsum=(cumsum(Bottom_region.*BS_lin_norm_bis,1)./repmat(sum(Bottom_region.*BS_lin_norm_bis),size(Bottom_region,1),1));
+[~,Bottom_temp]=min((abs(BS_lin_cumsum-0.01)));
  
 Bottom_temp_2=nanmin(idx_bottom);
 Bottom=nanmax(Bottom_temp,Bottom_temp_2);
@@ -199,6 +201,7 @@ Bottom(Bottom==1)=nan;
 Bottom(nanmin(idx_bottom)>=nanmax(1,nb_samples-round(heigh_b_filter)/2))=nan;
 
 BS_filter=(20*log10(filter2_perso(ones(4*Np,1),10.^(BS/20)))).*Bottom_region;
+BS_filter(Bottom_region==0)=nan;
 
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
@@ -209,7 +212,7 @@ if p.Results.shift_bot>0
 end
 
 
-%
+
 % profile off;
 % profile viewer;
 

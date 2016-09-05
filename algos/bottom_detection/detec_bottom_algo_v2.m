@@ -1,4 +1,4 @@
-function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v3(trans_obj,varargin)
+function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(trans_obj,varargin)
 disp('Detecting Bottom.');
 %profile on;
 %Parse Arguments

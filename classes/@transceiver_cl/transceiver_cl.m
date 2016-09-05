@@ -84,7 +84,7 @@ classdef transceiver_cl < handle
                end
             end
             
-            
+            obj.setBottom(p.Results.Bottom);
         end
         
         

@@ -34,13 +34,15 @@ for k = 1:length(regionSumVbscf.snapshot)
                 end
         end
     end
-    for ik=1:length(regionSumVbscf.vbscf_values{k}(:))
-        if regionSumVbscf.vbscf_values{k}(ik)==0||isnan(regionSumVbscf.vbscf_values{k}(ik))
+    vb=regionSumVbscf.vbscf_values{k}';
+    vb=vb(:);
+    for ik=1:length(vb)
+        if vb(ik)==0||isnan(vb(ik))
             precslice_abscf='%.0f,';
             str=[str sprintf(precslice_abscf, 0)];
         else
             precslice_abscf='%.5e,';
-            str=[str sprintf(precslice_abscf, regionSumVbscf.vbscf_values{k}(ik))];
+            str=[str sprintf(precslice_abscf, vb(ik))];
         end
         
     end

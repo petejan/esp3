@@ -13,7 +13,7 @@ elseif ~isempty(obj.Heading)
     heading_pings=resample_data_v2(obj.Heading,obj.Time,time,'Type','Angle');
     obj_out=attitude_nav_cl('Heading',heading_pings,'Time',time);
 else
-    obj_out=attitude_nav_cl.empty();
+    obj_out=attitude_nav_cl('Time',time);
 
 end
         

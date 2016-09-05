@@ -21,7 +21,7 @@ for i=1:nb_child
         case 'survey'
            Infos=get_node_att(xml_struct.Children(i));
         case 'cal'
-            nb_cal=nb_cal+1;
+           nb_cal=nb_cal+1;
            cal_temp=get_node_att(xml_struct.Children(i));
            if ~isfield(cal_temp,'FREQ')
                cal_temp.FREQ=Options.Frequency;
@@ -120,10 +120,16 @@ for iu=1:length(trans_nodes)
     if isfield(trans_curr,'files')
         trans_curr.files=strsplit(trans_curr.files,';');
     end
+    cals=get_childs(trans_nodes(iu),'cal');
+    Cal=[];
+    for ii=1:length(cals)
+        cal_temp=get_node_att(cals(ii));
+        Cal=[Cal cal_temp];
+    end
+    trans_curr.Cal=Cal;
     transects{iu}=trans_curr;
 end
     
-
 end
 
 function snapshot_struct=get_snapshot(node)
@@ -131,12 +137,28 @@ snapshot_struct.Number=get_att(node,'number');
 snapshot_struct.Folder=get_att(node,'folder');
 stratum=get_childs(node,'stratum');
 snapshot_struct.Stratum=cell(1,length(stratum));
+cals=get_childs(node,'cal');
+Cal=[];
+for i=1:length(cals)
+    cal_temp=get_node_att(cals(i));
+    Cal=[Cal cal_temp];
+end
+snapshot_struct.Cal=Cal;
+
 for i=1:length(stratum)
     strat_curr.Name=get_att(stratum(i),'name');
     strat_curr.Transects=get_transects(stratum(i));
     if isnumeric(strat_curr.Name)
            strat_curr.Name=num2str(strat_curr.Name,'%.0f');
     end
+    
+    cals=get_childs(stratum(i),'cal');
+    Cal=[];
+    for ii=1:length(cals)
+        cal_temp=get_node_att(cals(ii));
+        Cal=[Cal cal_temp];
+    end
+    strat_curr.Cal=Cal;
     snapshot_struct.Stratum{i}=strat_curr;
 end
 

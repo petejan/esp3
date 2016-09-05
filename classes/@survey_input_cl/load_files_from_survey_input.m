@@ -1,4 +1,4 @@
-function layers=load_files_from_survey_input(surv_input_obj,varargin)
+function [layers_new,layers]=load_files_from_survey_input(surv_input_obj,varargin)
 
 p = inputParser;
 
@@ -16,25 +16,30 @@ infos=surv_input_obj.Infos;
 options=surv_input_obj.Options;
 regions_wc=surv_input_obj.Regions_WC;
 algos=surv_input_obj.Algos;
-cal=surv_input_obj.Cal;
+
 
 snapshots=surv_input_obj.Snapshots;
-u=0;
+cal_opt=surv_input_obj.Cal;
 layers=p.Results.layers;
-
+layers_new=[];
 for isn=1:length(snapshots)
+    
+    
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
+    
+    cal_snap=get_cal_node(cal_opt,snapshots{isn});
     
     for ist=1:length(stratum)
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
+        cal_strat=get_cal_node(cal_snap,stratum{ist});
         for itr=1:length(transects)
             
             filenames_cell=transects{itr}.files;
             trans_num=transects{itr}.number;
-            
-            
+            cal=get_cal_node(cal_strat,transects{itr});
+  
             fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             if ~iscell(filenames_cell)
                 filenames_cell={filenames_cell};
@@ -43,7 +48,7 @@ for isn=1:length(snapshots)
             bot=transects{itr}.Bottom;
             layers_in=[];
             fType=cell(1,length(filenames_cell));
-
+            
             for ifiles=1:length(filenames_cell)
                 fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                 if isfield(transects{itr},'EsError')
@@ -51,21 +56,7 @@ for isn=1:length(snapshots)
                 else
                     es_offset=options.Es60_correction;
                 end
-                if isfield(transects{itr},'Cal')%
-                    cal_temp=transects{itr}.Cal{ifiles};
-                    cal_temp.FREQ=options.Frequency;
-                    if isfield(cal_temp,'G0')
-                        if ~isempty(find([cal(:).FREQ]==options.Frequency, 1))
-                            cal([cal(:).FREQ]==options.Frequency)=cal_temp;
-                        else
-                            cal(length(cal)+1)=cal_temp;
-                        end
-                    else
-                       cal=surv_input_obj.Cal; 
-                    end
-                else
-                    cal=surv_input_obj.Cal;
-                end
+                
                 
                 if ~isempty(layers)
                     [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
@@ -88,7 +79,7 @@ for isn=1:length(snapshots)
                 if found_lay>0
                     layers_in=[layers_in layers(idx_lays(1))];
                     fType{ifiles}=layers(idx_lays(1)).Filetype;
-                    layers(idx_lays(1))=[];     
+                    layers(idx_lays(1))=[];
                     continue;
                 else
                     if exist(fileN,'file')==2
@@ -124,8 +115,10 @@ for isn=1:length(snapshots)
                                 new_lay.set_survey_data(surv);
                                 
                                 switch lower(fType{ifiles})
-                                    case {'ek60','ek80','asl'}
+                                    case {'ek60','ek80'}
                                         new_lay.update_echo_logbook_file();
+                                        new_lay.write_reg_to_reg_xml();
+                                        new_lay.write_bot_to_bot_xml()
                                 end
                                 
                         end
@@ -145,7 +138,7 @@ for isn=1:length(snapshots)
                 continue;
             end
             fType_in=cell(1,length(layers_in));
-             dates_out=nan(1,length(layers_in));
+            dates_out=nan(1,length(layers_in));
             for ilay_in=1:length(layers_in)
                 fType_in{ilay_in}=layers_in(ilay_in).Filetype;
                 dates_out(ilay_in)=layers_in(ilay_in).Transceivers(1).Data.Time(1);
@@ -201,21 +194,26 @@ for isn=1:length(snapshots)
             if length(layers_out_temp)>1
                 warning('Non continuous files in Snapshot %.0f Stratum %s Transect %.0f',snap_num,strat_name,trans_num);
             end
-            
+            i_cal=0;
             for i_lay=1:length(layers_out_temp)
                 layer_new=layers_out_temp(i_lay);
                 [idx_freq,~]=layer_new.find_freq_idx(options.Frequency);
-                
+                i_cal=i_cal+length(layer_new.Filename);
+                if iscell(cal)
+                    cal_curr=cal{i_cal};
+                else
+                    cal_curr=cal; 
+                end
                 for i_freq=1:length(layer_new.Frequencies)
                     curr_freq=layer_new.Frequencies(i_freq);
                     
-                   switch lower(layer_new.Filetype)
-                       case {'ek60','ek80'}
-                        if ~isempty(find([cal(:).FREQ]==curr_freq, 1))
-                            layer_new.Transceivers(i_freq).apply_cw_cal(cal([cal(:).FREQ]==layer_new.Frequencies(i_freq)));
-                        else
-                            fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
-                        end
+                    switch lower(layer_new.Filetype)
+                        case {'ek60','ek80'}
+                            if ~isempty(find([cal_curr(:).FREQ]==curr_freq, 1))
+                                layer_new.Transceivers(i_freq).apply_cw_cal(cal_curr([cal_curr(:).FREQ]==layer_new.Frequencies(i_freq)));
+                            else
+                                fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                            end
                     end
                     
                     if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
@@ -232,8 +230,13 @@ for isn=1:length(snapshots)
                 
                 switch p.Results.origin
                     case 'xml'
-                        
-                        layer_new.load_echo_logbook();
+                        switch lower(layer_new.Filetype)
+                            case {'ek60','ek80'}
+                                layer_new.load_echo_logbook();
+                            case 'asl'
+                                surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
+                                layer_new.set_survey_data(surv);
+                        end
                         
                         if isfield(bot,'ver')
                             layer_new.load_bot_regs('reg_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
@@ -261,7 +264,7 @@ for isn=1:length(snapshots)
                                 for irewc=1:length(regions_wc)
                                     if isfield(regions_wc{irewc},'y_max')
                                         y_max=regions_wc{irewc}.y_max;
-                                    else 
+                                    else
                                         y_max=inf;
                                     end
                                     reg_wc=layer_new.Transceivers(idx_freq).create_WC_region(...
@@ -324,8 +327,7 @@ for isn=1:length(snapshots)
                 end
                 
                 
-                u=length(layers)+1;
-                layers(u)=layer_new;
+                layers_new=[layers_new layer_new];
             end
             clear layers_out_temp;
         end
@@ -334,11 +336,40 @@ for isn=1:length(snapshots)
     
 end
 
-if u==0
-    layers=[];
-end
+
 end
 
 
-
+function cal=get_cal_node(cal_ori,node)
+cal=cal_ori;
+if ~isempty(node.Cal)
+    cal_temp_cell=node.Cal;
+    if ~iscell(cal_temp_cell)
+        cal_temp_cell={cal_temp_cell};
+    end
+    cal=cell(1,length(cal_temp_cell));
+    
+    for icell=1:length(cal_temp_cell)
+        call_out_temp=[];
+        for ical=1:length(cal_temp_cell{icell})
+            cal_temp=cal_temp_cell{icell};
+            if ~isempty(cal_ori)
+                call_out_temp=cal_ori;
+                if ~isempty(find([call_out_temp(:).FREQ]==cal_temp(ical).FREQ, 1))
+                    call_out_temp([call_out_temp(:).FREQ]==cal_temp(ical).FREQ)=cal_temp(ical);
+                else
+                    call_out_temp(length(call_out_temp)+1)=cal_temp(ical);
+                end
+            else
+                call_out_temp=cal_temp;
+            end
+        end
+        cal{icell}=call_out_temp;
+    end
+    
+    if length(cal)==1
+        cal=cal{1};
+    end
+end
+end
 

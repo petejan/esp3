@@ -23,7 +23,7 @@ if ~isempty(gps_obj.Lat)
         obj=gps_data_cl();
     end
 else
-    obj=gps_data_cl.empty();
+    obj=gps_data_cl('Time',time);
 end
 
 end

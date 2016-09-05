@@ -38,10 +38,10 @@ for idx_freq=1:length(trans_obj)
 %         end
 %         
 
-        yc_1_temp=filter2((flipud(y_tx_matched)),s1,'full')/nansum(abs(y_tx_matched).^2); 
-        yc_2_temp=filter2((flipud(y_tx_matched)),s2,'full')/nansum(abs(y_tx_matched).^2); 
-        yc_3_temp=filter2((flipud(y_tx_matched)),s3,'full')/nansum(abs(y_tx_matched).^2); 
-        yc_4_temp=filter2((flipud(y_tx_matched)),s4,'full')/nansum(abs(y_tx_matched).^2); 
+        yc_1_temp=filter2((flipud(y_tx_matched)),s1,'full')/sum(abs(y_tx_matched).^2); 
+        yc_2_temp=filter2((flipud(y_tx_matched)),s2,'full')/sum(abs(y_tx_matched).^2); 
+        yc_3_temp=filter2((flipud(y_tx_matched)),s3,'full')/sum(abs(y_tx_matched).^2); 
+        yc_4_temp=filter2((flipud(y_tx_matched)),s4,'full')/sum(abs(y_tx_matched).^2); 
         
         
         yc_1=yc_1_temp(length(y_tx_matched):end,:);

@@ -10,10 +10,26 @@ else
 end
 subacdata_vec=[];
 
+
 for uuu=1:length(ff)
     if isfield(data_struct,ff{uuu})
         subacdata_vec=[subacdata_vec sub_ac_data_cl(ff{uuu},curr_name,data_struct.(ff{uuu}))];
     end
 end
 
+% 
+% format_test={};
+% 
+% fileID_test = fopen(curr_name,'w+');
+% for uuu=1:length(ff)
+%     if ~isempty(data_struct.(ff{uuu}))
+%         format_test=[format_test;{'single',size(data_struct.(ff{uuu})),ff{uuu}}];
+%         fwrite(fileID_test,single(data_struct.(ff{uuu})),'single');
+%     end
+% end
+% fclose(fileID_test);
+% memmap_test= memmapfile(curr_name,...
+%     'Format',format_test,'repeat',1,'writable',true);
+% 
+% disp('test');
 end

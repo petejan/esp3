@@ -1,16 +1,23 @@
 function setBottom(obj,bottom_obj)
 
+
+if isempty(obj.Data)
+    return;
+end
+
+if isempty(bottom_obj)
+    bottom_obj=bottom_cl();
+end
+
 range=obj.Data.get_range();
 pings=obj.Data.get_numbers();
 
-if isempty(bottom_obj)
-    return;
-end
 IdxBad=find(bottom_obj.Tag==0);
 
 IdxBad(IdxBad<=0)=[];
-new_bot_sple=nan(size(pings'));
-new_bot_r=nan(size(pings'));
+
+new_bot_sple=nan(size(pings));
+new_bot_r=nan(size(pings));
 
 bot_sple=bottom_obj.Sample_idx;
 
@@ -35,6 +42,7 @@ if ~isempty(bot_sple)
     
     new_bot_r(~isnan(new_bot_sple))=range(new_bot_sple(~isnan(new_bot_sple)));
 end
+
 tag=ones(size(new_bot_r));
 tag(IdxBad)=0;
 new_bot_r(isnan(new_bot_r)&tag==1)=range(end);

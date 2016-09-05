@@ -28,31 +28,31 @@ range=trans_obj.Data.get_range();
 
 switch trans_obj.Mode
     case 'FM'
-
-        [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
+        
+        [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
         
         trans_obj.Data.Range=[range(1) range(end)];
-
-            if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
-                [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr);
-                trans_obj.Data.add_sub_data('spunmatched',Sp_un);
-            end
-
+        
+        if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
+            [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff_cw,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
+            trans_obj.Data.add_sub_data('spunmatched',Sp_un);
+        end
+        
         
     case 'CW'
-
-        [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr);
+        
+        [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
         
         trans_obj.Data.Range=[range(1) range(end)];
         
 end
 
-    if any(strcmpi(p.Results.FieldNames,'sv'))||isempty(p.Results.FieldNames)
-        trans_obj.Data.add_sub_data('sv',Sv);
-    end
-    if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
-        trans_obj.Data.add_sub_data('sp',Sp);
-    end
+if any(strcmpi(p.Results.FieldNames,'sv'))||isempty(p.Results.FieldNames)
+    trans_obj.Data.add_sub_data('sv',Sv);
+end
+if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
+    trans_obj.Data.add_sub_data('sp',Sp);
+end
 
 
 end

@@ -40,7 +40,7 @@ min_axis=curr_disp.Cax(1);
 data=double(get(echo_im,'CData'));
 xdata=double(get(echo_im,'XData'));
 ydata=double(get(echo_im,'YData'));
-alpha_map=double(data>=min_axis);
+alpha_map=sparse(double(data>=min_axis));
 
 nb_pings=length(xdata);
 
@@ -79,7 +79,7 @@ end
 
 set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
 set(echo_ax,'CLim',curr_disp.Cax);
-set(echo_im,'AlphaData',double(alpha_map));
+set(echo_im,'AlphaData',alpha_map);
 
 if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
     create_context_menu_main_echo(main_figure);

@@ -26,12 +26,15 @@ strat_couple=unique([snap_vec;strat_vec_num']','rows');
 surv_out_obj=survey_output_cl(size(strat_couple,1),size(trans_triple,1),nansum(reg_nb_vec));
 snapshots=surv_in_obj.Snapshots;
 
+idx_lay_processed=[];
 i_trans=0;
 i_reg=0;
 for isn=1:length(snapshots)
+    
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
     fprintf('Integrating Snapshot %.0f:\n',snap_num);
+    
     for ist=1:length(stratum)
        
         strat_name=stratum{ist}.Name;
@@ -42,6 +45,8 @@ for isn=1:length(snapshots)
             trans_num=transects{itr}.number;
             idx_lay=find(trans_num==output.Transect&snap_num==output.Snapshot&strcmpi(strat_name,output.Stratum));
             fprintf('Transect %d\n',trans_num);
+            idx_lay=setdiff(idx_lay,idx_lay_processed);
+            idx_lay_processed=union(idx_lay_processed,idx_lay);
             if isempty(idx_lay)
                 warning('Could not find layers for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
                 continue;
@@ -72,39 +77,48 @@ for isn=1:length(snapshots)
             time_track=[];
             TS_mean_track=[];
             
-            layer_obj_tr=layers(output.Layer_idx(idx_lay(1)));
-            idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-            gps_tot=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
-            bot_tot=layer_obj_tr.Transceivers(idx_freq).Bottom;
-            
-            if length(idx_lay)>1
-                for i=2:length(idx_lay)
+                dist_tot=0;
+                timediff_tot=0;
+                nb_good_pings=0;
+                mean_bot_w=0;
+                mean_bot=nan(1,length(idx_lay));
+                av_speed=nan(1,length(idx_lay));
+                idx_good_pings=[];
+                iping0=0;
+                for i=1:length(idx_lay)
                     layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
                     idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-                    if layer_obj_tr.Transceivers(idx_freq).GPSDataPing.Time(1)> gps_tot.Time(end)
-                        bot_tot=concatenate_Bottom(bot_tot,layer_obj_tr.Transceivers(idx_freq).Bottom);
-                    else
-                        bot_tot=concatenate_Bottom(layer_obj_tr.Transceivers(idx_freq).Bottom,bot_tot);
-                    end
+                    bot_add=layer_obj_tr.Transceivers(idx_freq).Bottom;
                     gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
-                    gps_tot=concatenate_GPSData(gps_tot,gps_add);
+                    if i>1
+                        gps_tot=concatenate_GPSData(gps_tot,gps_add);
+                    else
+                        gps_tot=gps_add;
+                    end
                     
+                    gps_add.Long(gps_tot.Long>180)=gps_add.Long(gps_tot.Long>180)-360;
+                    idx_pings=1:length(gps_add.Time);
+                    idx_good_pings_add=intersect(idx_pings,find(bot_add.Tag(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
+                    dist_add=m_lldist([gps_add.Long(idx_good_pings_add(1)) gps_add.Long(idx_good_pings_add(end))],[gps_add.Lat(idx_good_pings_add(1)) gps_add.Lat(idx_good_pings_add(end))])/1.852;
+                    dist_tot=dist_tot+dist_add;
+                    timediff=(gps_add.Time(idx_good_pings_add(end))-gps_add.Time(idx_good_pings_add(1)))*24;
+                    timediff_tot=timediff_tot+timediff;
+                    nb_good_pings=nb_good_pings+length(idx_good_pings_add);
+                    mean_bot(i)=nanmean(bot_add.Range(idx_good_pings_add));
+                    mean_bot_w=mean_bot_w+mean_bot(i)*length(idx_good_pings_add);
+                    av_speed(i)=dist_add/timediff;
+                    idx_good_pings=union(idx_good_pings,idx_good_pings_add+iping0);
+                    iping0=length(idx_pings);
                 end
-            end
             
-            gps_tot.Long(gps_tot.Long>180)=gps_tot.Long(gps_tot.Long>180)-360;
-            
-            idx_pings=1:length(gps_tot.Time);
-            idx_good_pings=intersect(idx_pings,find(bot_tot.Tag(:)>0&gps_tot.Time(:)>=nanmin(output.StartTime(idx_lay(1)))&gps_tot.Time(:)<=nanmax(output.EndTime(idx_lay(end)))));
-            dist_tot=m_lldist([gps_tot.Long(idx_good_pings(1)) gps_tot.Long(idx_good_pings(end))],[gps_tot.Lat(idx_good_pings(1)) gps_tot.Lat(idx_good_pings(end))])/1.852;
-            timediff_tot=(gps_tot.Time(idx_good_pings(end))-gps_tot.Time(idx_good_pings(1)))*24;
+
             av_speed_tot=dist_tot/timediff_tot;
             
-            good_bot_tot=nanmean(bot_tot.Range(idx_good_pings));
+            good_bot_tot=mean_bot_w/nb_good_pings;
             
-            
+            ir=0;
             for ilay=idx_lay
-                
+                ir=ir+1;
                 layer_obj_tr=layers(output.Layer_idx(ilay));
                 idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
                 gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
@@ -207,7 +221,7 @@ for isn=1:length(snapshots)
                 end
                 
                 
-                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
+                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
                 %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
 
                 Output_echo=[Output_echo sliced_output];
@@ -233,12 +247,6 @@ for isn=1:length(snapshots)
                             finish_d = 0;
                     end
                     
-%                     dist = m_lldist([gps.Long(regCellInt.Ping_S(1)) gps.Long(regCellInt.Ping_E(end))],[gps.Lat(regCellInt.Ping_S(1)) gps.Lat(regCellInt.Ping_E(end))])/1.852;% get distance as esp2 does... Straigth line estimate
-%                     time_s = regCellInt.Time_S(1);
-%                     time_e = regCellInt.Time_E(end);
-%                     timediff = (time_e-time_s)*24;
-%                     
-%                     av_speed=dist/timediff;
 
                     surv_out_obj.regionsIntegrated.snapshot(i_reg)=snap_num;
                     surv_out_obj.regionsIntegrated.stratum{i_reg}=strat_name;
@@ -274,9 +282,9 @@ for isn=1:length(snapshots)
                     surv_out_obj.regionSum.slice_size(i_reg)=reg_curr.Cell_h;
                     surv_out_obj.regionSum.good_pings(i_reg)=length(ix_good);
                     surv_out_obj.regionSum.start_d(i_reg)= start_d;
-                    surv_out_obj.regionSum.mean_d(i_reg)=nanmean(good_bot_tot);%possibly mean_d
+                    surv_out_obj.regionSum.mean_d(i_reg)=mean_bot(ir);
                     surv_out_obj.regionSum.finish_d(i_reg)=finish_d;
-                    surv_out_obj.regionSum.av_speed(i_reg)=av_speed_tot;
+                    surv_out_obj.regionSum.av_speed(i_reg)=av_speed(ir);
                     surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_esp2));
                     surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2));%Abscf Region
                     surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;

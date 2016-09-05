@@ -15,42 +15,33 @@ u=0;
 if ~isempty(roll)
     u=u+1;
     h_fig(u)=figure('Name','Attitude','NumberTitle','off','tag','attitude');
-    ax(1)= axes();
-    axes(ax(1));
-    hold on;
-    plot(time,heave,'r');
-    ax(1).XColor = 'r';
-    ax(1).YColor = 'r';
-    ax1_pos = ax(1).Position; % position of first axes
+    ax= axes('nextplot','add');
+    yyaxis(ax,'left');
+    ax.YAxis(1).Color = 'r';
+    plot(ax,time,heave,'r');
     xlabel('Time(s)');
     ylabel('Heave (m)');
-    legend('Heave','Location','northwest')
-    legend('boxoff')
     
-    ax(2)= axes();
-    axes(ax(2));
-    plot(time,pitch,'k');
-    hold on;
-    plot(time,roll,'g');
-    legend('Pitch','Roll','Location','northeast')
+    yyaxis(ax,'right');
+    plot(ax,time,pitch,'k');
+    plot(ax,time,roll,'g');
+    ax.YAxis(2).Color = 'k';
+    ax.YAxis(2).TickLabelFormat  = '%g^\\circ';
+    legend('Heave','Pitch','Roll','Location','northeast')
     legend('boxoff')
-    ylabel('Attitude (deg)');
-    set(ax(2),'Position',ax1_pos,...
-        'XAxisLocation','top',...
-        'YAxisLocation','right',...
-        'Color','none')
+    ylabel('Attitude');
     grid on;
-    linkaxes(ax,'x');
 end
 if ~isempty(heading)
     u=u+1;
     h_fig(u)=figure('Name','Heading','NumberTitle','off','tag','attitude');
-    ax(3)=axes();
+    axh=axes('nextplot','add');
+    axh.YAxis.TickLabelFormat  = '%g^\\circ';
     plot(time,heading,'k');
     xlabel('Time(s)');
-    ylabel('Heading (deg)');
+    ylabel('Heading');
     grid on;
-    linkaxes(ax,'x');
+    linkaxes([ax axh],'x');
 end
 
 end

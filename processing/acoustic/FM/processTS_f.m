@@ -39,7 +39,7 @@ if strcmp(Transceiver.Mode,'FM')
     y_tx_auto=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
     y_tx_auto_red=y_tx_auto(ceil(length(y_tx_auto)/2)-idx_max+1:ceil(length(y_tx_auto)/2)+length(y_c_ts)-idx_max);
     
-    nfft=(2.^(nextpow2(length(y_c_ts)+2)));
+    nfft=(2.^(nextpow2(length(y_c_ts)+1)));
 
     fft_target=(fft(y_c_ts,nfft))/nfft;
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;

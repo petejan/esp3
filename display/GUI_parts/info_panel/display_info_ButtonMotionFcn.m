@@ -10,12 +10,13 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 Range=trans.Data.get_range();
 Bottom=trans.Bottom;
-
-Samples=trans.Data.get_samples();
-Lat=trans.GPSDataPing.Lat;
-Long=trans.GPSDataPing.Long;
 Time=trans.Data.Time;
 Number=trans.Data.get_numbers();
+Samples=trans.Data.get_samples();
+
+Lat=trans.GPSDataPing.Lat;
+Long=trans.GPSDataPing.Long;
+
 
 ax_main=axes_panel_comp.main_axes;
 
@@ -100,7 +101,7 @@ if ~isempty(cdata)
     t_n=Time(idx_ping);
     
     i_str='';
-
+    
     if length(layer.SurveyData)>=1
         for is=1:length(layer.SurveyData)
             surv_temp=layer.get_survey_data('Idx',is);
@@ -111,7 +112,7 @@ if ~isempty(cdata)
             end
         end
     end
-         
+    
     
     xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
     if ~isempty(Lat)
@@ -137,12 +138,12 @@ if ~isempty(cdata)
     [~,idx_params]=min(abs(time_params-Time(idx_ping)));
     
     if length(layer.Transceivers(idx_freq).Params.TransmitPower)>1
-         summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower(idx_params),layer.Transceivers(idx_freq).Params.PulseLength(idx_params)*1e3);
+        summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower(idx_params),layer.Transceivers(idx_freq).Params.PulseLength(idx_params)*1e3);
     else
-         summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
+        summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz \nPower: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,layer.Transceivers(idx_freq).Params.TransmitPower,layer.Transceivers(idx_freq).Params.PulseLength*1e3);
     end
-     
-        
+    
+    
     set(info_panel_comp.i_str,'String',i_str);
     set(info_panel_comp.summary,'string',summary_str);
     set(info_panel_comp.xy_disp,'string',xy_string);
@@ -160,7 +161,7 @@ if ~isempty(cdata)
     
     delete(findobj(axh,'Tag','curr_val'));
     delete(findobj(axv,'Tag','curr_val'));
-
+    
     
     set(axv_plot,'XData',vert_val,'YData',ydata_red);
     
@@ -177,7 +178,7 @@ if ~isempty(cdata)
     y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];
     
     set(axh_plot,'XData',xdata_red,'YData',horz_val);
-
+    
     plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
     set(axh,'xlim',x_lim)
     set(allchild(axh), 'visible',get(axh,'visible'))

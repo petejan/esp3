@@ -9,6 +9,7 @@ addParameter(p,'Slice_w',100,@(x) x>0);
 addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',Inf,@(x) x>0);
+addParameter(p,'Denoised',0,@isnumeric);
 
 parse(p,trans_obj,varargin{:});
 
@@ -112,7 +113,7 @@ for iuu=1:length(idx_reg)
     
     i_reg=i_reg+1;
     reg_param=reg(iuu);
-    regCellInt=reg_curr.integrate_region(trans_obj,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime]);
+    regCellInt=reg_curr.integrate_region(trans_obj,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],'denoised',p.Results.Denoised);
     if isempty(regCellInt.Sv_mean_lin)
         i_reg=i_reg-1;
         continue;

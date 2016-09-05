@@ -76,7 +76,7 @@ classdef region_cl
                         if ~isempty(y)
                             obj.X_cont=x;
                             obj.Y_cont=y;
-                            obj.MaskReg=results.MaskReg;
+                            obj.MaskReg=(results.MaskReg);
                         else
                             obj.Shape='Rectangular';
                             obj.X_cont=[];
@@ -88,7 +88,7 @@ classdef region_cl
                         obj.Shape='Polygon';
                         obj.X_cont=results.X_cont;
                         obj.Y_cont=results.Y_cont;
-                        obj.MaskReg=obj.create_mask();
+                        obj.MaskReg=(obj.create_mask());
                     end
                 otherwise
                     obj.Shape='Rectangular';

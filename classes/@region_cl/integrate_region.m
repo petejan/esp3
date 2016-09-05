@@ -22,12 +22,12 @@ idx_r=region.Idx_r;
 if p.Results.denoised>0
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
     if isempty(Sv_reg)
+        disp('Cannot find denoised Sv, integrating normal Sv.')
         Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
     end
 else
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
-
 
 
 

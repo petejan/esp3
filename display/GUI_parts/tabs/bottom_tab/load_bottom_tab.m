@@ -56,6 +56,7 @@ set(bottom_tab_comp.Shift_bot_ed,'callback',@(src,evtdata)(cellfun(@(x)feval(x,s
 
 
 bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,'Style','checkbox','Value',0,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.3 0.3 0.1]);
+%bottom_tab_comp.denoised=uicheckbox(bottom_tab_comp.bottom_tab,'Value',0,'Text','Compute on Denoised data','units','normalized','Position',[0.7 0.3 0.3 0.1]);
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BottomDetection'});

@@ -11,7 +11,7 @@ Sv=trans.Data.get_datamat('sv');
 if ~isempty(Sv)
     Sv_new=apply_new_absorption(Sv,trans.Data.get_range(),alpha_ori,alpha);
     trans.Params.Absorption=alpha*ones(1,length(trans.Params.Absorption));
-    trans.Data.add_sub_data('sv',Sv_new);
+    trans.Data.replace_sub_data('sv',Sv_new);
 end
 
 Sp=trans.Data.get_datamat('sp');
@@ -19,7 +19,7 @@ Sp=trans.Data.get_datamat('sp');
 if ~isempty(Sp)
     Sp_new=apply_new_absorption(Sp,trans.Data.get_range(),alpha_ori,alpha);
     trans.Params.Absorption=alpha*ones(1,length(trans.Params.Absorption));
-    trans.Data.add_sub_data('sp',Sp_new);
+    trans.Data.replace_sub_data('sp',Sp_new);
 end
 
 

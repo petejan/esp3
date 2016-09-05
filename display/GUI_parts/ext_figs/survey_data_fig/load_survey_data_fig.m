@@ -280,7 +280,7 @@ for isnap=1:length(snapshots)
     end
     
 end
-survey_input_obj.check_n_complete_input();
+
 
 
 prompt={'Title',...
@@ -314,7 +314,7 @@ end
 if isequal(filename,0) || isequal(pathname,0)
     return;
 end
-
+survey_input_obj.check_n_complete_input();
 survey_input_obj.survey_input_to_survey_xml('xml_filename',fullfile(pathname,filename));
 
 end
