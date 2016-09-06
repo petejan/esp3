@@ -358,7 +358,7 @@ if p.Results.GPSOnly==0
     c = envdata.SoundSpeed;
     
     for i =1:nb_trans
-       
+       curr_data=[];
         trans_obj(i).Mode=mode{i};
         switch trans_obj(i).Config.TransceiverType
             case {'WBT','WBT Tube'}
@@ -402,7 +402,6 @@ if p.Results.GPSOnly==0
             'Number',[double(data.pings(i).number(1)) double(data.pings(i).number(end))],...
             'MemapName',curr_name);
         trans_obj(i).setBottom([]);
-        clear curr_data;
     end
     
 else

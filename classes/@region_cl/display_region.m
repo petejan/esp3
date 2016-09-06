@@ -6,7 +6,7 @@ output_reg=reg_obj.integrate_region(trans_obj);
 sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
 
 
-if isempty(find(~isnan(sv_disp(:)), 1))
+if ~any(~isnan(sv_disp))
     h_fig=[];
     return;
 end

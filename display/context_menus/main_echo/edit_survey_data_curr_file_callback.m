@@ -41,11 +41,8 @@ end
 
 layer_cl.empty.update_echo_logbook_file('Filename',layer.Filename{trans.Data.FileId(idx_ping)},'SurveyData',surv);
 layer.load_echo_logbook();
+setappdata(main_figure,'Layer',layer);
 import_survey_data_callback([],[],main_figure);
-
-load_cursor_tool(main_figure);
-update_axis_panel(main_figure,0);
-display_survdata_lines(main_figure);
 
 
 end

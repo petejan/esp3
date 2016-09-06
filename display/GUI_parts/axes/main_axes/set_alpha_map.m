@@ -19,7 +19,7 @@ switch p.Results.main_or_mini
         echo_im=axes_panel_comp.main_echo;
         echo_ax=axes_panel_comp.main_axes;
         echo_im_bt=axes_panel_comp.bad_transmits;
-        set(axes_panel_comp.bottom_plot,'vis',curr_disp.DispUnderBottom);
+        set(axes_panel_comp.bottom_plot,'vis',curr_disp.DispBottom);
     case 'mini'
         mini_axes_comp=getappdata(main_figure,'Mini_axes');
         echo_im=mini_axes_comp.mini_echo;

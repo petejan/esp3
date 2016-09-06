@@ -16,11 +16,7 @@ end
 
 for i=1:nb_pings
     idx_num=(abs(double(x_data)-double(x_data(1+(i-1)*spc)))<(win+1)/2);
-    
-    %     figure(1)
-    %     plot(abs(double(x_data)-double(x_data(i))))
-    %     drawnow;
-    %     grid on;
+
     if min(size(y_data))>1
         y_data_temp=y_data(:,idx_num);
         if gauss_win
@@ -41,8 +37,7 @@ for i=1:nb_pings
        
     s_pdf(:,i)=s_pdf_temp';
     y_value(:,i)=y_value_temp';
-    x_value(:,i)=x_data(1+(i-1)*spc);
-   
+    x_value(:,i)=x_data(1+(i-1)*spc); 
 end
 
 end

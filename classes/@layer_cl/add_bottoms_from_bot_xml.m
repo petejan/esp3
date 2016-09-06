@@ -27,7 +27,7 @@ for i=1:length(xml_file)
     for itrans=1:length(bottom_xml_tot)
          
         bottom_xml=bottom_xml_tot{itrans};
-        if ~isempty(p.Results.Frequencies)&&nansum(bottom_xml.Infos.Freq==p.Results.Frequencies)==0
+        if ~isempty(p.Results.Frequencies)&&~any(bottom_xml.Infos.Freq==p.Results.Frequencies)
             continue;
         end
         

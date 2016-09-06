@@ -28,10 +28,9 @@ xdata=trans.Data.get_numbers();
 t_n=trans.Data.Time(idx_ping);
 surv=cell(1,2);
 idx_split=0;
-idx_start=0;
-idx_end=length(layer.SurveyData);
+
 surv_to_split=[];
-surv_temp=[];
+
 
 if isempty(layer.SurveyData)
     surv{1}=survey_data_cl();
@@ -57,13 +56,8 @@ else
         end
     end
     
-    if idx_split>1
-        idx_start=idx_split-1;
-    end
-    
-    if idx_split<length(layer.SurveyData)
-        idx_end=idx_split+1;
-    end
+
+  
     
     if ~isempty(surv_to_split)
         surv{1}=surv_to_split;
@@ -78,17 +72,14 @@ else
         dt_before(dt_before<0)=nan;
         dt_after(dt_after<0)=nan;
         
-        if isempty(find(~isnan(dt_before),1))
-            idx_start=0;
+        if ~any(~isnan(dt_before))
             start_time=trans.Data.Time(1);
         else
-            [~,idx_start]=nanmin(dt_before);
             surv_temp=layer.get_survey_data('Idx',idx_start);
             start_time=surv_temp.EndTime;
         end
         
-        if isempty(find(~isnan(dt_after),1))
-            idx_end=length(layer.SurveyData);
+        if ~any(~isnan(dt_after))
             end_time=trans.Data.Time(end);
         else
             [~,idx_end]=nanmin(dt_after);
@@ -110,9 +101,10 @@ end
 
 surv{1}.StartTime(1)=start_time;
 surv{1}.EndTime=t_n;
+surv{1}.Comment=surv_temp.Comment;
 surv{2}.StartTime=t_n;
 surv{2}.EndTime=end_time;
-
+surv{2}.Comment=surv_temp.Comment;
 
 
 [surv{1}.Voyage,surv{1}.SurveyName,surv{1}.Snapshot,surv{1}.Stratum,surv{1}.Transect,cancel]=fill_survey_data_dlbox(surv_temp,'Title','Enter Data For First Part');

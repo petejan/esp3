@@ -27,7 +27,7 @@ while classified==0
         else
             ID_goto=node.false_target;
         end
-    elseif ~isempty(find(ID_goto==IDs_class,1))
+    elseif any(ID_goto==IDs_class)
         tag=node.Class;
         classified=1;
     else

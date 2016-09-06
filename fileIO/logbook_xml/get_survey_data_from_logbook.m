@@ -30,7 +30,7 @@ for i=1:length(idx_surv_data)
 
     survey_data{i}=survey_data_cl('Voyage',surv_data_struct.Voyage{idx_surv_data(i)},'SurveyName',surv_data_struct.SurveyName{idx_surv_data(i)},...
         'Snapshot',surv_data_struct.Snapshot(idx_surv_data(i)),'Stratum',surv_data_struct.Stratum{idx_surv_data(i)},'Transect',surv_data_struct.Transect(idx_surv_data(i)),...
-        'StartTime',start_time,'EndTime',end_time);
+        'StartTime',start_time,'EndTime',end_time,'Comment',surv_data_struct.Comment{idx_surv_data(i)});
 end
 
 end

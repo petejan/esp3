@@ -60,7 +60,7 @@ for ii=1:length(filenames)
             for i=1:length(config)
                 CIDs{i}=char(config(i).ChannelID);
                 freqs=config(i).Frequency;
-                if nansum((vec_freq==-1))==1||~isempty(find(freqs==vec_freq, 1))
+                if nansum((vec_freq==-1))==1||any(freqs==vec_freq)
                     uuu=uuu+1;
                     data.config(uuu)=config(i);
                     idx_freq=[idx_freq i];

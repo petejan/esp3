@@ -177,7 +177,7 @@ for i=1:nb_pings
     
     %i_display=1:500:nb_pings;
     i_display=-1;
-    if ~isempty(find(i-i_display==0,1))&&DEBUG
+    if ~any(i==i_display)&&DEBUG
         figure(94587)
         clf;
         ax1=subplot(3,1,1);

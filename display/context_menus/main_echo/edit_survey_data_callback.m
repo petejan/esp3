@@ -11,11 +11,8 @@ x_lim=double(get(ax_main,'xlim'));
 cp = ax_main.CurrentPoint;
 x=cp(1,1);
 
-
 x=nanmax(x,x_lim(1));
 x=nanmin(x,x_lim(2));
-
-
 
 xdata=trans.Data.get_numbers();
 
@@ -61,7 +58,7 @@ else
         dt_before(dt_before<0)=nan;
         dt_after(dt_after<0)=nan;
         
-        if isempty(find(~isnan(dt_before),1))
+        if ~any(~isnan(dt_before))
             start_time=trans.Data.Time(1);
         else
             [~,idx_start]=nanmin(dt_before);
@@ -69,7 +66,7 @@ else
             start_time=surv_temp.EndTime;
         end
         
-        if isempty(find(~isnan(dt_after),1));
+        if ~any(~isnan(dt_after));
             end_time=trans.Data.Time(end);
         else
             [~,idx_end]=nanmin(dt_after);
@@ -115,11 +112,9 @@ end
 
 layer.set_survey_data(new_surveydata);
 layer.update_echo_logbook_file();
-
 setappdata(main_figure,'Layer',layer);
 
 load_cursor_tool(main_figure);
-update_axis_panel(main_figure,0);
-display_survdata_lines(main_figure);
+display_survdata_lines(main_figure)
 
 end

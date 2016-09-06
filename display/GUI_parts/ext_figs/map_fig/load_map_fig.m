@@ -240,7 +240,7 @@ index_selected = get(box.listbox,'Value');
 
 for i=1:length(box.lat_lays)
     if ~isempty(box.lat_lays{i})
-        if ~isempty(find(index_selected==i,1))
+        if any(index_selected==i)
             box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','r','linewidth',2,'linestyle','none','marker','.');
         else
             box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','k','linewidth',1,'linestyle','none','marker','.');
@@ -359,7 +359,7 @@ index_selected = get(box.listbox,'Value');
 
 axes(box.lim_axes);
 for i=1:length(box.lat_lays)
-    if ~isempty(find(index_selected==i,1))
+    if any(index_selected==i)
         set(box.trans(i),'color','r','linewidth',2);
     else
         set(box.trans(i),'color','k','linewidth',1);

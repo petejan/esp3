@@ -4,7 +4,7 @@ surv_data_struct=[];
 if exist(FileN,'file')==2
     surv_data_struct=csv2struct_perso(FileN);
     
-    if ~isempty(find(isfield(surv_data_struct,{'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'EndTime'})==0, 1))
+    if any(~isfield(surv_data_struct,{'Voyage' 'SurveyName' 'Filename' 'Snapshot' 'Stratum' 'Transect' 'StartTime' 'Comment' 'EndTime'}))
         surv_data_struct=[];
         warning('cannot find required fields in the *.csv file...');
         return;

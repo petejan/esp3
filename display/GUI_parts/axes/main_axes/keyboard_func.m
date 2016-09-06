@@ -67,7 +67,7 @@ switch callbackdata.Key
                 set(main_axes,'ylim',y_lim);
         end
         set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-    case '1'
+    case {'1' 'numpad1'}
         
         if isempty(callbackdata.Modifier)
             zi='zin';
@@ -101,7 +101,7 @@ switch callbackdata.Key
                 end
         end
         %toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
-    case '2'
+    case {'2' 'numpad2'}
         
         switch get(cursor_mode_tool_comp.bad_trans,'state');
             case 'off'
@@ -112,7 +112,7 @@ switch callbackdata.Key
                 curr_disp.CursorMode='Normal';
         end
         %toggle_func(cursor_mode_tool_comp.bad_trans,[],main_figure);
-    case '3'
+    case {'3' 'numpad3'}
         
         switch get(cursor_mode_tool_comp.edit_bottom,'state');
             case 'off'
@@ -123,11 +123,11 @@ switch callbackdata.Key
                 curr_disp.CursorMode='Normal';
         end
         %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
-    case '4'
+    case {'4' 'numpad4'}
         curr_disp.CursorMode='Create Region';
         reset_mode(0,0,main_figure);
         set(main_figure,'WindowButtonDownFcn',@create_region);
-    case '5'
+    case {'5' 'numpad5'}
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);
     case 'b'

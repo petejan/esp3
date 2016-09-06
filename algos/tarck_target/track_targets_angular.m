@@ -192,15 +192,14 @@ for i=2:nb_pings
                     if nansum(idx_new_target(j)==idx_new_target_tot)==0
                         idx_old_track_temp=[];
                         for d=1:length(active_tracks{i-1-u})
-                            if ~isempty(find((tracks{active_tracks{i-1-u}(d)}==idx_target{i-u-1}(idx_old_target(j))), 1))
+                            if any(tracks{active_tracks{i-1-u}(d)}==idx_target{i-u-1}(idx_old_target(j)))
                                 idx_old_track_temp=unique([idx_old_track_temp active_tracks{i-1-u}(d)]);
                             end
                         end
                         
                         active_tracks{i}=([active_tracks{i} idx_old_track_temp]);
                         for t=1:length(idx_old_track_temp)
-                            if isempty(find(tracks{idx_old_track_temp(t)}==idx_target{i}(idx_new_target(j)), 1))
-                                
+                            if any(tracks{idx_old_track_temp(t)}==idx_target{i}(idx_new_target(j)))
                                 if length(tracks_pings{idx_old_track_temp(t)})>=2
                                     diff_pings=tracks_pings{idx_old_track_temp(t)}(end)-tracks_pings{idx_old_track_temp(t)}(end-1);
                                     diff_TS=(ST.TS_comp(idx_target{i}(idx_new_target(j)))-ST.TS_comp(tracks{idx_old_track_temp(t)}(end-1)));

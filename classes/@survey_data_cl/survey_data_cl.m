@@ -7,6 +7,7 @@ classdef survey_data_cl
         Snapshot
         Stratum
         Transect
+        Comment
         StartTime
         EndTime
     end
@@ -22,6 +23,7 @@ classdef survey_data_cl
             addParameter(p,'Snapshot',0,@isnumeric);
             addParameter(p,'Stratum','',ver_fmt);
             addParameter(p,'Transect',0,@isnumeric);
+            addParameter(p,'Comment','',ver_fmt);
             addParameter(p,'Voyage','',ver_fmt);
             addParameter(p,'StartTime',0,@isnumeric);
             addParameter(p,'EndTime',1,@isnumeric);      
@@ -32,18 +34,23 @@ classdef survey_data_cl
             obj.Voyage=results.Voyage;
             obj.SurveyName=results.SurveyName;
             obj.Snapshot=results.Snapshot;
-            if ~ischar(obj.Stratum)
+            
+            if ~ischar(results.Stratum)
                 obj.Stratum=num2str(results.Stratum,'%.0f');
             else
                 obj.Stratum=results.Stratum;
             end
+            
+            if ~ischar(results.Comment)
+                obj.Comment=num2str(obj.Comment);
+            else
+                obj.Comment=results.Comment;
+            end
+            
             obj.Transect=results.Transect;
             obj.StartTime=results.StartTime;
             obj.EndTime=results.EndTime;
             
-            if isnumeric(obj.Stratum)
-                obj.Stratum=num2str(obj.Stratum,'%.0f');
-            end
             if isnumeric(obj.SurveyName)
                 obj.SurveyName='';
             end

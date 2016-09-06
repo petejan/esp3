@@ -209,7 +209,7 @@ for isn=1:length(snapshots)
                     
                     switch lower(layer_new.Filetype)
                         case {'ek60','ek80'}
-                            if ~isempty(find([cal_curr(:).FREQ]==curr_freq, 1))
+                            if any([cal_curr(:).FREQ]==curr_freq)
                                 layer_new.Transceivers(i_freq).apply_cw_cal(cal_curr([cal_curr(:).FREQ]==layer_new.Frequencies(i_freq)));
                             else
                                 fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
@@ -355,7 +355,7 @@ if ~isempty(node.Cal)
             cal_temp=cal_temp_cell{icell};
             if ~isempty(cal_ori)
                 call_out_temp=cal_ori;
-                if ~isempty(find([call_out_temp(:).FREQ]==cal_temp(ical).FREQ, 1))
+                if any([call_out_temp(:).FREQ]==cal_temp(ical).FREQ)
                     call_out_temp([call_out_temp(:).FREQ]==cal_temp(ical).FREQ)=cal_temp(ical);
                 else
                     call_out_temp(length(call_out_temp)+1)=cal_temp(ical);

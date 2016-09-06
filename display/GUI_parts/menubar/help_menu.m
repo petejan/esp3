@@ -2,7 +2,8 @@ function help_menu(~,~,main_figure)
 
 hfigs=getappdata(main_figure,'ExternalFigures');
     hfigs(~isvalid(hfigs))=[];
-    if ~isempty(find(strcmp({hfigs(:).Tag},'shortcuts'), 1))
+    if any(strcmp({hfigs(:).Tag},'shortcuts'))
+        figure(hfigs(strcmp({hfigs(:).Tag},'shortcuts')));
        return; 
     end
 

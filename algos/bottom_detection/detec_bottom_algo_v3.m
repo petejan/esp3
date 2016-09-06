@@ -173,19 +173,21 @@ Bottom=nanmax(Bottom_temp,Bottom_temp_2);
 backstep=nanmax([1 Np]);
 
 for i=1:nb_pings
+    BS_ping=BS_ori(:,i);
     if Bottom(i)>2*backstep
         Bottom(i)=Bottom(i)-backstep;
         if Bottom(i)>backstep
-            [bs_val,idx_max_tmp]=nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i));
+            [bs_val,idx_max_tmp]=nanmax(BS_ping((Bottom(i)-backstep):Bottom(i)-1));
         else
             continue;
         end
-        while bs_val>=BS_ori(Bottom(i),i)+thr_backstep &&bs_val>-999
+
+        while bs_val>=BS_ping(Bottom(i))+thr_backstep &&bs_val>-999
             if Bottom(i)-(backstep-idx_max_tmp+1)>0
                 Bottom(i)=Bottom(i)-(backstep-idx_max_tmp+1);
             end
             if Bottom(i)>backstep
-                [bs_val,idx_max_tmp]=nanmax(BS_ori((Bottom(i)-backstep):Bottom(i)-1,i));
+                [bs_val,idx_max_tmp]=nanmax(BS_ping((Bottom(i)-backstep):Bottom(i)-1));
             else
                 break;
             end

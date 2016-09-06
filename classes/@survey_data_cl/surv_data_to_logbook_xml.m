@@ -25,11 +25,19 @@ end
 line_node = docNode.createElement('line');
 line_node.setAttribute('Filename',deblank(filename));
 line_node.setAttribute('Snapshot',num2str(surv_data_obj.Snapshot,'%.0f'));
+
+if ~ischar(surv_data_obj.Comment)
+    line_node.setAttribute('Comment',num2str(surv_data_obj.Comment,'%.0f'));
+else
+    line_node.setAttribute('Comment', surv_data_obj.Comment);
+end
+
 if ~ischar(surv_data_obj.Stratum)
     line_node.setAttribute('Stratum',num2str(surv_data_obj.Stratum,'%.0f'));
 else
     line_node.setAttribute('Stratum', surv_data_obj.Stratum);
 end
+
 line_node.setAttribute('Transect',num2str(surv_data_obj.Transect,'%.0f'));
 line_node.setAttribute('StartTime',st);
 line_node.setAttribute('EndTime',et);

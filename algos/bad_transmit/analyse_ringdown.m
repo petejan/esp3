@@ -45,7 +45,7 @@ end;
 %idx_high_p=s_pdf<=(0.1*repmat(s_pdf(idx_max+(bin*(0:nb_pings-1))),size(s_pdf,1),1));
 %y_value(idx_high_p)=nan;
 
-[s_pdf_sorted,idx_sort]=sort(s_pdf,1,'descend');
+[~,idx_sort]=sort(s_pdf,1,'descend');
 idx_sort=idx_sort+ones(bin,1)*(0:size(idx_sort,2)-1)*bin;
 y_value_sorted=y_value(idx_sort);
 

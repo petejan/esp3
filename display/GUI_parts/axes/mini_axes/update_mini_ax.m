@@ -38,6 +38,8 @@ if new>0
     data_disp=single(data_disp);
     set(mini_axes_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[range(1) range(end)])
     set(mini_axes_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
+
+
 end
 
 patch_col='b';

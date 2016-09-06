@@ -34,7 +34,7 @@ for ix=1:length(xml_file)
     for itrans=1:length(region_xml_tot)
         region_xml=region_xml_tot{itrans};
         
-        if ~isempty(p.Results.Frequencies)&&nansum(region_xml.Infos.Freq==p.Results.Frequencies)==0
+        if ~isempty(p.Results.Frequencies)&&~any(region_xml.Infos.Freq==p.Results.Frequencies)
             continue;
         end
         

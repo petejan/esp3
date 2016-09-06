@@ -29,7 +29,7 @@ if isempty(surv_data_struct.Voyage)
 end
 
 
-survDataSummary=cell(length(surv_data_struct.Filename),8);
+survDataSummary=cell(length(surv_data_struct.Filename),9);
 
 survDataSummary(:,1)=cell(size(surv_data_struct.Filename));
 
@@ -37,21 +37,24 @@ survDataSummary(:,2)=surv_data_struct.Filename;
 survDataSummary(:,3)=num2cell(surv_data_struct.Snapshot);
 survDataSummary(:,4)=surv_data_struct.Stratum;
 survDataSummary(:,5)=num2cell(surv_data_struct.Transect);
+survDataSummary(:,6)=surv_data_struct.Comment;
+survDataSummary(:,9)=num2cell(1:length(surv_data_struct.SurvDataObj));
 
 for i=1:length(surv_data_struct.SurvDataObj)
+    survDataSummary{i,7}=datestr(surv_data_struct.SurvDataObj{i}.StartTime,'dd-mmm-yyyy HH:MM:SS');
+    survDataSummary{i,8}=datestr(surv_data_struct.SurvDataObj{i}.EndTime,'dd-mmm-yyyy HH:MM:SS');
     survDataSummary{i,1}=false;
-    survDataSummary{i,6}=datestr(surv_data_struct.SurvDataObj{i}.StartTime,'dd-mmm-yyyy HH:MM:SS');
-    survDataSummary{i,7}=datestr(surv_data_struct.SurvDataObj{i}.EndTime,'dd-mmm-yyyy HH:MM:SS');
-    survDataSummary{i,8}=i;
 end
 
 
 
 % Column names and column format
-columnname = {'' 'Filename','Snapshot','Stratum','Transect','Start Time','End Time' 'id'};
-columnformat = {'logical' 'char','numeric','char','numeric','char','char'};
+columnname = {'' 'Filename','Snapshot','Stratum','Transect','Comment' 'Start Time','End Time'  'id'};
+columnformat = {'logical' 'char','numeric','char','numeric','char','char','char','numeric'};
 
-surv_data_fig = figure('Position',[100 100 800 600],'Resize','off',...
+size_max = get(0, 'MonitorPositions');  
+
+surv_data_fig = figure('Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/4*size_max(1,4) size_max(1,3)/2 size_max(1,4)/2],'Resize','off',...
     'Name','SurveyData','NumberTitle','off','tag','logbook',...
     'MenuBar','none');%No Matlab Menu)
 hfigs_new=[hfigs surv_data_fig];
@@ -76,15 +79,15 @@ surv_data_table.table_main = uitable('Parent',surv_data_fig,...
     'Data', survDataSummary,...
     'ColumnName', columnname,...
     'ColumnFormat', columnformat,...
-    'ColumnEditable', [true false true true true false],...
+    'ColumnEditable', [true false true true true true false false false],...
     'Units','Normalized','Position',[0 0 1 0.95],...
     'RowName',[]);
 
 set(surv_data_table.table_main,'Units','pixels');
 pos_t=get(surv_data_table.table_main,'Position');
-set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/12,3*pos_t(3)/12, pos_t(3)/12, pos_t(3)/12, pos_t(3)/12, 2*pos_t(3)/12, 2*pos_t(3)/12, pos_t(3)/12});
-set(surv_data_table.table_main,'CellEditCallback',{@update_surv_data_struct,surv_data_fig});
-set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
+set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/18,4*pos_t(3)/18, 2*pos_t(3)/18, 2*pos_t(3)/18, pos_t(3)/18, 3*pos_t(3)/18, 2*pos_t(3)/18,2*pos_t(3)/18, pos_t(3)/18});
+set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_struct,surv_data_fig});
+%set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
 
 
 rc_menu = uicontextmenu(surv_data_fig);
@@ -170,7 +173,7 @@ text(evt.IntersectionPoint(1),evt.IntersectionPoint(2),file_list{idx},'Tag','fna
 end
 
 
-function update_surv_data_struct(src,evt,surv_data_fig)
+function edit_surv_data_struct(src,evt,surv_data_fig)
 if isempty(evt.Indices)
     return;
 end
@@ -180,13 +183,11 @@ if isnan(src.Data{evt.Indices(1),evt.Indices(2)})
     src.Data{evt.Indices(1),evt.Indices(2)}=0;
 end
 
-idx_struct=src.Data{evt.Indices(1),8};
+idx_struct=src.Data{evt.Indices(1),9};
 
 switch evt.Indices(2)
     case 1
         data_ori{idx_struct,1}=src.Data{evt.Indices(1),1};
-    case 2
-
     case 3
         surv_data_struct.Snapshot(idx_struct)=src.Data{evt.Indices(1),evt.Indices(2)};
         surv_data_struct.SurvDataObj{idx_struct}.Snapshot=src.Data{evt.Indices(1),evt.Indices(2)};
@@ -196,6 +197,9 @@ switch evt.Indices(2)
     case 5
         surv_data_struct.Transect(idx_struct)=src.Data{evt.Indices(1),evt.Indices(2)};
         surv_data_struct.SurvDataObj{idx_struct}.Transect=src.Data{evt.Indices(1),evt.Indices(2)};
+    case 6
+        surv_data_struct.Comment{idx_struct}=src.Data{evt.Indices(1),evt.Indices(2)};
+        surv_data_struct.SurvDataObj{idx_struct}.Comment=src.Data{evt.Indices(1),evt.Indices(2)};
 end
 
 data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
@@ -225,7 +229,7 @@ for i=1:size(data,1)
         case 'inv'
             data{i,1}=~data{i,1};
     end
-    data_ori{data{i,8},1}=data{i,1};
+    data_ori{data{i,9},1}=data{i,1};
 end
 set(surv_data_table.table_main,'Data',data);
 setappdata(surv_data_fig,'data_ori',data_ori);
@@ -249,7 +253,7 @@ surv_data_table=getappdata(surv_data_fig,'surv_data_table');
 surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
 data_ori=get(surv_data_table.table_main,'Data');
 path_f=getappdata(surv_data_fig,'path_data');
-idx_struct=unique([data_ori{[data_ori{:,1}],8}]);
+idx_struct=unique([data_ori{[data_ori{:,1}],9}]);
 
 survey_input_obj=survey_input_cl();
 

@@ -20,7 +20,7 @@ else
 end
 
 
-if isempty(find(strcmp(p.UsingDefaults,'SurveyName'),1))
+if any(strcmp(p.UsingDefaults,'SurveyName'))
     surv_name=results.SurveyName;
 else
     surv_name= '';

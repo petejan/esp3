@@ -13,6 +13,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 		<th>Snapshot</th>
         <th>Stratum</th>
 		<th>Transect</th>
+        <th>Comment</th>
         <th>Start Time</th>
 		<th>End Time</th>
       </tr>
@@ -24,6 +25,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
           <td><xsl:value-of select="@Snapshot"/></td>
 		  <td><xsl:value-of select="@Stratum"/></td>
 		  <td><xsl:value-of select="@Transect"/></td>
+          <td><xsl:value-of select="@Comment"/></td>
 		  <td><xsl:value-of select="concat(substring($st,9,2),':',substring($st,11,2),':',substring($st,13,2),' ',substring($st,7,2),'/',substring($st,5,2),'/',substring($st,1,4))"/></td><!-- 20151222173429 -->
 		  <td><xsl:value-of select="concat(substring($et,9,2),':',substring($et,11,2),':',substring($et,13,2),' ',substring($et,7,2),'/',substring($et,5,2),'/',substring($et,1,4))"/></td><!-- 20151222173429 -->
         </tr>

@@ -34,7 +34,8 @@ if ~isequal(Filename_cell, 0)
     
     prev_ping_end=0;
     prev_ping_start=1;
-    nb_lay=0;
+
+    layers(length(Filename_cell))=layer_cl();
     for uu=1:length(Filename_cell)
         
         Filename=Filename_cell{uu};
@@ -65,7 +66,6 @@ if ~isequal(Filename_cell, 0)
             if isempty(frequency)
                 disp(['Cannot open file ' Filename]);
                 continue;
-                
             end
             transceivercount=length(frequency);
             vec_freq_temp=nan(1,transceivercount);
@@ -101,8 +101,7 @@ if ~isequal(Filename_cell, 0)
         end
         
         
-        
-
+       
         pings_range(1)=pings_range(1)-prev_ping_start+1;
         if pings_range(2)~=Inf
             pings_range(2)=pings_range(2)-prev_ping_end;
@@ -144,7 +143,6 @@ if ~isequal(Filename_cell, 0)
             continue;
         end
 
-        nb_lay=nb_lay+1;
 
         idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));
         [gps_data,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
@@ -244,15 +242,9 @@ if ~isequal(Filename_cell, 0)
             envdata=env_data_cl.empty();
         end
         
-        layers_temp(nb_lay)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);         
+        layers(uu)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);         
     end
     
-    if exist('layers_temp','var')
-        layers=layers_temp;
-    else
-        layers=[];
-        return;
-    end
 
     clear data transceiver
     

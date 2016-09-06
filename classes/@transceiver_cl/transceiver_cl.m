@@ -270,7 +270,7 @@ classdef transceiver_cl < handle
                 id_list(i)=reg_curr(i).Unique_ID;
             end
             unique_id=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
-            while ~isempty(find(unique_id==id_list,1))
+            while any(unique_id==id_list)
                 unique_id=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
             end
         end
