@@ -2,7 +2,6 @@
 classdef bottom_cl 
     properties
         Origin='';
-        Range=[];
         Sample_idx=[];
         Tag=[];
         Shifted=0;
@@ -14,7 +13,6 @@ classdef bottom_cl
             p = inputParser;
             
             addParameter(p,'Origin','',@ischar);
-            addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'Sample_idx',[],@isnumeric);
             addParameter(p,'Tag',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Shifted',0,@(x) isnumeric(x));
@@ -44,12 +42,10 @@ classdef bottom_cl
                 return;
             end
                 
-            n_r=[bot_1.Range(:); bot_2.Range(:)];
             n_s=[bot_1.Sample_idx(:); bot_2.Sample_idx(:)];
             n_t=[bot_1.Tag(:); bot_2.Tag(:)];
             
-            bot_out=bottom_cl('Origin',bot_1.Origin,...
-                'Range',n_r,...
+            bot_out=bottom_cl('Origin',bot_1.Origin,....
                 'Sample_idx',n_s,'Tag',n_t);
         end
         

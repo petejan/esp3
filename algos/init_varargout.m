@@ -1,7 +1,7 @@
 function varout=init_varargout(name)
 
 switch name
-    case 'BottomDetection'
+    case {'BottomDetectionV2','BottomDetection'}
         varout={'bottom','double_bottom_region','bs_bottom','idx_bottom','idx_ringdown'};
     case 'BadPings'
         varout={'bottom','double_bottom_region','idx_noise_sector'};

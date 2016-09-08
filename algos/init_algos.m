@@ -1,6 +1,6 @@
 function algo_vec=init_algos(name)
 
-name_vec={'BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
+name_vec={'BottomDetectionV2','BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
 algo_vec=[];
 
 if nargin==0
@@ -9,6 +9,10 @@ end
 
 if any(strcmpi(name,'BottomDetection'))
     algo_vec=[algo_vec algo_cl('Name','BottomDetection')];
+end
+
+if any(strcmpi(name,'BottomDetectionV2'))
+    algo_vec=[algo_vec algo_cl('Name','BottomDetectionV2')];
 end
 if any(strcmpi(name,'BadPings'))
     algo_vec=[algo_vec algo_cl('Name','BadPings')];

@@ -20,6 +20,6 @@ depth_resampled=resample_data_v2(depth,timestamp,timevec);
 sample_idx=resample_data_v2(1:length(range),range,depth_resampled,'Opt','Nearest');
 tag_resampled=resample_data_v2(tag,timestamp,timevec);
 
-obj=bottom_cl('Origin','EVL','Range',depth,'Sample_idx',sample_idx,'Tag',tag_resampled~=2);
+obj=bottom_cl('Origin','EVL','Sample_idx',sample_idx,'Tag',tag_resampled~=2);
 
 end

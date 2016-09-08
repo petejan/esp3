@@ -24,6 +24,8 @@ set(bad_ping_tab_comp.thr_spikes_Below_sl,'callback',{@sync_Sl_ed,bad_ping_tab_c
 set(bad_ping_tab_comp.thr_spikes_Below_ed,'callback',{@sync_Sl_ed,bad_ping_tab_comp.thr_spikes_Below_sl,'%.0f'});
 
 
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Bottom Algo Version','units','normalized','Position',pos{1,4});
+bad_ping_tab_comp.version=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','popupmenu','Value',1,'String',{'V1','V2'},'units','normalized','Position',pos{1,5});
 
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BadPings'});
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});

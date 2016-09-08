@@ -73,14 +73,9 @@ TS(mask>=1)=-999;
 
 Idx_samples_lin=reshape(1:nb_samples*nb_pings,nb_samples,nb_pings);
 
-Bottom=Transceiver.Bottom.Range;
-range=Transceiver.Data.get_range();
-if isempty(Bottom)
-    Bottom=ones(1,nb_pings)*range(end);
-end
+Bottom=trans_obj.get_bottom_range();
 
 Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
-
 
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;

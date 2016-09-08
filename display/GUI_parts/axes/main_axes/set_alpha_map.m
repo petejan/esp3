@@ -59,18 +59,16 @@ data_temp=nan(size(alpha_map));
 data_temp(:,idx_bad_red)=Inf;
 
 
-if ~isempty(layer.Transceivers(idx_freq).Bottom.Range)
-    
-    bot_vec_red=imresize(layer.Transceivers(idx_freq).Bottom.Range(idx_pings),[1,size(alpha_map,2)],'nearest');
-    ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest');
-    idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
-    
-    
-    if strcmpi(curr_disp.DispUnderBottom,'off')==1
-        alpha_map(idx_bot_red)=0;
-    end
-    
+bot_vec_red=imresize(layer.Transceivers(idx_freq).get_bottom_range(idx_pings),[1,size(alpha_map,2)],'nearest');
+ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest');
+idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
+
+
+if strcmpi(curr_disp.DispUnderBottom,'off')==1
+    alpha_map(idx_bot_red)=0;
 end
+
+
 if strcmp(curr_disp.DispBadTrans,'on')
     alpha_map_bt=(~isnan(data_temp))-0.2;
 else

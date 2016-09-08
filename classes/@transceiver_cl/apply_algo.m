@@ -1,5 +1,5 @@
 function output_struct= apply_algo(trans_obj,algo_name,varargin)
-names={'BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
+names={'BottomDetectionV2','BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
 
 p = inputParser;
 
@@ -44,25 +44,22 @@ for i=1:length(fields_algo_out)
 end
 
 switch algo_name
-    case'BottomDetection'
-        range=trans_obj.Data.get_range();
-        bottom_range=nan(size(bottom));
-        bottom_range(~isnan(bottom))=range(bottom(~isnan(bottom)));
+     case'BottomDetection'      
+        old_tag=trans_obj.Bottom.Tag;  
+        trans_obj.setBottom(bottom_cl('Origin','Algo_v3',...
+            'Sample_idx',bottom,...
+            'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
+    case'BottomDetectionV2'
         old_tag=trans_obj.Bottom.Tag;
         
-        trans_obj.setBottom(bottom_cl('Origin','Algo_v3',...
-            'Range', bottom_range,...
+        trans_obj.setBottom(bottom_cl('Origin','Algo_v4',...
             'Sample_idx',bottom,...
             'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
     case 'BadPings'
-        range=trans_obj.Data.get_range();
-        bottom_range=nan(size(bottom));
-        bottom_range(~isnan(bottom))=range(bottom(~isnan(bottom)));
-        
+
         tag=double(idx_noise_sector==0);
         
         trans_obj.Bottom=bottom_cl('Origin','Algo_v2_bp',...
-            'Range', bottom_range,...
             'Sample_idx',bottom,...
             'Tag',tag,'Shifted',algo_obj.Varargin.shift_bot);
     case 'Denoise'

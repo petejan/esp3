@@ -356,7 +356,7 @@ classdef transceiver_cl < handle
             end
             
             Sv(:,(obj.Bottom.Tag==0))=NaN;
-            bot_r=obj.Bottom.Range;
+            bot_r=obj.get_bottom_range();
             bot_r(bot_r==0)=obj.Data.Range(2);
             bot_r(isnan(bot_r))=obj.Data.Range(2);
             

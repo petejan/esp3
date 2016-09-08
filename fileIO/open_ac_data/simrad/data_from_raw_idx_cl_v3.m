@@ -95,12 +95,14 @@ time_nmea=idx_raw_obj.get_time_dg('NME0');
 NMEA.time= time_nmea;
 NMEA.string= cell(1,nb_nmea);
 
+params_cl_init(nb_trans)=params_cl();
 
 for i=1:nb_trans
     nb_pings(i)=nanmin(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);
     data.pings(i).number=nan(1,nb_pings(i));
     data.pings(i).time=nan(1,nb_pings(i));
     data.pings(i).samples=(1:nb_samples(i))';
+    trans_obj(i).Params=params_cl(nb_pings(i));
     
     switch config(i).TransceiverType
         case {'WBT','WBT Tube'}
@@ -124,76 +126,103 @@ conf_dg=0;
 env_dg=0;
 
 prop_params=properties(params_cl);
+prop_config=properties(config_cl);
+prop_env=properties(env_data_cl);
+
+param_str_init=cell(1,nb_trans);
+param_str_init(:)={''};
+
 
 fid=fopen(filename,'r');
 
 for idg=1:length(idx_raw_obj.type_dg)
     pos=ftell(fid);
-
+    
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'
             %disp(dgType);
-
+            
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             t_line=(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char','l'))';
             t_line=deblank(t_line);
-            if ~isempty(strfind(t_line,'Configuration'))
+            if ~isempty(strfind(t_line,'<Configuration>'))&&conf_dg==1
                 if conf_dg==1
                     fread(fid, 1, 'int32', 'l');
                     continue;
                 end
-                conf_dg=1;
-            elseif ~isempty(strfind(t_line,'Environment'))
-                if env_dg==1
+
+            elseif ~isempty(strfind(t_line,'<Environment>'))&&env_dg==1
                     fread(fid, 1, 'int32', 'l');
+                    continue;
+            elseif ~isempty(strfind(t_line,'<Parameter>'))&&any(strcmp(t_line,param_str_init))
+                idx = find(strcmp(t_line,param_str_init));
+                if ~isempty(idx)
+                    dgTime=idx_raw_obj.time_dg(idg);
+                    fread(fid, 1, 'int32', 'l');
+                    params_cl_init(idx).Time=dgTime;
+                    trans_obj(idx).Params.Time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                     continue;
                 end
             end
             
             %[~,output,type]=read_xml0_OLD2(t_line);
+            
             [~,output,type]=read_xml0(t_line);%50% faster than the old version!
+            
             switch type
+                
                 case'Configuration'
+                    
                     config_temp=output;
                     for iout=1:length(config_temp)
                         idx = find(strcmp(deblank(CIDs_freq),deblank(config_temp(iout).ChannelID)));
                         if ~isempty(idx)
                             props=fieldnames(config_temp(iout));
                             for iii=1:length(props)
-                                if  isprop(trans_obj(idx).Config, (props{iii}))
+                                if  any(strcmpi(prop_config,props{iii}))
                                     trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
                                 end
                             end
                         end
                     end
                 case 'Environment'
+                    
                     props=fieldnames(output);
                     envdata=env_data_cl();
                     for iii=1:length(props)
-                        if  isprop(envdata, (props{iii}))
+                        if  any(strcmpi(prop_env,props{iii}))
                             envdata.(props{iii})=output.(props{iii});
                         end
                     end
                 case 'Parameter'
                     params_temp=output;
                     idx = find(strcmp(deblank(CIDs_freq),deblank(params_temp.ChannelID)));
-                    fields_params=fieldnames(params_temp);
-                    
                     dgTime=idx_raw_obj.time_dg(idg);
-                    
+                    fields_params=fieldnames(params_temp);
                     if ~isempty(idx)
+                        param_str_init{idx}=t_line;
                         if i_ping(idx)>=p.Results.PingRange(1)&&i_ping(idx)<=p.Results.PingRange(2)
-                            trans_obj(idx).Params.Time(i_ping(idx))=dgTime;
+                            params_cl_init(idx).Time=dgTime;
                             for jj=1:length(fields_params)
                                 switch fields_params{jj}
                                     case 'ChannelID'
-                                        trans_obj(idx).Params.(fields_params{jj}){i_ping(idx)-p.Results.PingRange(1)+1}=(params_temp.(fields_params{jj}));
+                                        params_cl_init(idx).(fields_params{jj})=params_temp.(fields_params{jj});
                                     case 'PulseDuration'
-                                        trans_obj(idx).Params.PulseLength(i_ping(idx)-p.Results.PingRange(1)+1)=(params_temp.(fields_params{jj}));
+                                        params_cl_init(idx).PulseLength=params_temp.(fields_params{jj});
                                     otherwise
                                         if any(strcmpi(prop_params,fields_params{jj}))
-                                            trans_obj(idx).Params.(fields_params{jj})(i_ping(idx)-p.Results.PingRange(1)+1)=(params_temp.(fields_params{jj}));
+                                            params_cl_init(idx).(fields_params{jj})=params_temp.(fields_params{jj});
                                         end
+                                end
+                            end
+                            trans_obj(idx).Params.Time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
+                            for jj=1:length(prop_params)
+                                if ~isempty(params_cl_init(idx).(prop_params{jj}))
+                                    if ischar(params_cl_init(idx).(prop_params{jj}))
+                                        trans_obj(idx).Params.(prop_params{jj}){i_ping(idx)-p.Results.PingRange(1)+1}=(params_cl_init(idx).(prop_params{jj}));
+                                    else
+                                        trans_obj(idx).Params.(prop_params{jj})(i_ping(idx)-p.Results.PingRange(1)+1)=(params_cl_init(idx).(prop_params{jj}));
+                                    end
                                 end
                             end
                         end
@@ -238,7 +267,7 @@ for idg=1:length(idx_raw_obj.type_dg)
             dgTime=idx_raw_obj.time_dg(idg);
             channelID = (fread(fid,128,'*char', 'l')');
             idx = find(strcmp(deblank(CIDs_freq),deblank(channelID)));
-
+            
             
             if isempty(idx)
                 fseek(fid, idx_raw_obj.len_dg(idg) - HEADER_LEN -128 , 0);
@@ -323,6 +352,19 @@ for idg=1:length(idx_raw_obj.type_dg)
 end
 fclose(fid);
 
+
+%Complete Params if necessary
+
+for idx=1:nb_trans
+   idx_val=[find(~isnan(trans_obj(idx).Params.TransmitPower)) length(trans_obj(idx).Params.TransmitPower)+1];
+   for ii=1:(length(idx_val)-1)
+       for jj=1:length(prop_params)
+               trans_obj(idx).Params.(prop_params{jj})(idx_val(ii):idx_val(ii+1)-1)=trans_obj(idx).Params.(prop_params{jj})(idx_val(ii));
+       end
+   end
+    
+end
+
 if p.Results.GPSOnly==0
     
     switch ftype
@@ -358,7 +400,7 @@ if p.Results.GPSOnly==0
     c = envdata.SoundSpeed;
     
     for i =1:nb_trans
-       curr_data=[];
+        curr_data=[];
         trans_obj(i).Mode=mode{i};
         switch trans_obj(i).Config.TransceiverType
             case {'WBT','WBT Tube'}
@@ -381,16 +423,17 @@ if p.Results.GPSOnly==0
                 curr_data.alongphi=single(data.pings(i).alongship_e);
         end
         
-        if isempty(trans_obj(i).Params.Absorption)
+        if any(isnan(trans_obj(i).Params.Absorption))
             FreqStart=(trans_obj(i).Params.FrequencyStart(1));
             FreqEnd=(trans_obj(i).Params.FrequencyEnd(1));
             FreqCenter=(FreqStart+FreqEnd)/2;
             alpha= sw_absorption(FreqCenter/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
             trans_obj(i).Params.Absorption=alpha*ones(1,size(curr_data.power,2));
+            trans_obj(i).Params.Frequency=FreqCenter*ones(1,size(curr_data.power,2));
         end
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);
-        t = trans_obj(i).Params.SampleInterval(end);
+        t = trans_obj(i).Params.SampleInterval(1);
         dR = double(c .* t / 2)';
         samples=double([sample_start(i) sample_end(i)]);
         range=double(samples-1)*dR;

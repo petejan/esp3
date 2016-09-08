@@ -1,19 +1,22 @@
 function keyboard_func(src,callbackdata,main_figure)
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
-layer=getappdata(main_figure,'Layer');
-if isempty(layer)
-    return;
+layer=getappdata(main_figure,'Layer');curr_disp=getappdata(main_figure,'Curr_disp');
+if ~isempty(layer)
+    [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
+    trans=layer.Transceivers(idx_freq);
+    Number=trans.Data.get_numbers();
+    Range=trans.Data.get_range();
+    
+    xdata=Number;
+    ydata=Range;
+else
+    layer=layer_cl();
+    idx_freq=1;
+    trans=transceiver_cl();
+    xdata=[1 1];
+    ydata=[1 1];
 end
 
-curr_disp=getappdata(main_figure,'Curr_disp');
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-trans=layer.Transceivers(idx_freq);
-
-Number=trans.Data.get_numbers();
-Range=trans.Data.get_range();
-
-xdata=Number;
-ydata=Range;
 
 switch callbackdata.Key
     case {'leftarrow','rightarrow','uparrow','downarrow'}
@@ -130,7 +133,7 @@ switch callbackdata.Key
     case {'5' 'numpad5'}
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);
-    case 'b'
+    case {'b','pagedown'}
         
         switch curr_disp.DispUnderBottom
             case 'off'
@@ -162,22 +165,19 @@ switch callbackdata.Key
     case 'f'
         if length(layer.Frequencies)>1
             set(src,'KeyPressFcn','');
-            id_freq=layer.find_freq_idx(curr_disp.Freq);
-            curr_disp.Freq=layer.Frequencies(nanmin(rem(id_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
+            curr_disp.Freq=layer.Frequencies(nanmin(rem(idx_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
             set(src,'KeyPressFcn',{@keyboard_func,main_figure});
         end
     case 'e'
-        
-        set(src,'KeyPressFcn','');
-        curr_disp=getappdata(main_figure,'Curr_disp');
-        idx_freq=layer.find_freq_idx(curr_disp.Freq);
-        if length(layer.Transceivers(idx_freq).Data.Fieldname)>1
-            fields=layer.Transceivers(idx_freq).Data.Fieldname;
-            id_field=find(strcmp(curr_disp.Fieldname,fields));
-            curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
+        if~isempty(trans.Data)
+            set(src,'KeyPressFcn','');
+            if length(trans.Data.Fieldname)>1
+                fields=trans.Data.Fieldname;
+                id_field=find(strcmp(curr_disp.Fieldname,fields));
+                curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
+            end
+            set(src,'KeyPressFcn',{@keyboard_func,main_figure});
         end
-        set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-        
         
     case 'n'
         change_layer_callback([],[],main_figure,'next');
@@ -193,9 +193,7 @@ switch callbackdata.Key
         if ~isempty(get(gco,'Tag'))
             switch get(gco,'Tag')
                 case {'region','region_text'}
-                    curr_disp=getappdata(main_figure,'Curr_disp');
-                    idx_freq=layer.find_freq_idx(curr_disp.Freq);
-                    layer.Transceivers(idx_freq).rm_region_id(get(gco,'Userdata'));
+                    trans.rm_region_id(get(gco,'Userdata'));
                     update_regions_tab(main_figure,[]);
                     display_regions(main_figure);
                     order_stacks_fig(main_figure);order_axes(main_figure);

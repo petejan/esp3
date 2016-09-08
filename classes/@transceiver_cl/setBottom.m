@@ -47,6 +47,6 @@ tag=ones(size(new_bot_r));
 tag(IdxBad)=0;
 new_bot_r(isnan(new_bot_r)&tag==1)=range(end);
 new_bot_sple(isnan(new_bot_sple(:))&tag(:)==1)=length(range);
-obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Range',new_bot_r,'Sample_idx',new_bot_sple,'Tag',tag,'Shifted',bottom_obj.Shifted);
+obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Sample_idx',new_bot_sple,'Tag',tag,'Shifted',bottom_obj.Shifted);
 
 end

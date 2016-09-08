@@ -1,8 +1,7 @@
-function [amp_est,across_est,along_est,bs_bottom]=detec_bottom_bathymetric(Sv,AlongPhi,AcrossPhi,Range,Fs,PulseLength,thr_bottom,thr_echo,r_min)
+function [amp_est,across_est,along_est,bs_bottom]=detec_bottom_bathymetric(Sp,AlongPhi,AcrossPhi,Range,Fs,PulseLength,thr_bottom,thr_echo,r_min)
 DEBUG=1;
 
-
-[nb_samples,nb_pings]=size(Sv);
+[nb_samples,nb_pings]=size(Sp);
 
 AcrossPhi=AcrossPhi/180*pi;
 AlongPhi=AlongPhi/180*pi;
@@ -15,8 +14,8 @@ idx_r_max=nb_samples;
 idx_r_min=nanmax(idx_r_min,10);
 idx_r_min=nanmin(idx_r_min,nb_samples);
 
-%RingDown=Sv(3,:);
-Sv(1:idx_r_min,:)=nan;
+%RingDown=Sp(3,:);
+Sp(1:idx_r_min,:)=nan;
 
 Range_mat=repmat(Range,1,nb_pings);
 Samples_mat=repmat((1:nb_samples)',1,nb_pings);
@@ -25,7 +24,7 @@ Samples_mat=repmat((1:nb_samples)',1,nb_pings);
 %First let's find the bottom...
 heigh_b_filter=20*Np+1;
 
-BS=Sv+10*log10(Range_mat);
+BS=Sp-10*log10(Range_mat);
 BS(isnan(BS))=-999;
 BS_mask_ori=((filter2(ones(3,3),BS>-900,'same'))<=2);
 BS(BS_mask_ori)=-999;

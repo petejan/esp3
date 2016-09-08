@@ -57,16 +57,10 @@ if isempty(Sv_mat)
 end
 
 
-   
-[~,nb_pings]=size(Sv_mat);
 range=trans_obj.Data.get_range();
 dist_pings=trans_obj.GPSDataPing.Dist;
 
-Bottom=trans_obj.Bottom.Range;
-Bottom=Bottom(:)';
-if isempty(Bottom)
-    Bottom=ones(1,nb_pings)*range(end);
-end
+Bottom=trans_obj.get_bottom_range();
 
 [~,Np]=get_pulse_length(trans_obj);
 Sv_thr=p.Results.Sv_thr;

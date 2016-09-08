@@ -167,12 +167,11 @@ if ~isempty(cdata)
     
     plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
     plot(axv,bot_x_val,[bot_val bot_val],'k','Tag','curr_val');
-    if length(Bottom.Range)>=idx_ping
-        axv_text.Position=[nanmean(bot_x_val) bot_val 0];
-        axv_text.String=sprintf('%.2fm',Bottom.Range(idx_ping));
-    else
-        axv_text.String='';
-    end
+    
+
+    axv_text.Position=[nanmean(bot_x_val) bot_val 0];
+    axv_text.String=sprintf('%.2fm',trans.get_bottom_range(idx_ping));
+
     set(axv,'ylim',y_lim)
     set(allchild(axv),'visible',get(axv,'visible'))
     y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];

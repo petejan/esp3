@@ -36,7 +36,7 @@ t_angle = atan(sqrt(tand(trans.Config.Angles(2)).^2+tand(trans.Config.Angles(1))
 %time=trans.Data.Time;
 number = trans.Data.get_numbers();
 
-bot_range = trans.Bottom.Range;
+bot_range = trans.get_bottom_range();
 
 sv = trans.Data.get_datamat('sv');
 sp = trans.Data.get_datamat('sp');
@@ -50,12 +50,12 @@ alongangle  = trans.Data.get_datamat('alongangle');
 [alongphi, acrossphi] = trans.get_phase();
 
 
-idx_algo_bot = find_algo_idx(layer.Transceivers(idx_freq), 'BottomDetection');
+idx_algo_bot = find_algo_idx(layer.Transceivers(idx_freq), 'BottomDetectionV2');
 
 algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
 [PulseLength,~] = trans.get_pulse_length();
-[amp_est, across_est, along_est] = detec_bottom_bathymetric(sv, alongphi, acrossphi, ...
+[amp_est, across_est, along_est] = detec_bottom_bathymetric(sp, alongphi, acrossphi, ...
     layer.Transceivers(idx_freq).Data.get_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
 z_max = nanmax(amp_est.range) * cos(t_angle);
 ext_len = floor(z_max*(tan(t_angle+bw_mean) - tan(t_angle-bw_mean)) / dr/2);
@@ -127,7 +127,7 @@ dr=nanmean(diff(range));
 transmit_angles = (pi/2) - atan(sqrt(tand(Roll_r + trans.Config.Angles(2)) .^2 + tand(Pitch_r + trans.Config.Angles(1)) .^2));
 
 %BS = sp-10*log10(Range_mat) + 10*log10(cos(repmat(transmit_angles, nb_samples,1))) - eq_beam_angle;
-BS = sp - 10*log10(dr*2*Range_mat*sin(bw_mean).*sin(repmat(transmit_angles, nb_samples,1)))-10*log10(0.7);
+BS = sp - 10*log10(dr*2*Range_mat*sin(bw_mean).*sin(repmat(transmit_angles, nb_samples,1)))-10*log10(sqrt(2)/2);
 
 bs_bottom=nan(2*ext_len+1,nb_pings);
 extended_time=nan(2*ext_len+1,nb_pings);

@@ -19,7 +19,8 @@ idx_ping=find(file_id==trans_obj.Data.FileId);
 time_str=datestr(time(idx_ping),'yyyymmddHHMMSSFFF ');
 time_str=time_str';
 time_str=time_str(:)';
-range_str=sprintf('%.4f ',trans_obj.Bottom.Range(idx_ping));
+
+range_str=sprintf('%.4f ',trans_obj.get_bottom_range(idx_ping));
 tag_str=sprintf('%.0f ',trans_obj.Bottom.Tag(idx_ping));
 
 range_node = docNode.createElement('range');

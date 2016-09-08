@@ -22,12 +22,11 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
-nb_samples=length(layer.Transceivers(idx_freq).Data.get_range());
+%nb_samples=length(layer.Transceivers(idx_freq).Data.get_range());
 bot=layer.Transceivers(idx_freq).Bottom;
 
 
-if isempty(bot.Range)
-    bot.Range=nan(1,nb_pings);
+if isempty(bot.Sample_idx)
     bot.Sample_idx=nan(1,nb_pings);
 end
 xinit=nan(1,nb_pings);
@@ -84,14 +83,12 @@ end
                 
                 idx_bot_tot=(idx_bot:idx_bot_1)+idx_ping_ori-1;
 
-                bot.Range(idx_bot_tot)=linspace(y_f(i),y_f(i+1),length(idx_bot_tot));
                 bot.Sample_idx(idx_bot_tot)=round(linspace(idx_r+idx_r_ori-1,idx_r1+idx_r_ori-1,length(idx_bot_tot)));
             end
         elseif length(x_f)==1
             [~, idx_bot]=nanmin(abs(x_f-xdata));
             [~,idx_r]=nanmin(abs(y_f-ydata));
             bot.Sample_idx(idx_bot+idx_ping_ori-1)=idx_r+idx_r_ori-1;
-            bot.Range(idx_bot+idx_ping_ori-1)=y_f;
         end
           
      end_bottom_edit();
@@ -113,7 +110,6 @@ end
         [~, idx_min]=nanmin(abs(x_min-xdata));
         [~, idx_max]=nanmin(abs(x_max-xdata));
         idx_pings=(idx_min:idx_max)+idx_ping_ori-1;
-        bot.Range(idx_pings)=nan;
         bot.Sample_idx(idx_pings)=nan;
         end_bottom_edit();
 

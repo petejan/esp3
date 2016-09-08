@@ -1,6 +1,5 @@
 
 function add_algo(trans_obj,algo_obj,varargin)
-%names={'BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
 
 p = inputParser;
 

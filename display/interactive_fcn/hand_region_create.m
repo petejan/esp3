@@ -34,8 +34,7 @@ bot=trans.Bottom;
 Number=trans.Data.get_numbers();
 nb_pings=length(Number);
 
-if isempty(bot.Range)
-    bot.Range=nan(1,nb_pings);
+if isempty(bot.Sample_idx)
     bot.Sample_idx=nan(1,nb_pings);
 end
 

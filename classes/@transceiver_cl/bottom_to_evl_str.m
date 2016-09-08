@@ -1,13 +1,14 @@
-function evl_str=bottom_obj_to_evl_str(trans_obj)
+function evl_str=bottom_to_evl_str(trans_obj)
 
 bot_obj=trans_obj.Bottom;
+bot_r=trans_obj.get_bottom_range();
 time=trans_obj.Data.Time;
 
 evl_str=sprintf('EVBD 3 5.3.45.23076\n');
-evl_str=[evl_str sprintf('%d\n',nansum(~isnan(bot_obj.Range)))];
+evl_str=[evl_str sprintf('%d\n',nansum(~isnan(bot_r)))];
 for ui=1:length(time);
     str_time=[datestr(time(ui),'YYYYmmDD HHMMSSFFF') '0'];
-    depth=bot_obj.Range(ui);
+    depth=bot_r(ui);
     if isnan(depth)
         continue;
     end

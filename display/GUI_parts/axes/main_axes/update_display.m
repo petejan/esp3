@@ -15,8 +15,9 @@ end
 if new==1
     load_cursor_tool(main_figure);
     init_grid_val(main_figure);
-    update_bottom_tab(main_figure)
-    update_bad_pings_tab(main_figure)
+    update_bottom_tab(main_figure);
+    update_bottom_tab_v2(main_figure);
+    update_bad_pings_tab(main_figure);
     update_denoise_tab(main_figure);
     update_school_detect_tab(main_figure);
     update_single_target_tab(main_figure);

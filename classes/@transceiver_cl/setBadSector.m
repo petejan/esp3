@@ -5,8 +5,8 @@ if isempty(tag)
 end
 
 bottom_obj=obj.Bottom;
-tag=ones(size(bottom_obj.Range));
+tag=ones(size(bottom_obj.Sample_idx));
 tag(IdxBad)=0;
-obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Range',bottom_obj.Range,'Sample_idx',bottom_obj.Sample_idx,'Tag',tag);
+obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Sample_idx',bottom_obj.Sample_idx,'Tag',tag);
 
 end

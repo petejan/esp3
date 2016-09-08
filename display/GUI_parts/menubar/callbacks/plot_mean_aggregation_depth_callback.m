@@ -8,8 +8,8 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-Transceiver=layer.Transceivers(idx_freq);
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
+trans_obj=layer.trans_objs(idx_freq);
+list_reg = trans_obj.regions_to_str();
 
 if strcmp(curr_disp.Fieldname,'sv')
     cax=curr_disp.Cax;
@@ -18,23 +18,23 @@ else
 end
 
 if ~isempty(list_reg)
-    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
+    active_reg=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
     
-    [mean_depth,Sa]=Transceiver.get_mean_depth_from_region(active_reg.Unique_ID);
+    [mean_depth,Sa]=trans_obj.get_mean_depth_from_region(active_reg.Unique_ID);
     
-    Sv=layer.Transceivers(idx_freq).Data.get_datamat('sv');
+    Sv=trans_obj.Data.get_datamat('sv');
 
-    bot_r=Transceiver.Bottom.Range;
-    bot_r(bot_r==0)=layer.Transceivers(idx_freq).Data.Range(2);
-    bot_r(isnan(bot_r))=layer.Transceivers(idx_freq).Data.Range(2);
+    bot_r=trans_obj.get_bottom_range;
+    bot_r(bot_r==0)=trans_obj.Data.Range(2);
+    bot_r(isnan(bot_r))=trans_obj.Data.Range(2);
     
    idx_pings=active_reg.Idx_pings;
    idx_r=active_reg.Idx_r;
-    time=datetime(datestr(layer.Transceivers(idx_freq).Data.Time(idx_pings)));
-    range=layer.Transceivers(idx_freq).Data.get_range(idx_r);
+    time=datetime(datestr(trans_obj.Data.Time(idx_pings)));
+    range=trans_obj.Data.get_range(idx_r);
     figure();
     ax1=subplot(2,1,1);
-    u=imagesc(layer.Transceivers(idx_freq).Data.Time(idx_pings),range,Sv(idx_r,idx_pings));
+    u=imagesc(trans_obj.Data.Time(idx_pings),range,Sv(idx_r,idx_pings));
     hold on;
     plot(time,mean_depth,'r','linewidth',2);
     plot(time,bot_r(idx_pings))

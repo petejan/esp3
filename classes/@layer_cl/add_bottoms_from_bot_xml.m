@@ -80,12 +80,10 @@ for i=1:length(xml_file)
         
         if i==1
         new_bottom{idx_freq}= bottom_cl(...
-            'Range',nan(size(trans_obj.Data.Time)),...
             'Sample_idx',nan(size(trans_obj.Data.Time)),...
             'Tag',nan(size(trans_obj.Data.Time)));
         end
         
-        new_bottom{idx_freq}.Range(idx_start_file:idx_end_file)=depth_resampled;
         new_bottom{idx_freq}.Sample_idx(idx_start_file:idx_end_file)=sample_idx;
         new_bottom{idx_freq}.Tag(idx_start_file:idx_end_file)=tag_resampled;
        

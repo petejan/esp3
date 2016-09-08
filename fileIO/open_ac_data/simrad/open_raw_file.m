@@ -16,10 +16,11 @@ if ~isempty(layers)
     Filename(idx_already_open)=[];
 end
 
-
+% profile on;
 new_layers=open_raw_file_standalone_v2(Filename,...
     'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'LoadEKbot',1);
-
+% profile off;
+% profile viewer;
 
 if ~isempty(new_layers)
     for i=1:length(new_layers)

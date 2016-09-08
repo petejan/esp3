@@ -1,4 +1,4 @@
-function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v3(trans_obj,varargin)
+function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v4(trans_obj,varargin)
 
 %profile on;
 %Parse Arguments
@@ -40,7 +40,6 @@ else
 end
 eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
 Range= trans_obj.Data.get_range();
-dr=nanmean(diff(Range));
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
 
@@ -73,15 +72,7 @@ Sp(idx_r_max:end,:)=nan;
 
 %First let's find the bottom...
 
-dist=trans_obj.GPSDataPing.Dist;
-heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
 
-if ~isempty(dist)&&nb_pings>1&&p.Results.horz_filt>0
-    b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
-else
-    b_filter=ceil(nanmin(15,nb_pings/10));
-    %b_filter=nb_pings;
-end
 if p.Results.rm_rd
     idx_ringdown=analyse_ringdown(RingDown);
 else
@@ -89,57 +80,25 @@ else
 end
 
 BS=bsxfun(@minus,Sp,10*log10(Range));
-
+BS=Sp;
 BS(isnan(BS))=-999;
 BS_ori=BS;
 
-
 BS(:,~idx_ringdown)=nan;
 BS_lin=10.^(BS/10);
-BS_lin(isnan(BS_lin))=0;
-
-BS_lin_red=BS_lin(idx_r_min:idx_r_max,:);
-
-  
-filter_fun = @(block_struct) max(block_struct.data(:));
-BS_filtered_bot_lin=blockproc(BS_lin_red,[heigh_b_filter b_filter],filter_fun);
-[nb_samples_red,~]=size(BS_filtered_bot_lin);
-
-BS_filtered_bot=10*log10(BS_filtered_bot_lin);
-BS_filtered_bot_lin(isnan(BS_filtered_bot_lin))=0;
-
-cumsum_BS=cumsum((BS_filtered_bot_lin));
-cumsum_BS(cumsum_BS<0)=nan;
-diff_cum_BS=diff(10*log10(cumsum_BS));
-diff_cum_BS(isnan(diff_cum_BS))=0;
-
-[~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS);
-
-idx_start=idx_max_diff_cum_BS-1;
-idx_end=idx_max_diff_cum_BS+3;
-
-Bottom_region=(bsxfun(@ge,(1:nb_samples_red)',idx_start)&bsxfun(@le,(1:nb_samples_red)',idx_end));
-max_bs=nanmax(BS_filtered_bot);
-Max_BS_reg=(bsxfun(@gt,BS_filtered_bot,max_bs+thr_echo));
+max_bs=nanmax(BS);
+Max_BS_reg=(bsxfun(@gt,BS,max_bs+thr_echo));
 Max_BS_reg(:,max_bs<thr_bottom)=0;
 
-Bottom_region=find_cluster((Bottom_region>0&BS_filtered_bot>=thr_bottom&Max_BS_reg),1);
+Bottom_region=BS>thr_bottom&Max_BS_reg;
+Bottom_region=floor(filter2(ones(2*Np,1),Bottom_region)/(2*Np))==1;
+Bottom_region=ceil(filter2(ones(2*Np,2),Bottom_region)/(4*Np))==1;
 
-Bottom_region=ceil(filter2_perso(ones(1,3),Bottom_region));
-Bottom_region_red=imresize(Bottom_region,size(BS_lin_red),'nearest');
-Bottom_region=zeros(size(BS_lin));
-Bottom_region(idx_r_min:idx_r_max,:)=Bottom_region_red;
-
-n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
-Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
-
-Bottom_region=Bottom_region(Permut,:);
-Bottom_region(1:n_permut,:)=0;
+%figure();imagesc(Bottom_region)
 
 idx_bottom=bsxfun(@times,Bottom_region,(1:nb_samples)');
 idx_bottom(~Bottom_region)=nan;
 idx_bottom(end,(nansum(idx_bottom)==0))=nb_samples;
-
 
 [I_bottom,J_bottom]=find(~isnan(idx_bottom));
 
@@ -155,17 +114,13 @@ Double_bottom_region=~isnan(Double_bottom);
 
 %%%%%%%%%%%%%%%%%%%%%Bottom detection and BS analysis%%%%%%%%%%%%%%%%%%%%%%
 
-
 BS_lin_norm=bsxfun(@rdivide,Bottom_region.*BS_lin,nansum(Bottom_region.*BS_lin));
-
 
 BS_lin_norm_bis=BS_lin_norm;
 BS_lin_norm_bis(isnan(BS_lin_norm))=0;
 BS_lin_cumsum=(cumsum(BS_lin_norm_bis,1)./repmat(sum(BS_lin_norm_bis),size(Bottom_region,1),1));
 BS_lin_cumsum(BS_lin_cumsum<thr_cum)=Inf;
-[~,Bottom_temp]=min((abs(BS_lin_cumsum-thr_cum)));
-Bottom_temp_2=nanmin(idx_bottom);
-Bottom=nanmax(Bottom_temp,Bottom_temp_2);
+[~,Bottom]=min((abs(BS_lin_cumsum-thr_cum)));
 
 backstep=nanmax([1 Np]);
 
@@ -192,12 +147,8 @@ for i=1:nb_pings
     end
 end
 
-% figure();plot(Bottom_temp)
-% hold on;plot(Bottom_temp_2)
-% plot(Bottom);
 
 Bottom(Bottom==1)=nan;
-Bottom(nanmin(idx_bottom)>=nanmax(1,nb_samples-round(heigh_b_filter)/2))=nan;
 
 BS_filter=(20*log10(filter2_perso(ones(4*Np,1),10.^(BS/20)))).*Bottom_region;
 BS_filter(Bottom_region==0)=nan;

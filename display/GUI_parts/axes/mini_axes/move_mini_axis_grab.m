@@ -53,6 +53,7 @@ end
             hfigs=getappdata(main_figure,'ExternalFigures');
             setappdata(main_figure,'ExternalFigures',[h hfigs]);
         end
+        display_bottom(main_figure);
     end
 end
 

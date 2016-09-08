@@ -58,11 +58,11 @@ raw_idx_obj.len_dg=nan(1,MAX_DG_SIZE);
 raw_idx_obj.chan_dg=nan(1,MAX_DG_SIZE);
 dgTime_ori = datenum(1601, 1, 1, 0, 0, 0);
 
-
+frewind(fid);
 
 for i=1:length(idx_dg)
-    
-    fseek(fid,idx_dg(i)-5,-1);
+    fread(fid,idx_dg(i)-5-ftell(fid));
+
     len=fread(fid, 1, 'int32', 'l');
     
     if (feof(fid))
@@ -86,7 +86,7 @@ for i=1:length(idx_dg)
     switch dgType
         case 'RAW0'
             raw_idx_obj.chan_dg(i)=int16(fread(fid,1,'int16','l'));
-            fseek(fid,66,0);
+            fread(fid,66);
             raw_idx_obj.nb_samples(i) = fread(fid,1,'int32', 'l');
             
         case 'RAW3'

@@ -14,6 +14,7 @@ clear_lines(ah);
 [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
+ydata=double(get(axes_panel_comp.main_echo,'YData'));
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
@@ -42,9 +43,9 @@ cp = ah.CurrentPoint;
 xinit = cp(1,1);
 yinit=cp(1,2);
 
-% if xinit<xdata(1)||xinit>xdata(end)||yinit<1||yinit>range(end)
-%     return
-% end
+if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
+    return
+end
 
 x_bad=[xinit xinit];
 

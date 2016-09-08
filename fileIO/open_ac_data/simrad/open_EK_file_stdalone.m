@@ -188,9 +188,8 @@ if ~isequal(Filename_cell, 0)
                         depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Data.Time);
                         depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth(1);
                         sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
-                        depth_resampled(sample_idx==1)=nan;
                         sample_idx(sample_idx==1)=nan;
-                        trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Range',depth_resampled,'Sample_idx',sample_idx));
+                        trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Sample_idx',sample_idx));
                     end
                 end
             end
@@ -225,16 +224,17 @@ if ~isequal(Filename_cell, 0)
                 main_path=whereisEcho();
 
                 [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
-                if isempty(algo_vec)
-                    algo_vec=init_algos();
-                end
+                
+                algo_vec_init=init_algos();
+                
+                algo_vec_init=reset_range(algo_vec_init,trans_obj(i).Data.get_range());
                 algo_vec=reset_range(algo_vec,trans_obj(i).Data.get_range());
                 trans_obj(i).GPSDataPing=gps_data_ping;
                 trans_obj(i).AttitudeNavPing=attitude;
-                trans_obj(i).Algo=algo_vec;
+                trans_obj(i).Algo=algo_vec; trans_obj(i).add_algo(algo_vec_init);
                 trans_obj(i).computeAngles();
                 trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
-                
+               
             end
             
         else 

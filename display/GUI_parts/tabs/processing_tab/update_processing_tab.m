@@ -11,7 +11,7 @@ set(processing_tab_comp.tog_freq,'String',layer.Frequencies,'Value',idx_freq);
 if ~isempty(process_list)
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'Denoise');
     noise_rem_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BottomDetection');
+    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BottomDetectionV2');
     bot_algo=found;
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
     bad_trans_algo=found;

@@ -29,25 +29,15 @@ bFileName = sprintf('b%07d', num);
 
 ifile_info=parse_ifile(fullfile(dpath,iFileName));
 
-depthFactor = ifile_info.depth_factor;
-
 if bot>0&&exist(fullfile(folder,bFileName),'file')>0
     
     sample_idx = load_bottom_file(fullfile(folder,bFileName));
-    if isempty(sample_idx)
-        bottom=bottom_cl(...
-            'Origin','Esp2',...
-            'Range',[],...
-            'Sample_idx',[],'Tag',[]);
-    end
     
-    bottom = sample_idx/depthFactor;
-    
+   
     bad = load_bad_transmits(fullfile(folder,bFileName))';
     
     bottom=bottom_cl(...
         'Origin','Esp2',...
-        'Range',bottom,...
         'Sample_idx',sample_idx,...
         'Tag',double(bad==0));
     

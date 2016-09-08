@@ -14,8 +14,7 @@ switch (dgType)
         
         fread(fid, 1, 'int32', 'l');
         [header,config,~]=read_xml0(t_line);
-        
-        
+            
     otherwise
         
         disp(dgType);
