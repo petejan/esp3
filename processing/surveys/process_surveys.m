@@ -53,7 +53,7 @@ for i=1:length(Filenames)
         end
         
         if isempty(surv_obj.SurvInput.Algos)
-            fields_req={'power','sv'};
+            fields_req={'power','sv','sp'};
         else
             fields_req={};
         end

@@ -38,6 +38,7 @@ if p.Results.denoised>0
 else
     Sp=trans_obj.Data.get_datamat('sp');
 end
+
 eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
 Range= trans_obj.Data.get_range();
 Fs=1/trans_obj.Params.SampleInterval(1);
