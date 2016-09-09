@@ -40,7 +40,7 @@ else
     et=p.Results.EndTime;
 end
 
-idx_valid=trans_obj.Data.Time>=st&trans_obj.Data.Time<=et;
+idx_valid=find(trans_obj.Data.Time>=st&trans_obj.Data.Time<=et);
 
 
 switch Slice_units
@@ -68,9 +68,9 @@ for k = 1:length(binStart); % sum up abscf data according to bins
     [~,idx_bins_E(k)]=nanmin(abs(bin_ref-binEnd(k)));
 end
 
-bin_S=bin_ref(idx_bins_S);
-bin_E=bin_ref(idx_bins_E);
-bin_M=bin_ref(round((idx_bins_S+idx_bins_E)/2));
+idx_S=idx_valid(idx_bins_S);
+idx_E=idx_valid(idx_bins_E);
+idx_M=idx_valid(round((idx_bins_S+idx_bins_E)/2));
 
 if ~isempty(trans_obj.ST.TS_comp)
     x_st=trans_obj.ST.Ping_number;
@@ -143,10 +143,10 @@ output.slice_size=Slice_w;
 output.num_slices=numSlices;
 output.nb_good_pings=nb_good_pings;
 if ~isempty(trans_obj.GPSDataPing.Lat)
-    output.slice_lat=trans_obj.GPSDataPing.Lat(bin_M)';
-    output.slice_lon=trans_obj.GPSDataPing.Long(bin_M)';
-    output.slice_lat_esp2=trans_obj.GPSDataPing.Lat(bin_S)';
-    output.slice_lon_esp2=trans_obj.GPSDataPing.Long(bin_S)';
+    output.slice_lat=trans_obj.GPSDataPing.Lat(idx_M)';
+    output.slice_lon=trans_obj.GPSDataPing.Long(idx_M)';
+    output.slice_lat_esp2=trans_obj.GPSDataPing.Lat(idx_S)';
+    output.slice_lon_esp2=trans_obj.GPSDataPing.Long(idx_S)';
 else
     output.slice_lat=nan(size(nb_good_pings));
     output.slice_lon=nan(size(nb_good_pings));
@@ -154,8 +154,8 @@ else
     output.slice_lon_esp2=nan(size(nb_good_pings));
 end
 
-output.slice_time_start=trans_obj.Data.Time(bin_S);
-output.slice_time_end=trans_obj.Data.Time(bin_E);
+output.slice_time_start=trans_obj.Data.Time(idx_S);
+output.slice_time_end=trans_obj.Data.Time(idx_E);
 output.slice_nb_tracks=nb_tracks;
 output.slice_nb_st=nb_st;
 end

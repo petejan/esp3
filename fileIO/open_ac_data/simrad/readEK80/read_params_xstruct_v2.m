@@ -1,27 +1,24 @@
 function params=read_params_xstruct_v2(xstruct)
 
-params=xstruct.Parameter.Channel.Attributes;
-att=fieldnames(params);
 
-% for j=1:length(att)
-%     val_temp=str2double(params.(att{j}));
-%     if ~isnan(val_temp)
-%         params.(att{j})=val_temp;
-%     end
-% end
-
-
-
-for j=1:length(att)
-    switch att{j}
-        case 'ChannelID'
-        otherwise
-            val_temp=str2double(params.(att{j}));
-            if ~isnan(val_temp)
-                params.(att{j})=val_temp;
-            end
+Channels=xstruct.Parameter.Channel;
+for i=1:length(Channels)
+    if length(Channels)>1
+        Chanel=Channels{i};
+    else
+        Chanel=Channels;
+    end
+    params_temp=Chanel.Attributes;
+    att=fieldnames(params_temp);
+    
+    for j=1:length(att)
+        
+        val_temp=str2double(params_temp.(att{j}));
+        if ~isnan(val_temp)
+            params(i).(att{j})=val_temp;
+        else
+            params(i).(att{j})=params_temp.(att{j});
+        end
     end
     
 end
-end
-

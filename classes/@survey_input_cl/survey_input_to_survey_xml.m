@@ -99,13 +99,15 @@ if ~isempty(survey_input_obj.Snapshots)
         snap_node.setAttribute('number',num2str(survey_input_obj.Snapshots{isnap}.Number));
         snap_node.setAttribute('folder',survey_input_obj.Snapshots{isnap}.Folder);
         
-        cal_node=docNode.createElement('cal');
-        for ical=1:length(survey_input_obj.Snapshots{isnap}.Cal)
-            cal_node.setAttribute('G0',num2str(survey_input_obj.Snapshots{isnap}.Cal.G0,'%.2f'));
-            cal_node.setAttribute('SACORRECT',num2str(survey_input_obj.Snapshots{isnap}.Cal.SACORRECT,'%.2f'));
-            cal_node.setAttribute('FREQ',num2str(survey_input_obj.Snapshots{isnap}.Cal.FREQ,'%.0f'));
+        if isfield(survey_input_obj.Snapshots{isnap},'Cal')
+            cal_node=docNode.createElement('cal');
+            for ical=1:length(survey_input_obj.Snapshots{isnap}.Cal)
+                cal_node.setAttribute('G0',num2str(survey_input_obj.Snapshots{isnap}.Cal.G0,'%.2f'));
+                cal_node.setAttribute('SACORRECT',num2str(survey_input_obj.Snapshots{isnap}.Cal.SACORRECT,'%.2f'));
+                cal_node.setAttribute('FREQ',num2str(survey_input_obj.Snapshots{isnap}.Cal.FREQ,'%.0f'));
+            end
+            snap_node.appendChild(cal_node);
         end
-        snap_node.appendChild(cal_node);
         
         for istrat=1:length(survey_input_obj.Snapshots{isnap}.Stratum)
             strat_node = docNode.createElement('stratum');

@@ -14,6 +14,7 @@ end
 surv_in_obj=surv_obj.SurvInput;
 
 vert_slice = surv_in_obj.Options.Vertical_slice_size;
+vert_slice_units = surv_in_obj.Options.Vertical_slice_units;
 
 output=layers.list_layers_survey_data();
 
@@ -88,7 +89,8 @@ for isn=1:length(snapshots)
                 for i=1:length(idx_lay)
                     layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
                     idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-                    bot_add=layer_obj_tr.Transceivers(idx_freq).Bottom;
+                    tag_add=layer_obj_tr.Transceivers(idx_freq).Bottom.Tag;
+                    bot_range_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_range();
                     gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
                     if i>1
                         gps_tot=concatenate_GPSData(gps_tot,gps_add);
@@ -98,13 +100,13 @@ for isn=1:length(snapshots)
                     
                     gps_add.Long(gps_tot.Long>180)=gps_add.Long(gps_tot.Long>180)-360;
                     idx_pings=1:length(gps_add.Time);
-                    idx_good_pings_add=intersect(idx_pings,find(bot_add.Tag(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
+                    idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
                     dist_add=m_lldist([gps_add.Long(idx_good_pings_add(1)) gps_add.Long(idx_good_pings_add(end))],[gps_add.Lat(idx_good_pings_add(1)) gps_add.Lat(idx_good_pings_add(end))])/1.852;
                     dist_tot=dist_tot+dist_add;
                     timediff=(gps_add.Time(idx_good_pings_add(end))-gps_add.Time(idx_good_pings_add(1)))*24;
                     timediff_tot=timediff_tot+timediff;
                     nb_good_pings=nb_good_pings+length(idx_good_pings_add);
-                    mean_bot(i)=nanmean(bot_add.Range(idx_good_pings_add));
+                    mean_bot(i)=nanmean(bot_range_add);
                     mean_bot_w=mean_bot_w+mean_bot(i)*length(idx_good_pings_add);
                     av_speed(i)=dist_add/timediff;
                     idx_good_pings=union(idx_good_pings,idx_good_pings_add+iping0);
@@ -221,7 +223,7 @@ for isn=1:length(snapshots)
                 end
                 
                 
-                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
+                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
                 %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
 
                 Output_echo=[Output_echo sliced_output];

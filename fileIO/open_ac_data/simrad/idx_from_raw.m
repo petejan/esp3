@@ -61,8 +61,9 @@ dgTime_ori = datenum(1601, 1, 1, 0, 0, 0);
 frewind(fid);
 
 for i=1:length(idx_dg)
-    fread(fid,idx_dg(i)-5-ftell(fid));
-
+    curr_pos=ftell(fid);
+    fread(fid,idx_dg(i)-5-curr_pos);
+    %fseek(fid,idx_dg(i)-5,-1);
     len=fread(fid, 1, 'int32', 'l');
     
     if (feof(fid))
@@ -73,7 +74,7 @@ for i=1:length(idx_dg)
         len=HEADER_LEN+1;
     end
     
-    raw_idx_obj.pos_dg(i)=ftell(fid);
+    raw_idx_obj.pos_dg(i)=idx_dg(i)-1;
     raw_idx_obj.len_dg(i)=len;
     [dgType,nt_sec]=readEK60Header_v2(fid);
     if (feof(fid))||isempty(dgType)

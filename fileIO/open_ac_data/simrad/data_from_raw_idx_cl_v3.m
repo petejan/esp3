@@ -234,7 +234,7 @@ for idg=1:length(idx_raw_obj.type_dg)
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
-            
+
         case 'FIL1'
             if fil_process==0
                 %disp(dgType);
@@ -270,7 +270,7 @@ for idg=1:length(idx_raw_obj.type_dg)
             
             
             if isempty(idx)
-                fseek(fid, idx_raw_obj.len_dg(idg) - HEADER_LEN -128 , 0);
+                fread(fid, idx_raw_obj.len_dg(idg) - HEADER_LEN -128);
             else
                 if i_ping(idx)>=p.Results.PingRange(1)&&i_ping(idx)<=p.Results.PingRange(2)
                     
@@ -303,9 +303,14 @@ for idg=1:length(idx_raw_obj.type_dg)
                             
                         case 'GPT'
                             data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
-                            angle=fread(fid,[2 sampleCount],'int8', 'l');
-                            data.pings(idx).athwartship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
-                            data.pings(idx).alongship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                            if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
+                                angle=fread(fid,[2 sampleCount],'int8', 'l');
+                                data.pings(idx).athwartship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
+                                data.pings(idx).alongship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                            else
+                                data.pings(idx).athwartship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                data.pings(idx).alongship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                            end
                             
                     end
                     i_ping(idx) = i_ping(idx) + 1;

@@ -7,7 +7,8 @@ Bottom_idx=trans_obj.Bottom.Sample_idx;
 if isempty(Bottom_idx)
     bot_range=ones(1,nb_pings)*range(end);
 else
-    bot_range=range(Bottom_idx);
+    bot_range=nan(size(Bottom_idx));
+    bot_range(~isnan(Bottom_idx))=range(Bottom_idx(~isnan(Bottom_idx)));
 end
 
 if ~isempty(varargin)

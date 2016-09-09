@@ -16,9 +16,9 @@ for i=1:nb_transceivers
     else
         Transceiver=Transceivers.Transceiver;
     end
-
+    
     config_temp=Transceiver.Attributes;
-
+    
     
     Channels=Transceiver.Channels;
     Channel=Channels.Channel;
@@ -33,18 +33,59 @@ for i=1:nb_transceivers
         config_temp.(att{j})=Transducer.Attributes.(att{j});
     end
     
+    
+    
     fields=fieldnames(config_temp);
     
     for jj=1:length(fields)
-        switch fields{jj}
-            case {'ChannelID' ,'ChannelIdShort' ,'TransducerName','Version','TransceiverType','TransceiverName','EthernetAddress','IPAddress'}
-                config(i).(fields{jj})=(config_temp.(fields{jj}));
-            case {'Gain','PulseLength','SaCorrection'}
-                config(i).(fields{jj})=str2double(strsplit(config_temp.(fields{jj}),';'));
-            otherwise
-                config(i).(fields{jj})=str2double(config_temp.(fields{jj}));
+        val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
+        if any(isnan(val_temp))
+            config(i).(fields{jj})=config_temp.(fields{jj});
+        else
+            config(i).(fields{jj})=val_temp;
         end
     end
+end
+
+if isfield(conf,'Transducers')
+    
+    Transducers=conf.Transducers.Transducer;
+    nb_transducers=length(Transducers);
+    
+    for i=1:nb_transducers
+        if nb_transducers>1
+            Transducer=Transducers{i};
+        else
+            Transducer=Transducers;
+        end
+        
+        config_temp=Transducer.Attributes;
+        
+        
+        att=fieldnames(Transducer.Attributes);
+        for j=1:length(att)
+            config_temp.(att{j})=Transducer.Attributes.(att{j});
+        end
+        
+        
+        
+        fields=fieldnames(config_temp);
+        
+        for jj=1:length(fields)
+            
+            val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
+            if any(isnan(val_temp))
+                config_trans(i).(fields{jj})=config_temp.(fields{jj});
+            else
+                config_trans(i).(fields{jj})=val_temp;
+            end
+            
+        end
+    end
+    
+else
+    
+    config_trans=[];
 end
 
 end
