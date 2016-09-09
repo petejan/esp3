@@ -50,6 +50,7 @@ for i=1:length(Filenames)
                     warning('It looks like there is a problem with XML survey file %s\n',Filenames{i});
                     continue;
                 end
+                
         end
         
         if isempty(surv_obj.SurvInput.Algos)
@@ -57,6 +58,7 @@ for i=1:length(Filenames)
         else
             fields_req={};
         end
+        
         %surv_obj.SurvInput.Options.Soundspeed=1450;
         [layers_new,layers_old]=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,'layers',layers_out,'Fieldnames',fields_req);
  

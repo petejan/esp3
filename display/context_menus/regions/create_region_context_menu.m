@@ -11,6 +11,8 @@ uimenu(context_menu,'Label','Display Pdf of values','Callback',{@disp_hist_regio
 uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
+uimenu(context_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
+
 
 end
 
