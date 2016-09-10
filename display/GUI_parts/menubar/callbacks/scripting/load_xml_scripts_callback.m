@@ -1,5 +1,13 @@
 function load_xml_scripts_callback(~,~,hObject)
 
+hfigs=getappdata(hObject,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('ScriptingXML')));
+if ~isempty(idx_tag)
+    figure(hfigs(idx_tag(1)))
+    return;
+end
+
 app_path=getappdata(hObject,'App_path');
 
 [xml_surveys_input,xml_files]=get_xml_scripts(app_path.scripts);

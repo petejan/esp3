@@ -266,6 +266,7 @@ for isnap=1:length(snapshots)
     
     survey_input_obj.Snapshots{isnap}.Folder=path_f;
     survey_input_obj.Snapshots{isnap}.Number=snapshots(isnap);
+    survey_input_obj.Snapshots{isnap}.Cal=[];
     idx_snap=idx_struct(surv_data_struct.Snapshot(idx_struct)==snapshots(isnap));
     stratum=unique(surv_data_struct.Stratum(idx_snap));
     survey_input_obj.Snapshots{isnap}.Stratum=cell(1,length(stratum));

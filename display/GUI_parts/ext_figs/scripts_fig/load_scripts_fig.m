@@ -1,13 +1,19 @@
 function load_scripts_fig(main_figure,scriptsSummary,flag)
-
 hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('Scripting%s',flag)));
+if ~isempty(idx_tag)
+    figure(hfigs(idx_tag(1)))
+    return;
+end
+
 % Column names and column format
 columnname = {'Title','Species','Voyage','Areas','Author','Script','Created'};
 columnformat = {'char','char','char','char','char','char','char'};
 
 script_fig = figure('Position',[100 100 800 600],'Resize','off',...
     'Name',sprintf('Scripting (%s)',flag),'NumberTitle','off',...
-    'MenuBar','none');%No Matlab Menu)
+    'MenuBar','none','Tag',sprintf('Scripting%s',flag));%No Matlab Menu)
 hfigs_new=[hfigs script_fig];
 setappdata(main_figure,'ExternalFigures',hfigs_new);
 
@@ -120,6 +126,7 @@ function run_script_callback_v2(src,~,hObject,main_figure,flag)
 selected_scripts=getappdata(hObject,'SelectedScripts');
 app_path=getappdata(main_figure,'App_path');
 layers=getappdata(main_figure,'Layers');
+
 
 switch flag
     case 'mbs'
