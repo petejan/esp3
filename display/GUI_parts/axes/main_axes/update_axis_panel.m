@@ -41,7 +41,16 @@ end
 delete(axes_panel_comp.listeners);
 clear_lines(axes_panel_comp.main_axes);
 
-layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
+[dr,dp]=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
+str_subsampling=sprintf('Disp. SubSampling: [%.0fx%.0f]',dp,dr);
+info_panel_comp=getappdata(main_figure,'Info_panel');
+
+if dr>1||dp>1
+  set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor','r');
+else
+    set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor',[0 0.5 0]);
+end
+
 
 if strcmpi(curr_disp.CursorMode,'Normal')  
     create_context_menu_main_echo(main_figure);

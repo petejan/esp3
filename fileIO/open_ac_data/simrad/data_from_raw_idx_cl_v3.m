@@ -1,4 +1,4 @@
-function [trans_obj,envdata,NMEA]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,varargin)
+function [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,varargin)
 HEADER_LEN=12;
 p = inputParser;
 addRequired(p,'path_f',@(x) ischar(x));
@@ -132,6 +132,9 @@ prop_env=properties(env_data_cl);
 param_str_init=cell(1,nb_trans);
 param_str_init(:)={''};
 
+idx_mru0=strcmp(idx_raw_obj.type_dg,'MRU0');
+mru0_att=attitude_nav_cl('Time',idx_raw_obj.time_dg(idx_mru0));
+
 
 fid=fopen(filename,'r');
 
@@ -183,6 +186,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                                     trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
                                 end
                             end
+                            trans_obj(idx).Config.XML_string=t_line;
                         end
                     end
                 case 'Environment'
@@ -329,11 +333,10 @@ for idg=1:length(idx_raw_obj.type_dg)
         case 'MRU0'
             id_mru0=id_mru0+1;
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
-            mru0_t(id_mru0)=idx_raw_obj.time_dg(idg);
-            heave(id_mru0) = fread(fid,1,'int32', 'l');
-            roll(id_mru0) = fread(fid,1,'int32', 'l');
-            pitch(id_mru0) = fread(fid,1,'int32', 'l');
-            heading(id_mru0) = fread(fid,1,'int32', 'l');
+            mru0_att.Heave(id_mru0) = fread(fid,1,'int32', 'l');
+            mru0_att.Roll(id_mru0) = fread(fid,1,'int32', 'l');
+            mru0_att.Pitch(id_mru0) = fread(fid,1,'int32', 'l');
+            mru0_att.Heading(id_mru0) = fread(fid,1,'int32', 'l');
             
             
         case 'RAW0'

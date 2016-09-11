@@ -31,6 +31,7 @@ classdef config_cl
         MaxTxPowerTransducer;
         SaCorrection;
         TransducerName='Dummy Transducer'
+        XML_string='';
     end
      
 end

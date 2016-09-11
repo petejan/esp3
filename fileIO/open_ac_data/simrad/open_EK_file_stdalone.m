@@ -135,7 +135,7 @@ if ~isequal(Filename_cell, 0)
             end
         end
 
-        [trans_obj,envdata,NMEA]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap);
+        [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap);
 
         
         if ~isa(trans_obj,'transceiver_cl')
@@ -143,10 +143,18 @@ if ~isequal(Filename_cell, 0)
             continue;
         end
 
-
-        idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|GGA|GGL|VLW)')));
+        idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
+            cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
+            cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
+        
+        [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
+        
+        idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)'))),find(idx_NMEA_gps(idx_GPS,:)));
         [gps_data,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
         
+        if isempty(attitude_full)
+            attitude_full=mru0_att;
+        end
    
         if p.Results.GPSOnly==0
             for i =1:length(trans_obj)

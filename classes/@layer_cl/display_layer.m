@@ -1,4 +1,4 @@
-function display_layer(layer,freq,fieldname,ax,main_echo,x,y,new)
+function [dr,dp]=display_layer(layer,freq,fieldname,ax,main_echo,x,y,new)
 
 [idx_freq,found]=layer.find_freq_idx(freq);
 if found==0

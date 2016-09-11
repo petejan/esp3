@@ -391,5 +391,21 @@ output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
 
+fields=fieldnames(output);
+idx_zeros=find(nansum(output.Sv_mean_lin,2)==0);
+idx_rem=[];
+if length(idx_zeros)>2
+   if idx_zeros(1)==1;
+       idx_rem=idx_zeros(1:find(abs(diff(idx_zeros))>1,1));  
+   end
+   
+   if idx_zeros(end)==size(output.Sv_mean_lin,1);
+       idx_rem=union(idx_rem,idx_zeros(find(abs(diff([1;idx_zeros]))>1,1,'last')):idx_zeros(end));  
+   end
+end
+
+for ifi=1:length(fields)
+    output.(fields{ifi})(idx_rem,:)=[];
+end
 
 end

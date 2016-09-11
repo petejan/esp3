@@ -91,5 +91,5 @@ if curr_att>0
 elseif curr_heading>0
     attitude_full=attitude_nav_cl('Heading',heading.heading,'Time',heading.time);
 else
-    attitude_full=attitude_nav_cl();
+    attitude_full=attitude_nav_cl.empty();
 end

@@ -14,7 +14,7 @@ end
 range_tvg=range-(r_corr);
 range_tvg(range_tvg<0)=0;
 
-profile on;
+
 switch type
     case {'ASL'}
         tmp=10*log10(single(power));     

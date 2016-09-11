@@ -84,7 +84,7 @@ for idx_school=idx_schools
     school_struct.delta_sv_120_38_mean=delta_120_38;
     school_struct.aggregation_depth_mean=nanmean(output_reg_38.Range_mean(:));
     school_struct.aggregation_depth_min=nanmax(output_reg_38.Range_mean(:));
-    school_struct.bottom_depth=nanmean(layer.Transceivers(idx_18).Bottom.Range);
+    school_struct.bottom_depth=nanmean(layer.Transceivers(idx_18).get_bottom_range());
     school_struct.lat_mean=nanmean(output_reg_38.Lat_E(:));
     
     class_tree_obj=decision_tree_cl(fullfile(whereisEcho,'classification.xml'));

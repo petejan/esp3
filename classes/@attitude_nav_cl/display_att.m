@@ -31,6 +31,8 @@ if ~isempty(roll)
     legend('boxoff')
     ylabel('Attitude');
     grid on;
+else
+   ax=[]; 
 end
 if ~isempty(heading)
     u=u+1;
@@ -41,7 +43,7 @@ if ~isempty(heading)
     xlabel('Time(s)');
     ylabel('Heading');
     grid on;
-    linkaxes([ax axh],'x');
+    linkaxes([ axh],'x');
 end
 
 end

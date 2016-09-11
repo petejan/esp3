@@ -54,33 +54,39 @@ switch p.Results.Ref
         else
             idx_r_max=length(ydata);
         end
-
+   
+        shape='Rectangular';
+        if p.Results.y_max~=Inf
+            [~,idx_r_y_max]=nanmin(abs(ydata-p.Results.y_max));
+            idx_r_max=nanmin(idx_r_max,idx_r_y_max);
+        end
+        mask=[]; idx_r=idx_r_min:idx_r_max;
     case 'Bottom' 
         name='WC';
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
-        if nansum(isnan(bot_data))<nb_pings
-            [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
-        else
-            idx_r_max=length(ydata);
-        end
-        [~,idx_r_min]=nanmin(abs(ydata-nanmin(bot_data+p.Results.Cell_h-p.Results.y_min)));
+        shape='Polygon';
+
+        mask=bsxfun(@ge,ydata,bot_data-p.Results.Cell_h-p.Results.y_min)&...
+        bsxfun(@le,ydata,bot_data+p.Results.Cell_h);
+        idx_r=find(nansum(mask,2)>0);
+        mask=mask(idx_r,:);
 end
 
-[~,idx_r_y_max]=nanmin(abs(ydata-p.Results.y_max));
-idx_r_max=nanmin(idx_r_max,idx_r_y_max);
+
 
 trans_obj.rm_region_name(name);
 
- idx_r=idx_r_min:idx_r_max;
+
  
 reg_wc=region_cl(...
     'ID',trans_obj.new_id(),...
+    'Shape',shape,...
+    'MaskReg',mask,...
     'Name',name,...
     'Type',p.Results.Type,...
     'Idx_pings',idx_pings,...
     'Idx_r',idx_r,...
-    'Shape','Rectangular',...
     'Reference',p.Results.Ref,...
     'Cell_w',p.Results.Cell_w,...
     'Cell_w_unit',p.Results.Cell_w_unit,...
