@@ -24,7 +24,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
 [idx_reg,found]=trans_obj.find_reg_idx(reg_curr.Unique_ID);
-
+idx_reg=idx_reg;
 if found==0
     return;
 end

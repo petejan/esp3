@@ -39,7 +39,7 @@ for isn=1:length(snapshots)
             filenames_cell=transects{itr}.files;
             trans_num=transects{itr}.number;
             cal=get_cal_node(cal_strat,transects{itr});
-  
+            
             fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             if ~iscell(filenames_cell)
                 filenames_cell={filenames_cell};
@@ -144,51 +144,59 @@ for isn=1:length(snapshots)
                 dates_out(ilay_in)=layers_in(ilay_in).Transceivers(1).Data.Time(1);
             end
             
-            [fTypes,idx_unique,idx_out]=unique(fType_in);
             
-            for itype=1:length(fTypes)
-                switch lower(fTypes{itype})
-                    case 'asl'
-                        
-                        max_load_days=1;
-                        i_cell=1;
-                        new_layers_sorted{i_cell}=[];
-                        date_ori=dates_out(1);
-                        
-                        for i_file=1:length(dates_out)
-                            if i_file>1
-                                if dates_out(i_file)-dates_out(i_file-1)>=1
-                                    i_cell=i_cell+1;
-                                    new_layers_sorted{i_cell}= layers_in(i_file);
-                                    date_ori=dates_out(i_file);
-                                    continue;
+            switch p.Results.origin
+                case 'xml'
+                    [fTypes,idx_unique,idx_out]=unique(fType_in);
+                    
+                    for itype=1:length(fTypes)
+                        switch lower(fTypes{itype})
+                            case 'asl'
+                                max_load_days=1;
+                                i_cell=1;
+                                new_layers_sorted{i_cell}=[];
+                                date_ori=dates_out(1);
+                                
+                                for i_file=1:length(dates_out)
+                                    if i_file>1
+                                        if dates_out(i_file)-dates_out(i_file-1)>=1
+                                            i_cell=i_cell+1;
+                                            new_layers_sorted{i_cell}= layers_in(i_file);
+                                            date_ori=dates_out(i_file);
+                                            continue;
+                                        end
+                                    end
+                                    
+                                    if dates_out(i_file)-date_ori<=max_load_days
+                                        new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} layers_in(i_file)];
+                                    else
+                                        i_cell=i_cell+1;
+                                        new_layers_sorted{i_cell}= layers_in(i_file);
+                                        date_ori=dates_out(i_file);
+                                    end
+                                    
                                 end
-                            end
-                            
-                            if dates_out(i_file)-date_ori<=max_load_days
-                                new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} layers_in(i_file)];
-                            else
-                                i_cell=i_cell+1;
-                                new_layers_sorted{i_cell}= layers_in(i_file);
-                                date_ori=dates_out(i_file);
-                            end
-                            
+                                
+                                disp('Shuffling layers');
+                                layers_out_temp=[];
+                                
+                                for icell=1:length(new_layers_sorted)
+                                    layers_out_temp=[layers_out_temp shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
+                                end
+                                
+                                clear layers_in;
+                                clear new_layers_sorted;
+                                
+                            otherwise
+                                
+                                layers_out_temp=shuffle_layers(layers_in(idx_unique(itype)==idx_out),'multi_layer',0);
+                                clear layers_in;
+                                
                         end
-                        
-                        disp('Shuffling layers');
-                        layers_out_temp=[];
-                        
-                        for icell=1:length(new_layers_sorted)
-                            layers_out_temp=[layers_out_temp shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
-                        end
-                        clear layers_in;
-                        clear new_layers_sorted;
-                    otherwise
-                        
-                        layers_out_temp=shuffle_layers(layers_in(idx_unique(itype)==idx_out),'multi_layer',0);
-                        clear layers_in;
-                        
-                end
+                    end
+                case 'mbs'
+                    layers_out_temp=layers_in;
+                    clear layers_in;
             end
             
             if length(layers_out_temp)>1
@@ -202,7 +210,7 @@ for isn=1:length(snapshots)
                 if iscell(cal)
                     cal_curr=cal{i_cal};
                 else
-                    cal_curr=cal; 
+                    cal_curr=cal;
                 end
                 for i_freq=1:length(layer_new.Frequencies)
                     curr_freq=layer_new.Frequencies(i_freq);
@@ -325,7 +333,6 @@ for isn=1:length(snapshots)
                 if options.Remove_tracks
                     layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
                 end
-                
                 
                 layers_new=[layers_new layer_new];
             end

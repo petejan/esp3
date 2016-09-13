@@ -10,8 +10,6 @@ if found==0
     return
 end
 
-dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
-
 range=layer.Transceivers(idx_freq).Data.get_range();
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
@@ -28,6 +26,13 @@ set(bottom_tab_v2_comp.r_min_ed,'string',num2str(get(bottom_tab_v2_comp.r_min_sl
 set(bottom_tab_v2_comp.r_max_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
 set(bottom_tab_v2_comp.r_max_sl,'value',nanmin(algo.r_max,range(end)));
 set(bottom_tab_v2_comp.r_max_ed,'string',num2str(get(bottom_tab_v2_comp.r_max_sl,'Value'),'%.1f'));
+
+set(bottom_tab_v2_comp.thr_echo_sl,'value',algo.thr_echo);
+set(bottom_tab_v2_comp.thr_echo_ed,'string',num2str(get(bottom_tab_v2_comp.thr_echo_sl,'Value'),'%.0f'));
+
+set(bottom_tab_v2_comp.thr_cum_sl,'value',algo.thr_cum);
+set(bottom_tab_v2_comp.thr_cum_ed,'string',num2str(get(bottom_tab_v2_comp.thr_cum_sl,'Value'),'%.2f'));
+
 
 set(bottom_tab_v2_comp.Thr_backstep_sl,'value',algo.thr_backstep);
 set(bottom_tab_v2_comp.Thr_backstep_ed,'string',num2str(get(bottom_tab_v2_comp.Thr_backstep_sl,'Value'),'%.0f'));

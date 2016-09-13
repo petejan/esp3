@@ -1,5 +1,6 @@
 function [layers_out,surv_obj]=process_surveys(Filenames,varargin)
 
+
 p = inputParser;
 
 addRequired(p,'Filenames',@(x) ischar(x)|iscell(x));
@@ -16,7 +17,7 @@ layers_out=p.Results.layers;
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
-%profile on
+
 for i=1:length(Filenames)
     try
         surv_obj=survey_cl();

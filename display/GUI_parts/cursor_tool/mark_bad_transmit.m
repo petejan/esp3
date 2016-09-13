@@ -11,8 +11,8 @@ end
 
 clear_lines(ah);
 
-[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
+[~,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
 ydata=double(get(axes_panel_comp.main_echo,'YData'));
 
@@ -24,7 +24,7 @@ if strcmp(src.SelectionType,'normal')
 elseif  strcmp(src.SelectionType,'alt')
     set_val=1;
 else
-    return;
+    set_val=0;
 end
 
 %clear_lines(ah)
@@ -41,19 +41,25 @@ end
 
 cp = ah.CurrentPoint;
 xinit = cp(1,1);
-yinit=cp(1,2);
+yinit= cp(1,2);
 
 if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
     return
 end
 
-x_bad=[xinit xinit];
 
-src.WindowButtonMotionFcn = @wbmcb;
-src.WindowButtonUpFcn = @wbucb;
-
-hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
-
+switch src.SelectionType
+    case {'normal','alt'}
+        src.WindowButtonMotionFcn = @wbmcb;   
+        x_bad=[xinit xinit];
+        src.WindowButtonMotionFcn = @wbmcb;
+        src.WindowButtonUpFcn = @wbucb;
+        hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
+    otherwise
+        [~,idx_bad]=min(abs(xdata-xinit));
+        layer.Transceivers(idx_freq).Bottom.Tag(idx_bad+idx_ping_ori-1)=0;
+        end_bt_edit();
+end
     function wbmcb(~,~)
         
         cp = ah.CurrentPoint;
@@ -80,15 +86,19 @@ hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
         src.Pointer = 'arrow';
         [~,idx_start]=min(abs(xdata-min(x_bad)));
         [~,idx_end]=min(abs(xdata-max(x_bad)));
-        idx_f=idx_pings(idx_start:idx_end);
+        idx_f=(idx_start:idx_end)+idx_ping_ori-1;
         
         layer.Transceivers(idx_freq).Bottom.Tag(idx_f)=set_val;
         
+        end_bt_edit()
+        
+    end
+
+    function end_bt_edit()
         reset_disp_info(main_figure);
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);
-        
-        
     end
+
 end

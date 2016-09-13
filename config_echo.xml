@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.1">
-   <AppPath cvs_root=":local:Z:\" data="F:\t871601\hull\es80" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" scripts="X:\echo_scripts"/>
-   <Display Cmap="jet" DispBadTrans="on" DispBotHighVis="off" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="on" Freq="120000" Grid_x="0" Grid_y="20" Xaxes="Distance"/>
+   <AppPath cvs_root=":local:Z:\" data="X:\uae1601\hull\ek80" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" scripts="X:\echo_scripts"/>
+   <Display Cmap="jet" DispBadTrans="on" DispBotHighVis="off" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="off" Freq="200000" Grid_x="10" Grid_y="2" Xaxes="Distance"/>
    <algos>
-      <BottomDetection denoised="0.000000" horz_filt="50.000000" r_max="Inf" r_min="0.000000" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" vert_filt="10.000000"/>
-      <BadPings Above="1.000000" BS_std="6.000000" BS_std_bool="1.000000" Below="0.000000" botDetecVer="V2" denoised="0.000000" horz_filt="50.000000" r_max="49.587223" r_min="0.023829" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" thr_spikes_Above="3.000000" thr_spikes_Below="3.000000" vert_filt="0.992221"/>
+      <BottomDetection denoised="0.000000" horz_filt="50.000000" r_max="49.587234" r_min="0.000000" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" vert_filt="4.958723"/>
+      <BadPings Above="1.000000" BS_std="6.000000" BS_std_bool="1.000000" Below="0.000000" botDetecVer="V1" denoised="0.000000" horz_filt="50.000000" r_max="49.587234" r_min="0.000000" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" thr_cum="0.010000" thr_echo="-40.000000" thr_spikes_Above="3.000000" thr_spikes_Below="3.000000" vert_filt="4.958723"/>
       <Denoise HorzFilt="50.000000" NoiseThr="-125.000000" SNRThr="10.000000" VertFilt="10.000000"/>
       <SchoolDetection Sv_thr="-65.000000" Type="sv" depth_max="Inf" h_min_can="10.000000" h_min_tot="20.000000" horz_link_max="5.000000" l_min_can="10.000000" l_min_tot="50.000000" nb_min_sples="100.000000" vert_link_max="5.000000"/>
-      <SingleTarget MaxBeamComp="12.000000" MaxNormPL="1.500000" MaxStdMajAxisAngle="1.000000" MaxStdMinAxisAngle="1.000000" MinNormPL="0.600000" PLDL="6.000000" TS_threshold="-65.000000" Type="sp"/>
+      <SingleTarget MaxBeamComp="12.000000" MaxNormPL="1.500000" MaxStdMajAxisAngle="1.000000" MaxStdMinAxisAngle="1.000000" MinNormPL="0.600000" PLDL="6.000000" TS_threshold="-65.000000" Type="spdenoised"/>
       <TrackTarget AlphaMajAxis="0.700000" AlphaMinAxis="0.700000" AlphaRange="0.700000" BetaMajAxis="0.500000" BetaMinAxis="0.500000" BetaRange="0.500000" ExcluDistMajAxis="1.000000" ExcluDistMinAxis="1.000000" ExcluDistRange="1.000000" MaxStdMajorAxisAngle="1.000000" MaxStdMinorAxisAngle="1.000000" Max_Gap_Track="5.000000" Min_Pings_Track="10.000000" Min_ST_Track="8.000000" MissedPingExpMajAxis="5.000000" MissedPingExpMinAxis="5.000000" MissedPingExpRange="5.000000" WeightMajAxis="20.000000" WeightMinAxis="20.000000" WeightPingGap="10.000000" WeightRange="40.000000" WeightTS="10.000000"/>
-      <BottomDetectionV2 denoised="0.000000" r_max="49.587223" r_min="0.023829" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000"/>
+      <BottomDetectionV2 denoised="0.000000" r_max="49.587223" r_min="0.023829" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-50.000000" thr_cum="0.010000" thr_echo="-40.000000"/>
    </algos>
 </config_file>

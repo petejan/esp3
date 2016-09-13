@@ -298,7 +298,7 @@ for idg=1:length(idx_raw_obj.type_dg)
                                 temp = fread(fid,8*sampleCount,'float32', 'l');
                             end
                             
-                            if (sampleCount > 0)
+                            if (sampleCount > 0)    
                                 data.pings(idx).comp_sig_1(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
                                 data.pings(idx).comp_sig_2(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
                                 data.pings(idx).comp_sig_3(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);

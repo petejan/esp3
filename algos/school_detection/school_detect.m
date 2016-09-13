@@ -95,7 +95,7 @@ else
 end
 
 Sv_mask_ori(range>=p.Results.depth_max,:)=0;
-
+    
 h_filter=2*Np;
 
 Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);

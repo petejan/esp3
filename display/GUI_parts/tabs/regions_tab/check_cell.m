@@ -54,7 +54,7 @@ if ~isnan(val)&&val>0
                     end
             end
     end
-    set(src,'string',num2str(val,'%.0f'));
+    set(src,'string',num2str(val,'%.2g'));
 else
     set(src,'string',5);
 end

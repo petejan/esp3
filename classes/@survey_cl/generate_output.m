@@ -48,6 +48,7 @@ for isn=1:length(snapshots)
             fprintf('Transect %d\n',trans_num);
             idx_lay=setdiff(idx_lay,idx_lay_processed);
             idx_lay_processed=union(idx_lay_processed,idx_lay);
+            
             if isempty(idx_lay)
                 warning('Could not find layers for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
                 continue;

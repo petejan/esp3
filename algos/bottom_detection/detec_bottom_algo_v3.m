@@ -10,10 +10,10 @@ default_idx_r_min=0;
 default_idx_r_max=Inf;
 
 default_thr_bottom=-35;
-check_thr_bottom=@(x)(x>=-120&&x<=-10);
+check_thr_bottom=@(x)(x>=-120&&x<=-3);
 
 default_thr_backstep=-1;
-check_thr_backstep=@(x)(x>=-12&&x<=0);
+check_thr_backstep=@(x)(x>=-12&&x<=12);
 
 check_shift_bot=@(x)(x>=0);
 check_filt=@(x)(x>=0)||isempty(x);

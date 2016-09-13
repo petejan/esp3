@@ -7,11 +7,11 @@ default_BS_std=6;
 check_BS_std=@(x)(x>=3)&&(x<=20);
 
 
-default_thr_bottom=-56;
-check_thr_bottom=@(x)(x>=-120&&x<=-10);
+default_thr_bottom=-35;
+check_thr_bottom=@(x)(x>=-120&&x<=-3);
 
 default_thr_backstep=-12;
-check_thr_backstep=@(x)(x>=-12&&x<=0);
+check_thr_backstep=@(x)(x>=-12&&x<=12);
 
 default_idx_r_min=0;
 
@@ -26,6 +26,8 @@ check_shift_bot=@(x)x>=0;
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
+addParameter(p,'thr_echo',-40,check_thr_bottom);
+addParameter(p,'thr_cum',0.01,check_filt);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'vert_filt',10,check_filt);
 addParameter(p,'horz_filt',50,check_filt);
@@ -91,6 +93,8 @@ switch p.Results.botDetecVer
             'thr_backstep',thr_backstep,...
             'r_min',r_min,...
             'r_max',r_max,...
+            'thr_cum',p.Results.thr_cum,...
+            'thr_echo',p.Results.thr_echo,...
             'shift_bot',shift_bot,...
             'rm_rd',1);
 end

@@ -29,7 +29,7 @@ if isempty(surv_data_struct.Voyage)
 end
 
 
-survDataSummary=cell(length(surv_data_struct.Filename),9);
+survDataSummary=cell(length(surv_data_struct.Filename),11);
 
 survDataSummary(:,1)=cell(size(surv_data_struct.Filename));
 
@@ -37,24 +37,27 @@ survDataSummary(:,2)=surv_data_struct.Filename;
 survDataSummary(:,3)=num2cell(surv_data_struct.Snapshot);
 survDataSummary(:,4)=surv_data_struct.Stratum;
 survDataSummary(:,5)=num2cell(surv_data_struct.Transect);
-survDataSummary(:,6)=surv_data_struct.Comment;
-survDataSummary(:,9)=num2cell(1:length(surv_data_struct.SurvDataObj));
+survDataSummary(:,8)=surv_data_struct.Comment;
+survDataSummary(:,11)=num2cell(1:length(surv_data_struct.SurvDataObj));
 
-for i=1:length(surv_data_struct.SurvDataObj)
-    survDataSummary{i,7}=datestr(surv_data_struct.SurvDataObj{i}.StartTime,'dd-mmm-yyyy HH:MM:SS');
-    survDataSummary{i,8}=datestr(surv_data_struct.SurvDataObj{i}.EndTime,'dd-mmm-yyyy HH:MM:SS');
+for i=1:length(surv_data_struct.SurvDataObj) 
+    [path_xml,bot_file_str,reg_file_str]=create_bot_reg_xml_fname(fullfile(path_f,surv_data_struct.Filename{i}));
+    survDataSummary{i,6}=exist(fullfile(path_xml,bot_file_str),'file')==2;
+    survDataSummary{i,7}=exist(fullfile(path_xml,reg_file_str),'file')==2;
+    survDataSummary{i,9}=datestr(surv_data_struct.SurvDataObj{i}.StartTime,'dd-mmm-yyyy HH:MM:SS');
+    survDataSummary{i,10}=datestr(surv_data_struct.SurvDataObj{i}.EndTime,'dd-mmm-yyyy HH:MM:SS');
     survDataSummary{i,1}=false;
 end
 
 
 
 % Column names and column format
-columnname = {'' 'Filename','Snapshot','Stratum','Transect','Comment' 'Start Time','End Time'  'id'};
-columnformat = {'logical' 'char','numeric','char','numeric','char','char','char','numeric'};
+columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
+columnformat = {'logical' 'char','numeric','char','numeric','logical','logical','char','char','char','numeric'};
 
 size_max = get(0, 'MonitorPositions');  
 
-surv_data_fig = figure('Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/4*size_max(1,4) size_max(1,3)/2 size_max(1,4)/2],'Resize','off',...
+surv_data_fig = figure('Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],'Resize','off',...
     'Name','SurveyData','NumberTitle','off','tag','logbook',...
     'MenuBar','none');%No Matlab Menu)
 hfigs_new=[hfigs surv_data_fig];
@@ -71,7 +74,7 @@ surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','norma
 % surv_data_table.voyage_box=uicontrol(surv_data_fig,'style','checkbox','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,surv_data_fig});
 
 
-surv_data_table.save_button=uicontrol(surv_data_fig,'style','pushbutton','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Save','Value',1,'Callback',{@save_logbook_callback,surv_data_fig,main_figure});
+surv_data_table.save_button=uicontrol(surv_data_fig,'style','pushbutton','units','normalized','position',[0.75 0.95 0.2 0.04],'String','Save/Reload','Value',1,'Callback',{@save_logbook_callback,surv_data_fig,main_figure});
 
 
 % Create the uitable
@@ -79,13 +82,13 @@ surv_data_table.table_main = uitable('Parent',surv_data_fig,...
     'Data', survDataSummary,...
     'ColumnName', columnname,...
     'ColumnFormat', columnformat,...
-    'ColumnEditable', [true false true true true true false false false],...
+    'ColumnEditable', [true false true true true false false true false false false],...
     'Units','Normalized','Position',[0 0 1 0.95],...
     'RowName',[]);
 
 set(surv_data_table.table_main,'Units','pixels');
 pos_t=get(surv_data_table.table_main,'Position');
-set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/18,4*pos_t(3)/18, 2*pos_t(3)/18, 2*pos_t(3)/18, pos_t(3)/18, 3*pos_t(3)/18, 2*pos_t(3)/18,2*pos_t(3)/18, pos_t(3)/18});
+set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/36,4*pos_t(3)/18, pos_t(3)/18, pos_t(3)/18, pos_t(3)/18,pos_t(3)/36,pos_t(3)/36, 3*pos_t(3)/18, 3*pos_t(3)/18,3*pos_t(3)/18, pos_t(3)/18/2});
 set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_struct,surv_data_fig});
 %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
 
@@ -183,7 +186,7 @@ if isnan(src.Data{evt.Indices(1),evt.Indices(2)})
     src.Data{evt.Indices(1),evt.Indices(2)}=0;
 end
 
-idx_struct=src.Data{evt.Indices(1),9};
+idx_struct=src.Data{evt.Indices(1),11};
 
 switch evt.Indices(2)
     case 1
@@ -197,7 +200,7 @@ switch evt.Indices(2)
     case 5
         surv_data_struct.Transect(idx_struct)=src.Data{evt.Indices(1),evt.Indices(2)};
         surv_data_struct.SurvDataObj{idx_struct}.Transect=src.Data{evt.Indices(1),evt.Indices(2)};
-    case 6
+    case 8
         surv_data_struct.Comment{idx_struct}=src.Data{evt.Indices(1),evt.Indices(2)};
         surv_data_struct.SurvDataObj{idx_struct}.Comment=src.Data{evt.Indices(1),evt.Indices(2)};
 end
@@ -212,7 +215,7 @@ path_f=getappdata(surv_data_fig,'path_data');
 surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
 survey_data_struct_to_xml(path_f,surv_data_struct);
 import_survey_data_callback([],[],main_figure);
-%close(surv_data_fig);
+load_survey_data_fig(main_figure);
 end
 
 
@@ -229,7 +232,7 @@ for i=1:size(data,1)
         case 'inv'
             data{i,1}=~data{i,1};
     end
-    data_ori{data{i,9},1}=data{i,1};
+    data_ori{data{i,11},1}=data{i,1};
 end
 set(surv_data_table.table_main,'Data',data);
 setappdata(surv_data_fig,'data_ori',data_ori);
@@ -242,10 +245,29 @@ data_ori=get(surv_data_table.table_main,'Data');
 selected_files=unique(data_ori([data_ori{:,1}],2));
 path_f=getappdata(surv_data_fig,'path_data');
 files=fullfile(path_f,selected_files);
-if isempty(files)
-   return;
+layers=getappdata(main_figure,'Layers');
+if ~isempty(layers)
+    [old_files,lay_IDs]=layers.list_files_layers();
+    idx_already_open=cellfun(@(x) any(strcmpi(x,old_files)),files);
+    if any(idx_already_open)
+        fprintf('File %s already open in existing layer\n',files{idx_already_open});
+        files_open=files(idx_already_open);
+        files(idx_already_open)=[];
+    end
+else
+    idx_already_open=[];
 end
-open_file([],[],files,main_figure);
+
+if isempty(files)
+    if~isempty(idx_already_open)
+        idx_open=find(strcmpi(files_open{end},old_files));
+        [idx_lay,~]=find_layer_idx(layers,lay_IDs(idx_open(end)));
+        setappdata(main_figure,'Layer',layers(idx_lay));
+        loadEcho(main_figure);
+        return;
+    end
+end
+    open_file([],[],files,main_figure);
 end
 
 function generate_xml_callback(~,~,surv_data_fig,path_scripts)
@@ -253,7 +275,7 @@ surv_data_table=getappdata(surv_data_fig,'surv_data_table');
 surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
 data_ori=get(surv_data_table.table_main,'Data');
 path_f=getappdata(surv_data_fig,'path_data');
-idx_struct=unique([data_ori{[data_ori{:,1}],9}]);
+idx_struct=unique([data_ori{[data_ori{:,1}],11}]);
 
 survey_input_obj=survey_input_cl();
 

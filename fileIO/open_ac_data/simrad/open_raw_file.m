@@ -1,19 +1,18 @@
 
 function  open_raw_file(hObject,Filename,vec_freq,ping_start,ping_end)
 layers=getappdata(hObject,'Layers');
-
 app_path=getappdata(hObject,'App_path');
 
 sple_start=1;
 sple_end=inf;
 
-
-
 if ~isempty(layers)
     [old_files,~]=layers.list_files_layers();
     idx_already_open=cellfun(@(x) any(strcmpi(x,old_files)),Filename);
-    fprintf('File %s already open in existing layer\n',Filename{idx_already_open});
-    Filename(idx_already_open)=[];
+    if any(idx_already_open)
+        fprintf('File %s already open in existing layer\n',Filename{idx_already_open});
+        Filename(idx_already_open)=[];
+    end
 end
 
 % profile on;

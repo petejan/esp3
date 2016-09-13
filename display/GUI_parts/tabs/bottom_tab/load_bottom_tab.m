@@ -24,7 +24,7 @@ set(bottom_tab_comp.r_max_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.r_max_ed,'%
 set(bottom_tab_comp.r_max_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.r_max_sl,'%.1f'});
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Backstep Thr (dB)','units','normalized','Position',pos{4,1});
-bottom_tab_comp.Thr_backstep_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-12,'Max',0,'Value',-1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
+bottom_tab_comp.Thr_backstep_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-12,'Max',12,'Value',-1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
 bottom_tab_comp.Thr_backstep_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(bottom_tab_comp.Thr_backstep_sl,'Value'),'%.0f'));
 set(bottom_tab_comp.Thr_backstep_sl,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_backstep_ed,'%.0f'});
 set(bottom_tab_comp.Thr_backstep_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.Thr_backstep_sl,'%.0f'});
