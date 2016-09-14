@@ -1,4 +1,4 @@
-function docNode=create_reg_xml_node(docNode,reg_xml)
+function docNode=create_reg_xml_node(docNode,reg_xml,ver)
 
 p = inputParser;
 addRequired(p,'docNode',@(docnode) isa(docNode,'org.apache.xerces.dom.DocumentImpl'));
@@ -29,35 +29,64 @@ for ir=1:length(reg_xml.Regions)
         region_node.setAttribute('Unique_ID',num2str(reg_curr.Unique_ID,'%.0f'));
         region_node.setAttribute('Cell_w',num2str(reg_curr.Cell_w,'%.0f'));
         region_node.setAttribute('Cell_h',num2str(reg_curr.Cell_h,'%.0f'));
+        
         if isfield(reg_curr,'Remove_ST')
             region_node.setAttribute('Remove_ST',num2str(reg_curr.Remove_ST,'%.0f'));
         end
         
-        
-        bbox_t_s=datestr(reg_curr.bbox_t(1),'yyyymmddHHMMSSFFF');
-        bbox_t_e=datestr(reg_curr.bbox_t(2),'yyyymmddHHMMSSFFF');
-        bbox_str=sprintf('%s %.3f ',bbox_t_s,reg_curr.bbox_r(1),bbox_t_e,reg_curr.bbox_r(1));
-        
-        bbox_node = docNode.createElement('bbox');
-        bbox_node.appendChild(docNode.createTextNode(bbox_str));
-        region_node.appendChild(bbox_node);
-        
-        switch reg_curr.Shape
-            case 'Polygon'
-                contours_node = docNode.createElement('contours');
-                for icont=1:length(reg_curr.Contours)
-                    contour_node = docNode.createElement('contour');
-                    time_cont=datestr(reg_curr.Contours{icont}.Time,'yyyymmddHHMMSSFFF');
-                    range_cont=reg_curr.Contours{icont}.Range;
-                    cont_str=[];
-                    for istr=1:length(range_cont)
-                        cont_str=[cont_str sprintf('%s %.4f ',time_cont(istr,:),range_cont(istr))];
-                    end
-                    contour_node.appendChild(docNode.createTextNode(cont_str));
-                    contours_node.appendChild(contour_node);
+        switch ver
+            case '0.1'
+                bbox_t_s=datestr(reg_curr.bbox_t(1),'yyyymmddHHMMSSFFF');
+                bbox_t_e=datestr(reg_curr.bbox_t(2),'yyyymmddHHMMSSFFF');
+                bbox_str=sprintf('%s %.3f ',bbox_t_s,reg_curr.bbox_r(1),bbox_t_e,reg_curr.bbox_r(2));
+                
+                bbox_node = docNode.createElement('bbox');
+                bbox_node.appendChild(docNode.createTextNode(bbox_str));
+                region_node.appendChild(bbox_node);
+                
+                switch reg_curr.Shape
+                    case 'Polygon'
+                        contours_node = docNode.createElement('contours');
+                        for icont=1:length(reg_curr.Contours)
+                            contour_node = docNode.createElement('contour');
+                            time_cont=datestr(reg_curr.Contours{icont}.Time,'yyyymmddHHMMSSFFF');
+                            range_cont=reg_curr.Contours{icont}.Range;
+                            cont_str=[];
+                            for istr=1:length(range_cont)
+                                cont_str=[cont_str sprintf('%s %.4f ',time_cont(istr,:),range_cont(istr))];
+                            end
+                            contour_node.appendChild(docNode.createTextNode(cont_str));
+                            contours_node.appendChild(contour_node);
+                        end
+                        region_node.appendChild(contours_node);
                 end
-                region_node.appendChild(contours_node);
+            case '0.2'
+                bbox_p_s=reg_curr.bbox_p(1);
+                bbox_p_e=reg_curr.bbox_p(2);
+                bbox_str=sprintf('%d %d ',bbox_p_s,reg_curr.bbox_s(1),bbox_p_e,reg_curr.bbox_s(2));
+                
+                bbox_node = docNode.createElement('bbox');
+                bbox_node.appendChild(docNode.createTextNode(bbox_str));
+                region_node.appendChild(bbox_node);
+                
+                switch reg_curr.Shape
+                    case 'Polygon'
+                        contours_node = docNode.createElement('contours');
+                        for icont=1:length(reg_curr.Contours)
+                            contour_node = docNode.createElement('contour');
+                            ping_cont=reg_curr.Contours{icont}.Ping;
+                            sample_cont=reg_curr.Contours{icont}.Sample;
+                            cont_str=[];
+                            for istr=1:length(range_cont)
+                                cont_str=[cont_str sprintf('%d %.d ',ping_cont(istr,:),sample_cont(istr))];
+                            end
+                            contour_node.appendChild(docNode.createTextNode(cont_str));
+                            contours_node.appendChild(contour_node);
+                        end
+                        region_node.appendChild(contours_node);
+                end
         end
+        
         regions_node.appendChild(region_node);
 end
 

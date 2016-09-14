@@ -1,20 +1,20 @@
-function add_regions_from_reg_xml(layer_obj,xml_file,IDs,varargin)
+function add_regions_from_reg_xml(layer_obj,IDs,varargin)
 
 p = inputParser;
 
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
-addRequired(p,'xml_file',@iscell);
 addRequired(p,'IDs',@isnumeric);
 addParameter(p,'Frequencies',[]);
 
-parse(p,layer_obj,xml_file,IDs,varargin{:});
+parse(p,layer_obj,IDs,varargin{:});
 
 for idx_freq=1:length(layer_obj.Transceivers)
     trans_obj=layer_obj.Transceivers(idx_freq);
     trans_obj.rm_all_region();
 end
 
-
+[path_xml,reg_file_str,~]=layer_obj.create_files_str();
+xml_file=fullfile(path_xml,reg_file_str);
 
 for ix=1:length(xml_file)
     if exist(xml_file{ix},'file')==0
@@ -22,14 +22,14 @@ for ix=1:length(xml_file)
         continue;
     end
     
-    region_xml_tot=parse_region_xml(xml_file{ix});
+    [region_xml_tot,ver]=parse_region_xml(xml_file{ix});
     
     if isempty(region_xml_tot)
         sprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
         return;
     end
     
-    
+    iping_file=find(layer_obj.Transceivers(idx_freq).Data.FileId==ix);
     
     for itrans=1:length(region_xml_tot)
         region_xml=region_xml_tot{itrans};
@@ -93,6 +93,7 @@ for ix=1:length(xml_file)
                     end
                     
             end
+            
             Cell_w_unit=reg_xml{i}.Cell_w_unit;
             Cell_h_unit=reg_xml{i}.Cell_h_unit;
             Cell_w=reg_xml{i}.Cell_w;
@@ -100,42 +101,75 @@ for ix=1:length(xml_file)
             Shape=reg_xml{i}.Shape;
             Reference=reg_xml{i}.Reference;
             
-            time_box=reg_xml{i}.bbox_t;
-            time_box(time_box<t_min)=t_min;
-            time_box(time_box>t_max)=t_max;
-            pings=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,time_box,'Opt','Nearest');
             
-            depth_box=reg_xml{i}.bbox_r;
-            samples=resample_data_v2(1:length(trans_obj.Data.get_range()),trans_obj.Data.get_range(),depth_box,'Opt','Nearest');
-            
-            Idx_pings=pings(1):pings(2);
-            Idx_r=samples(1):samples(2);
-            
-            if nansum(isnan(Idx_pings))==length(Idx_pings)
-                continue;
-            end
-            
-            switch Shape
-                case 'Rectangular'
-                    X_cont=[];
-                    Y_cont=[];
-                case 'Polygon'
-                    i_cont=0;
-                    for ic=1:length(reg_xml{i}.Contours)
-                        idx_rem=reg_xml{i}.Contours{ic}.Time>t_max|reg_xml{i}.Contours{ic}.Time<t_min;
-                        reg_xml{i}.Contours{ic}.Time(idx_rem)=[];
-                        reg_xml{i}.Contours{ic}.Range(idx_rem)=[];
-                        if isempty(reg_xml{i}.Contours{ic}.Time)
-                            continue;
-                        end
-                        i_cont=i_cont+1;
-                        X_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,reg_xml{i}.Contours{ic}.Time,'Opt','Nearest');
-                        X_cont{i_cont}=X_cont{i_cont}-Idx_pings(1)+1;
-                        Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.get_range()),trans_obj.Data.get_range(),reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
-                        Y_cont{i_cont}=Y_cont{i_cont}-Idx_r(1)+1;
+            switch ver
+                case '0.1'
+                    time_box=reg_xml{i}.bbox_t;
+                    time_box(time_box<t_min)=t_min;
+                    time_box(time_box>t_max)=t_max;
+                    pings=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,time_box,'Opt','Nearest');
+                    
+                    depth_box=reg_xml{i}.bbox_r;
+                    samples=resample_data_v2(1:length(trans_obj.Data.get_range()),trans_obj.Data.get_range(),depth_box,'Opt','Nearest');
+                    
+                    Idx_pings=pings(1):pings(2);
+                    Idx_r=samples(1):samples(2);
+                    
+                    if nansum(isnan(Idx_pings))==length(Idx_pings)
+                        continue;
                     end
                     
+                    switch Shape
+                        case 'Rectangular'
+                            X_cont=[];
+                            Y_cont=[];
+                        case 'Polygon'
+                            i_cont=0;
+                            for ic=1:length(reg_xml{i}.Contours)
+                                idx_rem=reg_xml{i}.Contours{ic}.Time>t_max|reg_xml{i}.Contours{ic}.Time<t_min;
+                                reg_xml{i}.Contours{ic}.Time(idx_rem)=[];
+                                reg_xml{i}.Contours{ic}.Range(idx_rem)=[];
+                                if isempty(reg_xml{i}.Contours{ic}.Time)
+                                    continue;
+                                end
+                                i_cont=i_cont+1;
+                                X_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.Time),trans_obj.Data.Time,reg_xml{i}.Contours{ic}.Time,'Opt','Nearest');
+                                X_cont{i_cont}=X_cont{i_cont}-Idx_pings(1)+1;
+                                Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.Data.get_range()),trans_obj.Data.get_range(),reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
+                                Y_cont{i_cont}=Y_cont{i_cont}-Idx_r(1)+1;
+                            end
+                    end
+                    
+                case '0.2'
+                    
+                    
+                    ping_box=reg_xml{i}.bbox_p+iping_file(1)-1;
+                    sample_box=reg_xml{i}.bbox_s;
+                    
+                    Idx_pings=ping_box(1):ping_box(2);
+                    Idx_r=sample_box(1):sample_box(2);
+
+                    if nansum(isnan(Idx_pings))==length(Idx_pings)
+                        continue;
+                    end
+                    
+                    switch Shape
+                        case 'Rectangular'
+                            X_cont=[];
+                            Y_cont=[];
+                        case 'Polygon'
+                            i_cont=0;
+                            for ic=1:length(reg_xml{i}.Contours)
+                                if isempty(reg_xml{i}.Contours{ic}.Ping)
+                                    continue;
+                                end
+                                i_cont=i_cont+1;
+                                X_cont{i_cont}=reg_xml{i}.Contours{ic}.Ping;
+                                Y_cont{i_cont}=reg_xml{i}.Contours{ic}.Sample;
+                            end
+                    end
             end
+            
             new_reg=region_cl(...
                 'ID',ID,...
                 'Unique_ID',Unique_ID,...

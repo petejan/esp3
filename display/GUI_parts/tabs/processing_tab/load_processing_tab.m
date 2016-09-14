@@ -60,7 +60,7 @@ for ii=1:length(layer_to_proc)
         
         
         [~,idx_algo_denoise,noise_rem_algo]=find_process_algo(process_list,process_list(kk).Freq,'Denoise');
-        [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetectionV2');
+        [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetection');
         [~,idx_algo_bot_v2,bot_algo_v2]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetectionV2');
         [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,process_list(kk).Freq,'BadPings');
         [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,process_list(kk).Freq,'SchoolDetection');
@@ -78,7 +78,7 @@ for ii=1:length(layer_to_proc)
             trans_obj.apply_algo('BottomDetection');
         end
         
-        if bot_algo_v2&&~bad_trans_algo_v2
+        if bot_algo_v2&&~bad_trans_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot_v2));
             trans_obj.apply_algo('BottomDetectionV2');
         end
@@ -139,27 +139,27 @@ end
 
 add=get(processing_tab_comp.noise_removal,'value')==get(processing_tab_comp.noise_removal,'max');
 idx_algo=find_algo_idx(trans_obj,'Denoise');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.bot_detec,'value')==get(processing_tab_comp.bot_detec,'max');
 idx_algo=find_algo_idx(trans_obj,'BottomDetection');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.bot_detec_v2,'value')==get(processing_tab_comp.bot_detec_v2,'max');
 idx_algo=find_algo_idx(trans_obj,'BottomDetectionV2');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.bad_transmit,'value')==get(processing_tab_comp.bad_transmit,'max');
 idx_algo=find_algo_idx(trans_obj,'BadPings');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.school_detec,'value')==get(processing_tab_comp.school_detec,'max');
 idx_algo=find_algo_idx(trans_obj,'SchoolDetection');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add_st=get(processing_tab_comp.single_target,'value')==get(processing_tab_comp.single_target,'max');
 idx_algo=find_algo_idx(trans_obj,'SingleTarget');
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add_st);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add_st);
 
 if add_st==0
     set(processing_tab_comp.track_target,'value',get(processing_tab_comp.track_target,'min'));
@@ -168,7 +168,7 @@ end
 add=get(processing_tab_comp.track_target,'value')==get(processing_tab_comp.track_target,'max');
 idx_algo=find_algo_idx(trans_obj,'TrackTarget');
 
-process_list=set_process_list(process_list,layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
+process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 setappdata(main_figure,'Process',process_list);
 end
@@ -201,6 +201,7 @@ else
     bot_algo=0;
     bad_trans_algo=0;
     school_detect_algo=0;
+    bot_algo_v2=0;
 end
 
 set(processing_tab_comp.noise_removal,'value',noise_rem_algo);
@@ -208,37 +209,6 @@ set(processing_tab_comp.bot_detec,'value',bot_algo);
 set(processing_tab_comp.bot_detec_v2,'value',bot_algo_v2);
 set(processing_tab_comp.bad_transmit,'value',bad_trans_algo);
 set(processing_tab_comp.school_detec,'value',school_detect_algo);
-
-end
-
-function [voyage_path,rawFiles,iFiles]=getrawfiles()
-
-rawFiles = {};
-iFiles = {};
-voyage_path=uigetdir();
-
-u=strfind(voyage_path,'tan');
-
-if ~isempty(u)
-    voyage=upper(voyage_path(u(1):u(1)+6));
-else
-    return;
-end
-
-display(['Get rawfile names of trawl files for voyage: ', voyage]);
-j=0;
-tmpfold = dir(fullfile(voyage_path(1:end-5), 'i*')); % Assume i-files will be
-
-for i = 1:length(tmpfold);                          % in parent directory for raw files
-    tmpfile = tmpfold(i).name;
-    ifileInfo = parse_ifile(voyage_path(1:end-5),tmpfile);
-    if strcmp(ifileInfo.stratum, 'trawl')
-        j=j+1;
-        rawFiles{j} = ifileInfo.rawFileName;
-        iFiles{j} = tmpfile;
-    end
-    
-end
 
 end
 

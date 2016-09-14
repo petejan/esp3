@@ -1,4 +1,4 @@
-classdef attitude_nav_cl < handle
+classdef attitude_nav_cl
     properties
         Heading
         Heave

@@ -1,5 +1,5 @@
 
-classdef gps_data_cl <handle
+classdef gps_data_cl
     properties
         Lat
         Long

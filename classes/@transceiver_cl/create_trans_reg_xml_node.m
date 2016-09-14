@@ -1,4 +1,4 @@
-function docNode=create_trans_reg_xml_node(trans_obj,docNode,file_id)
+function docNode=create_trans_reg_xml_node(trans_obj,docNode,file_id,ver)
 
 p = inputParser;
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
@@ -11,11 +11,12 @@ idx_ping=find(file_id==trans_obj.Data.FileId);
 range=trans_obj.Data.get_range();
 time=trans_obj.Data.Time;
 region_file=docNode.getDocumentElement;
-
 regions_node = docNode.createElement('regions');
 regions_node.setAttribute('Freq',num2str(trans_obj.Config.Frequency,'%.0f'));
 regions_node.setAttribute('ChannelID',deblank(trans_obj.Config.ChannelID));
 region_file.appendChild(regions_node);
+
+
 
 for ir=1:length(trans_obj.Regions)
     
@@ -43,36 +44,70 @@ for ir=1:length(trans_obj.Regions)
             region_node.setAttribute('Remove_ST',num2str(splitted_reg(irs).Remove_ST,'%.0f'));
         end
         
-        
-        bbox_t_s=datestr(time(splitted_reg(irs).Idx_pings(1)),'yyyymmddHHMMSSFFF');
-        bbox_t_e=datestr(time(splitted_reg(irs).Idx_pings(end)),'yyyymmddHHMMSSFFF');
-        bbox_str=sprintf('%s %.3f ',bbox_t_s,range(splitted_reg(irs).Idx_r(1)),bbox_t_e,range(splitted_reg(irs).Idx_r(end)));
-        
-        bbox_node = docNode.createElement('bbox');
-        bbox_node.appendChild(docNode.createTextNode(bbox_str));
-        region_node.appendChild(bbox_node);
-        
-        switch splitted_reg(irs).Shape
-            case 'Polygon'
-                contours_node = docNode.createElement('contours');
-                for icont=1:length(splitted_reg(irs).X_cont)
-                    contour_node = docNode.createElement('contour');
-                    time_cont=datestr(time(splitted_reg(irs).Idx_pings(1)-1+splitted_reg(irs).X_cont{icont}),'yyyymmddHHMMSSFFF');
-                    range_cont=range(splitted_reg(irs).Idx_r(1)+splitted_reg(irs).Y_cont{icont}-1);
-                    cont_str=[];
-                    for istr=1:length(range_cont)
-                        cont_str=[cont_str sprintf('%s %.4f ',time_cont(istr,:),range_cont(istr))];
-                    end
-                    contour_node.appendChild(docNode.createTextNode(cont_str));
-                    contours_node.appendChild(contour_node);
+        switch ver
+            case '0.1'
+                
+                bbox_t_s=datestr(time(splitted_reg(irs).Idx_pings(1)),'yyyymmddHHMMSSFFF');
+                bbox_t_e=datestr(time(splitted_reg(irs).Idx_pings(end)),'yyyymmddHHMMSSFFF');
+                bbox_str=sprintf('%s %.3f ',bbox_t_s,range(splitted_reg(irs).Idx_r(1)),bbox_t_e,range(splitted_reg(irs).Idx_r(end)));
+                
+                bbox_node = docNode.createElement('bbox');
+                bbox_node.appendChild(docNode.createTextNode(bbox_str));
+                region_node.appendChild(bbox_node);
+                
+                switch splitted_reg(irs).Shape
+                    case 'Polygon'
+                        contours_node = docNode.createElement('contours');
+                        for icont=1:length(splitted_reg(irs).X_cont)
+                            contour_node = docNode.createElement('contour');
+                            time_cont=datestr(time(splitted_reg(irs).Idx_pings(1)-1+splitted_reg(irs).X_cont{icont}),'yyyymmddHHMMSSFFF');
+                            range_cont=range(splitted_reg(irs).Idx_r(1)+splitted_reg(irs).Y_cont{icont}-1);
+                            cont_str=[];
+                            for istr=1:length(range_cont)
+                                cont_str=[cont_str sprintf('%s %.4f ',time_cont(istr,:),range_cont(istr))];
+                            end
+                            contour_node.appendChild(docNode.createTextNode(cont_str));
+                            contours_node.appendChild(contour_node);
+                        end
+                        region_node.appendChild(contours_node);
                 end
-                region_node.appendChild(contours_node);
+                
+            case '0.2'
+                bbox_p_s=splitted_reg(irs).Idx_pings(1)-idx_ping(1)+1;
+                bbox_p_e=splitted_reg(irs).Idx_pings(end)-idx_ping(1)+1;
+                bbox_str=sprintf('%d %d ',bbox_p_s,splitted_reg(irs).Idx_r(1),bbox_p_e,splitted_reg(irs).Idx_r(end));
+                
+                bbox_node = docNode.createElement('bbox');
+                bbox_node.appendChild(docNode.createTextNode(bbox_str));
+                region_node.appendChild(bbox_node);
+                
+                switch splitted_reg(irs).Shape
+                    case 'Polygon'
+                        contours_node = docNode.createElement('contours');
+                        for icont=1:length(splitted_reg(irs).X_cont)
+                            contour_node = docNode.createElement('contour');
+                            ping_cont=splitted_reg(irs).X_cont{icont};
+                            sample_cont=splitted_reg(irs).Y_cont{icont};
+                            cont_str=[];
+                            for istr=1:length(sample_cont)
+                                cont_str=[cont_str sprintf('%d %d ',ping_cont(istr),sample_cont(istr))];
+                            end
+                            contour_node.appendChild(docNode.createTextNode(cont_str));
+                            contours_node.appendChild(contour_node);
+                        end
+                        region_node.appendChild(contours_node);
+                end 
         end
+        
         regions_node.appendChild(region_node);
     end
+    
+    
 end
 
 
 
 end
+
+
 

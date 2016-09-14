@@ -1,5 +1,5 @@
 
-classdef line_cl < handle
+classdef line_cl
     properties
         Name
         ID

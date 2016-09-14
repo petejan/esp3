@@ -34,6 +34,7 @@ if ~isempty(roll)
 else
    ax=[]; 
 end
+
 if ~isempty(heading)
     u=u+1;
     h_fig(u)=figure('Name','Heading','NumberTitle','off','tag','attitude');

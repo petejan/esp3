@@ -140,9 +140,12 @@ if ~strcmp(field,'Tag')
                 if ~strcmp(field,'Tag')
                     ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
                     idx_rings=find(ring_size>0);
-                    for uuj=idx_rings
-                        m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
-                    end
+                    
+%                     for uuj=idx_rings
+%                         m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
+%                     end
+                      m_range_ring(obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},ring_size,'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
+% 
                     
                     if~isempty(main_figure)
                         create_context_menu_track(main_figure,hfig,u_plot_slice(idx_snap(uui)));

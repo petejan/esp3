@@ -20,7 +20,7 @@ for id=1:length(idx_lines)
 end
 
 if~isempty(layers)
-    [idx,found]=layers.find_layer_idx_files_path(files);
+    [idx,found]=layers.find_layer_idx_files(files);
 else
     found=0;
 end

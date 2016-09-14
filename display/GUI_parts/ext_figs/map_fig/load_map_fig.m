@@ -440,6 +440,7 @@ end
 
 
 function create_map_callback(~,~,map_fig,main_fig,obj_vec_tot)
+
 box=getappdata(map_fig,'Box');
 hfigs=getappdata(main_fig,'ExternalFigures');
 curr_disp=getappdata(main_fig,'Curr_disp');
@@ -472,8 +473,8 @@ else
 end
 str_field=get(box.field,'string');
 str_field=str_field{get(box.field,'value')};
-close(map_fig);
 hfig=map_input.display_map_input_cl('main_figure',main_fig,'field',str_field);
+close(map_fig);
 hfigs_new=[hfigs hfig];
 setappdata(main_fig,'ExternalFigures',hfigs_new);
 

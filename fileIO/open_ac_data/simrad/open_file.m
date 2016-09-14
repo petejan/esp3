@@ -159,7 +159,7 @@ if ~isequal(Filename, 0)
                         case 'Yes'
                             for ifile_miss=idx_incomp
                                 miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
-                                Filename=[Filename miss_files];
+                                Filename=[Filename(:);miss_files(:)];
                             end
                         case 'No'
                         otherwise

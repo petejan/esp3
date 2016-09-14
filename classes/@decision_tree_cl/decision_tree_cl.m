@@ -1,4 +1,4 @@
-classdef decision_tree_cl < handle
+classdef decision_tree_cl
     properties
         Variables
         Nodes

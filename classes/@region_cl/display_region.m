@@ -23,7 +23,7 @@ switch(reg_obj.Reference)
 end
 
 h_fig=figure('Name',tt,'NumberTitle','off','tag','regions','Units','Normalized','Position',[0.1 0.2 0.8 0.6]);
-ax_in=axes(h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
+ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 reg_plot=imagesc(x_disp(~isnan(x_disp)),y_disp(~isnan(y_disp)),sv_disp(~isnan(y_disp),~isnan(x_disp)));
 ax_in.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end))-reg_obj.Cell_w/2;
 ax_in.YTick=sort((y_disp(1):reg_obj.Cell_h:y_disp(end))-reg_obj.Cell_h/2);
@@ -38,15 +38,15 @@ if strcmp(reg_obj.Reference,'Surface')
 end
 title(tt);
 
-ax_horz=axes(h_fig,'Units','Normalized','position',[0.2 0.1 0.7 0.15],'nextplot','add','box','on');
-plot(x_disp,pow2db(nanmean(output_reg.Sv_mean_lin_esp2)),'r');
+ax_horz=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.1 0.7 0.15],'nextplot','add','box','on');
+plot(x_disp,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2)),'r');
 grid on;
 xlabel(sprintf('%s',reg_obj.Cell_w_unit))
 ylabel('Sv mean(dB)')
 ax_horz.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end))+reg_obj.Cell_w/2;
 ax_horz.XTickLabelRotation=90;
 
-ax_vert=axes(h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
+ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
 plot(nanmean(output_reg.Sv_mean_lin_esp2,2),y_disp,'r');
 xlabel('Sv mean (lin)')
 

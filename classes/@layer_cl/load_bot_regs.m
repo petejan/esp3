@@ -9,15 +9,15 @@ addParameter(p,'Frequencies',[]);
 parse(p,layer,varargin{:});
 
 
-[path_xml,reg_file_str,bot_file_str]=layer.create_files_str();
+
 
 if p.Results.bot_ver>0
-    layer.add_bottoms_from_bot_xml(fullfile(path_xml,bot_file_str),'Frequencies',p.Results.Frequencies);
+    layer.add_bottoms_from_bot_xml('Frequencies',p.Results.Frequencies);
 end
 
 
 if p.Results.reg_ver>0
-    layer.add_regions_from_reg_xml(fullfile(path_xml,reg_file_str),p.Results.IDs,'Frequencies',p.Results.Frequencies);
+    layer.add_regions_from_reg_xml(p.Results.IDs,'Frequencies',p.Results.Frequencies);
 end
 
 end

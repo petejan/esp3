@@ -1,4 +1,4 @@
-function single_targets=single_targets_detection(Transceiver,varargin)
+function single_targets=single_targets_detection(trans_obj,varargin)
 %SINGLE_TARGET_DETECTION
 
 %Parse Arguments
@@ -22,7 +22,7 @@ checkMaxStdMajAxisAngle=@(MaxStdMajAxisAngle)(MaxStdMajAxisAngle>=0&&MaxStdMajAx
 check_data_type=@(datatype) ischar(datatype)&&(nansum(strcmp(datatype,{'CW','FM'}))==1);
 
 
-addRequired(p,'Transceiver',check_trans_cl);
+addRequired(p,'trans_obj',check_trans_cl);
 addParameter(p,'SoundSpeed',1500,@isnumeric);
 addParameter(p,'Type','sp',@ischar);
 addParameter(p,'TS_threshold',defaultTsThr,checkTsThr);
@@ -35,16 +35,16 @@ addParameter(p,'MaxStdMajAxisAngle',defaultMaxStdMajAxisAngle,checkMaxStdMajAxis
 addParameter(p,'DataType','CW',check_data_type);
 
 
-parse(p,Transceiver,varargin{:});
+parse(p,trans_obj,varargin{:});
 max_TS=-10;
 
 %Initialize usefule variables
 
 switch p.Results.DataType
     case 'CW'
-        TS=Transceiver.Data.get_datamat(p.Results.Type);
+        TS=trans_obj.Data.get_datamat(p.Results.Type);
         if isempty(TS)
-             TS=Transceiver.Data.get_datamat('sp');
+             TS=trans_obj.Data.get_datamat('sp');
         end
         if isempty(TS)
             disp('Can''t find single targets with no Sp datagram...');
@@ -52,17 +52,17 @@ switch p.Results.DataType
             return;
         end
     case 'FM'
-        TSun=Transceiver.Data.get_datamat('spunmatched');
-        TS=Transceiver.Data.get_datamat('sp');
+        TSun=trans_obj.Data.get_datamat('spunmatched');
+        TS=trans_obj.Data.get_datamat('sp');
 end
     
 
 mask=zeros(size(TS));
 
-idx_bad_data=Transceiver.list_regions_type('Bad Data');
+idx_bad_data=trans_obj.list_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
-   curr_reg=Transceiver.Regions(idx_bad_data(jj));
+   curr_reg=trans_obj.Regions(idx_bad_data(jj));
    mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
 end
 
@@ -75,53 +75,53 @@ Idx_samples_lin=reshape(1:nb_samples*nb_pings,nb_samples,nb_pings);
 
 Bottom=trans_obj.get_bottom_range();
 
-Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
+Range=repmat(trans_obj.Data.get_range(1:nb_samples),1,nb_pings);
 
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;
 
-idx_r_max=find(Transceiver.Data.get_range()==nanmax(Range(TS>-999)));%%TODO but
+idx_r_max=find(trans_obj.Data.get_range()==nanmax(Range(TS>-999)));%%TODO but
 
 %%%%%%%Remove all unnecessary data%%%%%%%%
 
 TS(idx_r_max:end,:)=[];
 Idx_samples_lin(idx_r_max:end,:)=[];
 [nb_samples,nb_pings]=size(TS);
-along=Transceiver.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AlongAngle');
-athwart=Transceiver.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AcrossAngle');
+along=trans_obj.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AlongAngle');
+athwart=trans_obj.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AcrossAngle');
 if isempty(along)||isempty(along)
    disp('Cannot compute single targets.... No angles');
    single_targets=[];
    return;
 end
 
-Range=repmat(Transceiver.Data.get_range(1:nb_samples),1,nb_pings);
+Range=repmat(trans_obj.Data.get_range(1:nb_samples),1,nb_pings);
 Samples=repmat((1:nb_samples)',1,nb_pings);
-Ping=repmat(Transceiver.Data.get_numbers(),nb_samples,1);
+Ping=repmat(trans_obj.Data.get_numbers(),nb_samples,1);
 
 
-[T,Np]=Transceiver.get_pulse_length();
-%[T,Np]=Transceiver.get_pulse_Comp_length();
+[T,Np]=trans_obj.get_pulse_length();
+%[T,Np]=trans_obj.get_pulse_Comp_length();
 
 switch p.Results.DataType
     case 'CW'
         simu_pulse=ones(1,Np);
     case 'FM'
        TSun(idx_r_max:end,:)=[];
-        [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));   
+        [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));   
         Np=4;
 end
 
 Pulse_length_sample=Np*ones(size(TS));
 
-BW_athwart=Transceiver.Config.BeamWidthAthwartship;
-BW_along=Transceiver.Config.BeamWidthAlongship;
+BW_athwart=trans_obj.Config.BeamWidthAthwartship;
+BW_along=trans_obj.Config.BeamWidthAlongship;
 
 Pulse_length_max_sample=ceil(Pulse_length_sample.*p.Results.MaxNormPL);
 Pulse_length_min_sample=floor(Pulse_length_sample.*p.Results.MinNormPL);
 
 c=p.Results.SoundSpeed;
-alpha=Transceiver.Params.Absorption(1);
+alpha=trans_obj.Params.Absorption(1);
 
 %Calculate simradBeamCompensation
 simradBeamCompensation = 6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2);
@@ -243,7 +243,7 @@ samples_targets_power(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Res
 samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
 
 
-switch Transceiver.Mode
+switch trans_obj.Mode
     case 'CW'
         dr=double(c*T/4);
         target_range=nansum(samples_targets_power.*samples_targets_range)./nansum(samples_targets_power)-dr;
@@ -345,11 +345,11 @@ single_targets.PulseLength_Normalized_PLDL=(pulse_env_after_lin(idx_keep_final)'
 single_targets.Transmitted_pulse_length=pulse_length_lin(idx_keep_final)';
 
 
-heading=Transceiver.AttitudeNavPing.Heading;
-pitch=Transceiver.AttitudeNavPing.Pitch;
-roll=Transceiver.AttitudeNavPing.Roll;
-heave=Transceiver.AttitudeNavPing.Heave;
-dist=Transceiver.GPSDataPing.Dist';
+heading=trans_obj.AttitudeNavPing.Heading;
+pitch=trans_obj.AttitudeNavPing.Pitch;
+roll=trans_obj.AttitudeNavPing.Roll;
+heave=trans_obj.AttitudeNavPing.Heave;
+dist=trans_obj.GPSDataPing.Dist';
 
 if isempty(dist)
     dist=zeros(1,size(TS,2));
