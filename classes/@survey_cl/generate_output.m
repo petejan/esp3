@@ -1,4 +1,4 @@
-    function generate_output(surv_obj,layers,varargin)
+function generate_output(surv_obj,layers,varargin)
 
 p = inputParser;
 
@@ -18,362 +18,371 @@ vert_slice_units = surv_in_obj.Options.Vertical_slice_units;
 
 output=layers.list_layers_survey_data();
 
-[snap_vec,strat_vec,trans_vec,reg_nb_vec,~]=surv_in_obj.list_transects();
+[snaps,strat,trans,regs_trans]=surv_in_obj.merge_survey_input_for_integration();
+[~,~,strat_vec_num]=unique(strat);
+strat_couple=unique([snaps;strat_vec_num]','rows');
+trans_triple=unique([snaps;strat_vec_num;trans]','rows');
 
-[~,~,strat_vec_num]=unique(strat_vec);
-trans_triple=unique([snap_vec;strat_vec_num';trans_vec]','rows');
-strat_couple=unique([snap_vec;strat_vec_num']','rows');
-
+reg_nb_vec=cellfun(@length,regs_trans);
 surv_out_obj=survey_output_cl(size(strat_couple,1),size(trans_triple,1),nansum(reg_nb_vec));
-snapshots=surv_in_obj.Snapshots;
+
+snap_temp=[surv_in_obj.Snapshots{:}];
+folders={snap_temp.Folder};
 
 idx_lay_processed=[];
 i_trans=0;
 i_reg=0;
-for isn=1:length(snapshots)
+
+fprintf('\n----------------Integration-----------------\n');
+for isn=1:length(snaps)
     
-    snap_num=snapshots{isn}.Number;
-    stratum=snapshots{isn}.Stratum;
-    fprintf('Integrating Snapshot %.0f:\n',snap_num);
+    snap_num=snaps(isn);
+    strat_name=strat{isn};
+    trans_num=trans(isn);
+    regs_t=regs_trans{isn};
     
-    for ist=1:length(stratum)
-       
-        strat_name=stratum{ist}.Name;
-        transects=stratum{ist}.Transects; 
-        fprintf('Stratum %s:\n',strat_name);
-        for itr=1:length(transects)
-            i_trans=i_trans+1;
-            trans_num=transects{itr}.number;
-            idx_lay=find(trans_num==output.Transect&snap_num==output.Snapshot&strcmpi(strat_name,output.Stratum));
-            fprintf('Transect %d\n',trans_num);
-            idx_lay=setdiff(idx_lay,idx_lay_processed);
-            idx_lay_processed=union(idx_lay_processed,idx_lay);
+    fprintf('Integrating Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num); 
+    i_trans=i_trans+1;
+    idx_lay=find(trans_num==output.Transect&snap_num==output.Snapshot&strcmpi(strat_name,output.Stratum)&cellfun(@(x) any(strcmpi(x,fullfile(folders,'\'))),fullfile(output.Folder,'\')));
+ 
+    if isempty(idx_lay)
+        warning('    Could not find layers for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
+        continue;
+    end
+    
+    idx_lay=setdiff(idx_lay,idx_lay_processed);
+    idx_lay_processed=union(idx_lay_processed,idx_lay);
+    
+    if isempty(idx_lay)
+        fprintf('     Already integrated\n');
+        continue;
+    end
+    
+    nb_bad_trans=0;
+    nb_ping_tot=0;
+    for i_test_bt=idx_lay
+        layer_obj_tr=layers(output.Layer_idx(i_test_bt));
+        idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
+        [perc_temp,nb_ping_temp]=layer_obj_tr.Transceivers(idx_freq).get_badtrans_perc();
+        nb_bad_trans=nb_bad_trans+nb_ping_temp*perc_temp/100;
+        nb_ping_tot=nb_ping_tot+nb_ping_temp;
+    end
+    
+    if nb_bad_trans/nb_ping_tot>surv_in_obj.Options.BadTransThr/100
+        fprintf('    Too much bad pings on Snapshot %.0f Stratum %s Transect %d. Removing it.\n',snap_num,strat_name,trans_num);
+        continue;
+    end
+    Output_echo=[];
+    eint=0;
+    nb_tracks=0;
+    nb_st=0;
+    lat_track=[];
+    lon_track=[];
+    depth_track=[];
+    ping_num_track=[];
+    time_track=[];
+    TS_mean_track=[];
+    
+    dist_tot=0;
+    timediff_tot=0;
+    nb_good_pings=0;
+    mean_bot_w=0;
+    mean_bot=nan(1,length(idx_lay));
+    av_speed=nan(1,length(idx_lay));
+    idx_good_pings=[];
+    iping0=0;
+    for i=1:length(idx_lay)
+        layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
+        idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
+        tag_add=layer_obj_tr.Transceivers(idx_freq).Bottom.Tag;
+        bot_range_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_range();
+        gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
+        if i>1
+            gps_tot=concatenate_GPSData(gps_tot,gps_add);
+        else
+            gps_tot=gps_add;
+        end
+        
+        gps_add.Long(gps_tot.Long>180)=gps_add.Long(gps_tot.Long>180)-360;
+        idx_pings=1:length(gps_add.Time);
+        idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
+        dist_add=m_lldist([gps_add.Long(idx_good_pings_add(1)) gps_add.Long(idx_good_pings_add(end))],[gps_add.Lat(idx_good_pings_add(1)) gps_add.Lat(idx_good_pings_add(end))])/1.852;
+        dist_tot=dist_tot+dist_add;
+        timediff=(gps_add.Time(idx_good_pings_add(end))-gps_add.Time(idx_good_pings_add(1)))*24;
+        timediff_tot=timediff_tot+timediff;
+        nb_good_pings=nb_good_pings+length(idx_good_pings_add);
+        mean_bot(i)=nanmean(bot_range_add);
+        mean_bot_w=mean_bot_w+mean_bot(i)*length(idx_good_pings_add);
+        av_speed(i)=dist_add/timediff;
+        idx_good_pings=union(idx_good_pings,idx_good_pings_add+iping0);
+        iping0=length(idx_pings);
+    end
+    
+    
+    av_speed_tot=dist_tot/timediff_tot;
+    
+    good_bot_tot=mean_bot_w/nb_good_pings;
+    
+    ir=0;
+    for ilay=idx_lay
+        ir=ir+1;
+        layer_obj_tr=layers(output.Layer_idx(ilay));
+        idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
+        gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
+        bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
+        gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
+        trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
+        
+        if isnan(good_bot_tot)
+            good_bot_tot= trans_obj_tr.Data.Range(end);
+        end
+        
+        if ~isempty(trans_obj_tr.ST.TS_comp)
+            nb_st=nb_st+length(trans_obj_tr.ST.TS_comp);
+        end
+        
+        if ~isempty(trans_obj_tr.Tracks)
+            nb_tracks=nb_tracks+length(trans_obj_tr.Tracks.target_id);
+            lat_st=trans_obj_tr.GPSDataPing.Lat(trans_obj_tr.ST.Ping_number);
+            lon_st=trans_obj_tr.GPSDataPing.Long(trans_obj_tr.ST.Ping_number);
+            time_st=trans_obj_tr.GPSDataPing.Time(trans_obj_tr.ST.Ping_number);
+            depth_st=trans_obj_tr.ST.Target_range;
+            ping_num_st=trans_obj_tr.ST.Ping_number;
+            TS_st=trans_obj_tr.ST.TS_comp;
             
-            if isempty(idx_lay)
-                warning('Could not find layers for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
-                continue;
+            for itracks=1:length(trans_obj_tr.Tracks.target_id)
+                idx_tr=trans_obj_tr.Tracks.target_id{itracks};
+                lat_track=[lat_track nanmean(lat_st(idx_tr))];
+                lon_track=[lon_track nanmean(lon_st(idx_tr))];
+                time_track=[time_track nanmean(time_st(idx_tr))];
+                depth_track=[depth_track nanmean(depth_st(idx_tr))];
+                ping_num_track=[ping_num_track nanmean(ping_num_st(idx_tr))];
+                TS_mean_track=[TS_mean_track  pow2db_perso(nanmean(db2pow_perso(TS_st(idx_tr))))];
             end
             
-            nb_bad_trans=0;
-            nb_ping_tot=0;
-            for i_test_bt=idx_lay   
-                layer_obj_tr=layers(output.Layer_idx(i_test_bt));
-                idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-                [perc_temp,nb_ping_temp]=layer_obj_tr.Transceivers(idx_freq).get_badtrans_perc();
-                nb_bad_trans=nb_bad_trans+nb_ping_temp*perc_temp/100;
-                nb_ping_tot=nb_ping_tot+nb_ping_temp;
-            end
-            
-            if nb_bad_trans/nb_ping_tot>surv_in_obj.Options.BadTransThr/100
-                fprintf('Too much bad pings on Snapshot %.0f Stratum %s Transect %d. Removing it.\n',snap_num,strat_name,trans_num);
-                continue;
-            end
-            Output_echo=[];
-            eint=0;
-            nb_tracks=0;
-            nb_st=0;
-            lat_track=[];
-            lon_track=[];
-            depth_track=[];
-            ping_num_track=[];
-            time_track=[];
-            TS_mean_track=[];
-            
-                dist_tot=0;
-                timediff_tot=0;
-                nb_good_pings=0;
-                mean_bot_w=0;
-                mean_bot=nan(1,length(idx_lay));
-                av_speed=nan(1,length(idx_lay));
-                idx_good_pings=[];
-                iping0=0;
-                for i=1:length(idx_lay)
-                    layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
-                    idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-                    tag_add=layer_obj_tr.Transceivers(idx_freq).Bottom.Tag;
-                    bot_range_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_range();
-                    gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
-                    if i>1
-                        gps_tot=concatenate_GPSData(gps_tot,gps_add);
-                    else
-                        gps_tot=gps_add;
-                    end
-                    
-                    gps_add.Long(gps_tot.Long>180)=gps_add.Long(gps_tot.Long>180)-360;
-                    idx_pings=1:length(gps_add.Time);
-                    idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
-                    dist_add=m_lldist([gps_add.Long(idx_good_pings_add(1)) gps_add.Long(idx_good_pings_add(end))],[gps_add.Lat(idx_good_pings_add(1)) gps_add.Lat(idx_good_pings_add(end))])/1.852;
-                    dist_tot=dist_tot+dist_add;
-                    timediff=(gps_add.Time(idx_good_pings_add(end))-gps_add.Time(idx_good_pings_add(1)))*24;
-                    timediff_tot=timediff_tot+timediff;
-                    nb_good_pings=nb_good_pings+length(idx_good_pings_add);
-                    mean_bot(i)=nanmean(bot_range_add);
-                    mean_bot_w=mean_bot_w+mean_bot(i)*length(idx_good_pings_add);
-                    av_speed(i)=dist_add/timediff;
-                    idx_good_pings=union(idx_good_pings,idx_good_pings_add+iping0);
-                    iping0=length(idx_pings);
-                end
-            
-
-            av_speed_tot=dist_tot/timediff_tot;
-            
-            good_bot_tot=mean_bot_w/nb_good_pings;
-            
-            ir=0;
-            for ilay=idx_lay
-                ir=ir+1;
-                layer_obj_tr=layers(output.Layer_idx(ilay));
-                idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-                gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
-                bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
-                gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
-                trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
-                
-                if isnan(good_bot_tot)
-                    good_bot_tot= trans_obj_tr.Data.Range(end);
-                end
-                
-                if ~isempty(trans_obj_tr.ST.TS_comp)
-                    nb_st=nb_st+length(trans_obj_tr.ST.TS_comp);
-                end
-                
-                if ~isempty(trans_obj_tr.Tracks)
-                    nb_tracks=nb_tracks+length(trans_obj_tr.Tracks.target_id);
-                    lat_st=trans_obj_tr.GPSDataPing.Lat(trans_obj_tr.ST.Ping_number);
-                    lon_st=trans_obj_tr.GPSDataPing.Long(trans_obj_tr.ST.Ping_number);
-                    time_st=trans_obj_tr.GPSDataPing.Time(trans_obj_tr.ST.Ping_number);
-                    depth_st=trans_obj_tr.ST.Target_range;
-                    ping_num_st=trans_obj_tr.ST.Ping_number;
-                    TS_st=trans_obj_tr.ST.TS_comp;
-                    
-                    for itracks=1:length(trans_obj_tr.Tracks.target_id)
-                        idx_tr=trans_obj_tr.Tracks.target_id{itracks};
-                        lat_track=[lat_track nanmean(lat_st(idx_tr))];
-                        lon_track=[lon_track nanmean(lon_st(idx_tr))];
-                        time_track=[time_track nanmean(time_st(idx_tr))];
-                        depth_track=[depth_track nanmean(depth_st(idx_tr))];
-                        ping_num_track=[ping_num_track nanmean(ping_num_st(idx_tr))];
-                        TS_mean_track=[TS_mean_track  pow2db_perso(nanmean(db2pow_perso(TS_st(idx_tr))))];
-                    end
-                    
-                    idx_time_out=output.StartTime(ilay)<time_track|time_track>output.EndTime(ilay);
-                    lat_track(idx_time_out)=[];
-                    lon_track(idx_time_out)=[];
-                    time_track(idx_time_out)=[];
-                    depth_track(idx_time_out)=[];
-                    ping_num_track(idx_time_out)=[];
-                    TS_mean_track(idx_time_out)=[];
-                    
-                end
-                
-                regs=transects{itr}.Regions;
-                idx_reg=[];
-
-                reg_tot=[];
-                for ireg=1:length(regs)
-                    if isfield(regs{ireg},'ver')
-                        if isfield(regs{ireg},'IDs')
-                            if ischar(regs{ireg}.IDs)
-                                IDs=strsplit(regs{ireg}.IDs,';');
-                            else
-                                IDs={regs{ireg}.IDs};
-                            end
-                        else
-                            IDs='';
-                        end
-                        if nansum(strcmp(IDs,''))>0
-                            idx_temp=trans_obj_tr.list_regions_type('Data');
-                            reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-                            idx_reg=union(idx_reg,idx_temp);
-                            reg_tot=[reg_tot reg_temp];
-                        else
-                            for i_sub_reg=1:length(IDs)
-                                if ischar(IDs{i_sub_reg})
-                                    out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
-                                else
-                                    out_cell={IDs{i_sub_reg},[],[]};
-                                end
-                                
-                                idx_temp=trans_obj_tr.list_regions_ID(abs(out_cell{1}));
-                                for i_temp=1:length(idx_temp)
-                                    reg_temp=trans_obj_tr.get_reg_spec(idx_temp(i_temp));
-                                    if ~isempty(out_cell{2});
-                                        reg_temp.startDepth=out_cell{2};
-                                    end
-                                    if ~isempty(out_cell{3});
-                                        reg_temp.finishDepth=out_cell{3};
-                                    elseif isempty(out_cell{3})&&~isempty(out_cell{2});
-                                        reg_temp.startDepth=0;
-                                        reg_temp.finishDepth=-out_cell{2};
-                                    end
-                                    reg_tot=[reg_tot reg_temp];
-                                    idx_reg=union(idx_reg,idx_temp(i_temp));
-                                end
-                            end
-                            
-                        end
-                    elseif isfield(regs{ireg},'name')
-                        idx_temp=trans_obj_tr.list_regions_name(regs{ireg}.name);
-                        if ~isempty(idx_temp)
-                            reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-                            reg_tot=[reg_tot reg_temp];
-                            idx_reg=union(idx_reg,idx_temp);
-                        end
-                    end
-                    
-                end
-                
-                
-                [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
-                %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
-
-                Output_echo=[Output_echo sliced_output];
-                
-                for j=1:length(regs)
-                    i_reg=i_reg+1;
-                    reg_curr =regs{j};
-                    regCellInt=regCellInt_tot{j};
-                    startPing = regCellInt.Ping_S(1);
-                    stopPing = regCellInt.Ping_E(end);
-                    ix = (startPing:stopPing);
-                    ix_good=intersect(ix,find(trans_obj_tr.Bottom.Tag>0));
-                    
-
-                    switch reg_curr.Reference
-                        case 'Surface';
-                            refType = 's';
-                            start_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
-                            finish_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
-                        case 'Bottom';
-                            refType = 'b';
-                            start_d = 0;
-                            finish_d = 0;
-                    end
-                    
-
-                    surv_out_obj.regionsIntegrated.snapshot(i_reg)=snap_num;
-                    surv_out_obj.regionsIntegrated.stratum{i_reg}=strat_name;
-                    surv_out_obj.regionsIntegrated.transect(i_reg)=trans_num;
-                    surv_out_obj.regionsIntegrated.file{i_reg}=layer_obj_tr.Filename;
-                    surv_out_obj.regionsIntegrated.Region{i_reg}=reg_curr;
-                    surv_out_obj.regionsIntegrated.RegOutput{i_reg}=regCellInt;
-                    
-                    surv_out_obj.regionSum.snapshot(i_reg)=snap_num;
-                    surv_out_obj.regionSumAbscf.snapshot(i_reg)=snap_num;
-                    surv_out_obj.regionSumVbscf.snapshot(i_reg)=snap_num;
-                    
-                    surv_out_obj.regionSum.stratum{i_reg}=strat_name;
-                    surv_out_obj.regionSumAbscf.stratum{i_reg}=strat_name;
-                    surv_out_obj.regionSumVbscf.stratum{i_reg}=strat_name;
-                    
-                    surv_out_obj.regionSum.transect(i_reg)=trans_num;
-                    surv_out_obj.regionSumAbscf.transect(i_reg)=trans_num;
-                    surv_out_obj.regionSumVbscf.transect(i_reg)=trans_num;
-                    
-                    surv_out_obj.regionSum.file{i_reg}=layer_obj_tr.Filename;
-                    surv_out_obj.regionSumAbscf.file{i_reg}=layer_obj_tr.Filename;
-                    surv_out_obj.regionSumVbscf.file{i_reg}=layer_obj_tr.Filename;
-                    
-                    surv_out_obj.regionSum.region_id(i_reg)=reg_curr.ID;
-                    surv_out_obj.regionSumAbscf.region_id(i_reg)=reg_curr.ID;
-                    surv_out_obj.regionSumVbscf.region_id(i_reg)=reg_curr.ID;
-                    
-                    %% Region Summary (4th Mbs Output Block)
-                    surv_out_obj.regionSum.time_end(i_reg)=regCellInt.Time_E(end);
-                    surv_out_obj.regionSum.time_start(i_reg)=regCellInt.Time_S(1);
-                    surv_out_obj.regionSum.ref{i_reg}=refType;
-                    surv_out_obj.regionSum.slice_size(i_reg)=reg_curr.Cell_h;
-                    surv_out_obj.regionSum.good_pings(i_reg)=length(ix_good);
-                    surv_out_obj.regionSum.start_d(i_reg)= start_d;
-                    surv_out_obj.regionSum.mean_d(i_reg)=mean_bot(ir);
-                    surv_out_obj.regionSum.finish_d(i_reg)=finish_d;
-                    surv_out_obj.regionSum.av_speed(i_reg)=av_speed(ir);
-                    surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_esp2));
-                    surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2));%Abscf Region
-                    surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
-                    
-                    %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
-                    surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end,:);
-                    surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S(1,:);
-                    surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.Lat_S,2);
-                    surv_out_obj.regionSumAbscf.transmit_start{i_reg} = nanmax(regCellInt.Ping_S); % transmit Start vertical slice
-                    surv_out_obj.regionSumAbscf.latitude{i_reg} = nanmax(regCellInt.Lat_S); % lat vertical slice
-                    surv_out_obj.regionSumAbscf.longitude{i_reg} = nanmax(regCellInt.Lon_S); % lon vertical slice
-                    surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.Sa_lin)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
-                    
-                    %% Region vbscf (6th Mbs Output Block)
-                    surv_out_obj.regionSumVbscf.time_end{i_reg}=regCellInt.Time_E;
-                    surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellInt.Time_S;
-                    surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,1);% num_h_slices
-                    surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,2); % num_v_slices
-                    tmp=surv_out_obj.regionSum.vbscf(i_reg);
-                    tmp(isnan(tmp))=0;
-                    surv_out_obj.regionSumVbscf.region_vbscf(i_reg) = tmp; % Vbscf Region
-                    surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt.Sv_mean_lin_esp2; %
-                    
-                    %% Region echo integral for Transect Summary
-                    eint =eint + nansum(nansum(regCellInt.Sa_lin(:)));
-                    
-                end%end of regions iteration for this file
-            end%end of layer iteration for this transect
-            
-                        
-            
-            %% Transect Summary
-            surv_out_obj.transectSum.snapshot(i_trans) = snap_num;
-            surv_out_obj.transectSum.stratum{i_trans} = strat_name;
-            surv_out_obj.transectSum.transect(i_trans) = trans_num;
-            surv_out_obj.transectSum.dist(i_trans) = dist_tot;
-            surv_out_obj.transectSum.mean_d(i_trans) = nanmean(good_bot_tot); % mean_d
-            surv_out_obj.transectSum.pings(i_trans) = length(idx_good_pings); % pings %
-            surv_out_obj.transectSum.av_speed(i_trans) = av_speed_tot; % av_speed
-            surv_out_obj.transectSum.start_lat(i_trans) = gps_tot.Lat(idx_good_pings(1)); % start_lat
-            surv_out_obj.transectSum.start_lon(i_trans) = gps_tot.Long(idx_good_pings(1)); % start_lon
-            surv_out_obj.transectSum.finish_lat(i_trans) = gps_tot.Lat(idx_good_pings(end)); % finish_lat
-            surv_out_obj.transectSum.finish_lon(i_trans) = gps_tot.Long(idx_good_pings(end)); % finish_lon
-            surv_out_obj.transectSum.time_start(i_trans) = gps_tot.Time(idx_good_pings(1)); % finish_lat
-            surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_good_pings(end)); % finish_lon
-            surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
-            surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
-            
-            %Tracks/ST transect summary
-            surv_out_obj.transectSumTracks.snapshot(i_trans) = snap_num;
-            surv_out_obj.transectSumTracks.stratum{i_trans} = strat_name;
-            surv_out_obj.transectSumTracks.transect(i_trans) = trans_num;
-            surv_out_obj.transectSumTracks.nb_st(i_trans) = nb_st;
-            surv_out_obj.transectSumTracks.nb_tracks(i_trans) = nb_tracks;
-            surv_out_obj.transectSumTracks.lat_track{i_trans}=lat_track;
-            surv_out_obj.transectSumTracks.lon_track{i_trans}=lon_track;
-            surv_out_obj.transectSumTracks.time_track{i_trans}=time_track;
-            surv_out_obj.transectSumTracks.depth_track{i_trans}=depth_track;
-            surv_out_obj.transectSumTracks.TS_mean_track{i_trans}=TS_mean_track;
-            surv_out_obj.transectSumTracks.ping_num_track{i_trans}=ping_num_track;
-            
-            
-            
-            %% Sliced Transect Summary
-            surv_out_obj.slicedTransectSum.snapshot(i_trans) = snap_num;
-            surv_out_obj.slicedTransectSum.stratum{i_trans} = strat_name;
-            surv_out_obj.slicedTransectSum.transect(i_trans) = trans_num;
-            surv_out_obj.slicedTransectSum.slice_size(i_trans) = nanmean([Output_echo(:).slice_size]); % slice_size
-            surv_out_obj.slicedTransectSum.num_slices(i_trans) = nansum([Output_echo(:).num_slices]); % num_slices
-            surv_out_obj.slicedTransectSum.latitude{i_trans} = [Output_echo(:).slice_lat_esp2]; % latitude
-            surv_out_obj.slicedTransectSum.longitude{i_trans} = [Output_echo(:).slice_lon_esp2]; % longitude
-            surv_out_obj.slicedTransectSum.time_start{i_trans} = [Output_echo(:).slice_time_start]; %
-            surv_out_obj.slicedTransectSum.time_end{i_trans} = [Output_echo(:).slice_time_end]; %
-            surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)=surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)-360;
-            surv_out_obj.slicedTransectSum.slice_abscf{i_trans} = [Output_echo(:).slice_abscf]; % slice_abscf
-            surv_out_obj.slicedTransectSum.slice_nb_tracks{i_trans} = [Output_echo(:).slice_nb_tracks];
-            surv_out_obj.slicedTransectSum.slice_nb_st{i_trans} = [Output_echo(:).slice_nb_st];
+            idx_time_out=output.StartTime(ilay)<time_track|time_track>output.EndTime(ilay);
+            lat_track(idx_time_out)=[];
+            lon_track(idx_time_out)=[];
+            time_track(idx_time_out)=[];
+            depth_track(idx_time_out)=[];
+            ping_num_track(idx_time_out)=[];
+            TS_mean_track(idx_time_out)=[];
             
         end
-    end%end of transect iteration for this stratum
+        
+        idx_reg=[];
+        reg_tot=[];
+        
+        names={};
+        IDs={};
+        
+        for ireg=1:length(regs_t)
+            if isfield(regs_t{ireg},'ver')
+                if isfield(regs_t{ireg},'IDs')
+                    if ischar(regs_t{ireg}.IDs)
+                        IDs=union(IDs,strsplit(regs_t{ireg}.IDs,';'));
+                    else
+                        IDs=union(IDs,num2str(regs_t{ireg}.IDs,'%d'));
+                    end
+                else
+                    IDs='';
+                end
+            elseif isfield(regs_t{ireg},'name')
+                names=union(names,regs_t{ireg}.name);
+            end
+        end
+        
+        if any(strcmp(IDs,''))>0
+            idx_temp=trans_obj_tr.list_regions_type('Data');
+            reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+            idx_reg=union(idx_reg,idx_temp);
+            reg_tot=[reg_tot reg_temp];
+        else
+            for i_sub_reg=1:length(IDs)
+                if ischar(IDs{i_sub_reg})
+                    out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
+                else
+                    out_cell={IDs{i_sub_reg},[],[]};
+                end
+                
+                idx_temp=trans_obj_tr.list_regions_ID(abs(out_cell{1}));
+                for i_temp=1:length(idx_temp)
+                    reg_temp=trans_obj_tr.get_reg_spec(idx_temp(i_temp));
+                    if ~isempty(out_cell{2});
+                        reg_temp.startDepth=out_cell{2};
+                    end
+                    if ~isempty(out_cell{3});
+                        reg_temp.finishDepth=out_cell{3};
+                    elseif isempty(out_cell{3})&&~isempty(out_cell{2});
+                        reg_temp.startDepth=0;
+                        reg_temp.finishDepth=-out_cell{2};
+                    end
+                    reg_tot=[reg_tot reg_temp];
+                    idx_reg=union(idx_reg,idx_temp(i_temp));
+                end
+            end
+        end
+        
+        for in=1:length(names)
+            idx_temp=trans_obj_tr.list_regions_name(names{in});
+            if ~isempty(idx_temp)
+                reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
+                reg_tot=[reg_tot reg_temp];
+                idx_reg=union(idx_reg,idx_temp);
+            end
+        end
+        
+        
+        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
+        %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
+        
+        Output_echo=[Output_echo sliced_output];
+        
+        for j=1:length(regs)
+            i_reg=i_reg+1;
+            reg_curr =regs{j};
+            regCellInt=regCellInt_tot{j};
+            startPing = regCellInt.Ping_S(1);
+            stopPing = regCellInt.Ping_E(end);
+            ix = (startPing:stopPing);
+            ix_good=intersect(ix,find(trans_obj_tr.Bottom.Tag>0));
+            
+            
+            switch reg_curr.Reference
+                case 'Surface';
+                    refType = 's';
+                    start_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
+                    finish_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
+                case 'Bottom';
+                    refType = 'b';
+                    start_d = 0;
+                    finish_d = 0;
+            end
+            
+            
+            surv_out_obj.regionsIntegrated.snapshot(i_reg)=snap_num;
+            surv_out_obj.regionsIntegrated.stratum{i_reg}=strat_name;
+            surv_out_obj.regionsIntegrated.transect(i_reg)=trans_num;
+            surv_out_obj.regionsIntegrated.file{i_reg}=layer_obj_tr.Filename;
+            surv_out_obj.regionsIntegrated.Region{i_reg}=reg_curr;
+            surv_out_obj.regionsIntegrated.RegOutput{i_reg}=regCellInt;
+            
+            surv_out_obj.regionSum.snapshot(i_reg)=snap_num;
+            surv_out_obj.regionSumAbscf.snapshot(i_reg)=snap_num;
+            surv_out_obj.regionSumVbscf.snapshot(i_reg)=snap_num;
+            
+            surv_out_obj.regionSum.stratum{i_reg}=strat_name;
+            surv_out_obj.regionSumAbscf.stratum{i_reg}=strat_name;
+            surv_out_obj.regionSumVbscf.stratum{i_reg}=strat_name;
+            
+            surv_out_obj.regionSum.transect(i_reg)=trans_num;
+            surv_out_obj.regionSumAbscf.transect(i_reg)=trans_num;
+            surv_out_obj.regionSumVbscf.transect(i_reg)=trans_num;
+            
+            surv_out_obj.regionSum.file{i_reg}=layer_obj_tr.Filename;
+            surv_out_obj.regionSumAbscf.file{i_reg}=layer_obj_tr.Filename;
+            surv_out_obj.regionSumVbscf.file{i_reg}=layer_obj_tr.Filename;
+            
+            surv_out_obj.regionSum.region_id(i_reg)=reg_curr.ID;
+            surv_out_obj.regionSumAbscf.region_id(i_reg)=reg_curr.ID;
+            surv_out_obj.regionSumVbscf.region_id(i_reg)=reg_curr.ID;
+            
+            %% Region Summary (4th Mbs Output Block)
+            surv_out_obj.regionSum.time_end(i_reg)=regCellInt.Time_E(end);
+            surv_out_obj.regionSum.time_start(i_reg)=regCellInt.Time_S(1);
+            surv_out_obj.regionSum.ref{i_reg}=refType;
+            surv_out_obj.regionSum.slice_size(i_reg)=reg_curr.Cell_h;
+            surv_out_obj.regionSum.good_pings(i_reg)=length(ix_good);
+            surv_out_obj.regionSum.start_d(i_reg)= start_d;
+            surv_out_obj.regionSum.mean_d(i_reg)=mean_bot(ir);
+            surv_out_obj.regionSum.finish_d(i_reg)=finish_d;
+            surv_out_obj.regionSum.av_speed(i_reg)=av_speed(ir);
+            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_esp2));
+            surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2));%Abscf Region
+            surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
+            
+            %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
+            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end,:);
+            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S(1,:);
+            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.Lat_S,2);
+            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = nanmax(regCellInt.Ping_S); % transmit Start vertical slice
+            surv_out_obj.regionSumAbscf.latitude{i_reg} = nanmax(regCellInt.Lat_S); % lat vertical slice
+            surv_out_obj.regionSumAbscf.longitude{i_reg} = nanmax(regCellInt.Lon_S); % lon vertical slice
+            surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.Sa_lin)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
+            
+            %% Region vbscf (6th Mbs Output Block)
+            surv_out_obj.regionSumVbscf.time_end{i_reg}=regCellInt.Time_E;
+            surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellInt.Time_S;
+            surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,1);% num_h_slices
+            surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,2); % num_v_slices
+            tmp=surv_out_obj.regionSum.vbscf(i_reg);
+            tmp(isnan(tmp))=0;
+            surv_out_obj.regionSumVbscf.region_vbscf(i_reg) = tmp; % Vbscf Region
+            surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt.Sv_mean_lin_esp2; %
+            
+            %% Region echo integral for Transect Summary
+            eint =eint + nansum(nansum(regCellInt.Sa_lin(:)));
+            
+        end%end of regions iteration for this file
+    end%end of layer iteration for this transect
+    
+    
+    
+    %% Transect Summary
+    surv_out_obj.transectSum.snapshot(i_trans) = snap_num;
+    surv_out_obj.transectSum.stratum{i_trans} = strat_name;
+    surv_out_obj.transectSum.transect(i_trans) = trans_num;
+    surv_out_obj.transectSum.dist(i_trans) = dist_tot;
+    surv_out_obj.transectSum.mean_d(i_trans) = nanmean(good_bot_tot); % mean_d
+    surv_out_obj.transectSum.pings(i_trans) = length(idx_good_pings); % pings %
+    surv_out_obj.transectSum.av_speed(i_trans) = av_speed_tot; % av_speed
+    surv_out_obj.transectSum.start_lat(i_trans) = gps_tot.Lat(idx_good_pings(1)); % start_lat
+    surv_out_obj.transectSum.start_lon(i_trans) = gps_tot.Long(idx_good_pings(1)); % start_lon
+    surv_out_obj.transectSum.finish_lat(i_trans) = gps_tot.Lat(idx_good_pings(end)); % finish_lat
+    surv_out_obj.transectSum.finish_lon(i_trans) = gps_tot.Long(idx_good_pings(end)); % finish_lon
+    surv_out_obj.transectSum.time_start(i_trans) = gps_tot.Time(idx_good_pings(1)); % finish_lat
+    surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_good_pings(end)); % finish_lon
+    surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
+    surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
+    
+    %Tracks/ST transect summary
+    surv_out_obj.transectSumTracks.snapshot(i_trans) = snap_num;
+    surv_out_obj.transectSumTracks.stratum{i_trans} = strat_name;
+    surv_out_obj.transectSumTracks.transect(i_trans) = trans_num;
+    surv_out_obj.transectSumTracks.nb_st(i_trans) = nb_st;
+    surv_out_obj.transectSumTracks.nb_tracks(i_trans) = nb_tracks;
+    surv_out_obj.transectSumTracks.lat_track{i_trans}=lat_track;
+    surv_out_obj.transectSumTracks.lon_track{i_trans}=lon_track;
+    surv_out_obj.transectSumTracks.time_track{i_trans}=time_track;
+    surv_out_obj.transectSumTracks.depth_track{i_trans}=depth_track;
+    surv_out_obj.transectSumTracks.TS_mean_track{i_trans}=TS_mean_track;
+    surv_out_obj.transectSumTracks.ping_num_track{i_trans}=ping_num_track;
+    
+    
+    
+    %% Sliced Transect Summary
+    surv_out_obj.slicedTransectSum.snapshot(i_trans) = snap_num;
+    surv_out_obj.slicedTransectSum.stratum{i_trans} = strat_name;
+    surv_out_obj.slicedTransectSum.transect(i_trans) = trans_num;
+    surv_out_obj.slicedTransectSum.slice_size(i_trans) = nanmean([Output_echo(:).slice_size]); % slice_size
+    surv_out_obj.slicedTransectSum.num_slices(i_trans) = nansum([Output_echo(:).num_slices]); % num_slices
+    surv_out_obj.slicedTransectSum.latitude{i_trans} = [Output_echo(:).slice_lat_esp2]; % latitude
+    surv_out_obj.slicedTransectSum.longitude{i_trans} = [Output_echo(:).slice_lon_esp2]; % longitude
+    surv_out_obj.slicedTransectSum.time_start{i_trans} = [Output_echo(:).slice_time_start]; %
+    surv_out_obj.slicedTransectSum.time_end{i_trans} = [Output_echo(:).slice_time_end]; %
+    surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)=surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)-360;
+    surv_out_obj.slicedTransectSum.slice_abscf{i_trans} = [Output_echo(:).slice_abscf]; % slice_abscf
+    surv_out_obj.slicedTransectSum.slice_nb_tracks{i_trans} = [Output_echo(:).slice_nb_tracks];
+    surv_out_obj.slicedTransectSum.slice_nb_st{i_trans} = [Output_echo(:).slice_nb_st];
+    
 end
+
 
 %% Stratum Summary (1st mbs Output block)
 
 i_strat=0;
-snapshots=unique(snap_vec);
+
+snapshots=unique(snaps);
 for isn = 1:length(snapshots)
     % loop over all snapshots and get Data subset
     ix = find(surv_out_obj.transectSum.snapshot==snapshots(isn));
@@ -418,7 +427,7 @@ for isn = 1:length(snapshots)
         else
             surv_out_obj.stratumSum.abscf_var(i_strat)=0;
         end
-            
+        
     end
 end
 surv_obj.SurvOutput=surv_out_obj;

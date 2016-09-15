@@ -37,7 +37,7 @@ axes_panel_comp.vaxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fo
     'visible','on');
 
 axes_panel_comp.v_axes_plot=plot(axes_panel_comp.vaxes,nan,'r');
-axes_panel_comp.v_axes_text=text(nan,nan,'','Color','r','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.vaxes);
+axes_panel_comp.v_axes_text=text(nan,nan,'','Color','k','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.vaxes);
 
 
 axes_panel_comp.haxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fontweight','Bold','Units','normalized',...

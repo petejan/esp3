@@ -8,7 +8,7 @@ if ~isempty(idx_tag)
 end
 
 % Column names and column format
-columnname = {'Title','Species','Voyage','Areas','Author','Script','Created'};
+columnname = {'Title','Species','Survey','Areas','Author','Script','Created'};
 columnformat = {'char','char','char','char','char','char','char'};
 
 script_fig = figure('Position',[100 100 800 600],'Resize','off',...

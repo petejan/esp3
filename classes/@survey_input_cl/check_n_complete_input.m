@@ -55,6 +55,7 @@ for isn=1:length(snapshots)
         continue;
     end
     
+    fprintf('\nLooking in folder %s\n',snapshots{isn}.Folder);
     surv_data_struct=import_survey_data_xml(file_name);
     
     for ist=1:length(stratum)

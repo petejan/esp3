@@ -23,13 +23,12 @@ cal_opt=surv_input_obj.Cal;
 layers=p.Results.layers;
 layers_new=[];
 for isn=1:length(snapshots)
-    
-    
+     
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
     
     cal_snap=get_cal_node(cal_opt,snapshots{isn});
-    
+    fprintf('\nLoading files from %s\n',snapshots{isn}.Folder);
     for ist=1:length(stratum)
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
@@ -285,8 +284,9 @@ for isn=1:length(snapshots)
                                         'Cell_w_unit',regions_wc{irewc}.Cell_w_unit,...
                                         'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                     reg_wc.Remove_ST=options.Remove_ST;
+                                    layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
                                 end
-                                layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
+                                
                         end
                     end
                 end
