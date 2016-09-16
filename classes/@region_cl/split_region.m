@@ -18,7 +18,7 @@ for ifile=file_ids
             reg_obj.Shape='Rectangular';
         end
         
-        if length(idx_reg_inter)<length(Idx_pings)
+        if length(idx_reg_inter)<length(reg_obj.Idx_pings)
             switch reg_obj.Shape
                 case 'Polygon'
                     mask=reg_obj.MaskReg(:,Idx_pings-reg_obj.Idx_pings(1)+1);

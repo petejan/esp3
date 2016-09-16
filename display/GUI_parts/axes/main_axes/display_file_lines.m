@@ -11,9 +11,11 @@ trans_obj=layer.Transceivers(idx_freq);
 xdata=trans_obj.Data.get_numbers();
 ydata=trans_obj.Data.get_range();
 
+obj_line=findobj(axes_panel_comp.main_axes,'Tag','file_id');
+delete(obj_line);
 
 for ifile=1:length(idx_change_file)
-    plot(axes_panel_comp.main_axes,xdata(idx_change_file(ifile)).*ones(size(ydata)),ydata,'k','tag','file_id');
+    plot(axes_panel_comp.main_axes,xdata(idx_change_file(ifile)).*ones(size(ydata)),ydata,'k','Tag','file_id');
 end
 
 obj_line=findobj(axes_panel_comp.main_axes,'Tag','file_id');

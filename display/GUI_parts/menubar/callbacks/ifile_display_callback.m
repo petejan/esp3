@@ -16,10 +16,12 @@ else
 
     [path_file,file,~]=fileparts(layer.OriginCrest);
     
-    tok = file(end-7);
-    num = file((end-6):end);
-    if (tok == 'd' || tok == 'n' || tok == 't') && ~isempty(str2double(num))
-        file(end-7) = 'i';
+    if ~isempty(file)
+        tok = file(end-7);
+        num = file((end-6):end);
+        if (tok == 'd' || tok == 'n' || tok == 't') && ~isempty(str2double(num))
+            file(end-7) = 'i';
+        end
     end
 end
 ifiletot=fullfile(path_file,file);

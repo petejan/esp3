@@ -43,7 +43,7 @@ set(bottom_tab_comp.Thr_backstep_sl,'value',algo.thr_backstep);
 set(bottom_tab_comp.Thr_backstep_ed,'string',num2str(get(bottom_tab_comp.Thr_backstep_sl,'Value'),'%.0f'));
 
 set(bottom_tab_comp.Shift_bot_sl,'value',algo.shift_bot);
-set(bottom_tab_comp.Shift_bot_ed,'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.0f'));
+set(bottom_tab_comp.Shift_bot_ed,'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.2f'));
 
 set(bottom_tab_comp.denoised,'value',algo.denoised);
 set(findall(bottom_tab_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'on');

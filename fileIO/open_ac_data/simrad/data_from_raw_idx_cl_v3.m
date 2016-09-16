@@ -133,7 +133,7 @@ param_str_init=cell(1,nb_trans);
 param_str_init(:)={''};
 
 idx_mru0=strcmp(idx_raw_obj.type_dg,'MRU0');
-mru0_att=attitude_nav_cl('Time',idx_raw_obj.time_dg(idx_mru0));
+mru0_att=attitude_nav_cl('Time',idx_raw_obj.time_dg(idx_mru0)');
 
 
 fid=fopen(filename,'r');
@@ -333,10 +333,10 @@ for idg=1:length(idx_raw_obj.type_dg)
         case 'MRU0'
             id_mru0=id_mru0+1;
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
-            mru0_att.Heave(id_mru0) = fread(fid,1,'int32', 'l');
-            mru0_att.Roll(id_mru0) = fread(fid,1,'int32', 'l');
-            mru0_att.Pitch(id_mru0) = fread(fid,1,'int32', 'l');
-            mru0_att.Heading(id_mru0) = fread(fid,1,'int32', 'l');
+            mru0_att.Heave(id_mru0) = fread(fid,1,'float32', 'l');
+            mru0_att.Roll(id_mru0) = fread(fid,1,'float32', 'l');
+            mru0_att.Pitch(id_mru0) = fread(fid,1,'float32', 'l');
+            mru0_att.Heading(id_mru0) = fread(fid,1,'float32', 'l');
             
             
         case 'RAW0'

@@ -68,7 +68,8 @@ switch p.Results.Ref
         shape='Polygon';
 
         mask=bsxfun(@ge,ydata,bot_data-p.Results.Cell_h-p.Results.y_min)&...
-        bsxfun(@le,ydata,bot_data+p.Results.Cell_h);
+        bsxfun(@le,ydata,bot_data+p.Results.Cell_h)&...
+        bsxfun(@ge,ydata,repmat(p.Results.y_max,size(bot_data)));
         idx_r=find(nansum(mask,2)>0);
         mask=mask(idx_r,:);
 end

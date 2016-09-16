@@ -116,53 +116,6 @@ for i_cell=1:length(Filename_cell)
     fclose(fid);
     
     for ic=1:max(data.nb_channel)
-        config_obj=config_cl();
-        params_obj=params_cl();
-        
-        config_obj.EthernetAddress='';
-        config_obj.IPAddress='';
-        config_obj.SerialNumber='';
-        config_obj.TransceiverName='ASL';
-        config_obj.TransceiverNumber=[];
-        config_obj.TransceiverSoftwareVersion='';
-        config_obj.TransceiverType='';
-        config_obj.ChannelID='';
-        config_obj.ChannelIdShort='';
-        config_obj.ChannelNumber=[];
-        config_obj.HWChannelConfiguration=[];
-        config_obj.MaxTxPowerTransceiver=[];
-        config_obj.PulseLength=nanmean(data.pulse_length(ic,:));
-        config_obj.AngleOffsetAlongship=[];
-        config_obj.AngleOffsetAthwartship=[];
-        config_obj.AngleSensitivityAlongship=[];
-        config_obj.AngleSensitivityAthwartship=[];
-        config_obj.BeamType='';
-        config_obj.BeamWidthAlongship=6;
-        config_obj.BeamWidthAthwartship=6;
-        config_obj.DirectivityDropAt2XBeamWidth=[];
-        config_obj.EquivalentBeamAngle=10*log10(1.4*pi*(1-cosd(config_obj.BeamWidthAlongship)));
-        config_obj.Frequency=data.freq(1,ic);
-        config_obj.FrequencyMaximum=data.freq(1,ic);
-        config_obj.FrequencyMinimum=data.freq(1,ic);
-        config_obj.Gain=1;
-        config_obj.MaxTxPowerTransducer=[];
-        config_obj.SaCorrection=0;
-        config_obj.TransducerName='';
-        
-        params_obj.Time=[];
-        params_obj.BandWidth=[];
-        params_obj.ChannelID={};
-        params_obj.ChannelMode={};
-        params_obj.FrequencyEnd=data.freq(1,ic);
-        params_obj.FrequencyStart=data.freq(1,ic);
-        params_obj.PulseForm=[];
-        params_obj.PulseLength=nanmean(data.pulse_length(ic,:));
-        params_obj.SampleInterval=1./nanmean(data.f_s(ic,:));
-        params_obj.Slope=[];
-        params_obj.TransducerDepth=[];
-        params_obj.TransmitPower=1;
-        params_obj.Absorption=0.0555;
-        
         
         [nb_samples,nb_pings]=size(data.(sprintf('chan_%.0f',ic)));
         sample_number=(nanmean(data.sample_start(ic,:))+1:nb_samples+nanmean(data.sample_start(ic,:)))';
@@ -170,9 +123,39 @@ for i_cell=1:length(Filename_cell)
         time=sample_number/nanmean(data.f_s(ic,:));
         range=c*time/2;
         
-        data_struct.sv = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(20*log10(range)+2*params_obj.Absorption*range,1,nb_pings) - 10*log10(c* config_obj.PulseLength/2)-config_obj.EquivalentBeamAngle;
-        data_struct.sp = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(40*log10(range)+2*params_obj.Absorption*range,1,nb_pings);
-        data_struct.power=remove_TVG_from_Sp(data_struct.sp,range,params_obj.Absorption);
+        
+        config_obj=config_cl();
+        params_obj=params_cl(nb_pings);
+        envdata=env_data_cl('SoundSpeed',1500);
+        config_obj.EthernetAddress='';
+        config_obj.IPAddress='';
+        config_obj.SerialNumber='';
+
+        config_obj.PulseLength=nanmean(data.pulse_length(ic,:));
+        config_obj.BeamType='';
+        config_obj.BeamWidthAlongship=6;
+        config_obj.BeamWidthAthwartship=6;
+        config_obj.EquivalentBeamAngle=10*log10(1.4*pi*(1-cosd(config_obj.BeamWidthAlongship)));
+        config_obj.Frequency=data.freq(1,ic);
+        config_obj.FrequencyMaximum=data.freq(1,ic);
+        config_obj.FrequencyMinimum=data.freq(1,ic);
+        config_obj.Gain=0;
+        config_obj.SaCorrection=0;
+        config_obj.TransducerName='';
+        
+        params_obj.Time=data.time;
+        params_obj.Frequency(:)=data.freq(1,ic);
+        params_obj.FrequencyEnd(:)=data.freq(1,ic);
+        params_obj.FrequencyStart(:)=data.freq(1,ic);
+        params_obj.PulseLength(:)=nanmean(data.pulse_length(ic,:));
+        params_obj.SampleInterval(:)=1./nanmean(data.f_s(ic,:));
+        params_obj.TransducerDepth(:)=0;
+        params_obj.TransmitPower(:)=1;
+        params_obj.Absorption(:)= sw_absorption(params_obj.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
+        
+        data_struct.sv = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(20*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings) - 10*log10(c*params_obj.PulseLength(1)/2)-config_obj.EquivalentBeamAngle;
+        data_struct.sp = data.(sprintf('chan_%.0f',ic)) - 162.5 - 97.2 + repmat(40*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings);
+        data_struct.power=remove_TVG_from_Sp(data_struct.sp,range,params_obj.Absorption(1));
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(data_struct,dir_data,{});
         
@@ -183,7 +166,7 @@ for i_cell=1:length(Filename_cell)
             'Time',data.time,...
             'Number',[1 nb_pings],...
             'MemapName',curr_name);
-        envdata=env_data_cl('SoundSpeed',1500);
+        
         clear curr_data;
         
         main_path=whereisEcho();

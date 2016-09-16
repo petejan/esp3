@@ -229,9 +229,9 @@ end
 N_y=length(Y)-1;
 
 
-output.Sv_mean_lin_esp2=nan(N_y,N_x);
-output.Sv_mean_lin=nan(N_y,N_x);
-output.Sa_lin=nan(N_y,N_x);
+output.Sv_mean_lin_esp2=zeros(N_y,N_x);
+output.Sv_mean_lin=zeros(N_y,N_x);
+output.Sa_lin=zeros(N_y,N_x);
 output.nb_samples=nan(N_y,N_x);
 output.length=2*repmat(x_res,N_y,1);
 output.height=2*repmat(y_res',1,N_x);
@@ -258,8 +258,8 @@ output.Lat_S=nan(N_y,N_x);
 output.Lon_S=nan(N_y,N_x);
 output.Lat_E=nan(N_y,N_x);
 output.Lon_E=nan(N_y,N_x);
-output.ABC=nan(N_y,N_x);
-output.NASC=nan(N_y,N_x);
+output.ABC=zeros(N_y,N_x);
+output.NASC=zeros(N_y,N_x);
 output.Thickness_esp2=nan(N_y,N_x);
 output.Thickness_mean=nan(N_y,N_x);
 output.Nb_good_pings=nan(N_y,N_x);
@@ -390,8 +390,14 @@ output.Sv_mean_lin_esp2(idx_nan)=nan;
 output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
-
 fields=fieldnames(output);
+idx_zeros_lat=nansum(output.Lon_S,1)==0;
+
+for ifi=1:length(fields)
+    output.(fields{ifi})(:,idx_zeros_lat)=[];
+end
+
+
 idx_zeros=find(nansum(output.Sv_mean_lin,2)==0);
 idx_rem=[];
 if length(idx_zeros)>2

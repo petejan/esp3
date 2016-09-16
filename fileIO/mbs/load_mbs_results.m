@@ -100,7 +100,7 @@ else
             continue;
         end
         
-                line=strrep(line,'NaN','');
+        line=strrep(line,'NaN','');
         all_words = words(line,',');
         if isempty(all_words)
             return;
@@ -118,7 +118,7 @@ else
         % the lat/long is we have the data.
         k = 1;
         if size(all_words,1) < 4*data{i,6} % we don't have lat/long values
-            for j = 1 : data(i).num_vert_slices
+            for j = 1 : data{i,6}
                 data{i,7}(k) = str2double(all_words(7+2*(j-1),:));
                 data{i,10}(k) = str2double(all_words(7+2*(j-1)+1,:));
                 data{i,8}(k) = NaN;
@@ -224,7 +224,7 @@ else
     % read in and parse the data
     for i = 1: header.num_strata
         line = fgetl(fid);
-                line=strrep(line,'NaN','');
+        line=strrep(line,'NaN','');
         all_words = words(line,',');
         if isempty(all_words)
             return;
@@ -252,7 +252,7 @@ else
     % read in and parse the data
     for i = 1: header.num_transects
         line = fgetl(fid);
-                line=strrep(line,'NaN','');
+        line=strrep(line,'NaN','');
         all_words = words(line,',');
         if isempty(all_words)
             return;
@@ -260,7 +260,7 @@ else
         data{i,1}   = str2double(all_words(1,:));
         data{i,2}    = strcat(all_words(2,:)); % strcat removes trailing spaces
         data{i,3}   = str2double(all_words(3,:));
-        data{i,4}       = str2double(all_words(4,:));
+        data{i,4}    = str2double(all_words(4,:));
         data{i,5}  = str2double(all_words(5,:));
         data{i,6}  = str2double(all_words(6,:));
         data{i,7}  = str2double(all_words(7,:));

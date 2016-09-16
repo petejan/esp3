@@ -7,13 +7,14 @@ for ii=1:length(reg_plot)
 end
 
 uimenu(context_menu,'Label','Display Region','Callback',{@display_region_callback,reg_curr,main_figure});
-uimenu(context_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
+
 uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
-uimenu(context_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
-
-
+analysis_menu=uimenu(context_menu,'Label','Analysis');
+uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
+uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
+uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,reg_curr,main_figure});
 end
 
 function copy_region_callback(~,~,reg_curr,main_figure)
@@ -50,6 +51,10 @@ switch reg_curr.Shape
 end
 data(sub_sample_mat>=sub_bot_mat)=nan;
 data(:,sub_idx_bad)=nan;
+
+if ~any(~isnan(data))
+    return;
+end
 
 [pdf,x]=pdf_perso(data,'bin',50);
 
