@@ -27,8 +27,8 @@ uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_
 uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,0});
 uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,1});
 
-%mhh = uimenu(main_figure,'Label','Export Results','Tag','menuexport');
-%uimenu(mhh,'Label','Export ?','Callback',{@??,main_figure});
+eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
+uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
 
 
 

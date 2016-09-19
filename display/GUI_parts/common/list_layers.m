@@ -13,7 +13,8 @@ layers_Str=cell(1,nb_layers);
 for i=1:nb_layers
     file_curr='';
     
-    [~,filename_cell]=fileparts_cell(layers(i).Filename);
+    [~,filename_cell,~]=cellfun(@fileparts,layers(i).Filename,'UniformOutput',false);
+    
     for il=1:length(layers(i).Filename)
         file_curr=[file_curr ' ' filename_cell{il}];
     end

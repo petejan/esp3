@@ -1,9 +1,17 @@
 function  open_file(~,~,file_id,main_figure)
+
+
+
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
+
+
 if isempty(file_id)
     return;
 end
+
+
+
 
 if ~isempty(layer)
     [path_lay,~]=layer.get_path_files();
@@ -101,7 +109,6 @@ else
         end
     end
     
-    
 end
 
 if iscell(Filename)
@@ -117,12 +124,10 @@ end
 if ~isequal(Filename, 0)
     ftype=get_ftype(Filename_tmp);
 else
-    return
+    return;
 end
 
 setappdata(main_figure,'Layer',layer);
-
-%read_all=0;
 
 
 if ~iscell(Filename)
@@ -130,102 +135,113 @@ if ~iscell(Filename)
 end
 
 
+
+
 if ~isequal(Filename, 0)
-    switch ftype
-        case {'EK60','EK80','dfile'} 
-            [path_tmp,~,~]=fileparts(Filename{1});
-            
-            survey_struct=import_survey_data_xml(fullfile(path_tmp,'echo_logbook.xml'));
-            
-            if ~isempty(survey_struct)
+    enabled_obj=findobj(main_figure,'Enable','on');
+    set(enabled_obj,'Enable','off');
+    try
+        switch ftype
+            case {'EK60','EK80','dfile'}
+                [path_tmp,~,~]=fileparts(Filename{1});
                 
-                [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
+                survey_struct=import_survey_data_xml(fullfile(path_tmp,'echo_logbook.xml'));
                 
-                for ic=1:length(files_lay)
-                    files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
-                end
-                
-                [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
-                
-                idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
-                
-                if ~isempty(idx_incomp)
-                    choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
-                        'Incomplete',...
-                        'Yes','No',...
-                        'Yes');
-                    % Handle response
-                    switch choice
-                        case 'Yes'
-                            for ifile_miss=idx_incomp
-                                miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
-                                Filename=[Filename(:);miss_files(:)];
-                            end
-                        case 'No'
-                        otherwise
-                            return;
+                if ~isempty(survey_struct)
+                    
+                    [~,files_lay,ext_lay]=cellfun(@fileparts,Filename,'UniformOutput',0);
+                    
+                    for ic=1:length(files_lay)
+                        files_lay{ic}=deblank([files_lay{ic} ext_lay{ic}]);
                     end
-                    Filename=unique(Filename);
                     
+                    [~,~,idx_missing]=find_survey_data(files_lay,survey_struct);
+                    
+                    idx_incomp=find(cellfun(@(x) ~isempty(x),idx_missing));
+                    
+                    if ~isempty(idx_incomp)
+                        choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
+                            'Incomplete',...
+                            'Yes','No',...
+                            'Yes');
+                        % Handle response
+                        switch choice
+                            case 'Yes'
+                                for ifile_miss=idx_incomp
+                                    miss_files=fullfile(path_tmp,survey_struct.Filename(idx_missing{ifile_miss}));
+                                    Filename=[Filename(:);miss_files(:)];
+                                end
+                            case 'No'
+                            otherwise
+                                return;
+                        end
+                        Filename=unique(Filename);
+                        
+                    end
                 end
-            end
-    end
-    
-    ping_start=1;
-    ping_end=Inf;
-    
-    switch ftype
-        case {'EK60','EK80'}
-%             profile on;
-            open_raw_file(main_figure,Filename,[],ping_start,ping_end);
-%             profile off;
-%             profile viewer;
-        case 'asl'
-            open_asl_files(main_figure,Filename);
-        case 'dfile'
-            choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
-                'd-file/raw_file',...
-                'd-file','raw file', ...
-                'd-file');
-            % Handle response
-            switch choice
-                case 'raw file'
-                    dfile=0;
-                case 'd-file'
-                    dfile=1;
-            end
-            
-            if isempty(choice)
-                return;
-            end
-            
-            choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
-                'Bottom/Region',...
-                'Yes','No', ...
-                'No');
-            % Handle response
-            switch choice
-                case 'Yes'
-                    CVSCheck=1;
-                    
-                case 'No'
+        end
+        
+        ping_start=1;
+        ping_end=Inf;
+        
+        switch ftype
+            case {'EK60','EK80'}
+                %             profile on;
+                open_raw_file(main_figure,Filename,[],ping_start,ping_end);
+                %             profile off;
+                %             profile viewer;
+            case 'asl'
+                open_asl_files(main_figure,Filename);
+            case 'dfile'
+                choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
+                    'd-file/raw_file',...
+                    'd-file','raw file', ...
+                    'd-file');
+                % Handle response
+                switch choice
+                    case 'raw file'
+                        dfile=0;
+                    case 'd-file'
+                        dfile=1;
+                end
+                
+                if isempty(choice)
+                    return;
+                end
+                
+                choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
+                    'Bottom/Region',...
+                    'Yes','No', ...
+                    'No');
+                % Handle response
+                switch choice
+                    case 'Yes'
+                        CVSCheck=1;
+                        
+                    case 'No'
+                        CVSCheck=0;
+                end
+                
+                if isempty(choice)
                     CVSCheck=0;
-            end
-            
-            if isempty(choice)
-                CVSCheck=0;
-            end
-            
-            switch dfile
-                case 1
-                    open_dfile_crest(main_figure,Filename,CVSCheck);
-                case 0
-                    open_dfile(main_figure,Filename,CVSCheck);
-            end
-            
+                end
+                
+                switch dfile
+                    case 1
+                        open_dfile_crest(main_figure,Filename,CVSCheck);
+                    case 0
+                        open_dfile(main_figure,Filename,CVSCheck);
+                end
+                
+        end
+        
+    catch err
+        disp(err.Message);
     end
+    set(enabled_obj,'Enable','on');
     
     loadEcho(main_figure);
-    
 end
+
+
 end

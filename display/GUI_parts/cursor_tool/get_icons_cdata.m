@@ -28,5 +28,7 @@ icon.next_lay = iconRead(fullfile(icon_dir,'next.png'));
 
 icon.add = iconRead(fullfile(icon_dir,'add.png'));
 
+icon.undock= iconRead(fullfile(icon_dir,'undock.png'));
+
 
 end

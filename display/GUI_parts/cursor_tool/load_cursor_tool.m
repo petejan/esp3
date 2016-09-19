@@ -12,13 +12,14 @@ layers_Str_comp=list_layers(layers);
 
 if isappdata(main_figure,'Cursor_mode_tool')
     cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
-    [idx,~]=layers.find_layer_idx(layer.ID_num);
+    [idx_curr,~]=layers.find_layer_idx(layer.ID_num);
+    
     cursor_mode_tool_comp.jCombo.removeAllItems();
     for i=1:nb_layers
         cursor_mode_tool_comp.jCombo.addItem(layers_Str{i});
     end
-    set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
-    set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx}]);
+    set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx_curr-1);
+    set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx_curr}]);
 else
     
     
@@ -38,7 +39,7 @@ else
         'ClickedCallback',{@set_curr_disp_mode,main_figure});
     
     [idx,~]=find_layer_idx(layers,layer.ID_num);
-    
+
     %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer');
     jToolbar = findjobj(main_figure,'-nomenu','class','mjtoolbar');
     
