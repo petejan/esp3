@@ -38,11 +38,12 @@ reverse_y_axis(main_figure);
 display_bottom(main_figure);
 display_tracks(main_figure);
 display_file_lines(main_figure);
-display_regions(main_figure);
+display_regions(main_figure,'both');
 display_lines(main_figure);
 display_survdata_lines(main_figure);
 
 set_alpha_map(main_figure);
+
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 update_mini_ax(main_figure,new);

@@ -17,7 +17,7 @@ for i=1:length(layers)
 end
 setappdata(main_figure,'Layers',layers);
 display_bottom(main_figure);
-display_regions(main_figure);
+display_regions(main_figure,'both');
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
 update_regions_tab(main_figure);

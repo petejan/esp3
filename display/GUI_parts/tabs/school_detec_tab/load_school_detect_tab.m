@@ -81,8 +81,9 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 layer.Transceivers(idx_freq).apply_algo('SchoolDetection');
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,[]);
-display_regions(main_figure);
+display_regions(main_figure,'both');
 set_alpha_map(main_figure);
+
 order_stacks_fig(main_figure);
 end
 

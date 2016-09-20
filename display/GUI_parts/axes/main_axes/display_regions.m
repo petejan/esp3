@@ -1,10 +1,10 @@
 
-function display_regions(main_figure)
+function display_regions(main_figure,varargin)
 
 layer=getappdata(main_figure,'Layer');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-%mini_ax_comp=getappdata(main_figure,'Mini_axes');
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 
@@ -24,9 +24,21 @@ end
 
 
 
+if ~isempty(varargin)
+    mini_ax_comp=getappdata(main_figure,'Mini_axes');
+    switch varargin{1}
+        case 'both'
+            main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
+        case 'mini'
+            main_axes_tot    =mini_ax_comp.mini_ax;
+        case 'main'
+            main_axes_tot=axes_panel_comp.main_axes;
+            
+    end
+else
+    main_axes_tot=axes_panel_comp.main_axes;
+end
 
-%main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
-main_axes_tot=axes_panel_comp.main_axes;
 
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
@@ -47,7 +59,7 @@ for iax=1:length(main_axes_tot)
     
     Number=trans.Data.get_numbers();
     Range=trans.Data.get_range();
-
+    
     
     xdata=Number;
     
@@ -73,12 +85,12 @@ for iax=1:length(main_axes_tot)
             col=ac_data_col;
         else
             col=in_data_col;
-%             switch lower(reg_curr.Type)
-%                 case 'data'
-%                     
-%                 case 'bad data'
-%                     col=bad_data_col;
-%             end
+            %             switch lower(reg_curr.Type)
+            %                 case 'data'
+            %
+            %                 case 'bad data'
+            %                     col=bad_data_col;
+            %             end
         end
         x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
         y_reg_rect=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
@@ -103,7 +115,7 @@ for iax=1:length(main_axes_tot)
                 
                 x_text=nanmean(x_reg_rect(:));
                 y_text=nanmean(y_reg_rect(:));
-                 plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
+                plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
             case 'Polygon'
                 
                 idx_x=reg_curr.X_cont;
@@ -131,14 +143,14 @@ for iax=1:length(main_axes_tot)
                         line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                     end
                 end
-                         reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
-                     
+                reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
+                
         end
         
         
         reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
         
-            if main_axes==axes_panel_comp.main_axes
+        if main_axes==axes_panel_comp.main_axes
             create_region_context_menu(reg_plot,main_figure,reg_curr);
         end
         

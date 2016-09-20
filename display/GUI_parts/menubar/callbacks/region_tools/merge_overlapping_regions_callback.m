@@ -11,7 +11,7 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     new_regions=layer.Transceivers(idx_freq).Regions.merge_regions();
     layer.Transceivers(idx_freq).rm_all_region();
     layer.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
-    display_regions(main_figure);
+    display_regions(main_figure,'both');
     update_regions_tab(main_figure,[]);
     order_stacks_fig(main_figure);
 end

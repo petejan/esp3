@@ -57,7 +57,7 @@ layer.Transceivers(idx_freq).add_region(reg_temp);
 
 update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
 order_axes(main_figure);
-display_regions(main_figure);
+display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
 
 end

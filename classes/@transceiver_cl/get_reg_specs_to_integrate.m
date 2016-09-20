@@ -14,7 +14,7 @@ for ireg=1:length(regs_t)
             IDs=union(IDs,num2str(regs_t{ireg}.IDs,'%d'));
         end
     elseif isfield(regs_t{ireg},'tag')
-        tags=union(tags,regs_t{ireg}.tag); 
+        tags=union(tags,strsplit(regs_t{ireg}.tag,';')); 
     elseif isfield(regs_t{ireg},'name')
         names=union(names,regs_t{ireg}.name);
     else

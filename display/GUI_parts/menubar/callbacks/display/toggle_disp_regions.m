@@ -3,8 +3,8 @@ function toggle_disp_regions(main_figure)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-
-main_axes_tot=axes_panel_comp.main_axes;
+mini_ax_comp=getappdata(main_figure,'Mini_axes');
+main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
 
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);

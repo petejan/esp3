@@ -195,7 +195,7 @@ switch callbackdata.Key
                 case {'region','region_text'}
                     trans.rm_region_id(get(gco,'Userdata'));
                     update_regions_tab(main_figure,[]);
-                    display_regions(main_figure);
+                    display_regions(main_figure,'both');
                     order_stacks_fig(main_figure);order_axes(main_figure);
             end
         end

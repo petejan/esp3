@@ -146,7 +146,7 @@ end
 
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,1)
-display_regions(main_figure);
+display_regions(main_figure,'both');
 
 end
 

@@ -115,7 +115,7 @@ reg_wc=trans_obj.create_WC_region('y_min',str2double(get(reg_fig_comp.depth_info
 trans_obj.add_region(reg_wc);
 close(reg_fig);
 
-display_regions(main_figure);
+display_regions(main_figure,'both');
 set_alpha_map(main_figure);
 update_regions_tab(main_figure,length(trans_obj.Regions));
 order_stacks_fig(main_figure);

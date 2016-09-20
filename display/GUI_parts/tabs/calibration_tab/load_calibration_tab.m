@@ -110,7 +110,7 @@ update_calibration_tab(main_figure);
 display_bottom(main_figure);
 display_tracks(main_figure);
 display_file_lines(main_figure);
-display_regions(main_figure);
+display_regions(main_figure,'both');
 display_lines(main_figure);
 display_survdata_lines(main_figure);
 set_alpha_map(main_figure);
