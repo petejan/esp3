@@ -10,7 +10,7 @@ addParameter(p,'cvs_root','',@ischar);
 addParameter(p,'data_root','',@ischar);
 addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'tag','raw',@(x) ischar(x));
-addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@isfigure);
+addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@ishandle);
 
 parse(p,Filenames,varargin{:});
 layers_out=p.Results.layers;

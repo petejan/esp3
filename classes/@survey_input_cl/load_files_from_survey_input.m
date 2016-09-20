@@ -8,7 +8,7 @@ addParameter(p,'origin','xml',@ischar);
 addParameter(p,'cvs_root','',@ischar);
 addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'FieldNames',{},@iscell);
-addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@isfigure);
+addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@ishandle);
 
 parse(p,surv_input_obj,varargin{:});
 
