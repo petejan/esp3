@@ -30,7 +30,7 @@ if ~isempty(varargin)
         case 'both'
             main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
         case 'mini'
-            main_axes_tot    =mini_ax_comp.mini_ax;
+            main_axes_tot=mini_ax_comp.mini_ax;
         case 'main'
             main_axes_tot=axes_panel_comp.main_axes;
             

@@ -31,6 +31,7 @@ if new==1
 end
 
 update_axis_panel(main_figure,new);
+update_mini_ax(main_figure,new);
 set_axes_position(main_figure);
 update_cmap(main_figure);
 reverse_y_axis(main_figure);
@@ -46,7 +47,6 @@ set_alpha_map(main_figure);
 
 order_axes(main_figure);
 order_stacks_fig(main_figure);
-update_mini_ax(main_figure,new);
 order_stacks_fig(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});

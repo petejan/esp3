@@ -325,11 +325,13 @@ for isn=1:length(snapshots)
                     if isappdata(p.Results.gui_main_handle,'Layers')&&isappdata(p.Results.gui_main_handle,'Layer')
                         setappdata(p.Results.gui_main_handle,'Layer',layer_new);
                         setappdata(p.Results.gui_main_handle,'Layers',[layers_old layers_new]);
+                        
                         try
                             loadEcho(p.Results.gui_main_handle);
                         catch err
                             disp(err.MEssage);
                         end
+
                     end
                 end
             end
