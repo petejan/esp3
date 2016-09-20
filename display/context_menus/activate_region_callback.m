@@ -30,24 +30,29 @@ if found==0
 end
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-ah=axes_panel_comp.main_axes;
+mini_ax_comp=getappdata(main_figure,'Mini_axes');
 
-reg_text=findobj(ah,'Tag','region_text');
+ah=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
+
+
+for i=1:length(ah)
+
+reg_text=findobj(ah(i),'Tag','region_text');
 set(reg_text,'color',txt_col);
 
-reg_lines_ac=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','line','-not','color',ac_data_col);
-reg_lines_in=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','line','-not','color',in_data_col);
+reg_lines_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','line','-not','color',ac_data_col);
+reg_lines_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','line','-not','color',in_data_col);
 set(reg_lines_ac,'color',ac_data_col);
 set(reg_lines_in,'color',in_data_col);
 
-reg_image_ac=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',ac_data_col);
+reg_image_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',ac_data_col);
         cdata=get(reg_image_ac,'CData');
         cdata(:,:,1)=ac_data_col(1);
         cdata(:,:,2)=ac_data_col(2);
         cdata(:,:,3)=ac_data_col(3);
 set(reg_image_ac,'Cdata',cdata);
 
-reg_image_in=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',in_data_col);
+reg_image_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',in_data_col);
 
 for i_inac=1:length(reg_image_in)
     cdata=get(reg_image_in(i_inac),'CData');
@@ -56,7 +61,7 @@ for i_inac=1:length(reg_image_in)
     cdata(:,:,3)=in_data_col(3);
     set(reg_image_in(i_inac),'Cdata',cdata);
 end
-
+end
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,idx_reg);
 order_axes(main_figure);
