@@ -13,6 +13,7 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+*.exe
 
 # Windows shortcuts
 *.lnk
@@ -46,6 +47,8 @@ Network Trash Folder
 Temporary Items
 .apdisk
 *.asv
+
+#Project Specific files
 
 deploy/
 private/
