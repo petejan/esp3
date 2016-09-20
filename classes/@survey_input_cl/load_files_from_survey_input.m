@@ -1,4 +1,4 @@
-function [layers_new,layers]=load_files_from_survey_input(surv_input_obj,varargin)
+function [layers_new,layers_old]=load_files_from_survey_input(surv_input_obj,varargin)
 
 p = inputParser;
 
@@ -8,6 +8,7 @@ addParameter(p,'origin','xml',@ischar);
 addParameter(p,'cvs_root','',@ischar);
 addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'FieldNames',{},@iscell);
+addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@isfigure);
 
 parse(p,surv_input_obj,varargin{:});
 
@@ -20,13 +21,11 @@ algos=surv_input_obj.Algos;
 
 snapshots=surv_input_obj.Snapshots;
 cal_opt=surv_input_obj.Cal;
-layers=p.Results.layers;
+layers_old=p.Results.layers;
 layers_new=[];
 for isn=1:length(snapshots)
-     
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
-    
     cal_snap=get_cal_node(cal_opt,snapshots{isn});
     fprintf('\nLoading files from %s\n',snapshots{isn}.Folder);
     for ist=1:length(stratum)
@@ -44,7 +43,7 @@ for isn=1:length(snapshots)
                 filenames_cell={filenames_cell};
             end
             regs=transects{itr}.Regions;
-            bot=transects{itr}.Bottom;
+            %bot=transects{itr}.Bottom;
             layers_in=[];
             fType=cell(1,length(filenames_cell));
             
@@ -57,8 +56,8 @@ for isn=1:length(snapshots)
                 end
                 
                 
-                if ~isempty(layers)
-                    [idx_lays,found_lay]=layers.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                if ~isempty(layers_old)
+                    [idx_lays,found_lay]=layers_old.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                 else
                     found_lay=0;
                 end
@@ -76,9 +75,9 @@ for isn=1:length(snapshots)
                 end
                 
                 if found_lay>0
-                    layers_in=[layers_in layers(idx_lays(1))];
-                    fType{ifiles}=layers(idx_lays(1)).Filetype;
-                    layers(idx_lays(1))=[];
+                    layers_in=union(layers_in,layers_old(idx_lays(1)));
+                    fType{ifiles}=layers_old(idx_lays(1)).Filetype;
+                    layers_old(idx_lays(1))=[];
                     continue;
                 else
                     if exist(fileN,'file')==2
@@ -122,7 +121,7 @@ for isn=1:length(snapshots)
                                 
                         end
                         
-                        layers_in=[layers_in new_lay];
+                        layers_in=union(layers_in,new_lay);
                         clear new_lay;
                     else
                         warning('Cannot Find specified file %s',filenames_cell{ifiles});
@@ -180,7 +179,7 @@ for isn=1:length(snapshots)
                                 layers_out_temp=[];
                                 
                                 for icell=1:length(new_layers_sorted)
-                                    layers_out_temp=[layers_out_temp shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
+                                    layers_out_temp=union(layers_out_temp,shuffle_layers(new_layers_sorted{icell},'multi_layer',-1));
                                 end
                                 
                                 clear layers_in;
@@ -201,6 +200,7 @@ for isn=1:length(snapshots)
             if length(layers_out_temp)>1
                 warning('Non continuous files in Snapshot %.0f Stratum %s Transect %.0f',snap_num,strat_name,trans_num);
             end
+            
             i_cal=0;
             for i_lay=1:length(layers_out_temp)
                 layer_new=layers_out_temp(i_lay);
@@ -271,7 +271,7 @@ for isn=1:length(snapshots)
                                         'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                     reg_wc.Remove_ST=options.Remove_ST;
                                     layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
-                                end 
+                                end
                         end
                     end
                 end
@@ -319,7 +319,19 @@ for isn=1:length(snapshots)
                     layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
                 end
                 
-                layers_new=[layers_new layer_new];
+                layers_new=union(layers_new,layer_new);
+                
+                if ~isempty(p.Results.gui_main_handle)
+                    if isappdata(p.Results.gui_main_handle,'Layers')&&isappdata(p.Results.gui_main_handle,'Layer')
+                        setappdata(p.Results.gui_main_handle,'Layer',layer_new);
+                        setappdata(p.Results.gui_main_handle,'Layers',[layers_old layers_new]);
+                        try
+                            loadEcho(p.Results.gui_main_handle);
+                        catch err
+                            disp(err.MEssage);
+                        end
+                    end
+                end
             end
             clear layers_out_temp;
         end

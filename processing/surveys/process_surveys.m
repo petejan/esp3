@@ -10,6 +10,7 @@ addParameter(p,'cvs_root','',@ischar);
 addParameter(p,'data_root','',@ischar);
 addParameter(p,'PathToMemmap','',@ischar);
 addParameter(p,'tag','raw',@(x) ischar(x));
+addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@isfigure);
 
 parse(p,Filenames,varargin{:});
 layers_out=p.Results.layers;
@@ -61,7 +62,8 @@ for i=1:length(Filenames)
         end
         
         %surv_obj.SurvInput.Options.Soundspeed=1450;
-        [layers_new,layers_old]=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,'layers',layers_out,'Fieldnames',fields_req);
+        [layers_new,layers_old]=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,...
+            'layers',layers_out,'Fieldnames',fields_req,'gui_main_handle',p.Results.gui_main_handle);
  
     catch err
         disp(err.message);

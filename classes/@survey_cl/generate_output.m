@@ -129,7 +129,7 @@ for isn=1:length(snaps)
         layer_obj_tr=layers(output.Layer_idx(ilay));
         idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
         gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
-        bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
+        %bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
         gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
         trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
         

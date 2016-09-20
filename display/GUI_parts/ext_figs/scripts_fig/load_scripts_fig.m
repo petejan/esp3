@@ -130,10 +130,10 @@ layers=getappdata(main_figure,'Layers');
 
 switch flag
     case 'mbs'
-        [layers,~]=process_surveys(selected_scripts,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','mbs','cvs_root',app_path.cvs_root,'data_root',app_path.data_root,'tag',src.Tag);
+        [layers,~]=process_surveys(selected_scripts,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','mbs','cvs_root',app_path.cvs_root,'data_root',app_path.data_root,'tag',src.Tag,'gui_main_handle',main_figure);
     case 'xml'
         selected_scripts_full=cellfun(@(x) fullfile(app_path.scripts,x),selected_scripts,'UniformOutput',0);
-        [layers,~]=process_surveys(selected_scripts_full,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','xml');
+        [layers,~]=process_surveys(selected_scripts_full,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','xml','gui_main_handle',main_figure);
 end
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);
