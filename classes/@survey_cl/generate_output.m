@@ -170,68 +170,7 @@ for isn=1:length(snaps)
             
         end
         
-        idx_reg=[];
-        reg_tot=[];
-        
-        names={};
-        IDs={};
-        
-        for ireg=1:length(regs_t)
-            if isfield(regs_t{ireg},'ver')
-                if isfield(regs_t{ireg},'IDs')
-                    if ischar(regs_t{ireg}.IDs)
-                        IDs=union(IDs,strsplit(regs_t{ireg}.IDs,';'));
-                    else
-                        IDs=union(IDs,num2str(regs_t{ireg}.IDs,'%d'));
-                    end
-                else
-                    IDs='';
-                end
-            elseif isfield(regs_t{ireg},'name')
-                names=union(names,regs_t{ireg}.name);
-            end
-        end
-        
-        if any(strcmp(IDs,''))>0
-            idx_temp=trans_obj_tr.list_regions_type('Data');
-            reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-            idx_reg=union(idx_reg,idx_temp);
-            reg_tot=[reg_tot reg_temp];
-        else
-            for i_sub_reg=1:length(IDs)
-                if ischar(IDs{i_sub_reg})
-                    out_cell=textscan(IDs{i_sub_reg},'%d(%d-%d)');
-                else
-                    out_cell={IDs{i_sub_reg},[],[]};
-                end
-                
-                idx_temp=trans_obj_tr.list_regions_ID(abs(out_cell{1}));
-                for i_temp=1:length(idx_temp)
-                    reg_temp=trans_obj_tr.get_reg_spec(idx_temp(i_temp));
-                    if ~isempty(out_cell{2});
-                        reg_temp.startDepth=out_cell{2};
-                    end
-                    if ~isempty(out_cell{3});
-                        reg_temp.finishDepth=out_cell{3};
-                    elseif isempty(out_cell{3})&&~isempty(out_cell{2});
-                        reg_temp.startDepth=0;
-                        reg_temp.finishDepth=-out_cell{2};
-                    end
-                    reg_tot=[reg_tot reg_temp];
-                    idx_reg=union(idx_reg,idx_temp(i_temp));
-                end
-            end
-        end
-        
-        for in=1:length(names)
-            idx_temp=trans_obj_tr.list_regions_name(names{in});
-            if ~isempty(idx_temp)
-                reg_temp=trans_obj_tr.get_reg_spec(idx_temp);
-                reg_tot=[reg_tot reg_temp];
-                idx_reg=union(idx_reg,idx_temp);
-            end
-        end
-        
+        reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_t);
         
         [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
         %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));

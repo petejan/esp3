@@ -105,14 +105,14 @@ regs={};
 for iuu=1:length(idx_reg)
     
     reg_curr=trans_obj.Regions(idx_reg(iuu));
-    
+   
     
     if ~strcmp(reg_curr.Type,'Data')
         continue;
     end
     
     i_reg=i_reg+1;
-    reg_param=reg(iuu);
+    reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
     regCellInt=reg_curr.integrate_region(trans_obj,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],'denoised',p.Results.Denoised);
     if isempty(regCellInt.Sv_mean_lin)
         i_reg=i_reg-1;

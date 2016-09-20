@@ -114,12 +114,15 @@ for iu=1:length(trans_nodes)
     reg_curr=get_childs(trans_nodes(iu),'region'); 
     trans_curr.Bottom=get_node_att(bott_curr);
     trans_curr.Regions=cell(1,length(reg_curr));
+    
     for iiu=1:length(reg_curr)
         trans_curr.Regions{iiu}=get_node_att(reg_curr(iiu));
     end
+    
     if isfield(trans_curr,'files')
         trans_curr.files=strsplit(trans_curr.files,';');
     end
+    
     cals=get_childs(trans_nodes(iu),'cal');
     Cal=[];
     for ii=1:length(cals)

@@ -244,22 +244,8 @@ for isn=1:length(snapshots)
                                 surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                 layer_new.set_survey_data(surv);
                         end
-                        
-                        if isfield(bot,'ver')
-                            layer_new.load_bot_regs('reg_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
-                        end
-                        
-                        if ~isempty(regs)
-                            for ire=1:length(regs)
-                                if isfield(regs{ire},'ver')
-                                    layer_new.load_bot_regs('bot_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
-                                end
-                            end
-                        else
-                            for idx_freq_reg=1:length(layer_new.Transceivers)
-                                layer_new.Transceivers(idx_freq_reg).rm_all_region();
-                            end
-                        end
+                        layer_new.load_bot_regs('reg_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                        layer_new.load_bot_regs('bot_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                 end
                 
                 
@@ -285,8 +271,7 @@ for isn=1:length(snapshots)
                                         'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                     reg_wc.Remove_ST=options.Remove_ST;
                                     layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
-                                end
-                                
+                                end 
                         end
                     end
                 end

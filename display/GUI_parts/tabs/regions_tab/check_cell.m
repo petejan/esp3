@@ -36,10 +36,12 @@ if ~isnan(val)&&val>0
                     if val>nb_pings
                         val=floor(nb_pings);
                     end
+                    fmt='%.0f';
                 case 'meters'
                     if val>dist(end)
                         val=floor(dist(end));
                     end
+                     fmt='%.2f';
             end
         case 'h'
             switch h_unit
@@ -47,14 +49,15 @@ if ~isnan(val)&&val>0
                     if val>nb_samples
                         val=floor(nb_samples);
                     end
-                    
+                     fmt='%.0f';
                 case 'meters'
                     if val>layer.Transceivers(idx_freq).Data.Range(2)
                         val=layer.Transceivers(idx_freq).Data.Range(2);
                     end
+                     fmt='%.2f';
             end
     end
-    set(src,'string',num2str(val,'%.2g'));
+    set(src,'string',num2str(val,fmt));
 else
     set(src,'string',5);
 end

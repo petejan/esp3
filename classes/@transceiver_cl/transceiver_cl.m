@@ -111,12 +111,7 @@ classdef transceiver_cl < handle
             if isempty(obj.Regions)
                 idx=[];
             else
-                idx=[];
-                for i=1:length(obj.Regions)
-                    if strcmpi(obj.Regions(i).Origin,origin)
-                        idx=[idx i];
-                    end
-                end
+                idx=find(strcmp({obj.Regions(:).Origin},origin));
             end
         end
         
@@ -125,12 +120,15 @@ classdef transceiver_cl < handle
             if isempty(obj.Regions)
                 idx=[];
             else
+                idx=find(strcmp({obj.Regions(:).Type},type));
+            end
+        end
+        
+        function idx=list_regions_tag(obj,tag)
+            if isempty(obj.Regions)
                 idx=[];
-                for i=1:length(obj.Regions)
-                    if strcmp(obj.Regions(i).Type,type)
-                        idx=[idx i];
-                    end
-                end
+            else
+                idx=find(strcmp({obj.Regions(:).Tag},tag));
             end
         end
         
@@ -168,12 +166,7 @@ classdef transceiver_cl < handle
             if isempty(obj.Regions)
                 idx=[];
             else
-                idx=[];
-                for i=1:length(obj.Regions)
-                    if strcmpi(obj.Regions(i).Name,name)
-                        idx=[idx i];
-                    end
-                end
+                idx=find(strcmp({obj.Regions(:).Name},name));
             end
         end
         
@@ -245,7 +238,6 @@ classdef transceiver_cl < handle
             end
             obj.Regions=reg_new;
         end
-        
         
         
         
