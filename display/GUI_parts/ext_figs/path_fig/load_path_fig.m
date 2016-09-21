@@ -153,7 +153,7 @@ app_path=getappdata(path_fig,'AppPath_temp');
 setappdata(main_fig,'App_path',app_path);
 main_path=whereisEcho();
 
-[~,~,algos]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+[~,~,algos]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 
 write_config_to_xml(app_path,curr_disp,algos);
 close(path_fig);

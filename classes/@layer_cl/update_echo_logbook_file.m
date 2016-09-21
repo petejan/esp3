@@ -196,7 +196,7 @@ for ilay=1:length(pathtofile)
         xml_file=fullfile(pathtofile{ilay},'echo_logbook.xml');
         xmlwrite(xml_file,docNode);
         htmlfile=fullfile(pathtofile{ilay},'echo_logbook.html');
-        xslt(xml_file, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+        xslt(xml_file, fullfile(whereisEcho,'config','echo_logbook.xsl'), htmlfile);
         
         
     catch err

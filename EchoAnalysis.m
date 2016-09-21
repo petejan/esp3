@@ -46,7 +46,7 @@ if ~isdeployed
     update_path(main_path);
 end
 
-[app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+[app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 
 try
     if ~isdir(app_path.data_temp)
@@ -56,10 +56,10 @@ try
     end
 catch ME
     disp('Error: Unable to create Data Folder')
-    disp(app_path.data_temp)
+    disp(app_path.data_temp);
     disp('Creating new config_echo.xml file')
-    delete(fullfile(main_path,'config_echo.xml'));
-    [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config_echo.xml')); %#ok<ASGLU>
+    delete(fullfile(main_path,'config','config_echo.xml'));
+    [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml')); %#ok<ASGLU>
     disp('Please re-launch program and change Data Folder path')
     rethrow(ME);
 end

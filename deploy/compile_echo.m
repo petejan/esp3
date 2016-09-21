@@ -28,7 +28,7 @@ end
 for i= 1:(length(folders))
     str{end+1}=sprintf('-a %s ',folders{i});
 end
-str{end+1}='-w enable ';
+str{end+1}=' -M ''IconESP3.res'' -w enable';
 
 str_mcc =[str{:}];
 disp(str_mcc);

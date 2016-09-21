@@ -34,8 +34,6 @@ end
 
 xmlwrite(xml_file,docNode);
 
-% xsl_file=fullfile(whereisEcho,'echo_logbook.xsl');
-% copyfile(xsl_file,fullfile(datapath,'echo_logbook.xsl'));
 
 
 

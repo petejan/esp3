@@ -87,7 +87,7 @@ for idx_school=idx_schools
     school_struct.bottom_depth=nanmean(layer.Transceivers(idx_18).get_bottom_range());
     school_struct.lat_mean=nanmean(output_reg_38.Lat_E(:));
     
-    class_tree_obj=decision_tree_cl(fullfile(whereisEcho,'classification.xml'));
+    class_tree_obj=decision_tree_cl(fullfile(whereisEcho,'config','classification.xml'));
     tag=class_tree_obj.apply_classification_tree(school_struct);
     
     layer.Transceivers(idx_18).Regions(idx_school_18).Tag=tag;

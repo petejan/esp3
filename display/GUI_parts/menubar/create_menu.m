@@ -232,7 +232,7 @@ for ifile=1:length(surv_data_struct.Filename)
 end
 
 update_display(main_figure,1)
-xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+xslt(xmlfile, fullfile(whereisEcho,'config','echo_logbook.xsl'), htmlfile);
 system(sprintf('start "" "%s"',htmlfile));
 
 end
@@ -259,7 +259,7 @@ if exist(xmlfile,'file')==0
 end
 
 if exist(htmlfile,'file')==0
-    xslt(xmlfile, fullfile(whereisEcho,'echo_logbook.xsl'), htmlfile);
+    xslt(xmlfile, fullfile(whereisEcho,'config','echo_logbook.xsl'), htmlfile);
 end
 
 system(sprintf('start "" "%s"',htmlfile));

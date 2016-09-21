@@ -7,7 +7,7 @@ addRequired(p,'curr_disp',@(obj) isempty(obj)||isa(obj,'curr_state_disp_cl'));
 parse(p,app_path,curr_disp);
 
 app_path_main=whereisEcho();
-file_xml=fullfile(app_path_main,'config_echo.xml');
+file_xml=fullfile(app_path_main,'config','config_echo.xml');
 
 docNode = com.mathworks.xml.XMLUtils.createDocument('config_file');
 

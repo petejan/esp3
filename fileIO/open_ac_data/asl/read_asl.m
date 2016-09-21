@@ -171,7 +171,7 @@ for i_cell=1:length(Filename_cell)
         
         main_path=whereisEcho();
         
-        [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config_echo.xml'));
+        [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
         if isempty(algo_vec)
             algo_vec=init_algos();
         else
