@@ -46,8 +46,22 @@ try
 
     end
     
-    survey_node.setAttribute('SurveyName',survdata_temp.SurveyName);
-    survey_node.setAttribute('Voyage',survdata_temp.Voyage);
+     idx_sname=find(~strcmp(surv_data_struct.SurveyName,''),1);
+    if ~isempty(idx_sname)
+        surv_name=surv_data_struct.SurveyName{idx_sname};
+    else
+        surv_name=survdata_temp.SurveyName;
+    end
+    
+    idx_vname=find(~strcmp(surv_data_struct.Voyage,''),1);
+    if ~isempty(idx_vname)
+       voy=surv_data_struct.Voyage{idx_vname};
+    else
+       voy=survdata_temp.Voyage;
+    end
+    
+    survey_node.setAttribute('SurveyName',surv_name);
+    survey_node.setAttribute('Voyage',voy);
     
     
     xmlwrite(xml_file,docNode);

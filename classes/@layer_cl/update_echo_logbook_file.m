@@ -13,18 +13,6 @@ parse(p,layers_obj,varargin{:});
 
 results=p.Results;
 
-if isempty(find(strcmp(p.UsingDefaults,'Voyage'),1))
-    voy=results.Voyage;
-else
-    voy='';
-end
-
-
-if any(strcmp(p.UsingDefaults,'SurveyName'))
-    surv_name=results.SurveyName;
-else
-    surv_name= '';
-end
 
 pathtofile={};
 files_lays={};
@@ -44,6 +32,29 @@ for ilay=1:length(pathtofile)
     
     surv_data_struct=load_logbook_to_struct(pathtofile{ilay});
     
+    idx_sname=find(~strcmp(surv_data_struct.SurveyName,''),1);
+    if ~isempty(idx_sname)
+        if ~any(strcmp(p.UsingDefaults,'SurveyName'))
+            surv_name=results.SurveyName;
+        else
+            surv_name=surv_data_struct.SurveyName{idx_sname};
+        end
+    else
+        surv_name=results.SurveyName;
+    end
+    
+    idx_vname=find(~strcmp(surv_data_struct.Voyage,''),1);
+    if ~isempty(idx_vname)
+        if ~any(strcmp(p.UsingDefaults,'Voyage'))
+            voy=results.Voyage;
+        else
+            voy=surv_data_struct.Voyage{idx_vname};
+        end
+    else
+        voy=results.Voyage;
+    end
+    
+    
     dir_raw=dir(fullfile(pathtofile{ilay},'*.raw'));
     dir_asl=dir(fullfile(pathtofile{ilay},'*A'));
     list_raw=union({dir_raw(:).name},{dir_asl(:).name});
@@ -55,16 +66,11 @@ for ilay=1:length(pathtofile)
     survey_node = docNode.createElement('survey');
     echo_logbook.appendChild(survey_node);
     
-    survdata_temp=survey_data_cl();
-    
     try
-        
         old_files=intersect(list_raw,surv_data_struct.Filename);
         nb_files=length(old_files);
         
         for i=1:nb_files
-            
-            
             
             f_processed=0;
             file_curr=fullfile(pathtofile{ilay},old_files{i});
@@ -86,18 +92,12 @@ for ilay=1:length(pathtofile)
                         [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},list_raw{i}));
                         
                     end
-                    
-                    if ~strcmp(voy,'')
-                        survdata_temp.Voyage=voy;
-                    end
-                    
-                    if ~strcmp(surv_name,'')
-                        survdata_temp.SurveyName=surv_name;
-                    end
-                    
+                    survdata_temp.Voyage=voy;
+                    survdata_temp.SurveyName=surv_name;
                     f_processed=1;
                     lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,list_raw{i},'StartTime',start_time,'EndTime',end_time);
                     survey_node.appendChild(lineNode);
+                    
                     if strcmp(file_curr,p.Results.Filename)
                         break;
                     end
@@ -108,7 +108,7 @@ for ilay=1:length(pathtofile)
                 if found_lay>0
                     for ilay2=idx_lay
                         if strcmp(file_curr,p.Results.Filename)
-                            survdata_temp=p.Results.SurveyData;
+                            survey_data_temp=p.Results.SurveyData;
                         else
                             survey_data_temp=layers_obj(idx_lay).SurveyData;
                         end
@@ -121,16 +121,15 @@ for ilay=1:length(pathtofile)
                             survey_data_temp={[]};
                         end
                         
+                        if ~iscell(survey_data_temp)
+                            survey_data_temp={survey_data_temp};
+                        end
+                        
                         for  i_cell=1:length(survey_data_temp)
                             if ~isempty(survey_data_temp{i_cell})
                                 survdata_temp=survey_data_temp{i_cell};
-                                if ~strcmp(voy,'')
-                                    survdata_temp.Voyage=voy;
-                                end
-                                
-                                if ~strcmp(surv_name,'')
-                                    survdata_temp.SurveyName=surv_name;
-                                end
+                                survdata_temp.Voyage=voy;
+                                survdata_temp.SurveyName=surv_name;
                                 
                                 start_time=survdata_temp.StartTime;
                                 end_time=survdata_temp.EndTime;
@@ -171,15 +170,13 @@ for ilay=1:length(pathtofile)
             end
         end
         
-        survey_node.setAttribute('SurveyName',survdata_temp.SurveyName);
-        survey_node.setAttribute('Voyage',survdata_temp.Voyage);
+        survey_node.setAttribute('SurveyName',surv_name);
+        survey_node.setAttribute('Voyage',voy);
         
         new_files=setdiff(list_raw,surv_data_struct.Filename);
         
         for i=1:length(new_files)
             fprintf('Adding file %s to logbook\n',new_files{i});
-            
-            
             [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},new_files{i}));
             
             
@@ -188,6 +185,7 @@ for ilay=1:length(pathtofile)
             else
                 survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
             end
+            
             lineNode=survdata_temp.surv_data_to_logbook_xml(docNode,new_files{i},'StartTime',start_time,'EndTime',end_time);
             survey_node.appendChild(lineNode);
         end
@@ -200,7 +198,7 @@ for ilay=1:length(pathtofile)
         
         
     catch err
-        disp(err);
+        disp(err.message);
         warning('Error when updating the logbook') ;
     end
     

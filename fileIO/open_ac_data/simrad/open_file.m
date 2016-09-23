@@ -234,10 +234,13 @@ if ~isequal(Filename, 0)
                 end
                 
         end
-        
     catch err
-        disp(err.Message);
+        disp(err.message);
+        for ife=1:length(Filename)
+            fprintf('Could not open files %s\n',Filename{ife});
+        end
     end
+    
     set(enabled_obj,'Enable','on');
     
     loadEcho(main_figure);

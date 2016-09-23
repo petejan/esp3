@@ -123,6 +123,7 @@ end
 
 new_surveydata{length(layer.SurveyData)+1}=surv{1};
 new_surveydata{length(layer.SurveyData)+2}=surv{2};
+new_surveydata(cellfun(@isempty,new_surveydata))=[];
 
 layer.set_survey_data(new_surveydata);
 
@@ -131,5 +132,5 @@ layer.update_echo_logbook_file();
 setappdata(main_figure,'Layer',layer);
 load_cursor_tool(main_figure);
 display_survdata_lines(main_figure);
-
+update_mini_ax(main_figure,0);
 end

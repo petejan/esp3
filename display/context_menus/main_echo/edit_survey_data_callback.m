@@ -116,5 +116,5 @@ setappdata(main_figure,'Layer',layer);
 
 load_cursor_tool(main_figure);
 display_survdata_lines(main_figure)
-
+update_mini_ax(main_figure,0);
 end

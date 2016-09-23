@@ -13,28 +13,12 @@ if can>0
     return;
 end
 layer.update_echo_logbook_file('SurveyName',SurveyName,'Voyage',Voyage);
-
-for i=1:length(layers)
-    if ~isempty(layers(i).SurveyData)
-        survd_new=cell(1,length(layers(i).SurveyData));
-        for ui=1:length(layers(i).SurveyData)           
-            survd=layers(i).get_survey_data('Idx',ui);
-            if ~isempty(survd)
-                survd_new{ui}=survey_data_cl('Voyage',Voyage,'SurveyName',SurveyName,...
-                    'Snapshot',survd.Snapshot,'Stratum',survd.Stratum,'Transect',survd.Transect,'StartTime',survd.StartTime,'EndTime',survd.EndTime);
-            else
-                survd_new{ui}=survey_data_cl('Voyage',Voyage,'SurveyName',SurveyName);
-            end
-        end
-    else
-        survd_new=survey_data_cl('Voyage',Voyage,'SurveyName',SurveyName);
-    end
-    layers(i).set_survey_data(survd_new);
-end
-
+update_mini_ax(main_figure,0);
 setappdata(main_figure,'Layer',layer);
-loadEcho(main_figure);
-
+import_survey_data_callback([],[],main_figure);
+load_cursor_tool(main_figure);
+load_info_panel(main_figure);
+update_mini_ax(main_figure,0);
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmp({hfigs(:).Tag},'logbook'), 1);

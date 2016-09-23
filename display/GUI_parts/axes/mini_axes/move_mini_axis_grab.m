@@ -24,7 +24,7 @@ end
         current_fig.WindowButtonUpFcn = '';
         
        if nansum(cp(1,1:2)<0|cp(1:2>pos(3:4))>=1)
-           undock_mini_axes_callback(src,[],main_figure)
+           undock_mini_axes_callback(src,[],main_figure,'out_figure')
        end
     end
 end

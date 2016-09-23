@@ -194,6 +194,7 @@ if isempty(layer)
     return;
 end
 layer.update_echo_logbook_file();
+
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmp({hfigs(:).Tag},'logbook'), 1);

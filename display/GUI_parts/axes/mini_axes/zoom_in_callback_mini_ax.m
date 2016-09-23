@@ -8,8 +8,6 @@ current_fig=gcf;
 switch current_fig.SelectionType
     case 'normal'
         mode='rectangular';
-    case 'alt'
-        mode='horizontal';
     otherwise
         return;
 end

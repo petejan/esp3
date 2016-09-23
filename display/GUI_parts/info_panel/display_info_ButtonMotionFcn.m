@@ -17,7 +17,8 @@ Samples=trans.Data.get_samples();
 Lat=trans.GPSDataPing.Lat;
 Long=trans.GPSDataPing.Long;
 
-
+try 
+    
 ax_main=axes_panel_comp.main_axes;
 
 
@@ -200,5 +201,8 @@ if ~isempty(cdata)
     
 end
 
-
+catch err
+    disp(err.message);
+    disp('Could not update info panel');
+end
 end

@@ -1,7 +1,6 @@
 function EchoAnalysis(varargin)
 global DEBUG;
 DEBUG=0;
-%set the lookand feel of the figure
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
@@ -27,15 +26,14 @@ main_figure=figure('Visible','on',...
     'DockControls','off',...
     'CloseRequestFcn',@closefcn_clean);
 
+
+javaFrame = get(main_figure,'JavaFrame');
+javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+
 set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
-git_ver='$Id$';
 
-git_ver = regexprep(git_ver, '[^\d]', '');
-if isempty(git_ver)
-    git_ver = 'unknown';
-end
-fprintf('Version %s\n',git_ver);
-
+echo_ver=get_ver();
+fprintf('Version %s\n',echo_ver);
 
 set(0,'DefaultUicontrolFontSize',10);%Default font size for Controls
 set(0,'DefaultUipanelFontSize',10);%Default font size for Panels
@@ -70,7 +68,7 @@ files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
 idx_old=[];
 for uu=1:length(files_in_temp)
     if (now-files_in_temp(uu).datenum)>1
-        idx_old=[idx_old uu];
+        idx_old=union(idx_old,uu);
     end
 end
 
@@ -122,7 +120,7 @@ drawnow;
 try
     jFrame = get(handle(main_figure), 'JavaFrame');
     jProx = jFrame.fHG2Client.getWindow;
-    jProx.setMinimumSize(java.awt.Dimension(size_max(3)/4*3,size_max(4)/4*3));
+    jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
     setappdata(main_figure,'javaWindow',jProx);
 catch err
     disp(err.message);

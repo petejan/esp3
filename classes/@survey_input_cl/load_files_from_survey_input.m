@@ -329,7 +329,7 @@ for isn=1:length(snapshots)
                         try
                             loadEcho(p.Results.gui_main_handle);
                         catch err
-                            disp(err.MEssage);
+                            disp(err.message);
                         end
 
                     end

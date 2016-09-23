@@ -48,11 +48,7 @@ if new>0
     data_disp=single(data_disp);
     set(mini_axes_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[range(1) range(end)])
     set(mini_axes_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
-    cdata_=get(mini_axes_comp.undock_button,'cdata');
-    undoc_cdata_size=size(cdata_);
-    set(mini_axes_comp.mini_ax,'Units','pixels');
-    set(mini_axes_comp.undock_button,'position',[mini_axes_comp.mini_ax.Position(3:4)-undoc_cdata_size(1:2) undoc_cdata_size(1:2)],'visible','on','enable','on');
-    set(mini_axes_comp.mini_ax,'Units','normalized');
+
 end
 
 patch_col='b';

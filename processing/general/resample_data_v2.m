@@ -50,17 +50,20 @@ if ~isempty(idx_nan)&&~isempty(idx_nonan_ori)
     dx=nanmean(diff(xdata_n));
     dx_old=nanmean(diff(xdata));
     idx_far=[];
+    
     for ij=1:length(idx_nan)
         [val,idx_nearest(ij)]=min(abs(xdata(idx_nonan_ori)-xdata_n(idx_nan(ij))));
         if val>nanmax(10*dx_old,10*dx)
-            idx_far=[idx_far ij];
+            idx_far=union(idx_far,ij);
         end
     end
+    
     ydata_temp=ydata(idx_nonan_ori);
     idx_nan(idx_far)=[];
     idx_nearest(idx_far)=[];
     ydata_new(idx_nan)=ydata_temp(idx_nearest);
 end
+
 end
 
 

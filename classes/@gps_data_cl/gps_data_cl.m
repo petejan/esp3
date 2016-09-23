@@ -33,10 +33,12 @@ classdef gps_data_cl
                 end
                 
                 obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
-                idx_nan=(isnan(obj.Lat)+isnan(obj.Long)+isnan(obj.Time))>0;
-                obj.Long(idx_nan)=[];
-                obj.Lat(idx_nan)=[];
-                obj.Time(idx_nan)=[];
+                idx_nan=find(isnan(obj.Lat)+isnan(obj.Long)+isnan(obj.Time))>0;
+
+                obj.Long(idx_nan)=nan;
+                obj.Lat(idx_nan)=nan;
+                obj.Time(idx_nan)=nan;
+                
                 [~,idx_sort]=sort(obj.Time);
                 
                 obj.Long=obj.Long(idx_sort);
@@ -44,10 +46,12 @@ classdef gps_data_cl
                 obj.Time=obj.Time(idx_sort);
                 
                 if length(obj.Long)>=2
-                    dist_disp=[0;cumsum(m_lldist(obj.Long,obj.Lat))]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
+                    d_dist=m_lldist(obj.Long,obj.Lat);
+                    d_dist(isnan(d_dist))=0;
+                    dist_disp=[0;cumsum(d_dist)]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
                     obj.Dist=dist_disp;
                 else
-                    obj.Dist=[];
+                    obj.Dist=zeros(size(obj.Lat));
                 end
                 
                 if size(obj.Dist,2)>1
