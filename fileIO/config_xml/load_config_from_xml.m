@@ -12,6 +12,7 @@ if exist(xml_file,'file')==0
     write_config_to_xml(app_path,curr_disp,algo_vec);
     return;
 end
+
 try
     xml_struct=parseXML(xml_file);
     app_node=get_childs(xml_struct,'AppPath');
