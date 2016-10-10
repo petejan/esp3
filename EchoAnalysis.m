@@ -113,7 +113,7 @@ movegui(main_figure,'center');
 
 initialize_display(main_figure);
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
-drawnow;
+
 
 try
     jFrame = get(handle(main_figure), 'JavaFrame');

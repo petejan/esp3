@@ -26,8 +26,6 @@ info_panel_comp.display_subsampling=uicontrol(info_panel_comp.info_panel,'Style'
 
 % info_panel.proc_axes=axes('parent',info_panel_comp.info_panel,'Units','normalized','Position',[0 0 0.05 1],'Visible','off');
 % imshow(fullfile(whereisEcho(),'icons','done.png'));
-
-
 setappdata(main_figure,'Info_panel',info_panel_comp);
 end
 

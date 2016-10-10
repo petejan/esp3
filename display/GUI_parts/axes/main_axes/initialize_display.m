@@ -21,9 +21,33 @@ load_track_target_tab(main_figure,algo_panel);
 load_axis_panel(main_figure);
 load_info_panel(main_figure);
 
+panel_obj=findobj(main_figure,'Type','uipanel');
+set(panel_obj,'BackgroundColor','White','bordertype','line');
 
+tab_obj=findobj(main_figure,'Type','uitab');
+set(tab_obj,'BackgroundColor','White');
+
+control_obj=findobj(main_figure,'Type','uicontrol','-not',{'Style','PushButton','-or','Style','togglebutton'});
+set(control_obj,'BackgroundColor','White');
 
 set(main_figure,'Visible','on');
+
+
+drawnow;
+% jFrame = get(main_figure,'JavaFrame');
+% jRootPane = jFrame.fHG2Client.getWindow;
+% statusbarObj = com.mathworks.mwswing.MJStatusBar;
+% 
+% % Add a progress-bar to left side of standard MJStatusBar container
+% jProgressBar = javax.swing.JProgressBar;
+% set(jProgressBar, 'Minimum',0, 'Maximum',100, 'Value',100);
+% set(jProgressBar, 'StringPainted',1, 'Value',50);
+% statusbarObj.add(jProgressBar,'West'); 
+% 
+% jRootPane.setStatusBar(statusbarObj);
+%  
+% jRootPane.setStatusBarVisible(1);
+% statusbarObj.setText('');
 end
 
 
