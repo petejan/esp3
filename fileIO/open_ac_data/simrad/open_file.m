@@ -1,7 +1,5 @@
 function  open_file(~,~,file_id,main_figure)
 
-
-
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
@@ -9,8 +7,6 @@ app_path=getappdata(main_figure,'App_path');
 if isempty(file_id)
     return;
 end
-
-
 
 
 if ~isempty(layer)

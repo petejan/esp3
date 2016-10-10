@@ -50,7 +50,8 @@ uimenu(m_survey,'Label','Look for new files in current folder','Callback',{@look
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
 uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
 uimenu(mhhhh,'Label','Re-shuffle Layers','Callback',{@reshuffle_layers_callback,main_figure});
-uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure});
+uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure})
+uimenu(mhhhh,'Label','Reload Current Layer','Callback',{@reload_current_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
 uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});
@@ -136,6 +137,16 @@ uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_di
 uimenu(main_figure,'Label','Shortcuts/Help','Callback',{@help_menu,main_figure});
 
 setappdata(main_figure,'main_menu',main_menu);
+
+end
+
+function reload_current_layer_callback(~,~,main_figure)
+layer=getappdata(main_figure,'Layer'); 
+
+file_id=layer.Filename;
+delete_layer_callback([],[],main_figure);
+
+open_file([],[],file_id,main_figure);
 
 end
 

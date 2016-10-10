@@ -75,8 +75,8 @@ for uu=1:length(trans_nb)
                         continue;
                     end
                     
-                    if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
-                            layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
+                    if nansum(layers_grp(uu).time_end(:,kki)+ 10*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
+                            layers_grp(uu).time_end(:,kki)-10*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
                         idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
                         
                     end

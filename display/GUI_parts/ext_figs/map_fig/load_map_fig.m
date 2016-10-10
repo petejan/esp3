@@ -33,7 +33,7 @@ if nansum(isnan(box.lat_lim))==2
 end
 
 box.slice_size=10;
-box.val_max=0.00001;
+box.val_max=0.000001;
 box.r_max=2;
 box.nb_pts=100;
 proj=m_getproj;
@@ -77,18 +77,25 @@ switch class(obj_vec)
     otherwise
         field_str={'SliceAbscf','Nb_ST','Nb_Tracks'};
 end
-        
+
+
+type_str={'Log10', 'Square Root', 'Linear'};
+
 uicontrol(map_fig,'Style','text',...
     'Units','normalized',...
-    'Position',[0.3 0.175 0.25 0.05],...
+    'Position',[0.3 0.15 0.25 0.05],...
     'BackgroundColor','w',...
-    'String','Variable to plot:');
+    'String','Variable to plot and scale:');
 box.field = uicontrol(map_fig,'Style','popupmenu',...
     'Units','normalized',...
     'Position',[0.3 0.1 0.2 0.05],...
     'String',field_str,...
-    'Tag','listbox',...
     'Callback',{@update_field_callback,map_fig});
+        
+box.plottype = uicontrol(map_fig,'Style','popupmenu',...
+    'Units','normalized',...
+    'Position',[0.3 0.025 0.2 0.05],...
+    'String',type_str);
 
 
 box.tog_proj=uicontrol(map_fig,'Style','popupmenu','String',box.list_proj_str,'Value',box.proj_idx,...
@@ -145,7 +152,7 @@ box.str_field=uicontrol(map_fig,'Style','text',...
 box.val_max_box = uicontrol(map_fig,'Style','edit',...
     'Units','normalized',...
     'Position',[0.175 0.1 0.1 0.05],...
-    'String',num2str(box.val_max,'%.6f'),...
+    'String',num2str(box.val_max,'%.8g'),...
     'BackgroundColor','w',...
     'Tag','slice_size','Callback',{@check_val_max,map_fig});
 
@@ -352,6 +359,8 @@ set(box.str_field,'String',sprintf('Max %s',str_field));
 end
 
 
+
+
 function update_map_callback(~,~,map_fig)
 
 box=getappdata(map_fig,'Box');
@@ -404,10 +413,10 @@ function check_val_max(src,~,map_fig)
 box=getappdata(map_fig,'Box');
 str=get(src,'string');
 if isnan(str2double(str))||str2double(str)<=0
-    set(src,'string',num2str(box.val_max,'%.6f'));
+    set(src,'string',num2str(box.val_max,'%.8g'));
 else
     box.val_max=str2double(str);
-    set(src,'string',num2str(box.val_max,'%.6f'));
+    set(src,'string',num2str(box.val_max,'%.8g'));
 end
 setappdata(map_fig,'Box',box);
 end
@@ -473,8 +482,12 @@ else
 end
 str_field=get(box.field,'string');
 str_field=str_field{get(box.field,'value')};
+
+str_type=get(box.plottype,'string');
+map_input.PlotType=str_type{get(box.plottype,'value')};
 hfig=map_input.display_map_input_cl('main_figure',main_fig,'field',str_field);
-close(map_fig);
+
+
 hfigs_new=[hfigs hfig];
 setappdata(main_fig,'ExternalFigures',hfigs_new);
 

@@ -80,7 +80,7 @@ for usnap=1:length(snap)
         return;
     end
     
-   
+    
     
     if obj.Depth_Contour>0
         try
@@ -91,10 +91,10 @@ for usnap=1:length(snap)
             end
         catch
             disp('Cannot find Etopo1 data...')
-        end 
+        end
     end
     
-     try
+    try
         if obj.Coast>0
             m_gshhs_h('patch',[.5 .5 .5],'edgecolor','k','parent',n_ax(usnap));
         end
@@ -138,14 +138,25 @@ if ~strcmp(field,'Tag')
                 set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
                 
                 if ~strcmp(field,'Tag')
-                    ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
+                    switch lower(obj.PlotType)
+                        case {'log10' 'db'}
+                            ring_size=zeros(size(obj.(field){idx_snap(uui)}));
+                            ring_size(obj.(field){idx_snap(uui)}>0)=obj.Rmax*(log10(obj.(field){idx_snap(uui)}(obj.(field){idx_snap(uui)}>0)/obj.ValMax));
+
+                            
+                        case {'sqrt' 'square root'}
+                            ring_size=obj.Rmax*sqrt(obj.(field){idx_snap(uui)}/obj.ValMax);
+                            
+                        case 'linear'
+                            ring_size=obj.Rmax*(obj.(field){idx_snap(uui)}/obj.ValMax);
+                            
+                    end
                     idx_rings=find(ring_size>0);
+                    m_range_ring(obj.SliceLon{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
                     
-%                     for uuj=idx_rings
-%                         m_range_ring(obj.SliceLon{idx_snap(uui)}(uuj),obj.SliceLat{idx_snap(uui)}(uuj),ring_size(uuj),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
-%                     end
-                      m_range_ring(obj.SliceLon{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
-% 
+                    
+                    
+                    
                     
                     if~isempty(main_figure)
                         create_context_menu_track(main_figure,hfig,u_plot_slice(idx_snap(uui)));
@@ -161,7 +172,7 @@ if ~strcmp(field,'Tag')
 else
     
     for utag=1:length(tag)
-        title(n_ax(utag),sprintf('%s: %s\n',obj.Voyage{1},tag{utag}));       
+        title(n_ax(utag),sprintf('%s: %s\n',obj.Voyage{1},tag{utag}));
         if strcmp(field,'Tag')
             ireg_tag=find(strcmp(obj.Regions.Tag,tag{utag}));
             if isempty(ireg_tag)

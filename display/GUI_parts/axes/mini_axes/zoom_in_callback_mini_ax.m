@@ -1,4 +1,4 @@
-function zoom_in_callback_mini_ax(src,~,main_figure)
+function zoom_in_callback_mini_ax(src,evt,main_figure)
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=mini_ax_comp.mini_ax;
@@ -96,6 +96,10 @@ order_axes(main_figure);
         current_fig.WindowButtonMotionFcn = '';
         current_fig.WindowButtonUpFcn = '';
         
+        if length(x_box)==1&&length(y_box)==1
+            move_patch_mini_axis(src,evt,main_figure);        
+        else
+        
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
         
@@ -124,17 +128,19 @@ order_axes(main_figure);
             x_lim=[x_min x_max];
             y_lim=[y_min y_max];
         end
+        
         patch_obj=mini_ax_comp.patch_obj;
         new_vert=patch_obj.Vertices;
         new_vert(:,1)=[x_lim(1) x_lim(2) x_lim(2) x_lim(1)];
         new_vert(:,2)=[y_lim(1) y_lim(1) y_lim(2) y_lim(2)];
         
         set(patch_obj,'Vertices',new_vert);
+
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         set(axes_panel_comp.main_axes,'XLim',x_lim,'YLim',y_lim);
        
         reset_disp_info(main_figure);
-        
+        end
     end
 
 end

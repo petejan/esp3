@@ -52,14 +52,12 @@ try
         disp('Data Folder Created')
         disp(app_path.data_temp)
     end
-catch ME
+catch 
     disp('Error: Unable to create Data Folder')
     disp(app_path.data_temp);
     disp('Creating new config_echo.xml file')
     delete(fullfile(main_path,'config','config_echo.xml'));
-    [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml')); %#ok<ASGLU>
-    disp('Please re-launch program and change Data Folder path')
-    rethrow(ME);
+    [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 end
 
 
@@ -111,9 +109,9 @@ setappdata(main_figure,'Curr_disp',curr_disp_obj);
 setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
-movegui(main_figure,'center')
-initialize_display(main_figure);
+movegui(main_figure,'center');
 
+initialize_display(main_figure);
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 drawnow;
 

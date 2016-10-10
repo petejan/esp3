@@ -24,6 +24,7 @@ classdef map_input_cl
         Rmax
         Coast
         Depth_Contour
+        PlotType
     end
     
     
@@ -55,7 +56,7 @@ classdef map_input_cl
             addParameter(p,'ValMax',0.0017,@isnumeric);
             addParameter(p,'Rmax',5,@isnumeric);
             addParameter(p,'Coast',1,@isnumeric);
-            
+            addParameter(p,'PlotType','log10',@ischar);
             parse(p,varargin{:});
             
             results=p.Results;

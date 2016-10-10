@@ -31,7 +31,7 @@ classdef layer_cl < handle
             addParameter(p,'ID_num',0,@isnumeric);
             addParameter(p,'Filename',{'No Data'},@(fname)(iscell(fname)));
             addParameter(p,'Filetype','',@(ftype)(ischar(ftype)));
-            addParameter(p,'Transceivers',[],check_transceiver_class);
+            addParameter(p,'Transceivers',transceiver_cl.empty(),check_transceiver_class);
             addParameter(p,'Lines',[],check_line_class);
             addParameter(p,'Frequencies',[],@isnumeric);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
@@ -39,7 +39,7 @@ classdef layer_cl < handle
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
             addParameter(p,'OriginCrest','');
-            addParameter(p,'SurveyData',{},@(obj) isa(obj,'survey_data_cl')|iscell(obj)|isempty(obj))
+            addParameter(p,'SurveyData',survey_data_cl(),@(obj) isa(obj,'survey_data_cl')|iscell(obj)|isempty(obj))
             
             parse(p,varargin{:});
             results=p.Results;
@@ -54,8 +54,9 @@ classdef layer_cl < handle
             for i=1:length(props)
                 obj.(props{i})=results.(props{i});
             end
+            
             if ~iscell(obj.Filename)
-                layer.Filename={obj.Filename};
+                obj.Filename={obj.Filename};
             end
             
             
@@ -64,12 +65,9 @@ classdef layer_cl < handle
                 obj.Frequencies(ifr)=obj.Transceivers(ifr).Config.Frequency(1);
             end
             
-            if isempty(obj.Transceivers)
-                obj.Transceivers=transceiver_cl.empty();
-            end
             
         end
-        
+
         function rm_memaps(layer)
             
             for kk=1:length(layer.Transceivers)

@@ -182,9 +182,15 @@ for idg=1:length(idx_raw_obj.type_dg)
                         if ~isempty(idx)
                             props=fieldnames(config_temp(iout));
                             for iii=1:length(props)
-                                if  any(strcmpi(prop_config,props{iii}))
-                                    trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
+                                switch props{iii}
+                                    case 'PulseDuration'
+                                        trans_obj(idx).Config.PulseLength=config_temp(iout).(props{iii});
+                                    otherwise
+                                        if  any(strcmpi(prop_config,props{iii}))
+                                            trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
+                                        end
                                 end
+                                
                             end
                             trans_obj(idx).Config.XML_string=t_line;
                         end

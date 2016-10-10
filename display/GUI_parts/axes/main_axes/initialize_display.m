@@ -21,6 +21,8 @@ load_track_target_tab(main_figure,algo_panel);
 load_axis_panel(main_figure);
 load_info_panel(main_figure);
 
+
+
 set(main_figure,'Visible','on');
 end
 

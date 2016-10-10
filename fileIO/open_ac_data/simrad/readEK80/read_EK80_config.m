@@ -12,6 +12,13 @@ switch (dgType)
         t_line=(fread(fid,len-HEADER_LEN,'*char','l'))';
         t_line=deblank(t_line);
         
+        if isempty(strfind(lower(t_line),'xml'))
+            header=-1;
+            config=-1;
+            fclose(fid);
+            return;
+        end
+        
         fread(fid, 1, 'int32', 'l');
         [header,config,~]=read_xml0(t_line);
             

@@ -9,14 +9,7 @@ end
 
 switch raw_idx_obj.raw_type
     case 'EK80'
-        [~,config]=read_EK80_config(filename);
-        
-        freq=nan(1,length(config));
-        CIDs=cell(1,length(config));
-        for uif=1:length(freq)
-            freq(uif)=config(uif).Frequency;
-            CIDs{uif}=config(uif).ChannelID;
-        end
+
         file_comp=fread(fid,'*char', 'l')';
         idx_nme0=strfind(file_comp,'NME0');
         idx_xml0=strfind(file_comp,'XML0');
@@ -25,6 +18,14 @@ switch raw_idx_obj.raw_type
         idx_mru0=strfind(file_comp,'MRU0');
         idx_fil1=strfind(file_comp,'FIL1');
         [idx_dg,~]=sort([idx_nme0 idx_xml0 idx_raw3 idx_tag0 idx_mru0 idx_fil1]);
+        
+        [~,config]=read_EK80_config(filename);
+        freq=nan(1,length(config));
+        CIDs=cell(1,length(config));
+        for uif=1:length(freq)
+            freq(uif)=config(uif).Frequency;
+            CIDs{uif}=config(uif).ChannelID;
+        end
     case 'EK60'
         [tmp, ~] = readEKRaw_ReadHeader(fid);
          freq=nan(1,length(tmp.transceiver));
