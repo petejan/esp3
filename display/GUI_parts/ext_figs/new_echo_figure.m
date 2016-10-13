@@ -11,7 +11,7 @@ addParameter(p,'Resize','on',@ischar);
 addParameter(p,'CloseRequestFcn',@close_win_echo,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowScrollWheelFcn',@ishandle,@(x) isa(x,'function_handle'));
 addParameter(p,'ButtonDownFcn',@ishandle,@(x) isa(x,'function_handle'));
-addParameter(p,'KeyPressFcn',@ishandle,@(x) isa(x,'function_handle')||ischar(x));
+addParameter(p,'KeyPressFcn',@ishandle,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowStyle','normal',@ischar);
 addParameter(p,'Tag','',@ischar)
 
