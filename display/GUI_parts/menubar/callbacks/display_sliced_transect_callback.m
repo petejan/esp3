@@ -6,7 +6,6 @@ return;
 end
     
 curr_disp=getappdata(main_figure,'Curr_disp');
-hfigs=getappdata(main_figure,'ExternalFigures');
 
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -17,7 +16,7 @@ idx_reg=trans_obj.list_regions_type('Data');
 reg_tot=trans_obj.get_reg_spec(idx_reg);               
 output_1D=trans_obj.slice_transect('reg',reg_tot);
 
-figure();
+new_echo_figure(main_figure);
 plot(10*log10(output_1D.slice_abscf));
 hold on;
 plot(10*log10(nansum(output_2D.cell_abscf)));
@@ -28,7 +27,7 @@ legend('1D','2D');
 
 alpha_map=ones(size(output_2D.cell_vbscf));
 alpha_map(10*log10(output_2D.cell_vbscf)<-70)=0;
-new_fig=figure();
+new_echo_figure(main_figure);
 echo=imagesc(output_2D.cell_dist_start,output_2D.cell_range_start,10*log10(output_2D.cell_vbscf));
 grid on;
 colormap jet;
@@ -41,8 +40,7 @@ ylabel('Range (meters)')
 caxis([-70 -35]);
 set(echo,'alphadata',alpha_map)
 
-hfigs=[hfigs new_fig];
-setappdata(main_figure,'ExternalFigures',hfigs);
+
 grid on;
 
 

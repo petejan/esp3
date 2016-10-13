@@ -2,13 +2,6 @@ function load_survey_data_fig(main_figure)
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
-hfigs=getappdata(main_figure,'ExternalFigures');
-hfigs(~isvalid(hfigs))=[];
-idx_tag=find(strcmp({hfigs(:).Tag},'logbook'));
-
-if ~isempty(idx_tag)
-    delete(figure(hfigs(idx_tag)))
-end
 
 if isempty(layer)
     path_f = uigetdir(app_path.data,'Choose Data Folder');
@@ -57,12 +50,10 @@ columnformat = {'logical' 'char','numeric','char','numeric','logical','logical',
 
 size_max = get(0, 'MonitorPositions');  
 
-surv_data_fig = figure('Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],'Resize','off',...
-    'Name','SurveyData','NumberTitle','off','tag','logbook',...
+surv_data_fig = new_echo_figure(main_figure,'Units','pixels','Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
+    'Name','SurveyData','Tag','logbook',...
     'MenuBar','none');%No Matlab Menu)
-hfigs_new=[hfigs surv_data_fig];
-setappdata(main_figure,'ExternalFigures',hfigs_new);
-%
+
 uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',surv_data_struct.Voyage{1},surv_data_struct.SurveyName{1}));
 uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
 
@@ -109,7 +100,7 @@ setappdata(surv_data_fig,'data_ori',survDataSummary);
 end
 
 function plot_bad_pings_callback(src,~,surv_data_fig,main_figure)
-hfigs=getappdata(main_figure,'ExternalFigures');
+
 surv_data_table=getappdata(surv_data_fig,'surv_data_table');
 data_ori=get(surv_data_table.table_main,'Data');
 selected_files=unique(data_ori([data_ori{:,1}],2));
@@ -131,14 +122,14 @@ else
 end
 
 for ifreq=1:length(freq_vec)
-    fig_temp=figure();
+    new_echo_figure(main_figure,'ButtonDownFcn',@display_filename_callback,'Tag',sprintf('bp%.0fkHz\n',freq_vec(ifreq)/1e3));
     plot_temp=plot(nb_bad_pings{ifreq}./nb_pings{ifreq}*100,'--+');
     grid on;
     %set(ax,'XTick',1:length(files_out{ifreq}),'XTickLabels',files_out{ifreq},'XTickLabelRotation',45);
     ylabel('%')
     title(sprintf('Bad pings percentage for %.0fkHz',freq_vec(ifreq)/1e3));
-    set(plot_temp,'ButtonDownFcn',{@display_filename_callback,files_out{ifreq}});
-    hfigs=[hfigs fig_temp];
+    set(plot_temp,{@display_filename_callback,files_out{ifreq}});
+
     
     for i=1:length(fid)
         
@@ -158,7 +149,7 @@ for i=1:length(fid)
     end
 end
 
-setappdata(main_figure,'ExternalFigures',hfigs);
+
 end
 
 function display_filename_callback(src,evt,file_list)

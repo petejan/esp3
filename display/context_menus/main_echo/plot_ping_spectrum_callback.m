@@ -47,7 +47,7 @@ for uui=idx_sort
         
         dr=pulse_length*c/(4*dp);
         
-        figure();
+        new_echo_figure(main_figure,'Tag','calcurves');
         echo=imagesc(f_vec/1e3,r_disp,TS_f);
         set(echo,'AlphaData',TS_f>-80);
         xlabel('Frequency (kHz)');

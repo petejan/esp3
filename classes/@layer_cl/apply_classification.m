@@ -50,7 +50,8 @@ for idx_school=idx_schools
     
     
     if disp_level>0&&nansum(output_reg_120.Range_mean(:))>0
-        h_figs=figure('Name',sprintf('School %d',idx_school_38),'NumberTitle','off','tag','classif');
+       
+        h_figs=new_echo_figure([],'Name',sprintf('School %d',idx_school_38),'Tag','classif');
         ax1=subplot(2,1,1);
         pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_38_cell);
         colormap(jet);

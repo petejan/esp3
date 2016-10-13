@@ -1,5 +1,5 @@
 function noise_analysis_callback(~,~,reg_curr,main_figure)
-extfig=getappdata(main_figure,'ExternalFigures');
+
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -25,14 +25,13 @@ end
 
 nb_fig=length(fs_unique);
 
-hfig(nb_fig)=figure;
 
 for i=1:nb_fig
     idx_fs=idx_unique==i;
     P_f=10*log10(2*(nanmean(ffts(:,idx_fs).*conj(ffts(:,idx_fs)),2)));
 
-    figure(hfig(i));
-    plot(nanmean(f_vec(:,idx_fs),2),P_f);
+    h=new_echo_figure(main_figure,'Tag',sprintf('pf%f%f',reg_curr.ID,fs_unique(i)));
+    plot(h,nanmean(f_vec(:,idx_fs),2),P_f);
     grid on;
     xlabel('F(Hz)')
     ylabel('|P(f)| (dB/Hz)')
@@ -41,7 +40,6 @@ for i=1:nb_fig
 end
 
 
-extfig=[extfig hfig];
-setappdata(main_figure,'ExternalFigures',extfig);
+
 
 end

@@ -1,13 +1,7 @@
 function load_mbs_scripts_callback(~,~,hObject)
 
 app_path=getappdata(hObject,'App_path');
-hfigs=getappdata(hObject,'ExternalFigures');
-hfigs(~isvalid(hfigs))=[];
-idx_tag=find(strcmpi({hfigs(:).Tag},'Scriptingmbs'));
-if ~isempty(idx_tag)
-    figure(hfigs(idx_tag(1)))
-    return;
-end
+
 
 [mbs_files,outDir]=get_mbs_from_esp2(app_path.cvs_root);
 

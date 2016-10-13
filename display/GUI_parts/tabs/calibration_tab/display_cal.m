@@ -7,7 +7,7 @@ layer=getappdata(main_figure,'Layer');
 
 
 [~,idx_sort]=sort(layer.Frequencies);
-    figure(); 
+    new_echo_figure(main_figure,'Tag','calibration');
     hold on;
     ax_1=subplot(3,1,1);
     xlabel('kHz')

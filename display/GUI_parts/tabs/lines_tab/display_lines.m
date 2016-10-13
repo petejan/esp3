@@ -12,14 +12,9 @@ curr_dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 main_axes=axes_panel_comp.main_axes;
 main_echo=axes_panel_comp.main_echo;
 
-u=get(main_axes,'children');
+u=findobj(main_axes,'tag','lines');
 
-for ii=1:length(u)
-    if strcmp(get(u(ii),'tag'),'lines')
-        delete(u(ii));
-    end
-end
-
+delete(u);
 x=double(get(main_echo,'xdata'));
 %y=double(get(main_echo,'ydata'));
 
@@ -41,17 +36,11 @@ end
 for i=1:length(list_line)
     active_line=layer.Lines(i);
     
-    if active_line.Dist_diff>= 0
-        [~,idx_t]=nanmin(abs((curr_dist-active_line.Dist_diff)));
-        dt_trawl=curr_time(idx_t)-curr_time(1);
-    else
-        [~,idx_t]=nanmin(abs(curr_dist+active_line.Dist_diff));
-         dt_trawl=-curr_time(idx_t)+curr_time(1);
-    end
+    dist_corr=curr_dist-active_line.Dist_diff; 
+    time_corr=resample_data_v2(curr_time,curr_dist,dist_corr);
+    time_corr(isnan(time_corr))=curr_time(isnan(time_corr))+nanmean(time_corr(:)-curr_time(:));
+    y_line=resample_data_v2(active_line.Range,active_line.Time,time_corr);
     
-    
-    
-    y_line=resample_data_v2(active_line.Range,active_line.Time+dt_trawl,curr_time);
     
     [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,main_echo);
     if isempty(y_line)
@@ -69,7 +58,7 @@ for i=1:length(list_line)
         color='g';
     end
     plot(main_axes,x_line,y_line,color,'linewidth',2,'tag','lines','visible',vis);
-    %text(nanmean(x_line(:)),nanmean(y_line(:)),line_curr.Tag,'visible',vis,'FontAngle','italic','Fontsize',10,'tag','line')
+    text(nanmean(x_line(:)),nanmean(y_line(:)),active_line.Tag,'visible',vis,'FontAngle','italic','Fontsize',10,'tag','lines')
 end
 
 end

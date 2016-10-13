@@ -199,8 +199,7 @@ if exitflag ~= 1
     disp('that there is something wrong with the echosounder.')
     
     % Plot the probably wrong data, using the un-filtered dataset
-    figure('name', 'Beam pattern contour plot')
-    clf
+    new_echo_figure([],'Name', 'Beam pattern contour plot');
     [XI,YI]=meshgrid(-trimTo:.1:trimTo,-trimTo:.1:trimTo);
     warning('off','MATLAB:griddata:DuplicateDataPoints');
     ZI = griddata(original.sphere(:,2), original.sphere(:,3), original.sphere(:,1), XI, YI);
@@ -284,7 +283,7 @@ end
 
 
 % plot up the on-axis TS values
-figure('name', 'On-axis sphere TS')
+new_echo_figure([],'Name', 'On-axis sphere TS')
 if exist('boxplot', 'file') % this lives in the Statistics toolbox, which not everyone will have
     boxplot(ts_values)
 else
@@ -340,8 +339,7 @@ warning('off','MATLAB:griddata:DuplicateDataPoints');
 ZI=griddata(double(sphere(:,2)), double(sphere(:,3)), double(sphere(:,1)+outby(1)),XI,YI);
 
 if ~isempty(ZI)
-    figure('name', 'Beam pattern contour plot')
-    clf
+    new_echo_figure([],'Name', 'Beam pattern contour plot')
     warning('on','MATLAB:griddata:DuplicateDataPoints');
     contourf(XI,YI,ZI)
     axis equal
@@ -359,7 +357,7 @@ if ~isempty(ZI)
     axis equal
     
     % Do a 3d plot of the uncorrected and corrected beampattern
-    figure('name', '3D beam pattern (corrected and uncorrected)')
+    new_echo_figure([],'Name', '3D beam pattern (corrected and uncorrected)')
     clf
     surf(XI, YI, ZI)
     warning('off','MATLAB:griddata:DuplicateDataPoints');
@@ -373,7 +371,7 @@ if ~isempty(ZI)
 end
 
 % Do a plot of the sphere range during the calibration
-figure('name', 'Sphere range')
+new_echo_figure([],'Name', 'Sphere range')
 clf
 plot(sphere(:,4))
 disp(['Mean sphere range = ' num2str(mean(sphere(:,4))) ...

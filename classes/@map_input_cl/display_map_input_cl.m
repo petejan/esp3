@@ -14,15 +14,13 @@ field=p.Results.field;
 
 
 if isempty(hfig)
-    hfig=figure();
+     hfig=new_echo_figure([],'Name','Navigation','Tag','nav');
 end
-
 
 
 %col_snap={'r','b','g','k','m'};
 col_snap={'k'};
 
-set(hfig,'Name','Navigation','NumberTitle','off','tag','nav');
 
 LonLim=[nan nan];
 LatLim=[nan nan];

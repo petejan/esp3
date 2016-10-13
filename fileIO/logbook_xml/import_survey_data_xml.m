@@ -26,6 +26,9 @@ if exist(FileN,'file')==2
         for ifi=1:length(fi_tmp)
             if iscell(surv_data_struct.(fi_tmp{ifi}))
                 surv_data_struct.(fi_tmp{ifi}){i}=survey_data_xml.(fi_tmp{ifi});
+                if isnumeric(surv_data_struct.(fi_tmp{ifi}){i})
+                    surv_data_struct.(fi_tmp{ifi}){i}=num2str(surv_data_struct.(fi_tmp{ifi}){i});
+                end
             else
                 surv_data_struct.(fi_tmp{ifi})(i)=survey_data_xml.(fi_tmp{ifi});
             end
@@ -50,6 +53,7 @@ if exist(FileN,'file')==2
         surv_data_struct.Stratum=replace_vec_per_cell(surv_data_struct.Stratum);
         surv_data_struct.Stratum(idx_nan)={''};
     end
+    
     
     if ~iscell(surv_data_struct.Comment)
         idx_nan=isnan(surv_data_struct.Comment);

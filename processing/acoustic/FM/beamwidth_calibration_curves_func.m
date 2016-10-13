@@ -24,9 +24,10 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 ah=axes_panel_comp.main_axes;
 
-TS_fig=figure();
-BP_fig_1=figure();
-BP_fig=figure();
+TS_fig=new_echo_figure(main_figure,'Name','TS','Tag','TS_fig');
+BP_fig_1=new_echo_figure(main_figure,'Name','','Tag','BP_fig1');
+BP_fig=new_echo_figure(main_figure,'Name','','Tag','BP_fig');
+
 
 
 for uui=1:length(layer.Frequencies)

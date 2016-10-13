@@ -6,7 +6,7 @@ X_cumul=[];
 Y_cumul=[];
 if~isempty(idx);
     
-    hfig=figure('Name','Curves','NumberTitle','off','tag','curves');
+     hfig=new_echo_figure([],'Name','Curves','Tag','curves');
     hold on;
     grid on;
     

@@ -1,7 +1,7 @@
 
 function load_path_fig(~,~,main_fig)
-path_fig = figure('Position',[200 200 600 300],'Resize','off',...
-    'Name','Path Options','NumberTitle','off','MenuBar','none','WindowStyle','modal');
+path_fig = new_echo_figure('Position','Units','Pixels',[200 200 600 300],'Resize','off',...
+    'Name','Path Options','MenuBar','none','WindowStyle','modal');
 
 app_path=getappdata(main_fig,'App_path');
 

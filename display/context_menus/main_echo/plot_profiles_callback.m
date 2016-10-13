@@ -60,23 +60,23 @@ else
 end
 bot_x_val=[nanmin(vert_val(~(vert_val==-Inf))) nanmax(vert_val)];
 
-figure();
-axv=axes();
+v=new_echo_figure(main_figure,'Tag','profile_v');
+axv=axes(v);
 hold on;
 title(sprintf('Vertical Profile for Ping: %.0f',idx_ping))
-plot(vert_val,ydata,'k');
+plot(axv,vert_val,ydata,'k');
 hold on;
-plot(bot_x_val,[bot_val bot_val],'r');
+plot(axv,bot_x_val,[bot_val bot_val],'r');
 grid on;
 ylabel('Range(m)')
 xlabel(ylab_str);
 axis ij;
 
-figure();
-axh=axes();
+h=new_echo_figure(main_figure,'Tag','profile_h');
+axh=axes(h);
 hold on;
 title(sprintf('Horizontal Profile for sample: %.0f, Range: %.2fm',idx_r,y))
-plot(xdata,horz_val,'r');
+plot(axh,xdata,horz_val,'r');
 grid on;
 xlabel(xlab_str);
 ylabel(ylab_str);

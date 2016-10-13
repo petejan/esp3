@@ -1,5 +1,5 @@
 
-classdef line_cl
+classdef line_cl < handle
     properties
         Name
         ID
@@ -10,6 +10,7 @@ classdef line_cl
         UTC_diff
         Dist_diff
         File_origin
+        Dr=0;
     end
     
     
@@ -42,6 +43,11 @@ classdef line_cl
         function change_time(obj,dt)
             obj.Time=obj.Time+dt/24-obj.UTC_diff/24;
             obj.UTC_diff=dt;
+        end
+        
+        function change_range(obj,dr)
+            obj.Range=obj.Range+(dr-obj.Dr);
+            obj.Dr=dr;
         end
                       
     end

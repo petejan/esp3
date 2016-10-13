@@ -177,7 +177,7 @@ for i=1:nb_pings
     %i_display=1:500:nb_pings;
     i_display=-1;
     if ~any(i==i_display)&&DEBUG
-        figure(94587)
+        new_echo_figure(94587)
         clf;
         ax1=subplot(3,1,1);
         plot(idx_temp_along,Phi_along_temp/pi*180)

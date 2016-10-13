@@ -69,8 +69,7 @@ end
 
 Sv_f_mean=10*log10(nanmean(10.^(Sv_f'/10)));
 
-figure();
-hold on;
+hfig=new_echo_figure(main_figure,'Name','SV(f)','Tag','sv_freq');
 %subplot(1,3,uui)
 %plot(f_vec/1e3,Sv_f,'b','linewidth',0.2);
 hold on;

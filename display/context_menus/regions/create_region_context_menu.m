@@ -27,7 +27,7 @@ end
 
 
 function disp_hist_region_callback(~,~,reg_curr,main_figure)
-extfig=getappdata(main_figure,'ExternalFigures');
+
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -68,7 +68,7 @@ switch lower(deblank(curr_disp.Fieldname))
         xlab=sprintf('%s (dB)',curr_disp.Type);
 end
 
-hfig=figure('Name',sprintf('Region Histogram: %s',curr_disp.Type),'NumberTitle','off');
+new_echo_figure(main_figure,'Name',sprintf('Region Histogram: %s',curr_disp.Type),'Tag','region_pdf');
 hold on;
 title(tt);
 bar(x,pdf);
@@ -76,8 +76,6 @@ grid on;
 ylabel('Pdf');
 xlabel(xlab);
 
-extfig=[extfig hfig];
-setappdata(main_figure,'ExternalFigures',extfig);
 
 end
 

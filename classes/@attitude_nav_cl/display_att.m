@@ -14,7 +14,7 @@ time=(obj.Time-obj.Time(1))*24*60*60;
 u=0;
 if ~isempty(roll)
     u=u+1;
-    h_fig(u)=figure('Name','Attitude','NumberTitle','off','tag','attitude');
+    h_fig(u)=new_echo_figure([],'Name','Attitude','Tag','attitude');
     ax= axes('nextplot','add');
     yyaxis(ax,'left');
     ax.YAxis(1).Color = 'r';
@@ -37,7 +37,7 @@ end
 
 if ~isempty(heading)
     u=u+1;
-    h_fig(u)=figure('Name','Heading','NumberTitle','off','tag','attitude');
+    h_fig(u)=new_echo_figure([],'Name','Heading','Tag','attitude');
     axh=axes('nextplot','add');
     axh.YAxis.TickLabelFormat  = '%g^\\circ';
     plot(time,heading,'k');

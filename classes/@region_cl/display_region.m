@@ -22,7 +22,7 @@ switch(reg_obj.Reference)
         y_disp=-nanmean(output_reg.y_node+output_reg.height/2,2);
 end
 
-h_fig=figure('Name',tt,'NumberTitle','off','tag','regions','Units','Normalized','Position',[0.1 0.2 0.8 0.6]);
+h_fig=new_echo_figure([],'Name',tt,'Tag','regions','Units','Normalized','Position',[0.1 0.2 0.8 0.6]);
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 reg_plot=imagesc(x_disp(~isnan(x_disp)),y_disp(~isnan(y_disp)),sv_disp(~isnan(y_disp),~isnan(x_disp)));
 ax_in.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end))-reg_obj.Cell_w/2;

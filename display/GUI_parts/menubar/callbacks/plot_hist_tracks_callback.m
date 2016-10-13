@@ -87,22 +87,17 @@ for uui=idx_sort
 end
 
 
-hfigs=getappdata(main_figure,'ExternalFigures');
-
-new_fig=[];
 for k=1:size(TS,1)
     [pdf_temp,x_temp]=pdf_perso(TS(k,:),'bin',25);
-    fig_temp=figure();
+    new_echo_figure(main_figure);
     bar(x_temp,pdf_temp);
     xlabel('TS(dB)');
     ylabel('Pdf');
     title(tag{k});
     grid on;
-    new_fig=[new_fig fig_temp];
+
 end
 
-hfigs=[hfigs new_fig];
-setappdata(main_figure,'ExternalFigures',hfigs);
 
 setappdata(main_figure,'Layer',layer);
 

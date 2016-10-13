@@ -11,9 +11,9 @@ end
 reg_fig_comp=getappdata(main_figure,'reg_fig');
 
 
-reg_fig = figure('Position',[100 100 400 400],'Resize','off',...
-    'Name','Create Region','NumberTitle','off','MenuBar','none',...
-    'Visible','off');
+reg_fig = new_echo_figure(main_figure,'Units','pixels','Position',[100 100 400 400],'Resize','off',...
+    'Name','Create Region','MenuBar','none',...
+    'Tag','create_reg');
 
 uicontrol(reg_fig,'Style','text',...
     'Units','normalized',...
@@ -53,9 +53,6 @@ set([reg_fig_comp.cell_w reg_fig_comp.cell_h],'callback',{@check_cell,main_figur
 
 reg_fig_comp.cell_w_unit=uicontrol(reg_fig,'Style','popupmenu','String',units_w,'Value',w_unit_idx,'units','normalized','Position', [0.4 0.4 0.2 0.1],'Tag','w');
 reg_fig_comp.cell_h_unit=uicontrol(reg_fig,'Style','popupmenu','String',units_h,'Value',h_unit_idx,'units','normalized','Position', [0.4 0.3 0.2 0.1],'Tag','h');
-
-shape_type={'Rectangular'};
-
 
 data_type={'Data' 'Bad Data'};
 data_idx=1;
@@ -103,8 +100,19 @@ h_units_idx=get(reg_fig_comp.cell_h_unit,'value');
 w_units=get(reg_fig_comp.cell_w_unit,'String');
 w_units_idx=get(reg_fig_comp.cell_w_unit,'value');
 
+switch ref{ref_idx}
+    case 'Surface'
+       y_min=str2double(get(reg_fig_comp.depth_info,'string'));
+       y_max=Inf;
+    case 'Bottom'
+      y_min=str2double(get(reg_fig_comp.depth_info,'string'));
+      y_max=0;
+end
 
-reg_wc=trans_obj.create_WC_region('y_min',str2double(get(reg_fig_comp.depth_info,'string')),...
+
+reg_wc=trans_obj.create_WC_region(...
+    'y_min',y_min,...
+    'y_max',y_max,...
     'Type',data_type{data_type_idx},...
     'Ref',ref{ref_idx},...
     'Cell_w',str2double(get(reg_fig_comp.cell_w,'string')),...

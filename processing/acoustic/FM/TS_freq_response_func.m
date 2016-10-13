@@ -98,10 +98,11 @@ if ~isempty(f_vec_save)
     %     end
     %
     TS_f_mean=10*log10(nanmean(10.^(TS_f'/10)));
-    figure();
-    plot(f_vec_save/1e3,TS_f,'b','linewidth',0.2);
+    h=new_echo_figure(main_figure,'Name','TS Curve','Tag','ts_f_mean');
+    ah=axes(h);
+    plot(ah,f_vec_save/1e3,TS_f,'b','linewidth',0.2);
     hold on;
-    plot(f_vec_save/1e3,TS_f_mean,'r','linewidth',2)
+    plot(ah,f_vec_save/1e3,TS_f_mean,'r','linewidth',2)
     grid on;
     xlabel('kHz')
     ylabel('TS(dB)')
