@@ -24,7 +24,6 @@ end
 
 new_fig=reg_curr.display_region(trans_obj);
 
-add_fig(main_figure,new_fig);
 hfigs=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs);
 

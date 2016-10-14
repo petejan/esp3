@@ -16,6 +16,7 @@ set(new_axes,'units','pixels','XAxisLocation','bottom','XTickLabelRotation',90);
 set(new_axes,'outerposition',get(new_fig,'position'));
 set(new_axes,'XTickLabel',haxes.XTickLabel);
 set(new_axes,'YTickLabel',vaxes.YTickLabel);
+set(new_fig,'Visible','off');
 
 text_obj=findobj(new_fig,'-property','Fontsize');
 set(text_obj,'Fontsize',16);

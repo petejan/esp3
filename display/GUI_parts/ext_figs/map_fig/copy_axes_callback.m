@@ -19,12 +19,13 @@ end
     function wbucb(~,~)
         
         if nansum(cp<0|cp>pos(3:4))>=1
-            new_echo_figure(main_figure)
             ax_old=obj.Parent;
             fig_old=ax_old.Parent;
+            h=new_echo_figure(main_figure,'Name',[fig_old.Name 'Copy'],'Tag',[fig_old.Tag '_copy']);
+            
             new_ax=copyobj(ax_old,h);
             set(new_ax,'Units','Normalized','OuterPosition',[0 0 1 1]);
-            set(h,'Name',[fig_old.Name 'Copy'],'NumberTitle',fig_old.NumberTitle,'Tag',fig_old.Tag);
+
 
         end
         

@@ -382,8 +382,7 @@ ylabel('Sphere range (m)')
 
 % Do a plot of the compensated and uncompensated echoes at a selection of
 % angles, similar to what one can get from the Simrad calibration program
-figure('name', 'Beam slice plot')
-clf
+new_echo_figure([],'Name', 'Beam slice plot')
 plotBeamSlices(sphere, outby(1), trimTo, faBW, psBW, peak_ts, p.onAxisTol)
 
 % Calculate the sa correction value informed by draft formulae

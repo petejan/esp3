@@ -110,7 +110,7 @@ nb_targets_pings(1)=length(idx_target{1});
 tracks={};
 weight={};
 tracks_pings={};
-for i=1:nb_targets_pings
+for i=1:nb_targets_pings(1)
     tracks{i}=idx_target{1}(i);
     tracks_pings{i}=pings(1);
     weight{i}=0;
@@ -199,7 +199,7 @@ for i=2:nb_pings
                         
                         active_tracks{i}=([active_tracks{i} idx_old_track_temp]);
                         for t=1:length(idx_old_track_temp)
-                            if any(tracks{idx_old_track_temp(t)}==idx_target{i}(idx_new_target(j)))
+                            if ~any(tracks{idx_old_track_temp(t)}==idx_target{i}(idx_new_target(j)))
                                 if length(tracks_pings{idx_old_track_temp(t)})>=2
                                     diff_pings=tracks_pings{idx_old_track_temp(t)}(end)-tracks_pings{idx_old_track_temp(t)}(end-1);
                                     diff_TS=(ST.TS_comp(idx_target{i}(idx_new_target(j)))-ST.TS_comp(tracks{idx_old_track_temp(t)}(end-1)));

@@ -16,7 +16,7 @@ map_obj=map_input_cl.map_input_cl_from_obj(new_layers);
  
 hfigs=getappdata(hObject,'ExternalFigures');
 
-hfig=figure();
+hfig=new_echo_figure([],'Tag','nav');
 map_obj.display_map_input_cl('hfig',hfig,'main_figure',hObject,'oneMap',1);
 
 hfigs=[hfigs hfig];

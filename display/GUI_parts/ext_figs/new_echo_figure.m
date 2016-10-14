@@ -9,9 +9,9 @@ addParameter(p,'Units','normalized',@ischar);
 addParameter(p,'MenuBar','figure',@ischar);
 addParameter(p,'Resize','on',@ischar);
 addParameter(p,'CloseRequestFcn',@close_win_echo,@(x) isa(x,'function_handle'));
-addParameter(p,'WindowScrollWheelFcn',@ishandle,@(x) isa(x,'function_handle'));
-addParameter(p,'ButtonDownFcn',@ishandle,@(x) isa(x,'function_handle'));
-addParameter(p,'KeyPressFcn',@ishandle,@(x) isa(x,'function_handle'));
+addParameter(p,'WindowScrollWheelFcn',@do_nothing,@(x) isa(x,'function_handle'));
+addParameter(p,'ButtonDownFcn',@do_nothing,@(x) isa(x,'function_handle'));
+addParameter(p,'KeyPressFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowStyle','normal',@ischar);
 addParameter(p,'Tag','',@ischar)
 
@@ -48,6 +48,9 @@ if ~isempty(main_figure)
     setappdata(main_figure,'ExternalFigures',[fig_handle hfigs]);
 end
 
+end
+
+function do_nothing(~,~,~,~)
 end
 
 function close_win_echo(src,~,~,main_fig)
