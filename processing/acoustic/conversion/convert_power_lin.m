@@ -14,7 +14,6 @@ end
 range_tvg=range-(r_corr);
 range_tvg(range_tvg<0)=0;
 
-profile on;
 switch type
     case {'ASL'};    
         sp=bsxfun(@times,power,db2pow_perso(TVG_Sp+2*alpha*range_tvg));

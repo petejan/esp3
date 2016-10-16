@@ -31,7 +31,8 @@ for i=1:nb_fig
     P_f=10*log10(2*(nanmean(ffts(:,idx_fs).*conj(ffts(:,idx_fs)),2)));
 
     h=new_echo_figure(main_figure,'Tag',sprintf('pf%f%f',reg_curr.ID,fs_unique(i)));
-    plot(h,nanmean(f_vec(:,idx_fs),2),P_f);
+    ah=axes(h);
+    plot(ah,nanmean(f_vec(:,idx_fs),2),P_f);
     grid on;
     xlabel('F(Hz)')
     ylabel('|P(f)| (dB/Hz)')

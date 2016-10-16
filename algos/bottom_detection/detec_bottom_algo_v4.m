@@ -41,7 +41,7 @@ else
     Sp=trans_obj.Data.get_datamat('sp');
 end
 
-eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
+
 Range= trans_obj.Data.get_range();
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
@@ -98,26 +98,24 @@ Bottom_region_temp=Max_BS_reg;
 Bottom_region_temp=ceil(filter2(ones(Np,5),Bottom_region_temp)/(5*Np))==1;
 idx_empty=nansum(Bottom_region_temp)==0;
 Bottom_region_temp(:,idx_empty)=[];
-CC = bwconncomp(Bottom_region_temp==1);
-size_groups=(cellfun(@length,CC.PixelIdxList));
-[~,idx_big]=sort(size_groups,'descend');
-
-Bottom_region_temp_2=zeros(size(Bottom_region_temp));
-
-ig=1;
-% figure();
-% a=axes();
-while ig<=length(size_groups)&&~all((nansum(Bottom_region_temp_2)>0)==(nansum(Bottom_region_temp)>0))
-    Bottom_region_temp_2(CC.PixelIdxList{idx_big(ig)})=1;
-    ig=ig+1;
-%     imagesc(a,Bottom_region);
-%     drawnow;
-end
+% CC = bwconncomp(Bottom_region_temp==1);
+% size_groups=(cellfun(@length,CC.PixelIdxList));
+% [~,idx_big]=sort(size_groups,'descend');
+% 
+% Bottom_region_temp_2=zeros(size(Bottom_region_temp));
+% 
+% ig=1;
+% % figure();
+% % a=axes();
+% while ig<=length(size_groups)&&~all((nansum(Bottom_region_temp_2)>0)==(nansum(Bottom_region_temp)>0))
+%     Bottom_region_temp_2(CC.PixelIdxList{idx_big(ig)})=1;
+%     ig=ig+1;
+% %     imagesc(a,Bottom_region);
+% %     drawnow;
+% end
 
 Bottom_region=zeros(size(BS));
-Bottom_region(:,~idx_empty)=Bottom_region_temp_2;
-
-
+Bottom_region(:,~idx_empty)=Bottom_region_temp;
 
 
 idx_bottom=bsxfun(@times,Bottom_region,(1:nb_samples)');

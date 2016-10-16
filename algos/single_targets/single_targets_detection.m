@@ -38,6 +38,7 @@ addParameter(p,'DataType','CW',check_data_type);
 parse(p,trans_obj,varargin{:});
 max_TS=-10;
 
+trans_obj.rm_tracks();
 %Initialize usefule variables
 
 switch p.Results.DataType

@@ -134,7 +134,6 @@ for uui=1:length(layer.Frequencies)
     display_tracks(main_figure);
     display_file_lines(main_figure);
     display_regions(main_figure,'both');
-    display_lines(main_figure);
     display_survdata_lines(main_figure);
     set_alpha_map(main_figure);
     order_axes(main_figure);

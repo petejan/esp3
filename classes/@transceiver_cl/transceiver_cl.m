@@ -174,6 +174,11 @@ classdef transceiver_cl < handle
             obj.Regions=[];
         end
         
+        function rm_tracks(obj)
+           trans_tmp=transceiver_cl();
+            obj.Tracks=trans_tmp.Tracks; 
+        end
+        
         function rm_region_name(obj,name)
             reg_curr=obj.Regions;
             reg_new=[];
