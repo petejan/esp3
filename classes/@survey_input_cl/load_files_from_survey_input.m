@@ -18,6 +18,12 @@ options=surv_input_obj.Options;
 regions_wc=surv_input_obj.Regions_WC;
 algos=surv_input_obj.Algos;
 
+if ~isempty(p.Results.gui_main_handle)
+    load_bar_comp=getappdata(p.Results.gui_main_handle,'Loading_bar');
+    
+else
+    load_bar_comp=[];
+end
 
 snapshots=surv_input_obj.Snapshots;
 cal_opt=surv_input_obj.Cal;
@@ -89,7 +95,7 @@ for isn=1:length(snapshots)
                                 %                                 profile on;
                                 
                                 new_lay=open_raw_file_standalone_v2(fileN,...
-                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames,'EsOffset',es_offset);
+                                    'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'FieldNames',p.Results.FieldNames,'EsOffset',es_offset,'load_bar_comp',load_bar_comp);
                                 
                                 %                                 profile off;
                                 %                                 profile viewer
@@ -286,7 +292,7 @@ for isn=1:length(snapshots)
                             [idx_freq_al,found_freq_al]=layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al));
                             if found_freq_al>0
                                 layer_new.Transceivers(idx_freq_al).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                                layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name);
+                                layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
                             else
                                 fprintf('Could not find Frequency %.0fkHz. Algo %s not applied on it\n',algos{ial}.Varargin.Frequencies(i_freq_al)/1e3,algos{ial}.Name);
                             end
@@ -331,7 +337,7 @@ for isn=1:length(snapshots)
                         catch err
                             disp(err.message);
                         end
-
+                        
                     end
                 end
             end

@@ -5,6 +5,7 @@ p = inputParser;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'algo_name',@(x) nansum(strcmpi(x,names))>0);
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,algo_name,varargin{:});
 
@@ -26,6 +27,7 @@ for i=1:length(fields_algo_in)
         str_eval=[str_eval sprintf('''%s'',%f,',fields_algo_in{i},algo_obj.Varargin.(fields_algo_in{i}))];
     end
 end
+
 str_eval(end)=[];
 
 str_output=[];
@@ -36,8 +38,18 @@ for i=1:length(fields_algo_out)
 end
 str_output(end)=[];
 
-fprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3);
-eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,' str_eval ');']);
+if ~isempty(p.Results.load_bar_comp)
+    p.Results.load_bar_comp.status_bar.setText(sprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3));
+else
+    fprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3);
+end
+
+eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',str_eval ');']);
+
+if ~isempty(p.Results.load_bar_comp)
+    p.Results.load_bar_comp.status_bar.setText('');
+    set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',100, 'Value',0);
+end
 
 for i=1:length(fields_algo_out)
     output_struct.(fields_algo_out{i})=eval(fields_algo_out{i});
@@ -50,8 +62,7 @@ switch algo_name
             'Sample_idx',bottom,...
             'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
     case'BottomDetectionV2'
-        old_tag=trans_obj.Bottom.Tag;
-        
+        old_tag=trans_obj.Bottom.Tag; 
         trans_obj.setBottom(bottom_cl('Origin','Algo_v4',...
             'Sample_idx',bottom,...
             'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
@@ -78,7 +89,6 @@ switch algo_name
         trans_obj.Tracks=tracks_out;
 end
 
-fprintf('Done\n\n');
 
 end
 

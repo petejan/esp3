@@ -391,11 +391,11 @@ output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
 fields=fieldnames(output);
-idx_zeros_lat=nansum(output.Lon_S,1)==0;
+% idx_zeros_lon=nansum(output.Lon_S,1)==0;
 
-for ifi=1:length(fields)
-    output.(fields{ifi})(:,idx_zeros_lat)=[];
-end
+% for ifi=1:length(fields)
+%     output.(fields{ifi})(:,idx_zeros_lon)=[];
+% end
 
 
 idx_zeros=find(nansum(output.Sv_mean_lin,2)==0);

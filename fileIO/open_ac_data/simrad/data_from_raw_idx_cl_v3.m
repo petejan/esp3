@@ -148,13 +148,14 @@ if ~isempty(load_bar_comp)
     load_bar_comp.status_bar.setText(sprintf('Opening File %s',filename));
 end
 
-for idg=1:length(idx_raw_obj.type_dg)
+nb_dg=length(idx_raw_obj.type_dg);
+for idg=1:nb_dg
     pos=ftell(fid);
-    
-    if ~isempty(load_bar_comp)
-        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_raw_obj.type_dg), 'Value',idg);
+    if mod(idg,floor(nb_dg/100))==1
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
+        end
     end
-    
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'
             %disp(dgType);

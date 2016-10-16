@@ -51,6 +51,7 @@ addParameter(p,'WeightPingGap',defaultWeightPingGap,checkWeigt);
 addParameter(p,'Min_ST_Track',default_min_ST_Track,check_min_ST_track);
 addParameter(p,'Min_Pings_Track',default_Min_Pings_Track,check_accept);
 addParameter(p,'Max_Gap_Track',default_Max_Gap_Track,check_accept);
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
 

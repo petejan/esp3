@@ -77,8 +77,8 @@ layer=getappdata(main_figure,'Layer');
 %school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-
-layer.Transceivers(idx_freq).apply_algo('SchoolDetection');
+load_bar_comp=getappdata(main_figure,'Loading_bar');
+layer.Transceivers(idx_freq).apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,[]);
 display_regions(main_figure,'both');

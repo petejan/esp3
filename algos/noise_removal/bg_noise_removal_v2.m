@@ -18,6 +18,7 @@ addParameter(p,'VertFilt',defaultVertFilt,checkVertFilt);
 addParameter(p,'HorzFilt',defaultHorzFilt,checkHorzFilt);
 addParameter(p,'NoiseThr',defaultNoiseThr,checkNoiseThr);
 addParameter(p,'SNRThr',defaultSNRThr,checkSNRThr);
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
 

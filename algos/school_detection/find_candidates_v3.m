@@ -1,6 +1,6 @@
 
 
-function candidates=find_candidates_v3(Mask,range,dist_pings,l_min_can,h_min_can,min_nb_sples,output)
+function candidates=find_candidates_v3(Mask,range,dist_pings,l_min_can,h_min_can,min_nb_sples,output,load_bar_comp)
 
 
 [nb_row,~]=size(Mask);
@@ -15,8 +15,18 @@ switch output
         candidates=cell(1,num_can);
 end
 
+if ~isempty(load_bar_comp)
+    load_bar_comp.status_bar.setText('Finding Candidates');
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_can, 'Value',0);
+end
 region_number=1;
+
 for i=1:num_can
+    if mod(i,floor(num_can/100))==1
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_can, 'Value',i);
+        end
+    end
     curr_candidate=candidates_idx{i};
     if length(curr_candidate)>min_nb_sples
         row_idx=rem(curr_candidate,nb_row);
@@ -34,7 +44,7 @@ for i=1:num_can
                     candidates{i}=curr_candidate;
             end
             if mod(num_can,i)==10
-
+                
             end
         end
     end

@@ -207,5 +207,5 @@ for ireg=1:length(regions)
 end
 regions(cellfun(@(x) strcmp(x,''),{regions(:).Name}))=[];
 regions_out=regions;
-disp('Done');
+
 end

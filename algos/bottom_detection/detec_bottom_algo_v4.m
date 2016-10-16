@@ -30,6 +30,7 @@ addParameter(p,'thr_echo',-35,check_thr_bottom);
 addParameter(p,'thr_cum',0.01,check_thr_cum);
 addParameter(p,'shift_bot',0,check_shift_bot);
 addParameter(p,'rm_rd',0);
+addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
 if p.Results.denoised>0
@@ -55,6 +56,11 @@ thr_echo=p.Results.thr_echo;
 thr_cum=p.Results.thr_cum;
 
 [nb_samples,nb_pings]=size(Sp);
+
+load_bar_comp=p.Results.load_bar_comp;
+if ~isempty(p.Results.load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
+end
 
 Np=round(PulseLength*Fs);
 if r_max==Inf
@@ -101,9 +107,9 @@ Bottom_region_temp(:,idx_empty)=[];
 % CC = bwconncomp(Bottom_region_temp==1);
 % size_groups=(cellfun(@length,CC.PixelIdxList));
 % [~,idx_big]=sort(size_groups,'descend');
-% 
+%
 % Bottom_region_temp_2=zeros(size(Bottom_region_temp));
-% 
+%
 % ig=1;
 % % figure();
 % % a=axes();
@@ -150,6 +156,12 @@ Bottom=nanmax(bottom_temp,Bottom);
 backstep=nanmax([1 Np]);
 
 for i=1:nb_pings
+    
+    if mod(i,floor(nb_pings/100))==1  
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar,'Value',i);
+        end
+    end
     BS_ping=BS_ori(:,i);
     if Bottom(i)>2*backstep
         Bottom(i)=Bottom(i)-backstep;
@@ -158,7 +170,7 @@ for i=1:nb_pings
         else
             continue;
         end
-
+        
         while bs_val>=BS_ping(Bottom(i))+thr_backstep &&bs_val>-999
             if Bottom(i)-(backstep-idx_max_tmp+1)>0
                 Bottom(i)=Bottom(i)-(backstep-idx_max_tmp+1);

@@ -72,13 +72,13 @@ if ~isempty(load_bar_comp)
     set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_dg), 'Value',0);
     load_bar_comp.status_bar.setText(sprintf('Indexing File %s',filename));
 end
-
+nb_dg=length(idx_dg);
 for i=1:length(idx_dg)
-    
+    if mod(i,floor(nb_dg/100))==1
     if ~isempty(load_bar_comp)
-        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_dg), 'Value',i);
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',i);
     end
-    
+    end
     curr_pos=ftell(fid);
     fread(fid,idx_dg(i)-5-curr_pos);
     %fseek(fid,idx_dg(i)-5,-1);

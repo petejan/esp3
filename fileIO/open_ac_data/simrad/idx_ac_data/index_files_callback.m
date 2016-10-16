@@ -50,7 +50,7 @@ for i=1:length(Filename)
         load(fileIdx);
         [~,et]=start_end_time_from_file(fileN);
         dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
-        if idx_raw_obj.time_dg(dgs(end))-et>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
+        if et-idx_raw_obj.time_dg(dgs(end))>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
             fprintf('Re-Indexing file: %s\n',Filename{i});
             delete(fileIdx);
             load_bar_comp=getappdata(main_figure,'Loading_bar');

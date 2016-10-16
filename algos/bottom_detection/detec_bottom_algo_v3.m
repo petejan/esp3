@@ -28,6 +28,7 @@ addParameter(p,'vert_filt',10,check_filt);
 addParameter(p,'horz_filt',50,check_filt);
 addParameter(p,'shift_bot',0,check_shift_bot);
 addParameter(p,'rm_rd',0);
+addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
 if p.Results.denoised>0
@@ -53,6 +54,12 @@ thr_echo=-35;
 thr_cum=0.01;
 
 [nb_samples,nb_pings]=size(Sp);
+
+load_bar_comp=p.Results.load_bar_comp;
+if ~isempty(p.Results.load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
+end
+
 
 Np=round(PulseLength*Fs);
 if r_max==Inf
@@ -170,6 +177,11 @@ Bottom=nanmax(Bottom_temp,Bottom_temp_2);
 backstep=nanmax([1 Np]);
 
 for i=1:nb_pings
+    if mod(i,floor(nb_pings/100))==1  
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar,'Value',i);
+        end
+    end
     BS_ping=BS_ori(:,i);
     if Bottom(i)>2*backstep
         Bottom(i)=Bottom(i)-backstep;

@@ -1,4 +1,4 @@
-function linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot)
+function linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot,load_bar_comp)
 
 if nansum(candidates(:))==0
     linked_candidates=candidates;
@@ -27,10 +27,20 @@ candidates(mask)=0;
 linking_mat=nan(nb_candidates,nb_candidates);
 
 u=0;
+if ~isempty(load_bar_comp)
+    load_bar_comp.status_bar.setText('Linking Candidates');
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(vec_candidates(1:end)), 'Value',0);
+end
+
 while u<length(vec_candidates(1:end-1))
     u=u+1;
     nb_candidates=length(vec_candidates(1:end));
     i=vec_candidates(u);
+    
+    if ~isempty(load_bar_comp)
+        load_bar_comp.status_bar.setText('Linking Candidates');
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(vec_candidates(1:end)), 'Value',u);
+    end
     
     curr_candidates=(candidates==i);
     

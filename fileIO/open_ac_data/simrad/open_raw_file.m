@@ -15,14 +15,13 @@ if ~isempty(layers)
     end
 end
 
-% profile on;
+
  load_bar_comp=getappdata(main_figure,'Loading_bar');
- %show_status_bar(main_figure);
+
  new_layers=open_raw_file_standalone_v2(Filename,...
      'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'LoadEKbot',1,'load_bar_comp',load_bar_comp);
  
- % profile off;
-% profile viewer;
+
 
 if ~isempty(new_layers)
     for i=1:length(new_layers)
@@ -45,7 +44,7 @@ layers_out=[];
 for icell=1:length(new_layers_sorted)
     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
 end
-load_bar_comp.status_bar.setText('');
+reinit_loading_bar(main_figure);
 layers=layers_out;
 
 layers=reorder_layers_time(layers);

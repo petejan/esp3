@@ -99,7 +99,8 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-layer.Transceivers(idx_freq).apply_algo('TrackTarget');
+load_bar_comp=getappdata(main_figure,'Loading_bar');
+layer.Transceivers(idx_freq).apply_algo('TrackTarget','load_bar_comp',load_bar_comp);
 setappdata(main_figure,'Layer',layer);
 display_tracks(main_figure);
 

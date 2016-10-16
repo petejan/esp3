@@ -33,6 +33,7 @@ addParameter(p,'MaxBeamComp',defaultMaxBeamComp,checkBeamComp);
 addParameter(p,'MaxStdMinAxisAngle',defaultMaxStdMinAxisAngle,checkMaxStdMinAxisAngle);
 addParameter(p,'MaxStdMajAxisAngle',defaultMaxStdMajAxisAngle,checkMaxStdMajAxisAngle);
 addParameter(p,'DataType','CW',check_data_type);
+addParameter(p,'load_bar_comp',[]);
 
 
 parse(p,trans_obj,varargin{:});
@@ -45,7 +46,7 @@ switch p.Results.DataType
     case 'CW'
         TS=trans_obj.Data.get_datamat(p.Results.Type);
         if isempty(TS)
-             TS=trans_obj.Data.get_datamat('sp');
+            TS=trans_obj.Data.get_datamat('sp');
         end
         if isempty(TS)
             disp('Can''t find single targets with no Sp datagram...');
@@ -56,15 +57,15 @@ switch p.Results.DataType
         TSun=trans_obj.Data.get_datamat('spunmatched');
         TS=trans_obj.Data.get_datamat('sp');
 end
-    
+
 
 mask=zeros(size(TS));
 
 idx_bad_data=trans_obj.list_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
-   curr_reg=trans_obj.Regions(idx_bad_data(jj));
-   mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
+    curr_reg=trans_obj.Regions(idx_bad_data(jj));
+    mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
 end
 
 TS(mask>=1)=-999;
@@ -91,9 +92,9 @@ Idx_samples_lin(idx_r_max:end,:)=[];
 along=trans_obj.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AlongAngle');
 athwart=trans_obj.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AcrossAngle');
 if isempty(along)||isempty(along)
-   disp('Cannot compute single targets.... No angles');
-   single_targets=[];
-   return;
+    disp('Cannot compute single targets.... No angles');
+    single_targets=[];
+    return;
 end
 
 Range=repmat(trans_obj.Data.get_range(1:nb_samples),1,nb_pings);
@@ -108,8 +109,8 @@ switch p.Results.DataType
     case 'CW'
         simu_pulse=ones(1,Np);
     case 'FM'
-       TSun(idx_r_max:end,:)=[];
-        [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));   
+        TSun(idx_r_max:end,:)=[];
+        [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
         Np=4;
 end
 
@@ -160,7 +161,7 @@ switch p.Results.DataType
         diff_idx_peaks=[zeros(1,nb_pings);diff(idx_peaks)];
         idx_peaks=(diff_idx_peaks==1);
         
-    case 'FM'        
+    case 'FM'
         corr=correlogramm_v2(10.^(TSun/10),abs(simu_pulse));
         idx_peaks=corr>0.6;
 end
@@ -184,7 +185,7 @@ max_pulse_length=nanmax(Pulse_length_max_sample(:));
 
 for j=1:max_pulse_length
     idx_sup_before=idx_sup_before.*(pulse_level<=peak_mat(nanmax(i_peaks_lin-j,1)+(j_peaks_lin-1)*nb_samples));
-
+    
     idx_sup_after=idx_sup_after.*(pulse_level<=peak_mat(nanmin(i_peaks_lin+j,nb_samples)+(j_peaks_lin-1)*nb_samples));
     pulse_env_before_lin=pulse_env_before_lin+idx_sup_before;
     pulse_env_after_lin=pulse_env_after_lin+idx_sup_after;
@@ -213,12 +214,17 @@ samples_targets_athwart=nan(max_pulse_length,nb_targets);
 target_ping_number=nan(1,nb_targets);
 target_time=nan(1,nb_targets);
 
-
-h = waitbar(0,sprintf('Target %i/%i',2,nb_targets),'Name','Single Targets detection : step 1');
+load_bar_comp=p.Results.load_bar_comp;
+if ~isempty(p.Results.load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_targets, 'Value',0);
+    load_bar_comp.status_bar.setText('Target Detection Step 1');
+end
 
 for i=1:nb_targets
     if mod(i,floor(nb_targets/10))==0
-        waitbar(i/nb_targets,h,sprintf('Target %i/%i',i,nb_targets));
+        if ~isempty(p.Results.load_bar_comp)
+            set(load_bar_comp.progress_bar,'Value',i);
+        end
     end
     idx_pulse=idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i);
     samples_targets_power(1:pulse_length_lin(i),i)=Power(idx_pulse);
@@ -230,7 +236,7 @@ for i=1:nb_targets
     target_ping_number(i)=Ping(idx_target_lin(i));
     target_time(i)=Ping(idx_target_lin(i));
 end
-close(h);
+
 [target_peak_power,idx_peak_power]=nanmax(samples_targets_power);
 target_comp=samples_targets_comp(idx_peak_power+(0:nb_targets-1)*max_pulse_length);
 samples_targets_idx_r=nanmin(samples_targets_sample)+idx_peak_power-1;
@@ -291,10 +297,16 @@ pulse_env_after_lin=pulse_env_after_lin(idx_keep);
 %let's remove overlapping targets just in case...
 idx_target=zeros(nb_samples,nb_pings);
 
-h = waitbar(0,sprintf('Target %i/%i',1,nb_valid_targets),'Name','Single Targets detection : step 2');
+if ~isempty(p.Results.load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_valid_targets, 'Value',0);
+    load_bar_comp.status_bar.setText('Target Detection Step 2');
+end
+
 for i=1:nb_valid_targets
     if mod(i,floor(nb_valid_targets/10))==0
-        waitbar(i/nb_valid_targets,h,sprintf('Target %i/%i',i,nb_valid_targets));
+        if ~isempty(p.Results.load_bar_comp)
+            set(load_bar_comp.progress_bar,'Value',i);
+        end
     end
     idx_same_ping=find(target_ping_number==target_ping_number(i));
     same_target=find((target_range_max(idx_same_ping)==target_range_max(i)&(target_range_min(i)==target_range_min(idx_same_ping))));
@@ -318,7 +330,7 @@ for i=1:nb_valid_targets
         target_range_min(idx_same_ping(idx_overlap))=nan;
     end
 end
-close(h);
+
 
 %removing all non-valid_targets again an storing results in single target
 %structure...

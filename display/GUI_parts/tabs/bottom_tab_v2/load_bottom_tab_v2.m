@@ -71,7 +71,8 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-layer.Transceivers(idx_freq).apply_algo('BottomDetectionV2');
+load_bar_comp=getappdata(main_figure,'Loading_bar');
+layer.Transceivers(idx_freq).apply_algo('BottomDetectionV2','load_bar_comp',load_bar_comp);
 
 setappdata(main_figure,'Layer',layer);
 set_alpha_map(main_figure);

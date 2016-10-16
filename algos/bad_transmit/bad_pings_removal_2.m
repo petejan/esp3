@@ -41,6 +41,7 @@ addParameter(p,'Above',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Below',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'shift_bot',0,check_shift_bot);
 addParameter(p,'botDetecVer','V2',@ischar);
+addParameter(p,'load_bar_comp',[]);
 
 
 parse(p,trans_obj,varargin{:});

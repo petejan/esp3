@@ -13,8 +13,7 @@ load_bar_comp.status_bar = com.mathworks.mwswing.MJStatusBar;
 
 % Add a progress-bar to left side of standard MJStatusBar container
 load_bar_comp.progress_bar = javax.swing.JProgressBar;
-set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',100, 'Value',100);
-set(load_bar_comp.progress_bar, 'StringPainted',1, 'Value',100);
+set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',100, 'Value',0, 'StringPainted',1);
 load_bar_comp.status_bar.add(load_bar_comp.progress_bar,'West'); 
 
 jRootPane.setStatusBar(load_bar_comp.status_bar);

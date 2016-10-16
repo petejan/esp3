@@ -44,7 +44,7 @@ addParameter(p,'horz_link_max',default_horz_link_max,check_horz_link_max);
 addParameter(p,'vert_link_max',default_vert_link_max,check_vert_link_max);
 addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
 addParameter(p,'depth_max',15000,@isnumeric);
-
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
 
@@ -104,11 +104,9 @@ Sv_mask=floor(filter2(ones(h_filter,1),double(Sv_mask>0),'same')./filter2(ones(h
 Sv_mask=ceil(filter2(ones(h_filter,1),Sv_mask,'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
 
 
-candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'mat');
-linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
-  
-%linked_candidates=link_candidates_v3(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot);
-% % %link candidate_v3 still does not work as I want... Too slow...
+candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'mat',p.Results.load_bar_comp);
+linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot,p.Results.load_bar_comp);
+
 
 
 

@@ -1,5 +1,5 @@
 function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(trans_obj,varargin)
-disp('Detecting Bottom.');
+
 %profile on;
 %Parse Arguments
 p = inputParser;
@@ -24,6 +24,9 @@ addParameter(p,'r_max',default_idx_r_max,@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',default_thr_echo,check_thr_echo);
 addParameter(p,'shift_bot',0,check_shift_bot);
+addParameter(p,'load_bar_comp',[]);
+
+
 parse(p,trans_obj,varargin{:});
 
 if p.Results.denoised>0
@@ -35,6 +38,7 @@ else
     Sv=trans_obj.Data.get_datamat('sv');
 end
 
+
 Range= trans_obj.Data.get_range();
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
@@ -45,6 +49,11 @@ r_min=nanmax(p.Results.r_min,2);
 r_max=p.Results.r_max;
 
 [nb_samples,nb_pings]=size(Sv);
+
+load_bar_comp=p.Results.load_bar_comp;
+if ~isempty(p.Results.load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
+end
 
 Np=round(PulseLength*Fs);
 [~,idx_r_max]=nanmin(abs(r_max-Range));

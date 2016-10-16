@@ -127,7 +127,7 @@ if ~isequal(Filename_cell, 0)
             load(fileIdx);
             [~,et]=start_end_time_from_file(Filename);
             dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
-            if idx_raw_obj.time_dg(dgs(end))-et>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
+            if et-idx_raw_obj.time_dg(dgs(end))>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
                 fprintf('Re-Indexing file: %s\n',Filename);
                 delete(fileIdx);
                 idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
