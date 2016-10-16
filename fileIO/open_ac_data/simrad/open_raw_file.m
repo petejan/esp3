@@ -1,7 +1,7 @@
 
-function  open_raw_file(hObject,Filename,vec_freq,ping_start,ping_end)
-layers=getappdata(hObject,'Layers');
-app_path=getappdata(hObject,'App_path');
+function  open_raw_file(main_figure,Filename,vec_freq,ping_start,ping_end)
+layers=getappdata(main_figure,'Layers');
+app_path=getappdata(main_figure,'App_path');
 
 sple_start=1;
 sple_end=inf;
@@ -16,9 +16,12 @@ if ~isempty(layers)
 end
 
 % profile on;
-new_layers=open_raw_file_standalone_v2(Filename,...
-    'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'LoadEKbot',1);
-% profile off;
+ load_bar_comp=getappdata(main_figure,'Loading_bar');
+ %show_status_bar(main_figure);
+ new_layers=open_raw_file_standalone_v2(Filename,...
+     'PathToMemmap',app_path.data_temp,'Frequencies',vec_freq,'PingRange',[ping_start ping_end],'SampleRange',[sple_start sple_end],'LoadEKbot',1,'load_bar_comp',load_bar_comp);
+ 
+ % profile off;
 % profile viewer;
 
 if ~isempty(new_layers)
@@ -33,13 +36,16 @@ end
 new_layers=[layers new_layers];
 new_layers_sorted=new_layers.sort_per_survey_data();
 id_lay=new_layers(end).ID_num;
-disp('Shuffling layers');
+
+load_bar_comp.status_bar.setText('Shuffling layers');
+%hide_status_bar(main_figure);
+
 layers_out=[];
 
 for icell=1:length(new_layers_sorted)
     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
 end
-
+load_bar_comp.status_bar.setText('');
 layers=layers_out;
 
 layers=reorder_layers_time(layers);
@@ -50,7 +56,7 @@ layer=layers(idx);
 % profile off
 % profile viewer;
 
-setappdata(hObject,'Layer',layer);
-setappdata(hObject,'Layers',layers);
+setappdata(main_figure,'Layer',layer);
+setappdata(main_figure,'Layers',layers);
 
 end

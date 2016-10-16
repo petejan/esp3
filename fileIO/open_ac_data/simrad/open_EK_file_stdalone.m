@@ -19,7 +19,7 @@ addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'GPSOnly',0);
 addParameter(p,'LoadEKbot',0);
-
+addParameter(p,'load_bar_comp',[]);
 parse(p,Filename_cell,varargin{:});
 
 cal=p.Results.Calibration;
@@ -120,7 +120,7 @@ if ~isequal(Filename_cell, 0)
         fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
             fprintf('Indexing file: %s\n',Filename);
-            idx_raw_obj=idx_from_raw(Filename);
+            idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
             save(fileIdx,'idx_raw_obj');
             disp('Done');
         else
@@ -130,13 +130,13 @@ if ~isequal(Filename_cell, 0)
             if idx_raw_obj.time_dg(dgs(end))-et>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
                 fprintf('Re-Indexing file: %s\n',Filename);
                 delete(fileIdx);
-                idx_raw_obj=idx_from_raw(Filename);
+                idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
                 save(fileIdx,'idx_raw_obj');
                 disp('Done')
             end
         end
 
-        [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap);
+        [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp);
 
         
         if ~isa(trans_obj,'transceiver_cl')

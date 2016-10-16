@@ -9,6 +9,7 @@ addParameter(p,'Frequencies',[],@isnumeric);
 addParameter(p,'GPSOnly',0,@isnumeric);
 addParameter(p,'PathToMemmap',path_f,@ischar);
 addParameter(p,'FieldNames',{});
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,path_f,idx_raw_obj,varargin{:});
 results=p.Results;
@@ -20,6 +21,10 @@ Frequencies=results.Frequencies;
 filename=fullfile(path_f,idx_raw_obj.filename);
 
 ftype=get_ftype(filename);
+
+load_bar_comp=results.load_bar_comp;
+
+
 
 switch ftype
     case 'EK80'
@@ -138,8 +143,17 @@ mru0_att=attitude_nav_cl('Time',idx_raw_obj.time_dg(idx_mru0)');
 
 fid=fopen(filename,'r');
 
+if ~isempty(load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_raw_obj.type_dg), 'Value',0);
+    load_bar_comp.status_bar.setText(sprintf('Opening File %s',filename));
+end
+
 for idg=1:length(idx_raw_obj.type_dg)
     pos=ftell(fid);
+    
+    if ~isempty(load_bar_comp)
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_raw_obj.type_dg), 'Value',idg);
+    end
     
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'

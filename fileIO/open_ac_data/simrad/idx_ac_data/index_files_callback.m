@@ -29,14 +29,9 @@ end
 idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
 Filename=Filename(idx_keep);
 
-indexing_file=waitbar(1/length(Filename),sprintf('Indexing file: %s',Filename{1}),'Name','Indexing files', 'WindowStyle', 'modal');
 
 for i=1:length(Filename) 
-    try
-        waitbar(i/length(Filename),indexing_file,sprintf('Indexing file: %s',Filename{i}), 'WindowStyle', 'modal');
-    catch
-        indexing_file=waitbar(i/length(Filename),sprintf('Indexing file: %s',Filename{i}),'Name','Indexing files', 'WindowStyle', 'modal');
-    end
+
     
     fileN=fullfile(PathToFile,Filename{i});
     
@@ -45,18 +40,21 @@ for i=1:length(Filename)
     end
     fileIdx=fullfile(PathToFile,'echoanalysisfiles',[Filename{i}(1:end-4) '_echoidx.mat']);
     
+    
     if exist(fileIdx,'file')==0
         fprintf('Indexing file: %s\n',Filename{i});
-        idx_raw_obj=idx_from_raw(fileN);
+        load_bar_comp=getappdata(main_figure,'Loading_bar');
+        idx_raw_obj=idx_from_raw(fileN,load_bar_comp);
         save(fileIdx,'idx_raw_obj');
     else
         load(fileIdx);
         [~,et]=start_end_time_from_file(fileN);
-        idx_raw_dg=(strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg);
-        if abs(et-idx_raw_obj.time_dg(end))>2*nanmean(diff(idx_raw_obj.time_dg(idx_raw_dg)))
+        dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
+        if idx_raw_obj.time_dg(dgs(end))-et>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
             fprintf('Re-Indexing file: %s\n',Filename{i});
             delete(fileIdx);
-            idx_raw_obj=idx_from_raw(fileN);
+            load_bar_comp=getappdata(main_figure,'Loading_bar');
+            idx_raw_obj=idx_from_raw(fileN,load_bar_comp);;
             save(fileIdx,'idx_raw_obj');
         end
     end
@@ -69,7 +67,5 @@ for i=1:length(Filename)
 
 end
 
-if exist('indexing_file','var')
-    close(indexing_file);
-end
+
 

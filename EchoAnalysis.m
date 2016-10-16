@@ -124,7 +124,7 @@ catch err
     disp(err.message);
 end
 
-create_menu(main_figure);
+
 if ~isempty(p.Results.Filenames)
     open_file([],[],p.Results.Filenames,main_figure);
 end

@@ -1,4 +1,4 @@
-function raw_idx_obj=idx_from_raw(filename)
+function raw_idx_obj=idx_from_raw(filename,varargin)
 raw_idx_obj=raw_idx_cl();
 raw_idx_obj.raw_type= get_ftype(filename);
 fid=fopen(filename);
@@ -61,7 +61,24 @@ dgTime_ori = datenum(1601, 1, 1, 0, 0, 0);
 
 frewind(fid);
 
+if length(varargin)>=1
+    load_bar_comp=varargin{1};
+    
+else
+    load_bar_comp=[];
+end
+
+if ~isempty(load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_dg), 'Value',0);
+    load_bar_comp.status_bar.setText(sprintf('Indexing File %s',filename));
+end
+
 for i=1:length(idx_dg)
+    
+    if ~isempty(load_bar_comp)
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_dg), 'Value',i);
+    end
+    
     curr_pos=ftell(fid);
     fread(fid,idx_dg(i)-5-curr_pos);
     %fseek(fid,idx_dg(i)-5,-1);
