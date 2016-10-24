@@ -42,8 +42,6 @@ if ~isempty(survey_data_struct_lay)
             end
         end
     end
-else
-    survey_data_struct=[];
 end
 
 layers_obj.add_survey_data(survey_data_struct);

@@ -82,7 +82,7 @@ if idx_modif>0
     fprintf('Modifying Survey data for %s\n',surv_to_modif.print_survey_data());
     surv_temp=surv_to_modif;
 else
-    surv_temp=surv{1};
+    surv_temp= layer.get_survey_data('Idx',1);
     fprintf('Modifying Survey Data\n');
 end
 
@@ -117,4 +117,5 @@ setappdata(main_figure,'Layer',layer);
 load_cursor_tool(main_figure);
 display_survdata_lines(main_figure)
 update_mini_ax(main_figure,0);
+load_survey_data_fig(main_figure);
 end

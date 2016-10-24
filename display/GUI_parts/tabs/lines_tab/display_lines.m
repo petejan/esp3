@@ -33,8 +33,13 @@ end
 for i=1:length(list_line)
     active_line=layer.Lines(i);
     
-    dist_corr=curr_dist-active_line.Dist_diff; 
-    time_corr=resample_data_v2(curr_time,curr_dist,dist_corr);
+    if nansum(curr_dist)>0
+        dist_corr=curr_dist-active_line.Dist_diff; 
+        time_corr=resample_data_v2(curr_time,curr_dist,dist_corr);
+    else
+        time_corr=curr_time;
+    end
+    
     time_corr(isnan(time_corr))=curr_time(isnan(time_corr))+nanmean(time_corr(:)-curr_time(:));
     y_line=resample_data_v2(active_line.Range,active_line.Time,time_corr);
     

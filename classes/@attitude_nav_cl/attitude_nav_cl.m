@@ -48,11 +48,11 @@ classdef attitude_nav_cl
             else
                 nb_pings=length(p.Results.Time);
                 obj.Heading=nan(nb_pings,1);
-                obj.Roll=nan(nb_pings,1);
-                obj.Pitch=nan(nb_pings,1);
-                obj.Heave=nan(nb_pings,1);
+                obj.Roll=zeros(nb_pings,1);
+                obj.Pitch=zeros(nb_pings,1);
+                obj.Heave=zeros(nb_pings,1);
                 obj.Time=p.Results.Time;
-                obj.SOG=nan(nb_pings,1);
+                obj.SOG=zeros(nb_pings,1);
                 
             end
             

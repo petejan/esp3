@@ -34,7 +34,7 @@ classdef gps_data_cl
                 
                 obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
                 idx_nan=find(isnan(obj.Lat)+isnan(obj.Long)+isnan(obj.Time))>0;
-
+                
                 obj.Long(idx_nan)=nan;
                 obj.Lat(idx_nan)=nan;
                 obj.Time(idx_nan)=nan;
@@ -82,6 +82,20 @@ classdef gps_data_cl
                 'Long',Long_tot_s,...
                 'Time',Time_tot_s,...
                 'NMEA',gps_data_1.NMEA);
+        end
+    end
+    methods(Static)
+        
+        
+        
+        function obj=load_gps_from_file(fileN)
+            try
+                temp=csv2struct_perso(fileN);
+                obj=gps_data_cl('Lat',temp.Lat,'Long',temp.Long,'Time',cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS'),temp.Time));
+            catch
+                fprintf('Could not read gps file %s',fileN);
+                obj=gps_data_cl.empty();
+            end
         end
         
         

@@ -143,15 +143,23 @@ if ~isequal(Filename_cell, 0)
             disp('Could not read file.')
             continue;
         end
-
-        idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
-            cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
-            cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
+        [~,fname,~]=fileparts(idx_raw_obj.filename);
+        gps_file=fullfile(path_f,[fname '.gps']);
         
-        [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
+        if exist(gps_file,'file')==2
+            idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)')));
+            [~,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
+            gps_data=gps_data_cl.load_gps_from_file(gps_file);
+            
+        else
+            idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
+                cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
+                cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
+            [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
+            idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)'))),find(idx_NMEA_gps(idx_GPS,:)));
+            [gps_data,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
+        end
         
-        idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)'))),find(idx_NMEA_gps(idx_GPS,:)));
-        [gps_data,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
         
         if isempty(attitude_full)
             attitude_full=mru0_att;

@@ -19,7 +19,7 @@ load_school_detect_tab(main_figure,algo_panel);
 load_single_target_tab(main_figure,algo_panel);
 load_track_target_tab(main_figure,algo_panel);
 load_axis_panel(main_figure);
-load_info_panel(main_figure);
+
 
 
 
@@ -33,11 +33,10 @@ control_obj=findobj(main_figure,'Type','uicontrol','-not',{'Style','PushButton',
 set(control_obj,'BackgroundColor','White');
 
 set(main_figure,'Visible','on');
-
 drawnow;
 
 load_loading_bar(main_figure);
-
+load_info_panel(main_figure);
 
 end
 

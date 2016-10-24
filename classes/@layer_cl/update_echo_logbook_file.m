@@ -89,8 +89,7 @@ for ilay=1:length(pathtofile)
                     end_time=survdata_temp.EndTime;
                     
                     if isnan(end_time)||(end_time==1)||isnan(start_time)||(start_time==0)
-                        [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},list_raw{i}));
-                        
+                        [start_time,end_time]=start_end_time_from_file(fullfile(pathtofile{ilay},list_raw{i}));    
                     end
                     survdata_temp.Voyage=voy;
                     survdata_temp.SurveyName=surv_name;

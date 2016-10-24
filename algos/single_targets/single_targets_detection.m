@@ -364,6 +364,15 @@ roll=trans_obj.AttitudeNavPing.Roll;
 heave=trans_obj.AttitudeNavPing.Heave;
 dist=trans_obj.GPSDataPing.Dist';
 
+pitch(isnan(pitch))=0;
+
+roll(isnan(roll))=0;
+
+heave(isnan(heave))=0;
+
+dist(isnan(dist))= 0;
+
+
 if isempty(dist)
     dist=zeros(1,size(TS,2));
 end
