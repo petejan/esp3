@@ -139,7 +139,7 @@ if ~strcmp(field,'Tag')
                     switch lower(obj.PlotType)
                         case {'log10' 'db'}
                             ring_size=zeros(size(obj.(field){idx_snap(uui)}));
-                            ring_size(obj.(field){idx_snap(uui)}>0)=obj.Rmax*(log10(obj.(field){idx_snap(uui)}(obj.(field){idx_snap(uui)}>0)/obj.ValMax));
+                            ring_size(obj.(field){idx_snap(uui)}>0)=obj.Rmax*(log10(1+obj.(field){idx_snap(uui)}(obj.(field){idx_snap(uui)}>0)/obj.ValMax));
 
                             
                         case {'sqrt' 'square root'}
@@ -152,9 +152,7 @@ if ~strcmp(field,'Tag')
                     idx_rings=find(ring_size>0);
                     m_range_ring(obj.SliceLon{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
                     
-                    
-                    
-                    
+                
                     
                     if~isempty(main_figure)
                         create_context_menu_track(main_figure,hfig,u_plot_slice(idx_snap(uui)));

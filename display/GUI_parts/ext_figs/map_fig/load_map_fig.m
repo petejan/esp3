@@ -255,6 +255,8 @@ for i=1:length(box.lat_lays)
     end
 end
 
+m_ruler([0.1 0.3],0.1);
+
 setappdata(map_fig,'Box',box);
 create_box_impoints(map_fig,100);
 end
