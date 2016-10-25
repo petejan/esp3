@@ -15,7 +15,7 @@ if ~isempty(layers)
     end
 end
 
-
+show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 new_layers=open_raw_file_standalone_v2(Filename,...
@@ -44,7 +44,8 @@ for icell=1:length(new_layers_sorted)
     layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
 end
 
-reinit_loading_bar(main_figure);
+
+hide_status_bar(main_figure);
 layers=layers_out;
 
 layers=reorder_layers_time(layers);

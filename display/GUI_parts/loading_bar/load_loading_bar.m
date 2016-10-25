@@ -19,7 +19,7 @@ load_bar_comp.status_bar.add(load_bar_comp.progress_bar,'West');
 jRootPane.setStatusBar(load_bar_comp.status_bar);
 
 load_bar_comp.status_bar.setText('');
-jRootPane.setStatusBarVisible(1);
+jRootPane.setStatusBarVisible(0);
 load_bar_comp.status_bar.setVisible(1);
 setappdata(main_figure,'Loading_bar',load_bar_comp);
 

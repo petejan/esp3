@@ -134,11 +134,15 @@ VX_o{1}=zeros(1,nb_targets_pings(1));VY_o{1}=zeros(1,nb_targets_pings(1));VZ_o{1
 VX_p{1}=zeros(1,nb_targets_pings(1));VY_p{1}=zeros(1,nb_targets_pings(1));VZ_p{1}=zeros(1,nb_targets_pings(1));VR_p{1}=zeros(1,nb_targets_pings(1));
 VX_s{1}=zeros(1,nb_targets_pings(1));VY_s{1}=zeros(1,nb_targets_pings(1));VZ_s{1}=zeros(1,nb_targets_pings(1));VR_s{1}=zeros(1,nb_targets_pings(1));
 
-h = waitbar(0,sprintf('Ping %i/%i',2,nb_pings),'Name','Processing tracks: Step 1');
-
+load_bar_comp=p.Results.load_bar_comp;
+if ~isempty(p.Results.load_bar_comp)
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
+end
 for i=2:nb_pings
-    if mod(i,floor(nb_pings/10))==0
-        waitbar(i/nb_pings,h,sprintf('Ping %i/%i',i,nb_pings));
+    if mod(i,floor(nb_pings/100))==1  
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar,'Value',i);
+        end
     end
     current_ping=pings(i);
     idx_target{i}=find(ST.Ping_number==current_ping&idx_allocation==0);
@@ -330,7 +334,6 @@ for i=2:nb_pings
     
 end
 
-close(h);
 
 tracks_out.target_id={};
 tracks_out.target_ping_number={};

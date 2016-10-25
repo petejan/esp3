@@ -39,7 +39,7 @@ classdef layer_cl < handle
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
             addParameter(p,'OriginCrest','');
-            addParameter(p,'SurveyData',survey_data_cl(),@(obj) isa(obj,'survey_data_cl')|iscell(obj)|isempty(obj))
+            addParameter(p,'SurveyData',{survey_data_cl()},@(obj) isa(obj,'survey_data_cl')|iscell(obj)|isempty(obj))
             
             parse(p,varargin{:});
             results=p.Results;

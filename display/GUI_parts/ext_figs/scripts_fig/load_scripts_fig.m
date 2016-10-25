@@ -15,13 +15,13 @@ script_fig = new_echo_figure(main_figure,'Units','Pixels','Position',[100 100 80
     'Name',sprintf('Scripting (%s)',flag),...
     'MenuBar','none','Tag',sprintf('Scripting%s',flag));%No Matlab Menu)
 
-uicontrol(script_fig,'style','text','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
+uicontrol(script_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
 script_table.search_box=uicontrol(script_fig,'style','edit','units','normalized','position',[0.2 0.96 0.3 0.03],'HorizontalAlignment','left','Callback',{@search_callback,script_fig});
 
-uicontrol(script_fig,'style','text','units','normalized','position',[0.55 0.96 0.1 0.03],'String','Filter (or): ');
-script_table.title_box=uicontrol(script_fig,'style','checkbox','units','normalized','position',[0.65 0.96 0.1 0.03],'String','Titles','Value',1,'Callback',{@search_callback,script_fig});
-script_table.species_box=uicontrol(script_fig,'style','checkbox','units','normalized','position',[0.75 0.96 0.1 0.03],'String','Species','Value',1,'Callback',{@search_callback,script_fig});
-script_table.voyage_box=uicontrol(script_fig,'style','checkbox','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,script_fig});
+uicontrol(script_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.55 0.96 0.1 0.03],'String','Filter (or): ');
+script_table.title_box=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.65 0.96 0.1 0.03],'String','Titles','Value',1,'Callback',{@search_callback,script_fig});
+script_table.species_box=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.75 0.96 0.1 0.03],'String','Species','Value',1,'Callback',{@search_callback,script_fig});
+script_table.voyage_box=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,script_fig});
 
 
 % Create the uitable

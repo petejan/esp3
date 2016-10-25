@@ -50,11 +50,11 @@ layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-%profile on;
+show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo('Denoise','load_bar_comp',load_bar_comp);
-% profile off;
-% profile viewer;
+
+hide_status_bar(main_figure);
 
 curr_disp.setField('svdenoised');
 

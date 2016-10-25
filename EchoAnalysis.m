@@ -120,6 +120,7 @@ try
     jProx = jFrame.fHG2Client.getWindow;
     jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
     setappdata(main_figure,'javaWindow',jProx);
+    %jFrame.setMaximized(true);
 catch err
     disp(err.message);
 end

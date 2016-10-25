@@ -44,7 +44,7 @@ elseif mode ==1
     layer_to_proc=layers;
 end
 
-
+show_status_bar(main_figure);
 for ii=1:length(layer_to_proc)
     layer=layer_to_proc(ii);
     
@@ -117,6 +117,8 @@ for ii=1:length(layer_to_proc)
     end
     
 end
+
+hide_status_bar(main_figure);
 setappdata(main_figure,'Layers',layers);
 display_bottom(main_figure);
 display_regions(main_figure,'both');

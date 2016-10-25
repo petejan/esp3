@@ -54,16 +54,11 @@ surv_data_fig = new_echo_figure(main_figure,'Units','pixels','Position',[size_ma
     'Name','SurveyData','Tag','logbook',...
     'MenuBar','none');%No Matlab Menu)
 
-uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',surv_data_struct.Voyage{1},surv_data_struct.SurveyName{1}));
-uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
+uicontrol(surv_data_fig,'BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',surv_data_struct.Voyage{1},surv_data_struct.SurveyName{1}));
+uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
 
 
 surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.45 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
-%uicontrol(surv_data_fig,'style','text','units','normalized','position',[0.65 0.96 0.1 0.03],'String','Filter (or): ');
-%surv_data_table.strat_box=uicontrol(surv_data_fig,'style','checkbox','units','normalized','position',[0.7 0.96 0.1 0.03],'String','Stratum','Value',1,'Callback',{@search_callback,surv_data_fig});
-% surv_data_table.species_box=uicontrol(surv_data_fig,'style','checkbox','units','normalized','position',[0.75 0.96 0.1 0.03],'String','Species','Value',1,'Callback',{@search_callback,surv_data_fig});
-% surv_data_table.voyage_box=uicontrol(surv_data_fig,'style','checkbox','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,surv_data_fig});
-
 
 surv_data_table.save_button=uicontrol(surv_data_fig,'style','pushbutton','units','normalized','position',[0.75 0.95 0.2 0.04],'String','Save/Reload','Value',1,'Callback',{@save_logbook_callback,surv_data_fig,main_figure});
 

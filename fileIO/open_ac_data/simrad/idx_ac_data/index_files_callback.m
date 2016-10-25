@@ -30,6 +30,9 @@ idx_keep=~cellfun(@isempty,regexp(Filename(:),'(raw$|^d.*\d$)'));
 Filename=Filename(idx_keep);
 
 
+show_status_bar(main_figure);
+load_bar_comp=getappdata(main_figure,'Loading_bar');
+
 for i=1:length(Filename) 
 
     
@@ -43,7 +46,6 @@ for i=1:length(Filename)
     
     if exist(fileIdx,'file')==0
         fprintf('Indexing file: %s\n',Filename{i});
-        load_bar_comp=getappdata(main_figure,'Loading_bar');
         idx_raw_obj=idx_from_raw(fileN,load_bar_comp);
         save(fileIdx,'idx_raw_obj');
     else
@@ -53,8 +55,7 @@ for i=1:length(Filename)
         if et-idx_raw_obj.time_dg(dgs(end))>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
             fprintf('Re-Indexing file: %s\n',Filename{i});
             delete(fileIdx);
-            load_bar_comp=getappdata(main_figure,'Loading_bar');
-            idx_raw_obj=idx_from_raw(fileN,load_bar_comp);;
+            idx_raw_obj=idx_from_raw(fileN,load_bar_comp);
             save(fileIdx,'idx_raw_obj');
         end
     end
@@ -66,6 +67,7 @@ for i=1:length(Filename)
     save(fileIdx,'idx_raw_obj');
 
 end
+hide_status_bar(main_figure);
 
 
 

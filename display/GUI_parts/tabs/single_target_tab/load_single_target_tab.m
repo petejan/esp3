@@ -68,8 +68,12 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+
+show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo('SingleTarget','load_bar_comp',load_bar_comp);
+
+hide_status_bar(main_figure);
 
 curr_disp.setField('singletarget');
 curr_disp.Freq=curr_disp.Freq;
