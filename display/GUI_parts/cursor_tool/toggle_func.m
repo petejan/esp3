@@ -6,8 +6,6 @@ reset_disp_info(main_figure);
 ah=axes_panel_comp.main_axes;
 axes(ah);
 
-
-
 type=src.Tag;
 childs=findall(main_figure,'type','uitoggletool');
 for i=1:length(childs)
@@ -34,39 +32,23 @@ switch src.State
             case 'zout'
                 setptr(main_figure,'glassminus');
                 set(main_figure,'WindowButtonDownFcn',{@zoom_out_callback,main_figure});
-            case 'fd'
-                switch(curr_disp.Fieldname)
-                    case {'Sv','Sp'}
-                        set(main_figure,'WindowButtonDownFcn',{@freq_response,main_figure});
-                    otherwise
-                        set(main_figure,'WindowButtonDownFcn','');
-                end
-                
-            case 'ts_cal'
-                switch(curr_disp.Fieldname)
-                    case {'Sp','Sv'}
-                        set(main_figure,'WindowButtonDownFcn',{@TS_calibration_curves,main_figure});
-                    otherwise
-                        set(main_figure,'WindowButtonDownFcn','');
-                end
-            case 'eba_cal'
-                switch(curr_disp.Fieldname)
-                    case {'Sp','Sv'}
-                        set(main_figure,'WindowButtonDownFcn',{@beamwidth_calibration_curves,main_figure});
-                    otherwise
-                        set(main_figure,'WindowButtonDownFcn','');
-                end
             case 'bt'
                 set(main_figure,'Pointer','arrow');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)mark_bad_transmit(src,envdata,main_figure));
-            case 'pan'
-                set(main_figure,'WindowButtonDownFcn','');
+
             case 'ed_bot'
                 set(main_figure,'Pointer','arrow');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)edit_bottom(src,envdata,main_figure));
             case 'loc'
                 set(main_figure,'Pointer','arrow');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)disp_loc(src,envdata,main_figure));
+            case 'meas'
+                set(main_figure,'Pointer','cross');
+                set(main_figure,'WindowButtonDownFcn',@(src,envdata)measure_distance(src,envdata,main_figure));
+            otherwise 
+                set(main_figure,'Pointer','arrow');
+                set(main_figure,'WindowButtonDownFcn','');
+                 
         end
     case 'off'
         set(main_figure,'Pointer','arrow');

@@ -42,7 +42,7 @@ end
 [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
 switch src.SelectionType
     case {'normal','alt'}
-        hp=plot(ah,xinit,xinit,'color',line_col,'linewidth',1);
+        hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1);
         src.WindowButtonMotionFcn = @wbmcb;
         switch src.SelectionType
             case 'normal'

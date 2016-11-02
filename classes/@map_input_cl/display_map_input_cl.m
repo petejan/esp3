@@ -79,7 +79,7 @@ for usnap=1:length(snap)
     end
     
     
-    
+    obj.Depth_Contour=10000;
     if obj.Depth_Contour>0
         try
             [lat_c,lon_c,bathy]=get_etopo1(LatLim,LonLim);

@@ -356,8 +356,6 @@ linkaxes([ap1 ap2]);
 
 
 
-
-
 true_z_bottom(true_z_bottom<10)=nan;
 true_x_along = true_r_bottom.*sind(Pitch_r+trans.Config.Angles(1));
 true_y_across = sign(Roll_r+trans.Config.Angles(2)).*true_r_bottom.*cosd(Pitch_r+trans.Config.Angles(1));

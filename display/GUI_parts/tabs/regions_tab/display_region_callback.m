@@ -21,11 +21,7 @@ if isempty(reg_curr)
     end
 end
 
-
-new_fig=reg_curr.display_region(trans_obj);
-
-hfigs=[hfigs new_fig];
-setappdata(main_figure,'ExternalFigures',hfigs);
+new_echo_figure(main_figure,'fig_handle',reg_curr.display_region(trans_obj),'Tag',reg_curr.print());
 
 
 end

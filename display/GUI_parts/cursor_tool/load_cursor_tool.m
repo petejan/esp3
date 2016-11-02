@@ -31,9 +31,8 @@ else
     cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom -','Tag','zout');
     cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.bad_trans ,'TooltipString','Bad Transmit','Tag','bt');
     cursor_mode_tool_comp.edit_bottom=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.edit_bot ,'TooltipString','Edit Bottom','Tag','ed_bot');
+    cursor_mode_tool_comp.measure=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.ruler ,'TooltipString','Measure Distance','Tag','meas');
 
-    
-    
     childs=findall(main_figure,'type','uitoggletool');
     set(childs,...
         'ClickedCallback',{@set_curr_disp_mode,main_figure});
@@ -52,7 +51,7 @@ else
         set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
         set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0));
         set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx}])
-        jToolbar(1).add(cursor_mode_tool_comp.jCombo,5);
+        jToolbar(1).add(cursor_mode_tool_comp.jCombo,6);
         jToolbar(1).repaint;
         jToolbar(1).revalidate;
     end
@@ -101,6 +100,8 @@ if strcmp(src.State,'on')
             curr_disp.CursorMode='Zoom In';
         case 'ed_bot'
             curr_disp.CursorMode='Edit Bottom';
+        case 'meas'
+            curr_disp.CursorMode='Measure';
     end
 else
     curr_disp.CursorMode='Normal';
