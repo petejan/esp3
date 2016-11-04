@@ -127,7 +127,7 @@ dr=nanmean(diff(range));
 transmit_angles = (pi/2) - atan(sqrt(tand(Roll_r + trans.Config.Angles(2)) .^2 + tand(Pitch_r + trans.Config.Angles(1)) .^2));
 
 %BS = sp-10*log10(Range_mat) + 10*log10(cos(repmat(transmit_angles, nb_samples,1))) - eq_beam_angle;
-BS = sp - 10*log10(dr*2*Range_mat*sin(bw_mean).*sin(repmat(transmit_angles, nb_samples,1)))-10*log10(sqrt(2)/2);
+BS = sp - 10*log10(dr*2*Range_mat*sin(bw_mean).*sin(repmat(transmit_angles, nb_samples,1)))-10*log10(2);
 
 bs_bottom=nan(2*ext_len+1,nb_pings);
 extended_time=nan(2*ext_len+1,nb_pings);

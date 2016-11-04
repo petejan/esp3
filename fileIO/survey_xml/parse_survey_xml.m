@@ -22,10 +22,8 @@ for i=1:nb_child
            Infos=get_node_att(xml_struct.Children(i));
         case 'cal'
            nb_cal=nb_cal+1;
-           cal_temp=get_node_att(xml_struct.Children(i));
-           if ~isfield(cal_temp,'FREQ')
-               cal_temp.FREQ=Options.Frequency;
-           end
+           %cal_temp=get_cal_node(node,Options.Frequency,Options.EQA);
+           cal_temp=get_cal_node(xml_struct.Children(i),Options.Frequency,nan);
            Cal=[Cal cal_temp];
         case 'options'
            Options=get_node_att(xml_struct.Children(i));
@@ -56,7 +54,7 @@ for i=1:nb_child
             Regions_WC{nb_reg}=get_node_att(xml_struct.Children(i));
         case 'snapshot'
             nb_snap=nb_snap+1;
-            Snapshots{nb_snap}=get_snapshot(xml_struct.Children(i));      
+            Snapshots{nb_snap}=get_snapshot(xml_struct.Children(i),Options);      
         otherwise
             warning('Unidentified Child in XML');
     end
@@ -83,6 +81,18 @@ for j=1:nb_att
         end
     end
     
+end
+end
+
+function cal=get_cal_node(node,freq,eqa)
+cal=get_node_att(node);
+
+if ~isfield(cal,'FREQ')
+    cal.FREQ=freq;
+end
+
+if ~isfield(cal,'EQA')
+    cal.EQA=eqa;
 end
 end
 
@@ -126,7 +136,7 @@ for iu=1:length(trans_nodes)
     cals=get_childs(trans_nodes(iu),'cal');
     Cal=[];
     for ii=1:length(cals)
-        cal_temp=get_node_att(cals(ii));
+        cal_temp=get_cal_node(node,nan,nan);
         Cal=[Cal cal_temp];
     end
     trans_curr.Cal=Cal;
@@ -135,7 +145,7 @@ end
     
 end
 
-function snapshot_struct=get_snapshot(node)
+function snapshot_struct=get_snapshot(node,options)
 snapshot_struct.Number=get_att(node,'number');
 snapshot_struct.Folder=get_att(node,'folder');
 stratum=get_childs(node,'stratum');
@@ -143,7 +153,7 @@ snapshot_struct.Stratum=cell(1,length(stratum));
 cals=get_childs(node,'cal');
 Cal=[];
 for i=1:length(cals)
-    cal_temp=get_node_att(cals(i));
+    cal_temp=get_cal_node(cals(i),options.Frequency,nan);
     Cal=[Cal cal_temp];
 end
 snapshot_struct.Cal=Cal;
@@ -158,7 +168,7 @@ for i=1:length(stratum)
     cals=get_childs(stratum(i),'cal');
     Cal=[];
     for ii=1:length(cals)
-        cal_temp=get_node_att(cals(ii));
+        cal_temp=get_cal_node(cals(i),options.Frequency,nan);
         Cal=[Cal cal_temp];
     end
     strat_curr.Cal=Cal;
