@@ -49,6 +49,5 @@ Temporary Items
 *.asv
 
 #Project Specific files
-
 deploy/
 private/
