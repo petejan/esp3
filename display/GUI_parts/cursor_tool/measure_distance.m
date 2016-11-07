@@ -13,9 +13,10 @@ delete(obj_meas);
 switch lower(curr_disp.Cmap)
     case 'esp2'
         line_col='--xg';
+        text_col='w';
     otherwise
         line_col='--xr';
-        
+        text_col='k';
 end
 
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
@@ -43,7 +44,7 @@ switch src.SelectionType
     case {'normal'}
         set(main_figure,'WindowScrollWheelFcn','');
         hp=plot(ah,xinit,yinit,line_col,'linewidth',1,'Tag','measurement');
-        ht=text(ah,xinit,yinit,'','Tag','measurement_text');
+        ht=text(ah,xinit,yinit,'','Tag','measurement_text','Color',text_col);
         add_point(cp(1,1),cp(1,2));
         click_num=2;
         src.WindowButtonDownFcn= @wbdf;

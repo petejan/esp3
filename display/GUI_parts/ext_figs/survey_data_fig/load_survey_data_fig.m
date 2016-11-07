@@ -4,8 +4,7 @@ app_path=getappdata(main_figure,'App_path');
 
 
 if isempty(layer)
-    path_f = uigetdir(app_path.data,'Choose Data Folder');
-    
+    path_f = uigetdir(app_path.data,'Choose Data Folder'); 
     if path_f==0
         return;
     end
@@ -84,12 +83,19 @@ set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_struct,surv_d
 
 rc_menu = uicontextmenu(surv_data_fig);
 surv_data_table.table_main.UIContextMenu =rc_menu;
-uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
+select_menu=uimenu(rc_menu,'Label','Select');
+process_menu=uimenu(rc_menu,'Label','Process');
+survey_menu=uimenu(rc_menu,'Label','SurveyData');
 uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig,app_path.scripts});
-uimenu(rc_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
-uimenu(rc_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
-uimenu(rc_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
-uimenu(rc_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
+uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
+uimenu(select_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
+uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
+uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
+uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
+uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
+uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});
+uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
+
 
 setappdata(surv_data_fig,'surv_data_struct',surv_data_struct);
 setappdata(surv_data_fig,'path_data',path_f);

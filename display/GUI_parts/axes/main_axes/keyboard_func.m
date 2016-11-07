@@ -159,8 +159,11 @@ switch callbackdata.Key
         end
         
     case 'c'
-        cmaps={'jet' 'hsv' 'esp2' 'ek500' 'parula' 'winter' 'autumn' 'spring' 'hot' 'cool'};
+        cmaps={'jet' 'hsv' 'esp2' 'ek500' 'parula' 'winter'};
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
+        if isempty(id_map)
+            id_map=0;
+        end
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
     case 'f'
         if length(layer.Frequencies)>1

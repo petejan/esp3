@@ -1,7 +1,7 @@
 function edit_trip_info_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
-layers=getappdata(main_figure,'Layers');
+
 if isempty(layer)
     return;
 end
