@@ -15,7 +15,7 @@ switch dest
         mini_axes_comp=getappdata(main_figure,'Mini_axes');
         delete(mini_axes_comp.mini_ax.Parent); 
     otherwise
-        delete(mini_axes_comp.mini_ax);
+        
         size_max = get(0, 'MonitorPositions');
         pos_fig=[size_max(1,1) size_max(1,2)+size_max(1,4)*0.2 size_max(1,3) size_max(1,4)*0.5];
         pos_out=[0 0 1 1];
@@ -27,9 +27,9 @@ switch dest
             'MenuBar','none',...
             'CloseRequestFcn',@close_min_axis,...
             'WindowScrollWheelFcn',@scroll_fcn_callback,...
-            'KeyPressFcn',@keyboard_func);
-        mini_axes_comp=getappdata(main_figure,'Mini_axes');
-        delete(mini_axes_comp.mini_ax); 
+            'KeyPressFcn',@keyboard_func,...
+            'Tag','mini_ax');
+        delete(mini_axes_comp.mini_ax);
 end
 
 load_mini_axes(main_figure,parent,pos_out);

@@ -9,5 +9,5 @@ region_text=findobj(echo_ax,'tag','region_text','-and','visible','on');
 zoom_area=findobj(echo_ax,'tag','zoom_area');
 
 uistack([region_text;lines;zoom_area;regions;regions_cont;bt_im;echo_im],'top');
-
+echo_ax.Layer='top';
 end

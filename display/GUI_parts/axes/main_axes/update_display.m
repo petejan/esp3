@@ -34,7 +34,9 @@ update_axis_panel(main_figure,new);
 try
     update_mini_ax(main_figure,new);
 catch
+    display_tab_comp=getappdata(main_figure,'Display_tab');
     load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.55]);
+    update_mini_ax(main_figure,new);
 end
 set_axes_position(main_figure);
 update_cmap(main_figure);

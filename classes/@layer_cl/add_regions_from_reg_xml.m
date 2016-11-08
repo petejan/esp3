@@ -18,14 +18,14 @@ xml_file=fullfile(path_xml,reg_file_str);
 
 for ix=1:length(xml_file)
     if exist(xml_file{ix},'file')==0
-        sprintf('Cannot find xml region file for %s\n',layer_obj.Filename{ix});
+        fprintf('Cannot find xml region file for %s\n',layer_obj.Filename{ix});
         continue;
     end
     
     [region_xml_tot,ver]=parse_region_xml(xml_file{ix});
     
     if isempty(region_xml_tot)
-        sprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
+        fprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
         return;
     end
     

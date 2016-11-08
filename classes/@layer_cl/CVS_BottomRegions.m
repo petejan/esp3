@@ -30,7 +30,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
     
     idx_slash=union(strfind(PathToFile,'\'),strfind(PathToFile,'/'));
     if length(idx_slash)>=2
-        voyage=PathToFile(idx_slash(1)+1:idx_slash(2)-1);
+        voyage=PathToFile(idx_slash(end-1)+1:idx_slash(end)-1);
     else
         warning('cannot find voyage name here...');
         return;

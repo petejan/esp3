@@ -15,7 +15,6 @@ if p.Results.bot_ver>0
     layer.add_bottoms_from_bot_xml('Frequencies',p.Results.Frequencies);
 end
 
-
 if p.Results.reg_ver>0
     layer.add_regions_from_reg_xml(p.Results.IDs,'Frequencies',p.Results.Frequencies);
 end

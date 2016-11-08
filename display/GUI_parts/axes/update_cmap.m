@@ -26,12 +26,12 @@ switch lower(curr_disp.Cmap)
         col_bot='g'; % Simrad sounders use a green bottom line
 end
 
-axes_panel_comp.main_axes.GridColor=col_grid;
+
 set(axes_panel_comp.vaxes,'YColor',col_lab);
 set(axes_panel_comp.haxes,'XColor',col_lab);
-set(axes_panel_comp.main_axes,'Color',col_ax);
+set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',col_grid);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
-set(mini_axes_comp.mini_ax,'Color',col_ax);
+set(mini_axes_comp.mini_ax,'Color',col_ax,'GridColor',col_grid);
 set(mini_axes_comp.bottom_plot,'Color',col_bot);
 tog_reg_callback([],[],main_figure)
 

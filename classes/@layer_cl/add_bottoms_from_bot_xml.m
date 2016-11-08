@@ -16,14 +16,14 @@ xml_file=fullfile(path_xml,bot_file_str);
 for i=1:length(xml_file)
     
     if exist(xml_file{i},'file')==0
-        sprintf('Cannot find xml bottom file for %s\n',layer_obj.Filename{i});
+        fprintf('Cannot find xml bottom file for %s\n',layer_obj.Filename{i});
         continue;
     end
     
     [bottom_xml_tot,ver]=parse_bottom_xml(xml_file{i});
     
     if isempty(bottom_xml_tot)
-        sprintf('Cannot find parse bottom file for %s\n',layer_obj.Filename{i});
+        fprintf('Cannot find parse bottom file for %s\n',layer_obj.Filename{i});
         continue;
     end
     
@@ -37,13 +37,13 @@ for i=1:length(xml_file)
         [idx_freq,found]=find_freq_idx(layer_obj,bottom_xml.Infos.Freq);
         
         if found==0
-            warning('Could not load bottoms for frequency %.0fkHz, it is not there...',bottom_xml.Infos.Freq);
+            fprintf('Could not load bottoms for frequency %.0fkHz, it is not there...',bottom_xml.Infos.Freq);
             continue;
         end
         
         trans_obj=layer_obj.Transceivers(idx_freq);
         if ~strcmp(deblank(trans_obj.Config.ChannelID),bottom_xml.Infos.ChannelID)
-            warning('Those bottoms have been written for a different GPT %.0fkHz',bottom_xml.Infos.Freq);
+            fprintf('Those bottoms have been written for a different GPT %.0fkHz',bottom_xml.Infos.Freq);
         end
         
         

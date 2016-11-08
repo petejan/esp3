@@ -19,7 +19,6 @@ switch curr_disp.Cmap
 end
 
 
-
 clear_lines(ah);
 
 xdata=get(mini_ax_comp.mini_echo,'XData');
@@ -48,7 +47,6 @@ y_box=yinit;
 
 
 hp=line(x_box,y_box,'color',col_line,'linewidth',1,'parent',ah);
-
 
 current_fig.WindowButtonMotionFcn = @wbmcb;
 current_fig.WindowButtonUpFcn = @wbucb;

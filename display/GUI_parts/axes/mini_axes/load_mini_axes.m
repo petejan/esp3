@@ -1,4 +1,5 @@
 function load_mini_axes(main_figure,parent,pos_in_parent)
+
 if isappdata(main_figure,'Mini_axes')
     mini_axes_comp=getappdata(main_figure,'Mini_axes');
     delete(mini_axes_comp.mini_ax);
@@ -17,15 +18,12 @@ set(mini_axes_comp.patch_obj,'ButtonDownFcn',{@move_patch_mini_axis_grab,main_fi
 set(mini_axes_comp.mini_echo,'ButtonDownFcn',{@zoom_in_callback_mini_ax,main_figure});
 set(mini_axes_comp.mini_echo_bt,'ButtonDownFcn',{@zoom_in_callback_mini_ax,main_figure});
 
-
 if isgraphics(parent,'figure')
     set(parent,'ResizeFcn',{@resize_mini_ax,main_figure});
-    hfigs=getappdata(main_figure,'ExternalFigures');
-    hfigs=[parent hfigs];
-    setappdata(main_figure,'ExternalFigures',hfigs);
 else
     set(mini_axes_comp.mini_ax,'ButtonDownFcn',{@move_mini_axis_grab,main_figure});
 end
+
 setappdata(main_figure,'Mini_axes',mini_axes_comp);
 create_context_menu_mini_echo(main_figure);
 end
