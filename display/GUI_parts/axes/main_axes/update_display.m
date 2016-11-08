@@ -31,7 +31,11 @@ if new==1
 end
 
 update_axis_panel(main_figure,new);
-update_mini_ax(main_figure,new);
+try
+    update_mini_ax(main_figure,new);
+catch
+    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.55]);
+end
 set_axes_position(main_figure);
 update_cmap(main_figure);
 reverse_y_axis(main_figure);
