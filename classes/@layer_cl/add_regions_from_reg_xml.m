@@ -18,7 +18,7 @@ xml_file=fullfile(path_xml,reg_file_str);
 
 for ix=1:length(xml_file)
     if exist(xml_file{ix},'file')==0
-        fprintf('Cannot find xml region file for %s\n',layer_obj.Filename{ix});
+        fprintf('No xml region file for %s\n',layer_obj.Filename{ix});
         continue;
     end
     

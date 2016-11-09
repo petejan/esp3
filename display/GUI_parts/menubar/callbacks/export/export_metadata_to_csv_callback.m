@@ -16,6 +16,12 @@ for ifs=1:length(field_csv)
     end
 end
 
+struct_out.StartLat=zeros(size(struct_out.Stratum));
+struct_out.StartLong=zeros(size(struct_out.Stratum));
+struct_out.EndLat=zeros(size(struct_out.Stratum));
+struct_out.EndLong=zeros(size(struct_out.Stratum));
+
+
 for i=1:length(struct_out.Stratum)
     struct_out.StartTime(i)=datenum(num2str(struct_out.StartTime(i)),'yyyymmddHHMMSS');
     struct_out.EndTime(i)=datenum(num2str(struct_out.EndTime(i)),'yyyymmddHHMMSS');

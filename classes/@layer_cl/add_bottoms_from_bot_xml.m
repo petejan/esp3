@@ -16,7 +16,7 @@ xml_file=fullfile(path_xml,bot_file_str);
 for i=1:length(xml_file)
     
     if exist(xml_file{i},'file')==0
-        fprintf('Cannot find xml bottom file for %s\n',layer_obj.Filename{i});
+        fprintf('No xml bottom file for %s\n',layer_obj.Filename{i});
         continue;
     end
     
