@@ -26,8 +26,7 @@ if ~isempty(new_layers)
     new_layers.load_echo_logbook();
     for i=1:length(new_layers)
         new_layers(i).load_bot_regs();
-    end
-   
+    end 
 else
     return;
 end

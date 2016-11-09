@@ -82,7 +82,7 @@ end
 if isnan(ifileInfo.transmit_pulse_length)
     params_obj.PulseLength=1/ifileInfo.depth_factor/soundspeed*4;
 else
-    params_obj.PulseLength=1/ifileInfodepth_factor/soundspeed*ifileInfo.transmit_pulse_length; 
+    params_obj.PulseLength=1/ifileInfo.depth_factor/soundspeed*ifileInfo.transmit_pulse_length; 
 end
 
 params_obj.SampleInterval=1/ifileInfo.depth_factor/soundspeed;

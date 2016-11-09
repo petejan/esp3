@@ -12,6 +12,7 @@ end
 str_read=char(zeros(1,BLCK_SIZE+4));
 found_start=0;
 n=0;
+idx_start=[];
 while found_start==0&&~feof(fid)
     str_read(1:4)=str_read(BLCK_SIZE+1:BLCK_SIZE+4);
     temp=fread(fid,BLCK_SIZE,'*char');
@@ -29,6 +30,7 @@ str_read=char(zeros(1,BLCK_SIZE+4));
 found_end=0;
 n=0;
 pos=ftell(fid);
+idx_end=[];
 while found_end==0&&pos>=BLCK_SIZE
     
     fseek(fid,-BLCK_SIZE,'cof');
@@ -61,6 +63,8 @@ end_time=1;
 if~isempty(idx_start)
     fseek(fid,idx_start,-1);
     [~,start_time]=readEK60Header(fid);
+else
+    start_time=0;
 end
 
 if~isempty(idx_end)

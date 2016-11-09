@@ -10,7 +10,7 @@ addParameter(p,'EndTime',1,@isnumeric);
 parse(p,surv_data_obj,docNode,filename,varargin{:});
 
 if p.Results.StartTime==0
-    st=get_start_date_from_raw(filename);
+    st=datestr(get_start_date_from_raw(filename),'yyyymmddHHMMSS');
 else
     st=datestr(p.Results.StartTime,'yyyymmddHHMMSS');
 end
