@@ -63,8 +63,6 @@ end_time=1;
 if~isempty(idx_start)
     fseek(fid,idx_start,-1);
     [~,start_time]=readEK60Header(fid);
-else
-    start_time=0;
 end
 
 if~isempty(idx_end)

@@ -21,8 +21,7 @@ nmeadata = strrep(nmeadata, ',,', ',0');
 
 switch type(3:end)    
     case 'SHR'
-        
-        
+       
         if ~isempty(strfind(nmeadata,'ATT'))
             '$PASHR,ATT,348466.00,147.26310,-0.66647,0.28198,0.0011,0.0037,0 ,';
             format = '%s %2.0f %2d %f %f %f %f %f %f %f %f %d %d';
