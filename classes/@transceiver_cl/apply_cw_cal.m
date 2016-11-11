@@ -18,7 +18,6 @@ Sp=Transceiver.Data.get_datamat('sp');
 
 if ~isempty(Sp)
     Sp_new=Sp+2*(old_cal.G0-new_cal.G0);
-
     Transceiver.Data.replace_sub_data('sp',Sp_new);
 end
 

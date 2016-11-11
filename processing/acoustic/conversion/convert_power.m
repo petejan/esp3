@@ -15,13 +15,16 @@ range_tvg=range-(r_corr);
 range_tvg(range_tvg<0)=0;
 
 
-switch type
+switch type 
+    case {'FCV30'} 
+        tmp=10*log10(single(power))-2*gain;
+        Sp=bsxfun(@plus,tmp,TVG_Sp+2*alpha*range_tvg);
+        Sv=bsxfun(@plus,tmp-10*log10(c*t_eff/2)-eq_beam_angle-2*sacorr,TVG_Sv+2*alpha*range_tvg);
     case {'ASL'}
         tmp=10*log10(single(power));     
         Sp=bsxfun(@plus,tmp,TVG_Sp+2*alpha*range_tvg);
         Sv=bsxfun(@plus,tmp-10*log10(c*t_eff/2)-eq_beam_angle,TVG_Sv+2*alpha*range_tvg);
-    otherwise   
-       
+    otherwise
         tmp=10*log10(single(power))-2*gain-10*log10(ptx*lambda^2/(16*pi^2));
         Sp=bsxfun(@plus,tmp,TVG_Sp+2*alpha*range_tvg);
         Sv=bsxfun(@plus,tmp-10*log10(c*t_eff/2)-eq_beam_angle-2*sacorr,TVG_Sv+2*alpha*range_tvg);

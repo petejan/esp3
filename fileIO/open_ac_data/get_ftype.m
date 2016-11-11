@@ -1,5 +1,13 @@
 function ftype=get_ftype(filename)
 if exist(filename,'file')>0
+    
+    [~,~,end_file]=fileparts(filename);
+    
+    if strcmp(end_file,'.lst')
+        ftype='fcv30';
+       return; 
+    end
+    
     fid = fopen(filename, 'r');
     if fid==-1
         warning('Cannot open file');

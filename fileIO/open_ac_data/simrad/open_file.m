@@ -25,7 +25,7 @@ if iscell(file_id)||ischar(file_id)
     Filename=file_id;
 else
     if file_id==0
-        [Filename,path_f]= uigetfile( {fullfile(file_path,'*.raw;d*;*A')}, 'Pick a raw/crest/asl file','MultiSelect','on');
+        [Filename,path_f]= uigetfile( {fullfile(file_path,'*.raw;d*;*A;*.lst')}, 'Pick a raw/crest/asl/fcv30 file','MultiSelect','on');
         if isempty(Filename)
             return;
         end
@@ -37,7 +37,7 @@ else
             Filename={Filename};
         end
         
-        idx_keep=~cellfun(@isempty,regexp(Filename(:),'(A$|raw$|^d.*\d$)'));
+        idx_keep=~cellfun(@isempty,regexp(Filename(:),'(A$|raw$|lst$|^d.*\d$)'));
         Filename=Filename(idx_keep);
         if isempty(Filename)
             return;
@@ -56,7 +56,7 @@ else
         end
         
         f = dir(file_path);
-        file_list=({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|^d.*\d$)'))).name}');
+        file_list=({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|lst$|^d.*\d$)'))).name}');
         
         if ~isempty(file_list)
             i=1;
@@ -82,7 +82,7 @@ else
         end
         
         f = dir(file_path);
-        file_list=({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|^d.*\d$)'))).name}');
+        file_list=({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|lst$|^d.*\d$)'))).name}');
         if ~isempty(file_list)
             i=size(file_list,1);
             file_diff=0;
@@ -136,7 +136,7 @@ end
 if ~isequal(Filename, 0)
     enabled_obj=findobj(main_figure,'Enable','on');
     set(enabled_obj,'Enable','off');
-    try
+    %try
         switch ftype
             case {'EK60','EK80','dfile'}
                 [path_tmp,~,~]=fileparts(Filename{1});
@@ -181,6 +181,11 @@ if ~isequal(Filename, 0)
         ping_end=Inf;
         
         switch ftype
+            case 'fcv30'
+                for ifi=1:length(Filename)
+                    open_FCV30_file(main_figure,Filename{ifi});
+                end
+            
             case {'EK60','EK80'}
                 %             profile on;
                 open_raw_file(main_figure,Filename,[],ping_start,ping_end);
@@ -230,12 +235,12 @@ if ~isequal(Filename, 0)
                 end
                 
         end
-    catch err
-        disp(err.message);
-        for ife=1:length(Filename)
-            fprintf('Could not open files %s\n',Filename{ife});
-        end
-    end
+%     catch err
+%         disp(err.message);
+%         for ife=1:length(Filename)
+%             fprintf('Could not open files %s\n',Filename{ife});
+%         end
+%     end
     
     set(enabled_obj,'Enable','on');
     
