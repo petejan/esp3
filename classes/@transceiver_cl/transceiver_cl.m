@@ -166,7 +166,7 @@ classdef transceiver_cl < handle
             if isempty(obj.Regions)
                 idx=[];
             else
-                idx=find(strcmp({obj.Regions(:).Name},name));
+                idx=find(strcmpi({obj.Regions(:).Name},name));
             end
         end
         

@@ -39,11 +39,19 @@ if cancel>0
     return;
 end
 
-layer_cl.empty.update_echo_logbook_file('Filename',layer.Filename{trans.Data.FileId(idx_ping)},'SurveyData',surv);
-layer.load_echo_logbook();
+layer_cl.empty.update_echo_logbook_dbfile('Filename',layer.Filename{trans.Data.FileId(idx_ping)},'SurveyData',surv);
+layer.load_echo_logbook_db();
 setappdata(main_figure,'Layer',layer);
 import_survey_data_callback([],[],main_figure);
-load_survey_data_fig(main_figure);
+
+    
+hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmpi({hfigs(:).Tag},'logbook'), 1);
+if ~isempty(idx_tag)
+    load_survey_data_fig_from_db(main_figure);
+end
+
 
 
 end

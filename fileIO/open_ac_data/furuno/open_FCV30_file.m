@@ -4,12 +4,29 @@ function open_FCV30_file(main_figure,file_lst)
 layers=getappdata(main_figure,'Layers');
 app_path=getappdata(main_figure,'App_path');
 
-
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 
+
+
+list_files=importdata(file_lst);
+filename_ini=cell(1,length(list_files));
+
+for i=1:length(list_files)
+    str_temp=strsplit(list_files{i},',');
+    filename_ini{i}=str_temp{2};
+end
+filename_ini=unique(filename_ini);
+
+[fidx,cancel]=listdlg('ListString',filename_ini,'InitialValue',1:length(filename_ini),'Name','Choose Files to open');
+
+if cancel==0
+    return;
+end
+
+
 new_layers=open_FCV30_file_stdalone(file_lst,...
-    'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
+    'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp,'file_idx',fidx);
 
 
 % if ~isempty(new_layers)

@@ -41,7 +41,7 @@ uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback'
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
 uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
-uimenu(m_survey,'Label','Display logbook (In Browser)','Callback',{@logbook_display_callback,main_figure});
+%uimenu(m_survey,'Label','Display logbook (In Browser)','Callback',{@logbook_display_callback,main_figure});
 uimenu(m_survey,'Label','Edit/Display logbook','Callback',{@logbook_dispedit_callback,main_figure});
 %uimenu(m_survey,'Label','Convert Csv Logbook to Xml (current layer)','Callback',{@convert_csv_logbook_to_xml_callback,main_figure});
 uimenu(m_survey,'Label','Look for new files in current folder','Callback',{@look_for_new_files_callback,main_figure})
@@ -202,50 +202,19 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
-layer.update_echo_logbook_file();
+layer.update_echo_logbook_dbfile();
 
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmp({hfigs(:).Tag},'logbook'), 1);
 
 if ~isempty(idx_tag)
-    load_survey_data_fig(main_figure);
+    load_survey_data_fig_from_db(main_figure);
 end
 
 end
 
-function convert_csv_logbook_to_xml_callback(~,~,main_figure)
-layer=getappdata(main_figure,'Layer');
 
-if isempty(layer)
-    return;
-end
-[path_lay,~]=layer.get_path_files();
-path_f=path_lay{1};
-xmlfile=fullfile(path_f,'echo_logbook.xml');
-htmlfile=fullfile(path_f,'echo_logbook.html');
-csvfile=fullfile(path_f,'echo_logbook.csv');
-
-if exist(csvfile,'file')==0
-    return;
-end
-
-if exist(xmlfile,'file')==0
-   initialize_echo_logbook_file(path_f);
-end
-
-surv_data_struct=import_survey_data(csvfile);
-layer.add_survey_data(surv_data_struct);
-
-for ifile=1:length(surv_data_struct.Filename)
-    layer_cl.empty.update_echo_logbook_file('Filename',fullfile(path_f,surv_data_struct.Filename{ifile}),'SurveyData',surv_data_struct.SurvDataObj{ifile});
-end
-
-update_display(main_figure,1)
-xslt(xmlfile, fullfile(whereisEcho,'config','echo_logbook.xsl'), htmlfile);
-system(sprintf('start "" "%s"',htmlfile));
-
-end
 
 function logbook_display_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');

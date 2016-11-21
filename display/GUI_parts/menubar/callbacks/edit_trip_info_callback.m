@@ -12,7 +12,7 @@ surveydata=layer.get_survey_data();
 if can>0
     return;
 end
-layer.update_echo_logbook_file('SurveyName',SurveyName,'Voyage',Voyage);
+layer.update_echo_logbook_dbfile('SurveyName',SurveyName,'Voyage',Voyage);
 update_mini_ax(main_figure,0);
 setappdata(main_figure,'Layer',layer);
 import_survey_data_callback([],[],main_figure);
@@ -24,6 +24,6 @@ hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmp({hfigs(:).Tag},'logbook'), 1);
 
 if ~isempty(idx_tag)
-    load_survey_data_fig(main_figure);
+    load_survey_data_fig_from_db(main_figure);
 end
 end

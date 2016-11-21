@@ -15,9 +15,6 @@ if path_f==0
     return;
 end
 
-if exist(fullfile(path_f,csv_file),'file')==0
-    return;
-end
 
 [Voyage,SurveyName,~,~,~,can]=fill_survey_data_dlbox(surveydata,'Voyage_only',1,'Title','Set Voyage Info');
 
@@ -25,15 +22,9 @@ if can>0
     return;
 end
 
-surv_data_struct=import_survey_data_csv(fullfile(path_f,csv_file),Voyage,SurveyName);
-
-if isempty(surv_data_struct)
-    return;
-end
-
-survey_data_struct_to_xml(path_f,surv_data_struct);
-
+csv_logbook_to_xml(path_f,csv_file,Voyage,SurveyName);
+xml_logbook_to_db(fullfile(path_f,'echo_logbook.db'));
 import_survey_data_callback([],[],main_figure);
-load_survey_data_fig(main_figure);
+load_survey_data_fig_from_db(main_figure);
 
 end

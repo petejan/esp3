@@ -13,6 +13,8 @@ addParameter(p,'SampleRange',[1 inf]);
 addParameter(p,'FieldNames',{});
 addParameter(p,'GPSOnly',0);
 addParameter(p,'load_bar_comp',[]);
+addParameter(p,'file_idx',[]);
+
 parse(p,file_lst,varargin{:});
 
 [main_path,~,~]=fileparts(file_lst);
@@ -30,12 +32,19 @@ end
 
 [ini_config_files,~,id_config_unique]=unique(filename_ini);
 
+id_config=(1:length(ini_config_files));
 
-nb_config=length(ini_config_files);
+if ~isempty(p.Results.file_idx)
+    id_config=(p.Results.file_idx);
+end
+
+
+nb_config=length(id_config);
 
 layers(nb_config)=layer_cl();
-for iconfig=1:nb_config
-    
+ilay=0;
+for iconfig=id_config
+    ilay=ilay+1;
     filename_dat=filename_dat_tot(id_config_unique==iconfig);
     nb_pings=length(filename_dat);
     config_current=config_cl();
@@ -47,6 +56,7 @@ for iconfig=1:nb_config
         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
     end
     
+    echo.Data=nan(5*1e5,nb_pings);
     for ip=1:nb_pings
         
         if ~isempty(load_bar_comp)
@@ -104,35 +114,36 @@ for iconfig=1:nb_config
         att.DataNumber(ip)=fread(fid,1,'ushort')-1;
         att.Remarks1{ip}=fread(fid,2,'*char')';
         temp=fread(fid,48*att.DataNumber(ip),'int8');
-        if~isfield(att,'Data')
-            att.Data(:,ip)=temp;
-        else
-            if att.DataNumber(ip)>att.DataNumber(ip-1)
-              temp_2=att.Data(:,ip);
-              att.Data=nan(att.DataNumber(ip),nb_pings);
-              att.Data(1:size(temp_2,1),1:ip-1)=temp_2;
-            end
-            att.Data(:,ip)=temp(1:size(att.Data,1));
-        end
+%         if~isfield(att,'Data')
+%             att.Data(:,ip)=temp;
+%         else
+%             if att.DataNumber(ip)>att.DataNumber(ip-1)
+%               temp_2=att.Data(:,ip);
+%               att.Data=nan(att.DataNumber(ip),nb_pings);
+%               att.Data(1:size(temp_2,1),1:ip-1)=temp_2;
+%             end
+%             att.Data(:,ip)=temp(1:size(att.Data,1));
+%         end
         att.StatuspR(ip)=fread(fid,1,'short');
         att.Roll(ip)=fread(fid,1,'short')*1e-1;
         att.Pitch(ip)=fread(fid,1,'short')*1e-1;
         att.StatusH(ip)=fread(fid,1,'short');
         att.Heave(ip)=fread(fid,1,'short')*1e-2;
         att.Remarks2{ip}=char(fread(fid,19,'short')');
-        
-        echo.DataSize(ip)=fread(fid,1,'ulong');
-        data_temp=fread(fid,echo.DataSize(ip)/4,'long');
-        
+       
+        echo.DataSize(ip)=fread(fid,1,'ulong')/4; 
+        data_temp=fread(fid,echo.DataSize(ip),'long');
+        echo.Data(1:length(data_temp),ip)=data_temp;
         fclose(fid);
-        
-              
-        echo.comp_sig_1(:,ip)=data_temp(1:8:end)+1j*data_temp(2:8:end);
-        echo.comp_sig_2(:,ip)=data_temp(3:8:end)+1j*data_temp(4:8:end);
-        echo.comp_sig_3(:,ip)=data_temp(5:8:end)+1j*data_temp(6:8:end);
-        echo.comp_sig_4(:,ip)=data_temp(7:8:end)+1j*data_temp(8:8:end);
-        
+                   
     end
+
+    echo.Data(nanmax(echo.DataSize)+1:end,:)=[];
+    
+    echo.comp_sig_1=echo.Data(1:8:end,:)+1j*echo.Data(2:8:end,:);
+    echo.comp_sig_2=echo.Data(3:8:end,:)+1j*echo.Data(4:8:end,:);
+    echo.comp_sig_3=echo.Data(5:8:end,:)+1j*echo.Data(6:8:end,:);
+    echo.comp_sig_4=echo.Data(7:8:end,:)+1j*echo.Data(8:8:end,:);
     
     [nb_samples,nb_pings]=size(echo.comp_sig_1);
     
@@ -230,7 +241,7 @@ for iconfig=1:nb_config
     trans_obj.AttitudeNavPing=attitude;
     trans_obj.Algo=algo_vec; trans_obj.add_algo(algo_vec_init);
     
-    layers(iconfig)=layer_cl('Filename',filename_dat,'Filetype','FCV30','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude,'EnvData',env_data);
+    layers(ilay)=layer_cl('Filename',ini_config_files(iconfig),'Filetype','FCV30','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude,'EnvData',env_data);
     
     
 end

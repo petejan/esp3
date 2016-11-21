@@ -109,7 +109,7 @@ infos=surv_obj.SurvInput.Infos;
 for ifile=1:length(mbs.Input.snapshot)
     fprintf('Adding Survey Data for File %s\n',mbs.Input.rawFileName{ifile});
     surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',mbs.Input.snapshot(ifile),'Stratum',mbs.Input.stratum{ifile},'Transect',mbs.Input.transect(ifile));                         
-    layer_cl.empty.update_echo_logbook_file('Filename',fullfile(mbs.Input.rawDir{ifile},mbs.Input.rawFileName{ifile}),'SurveyData',surv,'Voyage',infos.Voyage,'SurveyName',infos.SurveyName);
+    layer_cl.empty.update_echo_logbook_dbfile('Filename',fullfile(mbs.Input.rawDir{ifile},mbs.Input.rawFileName{ifile}),'SurveyData',surv,'Voyage',infos.Voyage,'SurveyName',infos.SurveyName);
 end
 
 end

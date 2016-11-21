@@ -1,43 +1,49 @@
-function load_survey_data_fig(main_figure)
+function load_survey_data_fig_from_db(main_figure)
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
 
 if isempty(layer)
-    path_f = uigetdir(app_path.data,'Choose Data Folder'); 
+    path_f = uigetdir(app_path.data,'Choose Data Folder');
     if path_f==0
         return;
     end
-    surv_data_struct=load_logbook_to_struct(path_f);
 else
     [path_lay,~]=get_path_files(layer);
     path_f=path_lay{1};
-    surv_data_struct=layer.get_logbook_struct();
 end
 
-
-if isempty(surv_data_struct.Voyage)
-    return;
+db_file=fullfile(path_f,'echo_logbook.db');
+   
+if ~(exist(db_file,'file')==2)
+    initialize_echo_logbook_dbfile(path_f,0)
 end
 
+%surv_data_struct=import_survey_data_db(db_file);
 
-survDataSummary=cell(length(surv_data_struct.Filename),11);
+dbconn=sqlite(db_file,'connect');
 
-survDataSummary(:,1)=cell(size(surv_data_struct.Filename));
+data_logbook=dbconn.fetch('select * from logbook order by StartTime');
+data_survey=dbconn.fetch('select * from survey');
+dbconn.close();
 
-survDataSummary(:,2)=surv_data_struct.Filename;
-survDataSummary(:,3)=num2cell(surv_data_struct.Snapshot);
-survDataSummary(:,4)=surv_data_struct.Stratum;
-survDataSummary(:,5)=num2cell(surv_data_struct.Transect);
-survDataSummary(:,8)=surv_data_struct.Comment;
-survDataSummary(:,11)=num2cell(1:length(surv_data_struct.SurvDataObj));
+nb_lines=size(data_logbook,1);
+survDataSummary=cell(nb_lines,11);
 
-for i=1:length(surv_data_struct.SurvDataObj) 
-    [path_xml,bot_file_str,reg_file_str]=create_bot_reg_xml_fname(fullfile(path_f,surv_data_struct.Filename{i}));
+survDataSummary(:,1)=cell(nb_lines,1);
+survDataSummary(:,2)=data_logbook(:,1);
+survDataSummary(:,3)=data_logbook(:,2);
+survDataSummary(:,4)=data_logbook(:,3);
+survDataSummary(:,5)=data_logbook(:,4);
+survDataSummary(:,8)=data_logbook(:,7);
+survDataSummary(:,9)=cellfun(@(x) datestr(datenum(num2str(x),'yyyymmddHHMMSS'),'dd-mmm-yyyy HH:MM:SS'),data_logbook(:,5),'UniformOutput',0);
+survDataSummary(:,10)=cellfun(@(x) datestr(datenum(num2str(x),'yyyymmddHHMMSS'),'dd-mmm-yyyy HH:MM:SS'),data_logbook(:,6),'UniformOutput',0);
+survDataSummary(:,11)=num2cell(1:nb_lines);
+
+for i=1:nb_lines
+    [path_xml,bot_file_str,reg_file_str]=create_bot_reg_xml_fname(fullfile(path_f,data_logbook{i,1}));
     survDataSummary{i,6}=exist(fullfile(path_xml,bot_file_str),'file')==2;
     survDataSummary{i,7}=exist(fullfile(path_xml,reg_file_str),'file')==2;
-    survDataSummary{i,9}=datestr(surv_data_struct.SurvDataObj{i}.StartTime,'dd-mmm-yyyy HH:MM:SS');
-    survDataSummary{i,10}=datestr(surv_data_struct.SurvDataObj{i}.EndTime,'dd-mmm-yyyy HH:MM:SS');
     survDataSummary{i,1}=false;
 end
 
@@ -47,7 +53,7 @@ end
 columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
 columnformat = {'logical' 'char','numeric','char','numeric','logical','logical','char','char','char','numeric'};
 
-size_max = get(0, 'MonitorPositions');  
+size_max = get(0, 'MonitorPositions');
 
 surv_data_fig = new_echo_figure(main_figure,...
     'Units','pixels',...
@@ -56,13 +62,11 @@ surv_data_fig = new_echo_figure(main_figure,...
     'Name','SurveyData','Tag','logbook',...
     'MenuBar','none');%No Matlab Menu)
 
-uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',surv_data_struct.Voyage{1},surv_data_struct.SurveyName{1}));
+uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
 uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
 
 
 surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.45 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
-
-surv_data_table.save_button=uicontrol(surv_data_fig,'style','pushbutton','units','normalized','position',[0.75 0.95 0.2 0.04],'String','Save/Reload','Value',1,'Callback',{@save_logbook_callback,surv_data_fig,main_figure});
 
 
 % Create the uitable
@@ -77,7 +81,7 @@ surv_data_table.table_main = uitable('Parent',surv_data_fig,...
 set(surv_data_table.table_main,'Units','pixels');
 pos_t=get(surv_data_table.table_main,'Position');
 set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/36,4*pos_t(3)/18, pos_t(3)/18, pos_t(3)/18, pos_t(3)/18,pos_t(3)/36,pos_t(3)/36, 3*pos_t(3)/18, 3*pos_t(3)/18,3*pos_t(3)/18, pos_t(3)/18/2});
-set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_struct,surv_data_fig});
+set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_fig,main_figure});
 %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
 
 
@@ -93,11 +97,11 @@ uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_d
 uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
 uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
 uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
+uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
 uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});
 uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
 
 
-setappdata(surv_data_fig,'surv_data_struct',surv_data_struct);
 setappdata(surv_data_fig,'path_data',path_f);
 setappdata(surv_data_fig,'surv_data_table',surv_data_table);
 setappdata(surv_data_fig,'data_ori',survDataSummary);
@@ -133,7 +137,7 @@ for ifreq=1:length(freq_vec)
     ylabel('%')
     title(sprintf('Bad pings percentage for %.0fkHz',freq_vec(ifreq)/1e3));
     set(plot_temp,{@display_filename_callback,files_out{ifreq}});
-
+    
     
     for i=1:length(fid)
         
@@ -142,9 +146,9 @@ for ifreq=1:length(freq_vec)
             fprintf(fid(i),'%s %.2f\n',files_out{ifreq}{i_sub},nb_bad_pings{ifreq}(i_sub)./nb_pings{ifreq}(i_sub)*100);
         end
         fprintf(fid(i),'\n');
-
+        
     end
-
+    
 end
 
 for i=1:length(fid)
@@ -171,11 +175,11 @@ text(evt.IntersectionPoint(1),evt.IntersectionPoint(2),file_list{idx},'Tag','fna
 end
 
 
-function edit_surv_data_struct(src,evt,surv_data_fig)
+function edit_surv_data_db(src,evt,surv_data_fig,main_figure)%change that so that data are entered into db straight away
 if isempty(evt.Indices)
     return;
 end
-surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
+
 data_ori=getappdata(surv_data_fig,'data_ori');
 if isnan(src.Data{evt.Indices(1),evt.Indices(2)})
     src.Data{evt.Indices(1),evt.Indices(2)}=0;
@@ -184,39 +188,39 @@ end
 idx_struct=src.Data{evt.Indices(1),11};
 
 switch evt.Indices(2)
-    case 1
-        data_ori{idx_struct,1}=src.Data{evt.Indices(1),1};
-    case 3
-        surv_data_struct.Snapshot(idx_struct)=src.Data{evt.Indices(1),evt.Indices(2)};
-        surv_data_struct.SurvDataObj{idx_struct}.Snapshot=src.Data{evt.Indices(1),evt.Indices(2)};
-    case 4
-        surv_data_struct.Stratum{idx_struct}=src.Data{evt.Indices(1),evt.Indices(2)};
-        surv_data_struct.SurvDataObj{idx_struct}.Stratum=src.Data{evt.Indices(1),evt.Indices(2)};
-    case 5
-        surv_data_struct.Transect(idx_struct)=src.Data{evt.Indices(1),evt.Indices(2)};
-        surv_data_struct.SurvDataObj{idx_struct}.Transect=src.Data{evt.Indices(1),evt.Indices(2)};
-    case 8
-        surv_data_struct.Comment{idx_struct}=src.Data{evt.Indices(1),evt.Indices(2)};
-        surv_data_struct.SurvDataObj{idx_struct}.Comment=src.Data{evt.Indices(1),evt.Indices(2)};
+    case {1,3,4,5,8}
+        filename=src.Data{evt.Indices(1),2};
+        snap=src.Data{evt.Indices(1),3};
+        strat=src.Data{evt.Indices(1),4};
+        trans=src.Data{evt.Indices(1),5};
+        st=str2double(datestr(datenum(src.Data{evt.Indices(1),9},'dd-mmm-yyyy HH:MM:SS'),'yyyymmddHHMMSS'));
+        et=str2double(datestr(datenum(src.Data{evt.Indices(1),10},'dd-mmm-yyyy HH:MM:SS'),'yyyymmddHHMMSS'));
+        comm=src.Data{evt.Indices(1),8};
     otherwise
         return;
 end
-
 data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
-setappdata(surv_data_fig,'surv_data_struct',surv_data_struct);
-setappdata(surv_data_fig,'data_ori',data_ori);
-end
 
-function save_logbook_callback(~,~,surv_data_fig,main_figure)
 path_f=getappdata(surv_data_fig,'path_data');
-surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
-%profile on;
-survey_data_struct_to_xml(path_f,surv_data_struct);
-% survey_data_struct_to_sqlite(path_f,surv_data_struct);
-% profile off;
-% profile viewer;
+
+db_file=fullfile(path_f,'echo_logbook.db');
+    if ~(exist(db_file,'file')==2)
+        initialize_echo_logbook_dbfile(path_f,0)
+    end
+
+%surv_data_struct=import_survey_data_db(db_file);
+
+dbconn=sqlite(db_file,'connect');
+
+%dbconn.fetch(sprintf('delete from logbook where Filename like "%s" and StartTime=%.0f',filename,st));
+dbconn.insert('logbook',{'Filename' 'Snapshot' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
+    {filename snap strat trans st et comm});
+
+dbconn.close();
+
+
+setappdata(surv_data_fig,'data_ori',data_ori);
 import_survey_data_callback([],[],main_figure);
-load_survey_data_fig(main_figure);
 end
 
 
@@ -268,7 +272,7 @@ if isempty(files)
         return;
     end
 end
-    open_file([],[],files,main_figure);
+open_file([],[],files,main_figure);
 end
 
 function generate_xml_callback(~,~,surv_data_fig,path_scripts)
@@ -321,7 +325,7 @@ defaultanswer={'','','','',''};
 
 answer=inputdlg(prompt,'XML survey informations',[1;1;1;1;5],defaultanswer);
 
-if isempty(answer)   
+if isempty(answer)
     return;
 end
 

@@ -1,5 +1,3 @@
-
-
 function [idx_files_layer,idx_loaded,idx_missing]=find_survey_data(files_layer,survey_data_struct)
 
 if isempty(survey_data_struct)

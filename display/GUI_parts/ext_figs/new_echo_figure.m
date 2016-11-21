@@ -17,6 +17,8 @@ addParameter(p,'WindowStyle','normal',@ischar);
 addParameter(p,'Tag','',@ischar)
 
 parse(p,main_figure,varargin{:});
+
+
 if ~isempty(main_figure)
     hfigs=getappdata(main_figure,'ExternalFigures');
     hfigs(~isvalid(hfigs))=[];

@@ -67,7 +67,7 @@ if ~isempty(new_layers)
         new_layers(i).load_bot_regs();
     end
     
-    new_layers.load_echo_logbook();
+    new_layers.load_echo_logbook_db();
 else
     return;
 end

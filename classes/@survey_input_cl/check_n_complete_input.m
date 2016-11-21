@@ -47,7 +47,7 @@ for isn=1:length(snapshots)
     
     stratum=snapshots{isn}.Stratum;
     
-    file_name=fullfile(snapshots{isn}.Folder,'echo_logbook.xml');
+    file_name=fullfile(snapshots{isn}.Folder,'echo_logbook.db');
     
     if exist(file_name,'file')==0
         fprintf('No logbook in for %s \n',snapshots{isn}.Folder);
@@ -56,7 +56,7 @@ for isn=1:length(snapshots)
     end
     
     fprintf('\nLooking in folder %s\n',snapshots{isn}.Folder);
-    surv_data_struct=import_survey_data_xml(file_name);
+    dbconn=sqlite(file_name,'connect');
     
     for ist=1:length(stratum)
         
@@ -90,9 +90,9 @@ for isn=1:length(snapshots)
                     'Snapshot',snap_num,...
                     'Stratum',strat_name,...
                     'Transect',trans_num);
-                
-                filenames=surv_temp.get_files_from_surv_struct(surv_data_struct);
+                filenames=get_files_from_db(dbconn,surv_temp);
 
+                
                 if ~isempty(filenames(:))
                     fprintf(' Files added to Snapshot %.0f Stratum %s Transect %.0f:\n',...
                         snap_num,strat_name,trans_num);                    
@@ -110,7 +110,7 @@ for isn=1:length(snapshots)
         end
         
     end
-    
+    close(dbconn);
 end
 
 if valid==0

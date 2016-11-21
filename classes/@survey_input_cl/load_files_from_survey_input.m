@@ -39,7 +39,7 @@ for isn=1:length(snapshots)
         transects=stratum{ist}.Transects;
         cal_strat=get_cal_node(cal_snap,stratum{ist});
         for itr=1:length(transects)
-            try
+           try
                 filenames_cell=transects{itr}.files;
                 trans_num=transects{itr}.number;
                 cal=get_cal_node(cal_strat,transects{itr});
@@ -120,7 +120,7 @@ for isn=1:length(snapshots)
                                     
                                     switch lower(fType{ifiles})
                                         case {'ek60','ek80'}
-                                            new_lay.update_echo_logbook_file();
+                                            new_lay.update_echo_logbook_dbfile();
                                             new_lay.write_reg_to_reg_xml();
                                             new_lay.write_bot_to_bot_xml()
                                     end
@@ -245,7 +245,7 @@ for isn=1:length(snapshots)
                         case 'xml'
                             switch lower(layer_new.Filetype)
                                 case {'ek60','ek80'}
-                                    layer_new.load_echo_logbook();
+                                    layer_new.load_echo_logbook_db();
                                 case 'asl'
                                     surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                     layer_new.set_survey_data(surv);
@@ -342,7 +342,8 @@ for isn=1:length(snapshots)
                     end
                 end
                 clear layers_out_temp;
-            catch
+            catch error
+                disp(error.message);
                 fprintf('Error openning file for Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             end
         end

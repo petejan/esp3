@@ -23,7 +23,7 @@ new_layers=open_raw_file_standalone_v2(Filename,...
 
 
 if ~isempty(new_layers)
-    new_layers.load_echo_logbook();
+    new_layers.load_echo_logbook_db();
     for i=1:length(new_layers)
         new_layers(i).load_bot_regs();
     end 

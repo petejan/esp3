@@ -23,7 +23,7 @@ classdef survey_data_cl
             addParameter(p,'Snapshot',0,@isnumeric);
             addParameter(p,'Stratum','',ver_fmt);
             addParameter(p,'Transect',0,@isnumeric);
-            addParameter(p,'Comment','',ver_fmt);
+            addParameter(p,'Comment',' ',ver_fmt);
             addParameter(p,'Voyage','',ver_fmt);
             addParameter(p,'StartTime',0,@isnumeric);
             addParameter(p,'EndTime',1,@isnumeric);      

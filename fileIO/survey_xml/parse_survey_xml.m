@@ -136,7 +136,7 @@ for iu=1:length(trans_nodes)
     cals=get_childs(trans_nodes(iu),'cal');
     Cal=[];
     for ii=1:length(cals)
-        cal_temp=get_cal_node(node,nan,nan);
+        cal_temp=get_cal_node(cals(ii),nan,nan);
         Cal=[Cal cal_temp];
     end
     trans_curr.Cal=Cal;

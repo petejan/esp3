@@ -9,6 +9,7 @@ uimenu(analysis_menu,'Label','Plot Ping Spectrum','Callback',{@plot_ping_spectru
 
 
 survey_menu=uimenu(context_menu,'Label','Survey Data');
+uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
 uimenu(survey_menu,'Label','Edit/Add Survey Data','Callback',{@edit_survey_data_callback,main_figure,0});
 uimenu(survey_menu,'Label','Edit/Add Survey Data for this file','Callback',{@edit_survey_data_curr_file_callback,main_figure});
 uimenu(survey_menu,'Label','Remove Survey Data','Callback',{@edit_survey_data_callback,main_figure,1});

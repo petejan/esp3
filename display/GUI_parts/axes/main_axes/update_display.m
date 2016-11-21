@@ -57,6 +57,7 @@ order_stacks_fig(main_figure);
 order_stacks_fig(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
-
+enabled_obj=findobj(main_figure,'Enable','off');
+set(enabled_obj,'Enable','on');
 
 end
