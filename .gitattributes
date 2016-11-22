@@ -18,7 +18,8 @@
 
 # Versionning
 EchoAnalysis.m ident
-*.exe filter=lfs diff=lfs merge=lfs -text
+#LFS
+#*.exe filter=lfs diff=lfs merge=lfs -text
 *.msi filter=lfs diff=lfs merge=lfs -text
 *.png filter=lfs diff=lfs merge=lfs -text
 *.bmp filter=lfs diff=lfs merge=lfs -text
