@@ -22,7 +22,7 @@ if can>0
     return;
 end
 
-csv_logbook_to_xml(path_f,csv_file,Voyage,SurveyName);
+csv_logbook_to_db(path_f,csv_file,Voyage,SurveyName);
 xml_logbook_to_db(fullfile(path_f,'echo_logbook.db'));
 import_survey_data_callback([],[],main_figure);
 load_survey_data_fig_from_db(main_figure);

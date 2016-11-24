@@ -23,7 +23,7 @@ end
 
 dbconn=sqlite(db_file,'connect');
 
-data_logbook=dbconn.fetch('select * from logbook order by StartTime');
+data_logbook=dbconn.fetch('select * from logbook order by datetime(StartTime)');
 data_survey=dbconn.fetch('select * from survey');
 dbconn.close();
 
@@ -36,8 +36,8 @@ survDataSummary(:,3)=data_logbook(:,2);
 survDataSummary(:,4)=data_logbook(:,3);
 survDataSummary(:,5)=data_logbook(:,4);
 survDataSummary(:,8)=data_logbook(:,7);
-survDataSummary(:,9)=cellfun(@(x) datestr(datenum(num2str(x),'yyyymmddHHMMSS'),'dd-mmm-yyyy HH:MM:SS'),data_logbook(:,5),'UniformOutput',0);
-survDataSummary(:,10)=cellfun(@(x) datestr(datenum(num2str(x),'yyyymmddHHMMSS'),'dd-mmm-yyyy HH:MM:SS'),data_logbook(:,6),'UniformOutput',0);
+survDataSummary(:,9)=data_logbook(:,5);
+survDataSummary(:,10)=data_logbook(:,6);
 survDataSummary(:,11)=num2cell(1:nb_lines);
 
 for i=1:nb_lines
@@ -136,7 +136,7 @@ for ifreq=1:length(freq_vec)
     %set(ax,'XTick',1:length(files_out{ifreq}),'XTickLabels',files_out{ifreq},'XTickLabelRotation',45);
     ylabel('%')
     title(sprintf('Bad pings percentage for %.0fkHz',freq_vec(ifreq)/1e3));
-    set(plot_temp,{@display_filename_callback,files_out{ifreq}});
+    set(plot_temp,'ButtonDownFcn',{@display_filename_callback,files_out{ifreq}});
     
     
     for i=1:length(fid)
@@ -193,8 +193,8 @@ switch evt.Indices(2)
         snap=src.Data{evt.Indices(1),3};
         strat=src.Data{evt.Indices(1),4};
         trans=src.Data{evt.Indices(1),5};
-        st=str2double(datestr(datenum(src.Data{evt.Indices(1),9},'dd-mmm-yyyy HH:MM:SS'),'yyyymmddHHMMSS'));
-        et=str2double(datestr(datenum(src.Data{evt.Indices(1),10},'dd-mmm-yyyy HH:MM:SS'),'yyyymmddHHMMSS'));
+        st=src.Data{evt.Indices(1),9};
+        et=src.Data{evt.Indices(1),10};
         comm=src.Data{evt.Indices(1),8};
     otherwise
         return;
