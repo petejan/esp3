@@ -32,7 +32,11 @@ layers_new=[];
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
-    cal_snap=get_cal_node(cal_opt,snapshots{isn});
+    try
+        cal_snap=get_cal_node(cal_opt,snapshots{isn});
+    catch
+        cal_snap=cal_opt;
+    end
     fprintf('\nLoading files from %s\n',snapshots{isn}.Folder);
     for ist=1:length(stratum)
         strat_name=stratum{ist}.Name;
@@ -42,7 +46,11 @@ for isn=1:length(snapshots)
            try
                 filenames_cell=transects{itr}.files;
                 trans_num=transects{itr}.number;
-                cal=get_cal_node(cal_strat,transects{itr});
+                try
+                    cal=get_cal_node(cal_strat,transects{itr});
+                catch
+                    cal=cal_strat;
+                end
                 
                 fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
                 if ~iscell(filenames_cell)

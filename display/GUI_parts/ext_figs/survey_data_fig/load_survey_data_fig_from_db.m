@@ -277,12 +277,18 @@ end
 
 function generate_xml_callback(~,~,surv_data_fig,path_scripts)
 surv_data_table=getappdata(surv_data_fig,'surv_data_table');
-surv_data_struct=getappdata(surv_data_fig,'surv_data_struct');
+path_f=getappdata(surv_data_fig,'path_data');
+
+surv_data_struct=get_struct_from_db(path_f);
 data_ori=get(surv_data_table.table_main,'Data');
 path_f=getappdata(surv_data_fig,'path_data');
 idx_struct=unique([data_ori{[data_ori{:,1}],11}]);
 
 survey_input_obj=survey_input_cl();
+
+if isempty(idx_struct)
+    return;
+end
 
 survey_input_obj.Infos.SurveyName=surv_data_struct.SurveyName{idx_struct(1)};
 survey_input_obj.Infos.Voyage=surv_data_struct.Voyage{idx_struct(1)};

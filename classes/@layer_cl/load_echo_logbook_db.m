@@ -1,6 +1,6 @@
 function load_echo_logbook_db(layers_obj)
 
-survey_data_struct_lay=[];
+
 pathtofile=cell(1,length(layers_obj));
 incomplete=0;
 for ilay=1:length(layers_obj)

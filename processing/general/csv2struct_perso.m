@@ -14,6 +14,7 @@ idx_rem=find(strcmpi(fields,''));
 for u=1:length(idx_rem)
     fields{idx_rem(u)}=sprintf('field_%d',u);
 end
+
 nb_fields=length(fields);
 txt_str=fread(fid,'*char')';
 fclose(fid);

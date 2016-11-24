@@ -79,6 +79,7 @@ for i=1:length(Filenames)
         fprintf(1,'Results save to %s \n',outputFile);
         
         layers_out=[layers_old layers_new];
+        layers_out=reorder_layers_time(layers_out);
         
     catch err
         disp(err.message);
