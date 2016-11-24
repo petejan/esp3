@@ -1,7 +1,7 @@
 function obj=map_input_cl_from_obj(Ext_obj,varargin)
 
 p = inputParser;
-check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl')|isa(x,'survey_cl');
+check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl')|isa(x,'survey_cl')|isstruct(x);
 addRequired(p,'Ext_obj',check_layer_cl);
 addParameter(p,'Proj','lambert',@ischar);
 addParameter(p,'ValMax',0.0001,@isnumeric);
@@ -27,6 +27,8 @@ switch class(Ext_obj)
     case 'survey_cl'
         survey_obj=Ext_obj;
         nb_trans=length(survey_obj.SurvOutput.transectSum.snapshot);
+    case 'struct'
+        nb_trans=length(Ext_obj.Lat);
     otherwise
         return;
 end
@@ -54,6 +56,7 @@ obj.ValMax=p.Results.ValMax;
 obj.Rmax=p.Results.Rmax;
 obj.Coast=p.Results.Coast;
 obj.Depth_Contour=p.Results.Depth_Contour;
+obj.StationCode=cell(1,nb_trans);
 
 obj.LatLim=[nan nan];
 obj.LonLim=[nan nan];
@@ -187,7 +190,22 @@ switch class(Ext_obj)
             obj.Regions.Lat_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.latitude{ireg});
             obj.Regions.Lon_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.longitude{ireg});
         end
-            
+    case 'struct'
+        fields=fieldnames(Ext_obj);
+        for ifi=1:length(fields)
+           if isprop(obj,fields{ifi})
+               obj.(fields{ifi})=Ext_obj.(fields{ifi});
+           end
+        end
+        lat_lim=[nan nan];
+        lon_lim=[nan nan];
+        lat_lim(1)=nanmin(lat_lim(1),nanmin([obj.Lat{:}]));
+        lon_lim(1)=nanmin(lon_lim(1),nanmin([obj.Lon{:}]));
+        lat_lim(2)=nanmax(lat_lim(2),nanmax([obj.Lat{:}]));
+        lon_lim(2)=nanmax(lon_lim(2),nanmax([obj.Lon{:}]));
+        [lat_lim,lon_lim]=ext_lat_lon_lim(lat_lim,lon_lim,0.1);
+        obj.LatLim=lat_lim;
+        obj.LonLim=lon_lim;
 end
 
 [obj.LatLim,obj.LonLim]=ext_lat_lon_lim(obj.LatLim,obj.LonLim,0.2);

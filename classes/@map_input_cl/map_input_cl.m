@@ -25,6 +25,7 @@ classdef map_input_cl
         Coast
         Depth_Contour
         PlotType
+        StationCode
     end
     
     
@@ -46,7 +47,8 @@ classdef map_input_cl
             addParameter(p,'SliceLon',{},@iscell);
             addParameter(p,'SliceAbscf',{},@iscell);
             addParameter(p,'SliceTime_E',{},@iscell);
-            addParameter(p,'SliceTime_S',{},@iscell)
+            addParameter(p,'SliceTime_S',{},@iscell);
+            addParameter(p,'StationCode',{},@iscell)
             addParameter(p,'Regions',struct(),@isstruct);
             addParameter(p,'Nb_ST',{},@iscell);
             addParameter(p,'Nb_Tracks',{},@iscell);
@@ -56,6 +58,7 @@ classdef map_input_cl
             addParameter(p,'ValMax',0.0017,@isnumeric);
             addParameter(p,'Rmax',5,@isnumeric);
             addParameter(p,'Coast',1,@isnumeric);
+            addParameter(p,'Depth_Contour',0,@isnumeric);
             addParameter(p,'PlotType','log10',@ischar);
             parse(p,varargin{:});
             

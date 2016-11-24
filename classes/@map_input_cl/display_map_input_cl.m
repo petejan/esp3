@@ -121,15 +121,20 @@ if ~strcmp(field,'Tag')
             if ~isempty(obj.Lon{idx_snap(uui)})
                 u_plot(idx_snap(uui))=m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
                 set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
-                m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
+                m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
                 if~isempty(main_figure)
                     create_context_menu_track(main_figure,hfig,u_plot(idx_snap(uui)));
                 end
+                if ~isempty(obj.StationCode{idx_snap(uui)})
+                    m_text(nanmean(obj.Lon{idx_snap(uui)}),nanmean(obj.Lat{idx_snap(uui)}),obj.StationCode{idx_snap(uui)},'parent',n_ax(usnap),'color','r');
+                end
             end
+            
+            
             
             if ~isempty(obj.SliceLon{idx_snap(uui)})
                 if isempty(obj.Lon{idx_snap(uui)})
-                    m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','>','Markersize',10,'Color','g','tag','start');
+                    m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
                 end
                 u_plot_slice(idx_snap(uui))=m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'.k','Tag','Nav');
                 set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
