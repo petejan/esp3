@@ -151,7 +151,7 @@ if ~isequal(Filename, 0)
                 % Handle response
                 switch choice
                     case 'Yes'
-                        Filename=unique([Filename missing_files]);
+                        Filename=unique([Filename;missing_files]);
                     case 'No'
                     otherwise
                         return;
@@ -226,7 +226,7 @@ if ~isequal(Filename, 0)
                 fprintf('Could not open files %s\n',Filename{ife});
             end
         end
-    
+%     
     set(enabled_obj,'Enable','on');
     hide_status_bar(main_figure);
     loadEcho(main_figure);

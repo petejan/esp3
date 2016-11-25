@@ -46,7 +46,7 @@ else
         cursor_mode_tool_comp.jCombo = javax.swing.JComboBox(layers_Str);
         cursor_mode_tool_comp.jCombo = handle(cursor_mode_tool_comp.jCombo,'callbackproperties');
         set(cursor_mode_tool_comp.jCombo, 'SelectedIndex', idx-1);
-        set(cursor_mode_tool_comp.jCombo, 'ActionPerformedCallback', {@change_layer,main_figure});
+        set(cursor_mode_tool_comp.jCombo, 'ActionPerformedCallback',{@change_layer,main_figure});
         set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(500,500));
         set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
         set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0));

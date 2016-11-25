@@ -119,7 +119,6 @@ if ~isequal(Filename_cell, 0)
        
         fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
         if exist(fileIdx,'file')==0
-            fprintf('Indexing file: %s\n',Filename);
             idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
             save(fileIdx,'idx_raw_obj');
             disp('Done');

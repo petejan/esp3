@@ -2,9 +2,13 @@ function load_logbook_from_xml_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
-   path_init=pwd;
-   else
-   [path_init,~]=layer.get_path_files();
+    path_init = uigetdir(app_path.data,'Choose Data Folder');
+    if path_init==0
+        return;
+    end
+else
+    [path_lay,~]=get_path_files(layer);
+    path_init=path_lay{1};
 end
 
 [xml_file,path_f]= uigetfile(fullfile(path_init,'*.csv;*.txt'), 'Choose csv_file','MultiSelect','off');

@@ -48,6 +48,7 @@ import_survey_data_callback([],[],main_figure);
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmpi({hfigs(:).Tag},'logbook'), 1);
+
 if ~isempty(idx_tag)
     load_survey_data_fig_from_db(main_figure);
 end

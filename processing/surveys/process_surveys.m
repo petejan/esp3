@@ -18,7 +18,7 @@ layers_out=p.Results.layers;
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
-
+show_status_bar(p.Results.gui_main_handle);
 for i=1:length(Filenames)
     try
         surv_obj=survey_cl();
@@ -62,9 +62,10 @@ for i=1:length(Filenames)
         end
         
         %surv_obj.SurvInput.Options.Soundspeed=1450;
+        
         [layers_new,layers_old]=surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',p.Results.PathToMemmap,'cvs_root',p.Results.cvs_root,'origin',p.Results.origin,...
             'layers',layers_out,'Fieldnames',fields_req,'gui_main_handle',p.Results.gui_main_handle);
- 
+        
     catch err
         disp(err.message);
         warning('Problem loading files from %s\n',Filenames{i});
@@ -87,6 +88,7 @@ for i=1:length(Filenames)
     end
     
 end
+hide_status_bar(p.Results.gui_main_handle);
 % profile off;
 % profile viewer;
 end

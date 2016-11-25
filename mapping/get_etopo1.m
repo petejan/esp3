@@ -65,6 +65,7 @@ if nansum(diff(idx_lon)>1)>0
 else
     id_lon_step=[1 length(idx_lon)+1];
 end
+
 lat=nan(size(idx_lat));
 lon=nan(size(idx_lon));
 bathy=nan(length(idx_lon),length(idx_lat));
@@ -88,7 +89,8 @@ if latlim(1)>=latlim(2)
     lat_temp=lat;
     lat_temp(lat_temp<0)=lat_temp(lat_temp<0)+180;
     [~,idx_order_lat]=sort(lat_temp);
-    lat=lat(idx_order_lat);bathy=bathy(:,idx_order_lat);
+    lat=lat(idx_order_lat);
+    bathy=bathy(:,idx_order_lat);
 end
 
 if lonlim(1)>=lonlim(2)
@@ -98,5 +100,5 @@ if lonlim(1)>=lonlim(2)
     lon=lon(idx_order_lon);bathy=bathy(idx_order_lon,:);
 end
 lon(lon<0)=lon(lon<0)+360;
-bathy=flipud(bathy');
+bathy=(bathy');
 end

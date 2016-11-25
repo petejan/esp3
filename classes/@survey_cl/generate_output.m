@@ -349,7 +349,8 @@ for isn = 1:length(snapshots)
         nb_trans_j=surv_out_obj.stratumSum.no_transects(i_strat);
         
         if surv_out_obj.stratumSum.no_transects(i_strat)>1
-            surv_out_obj.stratumSum.abscf_sd(i_strat) = sqrt((sum_sq_abscf-abscf_mean_j.^2.*nb_trans_j)/(nb_trans_j-1)); %
+            %surv_out_obj.stratumSum.abscf_sd(i_strat) = sqrt((sum_sq_abscf-abscf_mean_j.^2.*nb_trans_j)/(nb_trans_j-1)); %
+            surv_out_obj.stratumSum.abscf_sd(i_strat) = sqrt(nansum((trans_abscf-abscf_mean_j).^2)/(nb_trans_j-1)); %
         else
             surv_out_obj.stratumSum.abscf_sd(i_strat)=0;
         end

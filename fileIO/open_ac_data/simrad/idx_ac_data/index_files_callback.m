@@ -45,7 +45,6 @@ for i=1:length(Filename)
     
     
     if exist(fileIdx,'file')==0
-        fprintf('Indexing file: %s\n',Filename{i});
         idx_raw_obj=idx_from_raw(fileN,load_bar_comp);
         save(fileIdx,'idx_raw_obj');
     else

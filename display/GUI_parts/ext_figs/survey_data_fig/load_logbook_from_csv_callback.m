@@ -2,11 +2,13 @@ function load_logbook_from_csv_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
-   path_init=pwd;
-   surveydata=survey_data_cl();
+    path_init = uigetdir(app_path.data,'Choose Data Folder');
+    if path_init==0
+        return;
+    end
 else
-   [path_init,~]=layer.get_path_files();
-   surveydata=layer.get_survey_data();
+    [path_lay,~]=get_path_files(layer);
+    path_init=path_lay{1};
 end
 
 [csv_file,path_f]= uigetfile(fullfile(path_init,'*.csv;*.txt'), 'Choose csv_file','MultiSelect','off');

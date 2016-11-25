@@ -188,7 +188,11 @@ end
 idx_struct=src.Data{evt.Indices(1),11};
 
 switch evt.Indices(2)
-    case {1,3,4,5,8}
+    case {1}
+        data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
+        setappdata(surv_data_fig,'data_ori',data_ori);
+        return;
+    case{3,4,5,8}
         filename=src.Data{evt.Indices(1),2};
         snap=src.Data{evt.Indices(1),3};
         strat=src.Data{evt.Indices(1),4};
@@ -196,10 +200,10 @@ switch evt.Indices(2)
         st=src.Data{evt.Indices(1),9};
         et=src.Data{evt.Indices(1),10};
         comm=src.Data{evt.Indices(1),8};
+        data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
     otherwise
         return;
 end
-data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
 
 path_f=getappdata(surv_data_fig,'path_data');
 
