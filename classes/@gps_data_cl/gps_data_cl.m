@@ -64,7 +64,7 @@ classdef gps_data_cl
                     d_dist=m_lldist(imag(complex_pos_fil),real(complex_pos_fil));
                     if length(d_dist)>2*nb_chg
                        d_dist(1:nb_chg)=2*d_dist(1:nb_chg);
-                       d_dist(end-nb_chg+1:end)=2*d_dist(end-nb_chg:end+1);
+                       d_dist(end-nb_chg+1:end)=2*d_dist(end-nb_chg+1:end);
                     end
                     
 
