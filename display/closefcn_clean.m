@@ -1,36 +1,13 @@
-function closefcn_clean(src,~)
+function closefcn_clean(main_fig,~)
 % User-defined close request function
 % to display a question dialog box
-
-selection = questdlg('Close The Program?',...
-    '',...
-    'Yes','No','Yes');
+selection=close_dialog_fig(main_fig);
+% selection = questdlg('Close The Program?',...
+%     '',...
+%     'Yes','No','Yes');
 switch selection,
     case 'Yes'
-        hfigs=getappdata(src,'ExternalFigures');
-        delete(hfigs);
-        
-        layers=getappdata(src,'Layers');
-        
-        i=length(layers);
-        while i>=1
-            try
-                layers=layers.delete_layers(layers(i).ID_num);
-            end
-            
-            i=i-1;
-        end
-        
-        close_figures_callback([],[],src)
-        
-        appdata = get(src,'ApplicationData');
-        fns = fieldnames(appdata);
-        for ii = 1:numel(fns)
-            rmappdata(src,fns{ii});
-        end
-        
-        
-        delete(src);
+       cleanup_echo(main_fig);
     case 'No'
         return;
 end

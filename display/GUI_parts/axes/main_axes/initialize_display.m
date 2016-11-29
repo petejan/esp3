@@ -22,15 +22,7 @@ load_axis_panel(main_figure);
 
 
 
-
-panel_obj=findobj(main_figure,'Type','uipanel');
-set(panel_obj,'BackgroundColor','White','bordertype','line');
-
-tab_obj=findobj(main_figure,'Type','uitab');
-set(tab_obj,'BackgroundColor','White');
-
-control_obj=findobj(main_figure,'Type','uicontrol','-not',{'Style','PushButton','-or','Style','togglebutton'});
-set(control_obj,'BackgroundColor','White');
+format_color_gui(main_figure);
 
 set(main_figure,'Visible','on');
 drawnow;

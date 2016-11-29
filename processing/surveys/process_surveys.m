@@ -18,7 +18,7 @@ layers_out=p.Results.layers;
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
-show_status_bar(p.Results.gui_main_handle);
+
 for i=1:length(Filenames)
     try
         surv_obj=survey_cl();

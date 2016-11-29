@@ -55,6 +55,8 @@ for i=1:nb_child
         case 'snapshot'
             nb_snap=nb_snap+1;
             Snapshots{nb_snap}=get_snapshot(xml_struct.Children(i),Options);      
+        case '#comment'
+            continue;
         otherwise
             warning('Unidentified Child in XML');
     end

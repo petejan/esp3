@@ -1,4 +1,4 @@
-function add_bottoms_from_bot_xml(layer_obj,varargin)
+function pres=add_bottoms_from_bot_xml(layer_obj,varargin)
 
 p = inputParser;
 
@@ -12,10 +12,11 @@ new_bottom=cell(1,length(layer_obj.Transceivers));
 [path_xml,~,bot_file_str]=layer_obj.create_files_str();
 xml_file=fullfile(path_xml,bot_file_str);
 
-
+pres=ones(length(xml_file));
 for i=1:length(xml_file)
     
     if exist(xml_file{i},'file')==0
+        pres(i)=0;
         fprintf('No xml bottom file for %s\n',layer_obj.Filename{i});
         continue;
     end
@@ -23,7 +24,8 @@ for i=1:length(xml_file)
     [bottom_xml_tot,ver]=parse_bottom_xml(xml_file{i});
     
     if isempty(bottom_xml_tot)
-        fprintf('Cannot find parse bottom file for %s\n',layer_obj.Filename{i});
+        pres(i)=0;
+        fprintf('Cannot parse bottom file for %s\n',layer_obj.Filename{i});
         continue;
     end
     

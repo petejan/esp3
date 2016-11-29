@@ -22,8 +22,8 @@ idx_nan=isnan(A);
 A(idx_nan)=0;
 
 nan_filt=filter2(B,double(~idx_nan));
-
-C=filter2(B,A)./nan_filt;
+ori_filt=filter2(B,A);
+C=ori_filt./nan_filt;
 
 
 end

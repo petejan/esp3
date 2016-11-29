@@ -7,6 +7,7 @@ warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 p = inputParser;
 
 addParameter(p,'Filenames',{},@(x) ischar(x)|iscell(x));
+addParameter(p,'SaveEcho',0,@isnumeric);
 
 parse(p,varargin{:});
 
@@ -128,7 +129,14 @@ end
 
 if ~isempty(p.Results.Filenames)
     open_file([],[],p.Results.Filenames,main_figure);
+    if p.Results.SaveEcho>0
+        save_echo(main_figure);
+        cleanup_echo(main_figure);
+        delete(main_figure);
+    end
 end
+
+
 end
 
 

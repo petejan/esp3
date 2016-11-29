@@ -89,6 +89,15 @@ classdef curr_state_disp_cl <handle
             obj.Fieldname=field;
             obj.setTypeCax();
         end
+        
+        function cax=getCaxField(obj,field)
+           idx_field=find(cellfun(@(x) ~isempty(strfind(x,field)),obj.Fieldnames));
+            if ~isempty(idx_field)
+                cax=obj.Caxes{idx_field};
+            else
+                cax=obj.Cax;
+            end
+        end
                 
     end
     

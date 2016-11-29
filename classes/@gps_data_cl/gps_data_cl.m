@@ -46,9 +46,31 @@ classdef gps_data_cl
                 obj.Time=obj.Time(idx_sort);
                 
                 if length(obj.Long)>=2
-                    d_dist=m_lldist(obj.Long,obj.Lat);
+                   
+                    
+                    complex_pos=obj.Lat+1j*obj.Long;
+                    
+                   
+                    nb_points_filter=ceil(15/nanmean(diff(obj.Time*3600*24)));
+                    if size(obj.Time,1)==1
+                        filt=ones(1,nb_points_filter);
+                    else
+                        filt=ones(nb_points_filter,1);
+                    end
+                    
+                    complex_pos_fil=filter2_perso(filt,complex_pos);
+                   
+                    nb_chg=floor((nb_points_filter-1)/2); 
+                    d_dist=m_lldist(imag(complex_pos_fil),real(complex_pos_fil));
+                    if length(d_dist)>2*nb_chg
+                       d_dist(1:nb_chg)=2*d_dist(1:nb_chg);
+                       d_dist(end-nb_chg+1:end)=2*d_dist(end-nb_chg:end+1);
+                    end
+                    
+
                     d_dist(isnan(d_dist))=0;
                     dist_disp=[0;cumsum(d_dist)]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
+
                     obj.Dist=dist_disp;
                 else
                     obj.Dist=zeros(size(obj.Lat));

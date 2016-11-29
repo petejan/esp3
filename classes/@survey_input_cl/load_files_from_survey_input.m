@@ -42,6 +42,7 @@ for isn=1:length(snapshots)
         transects=stratum{ist}.Transects;
         cal_strat=get_cal_node(cal_snap,stratum{ist});
         for itr=1:length(transects)
+           show_status_bar(p.Results.gui_main_handle);
            try
                 filenames_cell=transects{itr}.files;
                 trans_num=transects{itr}.number;
@@ -258,8 +259,7 @@ for isn=1:length(snapshots)
                                     surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                     layer_new.set_survey_data(surv);
                             end
-                            layer_new.load_bot_regs('reg_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
-                            layer_new.load_bot_regs('bot_ver',0,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                            layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                     end
                     
                     
@@ -269,7 +269,7 @@ for isn=1:length(snapshots)
                     for ial=1:length(algos)
                         if isempty(algos{ial}.Varargin.Frequencies)
                             layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                            layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name);
+                            layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
                         else
                             for i_freq_al=1:length(algos{ial}.Varargin.Frequencies)
                                 [idx_freq_al,found_freq_al]=layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al));
@@ -281,6 +281,10 @@ for isn=1:length(snapshots)
                                 end
                             end
                         end
+                    end
+                    
+                    if options.SaveBot>0
+                        layer_new.write_bot_to_bot_xml();
                     end
                     
                     for ire=1:length(regs)
@@ -310,6 +314,7 @@ for isn=1:length(snapshots)
                         end
                     end
                     
+                                        
                     if options.ClassifySchool>0
                         [idx_120,found_120]=find_freq_idx(layer_new,120000);
                         if found_120>0
@@ -334,6 +339,9 @@ for isn=1:length(snapshots)
                     if options.Remove_tracks
                         layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
                     end
+                    if options.SaveReg>0
+                        layer_new.write_reg_to_reg_xml();
+                    end
                     
                     layers_new=union(layers_new,layer_new);
                     
@@ -350,6 +358,8 @@ for isn=1:length(snapshots)
                             
                         end
                     end
+                    
+                     
                 end
                 clear layers_out_temp;
             catch error

@@ -35,7 +35,7 @@ i_reg=0;
 
 fprintf('\n----------------Integration-----------------\n');
 for isn=1:length(snaps)
-    
+    try
     snap_num=snaps(isn);
     strat_name=strat{isn};
     trans_num=trans(isn);
@@ -313,7 +313,11 @@ for isn=1:length(snaps)
     surv_out_obj.slicedTransectSum.slice_abscf{i_trans} = [Output_echo(:).slice_abscf]; % slice_abscf
     surv_out_obj.slicedTransectSum.slice_nb_tracks{i_trans} = [Output_echo(:).slice_nb_tracks];
     surv_out_obj.slicedTransectSum.slice_nb_st{i_trans} = [Output_echo(:).slice_nb_st];
-    
+    catch err
+        disp(err.message);
+        warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
+        continue;
+    end
 end
 
 

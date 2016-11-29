@@ -1,4 +1,4 @@
-function add_regions_from_reg_xml(layer_obj,IDs,varargin)
+function pres=add_regions_from_reg_xml(layer_obj,IDs,varargin)
 
 p = inputParser;
 
@@ -16,8 +16,10 @@ end
 [path_xml,reg_file_str,~]=layer_obj.create_files_str();
 xml_file=fullfile(path_xml,reg_file_str);
 
+pres=ones(length(xml_file));
 for ix=1:length(xml_file)
     if exist(xml_file{ix},'file')==0
+        pres(ix)=0;
         fprintf('No xml region file for %s\n',layer_obj.Filename{ix});
         continue;
     end
@@ -25,6 +27,7 @@ for ix=1:length(xml_file)
     [region_xml_tot,ver]=parse_region_xml(xml_file{ix});
     
     if isempty(region_xml_tot)
+        pres(ix)=0;
         fprintf('Cannot parse xml region file for %s\n',layer_obj.Filename{ix});
         return;
     end

@@ -21,7 +21,7 @@ if isempty(reg_curr)
     end
 end
 
-new_echo_figure(main_figure,'fig_handle',reg_curr.display_region(trans_obj),'Tag',reg_curr.print());
+new_echo_figure(main_figure,'fig_handle',reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv')),'Tag',reg_curr.print());
 
 
 end

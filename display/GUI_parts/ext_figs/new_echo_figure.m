@@ -14,7 +14,8 @@ addParameter(p,'WindowScrollWheelFcn',@do_nothing,@(x) isa(x,'function_handle'))
 addParameter(p,'ButtonDownFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'KeyPressFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowStyle','normal',@ischar);
-addParameter(p,'Tag','',@ischar)
+addParameter(p,'Visible','on',@ischar);
+addParameter(p,'Tag','',@ischar);
 
 parse(p,main_figure,varargin{:});
 
@@ -42,6 +43,7 @@ if isempty(p.Results.fig_handle)
         'CloseRequestFcn',{p.Results.CloseRequestFcn,main_figure},...
         'ButtonDownFcn',{p.Results.ButtonDownFcn,main_figure},...
         'WindowScrollWheelFcn',{p.Results.WindowScrollWheelFcn,main_figure},...
+        'Visible',p.Results.Visible,...
         'KeyPressFcn',{p.Results.KeyPressFcn,main_figure});
     
 else
@@ -68,6 +70,17 @@ end
 function do_nothing(~,~,~,~)
 end
 
-function close_win_echo(src,~,~,main_fig)
+function close_win_echo(src,~,~,main_figure)
+uiresume(src);
+% if ~isempty(main_figure)
+%     ext_fig=getappdata(main_figure,'ExternalFigures');
+%     idx_src=find(src==ext_fig);
+%     if ~isempty(idx_src)
+%         ext_fig(idx_src)=[];
+%         setappdata(main_figure,'ExternalFigures',ext_fig);
+%     end
+% end
+
+
 delete(src);
 end
