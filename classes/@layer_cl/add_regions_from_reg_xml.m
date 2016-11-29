@@ -14,17 +14,17 @@ for idx_freq=1:length(layer_obj.Transceivers)
 end
 
 [path_xml,reg_file_str,~]=layer_obj.create_files_str();
-xml_file=fullfile(path_xml,reg_file_str);
 
-pres=ones(length(xml_file));
-for ix=1:length(xml_file)
-    if exist(xml_file{ix},'file')==0
+pres=ones(length(reg_file_str));
+for ix=1:length(reg_file_str)
+    xml_file=fullfile(path_xml{ix},reg_file_str{ix});
+    if exist(xml_file,'file')==0
         pres(ix)=0;
         fprintf('No xml region file for %s\n',layer_obj.Filename{ix});
         continue;
     end
     
-    [region_xml_tot,ver]=parse_region_xml(xml_file{ix});
+    [region_xml_tot,ver]=parse_region_xml(xml_file);
     
     if isempty(region_xml_tot)
         pres(ix)=0;

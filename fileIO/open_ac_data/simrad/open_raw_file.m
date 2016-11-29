@@ -25,7 +25,12 @@ new_layers=open_raw_file_standalone_v2(Filename,...
 if ~isempty(new_layers)
     new_layers.load_echo_logbook_db();
     for i=1:length(new_layers)
-        new_layers(i).load_bot_regs();
+        try
+            new_layers(i).load_bot_regs();
+        catch err
+            disp(err.message);
+            fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
+        end
     end 
 else
     return;

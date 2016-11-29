@@ -155,8 +155,9 @@ end
 
 Bottom_region(:,nansum(Bottom_region)<=Np)=0;
 
-Bottom_region=ceil(filter2_perso(ones(1,b_filter),Bottom_region));
-Bottom_region=floor(filter2_perso(ones(1,b_filter),Bottom_region));
+
+Bottom_region=ceil(filter(ones(b_filter,1)/b_filter,1,Bottom_region));
+Bottom_region=floor(filter(ones(b_filter,1)/b_filter,1,Bottom_region));
 
 n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
 Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
@@ -221,7 +222,7 @@ end
 Bottom(Bottom==1)=nan;
 Bottom(nanmin(idx_bottom)>=nanmax(1,nb_samples-round(heigh_b_filter)/2))=nan;
 
-BS_filter=(20*log10(filter2_perso(ones(4*Np,1),10.^(BS/20)))).*Bottom_region;
+BS_filter=(20*log10(filter(ones(4*Np,1),1,10.^(BS/20)))).*Bottom_region;
 
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;

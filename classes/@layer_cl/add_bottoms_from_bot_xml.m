@@ -10,22 +10,23 @@ parse(p,layer_obj,varargin{:});
 new_bottom=cell(1,length(layer_obj.Transceivers));
 
 [path_xml,~,bot_file_str]=layer_obj.create_files_str();
-xml_file=fullfile(path_xml,bot_file_str);
 
-pres=ones(length(xml_file));
-for i=1:length(xml_file)
-    
-    if exist(xml_file{i},'file')==0
-        pres(i)=0;
-        fprintf('No xml bottom file for %s\n',layer_obj.Filename{i});
+pres=ones(length(bot_file_str));
+init_bot=ones(1,length(layer_obj.Transceivers));
+
+for ix=1:length(bot_file_str)
+    xml_file=fullfile(path_xml{ix},bot_file_str{ix});
+    if exist(xml_file,'file')==0
+        pres(ix)=0;
+        fprintf('No xml bottom file for %s\n',layer_obj.Filename{ix});
         continue;
     end
     
-    [bottom_xml_tot,ver]=parse_bottom_xml(xml_file{i});
+    [bottom_xml_tot,ver]=parse_bottom_xml(xml_file);
     
     if isempty(bottom_xml_tot)
-        pres(i)=0;
-        fprintf('Cannot parse bottom file for %s\n',layer_obj.Filename{i});
+        pres(ix)=0;
+        fprintf('Cannot parse bottom file for %s\n',layer_obj.Filename{ix});
         continue;
     end
     
@@ -48,10 +49,11 @@ for i=1:length(xml_file)
             fprintf('Those bottoms have been written for a different GPT %.0fkHz',bottom_xml.Infos.Freq);
         end
         
-        
         bot_xml=bottom_xml.Bottom;
-        if i==1
+        if init_bot(idx_freq)==1
+            init_bot(idx_freq)=0;
             new_bottom{idx_freq}= bottom_cl(...
+                'Origin',sprintf('XML_v%s',ver),...
                 'Sample_idx',nan(size(trans_obj.Data.Time)),...
                 'Tag',nan(size(trans_obj.Data.Time)));
         end
@@ -96,7 +98,7 @@ for i=1:length(xml_file)
                 samples=bot_xml.Sample;
                 tag=bot_xml.Tag;
                 
-                iping_ori=find(layer_obj.Transceivers(idx_freq).Data.FileId==i,1);
+                iping_ori=find(layer_obj.Transceivers(idx_freq).Data.FileId==ix,1);
                 
                 new_bottom{idx_freq}.Sample_idx(pings+iping_ori-1)=samples;
                 new_bottom{idx_freq}.Tag(pings+iping_ori-1)=tag;

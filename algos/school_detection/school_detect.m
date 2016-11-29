@@ -100,8 +100,8 @@ h_filter=2*Np;
 
 Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);
 
-Sv_mask=floor(filter2(ones(h_filter,1),double(Sv_mask>0),'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
-Sv_mask=ceil(filter2(ones(h_filter,1),Sv_mask,'same')./filter2(ones(h_filter,1),ones(size(Sv_mask)),'same'));
+Sv_mask=floor(filter(ones(h_filter,1)/h_filter,1,double(Sv_mask>0)));
+Sv_mask=ceil(filter(ones(h_filter,1)/h_filter,1,Sv_mask));
 
 
 candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'mat',p.Results.load_bar_comp);

@@ -78,6 +78,17 @@ classdef layer_cl < handle
             end
         end
         
+        function fold_lay=get_folder(layer)
+           [folders,~,~]=cellfun(@fileparts,layer.Filename,'UniformOutput',0);
+           
+           fold_lay=unique(folders);
+           
+           if length(fold_lay)>1
+              warning('Files from multiple folder in one layer...') ;
+           end
+           
+        end
+        
         function memap_files=list_memaps(layers)
             memap_files={};
             ifile=0;

@@ -132,7 +132,7 @@ Max_BS_reg(:,max_bs<thr_bottom)=0;
 
 Bottom_region=find_cluster((Bottom_region>0&BS_filtered_bot>=thr_bottom&Max_BS_reg),1);
 
-Bottom_region=ceil(filter2_perso(ones(1,3),Bottom_region));
+Bottom_region=ceil(filter(ones(1,3)/3,1,Bottom_region));
 Bottom_region_red=imresize(Bottom_region,size(BS_lin_red),'nearest');
 Bottom_region=zeros(size(BS_lin));
 Bottom_region(idx_r_min:idx_r_max,:)=Bottom_region_red;
@@ -211,7 +211,7 @@ end
 Bottom(Bottom==1)=nan;
 Bottom(nanmin(idx_bottom)>=nanmax(1,nb_samples-round(heigh_b_filter)/2))=nan;
 
-BS_filter=(20*log10(filter2_perso(ones(4*Np,1),10.^(BS/20)))).*Bottom_region;
+BS_filter=(20*log10(filter(ones(4*Np,1)/(4*Np),1,10.^(BS/20)))).*Bottom_region;
 BS_filter(Bottom_region==0)=nan;
 
 BS_bottom=nanmax(BS_filter);

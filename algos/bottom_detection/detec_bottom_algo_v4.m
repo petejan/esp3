@@ -188,7 +188,7 @@ end
 Bottom(Bottom==1)=nan;
 Bottom(idx_empty)=nan;
 
-BS_filter=(20*log10(filter2_perso(ones(4*Np,1),10.^(BS/20)))).*Bottom_region;
+BS_filter=(20*log10(filter(ones(4*Np,1)/(4*Np),1,10.^(BS/20)))).*Bottom_region;
 BS_filter(Bottom_region==0)=nan;
 
 BS_bottom=nanmax(BS_filter);

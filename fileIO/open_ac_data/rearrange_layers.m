@@ -5,7 +5,7 @@ function layers_out=rearrange_layers(layers_in,multi_layer)
 %multi_layer=1: do nothing
 
 if multi_layer==1
-    layers_in=layers_in;
+    layers_out=layers_in;
     return;
 end
 
@@ -16,9 +16,11 @@ for i=1:length(layers_in)
     curr_layer=layers_in(i);
     nb_transceivers(i)=length(curr_layer.Transceivers);
     filetype{i}=curr_layer.Filetype;
+    fold_temp=curr_layer.get_folder();
 end
 
 trans_nb=unique(nb_transceivers);
+
 idx_to_concatenate=cell(1,length(trans_nb));
 idx_not_to_concatenate=cell(1,length(trans_nb));
 

@@ -6,16 +6,13 @@ parse(p,layer_obj);
 
 [path_xml,reg_file_str,~]=layer_obj.create_files_str();
 
-if exist(path_xml,'dir')==0
-    mkdir(path_xml);
-end
-
 nb_reg=layer_obj.get_nb_regions();
 
-
-
 for ifile=1:length(reg_file_str)
-    xml_file=fullfile(path_xml,reg_file_str{ifile});
+    if exist(path_xml{ifile},'dir')==0
+        mkdir(path_xml{ifile});
+    end
+    xml_file=fullfile(path_xml{ifile},reg_file_str{ifile});
     ver='0.2';
     
     if nansum(nb_reg)==0

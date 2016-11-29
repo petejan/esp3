@@ -80,7 +80,7 @@ for uui=1:length(layer.Frequencies)
     Sp_red=Sp(idx_r,idx_pings);
     Sp_red(Sp_red>sphere_ts+5)=nan;
     if ~strcmp(layer.Transceivers(uui).Mode,'FM')
-        Sp_red=filter2(ones(Np,1),Sp_red)./filter2(ones(Np,1),ones(size(Sp_red)));
+        Sp_red=filter(ones(Np,1)/Np,1,Sp_red)./filter2(ones(Np,1),ones(size(Sp_red)));
     end
     Sp_red(Sp_red<sphere_ts-20)=nan;
     [~,idx_peak]=nanmax(Sp_red,[],1);

@@ -7,15 +7,13 @@ parse(p,layer_obj);
 
 [path_xml,~,bot_file_str]=layer_obj.create_files_str();
 
-if exist(path_xml,'dir')==0
-    mkdir(path_xml);
-end
-
 for ifile=1:length(bot_file_str)
-    
+    if exist(path_xml{ifile},'dir')==0
+        mkdir(path_xml{ifile});
+    end
     docNode = com.mathworks.xml.XMLUtils.createDocument('bottom_file');
     ver='0.2';
-    xml_file=fullfile(path_xml,bot_file_str{ifile});
+    xml_file=fullfile(path_xml{ifile},bot_file_str{ifile});
     bottom_file=docNode.getDocumentElement;
     bottom_file.setAttribute('version',ver);
     if exist(xml_file,'file')==2

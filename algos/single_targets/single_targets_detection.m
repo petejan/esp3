@@ -151,7 +151,7 @@ idx_peaks=zeros(nb_samples,nb_pings);
 
 switch p.Results.DataType
     case 'CW'
-        peak_mat=10*log10(filter2(ones(floor(Np/2),1),10.^(peak_mat/10))./filter2(ones(floor(Np/2),1),ones(size(peak_mat))));
+        peak_mat=10*log10(filter(ones(floor(Np/2),1)/floor(Np/2),1,10.^(peak_mat/10)));
         idx_peaks=idx_comp;
         
         for i=1:floor(Np/4)+2

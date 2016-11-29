@@ -328,7 +328,7 @@ end
 %%%%%%And compile the final vector designing the bad pings%%%%%%%%%%%%%%%%
 idx_noise_sector=~(idx_spikes_Below&idx_spikes_Above&idx_bottom_bs_eval&idx_ringdown);
 %%%%%%%%%%%%%Remove isolated "good" pings%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-idx_noise_sector_filter=filter2(ones(1,9),idx_noise_sector)./filter2(ones(1,9),ones(size(idx_noise_sector)));
+idx_noise_sector_filter=filter(ones(1,9),1,idx_noise_sector/9);
 idx_noise_sector(idx_noise_sector_filter>=7/9)=1;
 
 
