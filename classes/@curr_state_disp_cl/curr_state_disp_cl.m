@@ -42,7 +42,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'CursorMode','Normal',@ischar);
             addParameter(p,'CurrLayerID',0,@isnumeric);
             addParameter(p,'NbLayers',0,@isnumeric);
-            addParameter(p,'Cmap','jet',@ischar);
+            addParameter(p,'Cmap','ek60',@ischar);
             
             parse(p,varargin{:});
             results=p.Results;

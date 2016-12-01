@@ -159,7 +159,7 @@ switch callbackdata.Key
         end
         
     case 'c'
-        cmaps={'jet' 'hsv' 'esp2' 'ek500' 'parula' 'winter'};
+        cmaps={'jet' 'hsv' 'esp2' 'ek60' 'ek500' 'parula' 'winter'};
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
         if isempty(id_map)
             id_map=0;

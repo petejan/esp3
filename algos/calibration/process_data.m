@@ -283,7 +283,7 @@ end
 
 
 % plot up the on-axis TS values
-new_echo_figure([],'Name', 'On-axis sphere TS')
+new_echo_figure([],'Name', 'On-axis sphere TS');
 if exist('boxplot', 'file') % this lives in the Statistics toolbox, which not everyone will have
     boxplot(ts_values)
 else
@@ -339,7 +339,7 @@ warning('off','MATLAB:griddata:DuplicateDataPoints');
 ZI=griddata(double(sphere(:,2)), double(sphere(:,3)), double(sphere(:,1)+outby(1)),XI,YI);
 
 if ~isempty(ZI)
-    new_echo_figure([],'Name', 'Beam pattern contour plot')
+    new_echo_figure([],'Name', 'Beam pattern contour plot');
     warning('on','MATLAB:griddata:DuplicateDataPoints');
     contourf(XI,YI,ZI)
     axis equal
@@ -357,7 +357,7 @@ if ~isempty(ZI)
     axis equal
     
     % Do a 3d plot of the uncorrected and corrected beampattern
-    new_echo_figure([],'Name', '3D beam pattern (corrected and uncorrected)')
+    new_echo_figure([],'Name', '3D beam pattern (corrected and uncorrected)');
     clf
     surf(XI, YI, ZI)
     warning('off','MATLAB:griddata:DuplicateDataPoints');
@@ -371,7 +371,7 @@ if ~isempty(ZI)
 end
 
 % Do a plot of the sphere range during the calibration
-new_echo_figure([],'Name', 'Sphere range')
+new_echo_figure([],'Name', 'Sphere range');
 clf
 plot(sphere(:,4))
 disp(['Mean sphere range = ' num2str(mean(sphere(:,4))) ...
@@ -382,7 +382,7 @@ ylabel('Sphere range (m)')
 
 % Do a plot of the compensated and uncompensated echoes at a selection of
 % angles, similar to what one can get from the Simrad calibration program
-new_echo_figure([],'Name', 'Beam slice plot')
+new_echo_figure([],'Name', 'Beam slice plot');
 plotBeamSlices(sphere, outby(1), trimTo, faBW, psBW, peak_ts, p.onAxisTol)
 
 % Calculate the sa correction value informed by draft formulae

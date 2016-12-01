@@ -31,8 +31,8 @@ nb_pings=length(idx_ping);
 outputSize=nanmin(screensize(3:4),[nb_pings nb_samples]);
 
 
-dr=nanmax(ceil(nb_samples/outputSize(2)),1);
-dp=nanmax(ceil(nb_pings/outputSize(1)),1);
+dr=nanmax(floor(nb_samples/outputSize(2)),1);
+dp=nanmax(floor(nb_pings/outputSize(1)),1);
 % dp=1;
 % dr=1;
 

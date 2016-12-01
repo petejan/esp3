@@ -44,6 +44,7 @@ end
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,flag);
+format_color_gui(main_figure);
 init_listeners(main_figure);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 

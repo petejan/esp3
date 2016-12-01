@@ -1,12 +1,9 @@
 function update_display(main_figure,new)
 
 set(main_figure,'WindowButtonMotionFcn','');
-main_childs=get(main_figure,'children');
-tags=get(main_childs,'Tag');
-
-idx_opt=strcmp(tags,'option_tab_panel');
-%idx_algo=strcmp(tags,'algo_tab_panel');
+opt_panel=findobj(main_figure,'Tag','option_tab_panel');
 layer=getappdata(main_figure,'Layer');
+
 
 if isempty(layer)
     return;
@@ -26,11 +23,12 @@ if new==1
     update_display_tab(main_figure);
     update_regions_tab(main_figure,1);
     update_lines_tab(main_figure);
-    load_calibration_tab(main_figure,main_childs(idx_opt));
+    load_calibration_tab(main_figure,opt_panel);
     load_info_panel(main_figure);
 end
 
 update_axis_panel(main_figure,new);
+
 try
     update_mini_ax(main_figure,new);
 catch
@@ -38,6 +36,7 @@ catch
     load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.55]);
     update_mini_ax(main_figure,new);
 end
+
 set_axes_position(main_figure);
 update_cmap(main_figure);
 reverse_y_axis(main_figure);

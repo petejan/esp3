@@ -23,7 +23,13 @@ switch lower(curr_disp.Cmap)
         col_ax='w';
         col_lab='k';
         col_grid=[0 0 0];
-        col_bot='g'; % Simrad sounders use a green bottom line
+        col_bot='g';
+     case 'ek60'
+        cmap=ek60_colormap();
+        col_ax='w';
+        col_lab='k';
+        col_grid=[0 0 0];
+        col_bot='k'; 
 end
 
 

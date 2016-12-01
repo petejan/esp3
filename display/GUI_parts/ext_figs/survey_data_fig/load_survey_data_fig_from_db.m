@@ -23,7 +23,7 @@ end
 
 dbconn=sqlite(db_file,'connect');
 
-data_logbook=dbconn.fetch('select * from logbook order by datetime(StartTime)');
+data_logbook=dbconn.fetch('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook order by datetime(StartTime)');
 data_survey=dbconn.fetch('select * from survey');
 dbconn.close();
 
@@ -35,9 +35,9 @@ survDataSummary(:,2)=data_logbook(:,1);
 survDataSummary(:,3)=data_logbook(:,2);
 survDataSummary(:,4)=data_logbook(:,3);
 survDataSummary(:,5)=data_logbook(:,4);
-survDataSummary(:,8)=data_logbook(:,7);
-survDataSummary(:,9)=data_logbook(:,5);
-survDataSummary(:,10)=data_logbook(:,6);
+survDataSummary(:,8)=data_logbook(:,5);
+survDataSummary(:,9)=data_logbook(:,6);
+survDataSummary(:,10)=data_logbook(:,7);
 survDataSummary(:,11)=num2cell(1:nb_lines);
 
 for i=1:nb_lines
@@ -59,8 +59,7 @@ surv_data_fig = new_echo_figure(main_figure,...
     'Units','pixels',...
     'Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
     'Resize','off',...
-    'Name','SurveyData','Tag','logbook',...
-    'MenuBar','none');%No Matlab Menu)
+    'Name','SurveyData','Tag','logbook');
 
 uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
 uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
@@ -99,6 +98,7 @@ uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot
 uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
 uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
 uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});
+uimenu(survey_menu,'Label','Export to Html and display','Callback',{@export_metadata_to_html_callback,main_figure});
 uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
 
 

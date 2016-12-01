@@ -72,8 +72,10 @@ if isequal(filename,0) || isequal(pathname,0)
     return;
 end
 
-struct2csv(new_struct,fullfile(pathname,filename));
 
+T = struct2table(new_struct);
+
+writetable(T,fullfile(pathname,filename));
 
 end
 

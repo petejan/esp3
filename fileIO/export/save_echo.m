@@ -10,7 +10,7 @@ main_axes=axes_panel_comp.main_axes;
 haxes=axes_panel_comp.haxes;
 vaxes=axes_panel_comp.vaxes;
 
-new_fig=new_echo_figure(main_figure,'Menubar','none','Units','Pixels','Position',get(0,'ScreenSize'),...
+new_fig=new_echo_figure(main_figure,'Units','Pixels','Position',get(0,'ScreenSize'),...
     'Name','','Tag','save_echo');
 new_axes=copyobj(main_axes,new_fig);
 set(new_axes,'units','pixels','XAxisLocation','bottom','XTickLabelRotation',90);

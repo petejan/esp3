@@ -2,18 +2,21 @@ function load_calibration_tab(main_figure,option_tab_panel)
 
 if isappdata(main_figure,'Calibration_tab')
     calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
-    delete(calibration_tab_comp.calibration_tab);
-    rmappdata(main_figure,'Calibration_tab');
+    delete(get(calibration_tab_comp.calibration_tab,'children'));
+else
+   calibration_tab_comp.calibration_tab=uitab(option_tab_panel,'Title','Calibration'); 
+  
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
+     setappdata(main_figure,'Calibration_tab',calibration_tab_comp);
     return;
 end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-calibration_tab_comp.calibration_tab=uitab(option_tab_panel,'Title','Calibration');
+
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed: %.0f(m/s)',curr_disp.Freq/1e3,layer.EnvData.SoundSpeed),'units','normalized','Position',[0.1 0.85 0.7 0.1]);
        
 if ~strcmp(layer.Filetype,'CREST')

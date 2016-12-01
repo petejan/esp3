@@ -17,17 +17,16 @@ for ip=1:length(pathtofile)
     
     dbconn=sqlite(fileN);
     
-     files_db=dbconn.fetch('select Filename from logbook');
+    files_db=dbconn.fetch('select Filename from logbook');
     close(dbconn);
     
    
-    
     dir_raw=dir(fullfile(pathtofile{ip},'*.raw'));
     dir_asl=dir(fullfile(pathtofile{ip},'*A'));
     
     list_raw=union({dir_raw(:).name},{dir_asl(:).name});
 
-    if nansum(cellfun(@(x) nansum(strcmpi(files_db,strtrim(x))),list_raw)==0)>0
+    if ~isempty(setdiff(list_raw,files_db))
         incomplete=1;
         fprintf('%s incomplete, we''ll update it\n',fileN);
     end
@@ -35,11 +34,10 @@ for ip=1:length(pathtofile)
 end
 
 
-
 layers_obj.add_survey_data_db();
 
 if incomplete>0
-    layers_obj.update_echo_logbook_dbfile;
+    layers_obj.update_echo_logbook_dbfile();
 end
 
 end

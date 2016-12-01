@@ -5,8 +5,15 @@ layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
 
 nb_layers=length(layers);
-layers_Str=list_layers(layers,'nb_char',80);
-layers_Str_comp=list_layers(layers);
+if nb_layers>0
+    layers_Str=list_layers(layers,'nb_char',80);
+    layers_Str_comp=list_layers(layers);
+else
+    layers_Str={'--'};
+    layers_Str_comp={'--'};
+    layers=layer_cl();
+    layer=layer_cl();
+end
 
 [path_lay,~]=layer.get_path_files();
 
@@ -22,8 +29,7 @@ if isappdata(main_figure,'Cursor_mode_tool')
     set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx_curr}]);
 else
     
-    
-    cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure);
+    cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure,'Tag','toolbar_esp3');
     app_path_main=whereisEcho();
     icon=get_icons_cdata(fullfile(app_path_main,'icons'));
     
@@ -39,9 +45,10 @@ else
     
     [idx,~]=find_layer_idx(layers,layer.ID_num);
 
-    %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer');
+    %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer
+    warning('off', 'YMA:FindJObj:invisibleHandle');
     jToolbar = findjobj(main_figure,'-nomenu','class','mjtoolbar');
-    
+     
     if ~isempty(jToolbar)
         cursor_mode_tool_comp.jCombo = javax.swing.JComboBox(layers_Str);
         cursor_mode_tool_comp.jCombo = handle(cursor_mode_tool_comp.jCombo,'callbackproperties');
@@ -69,6 +76,10 @@ function change_layer(hCombo, ~,main_figure)
 
 
 layers=getappdata(main_figure,'Layers');
+if isempty(layers)
+    return;
+end
+
 layer=getappdata(main_figure,'Layer');
 itemIndex = get(hCombo,'SelectedIndex');  % 0=topmost item
 % itemName  = get(hCombo,'SelectedItem');

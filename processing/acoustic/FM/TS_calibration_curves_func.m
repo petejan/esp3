@@ -78,10 +78,8 @@ for uui=1:length(layer.Frequencies)
     
     
     Sp_red=Sp(idx_r,idx_pings);
-    Sp_red(Sp_red>sphere_ts+5)=nan;
-    if ~strcmp(layer.Transceivers(uui).Mode,'FM')
-        Sp_red=filter(ones(Np,1)/Np,1,Sp_red)./filter2(ones(Np,1),ones(size(Sp_red)));
-    end
+    Sp_red(Sp_red>sphere_ts+20)=nan;
+ 
     Sp_red(Sp_red<sphere_ts-20)=nan;
     [~,idx_peak]=nanmax(Sp_red,[],1);
     
@@ -93,6 +91,7 @@ for uui=1:length(layer.Frequencies)
     Sp_red(abs(range_red_mat-r_mean)>10)=nan;
     [~,idx_peak]=nanmax(Sp_red,[],1);
     idx_peak=idx_peak+idx_r(1)-1;
+    
     
     AcrossAngle_sph=AcrossAngle(idx_peak+nb_samples*(idx_pings-1));
     AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(idx_pings-1));
@@ -162,10 +161,8 @@ for uui=1:length(layer.Frequencies)
     if idx_freq==uui
         switch curr_disp.Xaxes
             case 'Number'
-                axes(ah);
-                hold on;
-                plot(layer.Transceivers(uui).Data.get_numbers(idx_pings),layer.Transceivers(uui).Data.get_range(idx_peak),'+r','linewidth',2);
-                drawnow
+                plot(ah,layer.Transceivers(uui).Data.get_numbers(idx_pings),layer.Transceivers(uui).Data.get_range(idx_peak),'+r','linewidth',2);
+                    drawnow
             otherwise
                 
         end
@@ -214,7 +211,7 @@ for uui=1:length(layer.Frequencies)
         caxis([-55 -36])
         drawnow;
         
-        idx_low=(Sp_sph<=-60)|abs(phi)>0.1|compensation>12;
+        idx_low=(Sp_sph<=-70)|abs(phi)>0.1|compensation>12;
         idx_peak(idx_low)=[];
         idx_pings(idx_low)=[];
         range_sph(idx_low)=[];

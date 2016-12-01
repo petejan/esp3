@@ -15,7 +15,7 @@ field_csv=fieldnames(struct_out);
 
 for ifs=1:length(field_csv)
     if isfield(surv_data_struct,field_csv{ifs})
-        struct_out.(field_csv{ifs})=surv_data_struct.(field_csv{ifs})';
+        struct_out.(field_csv{ifs})=surv_data_struct.(field_csv{ifs});
     end
 end
 
@@ -30,7 +30,6 @@ for i=1:length(struct_out.Stratum)
 end
 
 
-
 [filename, pathname] = uiputfile('*.csv',...
     'Save survey csv Metadata file',...
     fullfile(path_lay{1},[surv_data_struct.Voyage{1} '_' surv_data_struct.SurveyName{1} '_metadata.csv']));
@@ -38,7 +37,8 @@ end
 if isequal(filename,0) || isequal(pathname,0)
     return;
 end
+T = struct2table(struct_out);
 
-struct2csv(struct_out,fullfile(pathname,filename),1);
+writetable(T,fullfile(pathname,filename));
 
 end

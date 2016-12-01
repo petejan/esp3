@@ -3,7 +3,7 @@ function answer=close_dialog_fig(main_figure)
 
     
     QuestFig=new_echo_figure(main_figure,'units','pixels','position',[200 200 200 100],...
-        'WindowStyle','modal','Visible','on','MenuBar','non','resize','off');
+        'WindowStyle','modal','Visible','on','resize','off');
     movegui(QuestFig,'center');
     
     uicontrol('Parent',QuestFig,...

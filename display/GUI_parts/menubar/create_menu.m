@@ -73,6 +73,7 @@ main_menu.colormap=uimenu(m_colormap,'Label','Autumn','Callback',{@change_cmap_c
 main_menu.colormap=uimenu(m_colormap,'Label','Winter','Callback',{@change_cmap_callback,main_figure},'Tag','winter');
 main_menu.colormap=uimenu(m_colormap,'Label','Spring','Callback',{@change_cmap_callback,main_figure},'Tag','spring');
 main_menu.colormap=uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
+main_menu.colormap=uimenu(m_colormap,'Label','EK60','Callback',{@change_cmap_callback,main_figure},'Tag','ek60');
 main_menu.colormap=uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
 
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');

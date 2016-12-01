@@ -13,7 +13,7 @@ columnformat = {'char','char','char','char','char','char','char'};
 
 script_fig = new_echo_figure(main_figure,'Units','Pixels','Position',[100 100 800 600],'Resize','off',...
     'Name',sprintf('Scripting (%s)',flag),...
-    'MenuBar','none','Tag',sprintf('Scripting%s',flag));%No Matlab Menu)
+    'Tag',sprintf('Scripting%s',flag));%No Matlab Menu)
 
 uicontrol(script_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
 script_table.search_box=uicontrol(script_fig,'style','edit','units','normalized','position',[0.2 0.96 0.3 0.03],'HorizontalAlignment','left','Callback',{@search_callback,script_fig});

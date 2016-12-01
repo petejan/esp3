@@ -83,7 +83,7 @@ for ilay=1:length(layers_obj)
             
             survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
             
-            survdata_temp.surv_data_to_logbook_db(dbconn,list_raw{i},'StartTime',start_time,'EndTime',end_time);
+            survdata_temp.surv_data_to_logbook_db(dbconn,new_files{i},'StartTime',start_time,'EndTime',end_time);
         end
         
         

@@ -178,7 +178,7 @@ for iconfig=id_config
     params_current.PulseLength(:)=params.TXPulseWidth(1);
     params_current.SampleInterval=nanmean(diff(T,1,1),1);
     params_current.Absorption(:)=alpha;
-    
+    params_current.TransmitPower(:)=2000;
     env_data=env_data_cl();
     env_data.SoundSpeed=c;
     

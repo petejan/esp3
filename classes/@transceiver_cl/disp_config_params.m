@@ -9,7 +9,7 @@ parse(p,trans_obj,varargin{:});
 
 fig =new_echo_figure([],'Units','pixels','Position',[200 300 800 400],'Resize','off',...
     'Name',sprintf('Configuration/Parameters %s ping %d',trans_obj.Config.ChannelID,p.Results.idx_ping),...
-    'MenuBar','none','Tag',sprintf('config_params%s',trans_obj.Config.ChannelID));
+    'Tag',sprintf('config_params%s',trans_obj.Config.ChannelID));
 
 config_str=trans_obj.Config.config2str();
 

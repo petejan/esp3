@@ -1,12 +1,13 @@
 function load_info_panel(main_figure)
 
+
 if isappdata(main_figure,'Info_panel')
     info_panel_comp=getappdata(main_figure,'Info_panel');
-    delete(info_panel_comp.info_panel);
-    rmappdata(main_figure,'Info_panel');
+    delete(get(info_panel_comp.info_panel,'children'));
+else
+   info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','info_panel');
 end
 
-info_panel_comp.info_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0 1 .05],'BackgroundColor',[1 1 1],'tag','axes_panel');
 
 i_str='';
 

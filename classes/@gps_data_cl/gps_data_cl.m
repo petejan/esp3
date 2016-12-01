@@ -50,7 +50,7 @@ classdef gps_data_cl
                     complex_pos=obj.Lat+1j*obj.Long;
                     
                     nb_points_filter=ceil(20/nanmean(diff(obj.Time*3600*24)));
-                    complex_pos_fil=smooth(complex_pos,nb_points_filter,'rloess');
+                    complex_pos_fil=smooth(complex_pos,nb_points_filter,'moving');
                     
                     d_dist=m_lldist(imag(complex_pos_fil),real(complex_pos_fil));
   
