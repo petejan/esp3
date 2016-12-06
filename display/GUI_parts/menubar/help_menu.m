@@ -33,6 +33,6 @@ labelStr = ['<html><ul>Shortcuts:'...
 jLabel = javaObjectEDT('javax.swing.JLabel',labelStr);
 [jcomp,~] = javacomponent(jLabel,[0,0,400,400],dialog_fig);
 jcomp.setBackground(Color.WHITE);
-format_color_gui(dialog_fig);
+format_color_gui(dialog_fig,curr_disp.Font);
 
 end

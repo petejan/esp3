@@ -3,13 +3,9 @@ function zoom_out_callback(src,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
-set(axes_panel_comp.main_axes,'units','pixels');
-
-set(axes_panel_comp.main_axes,'units','normalized');
 
 xdata_tot=trans.Data.get_numbers();       
 ydata_tot=trans.Data.get_range();

@@ -7,6 +7,7 @@ addRequired(p,'reg_obj',@(obj) isa(obj,'region_cl'));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
 
 addParameter(p,'Cax',init_cax('sv'),@isnumeric);
+addParameter(p,'Cmap','jet',@ischar);
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
@@ -59,7 +60,10 @@ caxis(cax);
 
 colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
 grid on;
-colormap jet;
+[cmap,~,~,col_grid,~]=init_cmap(p.Results.Cmap);
+colormap(ax_in,cmap);
+set(ax_in,'GridColor',col_grid);
+
 if strcmp(reg_obj.Reference,'Surface')
     axis ij
 end
@@ -74,8 +78,15 @@ ylabel('Sv mean(dB)')
 ax_horz.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
 ax_horz.XTickLabelRotation=90;
 
+switch reg_obj.Cell_w_unit
+    case 'meters'
+        ax_horz.XAxis.TickLabelFormat='%.0fm';
+    case 'pings'
+        ax_horz.XAxis.TickLabelFormat='%.0f';
+end
+
 ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
-plot(pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2),y_disp,'r'));
+plot(pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2)),y_disp,'r');
 xlabel('Sv mean (db)')
 
 if strcmp(reg_obj.Reference,'Surface')
@@ -87,8 +98,8 @@ end
 
 grid on;
 ax_vert.YTick=(y_disp(1):reg_obj.Cell_h:y_disp(end))+reg_obj.Cell_h/2;
-ax_vert.YAxis.TickLabelFormat='%.2g';
 
+ax_vert.YAxis.TickLabelFormat='%.0gm';
 linkaxes([ax_in ax_vert],'y');
 linkaxes([ax_in ax_horz],'x');
 set(ax_in,'Xlim',[x_disp(1)-reg_obj.Cell_w/2 x_disp(end)+reg_obj.Cell_w/2]);

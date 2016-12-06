@@ -6,7 +6,7 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-hfigs=getappdata(main_figure,'ExternalFigures');
+
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
@@ -21,7 +21,6 @@ if isempty(reg_curr)
     end
 end
 
-new_echo_figure(main_figure,'fig_handle',reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv')),'Tag',reg_curr.print());
-
+new_echo_figure(main_figure,'fig_handle',reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap),'Tag',reg_curr.print());
 
 end

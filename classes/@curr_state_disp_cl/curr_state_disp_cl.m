@@ -21,6 +21,7 @@ classdef curr_state_disp_cl <handle
         CurrLayerID
         NbLayers
         Cmap
+        Font
     end
     
     methods
@@ -43,6 +44,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'CurrLayerID',0,@isnumeric);
             addParameter(p,'NbLayers',0,@isnumeric);
             addParameter(p,'Cmap','ek60',@ischar);
+            addParameter(p,'Font','default',@ischar);
             
             parse(p,varargin{:});
             results=p.Results;

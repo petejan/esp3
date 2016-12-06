@@ -8,9 +8,8 @@ current_fig=gcf;
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
     current_fig.Pointer = 'fleur';
-    set(current_fig,'units','normalized');
-    pos=ah.Position;
-    set(current_fig,'units','pixels');
+    pos = getpixelposition(ah);
+
     current_fig.WindowButtonMotionFcn = @wbmcb;
     current_fig.WindowButtonUpFcn = @wbucb;
 end
@@ -23,7 +22,7 @@ end
         current_fig.WindowButtonMotionFcn = '';
         current_fig.WindowButtonUpFcn = '';
         
-       if nansum(cp(1,1:2)<0|cp(1:2>pos(3:4))>=1)
+       if nansum(cp(1,1:2)<0|cp(1,1:2)>pos(3:4))>=1
            undock_mini_axes_callback(src,[],main_figure,'out_figure')
        end
     end

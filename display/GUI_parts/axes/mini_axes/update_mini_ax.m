@@ -27,10 +27,10 @@ if new>0
     range=layer.Transceivers(idx_freq).Data.get_range();
     nb_pings=length(pings);
     nb_samples=length(range);
-    set(mini_axes_comp.mini_ax,'units','pixels');
-    temp_size=get(mini_axes_comp.mini_ax,'position');
+
+    temp_size = getpixelposition(mini_axes_comp.mini_ax);
     size_mini=temp_size(3:4);
-    set(mini_axes_comp.mini_ax,'units','normalized');
+    
     idx_r_disp=unique(round(linspace(1,nb_samples,size_mini(2))));
     idx_p_disp=unique(round(linspace(1,nb_pings,size_mini(1))));
     data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);

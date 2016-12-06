@@ -1,4 +1,5 @@
 function load_scripts_fig(main_figure,scriptsSummary,flag)
+
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('Scripting%s',flag)));
@@ -11,9 +12,10 @@ end
 columnname = {'Title','Species','Survey','Areas','Author','Script','Created'};
 columnformat = {'char','char','char','char','char','char','char'};
 
-script_fig = new_echo_figure(main_figure,'Units','Pixels','Position',[100 100 800 600],'Resize','off',...
+script_fig = figure('Units','Pixels','Position',[100 100 800 600],'Resize','off',...
     'Name',sprintf('Scripting (%s)',flag),...
-    'Tag',sprintf('Scripting%s',flag));%No Matlab Menu)
+    'Tag',sprintf('Scripting%s',flag),...
+    'MenuBar','none');%No Matlab Menu)
 
 uicontrol(script_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
 script_table.search_box=uicontrol(script_fig,'style','edit','units','normalized','position',[0.2 0.96 0.3 0.03],'HorizontalAlignment','left','Callback',{@search_callback,script_fig});
@@ -33,8 +35,8 @@ script_table.table_main = uitable('Parent',script_fig,...
     'Units','Normalized','Position',[0 0 1 0.95],...
     'RowName',[]);
 
-set(script_table.table_main,'Units','pixels');
-pos_t=get(script_table.table_main,'Position');
+pos_t = getpixelposition(script_table.table_main);
+
 set(script_table.table_main,'ColumnWidth',{2*pos_t(3)/10, pos_t(3)/10, pos_t(3)/10, pos_t(3)/10, pos_t(3)/10, 2*pos_t(3)/10, 2*pos_t(3)/10});
 set(script_table.table_main,'CellSelectionCallback',{@store_selected_script_callback,script_fig})
 
@@ -59,6 +61,8 @@ selected_scripts={''};
 setappdata(script_fig,'SelectedScripts',selected_scripts);
 setappdata(script_fig,'script_table',script_table);
 setappdata(script_fig,'DataOri',scriptsSummary);
+
+new_echo_figure(main_figure,'fig_handle',script_fig);
 
 end
 

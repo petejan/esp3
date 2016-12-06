@@ -55,17 +55,18 @@ columnformat = {'logical' 'char','numeric','char','numeric','logical','logical',
 
 size_max = get(0, 'MonitorPositions');
 
-surv_data_fig = new_echo_figure(main_figure,...
+surv_data_fig = figure(...
     'Units','pixels',...
     'Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
     'Resize','off',...
+    'MenuBar','none',...
     'Name','SurveyData','Tag','logbook');
 
-uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
-uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
+uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
+uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.45 0.96 0.1 0.03],'String','Search :');
 
 
-surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.45 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
+surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
 
 
 % Create the uitable
@@ -77,8 +78,7 @@ surv_data_table.table_main = uitable('Parent',surv_data_fig,...
     'Units','Normalized','Position',[0 0 1 0.95],...
     'RowName',[]);
 
-set(surv_data_table.table_main,'Units','pixels');
-pos_t=get(surv_data_table.table_main,'Position');
+pos_t = getpixelposition(surv_data_table.table_main);
 set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/36,4*pos_t(3)/18, pos_t(3)/18, pos_t(3)/18, pos_t(3)/18,pos_t(3)/36,pos_t(3)/36, 3*pos_t(3)/18, 3*pos_t(3)/18,3*pos_t(3)/18, pos_t(3)/18/2});
 set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_fig,main_figure});
 %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
@@ -105,6 +105,8 @@ uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callba
 setappdata(surv_data_fig,'path_data',path_f);
 setappdata(surv_data_fig,'surv_data_table',surv_data_table);
 setappdata(surv_data_fig,'data_ori',survDataSummary);
+
+new_echo_figure(main_figure,'fig_handle',surv_data_fig);
 end
 
 function plot_bad_pings_callback(src,~,surv_data_fig,main_figure)

@@ -23,6 +23,7 @@ uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remov
 uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_callback,main_figure},'separator','on');
 uimenu(m_bot_reg,'Label','Save Bottom to xml','Callback',{@save_bot_xml_callback,main_figure});
 uimenu(m_bot_reg,'Label','Save Regions to xml','Callback',{@save_reg_xml_callback,main_figure});
+uimenu(m_bot_reg,'Label','Save Bottom and Regions to dB','Callback',{@save_bot_reg_xml_to_db_callback,main_figure});
 uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,1},'separator','on');
 uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,0});
 uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,1});
@@ -63,18 +64,27 @@ uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_
 
 m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
 
+m_font=uimenu(m_display,'Label','Font');
+% fonts=listfonts(main_figure);
+%
+% for i=1:length(fonts)
+% uimenu(m_font,'Label',fonts{i},'Callback',{@change_font_callback,main_figure},'Tag',fonts{i});
+% end
+uimenu(m_font,'Label','Change Font','Callback',{@change_font_callback,main_figure});
+
+
 m_colormap=uimenu(m_display,'Label','Colormap');
-main_menu.colormap=uimenu(m_colormap,'Label','Jet','Callback',{@change_cmap_callback,main_figure},'Tag','jet');
-main_menu.colormap=uimenu(m_colormap,'Label','HSV','Callback',{@change_cmap_callback,main_figure},'Tag','hsv');
-main_menu.colormap=uimenu(m_colormap,'Label','Hot','Callback',{@change_cmap_callback,main_figure},'Tag','hot');
-main_menu.colormap=uimenu(m_colormap,'Label','Cool','Callback',{@change_cmap_callback,main_figure},'Tag','cool');
-main_menu.colormap=uimenu(m_colormap,'Label','Parula','Callback',{@change_cmap_callback,main_figure},'Tag','parula');
-main_menu.colormap=uimenu(m_colormap,'Label','Autumn','Callback',{@change_cmap_callback,main_figure},'Tag','autumn');
-main_menu.colormap=uimenu(m_colormap,'Label','Winter','Callback',{@change_cmap_callback,main_figure},'Tag','winter');
-main_menu.colormap=uimenu(m_colormap,'Label','Spring','Callback',{@change_cmap_callback,main_figure},'Tag','spring');
-main_menu.colormap=uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
-main_menu.colormap=uimenu(m_colormap,'Label','EK60','Callback',{@change_cmap_callback,main_figure},'Tag','ek60');
-main_menu.colormap=uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
+uimenu(m_colormap,'Label','Jet','Callback',{@change_cmap_callback,main_figure},'Tag','jet');
+uimenu(m_colormap,'Label','HSV','Callback',{@change_cmap_callback,main_figure},'Tag','hsv');
+uimenu(m_colormap,'Label','Hot','Callback',{@change_cmap_callback,main_figure},'Tag','hot');
+uimenu(m_colormap,'Label','Cool','Callback',{@change_cmap_callback,main_figure},'Tag','cool');
+uimenu(m_colormap,'Label','Parula','Callback',{@change_cmap_callback,main_figure},'Tag','parula');
+uimenu(m_colormap,'Label','Autumn','Callback',{@change_cmap_callback,main_figure},'Tag','autumn');
+uimenu(m_colormap,'Label','Winter','Callback',{@change_cmap_callback,main_figure},'Tag','winter');
+uimenu(m_colormap,'Label','Spring','Callback',{@change_cmap_callback,main_figure},'Tag','spring');
+uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
+uimenu(m_colormap,'Label','EK60','Callback',{@change_cmap_callback,main_figure},'Tag','ek60');
+uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
 
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
 main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
@@ -141,7 +151,7 @@ setappdata(main_figure,'main_menu',main_menu);
 end
 
 function reload_current_layer_callback(~,~,main_figure)
-layer=getappdata(main_figure,'Layer'); 
+layer=getappdata(main_figure,'Layer');
 
 file_id=layer.Filename;
 delete_layer_callback([],[],main_figure);
@@ -178,6 +188,31 @@ end
 function change_cmap_callback(src,~,main_fig)
 curr_disp=getappdata(main_fig,'Curr_disp');
 curr_disp.Cmap=src.Tag;
+setappdata(main_fig,'Curr_disp',curr_disp);
+end
+
+function change_font_callback(~,~,main_fig)
+curr_disp=getappdata(main_fig,'Curr_disp');
+fonts=listfonts(main_fig);
+i_font=find(strcmp(curr_disp.Font,fonts));
+
+if isempty(i_font)
+    i_font=1;
+end
+
+list_font_figure= new_echo_figure(main_fig,'Units','Pixels','Position',[100 100 200 600],'Resize','off',...
+    'Name','Choose Font',...
+    'Tag','font_choice');
+movegui(list_font_figure,'center');
+uicontrol(list_font_figure,'Style','listbox','min',0,'max',0,'value',i_font,'string',fonts,'units','normalized','position',[0.1 0.05 0.8 0.9],'callback',{@list_font_cback,main_fig})
+
+end
+
+function list_font_cback(src,~,main_fig)
+curr_disp=getappdata(main_fig,'Curr_disp');
+fonts = get(src,'String');
+s = get(src,'Value');
+curr_disp.Font=fonts{s};
 setappdata(main_fig,'Curr_disp',curr_disp);
 end
 

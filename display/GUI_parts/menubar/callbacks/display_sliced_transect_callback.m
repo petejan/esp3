@@ -16,7 +16,7 @@ idx_reg=trans_obj.list_regions_type('Data');
 reg_tot=trans_obj.get_reg_spec(idx_reg);               
 output_1D=trans_obj.slice_transect('reg',reg_tot);
 
-new_echo_figure(main_figure);
+fig=figure();
 plot(10*log10(output_1D.slice_abscf));
 hold on;
 plot(10*log10(nansum(output_2D.cell_abscf)));
@@ -39,9 +39,9 @@ xlabel('Distance (meters)');
 ylabel('Range (meters)')
 caxis([-70 -35]);
 set(echo,'alphadata',alpha_map)
-
-
 grid on;
+
+new_echo_figure(main_figure,'fig_handle',fig);
 
 
 end

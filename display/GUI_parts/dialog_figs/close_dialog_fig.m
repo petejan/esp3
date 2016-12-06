@@ -1,7 +1,7 @@
 function answer=close_dialog_fig(main_figure)
 
 
-    
+    curr_disp=getappdata(main_figure,'Curr_disp');
     QuestFig=new_echo_figure(main_figure,'units','pixels','position',[200 200 200 100],...
         'WindowStyle','modal','Visible','on','resize','off');
     movegui(QuestFig,'center');
@@ -9,19 +9,18 @@ function answer=close_dialog_fig(main_figure)
     uicontrol('Parent',QuestFig,...
                'Style','text',...
                'Position',[10 50 180 40],...
-               'String','Close ESP3?','FontName','FixedWidth','Fontsize',14);
+               'String','Close ESP3?','Fontsize',14);
 
     uicontrol('Parent',QuestFig,...
         'Position',[40 20 50 25],...
         'String','Yes',...
-        'Callback',@decision_callback);
+        'Callback',@decision_callback,'Value',0);
     uicontrol('Parent',QuestFig,...
         'Position',[110 20 50 25],...
         'String','No',...
-        'Callback',@decision_callback);
+        'Callback',@decision_callback,'Value',0);
     
-   
-    format_color_gui(QuestFig);
+    format_color_gui(QuestFig,curr_disp.Font);
     drawnow;
     answer='';
     
@@ -33,7 +32,6 @@ function answer=close_dialog_fig(main_figure)
         delete(c);
     end
     
-
     
     
     function decision_callback(src,~,~)

@@ -4,9 +4,8 @@ function [dr,dp]=display_layer(layer,freq,fieldname,ax,main_echo,x,y,new)
 if found==0
     return;
 end
-set(ax,'units','pixels');
-screensize=get(ax,'position');
-set(ax,'units','normalized');
+
+screensize = getpixelposition(ax);
 
 xdata=layer.Transceivers(idx_freq).Data.get_numbers();
 ydata=layer.Transceivers(idx_freq).Data.get_range();

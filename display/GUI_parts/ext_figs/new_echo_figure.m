@@ -17,6 +17,7 @@ addParameter(p,'KeyPressFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowStyle','normal',@ischar);
 addParameter(p,'Visible','on',@ischar);
 addParameter(p,'Tag','',@ischar);
+addParameter(p,'Cmap','',@ischar);
 
 parse(p,main_figure,varargin{:});
 
@@ -62,10 +63,18 @@ end
 
 javaFrame = get(fig_handle,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+if ~isempty(main_figure)
+    curr_disp=getappdata(main_figure,'Curr_disp');
+    font=curr_disp.Font;
+else
+    font=[];
+end
+format_color_gui(fig_handle,font);
 
 if ~isempty(main_figure)
     setappdata(main_figure,'ExternalFigures',[fig_handle hfigs]);
 end
+
 
 end
 

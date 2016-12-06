@@ -5,32 +5,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 mini_axes_comp=getappdata(main_figure,'Mini_axes');
 
 
-switch lower(curr_disp.Cmap)
-    case {'parula' 'jet' 'hsv' 'winter' 'autumn' 'spring' 'hot' 'cool'}
-        cmap=colormap(curr_disp.Cmap);
-        col_ax='w';
-        col_lab='k';
-        col_grid=[0 0 0];
-        col_bot='k'; 
-    case 'esp2'
-        cmap=esp2_colormap();
-        col_ax='k';
-        col_lab=[0.8 0.8 0.8];
-        col_grid=[1 1 1];
-        col_bot='y';
-    case 'ek500'
-        cmap=ek500_colormap();
-        col_ax='w';
-        col_lab='k';
-        col_grid=[0 0 0];
-        col_bot='g';
-     case 'ek60'
-        cmap=ek60_colormap();
-        col_ax='w';
-        col_lab='k';
-        col_grid=[0 0 0];
-        col_bot='k'; 
-end
+[cmap,col_ax,col_lab,col_grid,col_bot]=init_cmap(curr_disp.Cmap);
 
 
 set(axes_panel_comp.vaxes,'YColor',col_lab);

@@ -89,13 +89,13 @@ end
 
 for k=1:size(TS,1)
     [pdf_temp,x_temp]=pdf_perso(TS(k,:),'bin',25);
-    new_echo_figure(main_figure);
+    hfig=figure();
     bar(x_temp,pdf_temp);
     xlabel('TS(dB)');
     ylabel('Pdf');
     title(tag{k});
     grid on;
-
+    new_echo_figure(main_figure,'fig_handle',hfig);
 end
 
 
