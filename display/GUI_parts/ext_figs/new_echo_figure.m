@@ -52,7 +52,9 @@ if isempty(p.Results.fig_handle)
 else
     fig_handle=p.Results.fig_handle;
     fields_in=fieldnames(p.Results);
-    
+    fig_handle.NumberTitle='off';
+    fig_handle.Color='White';
+    fig_handle.DockControls='off';
     for ifi=1:length(fields_in)
         if ~any(strcmp(fields_in{ifi},p.UsingDefaults))&&isprop(fig_handle,fields_in{ifi})
             set(fig_handle,fields_in{ifi},p.Results.(fields_in{ifi}));

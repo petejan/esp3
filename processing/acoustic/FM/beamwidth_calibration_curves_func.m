@@ -14,6 +14,8 @@ switch choice
     case 'No thank you'
         return;
 end
+show_status_bar(main_figure);
+load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 
 layer=getappdata(main_figure,'Layer');
@@ -79,11 +81,14 @@ for uui=1:length(layer.Frequencies)
     AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(idx_pings-1));
     Sp_sph=Sp(idx_peak+nb_samples*(idx_pings-1));
     
-    compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
+
+	faBW = layer.Transceivers(uui).Config.BeamWidthAlongship; % [degrees]
+    psBW = layer.Transceivers(uui).Config.BeamWidthAthwartship; % [degrees]
     
-    %[phi, theta] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
+    est_ts = sphere_ts-simradBeamCompensation(faBW, psBW, AlongAngle_sph, AcrossAngle_sph);
     
-    idx_low=(Sp_sph<=-65)|compensation>12|(Sp_sph>-30);
+    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>3  ;
+    
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];
@@ -139,20 +144,17 @@ for uui=1:length(layer.Frequencies)
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
         
-        h=waitbar(1/length(idx_pings),sprintf('Processing TS Estimation %i/%i',0,length(idx_pings)),'Name','Processing TS Estimation');
-        for kk=1:length(idx_pings)
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),[]);
-            try
-                waitbar(kk/length(idx_pings),h,sprintf('Processing TS Estimation %i/%i',kk,length(idx_pings)));
-            catch
-                h=waitbar(kk/length(idx_pings),sprintf('Processing TS Estimation %i/%i',kk,length(idx_pings)),'Name','Processing TS Estimation');
-            end
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
+        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+
+
+        
+         for kk=1:length(idx_pings)
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,[]);
+            set(load_bar_comp.progress_bar,'Value',kk);
         end
         
-        try
-            close(h);
-        end
-        
+       
         
         BeamWidthAlongship_f_th=2*acosd(1-(f_vec(:,kk)/Freq).^-2*(1-cosd(layer.Transceivers(uui).Config.BeamWidthAlongship/2)));
         BeamWidthAthwartship_f_th=2*acosd(1-(f_vec(:,kk)/Freq).^-2*(1-cosd(layer.Transceivers(uui).Config.BeamWidthAthwartship/2)));
@@ -165,22 +167,16 @@ for uui=1:length(layer.Frequencies)
         peak=nan(1,size(f_vec,1));
         exitflag=nan(1,size(f_vec,1));
         
-        h=waitbar(1/size(f_vec,1),sprintf('Processing Beamwidth Estimation %i/%i',0,size(f_vec,1)),'Name','Processing Beamwidth Estimation');
-        
+         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',size(f_vec,1), 'Value',0);
+        load_bar_comp.status_bar.setText(sprintf('Processing BeamWidth estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+
+
         for tt=1:size(f_vec,1)
             [offset_Alongship(tt), BeamWidthAlongship_f_fit(tt), offset_Athwartship(tt), BeamWidthAthwartship_f_fit(tt), ~, peak(tt), exitflag(tt)]...
                 =fit_beampattern(Sp_f(tt,:), AcrossAngle_sph, AlongAngle_sph,mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]), mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]));
-            try
-                waitbar(tt/size(f_vec,1),h,sprintf('Processing Beamwidth Estimation %i/%i',tt,size(f_vec,1)));
-            catch
-                h=waitbar(tt/size(f_vec,1),sprintf('Processing Beamwidth Estimation %i/%i',tt,size(f_vec,1)),'Name','Processing Beamwidth Estimation');
-            end
+            set(load_bar_comp.progress_bar,'Value',kk);
         end
-        
-        
-        try
-            close(h)
-        end
+
         
         figure(TS_fig);
         hold on;
@@ -214,6 +210,7 @@ for uui=1:length(layer.Frequencies)
     end
 end
 setappdata(main_figure,'Layer',layer);
-
+hide_status_bar(main_figure);
+loadEcho(main_figure);
 end
 

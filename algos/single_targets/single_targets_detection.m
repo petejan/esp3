@@ -103,7 +103,7 @@ Ping=repmat(trans_obj.Data.get_numbers(),nb_samples,1);
 
 
 [T,Np]=trans_obj.get_pulse_length();
-%[T,Np]=trans_obj.get_pulse_Comp_length();
+
 
 switch p.Results.DataType
     case 'CW'

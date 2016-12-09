@@ -5,10 +5,10 @@ dR_old=nanmean(diff(old_range));
 t=2*dR_old/old_c;
 dR_new= double(new_c * t / 2);
 new_range=(trans_obj.Data.get_samples()-1)*dR_new;
+[~,Np]=trans_obj.get_pulse_length();
+[TVG_Sp_old,TVG_Sv_old]=computeTVG(old_range,Np);
 
-[TVG_Sp_old,TVG_Sv_old]=computeTVG(old_range);
-
-[TVG_Sp_new,TVG_Sv_new]=computeTVG(new_range);
+[TVG_Sp_new,TVG_Sv_new]=computeTVG(new_range,Np);
 
 trans_obj.Data.Range=[new_range(1) new_range(end)];
 

@@ -47,12 +47,7 @@ classdef gps_data_cl
                 
                 if length(obj.Long)>=2
                    
-                    complex_pos=obj.Lat+1j*obj.Long;
-                    
-                    nb_points_filter=ceil(20/nanmean(diff(obj.Time*3600*24)));
-                    complex_pos_fil=smooth(complex_pos,nb_points_filter,'moving');
-                    
-                    d_dist=m_lldist(imag(complex_pos_fil),real(complex_pos_fil));
+                    d_dist=m_lldist(obj.Lat,obj.Long);
   
                     d_dist(isnan(d_dist))=0;
                     dist_disp=[0;cumsum(d_dist)]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!

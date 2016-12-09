@@ -6,14 +6,9 @@ Ztrd=75;%ohms
 for idx_freq=1:length(trans_obj)
 
     switch trans_obj(idx_freq).Config.TransceiverType
-        case {'WBT','WBT Tube'}
+        case {'WBT','WBT Tube','WBAT'}
             
-            
-            FreqStart=(trans_obj(idx_freq).Params.FrequencyStart(1));
-            FreqEnd=(trans_obj(idx_freq).Params.FrequencyEnd(1));
-            FreqCenter=(FreqStart+FreqEnd)/2;
-            
-            
+           
             s1=data.pings(idx_freq).comp_sig_1;
             s2=data.pings(idx_freq).comp_sig_2;
             s3=data.pings(idx_freq).comp_sig_3;
@@ -23,9 +18,7 @@ for idx_freq=1:length(trans_obj)
             
             y=data.pings(idx_freq).y;
             data.pings(idx_freq).power=4*(abs(y)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
-            
-        case 'GPT'
-            FreqCenter=trans_obj(idx_freq).Params.FrequencyEnd(1);
+
  
     end
     

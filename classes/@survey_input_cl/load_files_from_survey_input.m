@@ -57,7 +57,18 @@ for isn=1:length(snapshots)
                     filenames_cell={filenames_cell};
                 end
                 regs=transects{itr}.Regions;
-                %bot=transects{itr}.Bottom;
+                reg_ver=0;
+                for ireg=1:length(regs)
+                    if isfield(regs{ireg},'ver')
+                        reg_ver=nanmax(reg_ver,regs{ireg}.ver);
+                    end
+                end
+                bot=transects{itr}.Bottom;
+                bot_ver=0;
+                if isfield(bot,'ver')
+                    bot_ver=nanmax(bot_ver,bot.ver);
+                end
+                
                 layers_in=[];
                 fType=cell(1,length(filenames_cell));
                 
@@ -259,7 +270,7 @@ for isn=1:length(snapshots)
                                     surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                     layer_new.set_survey_data(surv);
                             end
-                            layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                            layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'bot_ver',bot_ver,'reg_ver',reg_ver);
                     end
                     
                     

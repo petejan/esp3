@@ -32,7 +32,7 @@ format_color_gui(main_figure,curr_disp.Font);
 
 set(main_figure,'Visible','on');
 drawnow;
-
+movegui(main_figure,'center');
 load_loading_bar(main_figure);
 load_info_panel(main_figure);
 

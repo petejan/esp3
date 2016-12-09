@@ -1,15 +1,16 @@
 function loadEcho(main_figure)
 
 set(main_figure,'WindowButtonMotionFcn','');
-rm_listeners(main_figure)
+rm_listeners(main_figure);
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
-nb_layers=length(layers);
-curr_disp=getappdata(main_figure,'Curr_disp');
 
-if nb_layers==0
+if isempty(layers)
     return;
 end
+
+nb_layers=length(layers);
+curr_disp=getappdata(main_figure,'Curr_disp');
 
 [idx_freq,found_freq]=find_freq_idx(layer,curr_disp.Freq);
 [~,found_field]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
@@ -17,7 +18,7 @@ end
 if found_freq==0
     idx_freq=1;
     %disp('Cannot Find Frequency...');
-    curr_disp.Freq=layer.Frequencies(idx_freq);   
+    curr_disp.Freq=layer.Frequencies(idx_freq);
 end
 
 if found_field==0
@@ -32,15 +33,17 @@ end
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 if ~isempty(layer)
-   if layer.ID_num==curr_disp.CurrLayerID&&nb_layers==curr_disp.NbLayers
-       flag=0;
-   else
-       flag=1;
-       curr_disp.CurrLayerID=layer.ID_num;
-       curr_disp.NbLayers=nb_layers;
-       %disp('New Layer')
-   end
+    if layer.ID_num==curr_disp.CurrLayerID&&nb_layers==curr_disp.NbLayers
+        flag=0;
+    else
+        flag=1;
+        curr_disp.CurrLayerID=layer.ID_num;
+        curr_disp.NbLayers=nb_layers;
+        %disp('New Layer')
+    end
 end
+curr_disp.Bot_changed_flag=0;
+curr_disp.Reg_changed_flag=0;
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,flag);

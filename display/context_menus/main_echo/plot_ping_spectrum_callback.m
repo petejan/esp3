@@ -41,23 +41,27 @@ for uui=idx_sort
         [Sp_f,Compensation_f,f_vec,r_disp]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_ping,range,dp,cal);
         
         TS_f=Sp_f+Compensation_f;
-        c=(layer.EnvData.SoundSpeed);
-        
-        pulse_length=(layer.Transceivers(uui).Params.PulseLength(1));
-        
-        dr=pulse_length*c/(4*dp);
-        
-        new_echo_figure(main_figure,'Tag','calcurves');
-        echo=imagesc(f_vec/1e3,r_disp,TS_f);
+
+       [cmap,col_ax,col_lab,col_grid,~]=init_cmap(curr_disp.Cmap);
+       df=nanmean(diff(f_vec))/1e3;
+        fig=figure();
+        ax=axes();
+        echo=imagesc(ax,f_vec/1e3,r_disp,TS_f);
         set(echo,'AlphaData',TS_f>-80);
         xlabel('Frequency (kHz)');
         ylabel('Range(m)');
-        caxis([-80 -30]); colormap('jet');
-        title(sprintf('Ping %i, Frequency resolution %.1f kHz',idx_ping,(c/(2*dr)/1e3)));
-   
+        caxis(curr_disp.getCaxField('sp')); colormap(cmap);
+        title(sprintf('TS(f) for %.0fkHz, Ping %i, Frequency resolution %.1f kHz',layer.Frequencies(uui)/1e3,idx_ping,df));
+         
+        colorbar(ax);
         
-        
+        set(ax,'YColor',col_lab);
+        set(ax,'XColor',col_lab);
+        set(ax,'Color',col_ax,'GridColor',col_grid);
+
         clear Sp_f Compensation_f  f_vec
+        
+        new_echo_figure(main_figure,'Tag',sprintf('ts_ping %.0f',df),'fig_handle',fig);
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         %         f_vec_save=layer.Frequencies;

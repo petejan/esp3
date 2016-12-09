@@ -51,7 +51,7 @@ if ~strcmp(layer.Filetype,'CREST')
     
     
 end
-
+format_color_gui(main_figure,[]);
 
 setappdata(main_figure,'Calibration_tab',calibration_tab_comp);
 end

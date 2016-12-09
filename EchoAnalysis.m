@@ -17,7 +17,7 @@ parse(p,varargin{:});
 %%%%%%%%%%%%%%
 size_max = get(0, 'MonitorPositions');
 main_figure=figure('Visible','on',...
-    'Units','pixels','Position',[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3) size_max(1,4)/8*7],...       %Position and size normalized to the screen size ([left, bottom, width, height])
+    'Units','pixels','Position',[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3)/4*3 size_max(1,4)/4*3],...       %Position and size normalized to the screen size ([left, bottom, width, height])
     'Color','White',...                                         %Background color
     'Name','ESP3',...
     'NumberTitle','off',...   
@@ -100,9 +100,9 @@ if ~isempty(idx_old)
 end
 
 
-layer_obj=layer_cl.empty;
+layer_obj=layer_cl.empty();
 
-process_obj=process_cl.empty;
+process_obj=process_cl.empty();
 
 layers=layer_obj;
 setappdata(main_figure,'Layers',layers);

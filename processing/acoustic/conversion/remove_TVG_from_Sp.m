@@ -1,9 +1,8 @@
-function power=remove_TVG_from_Sp(Sp,range,alpha)
+function power=remove_TVG_from_Sp(Sp,range,alpha,Np)
 
-[TVG_Sp,~]=computeTVG(range);
 
-dr=nanmean(diff(range(:)));
-r_corr = 2*dr;
+[TVG_Sp,~]=computeTVG(range,Np);
+r_corr = Np/2*dr;
 
 
 if size(range,1)==1

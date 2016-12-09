@@ -74,6 +74,7 @@ end
 
 function change_layer(hCombo, ~,main_figure)
 
+check_saved_bot_reg(main_figure);
 
 layers=getappdata(main_figure,'Layers');
 if isempty(layers)
@@ -92,7 +93,6 @@ else
 end
 
 setappdata(main_figure,'Layer',layer);
-
 loadEcho(main_figure);
 
 

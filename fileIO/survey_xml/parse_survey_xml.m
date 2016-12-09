@@ -74,6 +74,7 @@ if isempty(node)
 end
 nb_att=length(node.Attributes);
 node_atts=[];
+
 for j=1:nb_att
     node_atts.(node.Attributes(j).Name)=node.Attributes(j).Value;
 

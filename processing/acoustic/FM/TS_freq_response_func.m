@@ -4,6 +4,9 @@ function TS_freq_response_func(main_figure,idx_r,idx_pings)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
+show_status_bar(main_figure);
+load_bar_comp=getappdata(main_figure,'Loading_bar');
+
 
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
@@ -56,11 +59,16 @@ for uui=idx_sort
             disp('No calibration file');
             cal=[];
         end
-        
+                
+         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
+        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+
         
         for kk=1:length(idx_pings)
-            %[Sp_f_old(:,kk),Compensation_f_old(:,kk),f_vec_old(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),cal);
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,cal);
+            
+            %[Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),cal);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal);
+            set(load_bar_comp.progress_bar,'Value',kk);
         end
 
         TS_f=[TS_f; Sp_f+Compensation_f];
@@ -71,7 +79,7 @@ for uui=idx_sort
         clear Sp_f Compensation_f  f_vec
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        f_vec_save=layer.Frequencies;
+        f_vec_save=[f_vec_save;layer.Frequencies(uui)];
         
         AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
         AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
@@ -80,7 +88,7 @@ for uui=idx_sort
         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
         
         comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship , AcrossAngle((idx_pings-1)*length(range)+idx_peak), AlongAngle((idx_pings-1)*length(range)+idx_peak));
-        TS_f(uui,:)=Sp_max+comp;
+        TS_f=[TS_f; Sp_max+comp;];
     end
 end
 
@@ -128,5 +136,5 @@ if ~isempty(f_vec_save)
     %     hold on;
     %     plot(f_vec_2/1e3,ts,'k','linewidth',2)
 end
-
+hide_status_bar(main_figure);
 end

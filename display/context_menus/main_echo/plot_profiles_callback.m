@@ -71,6 +71,7 @@ grid on;
 ylabel('Range(m)')
 xlabel(ylab_str);
 axis ij;
+linkaxes([ax_main axv],'y');
 
 h=new_echo_figure(main_figure,'Tag','profile_h');
 axh=axes(h);
@@ -80,6 +81,7 @@ plot(axh,xdata,horz_val,'r');
 grid on;
 xlabel(xlab_str);
 ylabel(ylab_str);
+linkaxes([ax_main axh],'x');
 switch curr_disp.Xaxes
     case 'Time'
         datetick(axh,'x','dd-mmm-yyyy HH:MM:SS')

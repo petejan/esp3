@@ -1,10 +1,15 @@
-function [sp,sv]=convert_power_lin(power,range,c,alpha,t_eff,ptx,lambda,gain,eq_beam_angle,sacorr,type)
-
-
-[TVG_Sp,TVG_Sv]=computeTVG(range);
-
+function [sp,sv]=convert_power_lin(power,range,c,alpha,t_eff,t_nom,ptx,lambda,gain,eq_beam_angle,sacorr,type)
 dr=nanmean(diff(range(:)));
-r_corr = 2*dr;
+switch type
+    case {'WBT','WBT Tube','WBAT'}
+        Np=0;
+    otherwise
+        Np=c*t_nom/2/dr;
+end
+[TVG_Sp,TVG_Sv]=computeTVG(range,Np);
+
+
+r_corr = Np/2*dr;
 %r_corr=0;
 
 if size(range,1)==1
@@ -20,7 +25,7 @@ switch type
         sv=bsxfun(@times,power/db2pow_perso(10*log10(c*t_eff/2)+eq_beam_angle),db2pow_perso(TVG_Sv+2*alpha*range_tvg));
     otherwise   
        
-        tmp=power/db2pow_perso(2*gain+10*log10(ptx*lambda^2/(16*pi^2)));
+        tmp=bsxfun(@rdivide,power,db2pow_perso(2*gain+10*log10(ptx*lambda^2/(16*pi^2))));
         sp=bsxfun(@times,tmp,db2pow_perso(TVG_Sp+2*alpha*range_tvg));
         sv=bsxfun(@times,tmp/db2pow_perso(10*log10(c*t_eff/2)+eq_beam_angle+2*sacorr),db2pow_perso(TVG_Sv+2*alpha*range_tvg));
        

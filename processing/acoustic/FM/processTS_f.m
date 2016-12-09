@@ -16,6 +16,7 @@ if strcmp(Transceiver.Mode,'FM')
     [~,idx_pulse]=nanmin(abs(pulse_lengths-pulse_length));
     gain=gains(idx_pulse);
     eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
+    
     dr=pulse_length*c/8;
 
     range=Transceiver.Data.get_range();
@@ -71,8 +72,9 @@ if strcmp(Transceiver.Mode,'FM')
     
     if ~isempty(cal)
         Gf_corr=interp1(cal.freq_vec,cal.Gf,f_vec);
-        idx_null=abs((cal.th_ts)-10*log10(nanmean(10.^(cal.th_ts/10))))>5;
-        cal.Gf(idx_null)=nan;
+%         idx_null=abs((cal.th_ts)-10*log10(nanmean(10.^(cal.th_ts/10))))>10;
+%         cal.Gf(idx_null)=nan;
+        idx_null=[];
     else
         Gf_corr=0;
         idx_null=[];

@@ -22,33 +22,43 @@ layer=getappdata(main_figure,'Layer');
     ylabel('EBA(dB)')
 
 for uui=idx_sort
-    file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
-    file_cal_eba=fullfile(cal_path,['Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
-    
-    Freq=(layer.Transceivers(uui).Config.Frequency);
-    eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
-    
-    if exist(file_cal,'file')>0
-        cal=load(file_cal);
+     Freq=(layer.Transceivers(uui).Config.Frequency);
+        eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
+    if ~isempty(layer.Transceivers(uui).Config.Cal_FM)
+        %<FrequencyPar Frequency="222062" Gain="30.09" Impedance="75" Phase="0" BeamWidthAlongship="5.43" BeamWidthAthwartship="5.64" AngleOffsetAlongship="0.04" AngleOffsetAthwartship="0.04" />
+        cal_eba.BeamWidthAlongship_f_fit=layer.Transceivers(uui).Config.Cal_FM.BeamWidthAlongship;
+        cal_eba.BeamWidthAthwartship_f_fit=layer.Transceivers(uui).Config.Cal_FM.BeamWidthAthwartship;
+        cal_eba.freq_vec=layer.Transceivers(uui).Config.Cal_FM.Frequency;
+        cal.freq_vec=layer.Transceivers(uui).Config.Cal_FM.Frequency;
+        cal.Gf=layer.Transceivers(uui).Config.Cal_FM.Gain;
+        
     else
-        cal=[];
+        file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
+        file_cal_eba=fullfile(cal_path,['Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
+        
+       
+        
+        if exist(file_cal,'file')>0
+            cal=load(file_cal);
+        else
+            cal=[];
+        end
+        
+        if exist(file_cal_eba,'file')>0
+            cal_eba=load(file_cal_eba);
+        else
+            cal_eba=[];
+        end
     end
     
-    if exist(file_cal_eba,'file')>0
-        cal_eba=load(file_cal_eba);
-    else
-        cal_eba=[];
-    end
-    
-    
-    if ~isempty(cal)
-        idx_null=(cal.th_ts)<nanmax(cal.th_ts)-5;
-        cal.Gf(idx_null)=nan;
-        cal.cal_ts(idx_null)=nan;
-    else
+%     if ~isempty(cal)
+%         idx_null=(cal.th_ts)<nanmax(cal.th_ts)-5;
+%         cal.Gf(idx_null)=nan;
+%         cal.cal_ts(idx_null)=nan;
+%     else
         idx_null=[];
-    end
-    
+%     end
+%     
     
     if ~isempty(cal_eba)
         cal_eba.BeamWidthAlongship_f_fit(idx_null)=nan;
@@ -60,12 +70,10 @@ for uui=idx_sort
     if ~isempty(cal)   
         axes(ax_1);
         hold on;
-        plot(cal.freq_vec/1e3,cal.cal_ts,'r','linewidth',2);
-        hold on;
-        plot(cal.freq_vec/1e3,cal.th_ts,'k','linewidth',2);
+        plot(cal.freq_vec/1e3,cal.Gf,'r','linewidth',2);
         grid on;
-       ylim([-60 0.9*nanmax(cal.th_ts)])
-       legend('Measured','Theoritical');
+       %ylim([0.9*nanmin(cal.Gf) 1.1*nanmax(cal.Gf)])
+       legend('Measured');
       
     end
 
@@ -74,6 +82,7 @@ for uui=idx_sort
         eq_beam_angle_f=eq_beam_angle-20*log10(cal_eba.freq_vec/Freq); 
         
         eba=10*log10(2.2578*sind(cal_eba.BeamWidthAlongship_f_fit/4+cal_eba.BeamWidthAthwartship_f_fit/4).^2);
+        
         BeamWidthAlongship_f_th=2*acosd(1-(cal_eba.freq_vec/Freq).^-2*(1-cosd(layer.Transceivers(uui).Config.BeamWidthAlongship/2)));
         BeamWidthAthwartship_f_th=2*acosd(1-(cal_eba.freq_vec/Freq).^-2*(1-cosd(layer.Transceivers(uui).Config.BeamWidthAthwartship/2)));
 
@@ -84,7 +93,7 @@ for uui=idx_sort
         plot(cal_eba.freq_vec/1e3,BeamWidthAlongship_f_th,'-k','linewidth',2);
         plot(cal_eba.freq_vec/1e3,cal_eba.BeamWidthAthwartship_f_fit,'-r','linewidth',2);
         plot(cal_eba.freq_vec/1e3,BeamWidthAthwartship_f_th,'-b','linewidth',2);
-        ylim([0.9*nanmin(cal_eba.BeamWidthAlongship_f_th+cal_eba.BeamWidthAthwartship_f_th)/2 1.1*nanmax(cal_eba.BeamWidthAlongship_f_th+cal_eba.BeamWidthAthwartship_f_th)/2])
+        %ylim([0.9*nanmin(cal_eba.BeamWidthAlongship_f_th+cal_eba.BeamWidthAthwartship_f_th)/2 1.1*nanmax(cal_eba.BeamWidthAlongship_f_th+cal_eba.BeamWidthAthwartship_f_th)/2])
         legend('Measured Alongship Beamwidth','Theoritical Alongship Beamwidth','Measured Athwardship Beamwidth','Theoritical Athwardship Beamwidth');
         grid on;
         
@@ -92,7 +101,7 @@ for uui=idx_sort
         hold on;
         plot(cal_eba.freq_vec/1e3,eba,'-k','linewidth',2);
         plot(cal_eba.freq_vec/1e3,eq_beam_angle_f,'-b','linewidth',2);
-        ylim([1.1*nanmin(eq_beam_angle_f) 0.9*nanmax(eq_beam_angle_f)]);
+        %ylim([1.1*nanmin(eq_beam_angle_f) 0.9*nanmax(eq_beam_angle_f)]);
         grid on;
         legend('Measured EBA','Theoritical EBA');
        

@@ -46,6 +46,7 @@ classdef raw_idx_cl
             
         end
         
+        
         function nb_samples=get_nb_samples_per_channels(idx_obj)
             channels=unique(idx_obj.chan_dg(~isnan(idx_obj.chan_dg)));
             nb_transceivers=length(channels);

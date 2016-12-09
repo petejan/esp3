@@ -5,8 +5,11 @@ p = inputParser;
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
 addRequired(p,'IDs',@isnumeric);
 addParameter(p,'Frequencies',[]);
+addParameter(p,'Version',-1);
 
 parse(p,layer_obj,IDs,varargin{:});
+
+
 
 for idx_freq=1:length(layer_obj.Transceivers)
     trans_obj=layer_obj.Transceivers(idx_freq);
@@ -175,6 +178,7 @@ for ix=1:length(reg_file_str)
             
             new_reg=region_cl(...
                 'ID',ID,...
+                'Version',p.Results.Version,...
                 'Unique_ID',Unique_ID,...
                 'Name',Name,...
                 'Tag',Tag,...

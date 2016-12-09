@@ -1,14 +1,14 @@
-function import_bot_regs_from_xml_callback(~,~,main_figure,bot,reg)
+function import_bot_regs_from_db_callback(~,~,main_figure,bot,reg)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
     return;
 end
-if ~isempty(bot)&&~isempty(reg)
+if bot>=0&&reg>=0
     war_str=('WARNING: This will replace currently defined Regions and Bottom?');
-elseif ~isempty(bot)&&isempty(reg)
+elseif bot>=0&&reg<0
     war_str=('WARNING: This will replace currently defined Bottom?');
-elseif isempty(bot)&&~isempty(reg)
+elseif bot<0&&reg>=0
     war_str=('WARNING: This will replace currently defined Regions?');
 else
     return;
@@ -25,8 +25,8 @@ switch choice
         return;
 end
 
-[~,~,~]=layer.load_bot_regs('bot_ver',bot,'reg_ver',reg);
-
+layer.load_bot_regs('bot_ver',bot,'reg_ver',reg);
+disp('Bottom and regions imported');
 
 display_bottom(main_figure);
 display_regions(main_figure,'both');

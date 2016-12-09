@@ -19,29 +19,11 @@ for ifile=1:length(reg_file_str)
     
     dbfile=fullfile(path_xml{ifile},'bot_reg.db');
     if exist(dbfile,'file')==0
-        dbconn=sqlite(dbfile,'create');
         
-        createbotTable = ['create table bottom ' ...
-            '(Filename VARCHAR DEFAULT NULL,'...
-            'Version INTEGER DEFAULT 1,'...
-            'Bot_XML TEXT DEFAULT NULL,'...
-            'Save_time TIME DEFAULT CURRENT_TIMESTAMP,'...
-            'PRIMARY KEY(Filename,version)'...
-            'ON CONFLICT ABORT)'];
+        initialize_reg_bot_db(dbfile)
         
-        createregTable = ['create table region ' ...
-            '(Filename VARCHAR DEFAULT NULL,'...
-            'Version NUMERIC DEFAULT 1,'...
-            'Reg_XML TEXT DEFAULT NULL,'...
-            'Save_time TIME DEFAULT CURRENT_TIMESTAMP,'...
-            'PRIMARY KEY(Filename,version)'...
-            'ON CONFLICT ABORT)'];
-        dbconn.exec(createbotTable);
-        dbconn.exec(createregTable);
-    else
-        dbconn=sqlite(dbfile,'connect');
     end
-    
+    dbconn=sqlite(dbfile,'connect');
     
     
     
@@ -66,9 +48,9 @@ for ifile=1:length(reg_file_str)
         dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg nanmax(cell2mat(reg_ver))+1});
     end
     
-%     out_bot = dbconn.fetch('select * from bottom')
-%     
-%     out_reg = dbconn.fetch('select * from region')
+    %     out_bot = dbconn.fetch('select * from bottom')
+    %
+    %     out_reg = dbconn.fetch('select * from region')
     
     
     close(dbconn)

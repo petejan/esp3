@@ -4,7 +4,7 @@ function data=computesPhasesAngles_v2(trans_obj,data)
 
 for idx_freq=1:length(trans_obj)
     switch trans_obj(idx_freq).Config.TransceiverType
-        case {'WBT','WBT Tube'}
+        case {'WBT','WBT Tube','WBAT'}
             angleSensitivityAlongship=trans_obj(idx_freq).Config.AngleSensitivityAlongship;
             angleSensitivityAthwartship=trans_obj(idx_freq).Config.AngleSensitivityAthwartship;
             
@@ -29,7 +29,7 @@ for idx_freq=1:length(trans_obj)
 end
 
 switch trans_obj(idx_freq).Config.TransceiverType
-    case {'WBT','WBT Tube'}
+    case {'WBT','WBT Tube','WBAT'}
         data.pings=rmfield(data.pings,{'comp_sig_1','comp_sig_2','comp_sig_3','comp_sig_4'});
 end
 end

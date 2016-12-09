@@ -1,4 +1,5 @@
 function ftype=get_ftype(filename)
+ftype='';
 if exist(filename,'file')>0
     
     [~,~,end_file]=fileparts(filename);
@@ -32,9 +33,6 @@ if exist(filename,'file')>0
             end
             
     end
-else
-    ftype='';
-    return
 end
 
 

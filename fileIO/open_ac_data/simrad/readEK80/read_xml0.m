@@ -1,7 +1,11 @@
 function [header,output,type]=read_xml0(t_line)
 header=[];
 output=[];
+type='';
 
+if length(t_line)==1
+    return;
+end
 
 xstruct=xml2struct(t_line);
 type_tmp=fields(xstruct);

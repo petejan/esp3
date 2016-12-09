@@ -79,9 +79,9 @@ set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_m
 set(echo_ax,'CLim',curr_disp.Cax);
 set(echo_im,'AlphaData',alpha_map);
 
-if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
-    create_context_menu_main_echo(main_figure);
-end
+% if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
+%     create_context_menu_main_echo(main_figure);
+% end
 
 order_axes(main_figure);
 end

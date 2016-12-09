@@ -36,6 +36,7 @@ if ~isequal(Filename_cell, 0)
     prev_ping_start=1;
 
     layers(length(Filename_cell))=layer_cl();
+    id_rem=[];
     for uu=1:length(Filename_cell)
         
         Filename=Filename_cell{uu};
@@ -121,7 +122,6 @@ if ~isequal(Filename_cell, 0)
         if exist(fileIdx,'file')==0
             idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
             save(fileIdx,'idx_raw_obj');
-            disp('Done');
         else
             load(fileIdx);
             [~,et]=start_end_time_from_file(Filename);
@@ -131,10 +131,16 @@ if ~isequal(Filename_cell, 0)
                 delete(fileIdx);
                 idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
                 save(fileIdx,'idx_raw_obj');
-                disp('Done')
             end
         end
-
+        
+        nb_pings=idx_raw_obj.get_nb_pings_per_channels();
+        
+        if any(nb_pings<=1)
+            id_rem=union(id_rem,uu);
+            continue;
+        end
+        
         [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp);
 
         
@@ -261,7 +267,12 @@ if ~isequal(Filename_cell, 0)
         layers(uu)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);         
     end
     
-
+    if length(id_rem)==length(layers)
+        layers=layer_cl.empty();
+    else
+        layers(id_rem)=[];
+    end
+    
     clear data transceiver
     
     

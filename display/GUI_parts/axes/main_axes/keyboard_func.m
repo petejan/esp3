@@ -70,8 +70,7 @@ switch callbackdata.Key
                 set(main_axes,'ylim',y_lim);
         end
         set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-    case {'1' 'numpad1'}
-        
+    case {'1' 'numpad1'} 
         if isempty(callbackdata.Modifier)
             zi='zin';
         elseif strcmpi(callbackdata.Modifier,'shift')
@@ -204,6 +203,15 @@ switch callbackdata.Key
         end
     case 'l'
         logbook_dispedit_callback([],[],main_figure)
+    case 's'
+       if isempty(callbackdata.Modifier)
+            return
+        elseif strcmpi(callbackdata.Modifier,'control')
+            save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
+        else
+            return;
+        end
+       
         
 end
 order_axes(main_figure);

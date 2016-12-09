@@ -110,7 +110,7 @@ for i=1:nb_trans
     trans_obj(i).Params=params_cl(nb_pings(i));
     
     switch config(i).TransceiverType
-        case {'WBT','WBT Tube'}
+        case {'WBT','WBT Tube','WBAT'}
             data.pings(i).comp_sig_1=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
@@ -168,13 +168,14 @@ for idg=1:nb_dg
                     fread(fid, 1, 'int32', 'l');
                     continue;
                 end
-
+                
             elseif ~isempty(strfind(t_line,'<Environment>'))&&env_dg==1
-                    fread(fid, 1, 'int32', 'l');
-                    continue;
+                fread(fid, 1, 'int32', 'l');
+                continue;
             elseif ~isempty(strfind(t_line,'<Parameter>'))&&any(strcmp(t_line,param_str_init))
                 idx = find(strcmp(t_line,param_str_init));
-                if ~isempty(idx)
+                %if ~isempty(idx)
+                if 0
                     dgTime=idx_raw_obj.time_dg(idg);
                     fread(fid, 1, 'int32', 'l');
                     params_cl_init(idx).Time=dgTime;
@@ -251,6 +252,8 @@ for idg=1:nb_dg
                                 end
                             end
                         end
+                        
+                        
                     end
             end
             
@@ -259,7 +262,7 @@ for idg=1:nb_dg
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
-
+            
         case 'FIL1'
             if fil_process==0
                 %disp(dgType);
@@ -314,12 +317,12 @@ for idg=1:nb_dg
                     data.pings(idx).time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                     
                     switch config(idx).TransceiverType
-                        case {'WBT','WBT Tube'}
+                        case {'WBT','WBT Tube','WBAT'}
                             if (sampleCount > 0)
                                 temp = fread(fid,8*sampleCount,'float32', 'l');
                             end
                             
-                            if (sampleCount > 0)    
+                            if (sampleCount > 0)
                                 data.pings(idx).comp_sig_1(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
                                 data.pings(idx).comp_sig_2(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
                                 data.pings(idx).comp_sig_3(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
@@ -385,14 +388,25 @@ fclose(fid);
 %Complete Params if necessary
 
 for idx=1:nb_trans
-   idx_val=[find(~isnan(trans_obj(idx).Params.TransmitPower)) length(trans_obj(idx).Params.TransmitPower)+1];
-   for ii=1:(length(idx_val)-1)
-       for jj=1:length(prop_params)
-               trans_obj(idx).Params.(prop_params{jj})(idx_val(ii):idx_val(ii+1)-1)=trans_obj(idx).Params.(prop_params{jj})(idx_val(ii));
-       end
-   end
+    
+    for jj=1:length(prop_params)
+        if isnumeric(trans_obj(idx).Params.(prop_params{jj}))
+            if any(isnan(trans_obj(idx).Params.(prop_params{jj})))
+                trans_obj(idx).Params.(prop_params{jj})(isnan(trans_obj(idx).Params.(prop_params{jj})))=trans_obj(idx).Params.(prop_params{jj})(1);
+            end
+        end
+    end
+    if any(isnan(trans_obj(idx).Params.Frequency))
+        trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.Frequency))=trans_obj(idx).Config.Frequency;
+    end
+    if any(isnan(trans_obj(idx).Params.FrequencyStart))
+        trans_obj(idx).Params.FrequencyStart(isnan(trans_obj(idx).Params.FrequencyStart))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyStart));
+        trans_obj(idx).Params.FrequencyEnd(isnan(trans_obj(idx).Params.FrequencyEnd))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyEnd));
+    end
     
 end
+
+
 
 if p.Results.GPSOnly==0
     
@@ -432,7 +446,7 @@ if p.Results.GPSOnly==0
         curr_data=[];
         trans_obj(i).Mode=mode{i};
         switch trans_obj(i).Config.TransceiverType
-            case {'WBT','WBT Tube'}
+            case {'WBT','WBT Tube','WBAT'}
                 if strcmpi(mode{i},'FM')
                     curr_data.powerunmatched=single(data_ori.pings(i).power);
                     curr_data.power=single(data.pings(i).power);
@@ -453,12 +467,8 @@ if p.Results.GPSOnly==0
         end
         
         if any(isnan(trans_obj(i).Params.Absorption))
-            FreqStart=(trans_obj(i).Params.FrequencyStart(1));
-            FreqEnd=(trans_obj(i).Params.FrequencyEnd(1));
-            FreqCenter=(FreqStart+FreqEnd)/2;
-            alpha= sw_absorption(FreqCenter/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
+            alpha= sw_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
             trans_obj(i).Params.Absorption=alpha*ones(1,size(curr_data.power,2));
-            trans_obj(i).Params.Frequency=FreqCenter*ones(1,size(curr_data.power,2));
         end
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);

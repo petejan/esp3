@@ -126,6 +126,8 @@ end
     function end_bottom_edit()
         
         layer.Transceivers(idx_freq).Bottom=bot;
+        curr_disp.Bot_changed_flag=1; 
+        setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
         reset_disp_info(main_figure);
         display_bottom(main_figure);

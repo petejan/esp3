@@ -1,5 +1,6 @@
 
 function create_region(main_figure,~)
+curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 modes=get(region_tab_comp.mode,'string');
 mode_idx=get(region_tab_comp.mode,'value');
@@ -11,8 +12,11 @@ main_figure.Pointer = 'cross';
 switch shape
     case 'Polygon'
         hand_region_create(main_figure,@create_poly_region_func)
-    otherwise  
+    otherwise
         inter_region_create(main_figure,mode,@create_region_func)
 end
 order_axes(main_figure);
+
+curr_disp.Reg_changed_flag=1;
+setappdata(main_figure,'Curr_disp',curr_disp);
 end

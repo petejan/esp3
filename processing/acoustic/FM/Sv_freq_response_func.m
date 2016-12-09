@@ -49,7 +49,7 @@ for uui=1:length(layer.Frequencies)
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         
-        f_vec=layer.Frequencies;
+        f_vec=layer.Frequencies(uui);
         
         Sv=layer.Transceivers(uui).Data.get_datamat('Sv');
         
@@ -61,8 +61,9 @@ for uui=1:length(layer.Frequencies)
       
         idx_r1=nanmax(idx_r1,1);
         idx_r2=nanmin(idx_r2,nb_samples);
-
-        Sv_f(uui,:)=10*log10(nanmean(10.^(Sv(idx_r1:idx_r2,idx_pings)'/10)));
+        Sv_f=[Sv_f; 10*log10(nanmean(10.^(Sv(idx_r1:idx_r2,idx_pings)'/10)))];
+        f_vec=[f_vec; f_vec_temp(:,1),f_vec];
+        
     end
 end
 

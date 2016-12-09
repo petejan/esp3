@@ -28,5 +28,6 @@ end
 
 setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Layer',layer);
+check_saved_bot_reg(main_figure);
 loadEcho(main_figure);
 end

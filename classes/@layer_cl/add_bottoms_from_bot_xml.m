@@ -4,6 +4,7 @@ p = inputParser;
 
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
 addParameter(p,'Frequencies',[]);
+addParameter(p,'Version',-1);
 
 parse(p,layer_obj,varargin{:});
 
@@ -55,7 +56,8 @@ for ix=1:length(bot_file_str)
             new_bottom{idx_freq}= bottom_cl(...
                 'Origin',sprintf('XML_v%s',ver),...
                 'Sample_idx',nan(size(trans_obj.Data.Time)),...
-                'Tag',nan(size(trans_obj.Data.Time)));
+                'Tag',nan(size(trans_obj.Data.Time)),...
+                'Version',p.Results.Version);
         end
         
         switch ver

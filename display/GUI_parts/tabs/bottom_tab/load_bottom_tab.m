@@ -45,7 +45,7 @@ set(bottom_tab_comp.horz_filt_ed,'callback',{@sync_Sl_ed,bottom_tab_comp.horz_fi
 
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{3,4});
-bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',0,'Max',100,'Value',0,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{3,5});
+bottom_tab_comp.Shift_bot_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-50,'Max',50,'Value',0,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{3,5});
 bottom_tab_comp.Shift_bot_ed=uicontrol(bottom_tab_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.1f'));
 set(bottom_tab_comp.Shift_bot_sl,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
     {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_comp.Shift_bot_ed,'%.1f'),...

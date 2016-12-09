@@ -1,26 +1,35 @@
-function [pres_bot,pres_reg]=load_bot_regs(layer,varargin)
+function [ver_bot_loaded,ver_reg_loaded,comment]=load_bot_regs(layer,varargin)
 p = inputParser;
 
 addRequired(p,'layer',@(obj) isa(obj,'layer_cl'));
-addParameter(p,'bot_ver',1);
-addParameter(p,'reg_ver',1);
+addParameter(p,'bot_ver',-1);
+addParameter(p,'reg_ver',-1);
 addParameter(p,'IDs',[]);
 addParameter(p,'Frequencies',[]);
 parse(p,layer,varargin{:});
 
+ver_bot_loaded=p.Results.bot_ver;
+if ~isempty(p.Results.bot_ver)
+    if p.Results.bot_ver>=0
+        ver_bot_loaded=layer.create_bot_xml_from_db('bot_ver',p.Results.bot_ver);
+    end
+    layer.add_bottoms_from_bot_xml('Frequencies',p.Results.Frequencies,'Version',ver_bot_loaded);
+    fprintf('Bottom version %d loaded\n',ver_bot_loaded);
 
-
-
-if p.Results.bot_ver>0
-    pres_bot=layer.add_bottoms_from_bot_xml('Frequencies',p.Results.Frequencies);
-else
-    pres_bot=0;
 end
 
-if p.Results.reg_ver>0
-    pres_reg=layer.add_regions_from_reg_xml(p.Results.IDs,'Frequencies',p.Results.Frequencies);
-else
-   pres_reg=0; 
+ver_reg_loaded=p.Results.reg_ver;
+comment='';
+
+if ~isempty(p.Results.reg_ver)
+    if p.Results.reg_ver>=0
+        [ver_reg_loaded,comment]=layer.create_reg_xml_from_db('reg_ver',p.Results.reg_ver);
+    end
+    layer.add_regions_from_reg_xml([],'Frequencies',p.Results.Frequencies,'Version',ver_reg_loaded);
+    fprintf('Regions version %d loaded\n',ver_reg_loaded);
+
 end
+
+
 
 end

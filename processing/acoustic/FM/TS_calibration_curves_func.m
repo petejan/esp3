@@ -16,12 +16,23 @@ switch choice
         return;
 end
 
+show_status_bar(main_figure);
+load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
+
+
+sph.radius=0.064/2;
+%sph.radius=0.0381/2;
+sph.lont_c=6853;
+sph.trans_c=4171;
+sph.rho=14900;
+sph.rho_water=1025;
+
 
 
 f_vec_save=[];
@@ -33,8 +44,6 @@ BP_fig=new_echo_figure(main_figure,'Name','','Tag','BP_fig');
 for uui=1:length(layer.Frequencies)
     
    
-    
-    
     range=double(layer.Transceivers(uui).Data.get_range());
     ping_num=layer.Transceivers(uui).Data.get_numbers();
     
@@ -74,9 +83,8 @@ for uui=1:length(layer.Frequencies)
     
     [nb_samples,~]=size(AcrossAngle);
     
-    sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
-    
-    
+    sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, layer.EnvData.SoundSpeed, ...
+        sph.lont_c, sph.trans_c, sph.rho_water, sph.rho);
     Sp_red=Sp(idx_r,idx_pings);
     Sp_red(Sp_red>sphere_ts+20)=nan;
  
@@ -111,8 +119,8 @@ for uui=1:length(layer.Frequencies)
     c = sw_svel(s, t, d);
     alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
 
-    sphere_ts = spherets(2*pi*Freq/c, .0381/2, c_at_sphere, ...
-        6853, 4171, density_at_sphere, 14900);
+     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, c_at_sphere, ...
+        sph.lont_c, sph.trans_c, density_at_sphere, sph.rho);
     
     % print out the parameters
     disp(['sound speed at sphere = ' num2str(c_at_sphere) ' m/s'])
@@ -143,10 +151,12 @@ for uui=1:length(layer.Frequencies)
     
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
+    %idx_low=compensation>18|(Sp_sph>-30)|idx_peak==idx_r(1);
     
-    idx_low=compensation>18|(Sp_sph>-30)|idx_peak==idx_r(1);
+    est_ts = sphere_ts-compensation;
     
-    %idx_low=idx_peak==idx_r(1)  ;
+
+    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>10;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];
@@ -157,6 +167,10 @@ for uui=1:length(layer.Frequencies)
     compensation(idx_low)=[];
     range_sph(idx_low)=[];
     
+    if isempty(AlongAngle_sph)
+        disp('Not enough echoes');
+        continue;
+    end
     
     if idx_freq==uui
         switch curr_disp.Xaxes
@@ -211,7 +225,7 @@ for uui=1:length(layer.Frequencies)
         caxis([-55 -36])
         drawnow;
         
-        idx_low=(Sp_sph<=-70)|abs(phi)>0.1|compensation>12;
+        idx_low=(Sp_sph<=-70)|abs(phi)>3|compensation>12;
         idx_peak(idx_low)=[];
         idx_pings(idx_low)=[];
         range_sph(idx_low)=[];
@@ -228,8 +242,14 @@ for uui=1:length(layer.Frequencies)
             continue;
         end
         
+         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
+        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+
+        
         for kk=1:length(idx_pings)
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),[]);
+            %[Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),[]);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,[]);
+            set(load_bar_comp.progress_bar, 'Value',kk);
         end
         
         TS_f=Sp_f+Compensation_f;
@@ -247,6 +267,7 @@ for uui=1:length(layer.Frequencies)
         ylabel('TS(dB)')
         
         th_ts=nan(1,length(f_vec(:,1)));
+        
         for jj=1:length(f_vec(:,1))
             th_ts(jj) = spherets(2*pi*f_vec(jj,1)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
         end
@@ -289,8 +310,8 @@ if ~isempty(f_vec_save)
     plot(f_vec_2/1e3,ts,'k','linewidth',2)
 end
 
-
 setappdata(main_figure,'Layer',layer);
+hide_status_bar(main_figure);
 loadEcho(main_figure);
 
 end

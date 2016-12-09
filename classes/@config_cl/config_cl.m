@@ -32,6 +32,7 @@ classdef config_cl
         SaCorrection=0;
         TransducerName=''
         XML_string='';
+        Cal_FM=struct.empty();
     end
     
     methods

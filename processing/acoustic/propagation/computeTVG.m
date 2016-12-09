@@ -1,7 +1,7 @@
-function [TVG_Sp,TVG_Sv]=computeTVG(range)
+function [TVG_Sp,TVG_Sv]=computeTVG(range,Np)
 
 dr=nanmean(diff(range(:)));
-r_corr = 2*dr;
+r_corr = Np/2*dr;
 %r_corr=0;
 
 if size(range,1)==1

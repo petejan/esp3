@@ -5,6 +5,7 @@ classdef region_cl
         ID
         Tag
         Origin
+        Version=-1;
         Unique_ID
         Remove_ST
         Type
@@ -40,6 +41,7 @@ classdef region_cl
             
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);
+            addParameter(p,'Version',-1,@isnumeric);
             addParameter(p,'Unique_ID',unique_ID,@isnumeric);
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Origin','',@ischar);

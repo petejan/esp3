@@ -36,7 +36,7 @@ for idx_freq=1:length(trans_obj)
 %             yc_3(:,i)=yc_3_temp(length(y_tx_matched):end);
 %             yc_4(:,i)=yc_4_temp(length(y_tx_matched):end);
 %         end
-%         
+         
 
         yc_1_temp=filter2((flipud(y_tx_matched)),s1,'full')/sum(abs(y_tx_matched).^2); 
         yc_2_temp=filter2((flipud(y_tx_matched)),s2,'full')/sum(abs(y_tx_matched).^2); 

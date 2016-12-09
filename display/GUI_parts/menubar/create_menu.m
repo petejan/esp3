@@ -20,13 +20,14 @@ uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_
 uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
 uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
 uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
-uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_callback,main_figure},'separator','on');
-uimenu(m_bot_reg,'Label','Save Bottom to xml','Callback',{@save_bot_xml_callback,main_figure});
-uimenu(m_bot_reg,'Label','Save Regions to xml','Callback',{@save_reg_xml_callback,main_figure});
-uimenu(m_bot_reg,'Label','Save Bottom and Regions to dB','Callback',{@save_bot_reg_xml_to_db_callback,main_figure});
-uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,1},'separator','on');
-uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,1,0});
-uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,1});
+uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,1},'separator','on');
+uimenu(m_bot_reg,'Label','Save Bottom to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,[]});
+uimenu(m_bot_reg,'Label','Save Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],1});
+
+uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,0},'separator','on');
+uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,[]});
+uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,[],0});
+uimenu(m_bot_reg,'Label','Manage versions','Callback',{@manage_version_calllback,main_figure},'separator','on');
 
 eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
@@ -147,6 +148,13 @@ help_shortcuts=uimenu(main_figure,'Label','Shortcuts/Help');
 uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@help_menu,main_figure});
 
 setappdata(main_figure,'main_menu',main_menu);
+
+end
+
+function manage_version_calllback(~,~,main_figure)
+
+load_bot_reg_data_fig_from_db(main_figure);
+
 
 end
 

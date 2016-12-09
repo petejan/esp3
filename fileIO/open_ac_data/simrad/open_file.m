@@ -2,7 +2,7 @@ function  open_file(~,~,file_id,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
-
+check_saved_bot_reg(main_figure);
 
 if isempty(file_id)
     return;
@@ -138,7 +138,7 @@ end
 if ~isequal(Filename, 0)
     enabled_obj=findobj(main_figure,'Enable','on');
     set(enabled_obj,'Enable','off');
-    try
+    %try
         switch ftype
             case {'EK60','EK80','dfile'}
                 
@@ -153,7 +153,6 @@ if ~isequal(Filename, 0)
                     switch choice
                         case 'Yes'
                             Filename=union(Filename,missing_files);
-                            snapnow;
                         case 'No'
                         otherwise
                             return;
@@ -222,13 +221,13 @@ if ~isequal(Filename, 0)
                 end
                 
         end
-    catch err
-        disp(err.message);
-        for ife=1:length(Filename)
-            fprintf('Could not open files %s\n',Filename{ife});
-        end
-    end
-    %
+%     catch err
+%         disp(err.message);
+%         for ife=1:length(Filename)
+%             fprintf('Could not open files %s\n',Filename{ife});
+%         end
+%     end
+    
     set(enabled_obj,'Enable','on');
     hide_status_bar(main_figure);
     loadEcho(main_figure);

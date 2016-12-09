@@ -22,7 +22,7 @@ p.maxdBDiff1 = 12;
 % sphere TS are discarded. Done after working out the beam width.
 % Note that this forces an upper limit on the RMS of the final fit to the
 % beam pattern.
-p.maxdBDiff2 = .75;
+p.maxdBDiff2 = 1;
 
 % All echoes within onAxisTol degrees of an axis (or 45 deg to the axis)
 % will be used when doing the 4-panel plot of sphere echoes
@@ -77,9 +77,8 @@ gains=transceiver.Config.Gain;
 pulselengths=transceiver.Config.PulseLength;
 [~,idx_pulse]=nanmin(abs(pulselengths-pulselength));
 gain=gains(idx_pulse);
-Np=double(round(pulselength/transceiver.Params.SampleInterval(1)));
-
-
+[sim_pulse,~]=transceiver.get_pulse();
+Np=length(sim_pulse);
 pp = idx_peak;
 tts = zeros(size(pp));
 range = zeros(length(pp),1);
@@ -171,8 +170,13 @@ i = find(nanstd(phase_along(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase
 % Trim echoes to those within a bit more than the 3 dB beamwidth
 % This is not exact because we haven't yet calculated the
 % beam centre offsets, but it will do for the moment
-trimTo = p.trimToFactor * mean([faBW psBW]) * 0.5;
-i = find(abs(sphere(:,2)) < trimTo & abs(sphere(:,3)) < trimTo);
+
+
+% est_ts = sphere_ts-simradBeamCompensation(faBW, psBW, sphere(:,3), sphere(:,2));
+%     
+
+trimTo = p.trimToFactor * mean([faBW psBW]) * 0.7;
+i = find(abs(sphere(:,2)) < trimTo | abs(sphere(:,3)) < trimTo);
 [sphere,power,phase_along,phase_athwart] = trim_data(i, sphere, power, phase_along, phase_athwart);
 
 % Use the Simrad theoretical beampattern formula to trim echoes that are
@@ -406,9 +410,9 @@ plotBeamSlices(sphere, outby(1), trimTo, faBW, psBW, peak_ts, p.onAxisTol)
 %  between P measurements. This is simply the ratio of the area under the
 %  nominal pulse and the area under the actual pulse.
 %
-% For the EK60, dt = Tnom/4 (it samples 4 times every pulse length)
-% So, alpha = Sum(P * Tnom) / (4 * Pmax * Tnom)
-%     alpha = Sum(P) / (4 * Pmax)
+% For the EK60, dt = Tnom/Np (it samples Np times every pulse length)
+% So, alpha = Sum(P * Tnom) / (Np * Pmax * Tnom)
+%     alpha = Sum(P) / (Np * Pmax)
 %
 % However, Echoview, etc, expect the correction factor to be in dB, and
 % furthermore is used as (10log10(Tnom) + 2 * Sa). Hence
@@ -416,7 +420,16 @@ plotBeamSlices(sphere, outby(1), trimTo, faBW, psBW, peak_ts, p.onAxisTol)
 
 % Work in the linear domain to calculate the scale factor to convert the
 % nominal pulse length into the effective pulse length
-alpha = mean( (sum(power(:,i)) ) ./ (Np * max(power(:,i))));
+
+sig_pulse=zeros(1,2*Np+1);
+sig_pulse(floor(Np/2):floor(Np/2)+Np-1)=sim_pulse(:)';
+alpha = mean((sum(power(:,i)))./(max(power(:,i))))/nansum(abs(sim_pulse).^2);
+
+figure();
+plot(bsxfun(@rdivide,power,max(power,[],1)));
+hold on;
+plot(abs(sig_pulse),'r','linewidth',2);
+
 
 % And convert that to dB, taking account of how this ratio is used as 2Sa
 % everywhere (i.e., it needs to be halved after converting to dB).

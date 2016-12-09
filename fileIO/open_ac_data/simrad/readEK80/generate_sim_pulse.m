@@ -37,7 +37,7 @@ sim_pulse=env_pulse.*((exp(1i*phi_sweep)));
 f_s_dec(1)=f_s_ori/D_1;
 f_s_dec(2)=f_s_dec(1)/D_2;
 
-if f_s_dec(2)~=f_s_sig
+if round(f_s_dec(2))~=f_s_sig
     disp('Decimated pulse sample rate not matching signal sampling rate')
 end
 
@@ -47,11 +47,27 @@ end
 sim_pulse_1=conv(sim_pulse/nanmax(abs(sim_pulse)),filt_1,'same');
 sim_pulse_1=downsample(sim_pulse_1,D_1);
 
-%     t_sim_pulse_1=downsample(t_sim_pulse,D_1);
+t_sim_pulse_1=downsample(t_sim_pulse,D_1);
 
 sim_pulse_2=conv(sim_pulse_1/nanmax(abs(sim_pulse_1)),filt_2,'same');
 sim_pulse_2=downsample(sim_pulse_2,D_2);
 
-%     t_sim_pulse_2=downsample(t_sim_pulse_1,D_2);
+t_sim_pulse_2=downsample(t_sim_pulse_1,D_2);
 
 y_tx_matched=flipud(conj(sim_pulse_2))/nanmax(abs(sim_pulse_2));
+
+
+% figure();
+% subplot(3,1,1)
+% plot(t_sim_pulse*1e3,real(sim_pulse)/nanmax(real(sim_pulse)),'b');
+% grid on;
+% subplot(3,1,2)
+% plot(t_sim_pulse_1*1e3,real(sim_pulse_1)/nanmax(real(sim_pulse_1)),'k');
+% grid on;
+% subplot(3,1,3)
+% plot(t_sim_pulse_2*1e3,real(sim_pulse_2)/nanmax(real(sim_pulse_2)),'r');
+% grid on;
+% xlabel('Time(ms)');
+
+
+

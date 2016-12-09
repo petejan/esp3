@@ -317,8 +317,8 @@ for isnap=1:length(snapshots)
         survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects=cell(1,length(transects));
         for itrans=1:length(transects)
             survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.number=transects(itrans);
-            survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.Bottom=struct('ver',1);
-            survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.Regions{1}=struct('ver',1,'IDs',[]);
+            survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.Bottom=struct('ver',0);
+            survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.Regions{1}=struct('ver',0,'IDs',[]);
             survey_input_obj.Snapshots{isnap}.Stratum{istrat}.Transects{itrans}.Cal=[];
         end
     end

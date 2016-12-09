@@ -22,6 +22,8 @@ classdef curr_state_disp_cl <handle
         NbLayers
         Cmap
         Font
+        Bot_changed_flag 
+        Reg_changed_flag%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
     end
     
     methods
@@ -43,6 +45,8 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'CursorMode','Normal',@ischar);
             addParameter(p,'CurrLayerID',0,@isnumeric);
             addParameter(p,'NbLayers',0,@isnumeric);
+            addParameter(p,'Bot_changed_flag',0,@isnumeric);
+            addParameter(p,'Reg_changed_flag',0,@isnumeric);
             addParameter(p,'Cmap','ek60',@ischar);
             addParameter(p,'Font','default',@ischar);
             
