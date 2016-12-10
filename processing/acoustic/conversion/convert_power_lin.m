@@ -1,11 +1,8 @@
 function [sp,sv]=convert_power_lin(power,range,c,alpha,t_eff,t_nom,ptx,lambda,gain,eq_beam_angle,sacorr,type)
 dr=nanmean(diff(range(:)));
-switch type
-    case {'WBT','WBT Tube','WBAT'}
-        Np=0;
-    otherwise
-        Np=c*t_nom/2/dr;
-end
+
+Np=c*t_nom/2/dr;
+
 [TVG_Sp,TVG_Sv]=computeTVG(range,Np);
 
 

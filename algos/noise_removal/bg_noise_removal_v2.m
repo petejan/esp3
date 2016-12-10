@@ -51,11 +51,8 @@ switch trans_obj.Config.TransceiverType
     
     case {'WBT','WBT Tube','WBAT'}
        t_nom=0; 
-    otherwise
-        
-        [t_nom,~]=trans_obj.get_pulse_length();
-
-        
+    otherwise  
+        [t_nom,~]=trans_obj.get_pulse_length();        
 end
 
 power=trans_obj.Data.get_datamat('Power');

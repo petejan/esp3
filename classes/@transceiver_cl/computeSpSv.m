@@ -10,7 +10,7 @@ addParameter(p,'FieldNames',{},@iscell);
 
 parse(p,trans_obj,env_data_obj,varargin{:});
 
-f = trans_obj.Config.Frequency(1);
+f = trans_obj.Config.Frequency;
 c = env_data_obj.SoundSpeed;
 
 alpha = trans_obj.Params.Absorption(1);
@@ -29,7 +29,7 @@ range=trans_obj.Data.get_range();
 switch trans_obj.Mode
     case 'FM'
         
-        [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,0,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
+        [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
         
         trans_obj.Data.Range=[range(1) range(end)];
         
@@ -43,7 +43,7 @@ switch trans_obj.Mode
         
         switch trans_obj.Config.TransceiverType
             case {'WBT' 'WBT Tube'}
-                [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,0,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
+                [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
             otherwise
                 [Sp,Sv]=convert_power(power,range,c,alpha,t_nom,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
         end

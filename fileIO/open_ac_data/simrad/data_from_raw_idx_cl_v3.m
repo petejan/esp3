@@ -172,16 +172,15 @@ for idg=1:nb_dg
             elseif ~isempty(strfind(t_line,'<Environment>'))&&env_dg==1
                 fread(fid, 1, 'int32', 'l');
                 continue;
-            elseif ~isempty(strfind(t_line,'<Parameter>'))&&any(strcmp(t_line,param_str_init))
-                idx = find(strcmp(t_line,param_str_init));
-                %if ~isempty(idx)
-                if 0
-                    dgTime=idx_raw_obj.time_dg(idg);
-                    fread(fid, 1, 'int32', 'l');
-                    params_cl_init(idx).Time=dgTime;
-                    trans_obj(idx).Params.Time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
-                    continue;
-                end
+%             elseif ~isempty(strfind(t_line,'<Parameter>'))&&any(strcmp(t_line,param_str_init))
+%                 idx = find(strcmp(t_line,param_str_init));
+%                 if 0
+%                     dgTime=idx_raw_obj.time_dg(idg);
+%                     fread(fid, 1, 'int32', 'l');
+%                     params_cl_init(idx).Time=dgTime;
+%                     trans_obj(idx).Params.Time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
+%                     continue;
+%                 end
             end
             
             %[~,output,type]=read_xml0_OLD2(t_line);
