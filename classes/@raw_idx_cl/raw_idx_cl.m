@@ -37,7 +37,7 @@ classdef raw_idx_cl
         end
         
         function nb_pings=get_nb_pings_per_channels(idx_obj)
-             channels=unique(idx_obj.chan_dg(~isnan(idx_obj.chan_dg)));
+            channels=unique(idx_obj.chan_dg(~isnan(idx_obj.chan_dg)));
             nb_transceivers=length(channels);
             nb_pings=nan(1,nb_transceivers);
             for i=1:nb_transceivers

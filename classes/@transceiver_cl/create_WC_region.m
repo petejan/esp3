@@ -10,6 +10,8 @@ check_dataType=@(data) ~isempty(strcmp(data,{'Data','Bad Data'}));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'y_min',10,@isnumeric)
 addParameter(p,'y_max',inf,@isnumeric)
+addParameter(p,'t_min',0,@isnumeric)
+addParameter(p,'t_max',inf,@isnumeric)
 addParameter(p,'Type','Data',check_dataType);
 addParameter(p,'Ref','Surface',check_ref);
 addParameter(p,'Cell_w',10,@isnumeric);
@@ -40,8 +42,10 @@ switch p.Results.Cell_h_unit
         bot_data=trans_obj.get_bottom_range();
 end
 nb_pings=length(xdata);
-idx_pings=1:nb_pings;
 
+time_t=trans_obj.Params.Time();
+
+idx_pings=find(time_t>=p.Results.t_min&time_t<=p.Results.t_max);
 
 switch p.Results.Ref
     case 'Surface'

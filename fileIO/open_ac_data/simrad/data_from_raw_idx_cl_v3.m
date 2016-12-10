@@ -149,8 +149,12 @@ if ~isempty(load_bar_comp)
 end
 
 nb_dg=length(idx_raw_obj.type_dg);
+
 for idg=1:nb_dg
     pos=ftell(fid);
+%     if feof(fid)==1
+%         break;
+%     end
     if mod(idg,floor(nb_dg/100))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
@@ -158,8 +162,7 @@ for idg=1:nb_dg
     end
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'
-            %disp(dgType);
-            
+ 
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             t_line=(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char','l'))';
             t_line=deblank(t_line);
@@ -172,15 +175,16 @@ for idg=1:nb_dg
             elseif ~isempty(strfind(t_line,'<Environment>'))&&env_dg==1
                 fread(fid, 1, 'int32', 'l');
                 continue;
-%             elseif ~isempty(strfind(t_line,'<Parameter>'))&&any(strcmp(t_line,param_str_init))
-%                 idx = find(strcmp(t_line,param_str_init));
-%                 if 0
-%                     dgTime=idx_raw_obj.time_dg(idg);
-%                     fread(fid, 1, 'int32', 'l');
-%                     params_cl_init(idx).Time=dgTime;
-%                     trans_obj(idx).Params.Time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
-%                     continue;
-%                 end
+            elseif ~isempty(strfind(t_line,'<Parameter>'))
+                idx = find(strcmp(t_line,param_str_init));
+                if ~isempty(idx)
+                    dgTime=idx_raw_obj.time_dg(idg);
+                    fread(fid, 1, 'int32', 'l');
+                    params_cl_init(idx).Time=dgTime;
+                    trans_obj(idx).Params.Time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
+                    
+                    continue;
+                end
             end
             
             %[~,output,type]=read_xml0_OLD2(t_line);
@@ -263,9 +267,7 @@ for idg=1:nb_dg
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
             
         case 'FIL1'
-            if fil_process==0
-                %disp(dgType);
-                
+
                 fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
                 stage=fread(fid,1,'int16','l');
                 fread(fid,2,'char','l');
@@ -283,7 +285,7 @@ for idg=1:nb_dg
                         end
                     end
                 end
-            end
+
         case 'RAW3'
             if p.Results.GPSOnly>0
                 continue;
@@ -319,6 +321,12 @@ for idg=1:nb_dg
                         case {'WBT','WBT Tube','WBAT'}
                             if (sampleCount > 0)
                                 temp = fread(fid,8*sampleCount,'float32', 'l');
+                            else
+                                continue;
+                            end
+                            
+                            if length(temp)/8~=sampleCount
+                                continue;
                             end
                             
                             if (sampleCount > 0)
@@ -388,13 +396,30 @@ fclose(fid);
 
 for idx=1:nb_trans
     
-    for jj=1:length(prop_params)
-        if isnumeric(trans_obj(idx).Params.(prop_params{jj}))
-            if any(isnan(trans_obj(idx).Params.(prop_params{jj})))
-                trans_obj(idx).Params.(prop_params{jj})(isnan(trans_obj(idx).Params.(prop_params{jj})))=trans_obj(idx).Params.(prop_params{jj})(1);
-            end
+    idx_nonnan=find(~isnan(trans_obj(idx).Params.TransmitPower));
+    
+   time_s=trans_obj(idx).Params.Time;
+    for i=1:length(idx_nonnan)
+        
+        if i==length(idx_nonnan)
+            idx_rep=idx_nonnan(i):length(trans_obj(idx).Params.TransmitPower);
+        else
+            idx_rep=idx_nonnan(i):(idx_nonnan(i+1)-1);
         end
+        
+        for jj=1:length(prop_params)
+
+                if iscell(trans_obj(idx).Params.(prop_params{jj}))
+                    trans_obj(idx).Params.(prop_params{jj})(idx_rep)=trans_obj(idx).Params.(prop_params{jj})(idx_nonnan(i));
+                else
+                    trans_obj(idx).Params.(prop_params{jj})(idx_rep)=trans_obj(idx).Params.(prop_params{jj})(idx_nonnan(i));
+                end
+
+        end
+        
     end
+    
+
     if any(isnan(trans_obj(idx).Params.Frequency))
         trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.Frequency))=trans_obj(idx).Config.Frequency;
     end
@@ -402,7 +427,7 @@ for idx=1:nb_trans
         trans_obj(idx).Params.FrequencyStart(isnan(trans_obj(idx).Params.FrequencyStart))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyStart));
         trans_obj(idx).Params.FrequencyEnd(isnan(trans_obj(idx).Params.FrequencyEnd))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyEnd));
     end
-    
+     trans_obj(idx).Params.Time=time_s;
 end
 
 

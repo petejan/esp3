@@ -28,7 +28,7 @@ for ifile=1:length(path_xml)
     dbfile=fullfile(path_xml{ifile},'bot_reg.db');
     if exist(dbfile,'file')==0
         ver_reg_loaded=-1;
-        warning('Region and Bottom database file %s does not exist, we''ll get the Region from existing xml.',dbfile);
+        %warning('Region and Bottom database file %s does not exist, we''ll get the Region from existing xml.',dbfile);
         continue;
     end
     dbconn=sqlite(dbfile,'connect');
@@ -37,13 +37,13 @@ for ifile=1:length(path_xml)
         reg_xml_version = dbconn.fetch(sprintf('select reg_XML,Version,Comment from region where Filename is "%s"',reg_file_str{ifile}));
         if isempty(reg_xml_version)
             ver_reg_loaded=-1;
-            warning('No Region in database for file %s, we''ll get the region from existing xml if there is one.',reg_file_str{ifile});
+            %warning('No Region in database for file %s, we''ll get the region from existing xml if there is one.',reg_file_str{ifile});
             continue;
         end
         
         ver_num=cell2mat(reg_xml_version(:,2));
         
-        if ver_reg_loaded==0
+        if p.Results.reg_ver==0
             [ver_reg_loaded,idx_xml]=nanmax(ver_num);
         else
             idx_xml=find(ver_num<=p.Results.reg_ver,1,'last');

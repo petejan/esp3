@@ -33,12 +33,15 @@ if ~strcmp(layer.Filetype,'CREST')
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Save','callback',{@save_CW_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Reprocess','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
     else
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Disp. Cal. Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.55 0.6 0.15 0.2]);
-         
+       
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Disp. Cal. Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.8 0.6 0.15 0.2]);
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process TS Cal','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.80 0.1 0.15 0.2]);
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process EBA Cal','callback',{@reprocess_EBA_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
         
     end
+    
+     calibration_tab_comp.sphere=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',list_spheres(),'unit','normalized','position',[0.5 0.6 0.2 0.1]);
+  
     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0.1 0.4 0.2 0.1]);
     calibration_tab_comp.att=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
     
@@ -75,7 +78,7 @@ calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 new_abs=str2double(get(calibration_tab_comp.att,'string'));
-if~isnan(new_abs)&&new_abs>0&&new_abs<100
+if~isnan(new_abs)&&new_abs>0&&new_abs<200
     layer.Transceivers(idx_freq).apply_absorption(new_abs/1e3)
 end
 set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.2f'));

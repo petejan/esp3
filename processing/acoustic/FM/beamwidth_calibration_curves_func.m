@@ -31,6 +31,14 @@ BP_fig_1=new_echo_figure(main_figure,'Name','','Tag','BP_fig1');
 BP_fig=new_echo_figure(main_figure,'Name','','Tag','BP_fig');
 
 
+calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
+sphere_list=get(calibration_tab_comp.sphere,'String');
+sph=get_sph_params(sphere_list{get(calibration_tab_comp.sphere,'value')});
+
+
+
+
+
 
 for uui=1:length(layer.Frequencies)
     
@@ -70,6 +78,8 @@ for uui=1:length(layer.Frequencies)
     
     Freq=(layer.Transceivers(uui).Config.Frequency);
     %eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
+    sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, layer.EnvData.SoundSpeed, ...
+        sph.lont_c, sph.trans_c, sph.rho_water, sph.rho);
     
     [nb_samples,~]=size(AcrossAngle);
     

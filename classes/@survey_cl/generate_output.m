@@ -7,9 +7,6 @@ addRequired(p,'layers',@(obj) isa(obj,'layer_cl')||isempty(obj));
 addParameter(p,'PathToMemmap','',@ischar);
 parse(p,surv_obj,layers,varargin{:});
 
-if isempty(layers)
-    layers=load_files_from_survey_input(surv_obj,'PathToMemmap',p.Results.PathToMemmap);
-end
 
 surv_in_obj=surv_obj.SurvInput;
 
@@ -97,6 +94,7 @@ for isn=1:length(snaps)
         tag_add=layer_obj_tr.Transceivers(idx_freq).Bottom.Tag;
         bot_range_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_range();
         gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
+        
         if i>1
             gps_tot=concatenate_GPSData(gps_tot,gps_add);
         else

@@ -23,7 +23,7 @@ for ix=1:length(reg_file_str)
     xml_file=fullfile(path_xml{ix},reg_file_str{ix});
     if exist(xml_file,'file')==0
         pres(ix)=0;
-        fprintf('No xml region file for %s\n',layer_obj.Filename{ix});
+        %fprintf('No xml region file for %s\n',layer_obj.Filename{ix});
         continue;
     end
     

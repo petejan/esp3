@@ -28,6 +28,8 @@ classdef config_cl
         FrequencyMaximum=0;
         FrequencyMinimum=0;
         Gain=0;
+        Impedance=1e3;%ohms
+        Ztrd=75;%ohms
         MaxTxPowerTransducer=0;
         SaCorrection=0;
         TransducerName=''

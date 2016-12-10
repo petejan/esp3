@@ -8,7 +8,6 @@ Np=c*t_nom/2/dr;
 
 r_corr = Np/2*dr;
 
-
 if size(range,1)==1
     range=range';
 end

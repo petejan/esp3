@@ -87,7 +87,7 @@ for uu=1:length(trans_nb)
         elseif multi_layer==-1
             [~,idx_sort]=sort(layers_grp(uu).time_start(1,idx_same_samples));
             if length(idx_sort)>=2
-                idx_to_concatenate{uu}{kk}=[idx_same_samples(idx_sort(1:end-1));idx_same_samples(idx_sort(2:end))]';
+                idx_to_concatenate{uu}{kk}=[idx(idx_same_samples(idx_sort(1:end-1)));idx(idx_same_samples(idx_sort(2:end)))]';
             else
                 idx_to_concatenate{uu}{kk}=[];
             end

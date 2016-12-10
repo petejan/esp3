@@ -40,8 +40,8 @@ for uui=1:length(layer.Frequencies)
             [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),r_min,r_max,cal,cal_eba);
         end
         
-        Sv_f=[Sv_f; Sv_f_temp];     
-        f_vec=[f_vec; f_vec_temp(:,1)];
+        Sv_f=[Sv_f 10*log10(nanmean(10.^(Sv_f_temp'/10)))];     
+        f_vec=[f_vec f_vec_temp(:,1)'];
         
         
         
@@ -49,7 +49,7 @@ for uui=1:length(layer.Frequencies)
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         
-        f_vec=layer.Frequencies(uui);
+        f_vec_temp=layer.Frequencies(uui);
         
         Sv=layer.Transceivers(uui).Data.get_datamat('Sv');
         
@@ -61,20 +61,19 @@ for uui=1:length(layer.Frequencies)
       
         idx_r1=nanmax(idx_r1,1);
         idx_r2=nanmin(idx_r2,nb_samples);
-        Sv_f=[Sv_f; 10*log10(nanmean(10.^(Sv(idx_r1:idx_r2,idx_pings)'/10)))];
-        f_vec=[f_vec; f_vec_temp(:,1),f_vec];
+        Sv_f=[Sv_f 10*log10(nanmean(nanmean(10.^(Sv(idx_r1:idx_r2,idx_pings)/10))))];
         
+        f_vec=[f_vec f_vec_temp];
+        clear f_vec_temp
     end
 end
 
-
-Sv_f_mean=10*log10(nanmean(10.^(Sv_f'/10)));
 
 hfig=new_echo_figure(main_figure,'Name','SV(f)','Tag','sv_freq');
 %subplot(1,3,uui)
 %plot(f_vec/1e3,Sv_f,'b','linewidth',0.2);
 hold on;
-plot(f_vec/1e3,Sv_f_mean,'r','linewidth',2)
+plot(f_vec/1e3,Sv_f,'r','linewidth',2)
 %plot(f_vec/1e3,10*log10(filter2_perso(ones(1,nanmin(10,length(f_vec))),10.^(Sv_f_mean/10))),'k','linewidth',2)
 grid on;
 xlabel('kHz')

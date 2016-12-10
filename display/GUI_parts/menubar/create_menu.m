@@ -20,6 +20,7 @@ uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_
 uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
 uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
 uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
+
 uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,1},'separator','on');
 uimenu(m_bot_reg,'Label','Save Bottom to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,[]});
 uimenu(m_bot_reg,'Label','Save Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],1});

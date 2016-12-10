@@ -27,7 +27,7 @@ for ifile=1:length(path_xml)
     dbfile=fullfile(path_xml{ifile},'bot_reg.db');
     if exist(dbfile,'file')==0
         ver_bot_loaded=-1;
-        warning('Region and Bottom database file %s does not exist, we''ll get the bottom from existing xml.',dbfile);
+%         warning('Region and Bottom database file %s does not exist, we''ll get the bottom from existing xml.',dbfile);
         continue;
     end
     dbconn=sqlite(dbfile,'connect');
@@ -36,13 +36,13 @@ for ifile=1:length(path_xml)
         bot_xml_version = dbconn.fetch(sprintf('select bot_XML,Version from bottom where Filename is "%s"',bot_file_str{ifile}));
         if isempty(bot_xml_version)
             ver_bot_loaded=-1;
-            warning('No bottom in database for file %s, we''ll get the bottom from existing xml if there is one.',bot_file_str{ifile});
+%             warning('No bottom in database for file %s, we''ll get the bottom from existing xml if there is one.',bot_file_str{ifile});
             continue;
         end
         
         ver_num=cell2mat(bot_xml_version(:,2));
         
-        if ver_bot_loaded==0
+        if p.Results.bot_ver==0
             [ver_bot_loaded,idx_xml]=nanmax(ver_num);
         else
             idx_xml=find(ver_num<=p.Results.bot_ver,1,'last');

@@ -13,6 +13,15 @@ else
     path_f=path_lay{1};
 end
 
+hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmpi({hfigs(:).Tag},'logbook'));
+if ~isempty(idx_tag)
+    figure(hfigs(idx_tag(1)))
+    return;
+end
+
+
 db_file=fullfile(path_f,'echo_logbook.db');
    
 if ~(exist(db_file,'file')==2)

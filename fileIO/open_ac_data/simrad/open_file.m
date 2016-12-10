@@ -138,7 +138,6 @@ end
 if ~isequal(Filename, 0)
     enabled_obj=findobj(main_figure,'Enable','on');
     set(enabled_obj,'Enable','off');
-    %try
         switch ftype
             case {'EK60','EK80','dfile'}
                 
@@ -221,12 +220,7 @@ if ~isequal(Filename, 0)
                 end
                 
         end
-%     catch err
-%         disp(err.message);
-%         for ife=1:length(Filename)
-%             fprintf('Could not open files %s\n',Filename{ife});
-%         end
-%     end
+
     
     set(enabled_obj,'Enable','on');
     hide_status_bar(main_figure);

@@ -1,36 +1,34 @@
-function [Sv_f,f_vec]=processSv_f_r(Transceiver,EnvData,iPing,r1,r2,cal,cal_eba)
+function [Sv_f,f_vec]=processSv_f_r(trans_obj,EnvData,iPing,r1,r2,cal,cal_eba)
 
 
-if strcmp(Transceiver.Mode,'FM')
-    Rwt_rx=1e3;%ohms
-    Ztrd=75;%ohms
+if strcmp(trans_obj.Mode,'FM')
+    Rwt_rx=trans_obj.Config.Impedance;
+    Ztrd=trans_obj.Config.Ztrd;
     
     
-    f_s_sig=round(1/(Transceiver.Params.SampleInterval(1)));
+    f_s_sig=(1/(trans_obj.Params.SampleInterval(1)));
     c=(EnvData.SoundSpeed);
-    FreqStart=(Transceiver.Params.FrequencyStart(1));
-    FreqEnd=(Transceiver.Params.FrequencyEnd(1));
-    Freq=(Transceiver.Config.Frequency);
-    ptx=(Transceiver.Params.TransmitPower(1));
-    pulse_length=(Transceiver.Params.PulseLength(1));
-    gains=Transceiver.Config.Gain;
-    pulse_lengths=Transceiver.Config.PulseLength;
-    eq_beam_angle=Transceiver.Config.EquivalentBeamAngle;
-    [~,idx_pulse]=nanmin(abs(pulse_lengths-pulse_length));
-    gain=gains(idx_pulse);
-    FreqCenter=(FreqStart+FreqEnd)/2;
+    FreqStart=(trans_obj.Params.FrequencyStart(1));
+    FreqEnd=(trans_obj.Params.FrequencyEnd(1));
+    Freq=(trans_obj.Config.Frequency);
+    ptx=(trans_obj.Params.TransmitPower(1));
+    pulse_length=(trans_obj.Params.PulseLength(1));
+    
+    eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
     
     
+    gain=trans_obj.get_current_gain();
     
-    [simu_pulse,~]=generate_sim_pulse(Transceiver.Params,Transceiver.Filters(1),Transceiver.Filters(2));
     
-    range=Transceiver.Data.get_range();
+    [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
+    
+    range=trans_obj.Data.get_range();
     
     nb_samples=length(range);
-    nb_pings=length(Transceiver.Data.Time);
+    nb_pings=length(trans_obj.Data.Time);
     range_mat=repmat(range,1,nb_pings);
     N_w=2^nextpow2(ceil(2*pulse_length*f_s_sig));
-        
+    
     [~,idx_r1]=nanmin(abs(range-r1));
     [~,idx_r2]=nanmin(abs(range-r2));
     
@@ -49,14 +47,16 @@ if strcmp(Transceiver.Mode,'FM')
     idx_r=round((idx_r1+idx_r2)/2);
     N_w=length(idx_r1:idx_r2);
     
-    y_c=Transceiver.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_real')+1i*Transceiver.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_imag');
+    y_c=trans_obj.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_real')+1i*trans_obj.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_imag');
     y_spread=y_c.*range_mat(idx_r1:idx_r2,iPing);
     
     w_h=hann(N_w)/(nansum(hann(N_w))/sqrt(N_w));
     
     fft_vol=fft(w_h.*(y_spread),nfft)/nfft;
     
-    y_tx_auto=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
+    [~,y_tx_matched]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
+
+    y_tx_auto=xcorr(y_tx_matched)/nansum(abs(y_tx_matched).^2);
     t_eff_c=nansum(abs(y_tx_auto).^2)/(nanmax(abs(y_tx_auto).^2)*f_s_sig);
     
     fft_pulse=(fft(y_tx_auto,nfft))/nfft;
@@ -80,13 +80,9 @@ if strcmp(Transceiver.Mode,'FM')
     eq_beam_angle_f=eq_beam_angle-20*log10(f_vec/Freq);
     
     if ~isempty(cal)
-        Gf_corr=interp1(cal.freq_vec,cal.Gf,f_vec);
-%          idx_null=abs((cal.th_ts)-10*log10(nanmean(10.^(cal.th_ts/10))))>5;
-%         cal.Gf(idx_null)=nan;
-idx_null=[];
+        Gf=interp1(cal.freq_vec,cal.Gf,f_vec);
     else
-        Gf_corr=0;
-        idx_null=[];
+        Gf=gain+10*log10(f_vec./Freq);
     end
     
     
@@ -104,7 +100,6 @@ idx_null=[];
     % plot(f_vec,Gf_corr);
     % grid on;
     
-    gain_f=gain +20*log10(f_vec./Freq);
     
     
     alpha_f=nan(size(f_vec));
@@ -116,13 +111,13 @@ idx_null=[];
     
     Prx_fft_vol=4*(abs(fft_vol_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
     
-    Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr)-eq_beam_angle_f;
+    Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
     %Sp_f=10*log10(Prx_fft_target)+40*log10(r_ts(idx_max))+2*alpha_f.*r_ts(idx_max)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr);
-
+    
 else
     Sv_f=[];
     f_vec=[];
-    fprintf('%s not in  FM mode\n',Transceiver.Config.ChannelID);
+    fprintf('%s not in  FM mode\n',trans_obj.Config.ChannelID);
 end
 
 

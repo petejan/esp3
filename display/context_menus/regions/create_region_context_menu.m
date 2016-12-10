@@ -15,7 +15,7 @@ uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_regi
 uimenu(analysis_menu,'Label','Display Frequency response','Callback',{@freq_response_reg_callback,main_figure});
 uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
 uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,reg_curr,main_figure});
-
+uimenu(analysis_menu,'Label','Display Region Integration values)','Callback',{@reg_integrated_callback,reg_curr,main_figure});
 end
 
 function copy_region_callback(~,~,reg_curr,main_figure)
@@ -23,6 +23,17 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 layer.copy_region_across(idx_freq,reg_curr,[]);
+end
+
+function reg_integrated_callback(~,~,reg_curr,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+regCellInt=reg_curr.integrate_region(layer.Transceivers(idx_freq));
+
+fprintf('NASC (esp2): %.0f\n', 4*pi*1852^2*nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2)));
+fprintf('NASC (v2): %.0f\n', 4*pi*1852^2*nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings)));
+fprintf('NASC: %.0f\n', nanmean(nansum(regCellInt.NASC)));
 end
 
 

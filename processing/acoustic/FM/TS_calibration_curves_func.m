@@ -25,21 +25,15 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
 
-
-sph.radius=0.064/2;
-%sph.radius=0.0381/2;
-sph.lont_c=6853;
-sph.trans_c=4171;
-sph.rho=14900;
-sph.rho_water=1025;
+calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
+sphere_list=get(calibration_tab_comp.sphere,'String');
+sph=get_sph_params(sphere_list{get(calibration_tab_comp.sphere,'value')});
 
 
 
 f_vec_save=[];
 
-TS_fig=new_echo_figure(main_figure,'Name','TS','Tag','TS_fig');
-BP_fig_1=new_echo_figure(main_figure,'Name','','Tag','BP_fig1');
-BP_fig=new_echo_figure(main_figure,'Name','','Tag','BP_fig');
+
 
 for uui=1:length(layer.Frequencies)
     
@@ -84,7 +78,7 @@ for uui=1:length(layer.Frequencies)
     [nb_samples,~]=size(AcrossAngle);
     
     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, layer.EnvData.SoundSpeed, ...
-        sph.lont_c, sph.trans_c, sph.rho_water, sph.rho);
+    sph.lont_c, sph.trans_c, sph.rho_water, sph.rho);
     Sp_red=Sp(idx_r,idx_pings);
     Sp_red(Sp_red>sphere_ts+20)=nan;
  
@@ -104,16 +98,16 @@ for uui=1:length(layer.Frequencies)
     AcrossAngle_sph=AcrossAngle(idx_peak+nb_samples*(idx_pings-1));
     AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(idx_pings-1));
     Sp_sph=Sp(idx_peak+nb_samples*(idx_pings-1));
-    range_sph=range(idx_peak);
+    range_sph_old=range(idx_peak);
     
     t=layer.EnvData.Temperature;
     t_sphere=layer.EnvData.Temperature;
     s_sphere=layer.EnvData.Salinity;
     s=layer.EnvData.Salinity;
-    d=nanmean(range(range<nanmean(range_sph)));
+    d=nanmean(range(range<nanmean(range_sph_old)));
     
-    density_at_sphere = sw_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph));
-    c_at_sphere = sw_svel(s_sphere, t_sphere, nanmean(range_sph));
+    density_at_sphere = sw_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph_old));
+    c_at_sphere = sw_svel(s_sphere, t_sphere, nanmean(range_sph_old));
     
     % mean parameters over range from transducer to the sphere
     c = sw_svel(s, t, d);
@@ -134,6 +128,8 @@ for uui=1:length(layer.Frequencies)
     end
     layer.apply_soundspeed(c);
     layer.Transceivers(uui).apply_absorption(alpha/1e3);
+    range=double(layer.Transceivers(uui).Data.get_range());
+    range_sph=range(idx_peak);
     
     update_axis_panel(main_figure,0);
     update_calibration_tab(main_figure);
@@ -156,7 +152,7 @@ for uui=1:length(layer.Frequencies)
     est_ts = sphere_ts-compensation;
     
 
-    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>10;
+    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>5;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];
@@ -173,13 +169,7 @@ for uui=1:length(layer.Frequencies)
     end
     
     if idx_freq==uui
-        switch curr_disp.Xaxes
-            case 'Number'
-                plot(ah,layer.Transceivers(uui).Data.get_numbers(idx_pings),layer.Transceivers(uui).Data.get_range(idx_peak),'+r','linewidth',2);
-                    drawnow
-            otherwise
-                
-        end
+        plot(ah,layer.Transceivers(uui).Data.get_numbers(idx_pings),range_sph,'.r','linewidth',2);
     end
     
     
@@ -192,7 +182,7 @@ for uui=1:length(layer.Frequencies)
         ZI = griddata(AlongAngle_sph,AcrossAngle_sph,Sp_sph, XI, YI);
         
         
-        figure(BP_fig_1)
+        new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp%.0f',uui));
         subplot(1,length(layer.Frequencies),uui)
         contourf(XI, YI, ZI)
         hold on
@@ -209,7 +199,7 @@ for uui=1:length(layer.Frequencies)
         drawnow;
         
         
-        figure(BP_fig)
+        new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp2%.0f',uui));
         subplot(1,length(layer.Frequencies),uui)
         surf(XI, YI, ZI)
         shading interp
@@ -225,15 +215,14 @@ for uui=1:length(layer.Frequencies)
         caxis([-55 -36])
         drawnow;
         
-        idx_low=(Sp_sph<=-70)|abs(phi)>3|compensation>12;
+        idx_low=(Sp_sph<=-70)|abs(phi)>1|compensation>12;
         idx_peak(idx_low)=[];
         idx_pings(idx_low)=[];
         range_sph(idx_low)=[];
         
-        if idx_freq==uui
-            axes(ah);
-            hold on;
-            plot(idx_pings,range(idx_peak),'.r','markersize',5);
+        if idx_freq==uui;
+            hold(ah,'on');
+            plot(ah,idx_pings,range(idx_peak),'.r','markersize',5);
             drawnow;
         end
         
@@ -245,41 +234,57 @@ for uui=1:length(layer.Frequencies)
          set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
         load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
 
+           
+        
         
         for kk=1:length(idx_pings)
             %[Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),[]);
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,[]);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,[]);
             set(load_bar_comp.progress_bar, 'Value',kk);
         end
         
+
         TS_f=Sp_f+Compensation_f;
         
         TS_f_mean=10*log10(nanmean(10.^(TS_f'/10)));
         
-        figure(TS_fig);
-        hold on;
-        %subplot(1,3,uui)
+        
+        ts=nan(1,length(f_vec(:,1)));
+        
+        for jj=1:length(f_vec(:,1))
+            ts(jj) =  spherets(2*pi*f_vec(jj,1)/layer.EnvData.SoundSpeed,sph.radius, c_at_sphere, ...
+                sph.lont_c, sph.trans_c, density_at_sphere, sph.rho);
+        end
+        
+          
+        new_echo_figure(main_figure,'Name','TS','Tag',sprintf('TS%.0f',uui));
         plot(f_vec/1e3,TS_f,'b','linewidth',0.2);
         hold on;
-        plot(f_vec(:,1)/1e3,TS_f_mean,'r','linewidth',2)
+        plot(f_vec(:,1)/1e3,TS_f_mean,'r','linewidth',2);
+        plot(f_vec(:,1)/1e3,ts,'k','linewidth',2)
         grid on;
         xlabel('kHz')
         ylabel('TS(dB)')
         
         th_ts=nan(1,length(f_vec(:,1)));
         
+        
         for jj=1:length(f_vec(:,1))
             th_ts(jj) = spherets(2*pi*f_vec(jj,1)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
         end
         
-        
-        
+
         [cal_path,~,~]=fileparts(layer.Filename{1});
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
         freq_vec=f_vec(:,1);
         cal_ts=TS_f_mean;
-        Gf=(cal_ts-th_ts)/2;
+        
+         g_c=layer.Transceivers(uui).get_current_gain();
+ 
+        Gf_ori=g_c +10*log10(freq_vec./Freq);
+
+        Gf=(cal_ts-th_ts)/2+Gf_ori(:)';
         
         save(file_cal,'freq_vec','cal_ts','th_ts','Gf');
         
@@ -288,27 +293,11 @@ for uui=1:length(layer.Frequencies)
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        if uui==1
-            close(TS_fig);
-            close(BP_fig_1);
-            close(BP_fig);
-        end
+
         layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts);
     end
 end
 
-if ~isempty(f_vec_save)
-    f_vec_2=f_vec_save(1):100:f_vec_save(end);
-    ts=nan(1,length(f_vec_2));
-    
-    for jj=1:length(f_vec_2)
-        ts(jj) = spherets(2*pi*f_vec_2(jj)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
-    end
-    
-    figure(TS_fig)
-    hold on;
-    plot(f_vec_2/1e3,ts,'k','linewidth',2)
-end
 
 setappdata(main_figure,'Layer',layer);
 hide_status_bar(main_figure);

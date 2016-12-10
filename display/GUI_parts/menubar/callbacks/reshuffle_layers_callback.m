@@ -13,7 +13,7 @@ disp('Shuffling layers');
 layers_out=[];
 
 for icell=1:length(layers_sorted)
-    layers_out=[layers_out shuffle_layers(layers_sorted{icell},'multi_layer',-1)];
+    layers_out=[layers_out shuffle_layers(layers_sorted{icell},'multi_layer',0)];
 end
 
 id_lay=layers_out(end).ID_num;

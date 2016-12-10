@@ -38,7 +38,7 @@ for ifile=1:length(reg_file_str)
     end
     
     
-    if exist(xml_reg_file,'file')==2&&p.Results.bot>0
+    if exist(xml_reg_file,'file')==2&&p.Results.reg>0
         reg_ver = dbconn.fetch(sprintf('select Version from region where Filename is "%s"',reg_file_str{ifile}));
         xml_str_reg=fileread(xml_reg_file);
         if isempty(reg_ver)

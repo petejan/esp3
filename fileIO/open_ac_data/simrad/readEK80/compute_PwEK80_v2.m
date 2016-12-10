@@ -1,10 +1,8 @@
 function data=compute_PwEK80_v2(trans_obj,data)
 
-Rwt_rx=1e3;%ohms
-Ztrd=75;%ohms
-
 for idx_freq=1:length(trans_obj)
-
+Rwt_rx=trans_obj(idx_freq).Config.Impedance;
+Ztrd=trans_obj(idx_freq).Config.Ztrd;
     switch trans_obj(idx_freq).Config.TransceiverType
         case {'WBT','WBT Tube','WBAT'}
             

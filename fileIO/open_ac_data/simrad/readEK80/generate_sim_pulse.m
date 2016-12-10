@@ -54,7 +54,7 @@ sim_pulse_2=downsample(sim_pulse_2,D_2);
 
 t_sim_pulse_2=downsample(t_sim_pulse_1,D_2);
 
-y_tx_matched=flipud(conj(sim_pulse_2))/nanmax(abs(sim_pulse_2));
+y_tx_matched=flipud(conj(sim_pulse_2));
 
 
 % figure();
