@@ -118,8 +118,8 @@ for i=1:nb_trans
             
         case 'GPT'
             data.pings(i).power=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).alongship_e=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).athwartship_e=(nan(nb_samples(i),nb_pings(i)));
+            data.pings(i).AlongPhi=(nan(nb_samples(i),nb_pings(i)));
+            data.pings(i).AcrossPhi=(nan(nb_samples(i),nb_pings(i)));
     end
 end
 
@@ -207,10 +207,13 @@ for idg=1:nb_dg
                                     otherwise
                                         if  any(strcmpi(prop_config,props{iii}))
                                             trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
+                                        else
+                                           fprintf('New parameter in Configuration XML: %s\n', props{iii}); 
                                         end
                                 end
                                 
                             end
+
                             trans_obj(idx).Config.XML_string=t_line;
                         end
                     end
@@ -221,6 +224,8 @@ for idg=1:nb_dg
                     for iii=1:length(props)
                         if  any(strcmpi(prop_env,props{iii}))
                             envdata.(props{iii})=output.(props{iii});
+                        else
+                            fprintf('New parameter in Environment XML: %s\n', props{iii}); 
                         end
                     end
                 case 'Parameter'
@@ -241,6 +246,8 @@ for idg=1:nb_dg
                                     otherwise
                                         if any(strcmpi(prop_params,fields_params{jj}))
                                             params_cl_init(idx).(fields_params{jj})=params_temp.(fields_params{jj});
+                                        else
+                                            fprintf('New parameter in Parameters XML: %s\n', fields_params{jj}); 
                                         end
                                 end
                             end
@@ -252,6 +259,8 @@ for idg=1:nb_dg
                                     else
                                         trans_obj(idx).Params.(prop_params{jj})(i_ping(idx)-p.Results.PingRange(1)+1)=(params_cl_init(idx).(prop_params{jj}));
                                     end
+                                else
+                                     fprintf('Parameter not found in Parameters XML: %s\n', fields_params{jj}); 
                                 end
                             end
                         end
@@ -340,11 +349,11 @@ for idg=1:nb_dg
                             data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
                             if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
                                 angle=fread(fid,[2 sampleCount],'int8', 'l');
-                                data.pings(idx).athwartship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
-                                data.pings(idx).alongship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                                data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
+                                data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
                             else
-                                data.pings(idx).athwartship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
-                                data.pings(idx).alongship_e(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
                             end
                             
                     end
@@ -448,6 +457,7 @@ if p.Results.GPSOnly==0
             for i=1:length(idx_freq)
                 [trans_obj(i).Config,trans_obj(i).Params]=config_from_ek60(data.pings(i),config_EK60(idx_freq(i)));
             end
+            data=computesPhasesAngles_v2(trans_obj,data);
             envdata=env_data_cl();
             envdata.SoundSpeed=data.pings(1).soundvelocity(1);
     end
@@ -486,8 +496,8 @@ if p.Results.GPSOnly==0
                 
             case 'GPT'
                 curr_data.power=db2pow_perso(single(data.pings(i).power));
-                curr_data.acrossphi=single(data.pings(i).athwartship_e);
-                curr_data.alongphi=single(data.pings(i).alongship_e);
+                curr_data.acrossangle=single(data.pings(i).AcrossAngle);
+                curr_data.alongangle=single(data.pings(i).AlongAngle);
         end
         
         if any(isnan(trans_obj(i).Params.Absorption))

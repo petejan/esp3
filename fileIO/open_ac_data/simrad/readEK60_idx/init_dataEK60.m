@@ -15,8 +15,8 @@ for i=1:nb_transceivers
     data.pings(i).absorptioncoefficient = nan(1,nb_pings_channel);
     data.pings(i).count = nan(1,nb_pings_channel);
     data.pings(i).power=nan(nb_samples(i),nb_pings_channel);
-    data.pings(i).alongship_e=nan(nb_samples(i),nb_pings_channel);
-    data.pings(i).athwartship_e=nan(nb_samples(i),nb_pings_channel);
+    data.pings(i).AlongPhi=nan(nb_samples(i),nb_pings_channel);
+    data.pings(i).AcrossPhi=nan(nb_samples(i),nb_pings_channel);
     data.pings(i).time= nan(1,nb_pings_channel); 
 end
 

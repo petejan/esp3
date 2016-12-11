@@ -1,7 +1,7 @@
 function computeAngles(obj)
 
-AlongPhi=obj.Data.get_datamat('acrossphi');
-AcrossPhi=obj.Data.get_datamat('alongphi');
+AcrossPhi=obj.Data.get_datamat('acrossphi');
+AlongPhi=obj.Data.get_datamat('alongphi');
 
 AlongAngle=obj.Data.get_datamat('alongangle');
 AcrossAngle=obj.Data.get_datamat('acrossangle');

@@ -36,7 +36,6 @@ for ip=1:length(path_xml)
     
     if ~isempty(regions_db_temp)
         [version_reg,id_unique,~]=union(version_reg,cell2mat(regions_db_temp(:,1)),'stable');
-        comments_reg=[comments_reg regions_db_temp(id_unique,2)];
     end
     
     if ~isempty(bottom_db_temp)

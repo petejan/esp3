@@ -40,8 +40,8 @@ if data.pings(idx_data).count(i_ping) > 0
             fread(fid,2*(SampleRange(1)-1),'int16', 'l');
          end
         angle=fread(fid,[2 len_load],'int8', 'l');
-        data.pings(idx_data).athwartship_e(SampleRange(1):len_load,i_ping)=angle(1,:);
-        data.pings(idx_data).alongship_e(SampleRange(1):len_load,i_ping)=angle(2,:);
+        data.pings(idx_data).AcrossPhi(SampleRange(1):len_load,i_ping)=angle(1,:);
+        data.pings(idx_data).AlongPhi(SampleRange(1):len_load,i_ping)=angle(2,:);
       
     end
         data.pings(idx_data).samplerange=[SampleRange(1) len_load];

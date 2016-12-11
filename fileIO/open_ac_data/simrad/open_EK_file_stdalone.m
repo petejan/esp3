@@ -254,7 +254,6 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).GPSDataPing=gps_data_ping;
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).Algo=algo_vec; trans_obj(i).add_algo(algo_vec_init);
-                    trans_obj(i).computeAngles();
                     trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
                     
                 end
