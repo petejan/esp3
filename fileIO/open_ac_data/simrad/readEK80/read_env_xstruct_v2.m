@@ -1,10 +1,16 @@
-function env=read_env_xstruct_v2(xstruct)
+function env=read_env_xstruct_v2(xstruct)%%%%%%TOFIX
 
 env=xstruct.Environment.Attributes;
 
-att=fieldnames(xstruct.Environment.Transducer.Attributes);
+trans=xstruct.Environment.Transducer;
+
+if length(trans)==1
+    trans={trans};
+end
+
+att=fieldnames(trans{1}.Attributes);
 for j=1:length(att)
-    env.(att{j})=xstruct.Environment.Transducer.Attributes.(att{j});
+    env.(att{j})=trans{1}.Attributes.(att{j});
 end
 
 

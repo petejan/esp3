@@ -69,8 +69,10 @@ if isempty(idx_freq)
     idx_freq=(1:length(freq))';
 end
 
-nb_trans=length(idx_freq);
 channels=unique(idx_raw_obj.chan_dg(~isnan(idx_raw_obj.chan_dg)));
+idx_freq=idx_freq(1:length(channels));
+nb_trans=length(idx_freq);
+
 channels=channels(idx_freq);
 CIDs_freq=CIDs(idx_freq);
 trans_obj(length(CIDs_freq))=transceiver_cl();
@@ -205,7 +207,7 @@ for idg=1:nb_dg
                                     case 'PulseDuration'
                                         trans_obj(idx).Config.PulseLength=config_temp(iout).(props{iii});
                                     otherwise
-                                        if  any(strcmpi(prop_config,props{iii}))
+                                        if  any(strcmp(prop_config,props{iii}))
                                             trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
                                         else
                                             if ~isdeployed()

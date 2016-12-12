@@ -55,6 +55,8 @@ sim_pulse_1=downsample(sim_pulse_1,D_1);
 sim_pulse_2=conv(sim_pulse_1/nanmax(abs(sim_pulse_1)),filt_2,'same');
 sim_pulse_2=downsample(sim_pulse_2,D_2);
 
+sim_pulse_2=sim_pulse_2/nanmax(sim_pulse_2);
+
 
 y_tx_matched=flipud(conj(sim_pulse_2));
 

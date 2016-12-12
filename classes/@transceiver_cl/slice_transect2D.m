@@ -148,7 +148,7 @@ for iuu=1:length(idx_reg)
         
     end
     
-    regCellInt{i_reg}=reg_curr.integrate_region(trans_obj);
+    regCellInt{i_reg}=trans_obj.integrate_region(reg_curr);
     regCellIntCurr=regCellInt{i_reg};
     Sv_mean_lin=regCellIntCurr.Sv_mean_lin_esp2;
     Sa_lin = regCellIntCurr.Sa_lin;%sum up all abcsf per vertical slice

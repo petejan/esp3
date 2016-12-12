@@ -264,7 +264,7 @@ for uui=1:length(layer.Frequencies)
         freq_vec=f_vec(:,1);
         cal_ts=TS_f_mean;
         
-         g_c=layer.Transceivers(uui).get_current_gain();
+        g_c=layer.Transceivers(uui).get_current_gain();
  
         Gf_ori=g_c +10*log10(freq_vec./Freq);
 

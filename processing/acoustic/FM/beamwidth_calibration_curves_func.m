@@ -13,10 +13,6 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 ah=axes_panel_comp.main_axes;
 
-TS_fig=new_echo_figure(main_figure,'Name','TS','Tag','TS_fig');
-BP_fig_1=new_echo_figure(main_figure,'Name','','Tag','BP_fig1');
-BP_fig=new_echo_figure(main_figure,'Name','','Tag','BP_fig');
-
 
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 sphere_list=get(calibration_tab_comp.sphere,'String');
@@ -75,8 +71,8 @@ for uui=1:length(layer.Frequencies)
     AlongAngle_sph=AlongAngle(idx_peak+nb_samples*(idx_pings-1));
     Sp_sph=Sp(idx_peak+nb_samples*(idx_pings-1));
     
-
-	faBW = layer.Transceivers(uui).Config.BeamWidthAlongship; % [degrees]
+    
+    faBW = layer.Transceivers(uui).Config.BeamWidthAlongship; % [degrees]
     psBW = layer.Transceivers(uui).Config.BeamWidthAthwartship; % [degrees]
     
     est_ts = sphere_ts-simradBeamCompensation(faBW, psBW, AlongAngle_sph, AcrossAngle_sph);
@@ -99,7 +95,7 @@ for uui=1:length(layer.Frequencies)
     [XI,YI]=meshgrid(xi,yi);
     ZI = griddata(AlongAngle_sph,AcrossAngle_sph,Sp_sph, XI, YI);
     
-    figure(BP_fig_1);
+    new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp%.0f',uui));
     subplot(1,length(layer.Frequencies),uui)
     contourf(XI, YI, ZI,10)
     hold on
@@ -114,8 +110,7 @@ for uui=1:length(layer.Frequencies)
     axis equal;
     shading interp;
     
-    figure(BP_fig);
-    subplot(1,length(layer.Frequencies),uui)
+    new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp2%.0f',uui));
     surf(XI, YI, ZI)
     hold on;
     %surf(XI, YI, ZI_comp)
@@ -130,9 +125,8 @@ for uui=1:length(layer.Frequencies)
     shading interp;
     
     if uui==idx_freq
-        axes(ah);
-        hold on;
-        plot(idx_pings,range(idx_peak),'.r','markersize',5);
+        hold(ah,'on');
+        plot(ah,idx_pings,range(idx_peak),'.r','markersize',5);
     end
     drawnow;
     
@@ -140,15 +134,26 @@ for uui=1:length(layer.Frequencies)
         
         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
         load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
-
-
+        [cal_path,~,~]=fileparts(layer.Filename{1});
+        file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
-         for kk=1:length(idx_pings)
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,[]);
+        
+        
+        if exist(file_cal,'file')>0
+            disp('Calibration file loaded.');
+            cal=load(file_cal);
+        else
+            disp('No calibration file');
+            cal=[];
+        end
+        
+        
+        for kk=1:length(idx_pings)
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),2,cal);
             set(load_bar_comp.progress_bar,'Value',kk);
         end
         
-       
+        
         
         BeamWidthAlongship_f_th=2*acosd(1-(f_vec(:,kk)/Freq).^-2*(1-cosd(layer.Transceivers(uui).Config.BeamWidthAlongship/2)));
         BeamWidthAthwartship_f_th=2*acosd(1-(f_vec(:,kk)/Freq).^-2*(1-cosd(layer.Transceivers(uui).Config.BeamWidthAthwartship/2)));
@@ -161,18 +166,18 @@ for uui=1:length(layer.Frequencies)
         peak=nan(1,size(f_vec,1));
         exitflag=nan(1,size(f_vec,1));
         
-         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',size(f_vec,1), 'Value',0);
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',size(f_vec,1), 'Value',0);
         load_bar_comp.status_bar.setText(sprintf('Processing BeamWidth estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
-
-
+        
+        
         for tt=1:size(f_vec,1)
             [offset_Alongship(tt), BeamWidthAlongship_f_fit(tt), offset_Athwartship(tt), BeamWidthAthwartship_f_fit(tt), ~, peak(tt), exitflag(tt)]...
                 =fit_beampattern(Sp_f(tt,:), AcrossAngle_sph, AlongAngle_sph,mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]), mean([BeamWidthAlongship_f_th(tt), BeamWidthAthwartship_f_th(tt)]));
             set(load_bar_comp.progress_bar,'Value',kk);
         end
-
         
-        figure(TS_fig);
+        
+        new_echo_figure(main_figure,'Name','BeamWidth','Tag',sprintf('Bwidth%.0f',uui));
         hold on;
         plot(f_vec(:,1)/1e3,BeamWidthAlongship_f_fit,'-g','linewidth',2);
         plot(f_vec(:,1)/1e3,BeamWidthAlongship_f_th,'-k','linewidth',2);

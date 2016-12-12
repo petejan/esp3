@@ -57,7 +57,7 @@ for uui=idx_sort
         
         set(ax,'YColor',col_lab);
         set(ax,'XColor',col_lab);
-        set(ax,'Color',col_ax,'GridColor',col_grid);
+        set(ax,'Color',col_ax,'Grid','on','GridColor',col_grid);
 
         clear Sp_f Compensation_f  f_vec
         

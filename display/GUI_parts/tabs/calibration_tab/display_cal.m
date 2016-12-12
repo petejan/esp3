@@ -28,6 +28,7 @@ layer=getappdata(main_figure,'Layer');
 for uui=idx_sort
     Freq=(layer.Transceivers(uui).Config.Frequency);
     eq_beam_angle=layer.Transceivers(uui).Config.EquivalentBeamAngle;
+        gain=layer.Transceivers(uui).get_current_gain();
     
     if ~isempty(layer.Transceivers(uui).Config.Cal_FM)
         %<FrequencyPar Frequency="222062" Gain="30.09" Impedance="75" Phase="0" BeamWidthAlongship="5.43" BeamWidthAthwartship="5.64" AngleOffsetAlongship="0.04" AngleOffsetAthwartship="0.04" />
@@ -71,11 +72,12 @@ for uui=idx_sort
         cal_eba.BeamWidthAthwartship_f_fit(idx_null)=nan;
         eba=10*log10(2.2578*sind(cal_eba.BeamWidthAlongship_f_fit/4+cal_eba.BeamWidthAthwartship_f_fit/4).^2);
     end
-
-    if ~isempty(cal)   
-       plot(ax_1,cal.freq_vec(:)/1e3,cal.Gf(:),'r','linewidth',2);
-       grid(ax_1,'on');
-     end
+    
+    if ~isempty(cal)
+        plot(ax_1,cal.freq_vec(:)/1e3,cal.Gf(:),'r','linewidth',2);
+        plot(ax_1,cal.freq_vec(:)/1e3,gain +10*log10(cal.freq_vec(:)./Freq),'b','linewidth',2);
+        grid(ax_1,'on');
+    end
     
     if~isempty(cal_ori)
         plot(ax_1,cal_ori.freq_vec/1e3,cal_ori.Gf,'k','linewidth',2);

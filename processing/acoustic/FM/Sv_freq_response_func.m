@@ -37,7 +37,7 @@ for uui=1:length(layer.Frequencies)
         end
         
         for kk=1:length(idx_pings)
-            [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),r_min,r_max,cal,cal_eba);
+            [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),r_min,r_max,cal,cal_eba,[]);
         end
         
         Sv_f=[Sv_f 10*log10(nanmean(10.^(Sv_f_temp'/10)))];     

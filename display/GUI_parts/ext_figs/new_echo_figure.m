@@ -61,7 +61,7 @@ else
         end
     end
 end
-
+% 
 %     if ~isdeployed()
 %        set(fig_handle,'MenuBar','figure');
 %        set(fig_handle,'Toolbar','figure');

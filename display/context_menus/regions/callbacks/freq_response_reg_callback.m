@@ -22,6 +22,8 @@ if ~isempty(list_reg)
             TS_freq_response_func(main_figure,idx_r,idx_pings)
         case {'sv','svdenoised'}
             Sv_freq_response_func(main_figure,idx_r,idx_pings)
+        otherwise
+            TS_freq_response_func(main_figure,idx_r,idx_pings)
     end
 end
 

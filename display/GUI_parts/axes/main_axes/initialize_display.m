@@ -11,7 +11,7 @@ toolbar_obj_enable=findobj(toolbar_obj,'Enable','on');
 set(toolbar_obj_enable,'Enable','off');
 load_display_tab(main_figure,opt_panel);
 display_tab_comp=getappdata(main_figure,'Display_tab');
-load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.55]);
+load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.50]);
 load_regions_tab(main_figure,opt_panel);
 load_lines_tab(main_figure,opt_panel);
 load_calibration_tab(main_figure,opt_panel);

@@ -14,7 +14,7 @@ parse(p,reg_obj,trans_obj,varargin{:});
 
 
 if isa(trans_obj,'transceiver_cl')
-    output_reg=reg_obj.integrate_region(trans_obj);
+    output_reg=trans_obj.integrate_region(reg_obj);
 else
     output_reg=trans_obj;
 end

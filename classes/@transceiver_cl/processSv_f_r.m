@@ -1,4 +1,4 @@
-function [Sv_f,f_vec]=processSv_f_r(trans_obj,EnvData,iPing,r1,r2,cal,cal_eba)
+function [Sv_f,f_vec]=processSv_f_r(trans_obj,EnvData,iPing,r1,r2,cal,cal_eba,nfft)
 
 
 if strcmp(trans_obj.Mode,'FM')
@@ -18,8 +18,6 @@ if strcmp(trans_obj.Mode,'FM')
     
     
     gain=trans_obj.get_current_gain();
-    
-    
     
 
     range=trans_obj.Data.get_range();
@@ -42,12 +40,16 @@ if strcmp(trans_obj.Mode,'FM')
         idx_r2=nanmin(idx_r1+N_w-1,nb_samples);
     end
     
-    nfft=2^nextpow2(ceil(idx_r2-idx_r1+1));
+    if isempty(nfft)
+        nfft=2^nextpow2(ceil(idx_r2-idx_r1+1));
+    end
     
     idx_r=round((idx_r1+idx_r2)/2);
     N_w=length(idx_r1:idx_r2);
     
     y_c=trans_obj.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_real')+1i*trans_obj.Data.get_subdatamat(idx_r1:idx_r2,iPing,'field','y_imag');
+   
+    
     y_spread=y_c.*range_mat(idx_r1:idx_r2,iPing);
     
     w_h=hann(N_w)/(nansum(hann(N_w))/sqrt(N_w));
@@ -59,7 +61,7 @@ if strcmp(trans_obj.Mode,'FM')
     y_tx_auto=xcorr(y_tx_matched)/nansum(abs(y_tx_matched).^2);
     t_eff_c=nansum(abs(y_tx_auto).^2)/(nanmax(abs(y_tx_auto).^2)*f_s_sig);
     
-    fft_pulse=(fft(y_tx_auto,nfft))/nfft/2;
+    fft_pulse=(fft(y_tx_auto,nfft))/nfft;
        
     fft_vol_norm=(fft_vol./fft_pulse);
     
@@ -83,7 +85,6 @@ if strcmp(trans_obj.Mode,'FM')
     else
         Gf=gain+10*log10(f_vec./Freq);
     end
-    
     
     % if ~isempty(cal_eba)
     %     cal_eba.BeamWidthAlongship_f_fit(idx_null)=nan;
@@ -109,10 +110,10 @@ if strcmp(trans_obj.Mode,'FM')
     
     
     Prx_fft_vol=4*(abs(fft_vol_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
-    %tw=nfft/f_s_sig;
-    Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
-    %Sp_f=10*log10(Prx_fft_target)+40*log10(r_ts(idx_max))+2*alpha_f.*r_ts(idx_max)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr);
-    
+    tw=nfft/f_s_sig;
+    %Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
+    Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*tw/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
+
 else
     Sv_f=[];
     f_vec=[];
