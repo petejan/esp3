@@ -208,7 +208,9 @@ for idg=1:nb_dg
                                         if  any(strcmpi(prop_config,props{iii}))
                                             trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
                                         else
-                                           fprintf('New parameter in Configuration XML: %s\n', props{iii}); 
+                                            if ~isdeployed()
+                                                fprintf('New parameter in Configuration XML: %s\n', props{iii}); 
+                                            end
                                         end
                                 end
                                 
@@ -221,13 +223,19 @@ for idg=1:nb_dg
                     
                     props=fieldnames(output);
                     envdata=env_data_cl();
+
+                    
+
                     for iii=1:length(props)
                         if  any(strcmpi(prop_env,props{iii}))
                             envdata.(props{iii})=output.(props{iii});
                         else
-                            fprintf('New parameter in Environment XML: %s\n', props{iii}); 
+                            if ~isdeployed()
+                                fprintf('New parameter in Environment XML: %s\n', props{iii}); 
+                            end
                         end
                     end
+                    envdata.Salinity=35;
                 case 'Parameter'
                     params_temp=output;
                     idx = find(strcmp(deblank(CIDs_freq),deblank(params_temp.ChannelID)));
@@ -247,7 +255,9 @@ for idg=1:nb_dg
                                         if any(strcmpi(prop_params,fields_params{jj}))
                                             params_cl_init(idx).(fields_params{jj})=params_temp.(fields_params{jj});
                                         else
-                                            fprintf('New parameter in Parameters XML: %s\n', fields_params{jj}); 
+                                            if ~isdeployed()
+                                                fprintf('New parameter in Parameters XML: %s\n', fields_params{jj});
+                                            end
                                         end
                                 end
                             end
@@ -260,7 +270,9 @@ for idg=1:nb_dg
                                         trans_obj(idx).Params.(prop_params{jj})(i_ping(idx)-p.Results.PingRange(1)+1)=(params_cl_init(idx).(prop_params{jj}));
                                     end
                                 else
-                                     fprintf('Parameter not found in Parameters XML: %s\n', fields_params{jj}); 
+                                    if ~isdeployed()
+                                        fprintf('Parameter not found in Parameters XML: %s\n', fields_params{jj}); 
+                                    end
                                 end
                             end
                         end
@@ -320,42 +332,53 @@ for idg=1:nb_dg
                     %  store sample number if required/valid
                     number=i_ping(idx);
                     data.pings(idx).channelID=channelID;
-                    data.pings(idx).datatype=datatype;
+                    data.pings(idx).datatype=fliplr(dec2bin(datatype));
                     data.pings(idx).offset=offset;
                     data.pings(idx).sampleCount(i_ping(idx)-p.Results.PingRange(1)+1)=sampleCount;
                     data.pings(idx).number(i_ping(idx)-p.Results.PingRange(1)+1)=number;
                     data.pings(idx).time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                     
+                    
                     switch config(idx).TransceiverType
+                        
                         case {'WBT','WBT Tube','WBAT'}
+                            nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
+                            if data.pings(idx).datatype(4)==dec2bin(1)
+                                fmt='float32';
+                            elseif data.pings(idx).datatype(5)==dec2bin(1)
+                                fmt='float16';
+                            end
                             if (sampleCount > 0)
-                                temp = fread(fid,8*sampleCount,'float32', 'l');
+                                temp = fread(fid,nb_cplx_per_samples*sampleCount,fmt, 'l');
                             else
                                 continue;
                             end
                             
-                            if length(temp)/8~=sampleCount
+                            if length(temp)/(nb_cplx_per_samples)~=sampleCount
                                 continue;
                             end
                             
                             if (sampleCount > 0)
-                                data.pings(idx).comp_sig_1(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1:8:end)+1i*temp(2:8:end);
-                                data.pings(idx).comp_sig_2(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(3:8:end)+1i*temp(4:8:end);
-                                data.pings(idx).comp_sig_3(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(5:8:end)+1i*temp(6:8:end);
-                                data.pings(idx).comp_sig_4(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
+                                for isig=1:nb_cplx_per_samples/2
+                                    data.pings(idx).(sprintf('comp_sig_%1d',isig))(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1+2*(isig-1):nb_cplx_per_samples:end)+1i*temp(2+2*(isig-1):nb_cplx_per_samples:end);
+                                end
                             end
                             
                         case 'GPT'
-                            data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
-                            if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
-                                angle=fread(fid,[2 sampleCount],'int8', 'l');
-                                data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
-                                data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
-                            else
-                                data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
-                                data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                            if data.pings(idx).datatype(1)==dec2bin(1)
+                                data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
                             end
                             
+                            if data.pings(idx).datatype(2)==dec2bin(1)
+                                if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
+                                    angle=fread(fid,[2 sampleCount],'int8', 'l');
+                                    data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
+                                    data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                                else
+                                    data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                    data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                end
+                            end
                     end
                     i_ping(idx) = i_ping(idx) + 1;
                 else

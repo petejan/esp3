@@ -58,9 +58,9 @@ if strcmp(trans_obj.Mode,'FM')
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;
     
     if length(y_c_ts)<=nfft
-        s = fft(y_c_ts,nfft)/nfft;
+        s = fft(y_c_ts,nfft)/nfft/2;
     else
-        s = spectrogram(y_c_ts,win,nfft-1,nfft)/nfft;
+        s = spectrogram(y_c_ts,win,nfft-1,nfft)/nfft/2;
     end
     
     s_norm=bsxfun(@rdivide,s,fft_pulse);

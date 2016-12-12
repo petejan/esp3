@@ -28,7 +28,7 @@ if p.Results.denoised>0
 else
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
-
+%Sv_reg(Sv_reg<-80)=-999;
 
 
 if isempty(Sv_reg)

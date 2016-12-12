@@ -47,13 +47,13 @@ for ix=1:length(reg_file_str)
         [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
         
         if found==0
-            warning('Could not load regions for frequency %.0fkHz, there is none...',region_xml.Infos.Freq);
+            fprintf('Could not load regions for frequency %.0fkHz, there is none...\n',region_xml.Infos.Freq);
             continue;
         end
         trans_obj=layer_obj.Transceivers(idx_freq);
         
         if ~strcmp(deblank(trans_obj.Config.ChannelID),region_xml.Infos.ChannelID)
-            warning('Those regions have been written for a different GPT %.0fkHz',region_xml.Infos.Freq);
+            fprintf('Those regions have been written for a different GPT %.0fkHz\n',region_xml.Infos.Freq);
         end
         
         t_max=nanmax(trans_obj.Data.Time);

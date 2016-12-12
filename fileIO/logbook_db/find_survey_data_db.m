@@ -24,7 +24,7 @@ for ip=1:length(unique_paths)
             if curr_file_data{id,2}==0&&(strcmp(deblank(curr_file_data{id,3}),''))&&curr_file_data{id,4}==0
                 continue;
             end
-            missing_file_temp=dbconn.fetch(sprintf('select Filename from logbook where  Snapshot=%.0f and Stratum like "%s" and Transect=%.0f',curr_file_data{id,2},curr_file_data{id,3},curr_file_data{id,4}));
+            missing_file_temp=dbconn.fetch(sprintf('select Filename from logbook where  Snapshot=%.0f and Stratum is "%s" and Transect=%.0f',curr_file_data{id,2},curr_file_data{id,3},curr_file_data{id,4}));
             missing_files=union(missing_files,fullfile(unique_paths{ip},missing_file_temp));
         end
         

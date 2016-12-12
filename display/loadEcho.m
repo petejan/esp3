@@ -1,5 +1,9 @@
 function loadEcho(main_figure)
 
+if isempty(main_figure)
+    return;
+end
+
 set(main_figure,'WindowButtonMotionFcn','');
 rm_listeners(main_figure);
 layer=getappdata(main_figure,'Layer');

@@ -76,6 +76,7 @@ pulselength=double(transceiver.Params.PulseLength(1));
 gains=transceiver.Config.Gain;
 pulselengths=transceiver.Config.PulseLength;
 [~,idx_pulse]=nanmin(abs(pulselengths-pulselength));
+
 gain=gains(idx_pulse);
 [sim_pulse,~]=transceiver.get_pulse();
 Np=length(sim_pulse);
@@ -87,7 +88,7 @@ athwart = zeros(size(pp))';
 power = zeros(length(pp),2*Np+1);
 phase_along = zeros(length(pp),2*Np+1);
 phase_athwart = zeros(length(pp),2*Np+1);
-
+dt=pulselength/Np;
 for j = 1:length(pp)
     if (Np < pp(j) && (pp(j) + Np) < size(Sp,1))
         tts(j) = Sp(pp(j), idx_pings(j));
@@ -425,10 +426,14 @@ sig_pulse=zeros(1,2*Np+1);
 sig_pulse(floor(Np/2):floor(Np/2)+Np-1)=sim_pulse(:)';
 alpha = mean((sum(power(:,i)))./(max(power(:,i))))/nansum(abs(sim_pulse).^2);
 
-figure();
-plot(bsxfun(@rdivide,power,max(power,[],1)));
+t=(1:length(sig_pulse))/dt*1e3;
+new_echo_figure([],'Name','Pulse Comparison');
+plot(t,bsxfun(@rdivide,power,max(power,[],1)));
 hold on;
-plot(abs(sig_pulse),'r','linewidth',2);
+plot(t,abs(sig_pulse),'r','linewidth',2);
+grid on;
+xlabel('Time (ms)');
+ylabel('Normalized Power');
 
 
 % And convert that to dB, taking account of how this ratio is used as 2Sa
@@ -464,7 +469,7 @@ beam_model = peak_ts - compensation;
 rms_fit = sqrt( mean( ( (sphere(i,1) - beam_model(i))/2 ).^2 ) );
 disp(['RMS of fit to beam model out to ' num2str(fit_out_to) ' degrees = ' num2str(rms_fit) ' dB.'])
 
-new_cal.SACORRECT=sa_correction;
+% new_cal.SACORRECT=sa_correction;
 % 
 % transceiver.apply_cw_cal(new_cal);
 

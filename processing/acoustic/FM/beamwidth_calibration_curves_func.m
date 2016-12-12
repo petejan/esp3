@@ -1,19 +1,6 @@
 function beamwidth_calibration_curves_func(main_figure)
 
-options.Interpreter = 'tex';
-% Include the desired Default answer
-options.Default = 'No thank you';
-options.WindowStyle = 'modal';
-% Construct a questdlg with two options
-qstring='Are you sure that you want to recompute calibration curves? This might delete previously calculated curves.';
-choice = questdlg(qstring, ...
-    'Calibration', ...
-    'Yes','No thank you',options);
-% Handle response
-switch choice
-    case 'No thank you'
-        return;
-end
+
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 
@@ -34,9 +21,6 @@ BP_fig=new_echo_figure(main_figure,'Name','','Tag','BP_fig');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 sphere_list=get(calibration_tab_comp.sphere,'String');
 sph=get_sph_params(sphere_list{get(calibration_tab_comp.sphere,'value')});
-
-
-
 
 
 
@@ -207,6 +191,22 @@ for uui=1:length(layer.Frequencies)
         
         
         freq_vec=f_vec(:,1);
+        
+        
+        options.Interpreter = 'tex';
+        % Include the desired Default answer
+        options.Default = 'No thank you';
+        options.WindowStyle = 'modal';
+        % Constructt a questdlg with two options
+        qstring=sprintf('Do you want to save those results for frequency %.0fkHz',Freq/1e3);
+        choice = questdlg(qstring, ...
+            'Calibration', ...
+            'Yes','No thank you',options);
+        % Handle response
+        switch choice
+            case 'No thank you'
+                return;
+        end
         
         save(file_cal,'BeamWidthAlongship_f_fit','BeamWidthAlongship_f_th','BeamWidthAthwartship_f_fit','BeamWidthAthwartship_f_th','freq_vec');
         

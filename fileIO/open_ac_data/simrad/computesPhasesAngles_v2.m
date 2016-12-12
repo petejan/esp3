@@ -6,27 +6,52 @@ for idx_freq=1:length(trans_obj)
     angleSensitivityAthwartship=trans_obj(idx_freq).Config.AngleSensitivityAthwartship;
     switch trans_obj(idx_freq).Config.TransceiverType
         case {'WBT','WBT Tube','WBAT'}
+            k_angle=1;
             switch trans_obj(idx_freq).Config.TransducerName
-                case {'ES38-7' 'ES333'}
+                case {'ES38-7' 'ES333' }
+                    switch trans_obj(idx_freq).Config.TransducerName
+                        case 'ES38-7'
+                            
+                            sa=data.pings(idx_freq).comp_sig_1;
+                            pa=data.pings(idx_freq).comp_sig_2;
+                            fo=data.pings(idx_freq).comp_sig_3;
+                            ce=data.pings(idx_freq).comp_sig_4;
+                            
+                            sec1=sa+ce;
+                            sec2=pa+ce;
+                            sec3=fo+ce;
+                            
+                        case 'ES333'
+                            sec1=data.pings(idx_freq).comp_sig_1;
+                            sec2=data.pings(idx_freq).comp_sig_2;
+                            sec3=data.pings(idx_freq).comp_sig_3;
+                    end
                     
-                    sa=data.pings(idx_freq).comp_sig_1;
-                    pa=data.pings(idx_freq).comp_sig_2;
-                    fo=data.pings(idx_freq).comp_sig_3;
-                    ce=data.pings(idx_freq).comp_sig_4;
                     
-                    sec1=real(sa)+real(ce)+1j*imag(sa+ce);
-                    sec2=real(pa)+real(ce)+1j*imag(pa+ce);
-                    sec3=real(fo)+real(ce)+1j*imag(fo+ce);
                     
                     phi31=angle(sec3.*conj(sec1))/pi*180;
                     phi32=angle(sec3.*conj(sec2))/pi*180;
                     
                     data.pings(idx_freq).AlongPhi=1/sqrt(3)*(phi31+phi32);
                     data.pings(idx_freq).AcrossPhi=(phi32-phi31);
-                    k_angle=1; 
+
                     
+                case 'ES38-18|200-18C'
+                    if trans_obj(idx_freq).Config.Frequency==38000
+                        sec1=data.pings(idx_freq).comp_sig_1;
+                        sec2=data.pings(idx_freq).comp_sig_2;
+                        sec3=data.pings(idx_freq).comp_sig_3;
+                        phi31=angle(sec3.*conj(sec1))/pi*180;
+                        phi32=angle(sec3.*conj(sec2))/pi*180;
+                        data.pings(idx_freq).AlongPhi=1/sqrt(3)*(phi31+phi32);
+                        data.pings(idx_freq).AcrossPhi=(phi32-phi31);
+
+                    else
+                        data.pings(idx_freq).AlongPhi=nan(size(data.pings(idx_freq).comp_sig_1));
+                        data.pings(idx_freq).AcrossPhi=nan(size(data.pings(idx_freq).comp_sig_1));
+   
+                    end
                 otherwise
-                    
                     
                     s1=data.pings(idx_freq).comp_sig_1;
                     s2=data.pings(idx_freq).comp_sig_2;
@@ -37,8 +62,6 @@ for idx_freq=1:length(trans_obj)
                     aft =(s2+s1)/2;
                     stbd =(s1+s4)/2;
                     port =(s3+s2)/2;
-                    
-                    k_angle=1;
                     
                     data.pings(idx_freq).AlongPhi=angle(fore.*conj(aft))/pi*180;
                     data.pings(idx_freq).AcrossPhi=angle((stbd).*conj(port))/pi*180;

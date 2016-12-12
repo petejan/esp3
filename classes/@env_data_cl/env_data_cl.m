@@ -1,12 +1,20 @@
 
-classdef env_data_cl
+classdef env_data_cl < handle
     properties
-        Acidity
-        Depth
-        Salinity
-        SoundSpeed
-        Temperature
-        SVP
+        Acidity=8;
+        Depth=0;
+        Salinity=35;
+        SoundSpeed=1500
+        Temperature=18
+        SVP=[];
+        DropKeelOffset=0;
+        DropKeelOffsetIsManual=0;
+        Latitude=nan;
+        SoundVelocityProfile=[]
+        SoundVelocitySource='';
+        WaterLevelDraft=0;
+        WaterLevelDraftIsManual=0;
+        TransducerName='';
     end
     methods
         function obj = env_data_cl(varargin)

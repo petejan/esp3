@@ -20,8 +20,8 @@ if strcmp(trans_obj.Mode,'FM')
     gain=trans_obj.get_current_gain();
     
     
-    [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
     
+
     range=trans_obj.Data.get_range();
     
     nb_samples=length(range);
@@ -59,9 +59,8 @@ if strcmp(trans_obj.Mode,'FM')
     y_tx_auto=xcorr(y_tx_matched)/nansum(abs(y_tx_matched).^2);
     t_eff_c=nansum(abs(y_tx_auto).^2)/(nanmax(abs(y_tx_auto).^2)*f_s_sig);
     
-    fft_pulse=(fft(y_tx_auto,nfft))/nfft;
-    
-    
+    fft_pulse=(fft(y_tx_auto,nfft))/nfft/2;
+       
     fft_vol_norm=(fft_vol./fft_pulse);
     
     n_rep=ceil(FreqEnd/f_s_sig);
@@ -110,7 +109,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     
     Prx_fft_vol=4*(abs(fft_vol_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
-    
+    %tw=nfft/f_s_sig;
     Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
     %Sp_f=10*log10(Prx_fft_target)+40*log10(r_ts(idx_max))+2*alpha_f.*r_ts(idx_max)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(gain_f+Gf_corr);
     

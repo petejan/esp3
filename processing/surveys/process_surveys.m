@@ -89,6 +89,7 @@ for i=1:length(Filenames)
     
 end
 hide_status_bar(p.Results.gui_main_handle);
+loadEcho(p.Results.gui_main_handle);
 % profile off;
 % profile viewer;
 end

@@ -108,8 +108,8 @@ else
 end
 set(calibration_tab_comp.temp,'string',num2str(new_temp,'%.1f'));
     
+c = sw_svel(layer.EnvData.Salinity,layer.EnvData.Temperature,5);
 
-c = sw_svel(layer.EnvData.Salinity,layer.EnvData.Temperature,1);
 layer.apply_soundspeed(c);
 update_axis_panel(main_figure,0);
 update_calibration_tab(main_figure);

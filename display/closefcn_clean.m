@@ -9,7 +9,6 @@ selection=close_dialog_fig(main_fig);
 switch selection,
     case 'Yes'
        cleanup_echo(main_fig);
-       close all;
     case 'No'
         return;
 end

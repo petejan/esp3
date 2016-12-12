@@ -42,7 +42,7 @@ classdef sub_ac_data_cl < handle
                         continue;
                     end
                     format={'single',size(data{icell}),field};
-                    fwrite(fileID,single(data{icell}),'single');
+                    fwrite(fileID,double(data{icell}),'single');
                     fclose(fileID);
                     
                     obj.Memap{icell} = memmapfile(curr_name,...

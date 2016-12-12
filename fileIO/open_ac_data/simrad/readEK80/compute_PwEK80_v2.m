@@ -12,10 +12,16 @@ Ztrd=trans_obj(idx_freq).Config.Ztrd;
             s3=data.pings(idx_freq).comp_sig_3;
             s4=data.pings(idx_freq).comp_sig_4;
             
-            data.pings(idx_freq).y=(s1+s2+s3+s4)/4;
+            nb_chan=nansum(any(s1(:))+any(s2(:))+any(s3(:))+any(s4(:)));
+            data.pings(idx_freq).y=zeros(size(s1));
             
-            y=data.pings(idx_freq).y;
-            data.pings(idx_freq).power=4*(abs(y)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
+            for i=1:nb_chan
+                data.pings(idx_freq).y=data.pings(idx_freq).y+data.pings(idx_freq).(sprintf('comp_sig_%1d',i));
+            end
+            
+            data.pings(idx_freq).y=data.pings(idx_freq).y/nb_chan;
+
+            data.pings(idx_freq).power=nb_chan*(abs(data.pings(idx_freq).y)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
 
  
     end

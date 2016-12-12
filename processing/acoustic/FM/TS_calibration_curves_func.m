@@ -1,20 +1,6 @@
 function TS_calibration_curves_func(main_figure)
 
 
-options.Interpreter = 'tex';
-% Include the desired Default answer
-options.Default = 'No thank you';
-options.WindowStyle = 'modal';
-% Construct a questdlg with two options
-qstring='Are you sure that you want to recompute calibration curves? This might delete previously calculated curves.';
-choice = questdlg(qstring, ...
-    'Calibration', ...
-    'Yes','No thank you',options);
-% Handle response
-switch choice
-    case 'No thank you'
-        return;
-end
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
@@ -183,7 +169,6 @@ for uui=1:length(layer.Frequencies)
         
         
         new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp%.0f',uui));
-        subplot(1,length(layer.Frequencies),uui)
         contourf(XI, YI, ZI)
         hold on
         plot(AlongAngle_sph,AcrossAngle_sph,'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
@@ -200,7 +185,6 @@ for uui=1:length(layer.Frequencies)
         
         
         new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp2%.0f',uui));
-        subplot(1,length(layer.Frequencies),uui)
         surf(XI, YI, ZI)
         shading interp
         hold on;
@@ -286,10 +270,24 @@ for uui=1:length(layer.Frequencies)
 
         Gf=(cal_ts-th_ts)/2+Gf_ori(:)';
         
+        
+        options.Interpreter = 'tex';
+        % Include the desired Default answer
+        options.Default = 'No thank you';
+        options.WindowStyle = 'modal';
+        % Construct a questdlg with two options
+        qstring=sprintf('Do you want to save those results for frequency %.0fkHz',Freq/1e3);
+        choice = questdlg(qstring, ...
+            'Calibration', ...
+            'Yes','No thank you',options);
+        % Handle response
+        switch choice
+            case 'No thank you'
+                continue;
+        end
+        
         save(file_cal,'freq_vec','cal_ts','th_ts','Gf');
-        
-        f_vec_save=[f_vec_save; freq_vec];
-        
+          
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);

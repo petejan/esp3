@@ -14,7 +14,7 @@ f = trans_obj.Config.Frequency;
 c = env_data_obj.SoundSpeed;
 
 alpha = trans_obj.Params.Absorption(1);
-cal=get_cal(trans_obj);
+cal=trans_obj.get_cal();
 G=cal.G0;
 eq_beam_angle = trans_obj.Config.EquivalentBeamAngle;
 ptx = trans_obj.Params.TransmitPower;
@@ -34,7 +34,7 @@ switch trans_obj.Mode
         trans_obj.Data.Range=[range(1) range(end)];
         
         if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
-            [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff,0,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
+            [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
             trans_obj.Data.add_sub_data('spunmatched',Sp_un);
         end
         

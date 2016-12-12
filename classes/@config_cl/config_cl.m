@@ -35,6 +35,21 @@ classdef config_cl
         TransducerName=''
         XML_string='';
         Cal_FM=struct.empty();
+        TransducerAlphaX=0;
+        TransducerAlphaY=0;
+        TransducerAlphaZ=0;
+        TransducerCustomName='';
+        TransducerMounting='';
+        TransducerOffsetX=0;
+        TransducerOffsetY=0;
+        TransducerOffsetZ=0;
+        TransducerOrientation='';
+        TransducerSerialNumber=0;
+        MarketSegment='';
+        Version='';
+        PulseDurationFM=[];
+        ArticleNumber=0;
+
     end
     
     methods
