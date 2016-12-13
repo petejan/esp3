@@ -62,7 +62,7 @@ dist_pings=trans_obj.GPSDataPing.Dist;
 
 Bottom=trans_obj.get_bottom_range();
 
-[~,Np]=get_pulse_length(trans_obj);
+[~,Np]=trans_obj.get_pulse_Teff();
 Sv_thr=p.Results.Sv_thr;
 l_min_can=p.Results.l_min_can;
 h_min_can=p.Results.h_min_can;

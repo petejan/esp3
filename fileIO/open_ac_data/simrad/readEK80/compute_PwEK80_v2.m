@@ -6,7 +6,6 @@ Ztrd=trans_obj(idx_freq).Config.Ztrd;
     switch trans_obj(idx_freq).Config.TransceiverType
         case {'WBT','WBT Tube','WBAT'}
             
-           
             s1=data.pings(idx_freq).comp_sig_1;
             s2=data.pings(idx_freq).comp_sig_2;
             s3=data.pings(idx_freq).comp_sig_3;

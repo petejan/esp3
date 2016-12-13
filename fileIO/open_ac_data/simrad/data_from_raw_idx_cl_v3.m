@@ -47,6 +47,7 @@ switch ftype
         config_EK60=header.transceiver;
         
         CIDs=cell(1,nb_trans_tot);
+        
         for uif=1:length(freq)
             config_EK60(uif).soundername=header.header.soundername;
             CIDs{uif}=config_EK60(uif).channelid;
@@ -64,18 +65,19 @@ if isempty(Frequencies)
 else
     [~,~,idx_freq] = intersect(Frequencies,freq,'stable');
 end
-
+channels=unique(idx_raw_obj.chan_dg(~isnan(idx_raw_obj.chan_dg)));
 if isempty(idx_freq)
-    idx_freq=(1:length(freq))';
+    idx_freq=(1:length(channels))';
 end
 
-channels=unique(idx_raw_obj.chan_dg(~isnan(idx_raw_obj.chan_dg)));
-idx_freq=idx_freq(1:length(channels));
-nb_trans=length(idx_freq);
+if length(idx_freq)>length(channels)
+    idx_freq=idx_freq(1:length(channels));
+end
 
 channels=channels(idx_freq);
 CIDs_freq=CIDs(idx_freq);
 trans_obj(length(CIDs_freq))=transceiver_cl();
+nb_trans=length(idx_freq);
 
 if p.Results.GPSOnly>0
     nb_pings=zeros(1,length(CIDs_freq));
@@ -534,7 +536,7 @@ if p.Results.GPSOnly==0
         t = trans_obj(i).Params.SampleInterval(1);
         dR = double(c .* t / 2)';
         samples=double([sample_start(i) sample_end(i)]);
-        range=double(samples-1)*dR;
+        range=double(samples-1)*dR*1.;
         
         trans_obj(i).Data=ac_data_cl('SubData',sub_ac_data_temp,...
             'Range',range,...

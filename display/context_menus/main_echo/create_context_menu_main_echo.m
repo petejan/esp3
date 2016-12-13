@@ -10,7 +10,8 @@ axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
 analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
 if strcmpi(layer.Transceivers(idx_freq).Mode,'FM')
-    uimenu(analysis_menu,'Label','Plot Ping Spectrum','Callback',{@plot_ping_spectrum_callback,main_figure});
+    uimenu(analysis_menu,'Label','Plot Ping TS Spectrum','Callback',{@plot_ping_spectrum_callback,main_figure});
+    uimenu(analysis_menu,'Label','Plot Ping Sv Spectrum','Callback',{@plot_ping_sv_spectrum_callback,main_figure});
 end
 
 survey_menu=uimenu(context_menu,'Label','Survey Data');

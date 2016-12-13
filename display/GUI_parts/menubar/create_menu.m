@@ -120,9 +120,9 @@ uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapp
 
 
 
-bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
-uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
-uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
+% bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
+% uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
+% uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
 
 
 curves_tools=uimenu(mhhh,'Label','Curves');

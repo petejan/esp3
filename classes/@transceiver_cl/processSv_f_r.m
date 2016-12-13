@@ -85,7 +85,7 @@ if strcmp(trans_obj.Mode,'FM')
     else
         Gf=gain+10*log10(f_vec./Freq);
     end
-    
+    Gf=Gf(:);
     % if ~isempty(cal_eba)
     %     cal_eba.BeamWidthAlongship_f_fit(idx_null)=nan;
     %     cal_eba.BeamWidthAthwartship_f_fit(idx_null)=nan;
@@ -103,7 +103,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     
     alpha_f=nan(size(f_vec));
-    r=round(range(idx_r));
+    r=range(idx_r);
     for jj=1:length(f_vec)
         alpha_f(jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r,'fandg')/1e3;
     end
@@ -112,7 +112,7 @@ if strcmp(trans_obj.Mode,'FM')
     Prx_fft_vol=4*(abs(fft_vol_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
     tw=nfft/f_s_sig;
     %Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*t_eff_c/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
-    Sv_f=10*log10(Prx_fft_vol)+2*alpha_f.*r-10*log10(c*tw/2)-10*log10(ptx*lambda.^2/(16*pi^2))-2*(Gf)-eq_beam_angle_f;
+    Sv_f=10*log10(Prx_fft_vol(:))+2*alpha_f(:).*r-10*log10(c*tw/2)-10*log10(ptx*lambda(:).^2/(16*pi^2))-2*(Gf(:))-eq_beam_angle_f(:);
 
 else
     Sv_f=[];

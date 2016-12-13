@@ -35,8 +35,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     r_ts=range(idx_ts);
     
-    [~,idx_max]=nanmax(y_c_ts);
-    
+
     [~,y_tx_matched]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
     
 %    y_tx_auto=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
@@ -78,6 +77,7 @@ if strcmp(trans_obj.Mode,'FM')
     s_norm=s_norm_rep(idx_vec,:)';
     
     idx_val=floor(nfft/2):floor(nfft/2)+size(s_norm,1)-1;
+    
     r_tot=r_ts(idx_val);
     AlongAngle_val=AlongAngle_val(idx_val);
     AcrossAngle_val=AcrossAngle_val(idx_val);
@@ -95,7 +95,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     for jj=1:length(f_vec)
         compensation_f(:,jj) = simradBeamCompensation(BeamWidthAlongship_f(jj),BeamWidthAthwartship_f(jj) , AlongAngle_val, AcrossAngle_val);
-        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_ts(idx_max),'fandg')/1e3;
+        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_tot,'fandg')/1e3;
     end
     
     compensation_f(compensation_f<0)=nan;

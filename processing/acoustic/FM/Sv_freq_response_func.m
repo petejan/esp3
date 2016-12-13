@@ -3,9 +3,11 @@ function Sv_freq_response_func(main_figure,idx_r,idx_pings)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).Data.get_range(idx_r);
-r_min=nanmin(range);
-r_max=nanmax(range);
+range=layer.Transceivers(idx_freq).Data.get_range();
+
+r_min=nanmin(range(idx_r));
+r_max=nanmax(range(idx_r));
+
 
 f_vec=[];
 Sv_f=[];
@@ -18,7 +20,9 @@ for uui=1:length(layer.Frequencies)
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
                 
         file_cal_eba=fullfile(cal_path,[ 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
-        
+        range=layer.Transceivers(idx_freq).Data.get_range();
+        range(range<r_min)=[];
+        range(range>r_max)=[];
         
         if exist(file_cal_eba,'file')>0
             cal_eba=load(file_cal_eba);
@@ -32,12 +36,19 @@ for uui=1:length(layer.Frequencies)
             disp('Calibration file loaded.');
             cal=load(file_cal);
         else
-            disp('No calibration file');
             cal=[];
         end
         
+          
+%         for kk=1:length(idx_pings)
+%             [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(1),range(end),cal,cal_eba,[]);
+%            
+%         end
+
         for kk=1:length(idx_pings)
-            [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),r_min,r_max,cal,cal_eba,[]);
+            [sv_temp,f_vec_t,~]=processSv_f_r_2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range,[],cal,cal_eba);
+            Sv_f_temp(:,kk)=10*log10(nanmean(10.^(sv_temp/10),1));
+            f_vec_temp(:,kk)=nanmean(f_vec_t,1);
         end
         
         Sv_f=[Sv_f 10*log10(nanmean(10.^(Sv_f_temp'/10)))];     
@@ -56,8 +67,8 @@ for uui=1:length(layer.Frequencies)
         range=layer.Transceivers(uui).Data.get_range();
         [nb_samples,~]=size(Sv);
 
-        [~,idx_r1]=nanmin(abs(range-r_min));
-        [~,idx_r2]=nanmin(abs(range-r_max));
+        [~,idx_r1]=nanmin(abs(range-range(1)));
+        [~,idx_r2]=nanmin(abs(range-range(2)));
       
         idx_r1=nanmax(idx_r1,1);
         idx_r2=nanmin(idx_r2,nb_samples);

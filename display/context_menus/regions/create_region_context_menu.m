@@ -24,7 +24,8 @@ freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
 uimenu(freq_analysis_menu,'Label','Display Frequency response','Callback',{@freq_response_reg_callback,main_figure});
 
 if strcmp(layer.Transceivers(idx_freq).Mode,'FM')
-    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix','Callback',{@freq_response_mat_callback,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,main_figure});
 end
 end
 
