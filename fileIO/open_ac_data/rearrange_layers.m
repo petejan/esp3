@@ -16,7 +16,7 @@ for i=1:length(layers_in)
     curr_layer=layers_in(i);
     nb_transceivers(i)=length(curr_layer.Transceivers);
     filetype{i}=curr_layer.Filetype;
-    fold_temp=curr_layer.get_folder();
+    %fold_temp=curr_layer.get_folder();
 end
 
 trans_nb=unique(nb_transceivers);

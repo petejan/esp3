@@ -529,7 +529,7 @@ if p.Results.GPSOnly==0
         
         if any(isnan(trans_obj(i).Params.Absorption))
             alpha= sw_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
-            trans_obj(i).Params.Absorption=alpha*ones(1,size(curr_data.power,2));
+            trans_obj(i).Params.Absorption=round(alpha*1e3)/1e3*ones(1,size(curr_data.power,2));
         end
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);

@@ -240,6 +240,10 @@ for isn=1:length(snapshots)
                     for i_freq=1:length(layer_new.Frequencies)
                         curr_freq=layer_new.Frequencies(i_freq);
                         
+                        if ~isnan(options.Soundspeed)
+                            layer_new.apply_soundspeed(options.Soundspeed);
+                        end
+                        
                         switch lower(layer_new.Filetype)
                             case {'ek60','ek80'}
                                 if any([cal_curr(:).FREQ]==curr_freq)
@@ -248,16 +252,14 @@ for isn=1:length(snapshots)
                                     fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                                 end
                         end
-                        
+   
                         if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
                             layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
                         else
                             fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                         end
                         
-                        if ~isnan(options.Soundspeed)
-                            layer_new.apply_soundspeed(options.Soundspeed);
-                        end
+
                     end
                     
                     

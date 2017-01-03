@@ -44,7 +44,7 @@ if ~isempty(list_reg)
         [Sv_f,f_vec,ping_mat,r_mat]=trans_obj.sv_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba,'load_bar_comp',load_bar_comp);
         [~,idx_freq]=nanmin(abs(f_vec/1e3-floor(nanmean(f_vec/1e3))));
         
-        fig=new_echo_figure([]);
+        fig=new_echo_figure([],'Tag',sprintf('SV(f)Region %.0f',active_reg.Unique_ID));
         ax=axes(fig,'units','normalized','Position',[0.1 0.2 0.85 0.7]);
         im=imagesc(ax,ping_mat,r_mat,Sv_f(:,:,idx_freq)');
         title(ax,sprintf('%.0fkHz',f_vec(idx_freq)/1e3));
@@ -59,7 +59,7 @@ if ~isempty(list_reg)
             'units','normalized','Position',[0.2 0.05 0.6 0.05],'Callback',{@change_freq_cback,Sv_f,f_vec,im,ax});
         set(im,'alphadata',double(Sv_f(:,:,idx_freq)'>ax.CLim(1)));
         grid(ax,'on');
-        new_echo_figure(main_figure,'fig_handle',fig,'Name','Sv(f)','Tag',sprintf('Region %.0f',active_reg.Unique_ID),'Name',active_reg.print());
+        new_echo_figure(main_figure,'fig_handle',fig,'Name','Sv(f)','Name',active_reg.print());
         colorbar(ax);
         
     end

@@ -47,6 +47,13 @@ for isn=1:length(snapshots)
     
     stratum=snapshots{isn}.Stratum;
     
+        
+    if exist(snapshots{isn}.Folder,'dir')==0
+        fprintf('Cannot find folder %s \n',snapshots{isn}.Folder);
+        valid=0;
+        continue;
+    end
+    
     file_name=fullfile(snapshots{isn}.Folder,'echo_logbook.db');
     
     if exist(file_name,'file')==0

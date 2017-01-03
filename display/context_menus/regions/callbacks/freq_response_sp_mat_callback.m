@@ -32,7 +32,7 @@ if ~isempty(list_reg)
         [TS_f,f_vec,pings,range]=trans_obj.TS_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'dp',3,'load_bar_comp',load_bar_comp);
         [~,idx_freq]=nanmin(abs(f_vec/1e3-floor(nanmean(f_vec/1e3))));
         
-        fig=new_echo_figure([]);
+        fig=new_echo_figure([],'Tag',sprintf('TS Region %.0f',active_reg.Unique_ID));
         ax=axes(fig,'units','normalized','Position',[0.1 0.2 0.85 0.7]);
         im=imagesc(ax,pings,range,TS_f(:,:,idx_freq)');
         title(ax,sprintf('%.0fkHz',f_vec(idx_freq)/1e3));

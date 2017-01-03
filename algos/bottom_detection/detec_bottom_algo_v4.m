@@ -15,7 +15,7 @@ check_thr_bottom=@(x)(x>=-120&&x<=-3);
 default_thr_backstep=-1;
 check_thr_backstep=@(x)(x>=-12&&x<=12);
 
-check_shift_bot=@(x)(x>=0);
+check_shift_bot=@(x) isnumeric(x);
 
 check_thr_cum=@(x)(x>=0&&x<=1);
 
