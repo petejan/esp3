@@ -67,7 +67,7 @@ classdef layer_cl < handle
             
             
         end
-
+    
         function rm_memaps(layer)
             
             for kk=1:length(layer.Transceivers)

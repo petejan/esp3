@@ -10,7 +10,11 @@ xdata=trans_obj.Data.get_numbers();
 ydata=trans_obj.Data.get_range();
 
 
+if ~isvalid(axes_panel_comp.bottom_plot)
+    axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,'tag','bottom');
+end
 
+setappdata(main_figure,'Axes_panel',axes_panel_comp);
 
 if~isempty(idx_bottom)&&~isempty(xdata)&&~isempty(ydata)
     x=linspace(xdata(1),xdata(end),length(xdata));

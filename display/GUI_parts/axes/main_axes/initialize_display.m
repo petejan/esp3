@@ -26,8 +26,6 @@ load_track_target_tab(main_figure,algo_panel);
 load_axis_panel(main_figure);
 
 
-
-
 format_color_gui(main_figure,curr_disp.Font);
 
 set(main_figure,'Visible','on');
@@ -35,6 +33,8 @@ drawnow;
 movegui(main_figure,'center');
 load_loading_bar(main_figure);
 load_info_panel(main_figure);
+set(main_figure,'Pointer','arrow');
+set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
 
 end
 

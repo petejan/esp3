@@ -17,8 +17,11 @@ end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed: %.0f(m/s)',curr_disp.Freq/1e3,layer.EnvData.SoundSpeed),'units','normalized','Position',[0.1 0.85 0.7 0.1]);
+calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s):',curr_disp.Freq/1e3),'units','normalized','Position',[0.1 0.85 0.5 0.1]);
+
+  calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.55 0.85 0.1 0.1],'string',num2str(layer.EnvData.SoundSpeed,'%.0f'),'callback',{@change_soundspeed_cback,main_figure});
        
+
 if ~strcmp(layer.Filetype,'CREST')
     if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
         cal_cw=get_cal(layer.Transceivers(idx_freq));
@@ -84,6 +87,36 @@ end
 set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.2f'));
 
 loadEcho(main_figure);
+end
+
+function change_soundspeed_cback(~,~,main_figure)
+
+layer=getappdata(main_figure,'Layer');
+calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
+
+c = str2double(get(calibration_tab_comp.soundspeed,'string'));
+
+if~(~isnan(c)&&c>=1000&&c<=2000)
+    c=layer.EnvData.SoundSpeed;
+end
+
+set(calibration_tab_comp.soundspeed,'string',num2str(c,'%.0f'));
+
+layer.apply_soundspeed(c);
+
+update_axis_panel(main_figure,0);
+update_calibration_tab(main_figure);
+display_bottom(main_figure);
+display_tracks(main_figure);
+display_file_lines(main_figure);
+display_regions(main_figure,'both');
+display_survdata_lines(main_figure);
+set_alpha_map(main_figure);
+order_axes(main_figure);
+order_stacks_fig(main_figure);
+
+setappdata(main_figure,'Layer',layer);
+
 end
 
 function save_envdata_callback(~,~,main_figure)

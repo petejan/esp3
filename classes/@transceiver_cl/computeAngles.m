@@ -10,17 +10,17 @@ AcrossAngle=obj.Data.get_datamat('acrossangle');
 if ~isempty(strfind(obj.Config.TransceiverName,'ES60'))||~isempty(strfind(obj.Config.TransceiverName,'ES70'))...
         ||~isempty(strfind(obj.Config.TransceiverName,'ER60'))||~isempty(strfind(obj.Config.TransceiverName,'GPT'))
     if isempty(AlongAngle)
-        obj.Data.add_sub_data('alongangle',AcrossPhi*180/127/obj.Config.AngleSensitivityAthwartship-obj.Config.AngleOffsetAthwartship);
+        obj.Data.replace_sub_data('alongangle',AcrossPhi*180/127/obj.Config.AngleSensitivityAthwartship-obj.Config.AngleOffsetAthwartship);
     end
     if isempty(AcrossAngle)
-        obj.Data.add_sub_data('acrossangle',AlongPhi*180/127/obj.Config.AngleSensitivityAlongship-obj.Config.AngleOffsetAlongship);
+        obj.Data.replace_sub_data('acrossangle',AlongPhi*180/127/obj.Config.AngleSensitivityAlongship-obj.Config.AngleOffsetAlongship);
     end
 else
     if isempty(AlongAngle)
-        obj.Data.add_sub_data('alongangle',AcrossPhi/obj.Config.AngleSensitivityAthwartship-obj.Config.AngleOffsetAthwartship);
+        obj.Data.replace_sub_data('alongangle',AcrossPhi/obj.Config.AngleSensitivityAthwartship-obj.Config.AngleOffsetAthwartship);
     end
     if isempty(AcrossAngle)
-        obj.Data.add_sub_data('acrossangle',AlongPhi/obj.Config.AngleSensitivityAlongship-obj.Config.AngleOffsetAlongship);
+        obj.Data.replace_sub_data('acrossangle',AlongPhi/obj.Config.AngleSensitivityAlongship-obj.Config.AngleOffsetAlongship);
     end
 end
 

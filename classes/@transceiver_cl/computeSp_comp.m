@@ -9,7 +9,7 @@ switch trans_obj.Mode
     case 'FM'
         
     case 'CW'
-        trans_obj.Data.add_sub_data('sp_comp',sp+...
+        trans_obj.Data.replace_sub_data('sp_comp',sp+...
             6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2));
 end
 

@@ -35,7 +35,7 @@ switch trans_obj.Mode
         
         if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
             [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
-            trans_obj.Data.add_sub_data('spunmatched',Sp_un);
+            trans_obj.Data.replace_sub_data('spunmatched',Sp_un);
         end
         
         
@@ -52,10 +52,10 @@ switch trans_obj.Mode
 end
 
 if any(strcmpi(p.Results.FieldNames,'sv'))||isempty(p.Results.FieldNames)
-    trans_obj.Data.add_sub_data('sv',Sv);
+    trans_obj.Data.replace_sub_data('sv',Sv);
 end
 if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
-    trans_obj.Data.add_sub_data('sp',Sp);
+    trans_obj.Data.replace_sub_data('sp',Sp);
 end
 
 

@@ -2,6 +2,10 @@ function display_info_ButtonMotionFcn(~,~,main_figure,force_update)
 
 
 layer=getappdata(main_figure,'Layer');
+if isempty(layer)
+    return;
+end
+
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 info_panel_comp=getappdata(main_figure,'Info_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');

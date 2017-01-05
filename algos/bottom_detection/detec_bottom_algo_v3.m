@@ -22,6 +22,8 @@ addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
+addParameter(p,'idx_r',[],@isnumeric);
+addParameter(p,'idx_pings',[],@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'vert_filt',10,check_filt);
@@ -31,16 +33,28 @@ addParameter(p,'rm_rd',0);
 addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
+if isempty(p.Results.idx_r)
+    idx_r=1:length(trans_obj.Data.get_range());
+else
+    idx_r=p.Results.idx_r;
+end
+
+if isempty(p.Results.idx_pings)
+    idx_pings=1:length(trans_obj.Data.get_numbers());
+else
+    idx_pings=p.Results.idx_pings;
+end
+
 if p.Results.denoised>0
-    Sp=trans_obj.Data.get_datamat('spdenoised');
+    Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','spdenoised');
     if isempty(Sp)
-        Sp=trans_obj.Data.get_datamat('sp');
+        Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
     end
 else
-    Sp=trans_obj.Data.get_datamat('sp');
+    Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
-eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
-Range= trans_obj.Data.get_range();
+
+Range= trans_obj.Data.get_range(idx_r);
 dr=nanmean(diff(Range));
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
@@ -224,6 +238,10 @@ end
 
 t1=toc(t0);
 fprintf('Bottom detected in %0.2fs\n',t1);
+
+bottom_ori=trans_obj.get_bottom_idx();
+bottom_ori(idx_pings)=Bottom+idx_r(1)-1;
+Bottom=bottom_ori;
 % profile off;
 % profile viewer;
 

@@ -1,7 +1,7 @@
 function toggle_func(src, ~,main_figure)
 %cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-curr_disp=getappdata(main_figure,'Curr_disp');
+%curr_disp=getappdata(main_figure,'Curr_disp');
 reset_disp_info(main_figure);
 ah=axes_panel_comp.main_axes;
 axes(ah);
@@ -47,12 +47,12 @@ switch src.State
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)measure_distance(src,envdata,main_figure));
             otherwise 
                 set(main_figure,'Pointer','arrow');
-                set(main_figure,'WindowButtonDownFcn','');
+                set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
                  
         end
     case 'off'
         set(main_figure,'Pointer','arrow');
-        set(main_figure,'WindowButtonDownFcn','');
+        set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
         create_context_menu_main_echo(main_figure);
         create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
 end

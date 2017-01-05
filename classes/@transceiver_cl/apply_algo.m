@@ -5,6 +5,8 @@ p = inputParser;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'algo_name',@(x) nansum(strcmpi(x,names))>0);
+addParameter(p,'idx_r',[],@isnumeric);
+addParameter(p,'idx_pings',[],@isnumeric);
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,algo_name,varargin{:});
@@ -17,14 +19,25 @@ else
     algo_obj=trans_obj.Algo(idx_alg);
 end
 
+if isfield(algo_obj.Varargin,'idx_r')
+    algo_obj.Varargin.idx_r=p.Results.idx_r;
+end
+
+if isfield(algo_obj.Varargin,'idx_pings')
+    algo_obj.Varargin.idx_pings=p.Results.idx_pings;
+end
+
 str_eval=[];
 fields_algo_in=fields(algo_obj.Varargin);
 
 for i=1:length(fields_algo_in)
+    str_eval=[str_eval sprintf('''%s'',',fields_algo_in{i})];
     if ischar(algo_obj.Varargin.(fields_algo_in{i}))
-        str_eval=[str_eval sprintf('''%s'',''%s'',',fields_algo_in{i},algo_obj.Varargin.(fields_algo_in{i}))];
+        str_eval=[str_eval sprintf('''%s'',',algo_obj.Varargin.(fields_algo_in{i}))];
     else
-        str_eval=[str_eval sprintf('''%s'',%f,',fields_algo_in{i},algo_obj.Varargin.(fields_algo_in{i}))];
+        str_eval=[str_eval '['];
+        str_eval=[str_eval sprintf('%f ',algo_obj.Varargin.(fields_algo_in{i}))];
+        str_eval=[str_eval '],'];
     end
 end
 
@@ -75,10 +88,10 @@ switch algo_name
             'Tag',tag,'Shifted',algo_obj.Varargin.shift_bot);
     case 'Denoise'
         if ~isempty(power_unoised)
-            trans_obj.Data.add_sub_data('powerdenoised',power_unoised);
-            trans_obj.Data.add_sub_data('spdenoised',Sp_unoised);
-            trans_obj.Data.add_sub_data('svdenoised',Sv_unoised);
-            trans_obj.Data.add_sub_data('snr',SNR);
+            trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);
+            trans_obj.Data.replace_sub_data('spdenoised',Sp_unoised);
+            trans_obj.Data.replace_sub_data('svdenoised',Sv_unoised);
+            trans_obj.Data.replace_sub_data('snr',SNR);
         end
     case 'SchoolDetection'
         trans_obj.rm_region_name('School');

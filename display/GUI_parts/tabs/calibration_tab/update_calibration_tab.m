@@ -11,7 +11,9 @@ end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-set(calibration_tab_comp.calibration_txt,'String',sprintf('Current Frequency: %.0fkHz SoundSpeed: %.0f(m/s)',curr_disp.Freq/1e3,layer.EnvData.SoundSpeed));
+set(calibration_tab_comp.calibration_txt,'String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s)',curr_disp.Freq/1e3));
+
+set(calibration_tab_comp.soundspeed,'String',num2str(layer.EnvData.SoundSpeed,'%.0f'));
        
 if ~strcmp(layer.Filetype,'CREST')
     if strcmp(layer.Transceivers(idx_freq).Mode,'CW')

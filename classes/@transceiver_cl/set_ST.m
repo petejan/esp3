@@ -12,7 +12,7 @@ if ~isempty(ST)
         dataMat(idx(~idx_nope))=ST.TS_comp(~idx_nope);
     end
     
-    trans_obj.Data.add_sub_data('singletarget',dataMat);
+    trans_obj.Data.replace_sub_data('singletarget',dataMat);
     trans_obj.ST=ST;
 end
 
