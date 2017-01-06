@@ -47,7 +47,7 @@ for ix=1:length(reg_file_str)
         [idx_freq,found]=find_freq_idx(layer_obj,region_xml.Infos.Freq);
         
         if found==0
-            fprintf('Could not load regions for frequency %.0fkHz, there is none...\n',region_xml.Infos.Freq);
+            %fprintf('Could not load regions for frequency %.0fkHz, there is none...\n',region_xml.Infos.Freq);
             continue;
         end
         trans_obj=layer_obj.Transceivers(idx_freq);

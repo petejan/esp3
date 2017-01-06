@@ -41,7 +41,7 @@ for ix=1:length(bot_file_str)
         [idx_freq,found]=find_freq_idx(layer_obj,bottom_xml.Infos.Freq);
         
         if found==0
-            fprintf('Could not load bottoms for frequency %.0fkHz, it is not there...',bottom_xml.Infos.Freq);
+            %fprintf('Could not load bottoms for frequency %.0fkHz, it is not there...',bottom_xml.Infos.Freq);
             continue;
         end
         
