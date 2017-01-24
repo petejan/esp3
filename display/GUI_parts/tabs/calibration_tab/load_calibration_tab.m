@@ -186,7 +186,7 @@ function save_CW_calibration(~,~,main_figure)
 apply_calibration([],[],main_figure);
 layer=getappdata(main_figure,'Layer');
 
-[~,cal_path,~]=fileparts(layer.Filename{1});
+[cal_path,~,~]=fileparts(layer.Filename{1});
 
 fid=fopen(fullfile(cal_path,'cal_echo.csv'),'w+');
 fprintf(fid,'%s,%s,%s\n', 'F', 'G0', 'SACORRECT');

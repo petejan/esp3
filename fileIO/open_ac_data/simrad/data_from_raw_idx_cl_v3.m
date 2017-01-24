@@ -122,8 +122,8 @@ for i=1:nb_trans
             
         case 'GPT'
             data.pings(i).power=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).AlongPhi=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).AcrossPhi=(nan(nb_samples(i),nb_pings(i)));
+            data.pings(i).AlongPhi=(zeros(nb_samples(i),nb_pings(i)));
+            data.pings(i).AcrossPhi=(zeros(nb_samples(i),nb_pings(i)));
     end
 end
 
@@ -156,9 +156,9 @@ nb_dg=length(idx_raw_obj.type_dg);
 
 for idg=1:nb_dg
     pos=ftell(fid);
-%     if feof(fid)==1
-%         break;
-%     end
+    %     if feof(fid)==1
+    %         break;
+    %     end
     if mod(idg,floor(nb_dg/100))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
@@ -166,7 +166,7 @@ for idg=1:nb_dg
     end
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'
- 
+            
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             t_line=(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char','l'))';
             t_line=deblank(t_line);
@@ -213,13 +213,13 @@ for idg=1:nb_dg
                                             trans_obj(idx).Config.(props{iii})=config_temp(iout).(props{iii});
                                         else
                                             if ~isdeployed()
-                                                fprintf('New parameter in Configuration XML: %s\n', props{iii}); 
+                                                fprintf('New parameter in Configuration XML: %s\n', props{iii});
                                             end
                                         end
                                 end
                                 
                             end
-
+                            
                             trans_obj(idx).Config.XML_string=t_line;
                         end
                     end
@@ -227,15 +227,15 @@ for idg=1:nb_dg
                     
                     props=fieldnames(output);
                     envdata=env_data_cl();
-
                     
-
+                    
+                    
                     for iii=1:length(props)
                         if  any(strcmpi(prop_env,props{iii}))
                             envdata.(props{iii})=output.(props{iii});
                         else
                             if ~isdeployed()
-                                fprintf('New parameter in Environment XML: %s\n', props{iii}); 
+                                fprintf('New parameter in Environment XML: %s\n', props{iii});
                             end
                         end
                     end
@@ -275,7 +275,7 @@ for idg=1:nb_dg
                                     end
                                 else
                                     if ~isdeployed()
-                                        fprintf('Parameter not found in Parameters XML: %s\n', fields_params{jj}); 
+                                        fprintf('Parameter not found in Parameters XML: %s\n', fields_params{jj});
                                     end
                                 end
                             end
@@ -292,25 +292,25 @@ for idg=1:nb_dg
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
             
         case 'FIL1'
-
-                fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
-                stage=fread(fid,1,'int16','l');
-                fread(fid,2,'char','l');
-                filter_coeff_temp.channelID = (fread(fid,128,'*char', 'l')');
-                filter_coeff_temp.NoOfCoefficients=fread(fid,1,'int16','l');
-                filter_coeff_temp.DecimationFactor=fread(fid,1,'int16','l');
-                filter_coeff_temp.Coefficients=fread(fid,2*filter_coeff_temp.NoOfCoefficients,'float','l');
-                idx = find(strcmp(deblank(CIDs_freq),deblank(filter_coeff_temp.channelID)));
-                
-                if ~isempty(idx)
-                    props=fieldnames(filter_coeff_temp);
-                    for iii=1:length(props)
-                        if isprop(filter_cl(), (props{iii}))
-                            trans_obj(idx).Filters(stage).(props{iii})=filter_coeff_temp.(props{iii});
-                        end
+            
+            fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
+            stage=fread(fid,1,'int16','l');
+            fread(fid,2,'char','l');
+            filter_coeff_temp.channelID = (fread(fid,128,'*char', 'l')');
+            filter_coeff_temp.NoOfCoefficients=fread(fid,1,'int16','l');
+            filter_coeff_temp.DecimationFactor=fread(fid,1,'int16','l');
+            filter_coeff_temp.Coefficients=fread(fid,2*filter_coeff_temp.NoOfCoefficients,'float','l');
+            idx = find(strcmp(deblank(CIDs_freq),deblank(filter_coeff_temp.channelID)));
+            
+            if ~isempty(idx)
+                props=fieldnames(filter_coeff_temp);
+                for iii=1:length(props)
+                    if isprop(filter_cl(), (props{iii}))
+                        trans_obj(idx).Filters(stage).(props{iii})=filter_coeff_temp.(props{iii});
                     end
                 end
-
+            end
+            
         case 'RAW3'
             if p.Results.GPSOnly>0
                 continue;
@@ -372,15 +372,16 @@ for idg=1:nb_dg
                             if data.pings(idx).datatype(1)==dec2bin(1)
                                 data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
                             end
-                            
-                            if data.pings(idx).datatype(2)==dec2bin(1)
-                                if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
-                                    angle=fread(fid,[2 sampleCount],'int8', 'l');
-                                    data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
-                                    data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
-                                else
-                                    data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
-                                    data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                            if length(data.pings(idx).datatype)>=2
+                                if data.pings(idx).datatype(2)==dec2bin(1)
+                                    if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
+                                        angle=fread(fid,[2 sampleCount],'int8', 'l');
+                                        data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
+                                        data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                                    else
+                                        data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                        data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                    end
                                 end
                             end
                     end
@@ -434,7 +435,7 @@ for idx=1:nb_trans
     
     idx_nonnan=find(~isnan(trans_obj(idx).Params.TransmitPower));
     
-   time_s=trans_obj(idx).Params.Time;
+    time_s=trans_obj(idx).Params.Time;
     for i=1:length(idx_nonnan)
         
         if i==length(idx_nonnan)
@@ -444,18 +445,18 @@ for idx=1:nb_trans
         end
         
         for jj=1:length(prop_params)
-
-                if iscell(trans_obj(idx).Params.(prop_params{jj}))
-                    trans_obj(idx).Params.(prop_params{jj})(idx_rep)=trans_obj(idx).Params.(prop_params{jj})(idx_nonnan(i));
-                else
-                    trans_obj(idx).Params.(prop_params{jj})(idx_rep)=trans_obj(idx).Params.(prop_params{jj})(idx_nonnan(i));
-                end
-
+            
+            if iscell(trans_obj(idx).Params.(prop_params{jj}))
+                trans_obj(idx).Params.(prop_params{jj})(idx_rep)=trans_obj(idx).Params.(prop_params{jj})(idx_nonnan(i));
+            else
+                trans_obj(idx).Params.(prop_params{jj})(idx_rep)=trans_obj(idx).Params.(prop_params{jj})(idx_nonnan(i));
+            end
+            
         end
         
     end
     
-
+    
     if any(isnan(trans_obj(idx).Params.Frequency))
         trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.Frequency))=trans_obj(idx).Config.Frequency;
     end
@@ -463,7 +464,7 @@ for idx=1:nb_trans
         trans_obj(idx).Params.FrequencyStart(isnan(trans_obj(idx).Params.FrequencyStart))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyStart));
         trans_obj(idx).Params.FrequencyEnd(isnan(trans_obj(idx).Params.FrequencyEnd))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyEnd));
     end
-     trans_obj(idx).Params.Time=time_s;
+    trans_obj(idx).Params.Time=time_s;
 end
 
 

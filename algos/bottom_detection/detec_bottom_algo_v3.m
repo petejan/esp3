@@ -129,12 +129,16 @@ BS_filtered_bot_lin=blockproc(BS_lin_red,[heigh_b_filter b_filter],filter_fun);
 BS_filtered_bot=10*log10(BS_filtered_bot_lin);
 BS_filtered_bot_lin(isnan(BS_filtered_bot_lin))=0;
 
-cumsum_BS=cumsum((BS_filtered_bot_lin));
+cumsum_BS=cumsum((BS_filtered_bot_lin),1);
 cumsum_BS(cumsum_BS<0)=nan;
-diff_cum_BS=diff(10*log10(cumsum_BS));
+if size(cumsum_BS,1)>1
+    diff_cum_BS=diff(10*log10(cumsum_BS),1,1);
+else
+    diff_cum_BS=zeros(size(cumsum_BS));
+end
 diff_cum_BS(isnan(diff_cum_BS))=0;
 
-[~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS);
+[~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS,[],1);
 
 idx_start=idx_max_diff_cum_BS-1;
 idx_end=idx_max_diff_cum_BS+3;

@@ -11,7 +11,7 @@ p.max_std_phase = 3; %[degrees]
 
 % Only consider echoes that have an angular position that is within
 % trimToFactor times the beam angle
-p.trimToFactor = 1.7;
+p.trimToFactor = 1;
 
 % Any sphere echo more than maxDbDiff1 from the theoretical will be
 % discarded as an outlier. Used in a coarse filter prior to actually
@@ -176,7 +176,7 @@ i = find(nanstd(phase_along(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase
 % est_ts = sphere_ts-simradBeamCompensation(faBW, psBW, sphere(:,3), sphere(:,2));
 %     
 
-trimTo = p.trimToFactor * mean([faBW psBW]) * 0.7;
+trimTo = p.trimToFactor * mean([faBW psBW]);
 i = find(abs(sphere(:,2)) < trimTo | abs(sphere(:,3)) < trimTo);
 [sphere,power,phase_along,phase_athwart] = trim_data(i, sphere, power, phase_along, phase_athwart);
 
