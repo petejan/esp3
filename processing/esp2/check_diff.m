@@ -29,7 +29,7 @@ for i = 4:length(fn);
         strat{j}=echobsdata.stratum(1,j).stratum;
    
     end
-%     diff_strata_mean= nansum(strat_data_echo-strat_data_esp2)/(nansum(strat_data_esp2));
+    diff_strata_mean= nansum(strat_data_echo-strat_data_esp2)/(nansum(strat_data_esp2));
 
 
     figure(24);
