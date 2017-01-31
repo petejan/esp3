@@ -23,6 +23,7 @@ end
 
 switch src.State
     case'on'
+        iptPointerManager(main_figure,'disable');
         axes_panel_comp.bad_transmits.UIContextMenu=[];
         axes_panel_comp.bottom_plot.UIContextMenu=[];
         switch type
@@ -37,7 +38,7 @@ switch src.State
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)mark_bad_transmit(src,envdata,main_figure));
 
             case 'ed_bot'
-                set(main_figure,'Pointer','arrow');
+                set(main_figure,'Pointer','crosshair');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)edit_bottom(src,envdata,main_figure));
             case 'loc'
                 set(main_figure,'Pointer','arrow');
@@ -45,16 +46,16 @@ switch src.State
             case 'meas'
                 set(main_figure,'Pointer','cross');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)measure_distance(src,envdata,main_figure));
+            case 'create_reg'
+                set(main_figure,'Pointer','cross');
+                set(main_figure,'WindowButtonDownFcn',@create_region);
             otherwise 
                 set(main_figure,'Pointer','arrow');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
                  
         end
     case 'off'
-        set(main_figure,'Pointer','arrow');
-        set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
-        create_context_menu_main_echo(main_figure);
-        create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
-end
+        reset_mode(0,0,main_figure);
+en
 
 end

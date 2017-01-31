@@ -8,11 +8,8 @@ regions=findobj(echo_ax,'tag','region','-and','visible','on');
 region_text=findobj(echo_ax,'tag','region_text','-and','visible','on');
 select_area=findobj(echo_ax,'tag','SelectArea');
 
-
-
-
 zoom_area=findobj(echo_ax,'tag','zoom_area');
 
-uistack([region_text;lines;zoom_area;select_area;regions;regions_cont;bt_im;echo_im],'top');
+uistack([zoom_area;region_text;lines;select_area;regions;regions_cont;bt_im;echo_im],'top');
 echo_ax.Layer='top';
 end

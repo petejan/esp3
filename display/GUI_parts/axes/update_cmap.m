@@ -14,7 +14,7 @@ set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',col_grid);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
 set(mini_axes_comp.mini_ax,'Color',col_ax,'GridColor',col_grid);
 set(mini_axes_comp.bottom_plot,'Color',col_bot);
-tog_reg_callback([],[],main_figure)
+%tog_reg_callback([],[],main_figure)
 
 colormap(mini_axes_comp.mini_ax,cmap);
 colormap(axes_panel_comp.main_axes,cmap);

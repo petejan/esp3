@@ -28,6 +28,7 @@ switch dest
             'WindowScrollWheelFcn',@scroll_fcn_callback,...
             'KeyPressFcn',@keyboard_func,...
             'Tag','mini_ax');
+        iptPointerManager(parent);
         delete(mini_axes_comp.mini_ax);
 end
 

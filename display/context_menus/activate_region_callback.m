@@ -46,26 +46,45 @@ set(reg_lines_ac,'color',ac_data_col);
 set(reg_lines_in,'color',in_data_col);
 
 reg_image_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',ac_data_col);
-        cdata=get(reg_image_ac,'CData');
-        cdata(:,:,1)=ac_data_col(1);
-        cdata(:,:,2)=ac_data_col(2);
-        cdata(:,:,3)=ac_data_col(3);
-set(reg_image_ac,'Cdata',cdata);
+if ~isempty(reg_image_ac)
+    cdata=get(reg_image_ac,'CData');
+    cdata(:,:,1)=ac_data_col(1);
+    cdata(:,:,2)=ac_data_col(2);
+    cdata(:,:,3)=ac_data_col(3);
+    set(reg_image_ac,'Cdata',cdata);
+end
 
 reg_image_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',in_data_col);
-
-for i_inac=1:length(reg_image_in)
-    cdata=get(reg_image_in(i_inac),'CData');
-    cdata(:,:,1)=in_data_col(1);
-    cdata(:,:,2)=in_data_col(2);
-    cdata(:,:,3)=in_data_col(3);
-    set(reg_image_in(i_inac),'Cdata',cdata);
+if ~isempty(reg_image_in)
+    for i_inac=1:length(reg_image_in)
+        cdata=get(reg_image_in(i_inac),'CData');
+        cdata(:,:,1)=in_data_col(1);
+        cdata(:,:,2)=in_data_col(2);
+        cdata(:,:,3)=in_data_col(3);
+        set(reg_image_in(i_inac),'Cdata',cdata);
+    end 
 end
+reg_patch_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Patch','-not','FaceColor',ac_data_col);
+set(reg_patch_ac,'FaceColor',ac_data_col,'EdgeColor',ac_data_col);
+
+reg_patch_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','Patch','-not','FaceColor',in_data_col);
+set(reg_patch_in,'FaceColor',in_data_col,'EdgeColor',in_data_col);
+
 end
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,idx_reg);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
+
+% reg_patch_ac=findobj(ah,{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Patch');
+% 
+% move_patch_select(reg_patch_ac(1),[],main_figure);
+
+
+
+
+
+
 
 
 

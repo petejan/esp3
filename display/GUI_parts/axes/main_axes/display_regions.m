@@ -24,6 +24,7 @@ end
 
 
 
+
 if ~isempty(varargin)
     mini_ax_comp=getappdata(main_figure,'Mini_axes');
     switch varargin{1}
@@ -42,9 +43,9 @@ end
 
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
-    u=findobj(main_axes,'tag','region','-or','tag','region_text','-or','tag','region_cont');
+    delete(findobj(main_axes,'tag','region','-or','tag','region_text','-or','tag','region_cont'));
     
-    delete(u);
+    %delete(u);
     
     
     idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -93,8 +94,8 @@ for iax=1:length(main_axes_tot)
             %             end
         end
         x_reg_rect=x([reg_curr.Idx_pings(1) reg_curr.Idx_pings(end) reg_curr.Idx_pings(end) reg_curr.Idx_pings(1) reg_curr.Idx_pings(1)]);
-        y_reg_rect=y([reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1)]);
-        
+        y_reg_rect=y([reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end)]);
+
         
         x_reg_poly=[x(reg_curr.Idx_pings(:)') x(reg_curr.Idx_pings(end))*ones(size(reg_curr.Idx_r(:)')) x(reg_curr.Idx_pings) x(reg_curr.Idx_pings(1))*ones(size(reg_curr.Idx_r(:)'))];
         y_reg_poly=[y(reg_curr.Idx_r(1))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))' y(reg_curr.Idx_r(end))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))'];
@@ -105,18 +106,31 @@ for iax=1:length(main_axes_tot)
         
         
         reg_plot=gobjects(1,2);
-        cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
-        cdata(:,:,1)=col(1);
-        cdata(:,:,2)=col(2);
-        cdata(:,:,3)=col(3);
+        
+        
+        
+        
         switch reg_curr.Shape
             case 'Rectangular'
-                reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in,'visible',curr_disp.DispReg);
-                plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
+                %cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
+                %cdata(:,:,1)=col(1);
+                %cdata(:,:,2)=col(2);
+                %cdata(:,:,3)=col(3);
+                
+                %reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in,'visible',curr_disp.DispReg);
+                %plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
+                
+                reg_plot(1)=patch('XData',x_reg_rect(1:4),'YData',y_reg_rect(1:4),'FaceColor',col,'parent',main_axes,'FaceAlpha',alpha_in,'EdgeColor',col,'tag','region','UserData',reg_curr.Unique_ID,'visible',curr_disp.DispReg);
+                
+                
                 x_text=nanmean(x_reg_rect(:));
                 y_text=nanmean(y_reg_rect(:));
                 
             case 'Polygon'
+                cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
+                cdata(:,:,1)=col(1);
+                cdata(:,:,2)=col(2);
+                cdata(:,:,3)=col(3);
                 
                 idx_x=reg_curr.X_cont;
                 idx_y=reg_curr.Y_cont;
@@ -150,8 +164,13 @@ for iax=1:length(main_axes_tot)
         
         reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
         
+        
+        
         if main_axes==axes_panel_comp.main_axes
             create_region_context_menu(reg_plot,main_figure,reg_curr);
+            enterFcn =  @(figHandle, currentPoint)...
+                set(figHandle, 'Pointer', 'hand');
+            iptSetPointerBehavior(reg_plot,enterFcn);
         end
         
     end

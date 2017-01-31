@@ -122,18 +122,6 @@ order_axes(main_figure);
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
         delete(hp);
-%         cdata=zeros(2,2,3);
-%         cdata(:,:,1)=col(1);
-%         cdata(:,:,2)=col(2);
-%         cdata(:,:,3)=col(3);
-%         
-%         x_min=nanmin(x_box);
-%         x_max=nanmax(x_box);
-%         
-%         y_min=nanmin(y_box);
-%         y_max=nanmax(y_box);
-%         
-%         hp_a=image('XData',[x_min x_max],'YData',[y_min y_max],'CData',cdata,'parent',ah,'tag','SelectArea','AlphaData',0.2);
 
 switch mode
     case 'horizontal'
@@ -143,12 +131,14 @@ switch mode
     case 'vertical'
     otherwise
 end
-        hp_a=patch(ah,'XData',x_box,'YData',y_box,'FaceColor',col,'tag','SelectArea','FaceAlpha',0.5,'EdgeColor',col);
-        %plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
-                
-        %create_select_area_context_menu(hp,main_figure);
+        hp_a=patch(ah,'XData',x_box(1:4),'YData',y_box(1:4),'FaceColor',col,'tag','SelectArea','FaceAlpha',0.5,'EdgeColor',col);
+
         
-        create_select_area_context_menu(hp_a,main_figure)
+        create_select_area_context_menu(hp_a,main_figure);
+        enterFcn =  @(figHandle, currentPoint)...
+            set(figHandle, 'Pointer', 'fleur');
+        iptSetPointerBehavior(hp_a,enterFcn);
+        set(hp_a,'ButtonDownFcn',{@move_patch_select,main_figure});
         
         reset_disp_info(main_figure);
         

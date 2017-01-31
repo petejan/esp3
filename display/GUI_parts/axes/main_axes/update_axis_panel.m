@@ -11,9 +11,12 @@ if new==0
         x=[0 0];
         y=[0 0];
     end
+
 else
     x=[0 0];
     y=[0 0];
+    u=findobj(axes_panel_comp.main_axes,'Tag','SelectLine','-or','Tag','SelectArea');
+    delete(u);
 end
 
 [idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
@@ -59,5 +62,5 @@ end
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 update_grid(main_figure);
-display_info_ButtonMotionFcn([],[],main_figure,1);
+%display_info_ButtonMotionFcn([],[],main_figure,1);
 end

@@ -71,6 +71,7 @@ switch callbackdata.Key
         end
         set(src,'KeyPressFcn',{@keyboard_func,main_figure});
     case {'1' 'numpad1'} 
+        
         if isempty(callbackdata.Modifier)
             zi='zin';
         elseif strcmpi(callbackdata.Modifier,'shift')
@@ -78,6 +79,7 @@ switch callbackdata.Key
         else
             return;
         end
+        
         switch zi
             case 'zin'
                 
@@ -127,8 +129,6 @@ switch callbackdata.Key
         %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
     case {'4' 'numpad4'}
         curr_disp.CursorMode='Create Region';
-        reset_mode(0,0,main_figure);
-        set(main_figure,'WindowButtonDownFcn',@create_region);
     case {'5' 'numpad5'}
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);
@@ -158,7 +158,7 @@ switch callbackdata.Key
         end
         
     case 'c'
-        cmaps={'jet' 'hsv' 'esp2' 'ek60' 'ek500' 'parula' 'winter'};
+        cmaps={'ek60' 'esp2' 'ek500' 'jet' 'hsv' };
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
         if isempty(id_map)
             id_map=0;

@@ -1,15 +1,16 @@
-function move_patch_mini_axis_grab(~,~,main_figure)
+function move_patch_select(src,~,main_figure)
 
-mini_axes_comp=getappdata(main_figure,'Mini_axes');
-patch_obj=mini_axes_comp.patch_obj;
 
-ah=mini_axes_comp.mini_ax;
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+patch_obj=src;
+ah=axes_panel_comp.main_axes;
 
 if isempty(patch_obj.Vertices)
     return;
 end
 
-current_fig=gcf;
+current_fig=main_figure;
+wbmcb_ori=current_fig.WindowButtonMotionFcn;
 
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
@@ -61,17 +62,9 @@ end
 
     function wbucb(~,~)
         
-        current_fig.WindowButtonMotionFcn = '';
+        current_fig.WindowButtonMotionFcn = wbmcb_ori;
         current_fig.WindowButtonUpFcn = '';
-        axes_panel_comp=getappdata(main_figure,'Axes_panel');
-        main_axes=axes_panel_comp.main_axes;
-        
-        set(main_axes,'xlim',[nanmin(patch_obj.Vertices(:,1)) nanmax(patch_obj.Vertices(:,1))]);
-        set(main_axes,'ylim',[nanmin(patch_obj.Vertices(:,2)) nanmax(patch_obj.Vertices(:,2))]);
-        
-        reset_disp_info(main_figure)
-
-        
+      
     end
 end
 

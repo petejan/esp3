@@ -1,4 +1,4 @@
-function edit_bottom(src,~,main_figure)
+function edit_bottom(src,cbackdata,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -41,14 +41,19 @@ if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
 end
 [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
 switch src.SelectionType
-    case {'normal','alt'}
+    case {'normal','alt','extend'}
         hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1);
-        src.WindowButtonMotionFcn = @wbmcb;
+       
         switch src.SelectionType
             case 'normal'
                 src.WindowButtonUpFcn = @wbucb;
+                 src.WindowButtonMotionFcn = @wbmcb;
             case 'alt'
-                src.WindowButtonUpFcn = @wbucb_alt;
+                src.WindowButtonUpFcn = @wbucb_alt;   
+                 src.WindowButtonMotionFcn = @wbmcb;
+            case 'extend'
+                 src.WindowButtonMotionFcn = @wbmcb_ext;
+                src.WindowButtonUpFcn = @wbucb;
         end
     otherwise
         [~, idx_bot]=nanmin(abs(xinit(1)-xdata));
@@ -65,11 +70,20 @@ end
         set(hp,'XData',xinit,'YData',yinit);
     end
 
+    function wbmcb_ext(~,~)
+        u=2;
+        cp=ah.CurrentPoint;
+        xinit(u)=cp(1,1);
+        yinit(u)=cp(1,2);
+        
+        set(hp,'XData',xinit,'YData',yinit);
+    end
+
     function wbucb(src,~)
         
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
-        src.Pointer = 'arrow';
+
         delete(hp);
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
@@ -108,7 +122,7 @@ end
         
         src.WindowButtonMotionFcn = '';
         src.WindowButtonUpFcn = '';
-        src.Pointer = 'arrow';
+
         delete(hp);
         
         x_min=nanmin(xinit);
@@ -122,6 +136,8 @@ end
         
         
     end
+
+
 
     function end_bottom_edit()
         

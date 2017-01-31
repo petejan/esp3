@@ -7,15 +7,13 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 ah=axes_panel_comp.main_axes;
 axes(ah);
-
-
 childs=findall(main_figure,'type','uitoggletool');
 
 for i=1:length(childs)
     set(childs(i),'state','off');
 end
 
-
+iptPointerManager(main_figure,'enable');
 set(main_figure,'Pointer','arrow');
 set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
 create_context_menu_main_echo(main_figure);

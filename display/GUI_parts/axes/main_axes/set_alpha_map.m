@@ -40,7 +40,7 @@ min_axis=curr_disp.Cax(1);
 data=double(get(echo_im,'CData'));
 xdata=double(get(echo_im,'XData'));
 ydata=double(get(echo_im,'YData'));
-alpha_map=sparse(double(data>=min_axis));
+alpha_map=(double(data>=min_axis));
 
 nb_pings=length(xdata);
 
@@ -58,9 +58,17 @@ end
 data_temp=nan(size(alpha_map));
 data_temp(:,idx_bad_red)=Inf;
 
+bot_vec=layer.Transceivers(idx_freq).get_bottom_range(idx_pings);
+n_bot=size(alpha_map,2);
+if round(length(bot_vec)/n_bot)==length(bot_vec)/n_bot
+    bot_vec_red=bot_vec(1:length(bot_vec)/n_bot:end);
+else
+    bot_vec_red=imresize(bot_vec,[1,size(alpha_map,2)],'nearest');
+end
 
-bot_vec_red=imresize(layer.Transceivers(idx_freq).get_bottom_range(idx_pings),[1,size(alpha_map,2)],'nearest');
-ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest');
+%ydata_red=imresize(ydata,[size(alpha_map,1),1],'nearest');
+
+ydata_red=linspace(ydata(1),ydata(end),size(alpha_map,1))';
 idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
 
 

@@ -74,7 +74,6 @@ end
 
 function change_layer(hCombo, ~,main_figure)
 
-check_saved_bot_reg(main_figure);
 
 layers=getappdata(main_figure,'Layers');
 if isempty(layers)
@@ -91,6 +90,7 @@ if new_layer.ID_num==layer.ID_num
 else
     layer=new_layer;
 end
+check_saved_bot_reg(main_figure);
 
 setappdata(main_figure,'Layer',layer);
 loadEcho(main_figure);

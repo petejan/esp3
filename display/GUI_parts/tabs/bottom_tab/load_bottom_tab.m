@@ -2,7 +2,7 @@ function load_bottom_tab(main_figure,algo_tab_panel)
 
 bottom_tab_comp.bottom_tab=uitab(algo_tab_panel,'Title','Bottom Detect Option');
 
-pos=create_pos_algo_new(5,3);
+pos=create_pos_algo_new(5,2);
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','BS Thr(dB)','units','normalized','Position',pos{1,1});
 bottom_tab_comp.Thr_bottom_sl=uicontrol(bottom_tab_comp.bottom_tab,'Style','slider','Min',-80,'Max',-10,'Value',-35,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});

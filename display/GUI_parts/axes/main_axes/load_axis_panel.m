@@ -67,6 +67,10 @@ axes_panel_comp.main_echo=imagesc(1:size(echo_init,1),1:size(echo_init,2),echo_i
 axes_panel_comp.bad_transmits=image(1:size(echo_init,1),1:size(echo_init,2),nan(size(echo_init)),'parent',axes_panel_comp.main_axes,'AlphaData',0,'tag','bad_transmits');
 set(axes_panel_comp.main_axes,'xlim',[1 size(echo_init,1)],'ylim',[1 size(echo_init,2)]);
 axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,'tag','bottom');
+enterFcn =  @(figHandle, currentPoint)...
+    set(figHandle, 'Pointer', 'hand');
+iptSetPointerBehavior(axes_panel_comp.bottom_plot,enterFcn);
+
 axes_panel_comp.track_plot=[];
 axes_panel_comp.listeners=[];
 

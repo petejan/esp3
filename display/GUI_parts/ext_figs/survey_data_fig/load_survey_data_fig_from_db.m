@@ -67,13 +67,13 @@ size_max = get(0, 'MonitorPositions');
 surv_data_fig = figure(...
     'Units','pixels',...
     'Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
-    'Resize','off',...
+    'Resize','on',...
     'MenuBar','none',...
-    'Name','SurveyData','Tag','logbook');
+    'SizeChangedFcn',@resize_table,...
+    'Name','SurveyData','Tag',sprintf('logbook_%s',data_survey{2}));
 
 uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
 uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.45 0.96 0.1 0.03],'String','Search :');
-
 
 surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
 
@@ -116,6 +116,20 @@ setappdata(surv_data_fig,'surv_data_table',surv_data_table);
 setappdata(surv_data_fig,'data_ori',survDataSummary);
 
 new_echo_figure(main_figure,'fig_handle',surv_data_fig);
+end
+
+function resize_table(src,~)
+table=findobj(src,'Type','uitable');
+
+if~isempty(table)
+   column_width=table.ColumnWidth;
+   pos_f=getpixelposition(src);
+   width_t_old=nansum([column_width{:}]);
+   width_t_new=pos_f(3);
+   new_width=cellfun(@(x) x/width_t_old*width_t_new,column_width,'un',0);
+   set(table,'ColumnWidth',new_width);  
+end
+
 end
 
 function plot_bad_pings_callback(src,~,surv_data_fig,main_figure)

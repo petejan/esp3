@@ -172,7 +172,7 @@ if ~isequal(Filename, 0)
                 end
                 
             case {'EK60','EK80'}
-                %             profile on;
+                %            profile on;
                 open_raw_file(main_figure,Filename,[],ping_start,ping_end);
                 %             profile off;
                 %             profile viewer;
