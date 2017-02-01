@@ -6,15 +6,15 @@ ah=mini_axes_comp.mini_ax;
 current_fig=gcf;
 
 if strcmp(current_fig.SelectionType,'normal')
-    cp = ah.CurrentPoint;
+    cp = current_fig.CurrentPoint;
     current_fig.Pointer = 'fleur';
-    pos = getpixelposition(ah);
+    pos = getpixelposition(current_fig);
 
     current_fig.WindowButtonMotionFcn = @wbmcb;
     current_fig.WindowButtonUpFcn = @wbucb;
 end
     function wbmcb(~,~)
-        cp = ah.CurrentPoint;
+        cp = current_fig.CurrentPoint;
     end
 
     function wbucb(~,~)
@@ -22,7 +22,7 @@ end
         current_fig.WindowButtonMotionFcn = '';
         current_fig.WindowButtonUpFcn = '';
         
-       if nansum(cp(1,1:2)<0|cp(1,1:2)>pos(3:4))>=1
+       if nansum(cp(:)<0)||nansum(cp>pos(3:4))
            undock_mini_axes_callback(src,[],main_figure,'out_figure')
        end
     end

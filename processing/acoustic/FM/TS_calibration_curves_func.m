@@ -16,13 +16,22 @@ sphere_list=get(calibration_tab_comp.sphere,'String');
 sph=get_sph_params(sphere_list{get(calibration_tab_comp.sphere,'value')});
 
 
-
 f_vec_save=[];
 
+list_freq_str=cell(1,length(layer.Frequencies));
+for ki=1:length(layer.Frequencies)
 
+    list_freq_str{ki}=num2str(layer.Frequencies(ki),'%.0f');
+end
 
-for uui=1:length(layer.Frequencies)
-    
+[select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to calibrate',...
+    'PromptString','Choose Frequencies to calibrate','InitialValue',1:length(layer.Frequencies));
+
+if val==0||isempty(select)
+    return;
+end
+
+for uui=select
    
     range=double(layer.Transceivers(uui).Data.get_range());
     ping_num=layer.Transceivers(uui).Data.get_numbers();

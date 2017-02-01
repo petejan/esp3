@@ -47,6 +47,9 @@ if ~isdeployed
     update_path(main_path);
 end
 
+update_java_path(main_path);
+
+
 [app_path,curr_disp_obj,~]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 
 try

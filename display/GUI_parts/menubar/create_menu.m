@@ -124,6 +124,9 @@ uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapp
 % uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
 % uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
 
+data_tools=uimenu(mhhh,'Label','Data tools');
+uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
+
 
 curves_tools=uimenu(mhhh,'Label','Curves');
 uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});

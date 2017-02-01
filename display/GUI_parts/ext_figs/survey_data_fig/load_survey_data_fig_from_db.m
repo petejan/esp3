@@ -13,13 +13,7 @@ else
     path_f=path_lay{1};
 end
 
-hfigs=getappdata(main_figure,'ExternalFigures');
-hfigs(~isvalid(hfigs))=[];
-idx_tag=find(strcmpi({hfigs(:).Tag},'logbook'));
-if ~isempty(idx_tag)
-    figure(hfigs(idx_tag(1)))
-    return;
-end
+
 
 
 db_file=fullfile(path_f,'echo_logbook.db');
@@ -32,8 +26,16 @@ end
 
 dbconn=sqlite(db_file,'connect');
 
-data_logbook=dbconn.fetch('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook order by datetime(StartTime)');
 data_survey=dbconn.fetch('select * from survey');
+hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('logbook_%s',data_survey{2})));
+if ~isempty(idx_tag)
+    figure(hfigs(idx_tag(1)))
+    return;
+end
+
+data_logbook=dbconn.fetch('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook order by datetime(StartTime)');
 dbconn.close();
 
 nb_lines=size(data_logbook,1);
