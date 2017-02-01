@@ -154,7 +154,7 @@ if ~isequal(Filename_cell, 0)
             if exist(gps_file,'file')==2
                 idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)')));
                 [~,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
-                gps_data=gps_data_cl.load_gps_from_file(gps_file);
+                gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
                 
             else
                 idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
@@ -162,10 +162,11 @@ if ~isequal(Filename_cell, 0)
                     cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
                 [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
                 idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)'))),find(idx_NMEA_gps(idx_GPS,:)));
-                [gps_data,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
+                [gps_data_tmp,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA); 
             end
             
-            
+            gps_data=gps_data_tmp.clean_gps_track();
+            %gps_data=gps_data_tmp;
             if isempty(attitude_full)
                 attitude_full=mru0_att;
             end
