@@ -17,7 +17,7 @@ while found_start==0&&~feof(fid)
     str_read(1:4)=str_read(BLCK_SIZE+1:BLCK_SIZE+4);
     temp=fread(fid,BLCK_SIZE,'*char');
     str_read(5:length(temp)+4)=temp;
-    idx_dg=union(strfind(str_read,'RAW0'),strfind(str_read,'RAW3'));
+    idx_dg=union(union(strfind(str_read,'RAW0'),strfind(str_read,'RAW3')),strfind(str_read,'NME0'));
     if ~isempty(idx_dg)
         found_start=1;
         idx_start=BLCK_SIZE*n+idx_dg(1)-5;
@@ -36,7 +36,7 @@ while found_end==0&&pos>=BLCK_SIZE
     fseek(fid,-BLCK_SIZE,'cof');
     temp=fread(fid,BLCK_SIZE,'*char');
     str_read(5:length(temp)+4)=temp;
-    idx_dg=union(strfind(str_read,'RAW0'),strfind(str_read,'RAW3'));
+    idx_dg=union(union(strfind(str_read,'RAW0'),strfind(str_read,'RAW3')),strfind(str_read,'NME0'));
     
     if ~isempty(idx_dg)
         found_end=1;

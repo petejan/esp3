@@ -70,7 +70,7 @@ for ilay=1:length(layers_obj)
         
         dir_raw=dir(fullfile(path_f,'*.raw'));
         dir_asl=dir(fullfile(path_f,'*A'));
-        list_raw=union({dir_raw(:).name},{dir_asl(:).name});
+        list_raw=union({dir_raw([dir_raw(:).isdir]==0).name},{dir_asl([dir_asl(:).isdir]==0).name});
         
         
         new_files=setdiff(list_raw,files_logbook);

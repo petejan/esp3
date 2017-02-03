@@ -95,20 +95,36 @@ classdef gps_data_cl
             [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,2*1e-6,0);
             gps_data_out=gps_data_cl('Lat',gps_data.Lat(id_keep),'Long',gps_data.Long(id_keep),'Time',gps_data.Time(id_keep),'NMEA',gps_data.NMEA);
         end
+        
+        function save_gps_to_file(obj,fileN,idx_pings)
+            
+            if isempty(idx_pings)
+                idx_pings=1:length(obj.Lat);
+            end
+            
+            idx_pings=intersect(idx_pings,find(~isnan(obj.Time(:))&~isnan(obj.Lat(:))&~isnan(obj.Long(:))));
+            struct_obj.Lat=obj.Lat(idx_pings);
+            struct_obj.Long=obj.Long(idx_pings);
+            struct_obj.Time=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),(num2cell(obj.Time(idx_pings))),'UniformOutput',0);
+            struct2csv(struct_obj,fileN);
+
+        end
+        
     end
     methods(Static)
         
-        
-        
+         
         function obj=load_gps_from_file(fileN)
             try
-                temp=csv2struct_perso(fileN);
+                temp=csv2struct(fileN);
                 obj=gps_data_cl('Lat',temp.Lat,'Long',temp.Long,'Time',cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS'),temp.Time));
             catch
                 fprintf('Could not read gps file %s',fileN);
                 obj=gps_data_cl.empty();
             end
         end
+        
+         
         
         
     end

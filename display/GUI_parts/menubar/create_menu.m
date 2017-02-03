@@ -32,6 +32,9 @@ uimenu(m_bot_reg,'Label','Manage versions','Callback',{@manage_version_calllback
 
 eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
+uimenu(eport_menu,'Label','Export GPS to csv file','Callback',{@save_gps_callback,main_figure});
+uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
+
 
 
 
