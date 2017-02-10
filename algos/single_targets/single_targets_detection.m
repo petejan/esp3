@@ -77,12 +77,12 @@ Idx_samples_lin=reshape(1:nb_samples*nb_pings,nb_samples,nb_pings);
 
 Bottom=trans_obj.get_bottom_range();
 
-Range=repmat(trans_obj.Data.get_range(1:nb_samples),1,nb_pings);
+Range=repmat(trans_obj.get_transceiver_range(1:nb_samples),1,nb_pings);
 
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;
 
-idx_r_max=find(trans_obj.Data.get_range()==nanmax(Range(TS>-999)));%%TODO but
+idx_r_max=find(trans_obj.get_transceiver_range()==nanmax(Range(TS>-999)));%%TODO but
 
 %%%%%%%Remove all unnecessary data%%%%%%%%
 
@@ -97,7 +97,7 @@ if isempty(along)||isempty(along)
     return;
 end
 
-Range=repmat(trans_obj.Data.get_range(1:nb_samples),1,nb_pings);
+Range=repmat(trans_obj.get_transceiver_range(1:nb_samples),1,nb_pings);
 Samples=repmat((1:nb_samples)',1,nb_pings);
 Ping=repmat(trans_obj.Data.get_numbers(),nb_samples,1);
 

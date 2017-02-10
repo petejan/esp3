@@ -59,10 +59,10 @@ cell_hori_E = cells_hori(2:end);
 
 switch p.Results.Reference
     case 'Surface'
-        cell_vert_ref=trans_obj.Data.get_range();
+        cell_vert_ref=trans_obj.get_transceiver_range();
         cells_vert=unique([cell_vert_ref(1):cell_h:cell_vert_ref(end) cell_vert_ref(end)]);
     case 'Bottom'
-        cell_vert_ref=-trans_obj.Data.get_range();
+        cell_vert_ref=-trans_obj.get_transceiver_range();
         cells_vert=unique([cell_vert_ref(1):-cell_h:cell_vert_ref(end) cell_vert_ref(end)]);
 end
 
@@ -192,7 +192,7 @@ else
     output.cell_lat_esp2=nan(size(nb_good_pings));
     output.cell_lon_esp2=nan(size(nb_good_pings));
 end
-range=trans_obj.Data.get_range();
+range=trans_obj.get_transceiver_range();
 
 switch p.Results.Reference
     case 'Surface'

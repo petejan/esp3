@@ -11,7 +11,7 @@ for iax=1:length(main_axes_tot)
     u_reg_line=findobj(main_axes,'tag','region','-and','Type','line');
     set(u_reg_line,'visible',curr_disp.DispReg);
     
-    u_reg_image=findobj(main_axes,'tag','region','-and','Type','Image');
+    u_reg_image=findobj(main_axes,'tag','region','-and',{'Type','Image','-or','Type','Patch'});
     set(u_reg_image,'visible',curr_disp.DispReg);
    
 end

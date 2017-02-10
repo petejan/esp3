@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.1">
-   <AppPath cvs_root=":local:Z:\" data="D:\Docs\Data misc\UAE1604\hull\ek80" data_root="D:\Docs\Data misc\UAE1604\hull\ek80" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" scripts="X:\echo_scripts"/>
+   <AppPath cvs_root=":local:Z:\" data="X:\aex1602\AOS" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" scripts="X:\echo_scripts"/>
    <Display Bot_changed_flag="0" Cmap="ek60" DispBadTrans="on" DispBotHighVis="off" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="on" Font="Arial Narrow" Freq="200000" Grid_x="100" Grid_y="20" Reg_changed_flag="0" Xaxes="Distance"/>
    <algos>
       <BottomDetection denoised="0.000000" horz_filt="50.000000" idx_pings="" idx_r="" r_max="Inf" r_min="0.000000" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" vert_filt="10.000000"/>

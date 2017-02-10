@@ -10,6 +10,8 @@ if (exist(fullfile(PathToFile,Filename),'file')==2)
             line=create_line_from_rbr_mat(fullfile(PathToFile,Filename));
         case {'.cnv'}
             line=create_line_from_seabird(fullfile(PathToFile,Filename));
+        case '.log'
+            line=create_line_from_SupervisorLog(fullfile(PathToFile,Filename));
     end
 else
     line=[];

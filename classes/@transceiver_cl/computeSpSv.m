@@ -22,7 +22,7 @@ ptx = trans_obj.Params.TransmitPower;
 [t_nom,~]=get_pulse_length(trans_obj);
 sacorr = cal.SACORRECT;
 
-range=trans_obj.Data.get_range();
+range=trans_obj.get_transceiver_range();
 [power,~]=get_datamat(trans_obj.Data,'power');
 [powerunmatched,~]=get_datamat(trans_obj.Data,'powerunmatched');
 

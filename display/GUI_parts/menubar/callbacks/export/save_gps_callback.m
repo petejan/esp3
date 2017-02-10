@@ -12,6 +12,7 @@ idx_freq=find(layer.Frequencies==curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 gps_obj=trans_obj.GPSDataPing;
 filenames=layer.Filename;
+
 for i=1:length(filenames)
     
     [path_f,fileN_ori,~]=fileparts(filenames{i});

@@ -4,7 +4,7 @@ old_range=trans_obj.Data.get_range();
 dR_old=nanmean(diff(old_range));
 dt=2*dR_old/old_c;
 dR_new= double(new_c * dt / 2);
-new_range=(trans_obj.Data.get_samples()-1)*dR_new;
+new_range=old_range*dR_new/dR_old;
 [~,Np]=trans_obj.get_pulse_length();
 [TVG_Sp_old,TVG_Sv_old]=computeTVG(old_range,Np);
 

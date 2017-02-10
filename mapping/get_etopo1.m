@@ -1,4 +1,4 @@
-function [lat,lon,bathy]=get_etopo1(latlim,lonlim)
+function [lat,lon,bathy]=get_etopo1(latlim,LongLim)
 % ETOPO1_Bed_g_gmt4.grd
 % Format:
 %            classic
@@ -40,7 +40,7 @@ etopo_file=fullfile(whereisEcho,'private','ETOPO1_Bed_g_gmt4.grd');
 lon_etopo=ncread(etopo_file,'x');
 lat_etopo=ncread(etopo_file,'y');
 
-lonlim(lonlim>180)=lonlim(lonlim>180)-360;
+LongLim(LongLim>180)=LongLim(LongLim>180)-360;
 
 if latlim(1)<=latlim(2)
     idx_lat=find(lat_etopo>=latlim(1)&lat_etopo<=latlim(2));
@@ -48,10 +48,10 @@ else
     idx_lat=union(find(lat_etopo>=latlim(1)&lat_etopo<=90),find(lat_etopo>=-90&lat_etopo<=latlim(2)));
 end
 
-if lonlim(1)<=lonlim(2)
-    idx_lon=find(lon_etopo>=lonlim(1)&lon_etopo<=lonlim(2));
+if LongLim(1)<=LongLim(2)
+    idx_lon=find(lon_etopo>=LongLim(1)&lon_etopo<=LongLim(2));
 else
-    idx_lon=union(find(lon_etopo>=lonlim(1)&lon_etopo<=180),find(lon_etopo>=-180&lon_etopo<=lonlim(2)));
+    idx_lon=union(find(lon_etopo>=LongLim(1)&lon_etopo<=180),find(lon_etopo>=-180&lon_etopo<=LongLim(2)));
 end
 
 if nansum(diff(idx_lat)>1)>0 
@@ -93,7 +93,7 @@ if latlim(1)>=latlim(2)
     bathy=bathy(:,idx_order_lat);
 end
 
-if lonlim(1)>=lonlim(2)
+if LongLim(1)>=LongLim(2)
     lon_temp=lon;
     lon_temp(lon_temp<0)=lon_temp(lon_temp<0)+360;
     [~,idx_order_lon]=sort(lon_temp);

@@ -32,17 +32,15 @@ uimenu(m_bot_reg,'Label','Manage versions','Callback',{@manage_version_calllback
 
 eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
-uimenu(eport_menu,'Label','Export GPS to csv file','Callback',{@save_gps_callback,main_figure});
+uimenu(eport_menu,'Label','Export GPS to .csv file','Callback',{@save_gps_callback,main_figure});
 uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
 
-
-
-
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
-uimenu(m_import,'Label','Import Attitude from .csv','Callback',{@import_att_from_csv_callback,main_figure});
+
+uimenu(m_import,'Label','Import GPS from .mat or .csv','Callback',{@import_gps_from_csv_callback,main_figure});
+uimenu(m_import,'Label','Import Attitude from .csv or 3DM*.log file','Callback',{@import_att_from_csv_callback,main_figure});
 uimenu(m_import,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
 uimenu(m_import,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
-uimenu(m_import,'Label','Import Trawl Line (*.cnv, *.mat,*.evl,*txt)','Callback',{@import_line_callback,main_figure},'separator','on');
 
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
@@ -129,6 +127,7 @@ uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapp
 
 data_tools=uimenu(mhhh,'Label','Data tools');
 uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
+uimenu(data_tools,'Label','Load Offset line for data','Callback',{@load_offset_line_cback,main_figure});
 
 
 curves_tools=uimenu(mhhh,'Label','Curves');
@@ -255,14 +254,7 @@ if isempty(layer)
     return;
 end
 layer.update_echo_logbook_dbfile();
-
-hfigs=getappdata(main_figure,'ExternalFigures');
-hfigs(~isvalid(hfigs))=[];
-idx_tag=find(strcmp({hfigs(:).Tag},'logbook'), 1);
-
-if ~isempty(idx_tag)
-    load_survey_data_fig_from_db(main_figure);
-end
+load_survey_data_fig_from_db(main_figure,0);
 
 end
 

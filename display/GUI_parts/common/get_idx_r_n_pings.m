@@ -7,7 +7,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
 Number=trans.Data.get_numbers();
-Range=trans.Data.get_range();
+Range=trans.get_transceiver_range();
 
 
 [~,idx_ping_start]=nanmin(abs(xdata(1)-Number));

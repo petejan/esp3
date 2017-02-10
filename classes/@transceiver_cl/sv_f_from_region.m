@@ -13,7 +13,7 @@ output_reg=trans_obj.integrate_region(reg_obj);
 [N_y,N_x]=size(output_reg.Ping_S);
 
 
-range=trans_obj.Data.get_range(reg_obj.Idx_r);
+range=trans_obj.get_transceiver_range(reg_obj.Idx_r);
 pings=trans_obj.Data.get_numbers(reg_obj.Idx_pings);
 [~,Np]=trans_obj.get_pulse_length();
 

@@ -8,7 +8,7 @@ trans=layer.Transceivers(idx_freq);
 
 
 xdata_tot=trans.Data.get_numbers();       
-ydata_tot=trans.Data.get_range();
+ydata_tot=trans.get_transceiver_range();
 
 ah=axes_panel_comp.main_axes;
 switch src.SelectionType  

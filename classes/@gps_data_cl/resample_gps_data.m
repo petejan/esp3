@@ -11,7 +11,7 @@ if ~isempty(gps_obj.Lat)
     if nansum((size(long)==size(time)))<2
         time=time';
     end
-    if nansum(isnan(lat))<length(lat)
+    if nansum(isnan(lat))<length(lat)&& ~isempty(lat)
         if nansum(~isnan(lat))==length(lat)
             obj=gps_data_cl('Lat',lat,'Long',long,'Time',time,'NMEA',nmea);
         else

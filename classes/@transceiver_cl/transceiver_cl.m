@@ -34,6 +34,8 @@ classdef transceiver_cl < handle
         AttitudeNavPing
         Algo
         Mode
+        OffsetLine
+        
     end
     
     
@@ -51,6 +53,7 @@ classdef transceiver_cl < handle
             check_gps_class=@(obj) isa(obj,'gps_data_cl');
             check_att_class=@(obj) isa(obj,'attitude_nav_cl');
             check_algo_class=@(obj) isa(obj,'algo_cl');
+            check_line_class=@(obj) isa(obj,'line_cl');
             
             
             addParameter(p,'Data',ac_data_cl.empty(),check_data_class);
@@ -64,6 +67,7 @@ classdef transceiver_cl < handle
             addParameter(p,'GPSDataPing',gps_data_cl.empty(),check_gps_class);
             addParameter(p,'AttitudeNavPing',attitude_nav_cl.empty(),check_att_class);
             addParameter(p,'Algo',init_algos,check_algo_class);
+            addParameter(p,'OffsetLine',line_cl.empty(),check_line_class);
             addParameter(p,'Mode','CW',@ischar);
             parse(p,varargin{:});
             
@@ -76,16 +80,30 @@ classdef transceiver_cl < handle
             end
             
             if ~isempty(p.Results.Data)
-               if isempty(p.Results.GPSDataPing)
-                   obj.GPSDataPing=gps_data_cl('Time',p.Results.Data.Time);
-               end
-               if isempty(p.Results.AttitudeNavPing)
-                   obj.AttitudeNavPing=attitude_nav_cl('Time',p.Results.Data.Time);
-               end
+                if isempty(p.Results.GPSDataPing)
+                    obj.GPSDataPing=gps_data_cl('Time',p.Results.Data.Time);
+                end
+                if isempty(p.Results.AttitudeNavPing)
+                    obj.AttitudeNavPing=attitude_nav_cl('Time',p.Results.Data.Time);
+                end
             end
             
             obj.setBottom(p.Results.Bottom);
         end
+        
+        function range=get_transceiver_range(obj,varargin)
+            if nargin>=2
+                idx=varargin{1};
+                range=obj.Data.get_range(idx);
+            else
+                range=obj.Data.get_range();
+            end
+            if ~isempty(obj.Config.TransducerOffsetZ)
+                range=range+obj.Config.TransducerOffsetZ;
+            end
+                        
+        end
+              
         
         
         
@@ -95,7 +113,7 @@ classdef transceiver_cl < handle
             else
                 list=cell(1,length(obj.Regions));
                 for i=1:length(obj.Regions)
-                   new_name=sprintf('%s %0.f %s',obj.Regions(i).Name,obj.Regions(i).ID,obj.Regions(i).Type);     
+                    new_name=sprintf('%s %0.f %s',obj.Regions(i).Name,obj.Regions(i).ID,obj.Regions(i).Type);
                     u=1;
                     new_name_ori=new_name;
                     while nansum(strcmpi(new_name,list))>=1
@@ -175,8 +193,8 @@ classdef transceiver_cl < handle
         end
         
         function rm_tracks(obj)
-           trans_tmp=transceiver_cl();
-            obj.Tracks=trans_tmp.Tracks; 
+            trans_tmp=transceiver_cl();
+            obj.Tracks=trans_tmp.Tracks;
         end
         
         function rm_region_name(obj,name)
@@ -329,8 +347,6 @@ classdef transceiver_cl < handle
         end
         
         
-        
-        
         function [mean_depth,Sa]=get_mean_depth_from_region(obj,unique_id)
             
             [reg_idx,found]=obj.find_reg_idx(unique_id);
@@ -357,7 +373,7 @@ classdef transceiver_cl < handle
             bot_r(bot_r==0)=obj.Data.Range(2);
             bot_r(isnan(bot_r))=obj.Data.Range(2);
             
-            Sv(repmat(bot_r,size(Sv,1),1)<=repmat(obj.Data.get_range(),1,size(Sv,2)))=NaN;
+            Sv(repmat(bot_r,size(Sv,1),1)<=repmat(obj.get_transceiver_range(),1,size(Sv,2)))=NaN;
             
             idx_r=active_reg.Idx_r;
             idx_pings=active_reg.Idx_pings;
@@ -369,10 +385,10 @@ classdef transceiver_cl < handle
                 otherwise
                     Sv_reg=Sv(idx_r,idx_pings);
             end
-            Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(obj.Data.get_range(idx_r),1,size(Sv_reg,2)))=NaN;
-
+            Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(obj.get_transceiver_range(idx_r),1,size(Sv_reg,2)))=NaN;
+            
             Sv_reg(Sv_reg<-70)=nan;
-            range=double(obj.Data.get_range(idx_r));
+            range=double(obj.get_transceiver_range(idx_r));
             Sa=10*log10(nansum(10.^(Sv_reg/10).*nanmean(diff(range))));
             
             mean_depth= nansum(10.^(Sv_reg/20).*repmat(range,1,size(Sv_reg,2)))./nansum(10.^(Sv_reg/20));
@@ -385,7 +401,7 @@ classdef transceiver_cl < handle
             obj.Config.Angles=trans_angle;
         end
         
-             
+        
     end
     
     

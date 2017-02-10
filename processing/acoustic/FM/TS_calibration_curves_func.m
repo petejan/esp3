@@ -33,7 +33,7 @@ end
 
 for uui=select
    
-    range=double(layer.Transceivers(uui).Data.get_range());
+    range=double(layer.Transceivers(uui).get_transceiver_range());
     ping_num=layer.Transceivers(uui).Data.get_numbers();
     
     mask=layer.Transceivers(uui).mask_from_regions();
@@ -123,7 +123,7 @@ for uui=select
     end
     layer.apply_soundspeed(c);
     layer.Transceivers(uui).apply_absorption(alpha/1e3);
-    range=double(layer.Transceivers(uui).Data.get_range());
+    range=double(layer.Transceivers(uui).get_transceiver_range());
     range_sph=range(idx_peak);
     
     update_axis_panel(main_figure,0);

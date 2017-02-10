@@ -8,7 +8,7 @@ parse(p,trans_obj,docNode);
 
 idx_ping=find(file_id==trans_obj.Data.FileId);
 
-range=trans_obj.Data.get_range();
+range=trans_obj.get_transceiver_range();
 time=trans_obj.Data.Time;
 region_file=docNode.getDocumentElement;
 regions_node = docNode.createElement('regions');

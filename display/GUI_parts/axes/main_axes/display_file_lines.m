@@ -9,7 +9,7 @@ idx_change_file=find(diff(layer.Transceivers(idx_freq).Data.FileId)>0);
 state_file_lines=get(main_menu.display_file_lines,'checked');
 trans_obj=layer.Transceivers(idx_freq);
 xdata=trans_obj.Data.get_numbers();
-ydata=trans_obj.Data.get_range();
+ydata=trans_obj.get_transceiver_range();
 
 obj_line=findobj(axes_panel_comp.main_axes,'Tag','file_id');
 delete(obj_line);

@@ -20,16 +20,19 @@ if strcmp(trans_obj.Mode,'FM')
     gain=trans_obj.get_current_gain();
     
 
-    range=trans_obj.Data.get_range();
+    range=trans_obj.get_transceiver_range();
     nb_samples=length(range);
     dr=nanmean(diff(range));
     Np=2^nextpow2(ceil(2*pulse_length*f_s_sig));
-    
+
     if isempty(Nw)
         Nw=nanmax(length(r),Np);
+        Nw=2^(nextpow2(Nw)-1);
+    else
+       Nw=2^(nextpow2(Nw)); 
     end
     
-    Nw=2^(nextpow2(Nw));
+    
 
     [~,idx_r1]=nanmin(abs(range-(r(1)-Np/2*dr)));
     [~,idx_r2]=nanmin(abs(range-(r(end)+Np/2*dr)));

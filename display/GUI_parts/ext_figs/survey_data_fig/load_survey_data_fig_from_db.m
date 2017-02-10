@@ -1,4 +1,4 @@
-function load_survey_data_fig_from_db(main_figure)
+function load_survey_data_fig_from_db(main_figure,reload)
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
@@ -30,9 +30,35 @@ data_survey=dbconn.fetch('select * from survey');
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('logbook_%s',data_survey{2})));
+
 if ~isempty(idx_tag)
-    figure(hfigs(idx_tag(1)))
-    return;
+    if reload==0
+        figure(hfigs(idx_tag(1)))
+        return;
+    else
+        surv_data_fig=hfigs(idx_tag(1));
+        surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+        delete(surv_data_table.table_main);
+    end
+else
+    if reload==0
+        size_max = get(0, 'MonitorPositions');
+        
+        surv_data_fig = figure(...
+            'Units','pixels',...
+            'Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
+            'Resize','on',...
+            'MenuBar','none',...
+            'Name','SurveyData','Tag',sprintf('logbook_%s',data_survey{2}));
+        
+        
+        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
+        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.45 0.96 0.1 0.03],'String','Search :');
+        
+        surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
+    else
+        return;
+    end
 end
 
 data_logbook=dbconn.fetch('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook order by datetime(StartTime)');
@@ -58,26 +84,9 @@ for i=1:nb_lines
     survDataSummary{i,1}=false;
 end
 
-
-
 % Column names and column format
 columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
 columnformat = {'logical' 'char','numeric','char','numeric','logical','logical','char','char','char','numeric'};
-
-size_max = get(0, 'MonitorPositions');
-
-surv_data_fig = figure(...
-    'Units','pixels',...
-    'Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
-    'Resize','on',...
-    'MenuBar','none',...
-    'SizeChangedFcn',@resize_table,...
-    'Name','SurveyData','Tag',sprintf('logbook_%s',data_survey{2}));
-
-uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
-uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.45 0.96 0.1 0.03],'String','Search :');
-
-surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
 
 
 % Create the uitable
@@ -88,6 +97,8 @@ surv_data_table.table_main = uitable('Parent',surv_data_fig,...
     'ColumnEditable', [true false true true true false false true false false false],...
     'Units','Normalized','Position',[0 0 1 0.95],...
     'RowName',[]);
+
+set(surv_data_fig,'SizeChangedFcn',@resize_table)
 
 pos_t = getpixelposition(surv_data_table.table_main);
 set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/36,4*pos_t(3)/18, pos_t(3)/18, pos_t(3)/18, pos_t(3)/18,pos_t(3)/36,pos_t(3)/36, 3*pos_t(3)/18, 3*pos_t(3)/18,3*pos_t(3)/18, pos_t(3)/18/2});
@@ -249,9 +260,9 @@ dbconn.insert('logbook',{'Filename' 'Snapshot' 'Stratum' 'Transect'  'StartTime'
 
 dbconn.close();
 
-
 setappdata(surv_data_fig,'data_ori',data_ori);
 import_survey_data_callback([],[],main_figure);
+display_info_ButtonMotionFcn([],[],main_figure,1)
 end
 
 

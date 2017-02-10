@@ -2,7 +2,7 @@ function mask=mask_from_st(trans_obj)
 
 st=trans_obj.ST;
 nb_pings=length(trans_obj.Data.get_numbers());
-nb_samples=length(trans_obj.Data.get_range());
+nb_samples=length(trans_obj.get_transceiver_range());
 mask=nan(nb_samples,nb_pings);
 [~,Np]=trans_obj.get_pulse_length();
 if ~isempty(st)

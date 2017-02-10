@@ -13,7 +13,7 @@ parse(p,data,idx_r,idx_ping,varargin{:});
 field=p.Results.field;
 
 if isempty(idx_r)
-    idx_r=data.get_samples();
+    idx_r=1:length(data.get_samples()); 
 end
 
 if isempty(idx_ping)

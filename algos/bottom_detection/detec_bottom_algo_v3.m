@@ -34,7 +34,7 @@ addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
 if isempty(p.Results.idx_r)
-    idx_r=1:length(trans_obj.Data.get_range());
+    idx_r=1:length(trans_obj.get_transceiver_range());
 else
     idx_r=p.Results.idx_r;
 end
@@ -54,7 +54,7 @@ else
     Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
 
-Range= trans_obj.Data.get_range(idx_r);
+Range= trans_obj.get_transceiver_range(idx_r);
 dr=nanmean(diff(Range));
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);

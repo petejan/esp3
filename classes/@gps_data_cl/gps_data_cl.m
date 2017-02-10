@@ -33,11 +33,10 @@ classdef gps_data_cl
                 end
                 
                 obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
-                idx_nan=find(isnan(obj.Lat)+isnan(obj.Long)+isnan(obj.Time))>0;
+                idx_nan=find(isnan(obj.Lat)+isnan(obj.Long))>0;
                 
                 obj.Long(idx_nan)=nan;
                 obj.Lat(idx_nan)=nan;
-                obj.Time(idx_nan)=nan;
                 
                 [~,idx_sort]=sort(obj.Time);
                 
@@ -46,12 +45,12 @@ classdef gps_data_cl
                 obj.Time=obj.Time(idx_sort);
                 
                 if length(obj.Long)>=2
-                   
+                    
                     d_dist=m_lldist(obj.Lat,obj.Long);
-  
+                    
                     d_dist(isnan(d_dist))=0;
                     dist_disp=[0;cumsum(d_dist)]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
-
+                    
                     obj.Dist=dist_disp;
                 else
                     obj.Dist=zeros(size(obj.Lat));
@@ -88,6 +87,10 @@ classdef gps_data_cl
         end
         
         function gps_data_out=clean_gps_track(gps_data)
+            if isempty(gps_data)
+                gps_data_out=gps_data;
+                return;
+            end
             if isempty(gps_data.Long)
                 gps_data_out=gps_data;
                 return;
@@ -107,24 +110,47 @@ classdef gps_data_cl
             struct_obj.Long=obj.Long(idx_pings);
             struct_obj.Time=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),(num2cell(obj.Time(idx_pings))),'UniformOutput',0);
             struct2csv(struct_obj,fileN);
-
+            
         end
         
     end
     methods(Static)
         
-         
+        
         function obj=load_gps_from_file(fileN)
-            try
-                temp=csv2struct(fileN);
-                obj=gps_data_cl('Lat',temp.Lat,'Long',temp.Long,'Time',cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS'),temp.Time));
-            catch
-                fprintf('Could not read gps file %s',fileN);
-                obj=gps_data_cl.empty();
+            [~,~,ext]=fileparts(fileN);
+            switch ext
+                case {'.csv','.txt'}
+                    try
+                        temp=csv2struct(fileN);
+                        fields = isfield(temp,{'Lat','Long','Time'});
+                        temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
+                        temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
+                        time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time);
+                        
+                         if all(fields)
+                            obj=gps_data_cl('Lat',temp.Lat,'Long',temp.Long,'Time',time_temp);
+                        else
+                            obj=gps_data_cl.empty();
+                        end
+                       
+                    catch
+                        fprintf('Could not read gps file %s',fileN);
+                        obj=gps_data_cl.empty();
+                    end
+                    
+                case '.mat'
+                    gps_data=load(fileN);
+                    fields = isfield(gps_data,{'Lat','Long','Time'});
+                    if all(fields)
+                        obj=gps_data_cl('Lat',gps_data.Lat,'Long',gps_data.Long,'Time',gps_data.Time);
+                    else
+                        obj=gps_data_cl.empty();
+                    end
             end
         end
         
-         
+        
         
         
     end

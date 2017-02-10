@@ -27,7 +27,7 @@ switch class(obj)
         for ii=1:length(obj)
             map_temp=map_input_cl.map_input_cl_from_obj(obj(ii));
             lat{ii}=[map_temp.SliceLat{:}];
-            lon{ii}=[map_temp.SliceLon{:}];
+            lon{ii}=[map_temp.SliceLong{:}];
             if ~isempty(lat{ii})
                 lat_lim(1)=nanmin(lat_lim(1),nanmin(lat{ii}));
                 lon_lim(1)=nanmin(lon_lim(1),nanmin(lon{ii}));

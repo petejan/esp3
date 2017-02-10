@@ -22,19 +22,19 @@ end
 col_snap={'k'};
 
 
-LonLim=[nan nan];
+LongLim=[nan nan];
 LatLim=[nan nan];
 
 if ~strcmp(field,'Tag')
     snap=unique(obj.Snapshot);
 else
-    %[tag,snap]=unique(obj.Regions.Tag);
-    tag={'EUP','GYP','MMU','DIA','ELC','LHE'};
+    [tag,~]=unique(obj.Regions.Tag);
+    %tag={'EUP','GYP','MMU','DIA','ELC','LHE'};
     snap=ones(1,length(tag));
 end
 
-LonLim(1)=nanmin(LonLim(1),obj.LonLim(1));
-LonLim(2)=nanmax(LonLim(2),obj.LonLim(2));
+LongLim(1)=nanmin(LongLim(1),obj.LongLim(1));
+LongLim(2)=nanmax(LongLim(2),obj.LongLim(2));
 LatLim(1)=nanmin(LatLim(1),obj.LatLim(1));
 LatLim(2)=nanmax(LatLim(2),obj.LatLim(2));
 
@@ -56,7 +56,7 @@ for usnap=1:length(snap)
     i=0;
     while sucess==0&&i<length(list_proj_str);
         try
-            m_proj(obj.Proj,'long',LonLim,'lat',LatLim);
+            m_proj(obj.Proj,'long',LongLim,'lat',LatLim);
             sucess=1;
         catch
             i=i+1;
@@ -81,7 +81,7 @@ for usnap=1:length(snap)
     
     if obj.Depth_Contour>0
         try
-            [lat_c,lon_c,bathy]=get_etopo1(LatLim,LonLim);
+            [lat_c,lon_c,bathy]=get_etopo1(LatLim,LongLim);
             if length(lon_c)>=2&&length(lat_c)>=2
                 [Cs,hs]=m_contour(lon_c,lat_c,bathy,-10000:obj.Depth_Contour:-1,'edgecolor',[.4 .4 .4],'visible','on','parent',n_ax(usnap));
                 clabel(Cs,hs,'fontsize',8);
@@ -118,25 +118,25 @@ if ~strcmp(field,'Tag')
         end
         
         for uui=1:length(idx_snap)
-            if ~isempty(obj.Lon{idx_snap(uui)})
-                u_plot(idx_snap(uui))=m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
+            if ~isempty(obj.Long{idx_snap(uui)})
+                u_plot(idx_snap(uui))=m_plot(n_ax(usnap),obj.Long{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
                 set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
-                m_plot(n_ax(usnap),obj.Lon{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
+                m_plot(n_ax(usnap),obj.Long{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
                 if~isempty(main_figure)
                     create_context_menu_track(main_figure,hfig,u_plot(idx_snap(uui)));
                 end
                 if ~isempty(obj.StationCode{idx_snap(uui)})
-                    m_text(nanmean(obj.Lon{idx_snap(uui)}),nanmean(obj.Lat{idx_snap(uui)}),obj.StationCode{idx_snap(uui)},'parent',n_ax(usnap),'color','r');
+                    m_text(nanmean(obj.Long{idx_snap(uui)}),nanmean(obj.Lat{idx_snap(uui)}),obj.StationCode{idx_snap(uui)},'parent',n_ax(usnap),'color','r');
                 end
             end
             
             
             
-            if ~isempty(obj.SliceLon{idx_snap(uui)})
-                if isempty(obj.Lon{idx_snap(uui)})
-                    m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
+            if ~isempty(obj.SliceLong{idx_snap(uui)})
+                if isempty(obj.Long{idx_snap(uui)})
+                    m_plot(n_ax(usnap),obj.SliceLong{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
                 end
-                u_plot_slice(idx_snap(uui))=m_plot(n_ax(usnap),obj.SliceLon{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'.k','Tag','Nav');
+                u_plot_slice(idx_snap(uui))=m_plot(n_ax(usnap),obj.SliceLong{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'.k','Tag','Nav');
                 set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
                 
                 if ~strcmp(field,'Tag')
@@ -154,7 +154,7 @@ if ~strcmp(field,'Tag')
                             
                     end
                     idx_rings=find(ring_size>0);
-                    m_range_ring(obj.SliceLon{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
+                    m_range_ring(obj.SliceLong{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
                     
                 
                     
@@ -183,8 +183,8 @@ else
             [~,unique_trans,trans_ids]=unique(mat_surv_data,'rows');
             for itrans=1:length(unique_trans)
                 itrans_curr=find(trans_ids==itrans);
-                m_text(nanmean(obj.Regions.Lon_m(ireg_tag(itrans_curr))),nanmean(obj.Regions.Lat_m(ireg_tag(itrans_curr))),tag{utag},'parent',n_ax(utag),'color','r');
-                m_text(nanmean(obj.Regions.Lon_m(ireg_tag(itrans_curr))),nanmean(obj.Regions.Lat_m(ireg_tag(itrans_curr))),sprintf('\n,%.0f',obj.Regions.Transect(ireg_tag(itrans_curr(1)))),'parent',n_ax(utag),'color','b');
+                m_text(nanmean(obj.Regions.Long_m(ireg_tag(itrans_curr))),nanmean(obj.Regions.Lat_m(ireg_tag(itrans_curr))),tag{utag},'parent',n_ax(utag),'color','r');
+                m_text(nanmean(obj.Regions.Long_m(ireg_tag(itrans_curr))),nanmean(obj.Regions.Lat_m(ireg_tag(itrans_curr))),sprintf('\n,%.0f',obj.Regions.Transect(ireg_tag(itrans_curr(1)))),'parent',n_ax(utag),'color','b');
             end
         end
         
@@ -202,7 +202,7 @@ end
 
 
 Map_info.Proj=obj.Proj;
-Map_info.LonLim=LonLim;
+Map_info.LongLim=LongLim;
 Map_info.LatLim=LatLim;
 setappdata(hfig,'Idx_select',[]);
 setappdata(hfig,'Map_info',Map_info);

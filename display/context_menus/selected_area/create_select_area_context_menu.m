@@ -13,7 +13,7 @@ update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-r=layer.Transceivers(idx_freq).Data.get_range();
+r=layer.Transceivers(idx_freq).get_transceiver_range();
 
 
 idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));

@@ -28,24 +28,24 @@ end
 data_cell=textscan(txt_str,'%s','Delimiter',',');
 data=data_cell{1};
 
-
+fields_out=cell(size(fields));
 for i=1:length(data)
     i_field=rem(i,nb_fields);
     if i_field==0
         i_field=nb_fields;
     end
     i_line=ceil(i/nb_fields);
-    struct_out.(fields{i_field}){i_line}=data{i};
+    fields_out{i_field}=matlab.lang.makeValidName(fields{i_field});
+    struct_out.(fields_out{i_field}){i_line}=data{i};
 end
 
 
 for ifi=1:nb_fields
-    temp=cellfun(@str2double,struct_out.(fields{ifi}));
+    temp=cellfun(@str2double,struct_out.(fields_out{ifi}));
     idx_valid=~isnan(temp);
     if any(idx_valid)
-        struct_out.(fields{ifi})=temp;
+        struct_out.(fields_out{ifi})=temp;
     end
-    
 end
 
 

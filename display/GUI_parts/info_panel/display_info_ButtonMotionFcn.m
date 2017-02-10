@@ -12,7 +12,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
-Range=trans.Data.get_range();
+Range=trans.get_transceiver_range();
 Bottom=trans.Bottom;
 Time=trans.Data.Time;
 Number=trans.Data.get_numbers();
@@ -192,7 +192,7 @@ try
                 hAllAxes = findobj(hfigs(iu),'type','axes');
                 if isappdata(hfigs(iu),'Map_info')
                     Map_info=getappdata(hfigs(iu),'Map_info');
-                    m_proj(Map_info.Proj,'long',Map_info.LonLim,'lat',Map_info.LatLim);
+                    m_proj(Map_info.Proj,'long',Map_info.LongLim,'lat',Map_info.LatLim);
                 end
                 if ~isempty(Long)
                     for iui=1:length(hAllAxes)
@@ -201,6 +201,19 @@ try
                     end
                 end
             end
+        end
+        
+        idx_fig=find(strcmp({hfigs(:).Tag},'attitude'));
+        t1=(t_n-Time(1))*24*60*60;
+        for iu=idx_fig
+            if isvalid(hfigs(iu))
+                hAllAxes = findobj(hfigs(iu),'type','axes');
+                    for iui=1:length(hAllAxes)
+                        delete(findobj(hAllAxes(iui),'tag','time_bar'));
+                        plot(hAllAxes(iui),[t1 t1],hAllAxes(iui).YLim,'r','tag','time_bar')
+                    end
+            end
+
         end
         
         

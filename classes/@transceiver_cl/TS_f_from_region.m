@@ -10,7 +10,7 @@ addParameter(p,'dp',2,@isnumeric);
 parse(p,trans_obj,reg_obj,varargin{:});
 
 
-range=trans_obj.Data.get_range(reg_obj.Idx_r);
+range=trans_obj.get_transceiver_range(reg_obj.Idx_r);
 pings=trans_obj.Data.get_numbers(reg_obj.Idx_pings);
 
 

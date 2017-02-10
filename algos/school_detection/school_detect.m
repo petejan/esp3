@@ -57,7 +57,7 @@ if isempty(Sv_mat)
 end
 
 
-range=trans_obj.Data.get_range();
+range=trans_obj.get_transceiver_range();
 dist_pings=trans_obj.GPSDataPing.Dist;
 
 Bottom=trans_obj.get_bottom_range();

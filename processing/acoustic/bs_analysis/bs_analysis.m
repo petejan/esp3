@@ -26,7 +26,7 @@ trans=layer.Transceivers(idx_freq);
 
 trans.set_position(pos_trans, trans_angle);
 
-range = trans.Data.get_range();
+range = trans.get_transceiver_range();
 
 dr = nanmean(diff(range));
 
@@ -56,7 +56,7 @@ algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
 [PulseLength,~] = trans.get_pulse_length();
 [amp_est, across_est, along_est] = detec_bottom_bathymetric(sp, alongphi, acrossphi, ...
-    layer.Transceivers(idx_freq).Data.get_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
+    layer.Transceivers(idx_freq).get_transceiver_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
 z_max = nanmax(amp_est.range) * cos(t_angle);
 ext_len = floor(z_max*(tan(t_angle+bw_mean) - tan(t_angle-bw_mean)) / dr/2);
 
@@ -624,7 +624,7 @@ if ~isequal(file_outputs,0)&&~isequal(path_out,0)
     ping_number_mat=repmat(1:nb_pings,size(z_ext,1),1);
     lon_f=lon_bot_ext(mask_bs);
     lon_f(lon_f>180)=lon_f(lon_f>180)-360;
-    new_struct=struct('Lat',lat_bot_ext(mask_bs),'Lon',lon_f,'Depth',z_ext(mask_bs),'BS',bs_bottom(mask_bs),...
+    new_struct=struct('Lat',lat_bot_ext(mask_bs),'Long',lon_f,'Depth',z_ext(mask_bs),'BS',bs_bottom(mask_bs),...
         'PingNumber',ping_number_mat(mask_bs),'IncidentAngleEstimation',incident_angles_estimation_mat(mask_bs));
     struct2csv(new_struct,fullfile(path_out,file_outputs));
     

@@ -10,12 +10,12 @@ heading=obj.Heading;
 pitch=obj.Pitch;
 roll=obj.Roll;
 heave=obj.Heave;
+yaw=obj.Yaw;
 time=(obj.Time-obj.Time(1))*24*60*60;
-u=0;
+
+h_fig=new_echo_figure([],'Name','Attitude','Tag','attitude');
 if ~isempty(roll)
-    u=u+1;
-    h_fig(u)=new_echo_figure([],'Name','Attitude','Tag','attitude');
-    ax= axes('nextplot','add');
+    ax= axes(h_fig,'nextplot','add','OuterPosition',[0 0.5 1 0.5]);
     yyaxis(ax,'left');
     ax.YAxis(1).Color = 'r';
     plot(ax,time,heave,'r');
@@ -30,21 +30,34 @@ if ~isempty(roll)
     legend('Heave','Pitch','Roll','Location','northeast')
     legend('boxoff')
     ylabel('Attitude');
-    grid on;
+    grid on; 
 else
-   ax=[]; 
+    ax=[];
 end
 
 if ~isempty(heading)
-    u=u+1;
-    h_fig(u)=new_echo_figure([],'Name','Heading','Tag','attitude');
-    axh=axes('nextplot','add');
-    axh.YAxis.TickLabelFormat  = '%g^\\circ';
-    plot(time,heading,'k');
-    xlabel('Time(s)');
-    ylabel('Heading');
-    grid on;
-    linkaxes([ axh],'x');
+        axh=axes(h_fig,'nextplot','add','OuterPosition',[0 0 0.5 0.5]);
+        axh.YAxis.TickLabelFormat  = '%g^\\circ';
+        plot(axh,time,heading,'k');
+        xlabel('Time(s)');
+        ylabel('Heading');
+        grid on;
+
+else
+   axh=[]; 
 end
+
+if ~isempty(yaw)
+        axy=axes(h_fig,'nextplot','add','OuterPosition',[0.5 0 0.5 0.5]);
+        axy.YAxis.TickLabelFormat  = '%g^\\circ';
+        plot(axy,time,yaw,'k');
+        xlabel('Time(s)');
+        ylabel('Yaw');
+        grid on;
+else
+    axy=[];
+end
+
+linkaxes([ax axh axy],'x');
 
 end

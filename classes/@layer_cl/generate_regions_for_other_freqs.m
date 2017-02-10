@@ -7,7 +7,7 @@ end
 idx_freq_end=setdiff(idx_freq_end,idx_freq);
 
 Transceiver=layer.Transceivers(idx_freq);
-range_ori=Transceiver.Data.get_range();
+range_ori=Transceiver.get_transceiver_range();
 time_ori=Transceiver.Data.Time;
 
 dr_ori=nanmean(diff(range_ori));
@@ -24,7 +24,7 @@ for i=1:length(layer.Transceivers)
     end
     
     layer.Transceivers(i)=layer.Transceivers(i);
-    new_range=layer.Transceivers(i).Data.get_range();
+    new_range=layer.Transceivers(i).get_transceiver_range();
     new_time=layer.Transceivers(i).Data.Time;
     
     r_factor=dr_ori/nanmean(diff(new_range));

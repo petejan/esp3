@@ -36,7 +36,7 @@ if isempty(Sv_reg)
     return;
 end
 
-range=double(trans_obj.Data.get_range());
+range=double(trans_obj.get_transceiver_range());
 nb_samples=length(range);
 samples=(1:nb_samples)';
 dr=nanmean(diff(range));

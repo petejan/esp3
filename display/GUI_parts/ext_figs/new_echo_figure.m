@@ -61,11 +61,11 @@ else
         end
     end
 end
-% 
-%     if ~isdeployed()
-%        set(fig_handle,'MenuBar','figure');
-%        set(fig_handle,'Toolbar','figure');
-%     end
+
+    if ~isdeployed()
+       set(fig_handle,'MenuBar','figure');
+       set(fig_handle,'Toolbar','figure');
+    end
 
 javaFrame = get(fig_handle,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));

@@ -24,7 +24,7 @@ for uui=1:length(layer.Frequencies)
     
     
     
-    range=layer.Transceivers(uui).Data.get_range();
+    range=layer.Transceivers(uui).get_transceiver_range();
     ping_num=layer.Transceivers(uui).Data.get_numbers();
     mask=layer.Transceivers(uui).mask_from_regions();
     

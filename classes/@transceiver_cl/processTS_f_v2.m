@@ -21,7 +21,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     nfft=ceil(pulse_length*f_s_sig/dp);
     
-    range=trans_obj.Data.get_range();
+    range=trans_obj.get_transceiver_range();
     
     idx_ts=find(range>=nanmin(r)-dr&range<=nanmax(r)+dr);
     

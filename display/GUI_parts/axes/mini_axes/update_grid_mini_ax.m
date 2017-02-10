@@ -31,7 +31,7 @@ switch curr_disp.Xaxes
         xdata_grid=layer.Transceivers(idx_freq).Data.get_numbers(idx_pings);      
 end
 
-ydata_grid=layer.Transceivers(idx_freq).Data.get_range(idx_r);
+ydata_grid=layer.Transceivers(idx_freq).get_transceiver_range(idx_r);
  
 switch curr_disp.Xaxes
     case 'Time'

@@ -26,8 +26,8 @@ for iv=2:length(map_input_vec)
     end
     map_input_out.LatLim(1)=nanmin([map_input_out.LatLim(1) map_input_vec(iv).LatLim(1)]);
     map_input_out.LatLim(2)=nanmax([map_input_out.LatLim(2) map_input_vec(iv).LatLim(2)]);
-    map_input_out.LonLim(1)=nanmin([map_input_out.LonLim(1) map_input_vec(iv).LonLim(1)]);
-    map_input_out.LonLim(2)=nanmax([map_input_out.LonLim(2) map_input_vec(iv).LonLim(2)]);
+    map_input_out.LongLim(1)=nanmin([map_input_out.LongLim(1) map_input_vec(iv).LongLim(1)]);
+    map_input_out.LongLim(2)=nanmax([map_input_out.LongLim(2) map_input_vec(iv).LongLim(2)]);
 end
 
 map_input_out.Proj=map_input_vec(1).Proj;

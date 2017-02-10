@@ -104,9 +104,16 @@ for isn=1:length(snaps)
         gps_add.Long(gps_tot.Long>180)=gps_add.Long(gps_tot.Long>180)-360;
         idx_pings=1:length(gps_add.Time);
         idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
-        dist_add=m_lldist([gps_add.Long(idx_good_pings_add(1)) gps_add.Long(idx_good_pings_add(end))],[gps_add.Lat(idx_good_pings_add(1)) gps_add.Lat(idx_good_pings_add(end))])/1.852;
+        idx_good_pings_dist=intersect(idx_good_pings_add,find(~isnan(gps_add.Lat(:))));
+        
+        if ~isempty(idx_good_pings_dist)
+            dist_add=m_lldist([gps_add.Long(idx_good_pings_dist(1)) gps_add.Long(idx_good_pings_dist(end))],[gps_add.Lat(idx_good_pings_dist(1)) gps_add.Lat(idx_good_pings_dist(end))])/1.852;
+            timediff=(gps_add.Time(idx_good_pings_dist(end))-gps_add.Time(idx_good_pings_dist(1)))*24;
+        else
+            dist_add=0;
+            timediff=0;
+        end
         dist_tot=dist_tot+dist_add;
-        timediff=(gps_add.Time(idx_good_pings_add(end))-gps_add.Time(idx_good_pings_add(1)))*24;
         timediff_tot=timediff_tot+timediff;
         nb_good_pings=nb_good_pings+length(idx_good_pings_add);
         mean_bot(i)=nanmean(bot_range_add);
@@ -188,8 +195,8 @@ for isn=1:length(snaps)
             switch reg_curr.Reference
                 case 'Surface';
                     refType = 's';
-                    start_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
-                    finish_d = trans_obj_tr.Data.get_range(nanmin(regCellInt.Sample_S(:)));
+                    start_d = trans_obj_tr.get_transceiver_range(nanmin(regCellInt.Sample_S(:)));
+                    finish_d = trans_obj_tr.get_transceiver_range(nanmin(regCellInt.Sample_S(:)));
                 case 'Bottom';
                     refType = 'b';
                     start_d = 0;

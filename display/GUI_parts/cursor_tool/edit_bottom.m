@@ -22,7 +22,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
-%nb_samples=length(layer.Transceivers(idx_freq).Data.get_range());
+%nb_samples=length(layer.Transceivers(idx_freq).get_transceiver_range());
 bot=layer.Transceivers(idx_freq).Bottom;
 
 

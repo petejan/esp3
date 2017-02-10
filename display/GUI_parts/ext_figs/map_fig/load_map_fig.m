@@ -473,12 +473,12 @@ end
 if isempty(obj_vec_tot)
     map_input=map_input_cl.map_input_cl_from_obj(obj,'ValMax',box.val_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont,'Freq',curr_disp.Freq);
     map_input.LatLim=sort(box.lat_box);
-    map_input.LonLim=sort(box.lon_box);
+    map_input.LongLim=sort(box.lon_box);
 else
     for ui=1:length(obj)
         map_input(ui)=map_input_cl.map_input_cl_from_obj(obj(ui),'ValMax',box.val_max,'Rmax',box.r_max,'Proj',box.proj,'SliceSize',box.slice_size,'Coast',get(box.coast_box,'value'),'Depth_Contour',cont);
         map_input(ui).LatLim=sort(box.lat_box);
-        map_input(ui).LonLim=sort(box.lon_box);
+        map_input(ui).LongLim=sort(box.lon_box);
     end
     map_input=map_input.concatenate_map_input();
 end

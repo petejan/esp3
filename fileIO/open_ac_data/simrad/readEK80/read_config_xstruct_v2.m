@@ -71,7 +71,6 @@ for i=1:nb_transceivers
     end
 end
 
-config_trans=[];
 
 if isfield(conf,'Transducers')
     
@@ -86,7 +85,15 @@ if isfield(conf,'Transducers')
         end
         
         config_temp=Transducer.Attributes;
+        if isfield(config_temp,'TransducerCustomName')
+            i_trans=find(~cellfun(@isempty,strfind({config(:).ChannelIdShort},config_temp.TransducerCustomName)));
+        else
+            i_trans=[];
+        end
         
+        if isempty(i_trans)
+            continue;
+        end
         
         att=fieldnames(Transducer.Attributes);
         for j=1:length(att)
@@ -99,15 +106,21 @@ if isfield(conf,'Transducers')
             
             val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
             if any(isnan(val_temp))
-                config_trans(i).(fields{jj})=config_temp.(fields{jj});
+                config(i_trans).(fields{jj})=config_temp.(fields{jj});
             else
-                config_trans(i).(fields{jj})=val_temp;
+                config(i_trans).(fields{jj})=val_temp;
             end
             
         end
     end
     
+    
+    
 end
+
+
+
+
 sensor=[];
 if isfield(conf,'ConfiguredSensors')
     if isfield(conf.ConfiguredSensors,'Sensor')

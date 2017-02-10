@@ -7,10 +7,10 @@ classdef map_input_cl
         Transect
         Filename
         Lat
-        Lon
+        Long
         Time
         SliceLat
-        SliceLon
+        SliceLong
         SliceTime_S
         SliceTime_E
         SliceAbscf
@@ -18,7 +18,7 @@ classdef map_input_cl
         Nb_ST
         Nb_Tracks
         LatLim
-        LonLim
+        LongLim
         Proj
         ValMax
         Rmax
@@ -41,10 +41,10 @@ classdef map_input_cl
             addParameter(p,'Transect',[],@isnumeric);
             addParameter(p,'Filename',{},@iscell);
             addParameter(p,'Lat',{},@iscell);
-            addParameter(p,'Lon',{},@iscell);
+            addParameter(p,'Long',{},@iscell);
             addParameter(p,'Time',{},@iscell);
             addParameter(p,'SliceLat',{},@iscell);
-            addParameter(p,'SliceLon',{},@iscell);
+            addParameter(p,'SliceLong',{},@iscell);
             addParameter(p,'SliceAbscf',{},@iscell);
             addParameter(p,'SliceTime_E',{},@iscell);
             addParameter(p,'SliceTime_S',{},@iscell);
@@ -53,7 +53,7 @@ classdef map_input_cl
             addParameter(p,'Nb_ST',{},@iscell);
             addParameter(p,'Nb_Tracks',{},@iscell);
             addParameter(p,'LatLim',[nan nan],@isnumeric);
-            addParameter(p,'LonLim',[nan nan],@isnumeric);
+            addParameter(p,'LongLim',[nan nan],@isnumeric);
             addParameter(p,'Proj','lambert',@ischar);
             addParameter(p,'ValMax',0.0017,@isnumeric);
             addParameter(p,'Rmax',5,@isnumeric);

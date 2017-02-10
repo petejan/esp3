@@ -37,7 +37,7 @@ switch lower(curr_disp.Cmap)
         
 end
 
-% range=layer.Transceivers(idx_freq).Data.get_range();
+% range=layer.Transceivers(idx_freq).get_transceiver_range();
 
 cp = ah.CurrentPoint;
 xinit = cp(1,1);

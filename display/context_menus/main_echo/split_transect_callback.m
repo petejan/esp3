@@ -134,11 +134,7 @@ load_cursor_tool(main_figure);
 display_survdata_lines(main_figure);
 update_mini_ax(main_figure,0);
 
-hfigs=getappdata(main_figure,'ExternalFigures');
-hfigs(~isvalid(hfigs))=[];
 
-idx_tag=find(strcmpi({hfigs(:).Tag},'logbook'),1);
-if ~isempty(idx_tag)
-    load_survey_data_fig_from_db(main_figure);
-end
+load_survey_data_fig_from_db(main_figure,1);
+
 end

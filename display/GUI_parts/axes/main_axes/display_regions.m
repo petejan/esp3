@@ -59,7 +59,7 @@ for iax=1:length(main_axes_tot)
     alpha_in=0.4;
     
     Number=trans.Data.get_numbers();
-    Range=trans.Data.get_range();
+    Range=trans.get_transceiver_range();
     
     
     xdata=Number;
@@ -118,7 +118,7 @@ for iax=1:length(main_axes_tot)
                 %cdata(:,:,3)=col(3);
                 
                 %reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in,'visible',curr_disp.DispReg);
-                %plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
+                plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
                 
                 reg_plot(1)=patch('XData',x_reg_rect(1:4),'YData',y_reg_rect(1:4),'FaceColor',col,'parent',main_axes,'FaceAlpha',alpha_in,'EdgeColor',col,'tag','region','UserData',reg_curr.Unique_ID,'visible',curr_disp.DispReg);
                 

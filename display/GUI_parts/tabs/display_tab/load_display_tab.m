@@ -46,17 +46,17 @@ end
 function display_attitude(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
-hfigs=getappdata(main_figure,'ExternalFigures');
 
 if isempty(layer.AttitudeNav)
     warning('No attitude');
     return;
 end
 
+layers_Str=list_layers(layer);
 new_figs=layer.AttitudeNav.display_att();
-
-hfigs=[hfigs new_figs];
-setappdata(main_figure,'ExternalFigures',hfigs);
+for i=1:length(new_figs)
+    new_echo_figure(main_figure,'fig_handle',new_figs(i),'Tag','attitude','Name',sprintf('Attitude  %s',layers_Str{1}));
+end
 
 end
 

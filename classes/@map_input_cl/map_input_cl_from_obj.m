@@ -1,7 +1,7 @@
 function obj=map_input_cl_from_obj(Ext_obj,varargin)
 
 p = inputParser;
-check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl')|isa(x,'survey_cl')|isstruct(x);
+check_layer_cl=@(x) isempty(x)|isa(x,'layer_cl')|isa(x,'mbs_cl')|isa(x,'survey_cl')|isa(x,'gps_data_cl')|isstruct(x);
 addRequired(p,'Ext_obj',check_layer_cl);
 addParameter(p,'Proj','lambert',@ischar);
 addParameter(p,'ValMax',0.0001,@isnumeric);
@@ -23,12 +23,12 @@ switch class(Ext_obj)
         mbs_out=mbs.Output.slicedTransectSum.Data;
         mbs_out_reg=mbs.Output.regionSum.Data;
         mbs_head=mbs.Header;
-        nb_trans=size(mbs_out,1);   
+        nb_trans=size(mbs_out,1);
     case 'survey_cl'
         survey_obj=Ext_obj;
         nb_trans=length(survey_obj.SurvOutput.transectSum.snapshot);
-    case 'struct'
-        nb_trans=length(Ext_obj.Lat);
+    case {'struct' 'gps_data_cl'}
+        nb_trans=1;
     otherwise
         return;
 end
@@ -42,10 +42,10 @@ obj.Snapshot=zeros(1,nb_trans);
 obj.Stratum=cell(1,nb_trans);
 obj.Transect=zeros(1,nb_trans);
 obj.Lat=cell(1,nb_trans);
-obj.Lon=cell(1,nb_trans);
+obj.Long=cell(1,nb_trans);
 obj.Time=cell(1,nb_trans);
 obj.SliceLat=cell(1,nb_trans);
-obj.SliceLon=cell(1,nb_trans);
+obj.SliceLong=cell(1,nb_trans);
 obj.SliceTime_S=cell(1,nb_trans);
 obj.SliceTime_E=cell(1,nb_trans);
 obj.SliceAbscf=cell(1,nb_trans);
@@ -59,7 +59,7 @@ obj.Depth_Contour=p.Results.Depth_Contour;
 obj.StationCode=cell(1,nb_trans);
 
 obj.LatLim=[nan nan];
-obj.LonLim=[nan nan];
+obj.LongLim=[nan nan];
 
 switch class(Ext_obj)
     case 'mbs_cl'
@@ -71,16 +71,16 @@ switch class(Ext_obj)
             end
             obj.SurveyName{i}=mbs_head.title;
             obj.SliceLat{i}=mbs_out{i,6};
-            obj.SliceLon{i}=mbs_out{i,7};
-            obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
+            obj.SliceLong{i}=mbs_out{i,7};
+            obj.SliceLong{i}(obj.SliceLong{i}<0)=obj.SliceLong{i}(obj.SliceLong{i}<0)+360;
             obj.SliceAbscf{i}=mbs_out{i,8};
             obj.Snapshot(i)=mbs_out{i,1};
             obj.Stratum{i}=mbs_out{i,2};
             obj.Transect(i)=mbs_out{i,3};
             obj.LatLim(1)=nanmin(obj.LatLim(1),nanmin(obj.SliceLat{i}));
-            obj.LonLim(1)=nanmin(obj.LonLim(1),nanmin(obj.SliceLon{i}));
+            obj.LongLim(1)=nanmin(obj.LongLim(1),nanmin(obj.SliceLong{i}));
             obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.SliceLat{i}));
-            obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.SliceLon{i}));
+            obj.LongLim(2)=nanmax(obj.LongLim(2),nanmax(obj.SliceLong{i}));
             
             idx_file=find(obj.Snapshot(i)==[mbs_out_reg{:,1}]...
                 &strcmpi(obj.Stratum{i},{mbs_out_reg{:,2}})...
@@ -94,7 +94,7 @@ switch class(Ext_obj)
         for i=1:nb_trans
             obj.Filename{i}=layers(i).Filename;
             obj.Lat{i}=layers(i).GPSData.Lat;
-            obj.Lon{i}=layers(i).GPSData.Long;
+            obj.Long{i}=layers(i).GPSData.Long;
             obj.Time{i}=layers(i).GPSData.Time;
             if ~isempty(layers(i).get_survey_data())
                 surv_data=layers(i).get_survey_data();
@@ -129,7 +129,7 @@ switch class(Ext_obj)
                 output=layers(i).Transceivers(idx_freq).slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
                 %output2D=layers(i).Transceivers(idx_freq).slice_transect2D('regIDs',IDs,'cell_w',p.Results.SliceSize);
                 obj.SliceLat{i}=output.slice_lat_esp2;
-                obj.SliceLon{i}=output.slice_lon_esp2;
+                obj.SliceLong{i}=output.slice_lon_esp2;
                 obj.SliceAbscf{i}=output.slice_abscf;
                 obj.SliceTime_S{i}=output.slice_time_start;
                 obj.SliceTime_E{i}=output.slice_time_end;
@@ -139,9 +139,9 @@ switch class(Ext_obj)
         for it=1:nb_trans
             if ~isempty(obj.Lat{it})
                 obj.LatLim(1)=nanmin(obj.LatLim(1),nanmin(obj.Lat{it}));
-                obj.LonLim(1)=nanmin(obj.LonLim(1),nanmin(obj.Lon{it}));
+                obj.LongLim(1)=nanmin(obj.LongLim(1),nanmin(obj.Long{it}));
                 obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.Lat{it}));
-                obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.Lon{it}));    
+                obj.LongLim(2)=nanmax(obj.LongLim(2),nanmax(obj.Long{it}));
             end
         end
         
@@ -149,14 +149,14 @@ switch class(Ext_obj)
         
         for i=1:nb_trans
             if ~strcmpi(survey_obj.SurvInput.Infos.Voyage,'')
-                obj.Voyage{i}=survey_obj.SurvInput.Infos.Voyage;  
+                obj.Voyage{i}=survey_obj.SurvInput.Infos.Voyage;
             else
                 obj.Voyage{i}=survey_obj.SurvInput.Infos.Title;
             end
             obj.SurveyName{i}=survey_obj.SurvInput.Infos.Title;
             obj.SliceLat{i}=survey_obj.SurvOutput.slicedTransectSum.latitude{i};
-            obj.SliceLon{i}=survey_obj.SurvOutput.slicedTransectSum.longitude{i};
-            obj.SliceLon{i}(obj.SliceLon{i}<0)=obj.SliceLon{i}(obj.SliceLon{i}<0)+360;
+            obj.SliceLong{i}=survey_obj.SurvOutput.slicedTransectSum.longitude{i};
+            obj.SliceLong{i}(obj.SliceLong{i}<0)=obj.SliceLong{i}(obj.SliceLong{i}<0)+360;
             obj.SliceTime_S{i}=survey_obj.SurvOutput.slicedTransectSum.time_start{i};
             obj.SliceTime_E{i}=survey_obj.SurvOutput.slicedTransectSum.time_end{i};
             obj.SliceAbscf{i}=survey_obj.SurvOutput.slicedTransectSum.slice_abscf{i};
@@ -166,9 +166,9 @@ switch class(Ext_obj)
             obj.Stratum{i}=survey_obj.SurvOutput.slicedTransectSum.stratum{i};
             obj.Transect(i)=survey_obj.SurvOutput.slicedTransectSum.transect(i);
             obj.LatLim(1)=nanmin(obj.LatLim(1),nanmin(obj.SliceLat{i}));
-            obj.LonLim(1)=nanmin(obj.LonLim(1),nanmin(obj.SliceLon{i}));
+            obj.LongLim(1)=nanmin(obj.LongLim(1),nanmin(obj.SliceLong{i}));
             obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.SliceLat{i}));
-            obj.LonLim(2)=nanmax(obj.LonLim(2),nanmax(obj.SliceLon{i}));
+            obj.LongLim(2)=nanmax(obj.LongLim(2),nanmax(obj.SliceLong{i}));
             idx_file=find(obj.Snapshot(i)==survey_obj.SurvOutput.regionSum.snapshot...
                 &strcmpi(obj.Stratum(i),survey_obj.SurvOutput.regionSum.stratum)...
                 &obj.Transect(i)==survey_obj.SurvOutput.regionSum.transect,1);
@@ -188,27 +188,43 @@ switch class(Ext_obj)
             obj.Regions.Stratum{ireg}=survey_obj.SurvOutput.regionSum.stratum(ireg);
             obj.Regions.Transect(ireg)=survey_obj.SurvOutput.regionSum.transect(ireg);
             obj.Regions.Lat_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.latitude{ireg});
-            obj.Regions.Lon_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.longitude{ireg});
+            obj.Regions.Long_m(ireg)=nanmean(survey_obj.SurvOutput.regionSumAbscf.longitude{ireg});
         end
-    case 'struct'
+    case {'struct' 'gps_data_cl'}
         fields=fieldnames(Ext_obj);
         for ifi=1:length(fields)
-           if isprop(obj,fields{ifi})
-               obj.(fields{ifi})=Ext_obj.(fields{ifi});
-           end
+            if isprop(obj,fields{ifi})
+                if iscell(obj.(fields{ifi}))&&~iscell(Ext_obj.(fields{ifi}))
+                    obj.(fields{ifi})={Ext_obj.(fields{ifi})};
+                else
+                    obj.(fields{ifi})=Ext_obj.(fields{ifi});
+                end
+            end
         end
         lat_lim=[nan nan];
         lon_lim=[nan nan];
-        lat_lim(1)=nanmin(lat_lim(1),nanmin([obj.Lat{:}]));
-        lon_lim(1)=nanmin(lon_lim(1),nanmin([obj.Lon{:}]));
-        lat_lim(2)=nanmax(lat_lim(2),nanmax([obj.Lat{:}]));
-        lon_lim(2)=nanmax(lon_lim(2),nanmax([obj.Lon{:}]));
+        
+        if iscell(obj.Lat)
+            lat=[obj.Lat{:}];
+        else
+            lat=obj.Lat;
+        end
+        
+        if iscell(obj.Long)
+            long=[obj.Long{:}];
+        else
+            long=obj.Long;
+        end
+        lat_lim(1)=nanmin(lat_lim(1),nanmin(lat));
+        lon_lim(1)=nanmin(lon_lim(1),nanmin(long));
+        lat_lim(2)=nanmax(lat_lim(2),nanmax(lat));
+        lon_lim(2)=nanmax(lon_lim(2),nanmax(long));
         [lat_lim,lon_lim]=ext_lat_lon_lim(lat_lim,lon_lim,0.1);
         obj.LatLim=lat_lim;
-        obj.LonLim=lon_lim;
+        obj.LongLim=lon_lim;
 end
 
-[obj.LatLim,obj.LonLim]=ext_lat_lon_lim(obj.LatLim,obj.LonLim,0.2);
+[obj.LatLim,obj.LongLim]=ext_lat_lon_lim(obj.LatLim,obj.LongLim,0.2);
 
 
 end

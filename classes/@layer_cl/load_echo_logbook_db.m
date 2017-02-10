@@ -24,8 +24,7 @@ for ip=1:length(pathtofile)
     dir_raw=dir(fullfile(pathtofile{ip},'*.raw'));
     dir_asl=dir(fullfile(pathtofile{ip},'*A'));
     
-    list_raw=union({dir_raw(:).name},{dir_asl(:).name});
-
+    list_raw=union({dir_raw([dir_raw(:).isdir]==0).name},{dir_asl([dir_asl(:).isdir]==0).name});
     if ~isempty(setdiff(list_raw,files_db))
         incomplete=1;
         fprintf('%s incomplete, we''ll update it\n',fileN);

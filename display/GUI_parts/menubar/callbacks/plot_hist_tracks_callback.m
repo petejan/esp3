@@ -37,7 +37,7 @@ TS=nan(length(f_vec),length(tracks.target_id));
 tag=cell(1,length(idx_sort));
 
 for uui=idx_sort
-    range_freq=layer.Transceivers(idx_freq).Data.get_range();
+    range_freq=layer.Transceivers(idx_freq).get_transceiver_range();
     tag{uui}=sprintf('Track from %.0f kHz',f_vec(uui)/1e3);
     Sp=layer.Transceivers(uui).Data.get_datamat('sp');
     AcrossAngle=layer.Transceivers(uui).Data.get_datamat('acrossangle');
@@ -46,7 +46,7 @@ for uui=idx_sort
     BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
     Comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship,AcrossAngle,AlongAngle);
     Comp(Comp>12)=nan;
-    range=layer.Transceivers(uui).Data.get_range();
+    range=layer.Transceivers(uui).get_transceiver_range();
     
     [nb_samples,~]=size(Sp);
     

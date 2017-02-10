@@ -29,7 +29,7 @@ y=nanmin(y,y_lim(2));
 xlab_str='Ping Number';
 xdata=trans.Data.get_numbers();
 
-ydata=trans.Data.get_range();
+ydata=trans.get_transceiver_range();
 [~,idx_ping]=nanmin(abs(xdata-x));
 [~,idx_r]=nanmin(abs(ydata-y));
 vert_val=trans.Data.get_subdatamat(1:length(ydata),idx_ping,'field',curr_disp.Fieldname);

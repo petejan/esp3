@@ -118,7 +118,7 @@ data.cal.power = power;
 % amplitude is counted from the peak of the transmit pulse, which is
 % taken to occur at the range corresponding to half the transmit pulse
 % length.
-data.cal.range = transceiver.Data.get_range(range) - ...
+data.cal.range = transceiver.get_transceiver_range(range) - ...
     pulselength * envData.SoundSpeed/4;
 
 data.cal.sphere_ts = sphere_ts;

@@ -9,7 +9,7 @@ if isempty(bottom_obj)
     bottom_obj=bottom_cl();
 end
 
-range=obj.Data.get_range();
+range=obj.get_transceiver_range();
 pings=obj.Data.get_numbers();
 
 IdxBad=find(bottom_obj.Tag==0);

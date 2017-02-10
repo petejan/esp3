@@ -14,7 +14,7 @@ else
     return;
 end
 
-[Filename,path_line]= uigetfile({fullfile(path_f,'*.evl;*.dat;*.txt;*.mat;*converted.cnv')}, 'Pick a line file','MultiSelect','off');
+[Filename,path_line]= uigetfile({fullfile(path_f,'*.evl;*.dat;*.txt;*.mat;*converted.cnv;SUPERVISOR*.log')}, 'Pick a line file','MultiSelect','off');
 if Filename==0
     return;
 end

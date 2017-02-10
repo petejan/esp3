@@ -4,8 +4,9 @@ classdef attitude_nav_cl
         Heave
         Pitch
         Roll
+        Yaw
         Time
-        SOG
+        %SOG
     end
     
     methods
@@ -17,12 +18,13 @@ classdef attitude_nav_cl
             addParameter(p,'Roll',[],@isnumeric);
             addParameter(p,'Heave',[],@isnumeric);
             addParameter(p,'Pitch',[],@isnumeric);
+            addParameter(p,'Yaw',[],@isnumeric);
             addParameter(p,'Time',[],@isnumeric);
-            addParameter(p,'SOG',[],@isnumeric);
+            %addParameter(p,'SOG',[],@isnumeric);
             
             parse(p,varargin{:});
             
-            if ~isempty(p.Results.Heading)
+            if ~all([isempty(p.Results.Heading) isempty(p.Results.Roll) isempty(p.Results.Pitch) isempty(p.Results.Heave) isempty(p.Results.Yaw)])
                 results=p.Results;
                 props=fieldnames(results);
                 props_obj=fieldnames(obj);
@@ -42,6 +44,8 @@ classdef attitude_nav_cl
                 for i=1:length(props_obj)
                     if ~isempty(obj.(props_obj{i}))
                         obj.(props_obj{i})=obj.(props_obj{i})(idx_sort);
+                    else
+                        obj.(props_obj{i})=nan(size(obj.Time));
                     end
                 end
                 
@@ -51,8 +55,9 @@ classdef attitude_nav_cl
                 obj.Roll=zeros(nb_pings,1);
                 obj.Pitch=zeros(nb_pings,1);
                 obj.Heave=zeros(nb_pings,1);
+                obj.Yaw=zeros(nb_pings,1);
                 obj.Time=p.Results.Time;
-                obj.SOG=zeros(nb_pings,1);
+                %obj.SOG=zeros(nb_pings,1);
                 
             end
             

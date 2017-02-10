@@ -1,6 +1,6 @@
 function bot_range=get_bottom_range(trans_obj,varargin)
 
-range=trans_obj.Data.get_range();
+range=trans_obj.get_transceiver_range();
 nb_pings=length(trans_obj.Data.get_numbers());
 
 Bottom_idx=trans_obj.Bottom.Sample_idx;

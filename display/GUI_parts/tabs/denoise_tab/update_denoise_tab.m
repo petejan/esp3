@@ -16,7 +16,7 @@ end
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo_denoise_var=algo_obj.Varargin;
 
-range=layer.Transceivers(idx_freq).Data.get_range();
+range=layer.Transceivers(idx_freq).get_transceiver_range();
 pings=layer.Transceivers(idx_freq).Data.get_numbers();
 
 set(denoise_tab_comp.HorzFilt_sl,'max',length(pings));

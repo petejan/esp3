@@ -10,7 +10,7 @@ if found==0
     return
 end
 
-range=layer.Transceivers(idx_freq).Data.get_range();
+range=layer.Transceivers(idx_freq).get_transceiver_range();
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
 algo=algo_obj.Varargin;

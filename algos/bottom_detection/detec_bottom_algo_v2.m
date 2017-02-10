@@ -39,7 +39,7 @@ else
 end
 
 
-Range= trans_obj.Data.get_range();
+Range= trans_obj.get_transceiver_range();
 Fs=1/trans_obj.Params.SampleInterval(1);
 PulseLength=trans_obj.Params.PulseLength(1);
 

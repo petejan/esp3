@@ -8,8 +8,8 @@ end
 
 [path_f,~,~]=fileparts(layer.Filename{1});
 
-[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.csv')}, 'Pick a csv/txt','MultiSelect','off');
-if isempty(Filename)
+[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.csv;3DM*.log')}, 'Pick a csv/log','MultiSelect','off');
+if Filename==0
     return;
 end
 

@@ -34,7 +34,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 trans=layer.Transceivers(idx_freq);
 
 xdata_tot=trans.Data.get_numbers();
-ydata_tot=trans.Data.get_range();
+ydata_tot=trans.get_transceiver_range();
 
 if callbackdata.VerticalScrollCount>0
     

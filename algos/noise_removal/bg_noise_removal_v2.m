@@ -1,6 +1,6 @@
 function [power_unoised,Sv_unoised,Sp_unoised,SNR]=bg_noise_removal_v2(trans_obj,varargin)
 
-range=trans_obj.Data.get_range();
+range=trans_obj.get_transceiver_range();
 p = inputParser;
 
 defaultVertFilt=5;

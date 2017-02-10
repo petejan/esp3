@@ -43,7 +43,7 @@ end
 h_unit=h_units{h_unit_idx};
 
 
-range=double(Transceiver.Data.get_range());
+range=double(Transceiver.get_transceiver_range());
 samples=(1:length(range))';
 pings=double(Transceiver.Data.get_numbers()-Transceiver.Data.get_numbers(1)+1);
 

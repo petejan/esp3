@@ -88,7 +88,7 @@ for ix=1:length(bot_file_str)
                 end
                 
                 depth_resampled=resample_data_v2(range(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Data.Time(idx_start_file:idx_end_file),'Opt','Nearest');
-                sample_idx=resample_data_v2((1:length(trans_obj.Data.get_range())),trans_obj.Data.get_range(),depth_resampled,'Opt','Nearest');
+                sample_idx=resample_data_v2((1:length(trans_obj.get_transceiver_range())),trans_obj.get_transceiver_range(),depth_resampled,'Opt','Nearest');
                 tag_resampled=resample_data_v2(tag(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Data.Time(idx_start_file:idx_end_file),'Opt','Nearest');
                 
                 sample_idx(sample_idx==1)=nan;

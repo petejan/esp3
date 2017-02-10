@@ -38,7 +38,7 @@ switch p.Results.Cell_h_unit
         ydata=trans_obj.Data.get_samples();
         bot_data=trans_obj.Bottom.Sample_idx;
     case 'meters'
-        ydata=trans_obj.Data.get_range();
+        ydata=trans_obj.get_transceiver_range();
         bot_data=trans_obj.get_bottom_range();
 end
 nb_pings=length(xdata);

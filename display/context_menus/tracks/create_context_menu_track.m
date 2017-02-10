@@ -52,15 +52,15 @@ idx_lines=getappdata(hfig,'Idx_select');
 obj=getappdata(hfig,'Map_input');
 
 new_struct.lat=[];
-new_struct.lon=[];
+new_struct.long=[];
 new_struct.mat_time=[];
 
 for id=1:length(idx_lines)
     new_struct.lat=[new_struct.lat obj.Lat{idx_lines(id)}];
-    new_struct.lon=[new_struct.lon obj.Lon{idx_lines(id)}];
+    new_struct.long=[new_struct.long obj.Long{idx_lines(id)}];
     new_struct.mat_time=[new_struct.mat_time obj.Time{idx_lines(id)}];
 end
-new_struct.lon(new_struct.lon>180)=new_struct.lon(new_struct.lon>180)-360;
+new_struct.long(new_struct.lon>180)=new_struct.long(new_struct.lon>180)-360;
 
 [path,file,~]=fileparts(obj.Filename{idx_lines(1)}{1});
 

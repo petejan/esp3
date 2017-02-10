@@ -183,7 +183,7 @@ for iconfig=id_config
     env_data.SoundSpeed=c;
     
     gps_data=gps_data_cl('Time',NMEA.UTC,'Lat',NMEA.Latitude,'Long',NMEA.Longitude);
-    att_data=attitude_nav_cl('Time',NMEA.UTC,'Heading',NMEA.VesselCourse,'Pitch',att.Pitch,'Pitch',att.Roll,'Heave',att.Heave,'SOG', NMEA.speed);
+    att_data=attitude_nav_cl('Time',NMEA.UTC,'Heading',NMEA.VesselCourse,'Pitch',att.Pitch,'Pitch',att.Roll,'Heave',att.Heave);
     
     
     SigIn=4*sqrt((real(echo.comp_sig_1)+real(echo.comp_sig_2)).^2+(imag(echo.comp_sig_1)+imag(echo.comp_sig_2)).^2)/2^32/sqrt(2);
@@ -235,8 +235,8 @@ for iconfig=id_config
     
     algo_vec_init=init_algos();
     
-    algo_vec_init=reset_range(algo_vec_init,trans_obj.Data.get_range());
-    algo_vec=reset_range(algo_vec,trans_obj.Data.get_range());
+    algo_vec_init=reset_range(algo_vec_init,trans_obj.get_transceiver_range());
+    algo_vec=reset_range(algo_vec,trans_obj.get_transceiver_range());
     trans_obj.GPSDataPing=gps_data_ping;
     trans_obj.AttitudeNavPing=attitude;
     trans_obj.Algo=algo_vec; trans_obj.add_algo(algo_vec_init);

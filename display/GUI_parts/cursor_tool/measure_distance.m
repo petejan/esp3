@@ -25,7 +25,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 
-range=layer.Transceivers(idx_freq).Data.get_range();
+range=layer.Transceivers(idx_freq).get_transceiver_range();
 gps_data=layer.Transceivers(idx_freq).GPSDataPing;
 
 xinit=nan(1,1e2);

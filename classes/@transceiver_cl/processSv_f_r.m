@@ -20,7 +20,7 @@ if strcmp(trans_obj.Mode,'FM')
     gain=trans_obj.get_current_gain();
     
 
-    range=trans_obj.Data.get_range();
+    range=trans_obj.get_transceiver_range();
     
     nb_samples=length(range);
     nb_pings=length(trans_obj.Data.Time);

@@ -207,7 +207,7 @@ if ~isequal(Filename_cell, 0)
                         Bottom_sim.depth=Bottom_sim.depth(ia1,:);
                         
                         for itrans=1:length(trans_obj)
-                            curr_range=trans_obj(itrans).Data.get_range();
+                            curr_range=trans_obj(itrans).get_transceiver_range();
                             depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Data.Time);
                             depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth(1);
                             sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
@@ -233,7 +233,7 @@ if ~isequal(Filename_cell, 0)
                 for i =1:length(trans_obj)
                     sample_start(i)=sample_range(1);
                     if sample_range(2)==Inf
-                        sample_end(i) =length(trans_obj(i).Data.get_range())+sample_start(i)-1;
+                        sample_end(i) =length(trans_obj(i).get_transceiver_range())+sample_start(i)-1;
                     else
                         sample_end(i)=sample_range(2);
                     end
@@ -250,8 +250,8 @@ if ~isequal(Filename_cell, 0)
                     
                     algo_vec_init=init_algos();
                     
-                    algo_vec_init=reset_range(algo_vec_init,trans_obj(i).Data.get_range());
-                    algo_vec=reset_range(algo_vec,trans_obj(i).Data.get_range());
+                    algo_vec_init=reset_range(algo_vec_init,trans_obj(i).get_transceiver_range());
+                    algo_vec=reset_range(algo_vec,trans_obj(i).get_transceiver_range());
                     trans_obj(i).GPSDataPing=gps_data_ping;
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).Algo=algo_vec; trans_obj(i).add_algo(algo_vec_init);
