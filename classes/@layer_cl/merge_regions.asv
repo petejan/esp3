@@ -1,0 +1,22 @@
+function merge_regions(layer,idx_freqs)
+
+if isempty(idx_freqs)
+    idx_freqs=1:length(layer.Transceivers);
+end
+
+if length(idx_freqs)<2
+    return;
+end
+
+regs=cell(1,length(idx_freqs));
+idx_freqs_regs=cell(1,length(idx_freqs));
+
+
+for i=2:length(idx_freqs)
+    for ireg=1:length(layer.Transceivers.Regions)
+    [reg_temp,idx_freqs_regs{i}]=layer.generate_regions_for_other_freqs(idx_freqs(i),layer.Transceivers.Regions(i),idx_freqs(i));
+    regs{i}=[regs{i} reg_temp]==layer.generate_regions_for_other_freqs(idx_freqs(i),layer.Transceivers.Regions(i),idx_freqs);
+    end
+end
+
+end
