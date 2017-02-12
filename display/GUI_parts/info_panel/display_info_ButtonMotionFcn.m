@@ -1,10 +1,10 @@
 function display_info_ButtonMotionFcn(~,~,main_figure,force_update)
 
-
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 info_panel_comp=getappdata(main_figure,'Info_panel');
@@ -202,8 +202,8 @@ try
                 end
             end
         end
-        
-        idx_fig=find(strcmp({hfigs(:).Tag},'attitude'));
+
+        idx_fig=find(strcmp({hfigs(:).Tag},sprintf('attitude%.0f',layer.ID_num)));
         t1=(t_n-Time(1))*24*60*60;
         for iu=idx_fig
             if isvalid(hfigs(iu))

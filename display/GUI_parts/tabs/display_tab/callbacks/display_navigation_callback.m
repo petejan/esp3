@@ -1,7 +1,6 @@
 function display_navigation_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
-
 map_input=map_input_cl.map_input_cl_from_obj(layer,'SliceSize',0);
 if nansum(isnan(map_input.LatLim))>=1
     return;
