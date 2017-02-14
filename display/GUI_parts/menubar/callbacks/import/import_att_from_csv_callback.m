@@ -19,4 +19,6 @@ layer.add_attitude(attitude_full);
 
 setappdata(main_figure,'Layer',layer);
 
+display_attitude_cback([],[],main_figure);
+
 end

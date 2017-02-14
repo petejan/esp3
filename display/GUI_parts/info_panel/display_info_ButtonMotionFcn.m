@@ -18,6 +18,12 @@ Time=trans.Data.Time;
 Number=trans.Data.get_numbers();
 Samples=trans.Data.get_samples();
 
+if ~isempty(trans.OffsetLine)
+    Depth_corr=trans.OffsetLine.Range;
+else
+    Depth_corr=zeros(size(Number));
+end
+
 Lat=trans.GPSDataPing.Lat;
 Long=trans.GPSDataPing.Long;
 
@@ -118,7 +124,7 @@ try
         end
         
         
-        xy_string=sprintf('Range: %.2f m Sample: %.0f \n Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
+        xy_string=sprintf('Range: %.2fm Range Corr: %.2fm\n  Sample: %.0f Ping #:%.0f of  %.0f',Range(idx_r),Range(idx_r)+Depth_corr(idx_ping),Samples(idx_r),Number(idx_ping),Number(end));
         if ~isempty(Lat)
             pos_string=sprintf('Lat: %.6f \n Long:%.6f',Lat(idx_ping),Long(idx_ping));
         else

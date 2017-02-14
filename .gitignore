@@ -15,7 +15,10 @@ local.properties
 .classpath
 .settings/
 .loadpath
-.asv
+*.asv
+*.exe
+deploy/
+
 
 # External tool builders
 .externalToolBuilders/

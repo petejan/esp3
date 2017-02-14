@@ -32,7 +32,7 @@ display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit',
 display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.6 0.05 0.1],'string',cax(1));
 set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_caxis,main_figure});
 
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.8725 0.25 0.1 0.15],'callback',{@display_attitude,main_figure});
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.8725 0.25 0.1 0.15],'callback',{@display_attitude_cback,main_figure});
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Nav.','units','normalized','pos',[0.8725 0.1 0.1 0.15],'callback',{@display_navigation_callback,main_figure});
 
 set(findall(display_tab_comp.display_tab, '-property', 'Enable'), 'Enable', 'off');
@@ -43,7 +43,7 @@ end
 
 
 
-function display_attitude(~,~,main_figure)
+function display_attitude_cback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 

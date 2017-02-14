@@ -54,7 +54,7 @@ if isempty(layer.Lines)
 end
 
 line_offset=layer.Lines(get(lines_tab_comp.tog_line,'value'));
-layer.Transceivers(idx_freq).OffsetLine=line_offset;
+layer.Transceivers(idx_freq).add_offset_line(line_offset);
 
 display_offset_echogram(main_figure);
   
@@ -113,7 +113,11 @@ h_diff=sscanf(get(lines_tab_comp.time_h_diff,'string'),'%20d:%20d:%20d');
 
 
 if length(h_diff)==3
-    UTC_diff=sign(h_diff(1))*(abs(h_diff(1))+abs(h_diff(2))/60+abs(h_diff(3))/(60*60));
+    sgn=sign(h_diff(1));
+    if sgn==0
+        sgn=1;
+    end
+    UTC_diff=sgn*(abs(h_diff(1))+abs(h_diff(2))/60+abs(h_diff(3))/(60*60));
 else
     UTC_diff=0;
 end

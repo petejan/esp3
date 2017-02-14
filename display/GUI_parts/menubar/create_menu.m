@@ -14,21 +14,28 @@ m_bot_reg = uimenu(main_figure,'Label','Bottom/Regions','Tag','menufile');
 % uimenu(m_bot_reg_old,'Label','Load Bottom and Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,1});
 % uimenu(m_bot_reg_old,'Label','Load Bottom','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,0});
 % uimenu(m_bot_reg_old,'Label','Load Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,0,1});
-mcvs = uimenu(m_bot_reg,'Label','CVS','Tag','menucvs');
-uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
-uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_callback,main_figure});
-uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
-uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
-uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
+if ~isdeployed
+    mcvs = uimenu(m_bot_reg,'Label','CVS','Tag','menucvs');
+    uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
+    uimenu(mcvs,'Label','Load Bottom (if linked to dfile...)','Callback',{@load_bot_callback,main_figure});
+    uimenu(mcvs,'Label','Load Regions (if linked to dfile...)','Callback',{@load_reg_callback,main_figure});
+    uimenu(mcvs,'Label','Reload opened Layers CVS Bottom/Regions','Callback',{@reload_cvs_callback,main_figure});
+    uimenu(mcvs,'Label','Remove opened Layers CVS Bottom/Regions','Callback',{@remove_cvs_callback,main_figure});
+end
 
-uimenu(m_bot_reg,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,1},'separator','on');
-uimenu(m_bot_reg,'Label','Save Bottom to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,[]});
-uimenu(m_bot_reg,'Label','Save Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],1});
+m_bot_reg_xml = uimenu(m_bot_reg,'Label','XML','Tag','menucvs');
+uimenu(m_bot_reg_xml,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,0,0});
+uimenu(m_bot_reg_xml,'Label','Save Bottom to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,0,[]});
+uimenu(m_bot_reg_xml,'Label','Save Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],0});
+uimenu(m_bot_reg_xml,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,0},'separator','on');
+uimenu(m_bot_reg_xml,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,[]});
+uimenu(m_bot_reg_xml,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,[],0});
 
-uimenu(m_bot_reg,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,0},'separator','on');
-uimenu(m_bot_reg,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,[]});
-uimenu(m_bot_reg,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,[],0});
-uimenu(m_bot_reg,'Label','Manage versions','Callback',{@manage_version_calllback,main_figure},'separator','on');
+m_bot_reg_db = uimenu(m_bot_reg,'Label','DB','Tag','menucvs');
+uimenu(m_bot_reg_db,'Label','Save Bottom/Regions to db','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,1});
+uimenu(m_bot_reg_db,'Label','Save Bottom to db','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,[]});
+uimenu(m_bot_reg_db,'Label','Save Regions to db','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],1});
+uimenu(m_bot_reg_db,'Label','Load Bottom and/or Regions from db','Callback',{@manage_version_calllback,main_figure},'separator','on');
 
 eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
@@ -127,7 +134,9 @@ uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapp
 
 data_tools=uimenu(mhhh,'Label','Data tools');
 uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
-uimenu(data_tools,'Label','Load Offset line for data','Callback',{@load_offset_line_cback,main_figure});
+uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
+
+
 
 
 curves_tools=uimenu(mhhh,'Label','Curves');
