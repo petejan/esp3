@@ -137,6 +137,8 @@ try
                 val_str=sprintf('Angle: %.2f deg.',cdata(idx_r_red,idx_ping_red));
             case{'alongphi','acrossphi'}
                 val_str=sprintf('Phase: %.2f deg.(phase)',cdata(idx_r_red,idx_ping_red));
+            case {'fishdensity'}
+                val_str=sprintf('%s: %.2f fish/m^3',curr_disp.Type,cdata(idx_r_red,idx_ping_red));
             otherwise
                 val_str=sprintf('%s: %.2f dB',curr_disp.Type,cdata(idx_r_red,idx_ping_red));
         end

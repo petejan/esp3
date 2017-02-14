@@ -52,6 +52,9 @@ switch lower(Fieldname)
     case 'acrossangle'
         Cax=[-10 10];
         Type='Angle Across';
+   case 'fishdensity'
+        Cax=[0 30];
+        Type='Fish Density';
     otherwise
         Cax=[-Inf Inf];
         Type=Fieldname;

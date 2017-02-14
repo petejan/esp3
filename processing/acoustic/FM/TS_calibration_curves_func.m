@@ -300,8 +300,9 @@ for uui=select
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
+        
+       layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts);
 
-        layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts);
     end
 end
 

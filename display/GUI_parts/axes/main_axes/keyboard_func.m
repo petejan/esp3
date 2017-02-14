@@ -214,5 +214,6 @@ switch callbackdata.Key
        
         
 end
+
 order_axes(main_figure);
 end

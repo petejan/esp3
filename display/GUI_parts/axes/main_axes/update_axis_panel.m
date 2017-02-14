@@ -62,5 +62,6 @@ end
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 update_grid(main_figure);
+%disp('update Grid')
 %display_info_ButtonMotionFcn([],[],main_figure,1);
 end

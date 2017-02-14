@@ -40,7 +40,7 @@ min_axis=curr_disp.Cax(1);
 data=double(get(echo_im,'CData'));
 xdata=double(get(echo_im,'XData'));
 ydata=double(get(echo_im,'YData'));
-alpha_map=(double(data>=min_axis));
+alpha_map=(double(data>min_axis));
 
 nb_pings=length(xdata);
 

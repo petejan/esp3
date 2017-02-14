@@ -5,8 +5,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
-clear_lines(ah)
-
+clear_lines(ah);
 
 switch lower(curr_disp.Cmap)
     case 'esp2'
@@ -40,6 +39,7 @@ if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
     return
 end
 [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
+
 switch src.SelectionType
     case {'normal','alt','extend'}
         hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1);
@@ -50,10 +50,14 @@ switch src.SelectionType
                  src.WindowButtonMotionFcn = @wbmcb;
             case 'alt'
                 src.WindowButtonUpFcn = @wbucb_alt;   
-                 src.WindowButtonMotionFcn = @wbmcb;
+                src.WindowButtonMotionFcn = @wbmcb;
             case 'extend'
-                 src.WindowButtonMotionFcn = @wbmcb_ext;
-                src.WindowButtonUpFcn = @wbucb;
+                u=u+1;
+                enabled_obj=findobj(main_figure,'Enable','on');
+                set(enabled_obj,'Enable','off');
+                src.WindowButtonMotionFcn = @wbmcb_ext;
+                src.WindowButtonDownFcn = @wbdcb_ext;
+                set(main_figure,'WindowScrollWheelFcn','');      
         end
     otherwise
         [~, idx_bot]=nanmin(abs(xinit(1)-xdata));
@@ -66,17 +70,54 @@ end
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        
+        display_info_ButtonMotionFcn([],[],main_figure,1);
         set(hp,'XData',xinit,'YData',yinit);
     end
 
     function wbmcb_ext(~,~)
-        u=2;
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        
+        display_info_ButtonMotionFcn([],[],main_figure,1);
         set(hp,'XData',xinit,'YData',yinit);
+    end
+
+    function wbdcb_ext(~,~)
+        cp=ah.CurrentPoint;
+        xinit(u)=cp(1,1);
+        yinit(u)=cp(1,2);
+        [xinit,yinit]=check_xy();
+        u=length(xinit)+1;
+        update_bot(xinit,yinit);
+        layer.Transceivers(idx_freq).Bottom=bot;
+        curr_disp.Bot_changed_flag=1; 
+       
+        set_alpha_map(main_figure);
+        set_alpha_map(main_figure,'main_or_mini','mini');
+        display_bottom(main_figure);
+        set(hp,'XData',xinit,'YData',yinit);
+        
+         switch src.SelectionType   
+             case {'open' 'alt'}
+                 wbucb(src,[]);
+                 set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
+                 src.WindowButtonDownFcn = @(src,envdata)edit_bottom(src,envdata,main_figure);
+                 set(enabled_obj,'Enable','on');
+         end
+        
+    end
+
+    function [x_f, y_f]=check_xy()
+        xinit(isnan(xinit))=[];
+        yinit(isnan(yinit))=[];
+        x_rem=xinit>xdata(end)|xinit<xdata(1);
+        y_rem=yinit>ydata(end)|yinit<ydata(1);
+
+        xinit(x_rem|y_rem)=[];
+        yinit(x_rem|y_rem)=[];
+        
+        [x_f,IA,~] = unique(xinit);
+        y_f=yinit(IA);
     end
 
     function wbucb(src,~)
@@ -85,18 +126,15 @@ end
         src.WindowButtonUpFcn = '';
 
         delete(hp);
-        xinit(isnan(xinit))=[];
-        yinit(isnan(yinit))=[];
-        x_rem=xinit>xdata(end)|xinit<xdata(1);
-        y_rem=yinit>ydata(end)|yinit<ydata(1);
         
-        xinit(x_rem|y_rem)=[];
-        yinit(x_rem|y_rem)=[];
+       [x_f,y_f]=check_xy();
+       update_bot(x_f,y_f);
+
+        end_bottom_edit();
         
-        [x_f,IA,~] = unique(xinit);
-        y_f=yinit(IA);
-        
-        
+    end
+
+    function update_bot(x_f,y_f)
         if length(x_f)>1
             for i=1:length(x_f)-1
                 [~, idx_bot]=nanmin(abs(x_f(i)-xdata));
@@ -113,9 +151,6 @@ end
             [~,idx_r]=nanmin(abs(y_f-ydata));
             bot.Sample_idx(idx_bot+idx_ping_ori-1)=idx_r+idx_r_ori-1;
         end
-        
-        end_bottom_edit();
-        
     end
 
     function wbucb_alt(src,~)
@@ -124,7 +159,6 @@ end
         src.WindowButtonUpFcn = '';
 
         delete(hp);
-        
         x_min=nanmin(xinit);
         x_max=nanmax(xinit);
         
