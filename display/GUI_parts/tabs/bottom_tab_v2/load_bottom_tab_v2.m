@@ -39,18 +39,18 @@ set(bottom_tab_v2_comp.thr_echo_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.th
 uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Cumulative Thr','units','normalized','Position',pos{2,4},'Tooltipstring','Higher for harder bottom.');
 bottom_tab_v2_comp.thr_cum_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',0,'Max',1,'Value',0.01,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
 bottom_tab_v2_comp.thr_cum_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{2,6},'string',num2str(get(bottom_tab_v2_comp.thr_cum_sl,'Value'),'%.2f'));
-set(bottom_tab_v2_comp.thr_cum_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_cum_ed,'%.2f'});
-set(bottom_tab_v2_comp.thr_cum_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_cum_sl,'%.2f'});
+set(bottom_tab_v2_comp.thr_cum_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_cum_ed,'%g'});
+set(bottom_tab_v2_comp.thr_cum_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_cum_sl,'%g'});
 
 
 uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{3,4});
 bottom_tab_v2_comp.Shift_bot_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',-50,'Max',50,'Value',0,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{3,5});
 bottom_tab_v2_comp.Shift_bot_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(bottom_tab_v2_comp.Shift_bot_sl,'Value'),'%.1f'));
 set(bottom_tab_v2_comp.Shift_bot_sl,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
-    {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_v2_comp.Shift_bot_ed,'%.1f'),...
+    {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_v2_comp.Shift_bot_ed,'%.2f'),...
     @(src,evtdata) shift_bottom_callback_v2(src,evtdata,main_figure)})));
 set(bottom_tab_v2_comp.Shift_bot_ed,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
-    {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_v2_comp.Shift_bot_sl,'%.1f'),...
+    {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_v2_comp.Shift_bot_sl,'%.2f'),...
     @(src,evtdata) shift_bottom_callback_v2(src,evtdata,main_figure)})));
 
 bottom_tab_v2_comp.denoised=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','checkbox','Value',0,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.3 0.3 0.1]);

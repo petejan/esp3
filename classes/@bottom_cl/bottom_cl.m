@@ -51,6 +51,10 @@ classdef bottom_cl
                 'Sample_idx',n_s,'Tag',n_t);
         end
         
+        function samples=get_sample(bot_obj)
+            samples=bot_obj.Sample_idx(:);
+        end
+        
     end
 end
 

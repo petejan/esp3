@@ -31,7 +31,7 @@ dt=nanmean(diff(xdata));
 
 for ifile=1:length(idx_start_time)
     if ~isempty(idx_start_time(ifile))
-        plot(ax,xdata(idx_start_time(ifile)).*ones(size(ydata))+dt,ydata,'g','tag','surv_id');
+        plot(ax,xdata(idx_start_time(ifile)).*ones(size(ydata))+dt,ydata,'color',[0 0.5 0],'tag','surv_id');
     end
 end
 

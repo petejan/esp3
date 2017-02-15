@@ -19,7 +19,9 @@ end
 
 
 switch callbackdata.Key
-    case {'leftarrow','rightarrow','uparrow','downarrow'}
+    
+    
+    case {'leftarrow','rightarrow','uparrow','downarrow','a','d'}
         set(src,'KeyPressFcn','');
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
@@ -34,21 +36,21 @@ switch callbackdata.Key
         dx=(x_lim(2)-x_lim(1));
         dy=(y_lim(2)-y_lim(1));
         switch callbackdata.Key
-            case 'leftarrow'
+            case {'leftarrow' 'a'}
                 if x_lim(1)<=xdata(1)
                     set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    x_lim=[nanmax(xdata(1),x_lim(1)-3*dx/4),nanmax(xdata(1),x_lim(1)-3*dx/4)+dx];
+                    x_lim=[nanmax(xdata(1),x_lim(1)-0.2*dx),nanmax(xdata(1),x_lim(1)-0.2*dx)+dx];
                 end
                 set(main_axes,'xlim',x_lim);
                 set(main_axes,'ylim',y_lim);
-            case 'rightarrow'
+            case {'rightarrow' 'd'}
                 if x_lim(2)>=xdata(end)
                     set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    x_lim=[nanmin(xdata(end),x_lim(2)+3*dx/4)-dx,nanmin(xdata(end),x_lim(2)+3*dx/4)];
+                    x_lim=[nanmin(xdata(end),x_lim(2)+0.2*dx)-dx,nanmin(xdata(end),x_lim(2)+0.2*dx)];
                 end
                 set(main_axes,'xlim',x_lim);
                 set(main_axes,'ylim',y_lim);
@@ -57,7 +59,7 @@ switch callbackdata.Key
                     set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    y_lim=[nanmin(ydata(end),y_lim(2)+2*dy/4)-dy,nanmin(ydata(end),y_lim(2)+2*dy/4)];
+                    y_lim=[nanmin(ydata(end),y_lim(2)+0.2*dy)-dy,nanmin(ydata(end),y_lim(2)+0.2*dy)];
                 end
                 set(main_axes,'ylim',y_lim);
             case 'uparrow'
@@ -65,12 +67,12 @@ switch callbackdata.Key
                     set(src,'KeyPressFcn',{@keyboard_func,main_figure});
                     return;
                 else
-                    y_lim=[nanmax(ydata(1),y_lim(1)-2*dy/4),nanmax(ydata(1),y_lim(1)-2*dy/4)+dy];
+                    y_lim=[nanmax(ydata(1),y_lim(1)-0.2*dy),nanmax(ydata(1),y_lim(1)-0.2*dy)+dy];
                 end
                 set(main_axes,'ylim',y_lim);
         end
         set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-    case {'1' 'numpad1'} 
+    case {'1' 'numpad1'}
         
         if isempty(callbackdata.Modifier)
             zi='zin';
@@ -203,15 +205,25 @@ switch callbackdata.Key
         end
     case 'l'
         logbook_dispedit_callback([],[],main_figure)
+    case 'w'
+        keyboard_zoom(-1,main_figure);
     case 's'
-       if isempty(callbackdata.Modifier)
-            return
+        if isempty(callbackdata.Modifier)
+            keyboard_zoom(1,main_figure)
         elseif strcmpi(callbackdata.Modifier,'control')
             save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
         else
             return;
         end
-       
+        
+        
+        
+    case 'z'
+       go_to_ping(1,main_figure);
+        
+    case 'x'
+        
+       go_to_ping(length(Number),main_figure);
         
 end
 

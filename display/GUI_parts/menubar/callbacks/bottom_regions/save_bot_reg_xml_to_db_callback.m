@@ -24,6 +24,7 @@ if ~isempty(bot)
     end
 end
 setappdata(main_figure,'Curr_disp',curr_disp);
+load_survey_data_fig_from_db(main_figure,1);
 end
 
 

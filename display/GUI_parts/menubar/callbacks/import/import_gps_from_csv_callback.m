@@ -33,8 +33,9 @@ end
 if ~isnan(str2double(answer{1}))
     dt=str2double(answer{1});
 else
-    dt=0;
+   
     warning('Invalid time offset');
+    dt=0;
 end
 
 

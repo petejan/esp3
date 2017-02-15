@@ -70,7 +70,7 @@ classdef curr_state_disp_cl <handle
         
          function setCax(obj,cax)
              if cax(2)>cax(1)
-                 idx_field=find(cellfun(@(x) ~isempty(strfind(obj.Fieldname,x)),obj.Fieldnames));
+                 idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
                  if ~isempty(idx_field)
                      obj.Caxes{idx_field}=cax;
                      obj.Cax=cax;
@@ -83,10 +83,12 @@ classdef curr_state_disp_cl <handle
         function setTypeCax(obj)
             [cax,obj.Type]=init_cax(obj.Fieldname);  
             
-            idx_field=find(cellfun(@(x) ~isempty(strfind(obj.Fieldname,x)),obj.Fieldnames));
+            idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
             if ~isempty(idx_field)
                 obj.Cax=obj.Caxes{idx_field};
             else
+                obj.Caxes=[obj.Caxes cax];
+                obj.Fieldnames=[obj.Fieldnames obj.Fieldname];
                 obj.Cax=cax;
             end
         end
@@ -97,7 +99,7 @@ classdef curr_state_disp_cl <handle
         end
         
         function cax=getCaxField(obj,field)
-           idx_field=find(cellfun(@(x) ~isempty(strfind(x,field)),obj.Fieldnames));
+           idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),field));
             if ~isempty(idx_field)
                 cax=obj.Caxes{idx_field};
             else

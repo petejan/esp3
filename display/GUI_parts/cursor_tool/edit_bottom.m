@@ -9,7 +9,7 @@ clear_lines(ah);
 
 switch lower(curr_disp.Cmap)
     case 'esp2'
-        line_col='g';
+        line_col=[0 0.5 0];
     otherwise
         line_col='r';
         
@@ -89,7 +89,7 @@ end
         [xinit,yinit]=check_xy();
         u=length(xinit)+1;
         update_bot(xinit,yinit);
-        layer.Transceivers(idx_freq).Bottom=bot;
+        layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1; 
        
         set_alpha_map(main_figure);
@@ -175,7 +175,7 @@ end
 
     function end_bottom_edit()
         
-        layer.Transceivers(idx_freq).Bottom=bot;
+        layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);

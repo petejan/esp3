@@ -9,7 +9,7 @@ switch lower(Fieldname)
         Type='Denoised Sv';
     case 'sp'
         Cax=[-60 -30];
-        Type='Sp';
+        Type='TS Unc';
     case 'sp_comp'
         Cax=[-60 -30];
         Type='TS';

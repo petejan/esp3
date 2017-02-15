@@ -52,7 +52,7 @@ for i=1:length(list_line)
     x_line=curr_pings;
       
     if i==active_line_idx
-        color='g';
+        color=[0 0.5 0];
     else
         color='r';
     end

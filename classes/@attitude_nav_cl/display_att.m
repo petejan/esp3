@@ -24,7 +24,7 @@ if ~isempty(roll)
     
     yyaxis(ax,'right');
     plot(ax,time,pitch,'k');
-    plot(ax,time,roll,'g');
+    plot(ax,time,roll,'color',[0 0.5 0]);
     ax.YAxis(2).Color = 'k';
     ax.YAxis(2).TickLabelFormat  = '%g^\\circ';
     legend('Heave','Pitch','Roll','Location','northeast')

@@ -18,7 +18,7 @@ switch lower(cmap_name)
         col_ax='w';
         col_lab='k';
         col_grid=[0 0 0];
-        col_bot='g';
+        col_bot=[0 0.5 0];
      case 'ek60'
         cmap=ek60_colormap();
         col_ax='w';
