@@ -4,7 +4,6 @@ set(main_figure,'WindowButtonMotionFcn','');
 opt_panel=findobj(main_figure,'Tag','option_tab_panel');
 layer=getappdata(main_figure,'Layer');
 
-
 if isempty(layer)
     return;
 end
@@ -53,8 +52,7 @@ hide_status_bar(main_figure);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 order_stacks_fig(main_figure);
-display_info_ButtonMotionFcn([],[],main_figure,1);
-set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
+reset_disp_info(main_figure);
 enabled_obj=findobj(main_figure,'Enable','off');
 set(enabled_obj,'Enable','on');
 

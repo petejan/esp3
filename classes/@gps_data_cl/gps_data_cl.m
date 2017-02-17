@@ -119,40 +119,42 @@ classdef gps_data_cl
         
         function obj=load_gps_from_file(fileN)
             [~,~,ext]=fileparts(fileN);
-            switch ext
-                case {'.csv','.txt'}
-                    try
+            try
+                switch ext
+                    case {'.csv','.txt'}
+                        
                         temp=csv2struct(fileN);
                         fields = isfield(temp,{'Lat','Long','Time'});
                         temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
                         temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
                         time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time);
                         
-                         if all(fields)
+                        if all(fields)
                             obj=gps_data_cl('Lat',temp.Lat,'Long',temp.Long,'Time',time_temp);
                         else
                             obj=gps_data_cl.empty();
                         end
-                       
-                    catch
-                        fprintf('Could not read gps file %s',fileN);
-                        obj=gps_data_cl.empty();
-                    end
-                    
-                case '.mat'
-                    gps_data=load(fileN);
-                    fields = isfield(gps_data,{'Lat','Long','Time'});
-                    if all(fields)
-                        obj=gps_data_cl('Lat',gps_data.Lat,'Long',gps_data.Long,'Time',gps_data.Time);
-                    else
-                        obj=gps_data_cl.empty();
-                    end
+                        
+                    case '.mat'
+                        
+                        gps_data=load(fileN);
+                        fields = isfield(gps_data,{'Lat','Long','Time'});
+                        if all(fields)
+                            obj=gps_data_cl('Lat',gps_data.Lat,'Long',gps_data.Long,'Time',gps_data.Time);
+                        else
+                            obj=gps_data_cl.empty();
+                        end
+                        
+                        
+                end
+                
+            catch
+                fprintf('Could not read gps file %s\n',fileN);
+                obj=gps_data_cl.empty();
+                
             end
+            
         end
         
-        
-        
-        
     end
-    
 end

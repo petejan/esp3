@@ -43,8 +43,7 @@ ydata_tot=trans.get_transceiver_range();
 if diff(x_lim)<=0||diff(y_lim)<=0
     return;
 end
-
 set(ah,'XLim',x_lim,'YLim',y_lim);
-reset_disp_info(main_figure);
+
 
 end

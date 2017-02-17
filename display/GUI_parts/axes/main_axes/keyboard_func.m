@@ -1,5 +1,11 @@
 function keyboard_func(src,callbackdata,main_figure)
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
+%curr_disp=getappdata(main_figure,'Curr_disp');
+
+% if ~any(strcmpi(curr_disp.CursorMode,{'Normal','Edit Bottom'}))
+%     return;
+% end
+
 layer=getappdata(main_figure,'Layer');curr_disp=getappdata(main_figure,'Curr_disp');
 if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);

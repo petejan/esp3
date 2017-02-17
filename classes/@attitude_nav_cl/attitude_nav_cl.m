@@ -45,21 +45,44 @@ classdef attitude_nav_cl
                     if ~isempty(obj.(props_obj{i}))
                         obj.(props_obj{i})=obj.(props_obj{i})(idx_sort);
                     else
-                        obj.(props_obj{i})=nan(size(obj.Time));
+                        switch props_obj{i}
+                            case 'Heading'
+                                obj.Heading=nan(size(obj.Time));
+                            otherwise
+                                obj.(props_obj{i})=zeros(size(obj.Time));
+                        end
                     end
                 end
                 
             else
-                nb_pings=length(p.Results.Time);
-                obj.Heading=nan(nb_pings,1);
-                obj.Roll=zeros(nb_pings,1);
-                obj.Pitch=zeros(nb_pings,1);
-                obj.Heave=zeros(nb_pings,1);
-                obj.Yaw=zeros(nb_pings,1);
+                nb_pings=size(p.Results.Time);
+                obj.Heading=-999*ones(nb_pings);
+                obj.Roll=zeros(nb_pings);
+                obj.Pitch=zeros(nb_pings);
+                obj.Heave=zeros(nb_pings);
+                obj.Yaw=zeros(nb_pings);
                 obj.Time=p.Results.Time;
-                %obj.SOG=zeros(nb_pings,1);
+                %obj.SOG=zeros(nb_pings);
                 
             end
+            
+        end
+        
+        function save_attitude_to_file(obj,fileN,idx_pings)
+            
+            if isempty(idx_pings)
+                idx_pings=1:length(obj.Time);
+            end
+            
+            struct_obj.Heading=obj.Heading(idx_pings);
+            struct_obj.Roll=obj.Roll(idx_pings);
+            struct_obj.Pitch=obj.Pitch(idx_pings);
+            struct_obj.Heave=obj.Heave(idx_pings);
+            struct_obj.Yaw=obj.Yaw(idx_pings);
+
+            struct_obj.Time=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),(num2cell(obj.Time(idx_pings))),'UniformOutput',0);
+            
+            struct2csv(struct_obj,fileN);
             
         end
         
@@ -72,6 +95,7 @@ classdef attitude_nav_cl
                 roll=[attitude_1.Roll(:); attitude_2.Roll(:)];
                 heave=[attitude_1.Heave(:); attitude_2.Heave(:)];
                 pitch=[attitude_1.Pitch(:); attitude_2.Pitch(:)];
+                yaw=[attitude_1.Yaw(:); attitude_2.Yaw(:)];
                 time=[attitude_1.Time(:); attitude_2.Time(:)];
                 
                 
@@ -79,12 +103,43 @@ classdef attitude_nav_cl
                     'Roll',roll,...
                     'Heave',heave,...
                     'Pitch',pitch,...
+                    'Yaw',yaw,...
                     'Time',time);
             else
                 attitude_out=attitude_nav_cl.empty();
             end
             
         end
+        
+    end
+    
+     methods(Static)
+        
+         
+         function obj=load_att_from_file(fileN)
+             
+             try
+                 temp=csv2struct(fileN);
+                 fields = isfield(temp,{'Heading','Roll','Heave','Pitch','Yaw','Time'});
+                 temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
+                 temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
+                 time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time);
+                 
+                 if all(fields)
+                     obj=attitude_nav_cl('Heave',temp.Heave,'Heading',temp.Heading,'Yaw',temp.Yaw,'Pitch',temp.Pitch,'Roll',temp.Roll,'Time',time_temp);
+                 else
+                     [pathf,filen,ext]=fileparts(fileN);
+                     obj=csv_to_attitude(pathf,[filen ext]);
+                 end
+                 
+             catch
+                 [pathf,filen,ext]=fileparts(fileN);
+                 obj=csv_to_attitude(pathf,[filen ext]);
+             end
+         end
+        
+        
+        
         
     end
     

@@ -126,7 +126,7 @@ order_axes(main_figure);
         end
         
         set(ah,'XLim',x_lim,'YLim',y_lim);
-        reset_disp_info(main_figure);
+        
         
     end
 

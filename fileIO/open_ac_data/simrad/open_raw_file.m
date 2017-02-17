@@ -32,6 +32,15 @@ if ~isempty(new_layers)
             fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
         end
     end 
+    
+    for i=1:length(new_layers)
+        try
+            new_layers(i).add_lines_from_line_xml();
+        catch err
+            disp(err.message);
+            fprintf('Could not load lines for layer %s',list_layers(new_layers(i),'nb_char',80));
+        end
+    end
 else
     return;
 end

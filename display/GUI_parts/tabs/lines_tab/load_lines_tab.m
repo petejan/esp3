@@ -26,9 +26,14 @@ uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Vertical offset (m)'
 lines_tab_comp.Range_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.8 0.6 0.05 0.1],'string',range_diff_str,'callback',{@change_range_callback,main_figure});
 
 
-uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.45 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});
-uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.55 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
-uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Use as Offset','units','normalized','pos',[0.65 0.3 0.15 0.15],'callback',{@offset_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.35 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.45 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Use as Offset','units','normalized','pos',[0.55 0.3 0.15 0.15],'callback',{@offset_line_callback,main_figure});
+
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Export to XML','units','normalized','pos',[0.35 0.1 0.15 0.15],'callback',{@export_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import from XML','units','normalized','pos',[0.5 0.1 0.15 0.15],'callback',{@import_line_xml_callback,main_figure});
+
+
 
 set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Lines_tab',lines_tab_comp);

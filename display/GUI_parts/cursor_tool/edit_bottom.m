@@ -14,10 +14,13 @@ switch lower(curr_disp.Cmap)
         line_col='r';
         
 end
-
-xdata=double(get(axes_panel_comp.main_echo,'XData'));
-ydata=double(get(axes_panel_comp.main_echo,'YData'));
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+
+xdata=layer.Transceivers(idx_freq).Data.get_numbers();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
+%xdata=double(get(axes_panel_comp.main_echo,'XData'));
+%ydata=double(get(axes_panel_comp.main_echo,'YData'));
+
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
@@ -38,11 +41,10 @@ u=1;
 if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
     return
 end
-[idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
 
 switch src.SelectionType
     case {'normal','alt','extend'}
-        hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1);
+        hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
        
         switch src.SelectionType
             case 'normal'
@@ -57,12 +59,12 @@ switch src.SelectionType
                 set(enabled_obj,'Enable','off');
                 src.WindowButtonMotionFcn = @wbmcb_ext;
                 src.WindowButtonDownFcn = @wbdcb_ext;
-                set(main_figure,'WindowScrollWheelFcn','');      
+                %set(main_figure,'WindowScrollWheelFcn','');      
         end
     otherwise
         [~, idx_bot]=nanmin(abs(xinit(1)-xdata));
         [~,idx_r]=nanmin(abs(yinit(1)-ydata));
-        bot.Sample_idx(idx_bot+idx_ping_ori-1)=idx_r+idx_r_ori-1;
+        bot.Sample_idx(idx_bot)=idx_r;
         end_bottom_edit();
 end
     function wbmcb(~,~)
@@ -71,7 +73,11 @@ end
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
         display_info_ButtonMotionFcn([],[],main_figure,1);
-        set(hp,'XData',xinit,'YData',yinit);
+        if isvalid(hp)
+            set(hp,'XData',xinit,'YData',yinit);
+        else
+            hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
+        end
     end
 
     function wbmcb_ext(~,~)
@@ -79,31 +85,43 @@ end
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
         display_info_ButtonMotionFcn([],[],main_figure,1);
-        set(hp,'XData',xinit,'YData',yinit);
+        
+        if isvalid(hp)
+            set(hp,'XData',xinit,'YData',yinit);
+        else
+            hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
+        end
     end
 
     function wbdcb_ext(~,~)
-        cp=ah.CurrentPoint;
-        xinit(u)=cp(1,1);
-        yinit(u)=cp(1,2);
+        
+
+        switch src.SelectionType   
+             case {'open' 'alt'}
+%                  xinit(u)=[];
+%                  yinit(u)=[];
+                 wbucb(src,[]);
+                 %set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
+                 src.WindowButtonDownFcn = @(src,envdata)edit_bottom(src,envdata,main_figure);
+                 set(enabled_obj,'Enable','on');
+                 return;
+         end
+
         [xinit,yinit]=check_xy();
         u=length(xinit)+1;
         update_bot(xinit,yinit);
         layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1; 
-       
+        src.WindowButtonMotionFcn = @wbmcb_ext;
         set_alpha_map(main_figure);
         set_alpha_map(main_figure,'main_or_mini','mini');
         display_bottom(main_figure);
-        set(hp,'XData',xinit,'YData',yinit);
-        
-         switch src.SelectionType   
-             case {'open' 'alt'}
-                 wbucb(src,[]);
-                 set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
-                 src.WindowButtonDownFcn = @(src,envdata)edit_bottom(src,envdata,main_figure);
-                 set(enabled_obj,'Enable','on');
-         end
+        if isvalid(hp)
+            set(hp,'XData',xinit,'YData',yinit);
+        else
+           hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp'); 
+        end
+         
         
     end
 
@@ -142,14 +160,14 @@ end
                 [~,idx_r]=nanmin(abs(y_f(i)-ydata));
                 [~,idx_r1]=nanmin(abs(y_f(i+1)-ydata));
                 
-                idx_bot_tot=(idx_bot:idx_bot_1)+idx_ping_ori-1;
+                idx_bot_tot=(idx_bot:idx_bot_1);
                 
-                bot.Sample_idx(idx_bot_tot)=round(linspace(idx_r+idx_r_ori-1,idx_r1+idx_r_ori-1,length(idx_bot_tot)));
+                bot.Sample_idx(idx_bot_tot)=round(linspace(idx_r,idx_r1,length(idx_bot_tot)));
             end
         elseif length(x_f)==1
             [~, idx_bot]=nanmin(abs(x_f-xdata));
             [~,idx_r]=nanmin(abs(y_f-ydata));
-            bot.Sample_idx(idx_bot+idx_ping_ori-1)=idx_r+idx_r_ori-1;
+            bot.Sample_idx(idx_bot)=idx_r;
         end
     end
 
@@ -164,13 +182,12 @@ end
         
         [~, idx_min]=nanmin(abs(x_min-xdata));
         [~, idx_max]=nanmin(abs(x_max-xdata));
-        idx_pings=(idx_min:idx_max)+idx_ping_ori-1;
+        idx_pings=(idx_min:idx_max);
         bot.Sample_idx(idx_pings)=nan;
         end_bottom_edit();
         
         
     end
-
 
 
     function end_bottom_edit()

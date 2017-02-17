@@ -39,7 +39,8 @@ uimenu(m_bot_reg_db,'Label','Load Bottom and/or Regions from db','Callback',{@ma
 
 eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
-uimenu(eport_menu,'Label','Export GPS to .csv file','Callback',{@save_gps_callback,main_figure});
+uimenu(eport_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure});
+uimenu(eport_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
 uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
 
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');

@@ -137,7 +137,7 @@ order_axes(main_figure);
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         set(axes_panel_comp.main_axes,'XLim',x_lim,'YLim',y_lim);
        
-        reset_disp_info(main_figure);
+        
         end
     end
 

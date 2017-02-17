@@ -28,7 +28,8 @@ new_vert(:,2)=[y_lim(1) y_lim(1) y_lim(2) y_lim(2)];
 set(patch_obj,'Vertices',new_vert);
 
 display_info_ButtonMotionFcn([],[],main_figure,1);
-set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
+reset_disp_info(main_figure);
+
 % profile off;
 % profile viewer
 end

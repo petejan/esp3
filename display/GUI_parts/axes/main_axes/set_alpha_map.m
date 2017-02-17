@@ -78,7 +78,7 @@ end
 
 
 if strcmp(curr_disp.DispBadTrans,'on')
-    alpha_map_bt=(~isnan(data_temp))-0.2;
+    alpha_map_bt=(~isnan(data_temp))-0.6;
 else
     alpha_map_bt=zeros(size(data_temp));
 end

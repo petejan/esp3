@@ -56,6 +56,6 @@ switch src.State
         end
     case 'off'
         reset_mode(0,0,main_figure);
-en
+end
 
 end

@@ -18,6 +18,7 @@ if isempty(bottoms_node)
     return;
 end
     
+bottom_xml=cell(1,nb_bot);
 
 for i=1:nb_bot
     bottom_xml{i}.Infos=get_node_att(xml_struct.Children(i));

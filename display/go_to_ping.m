@@ -29,6 +29,5 @@ end
 
 set(ah,'XLim',x_lim,'YLim',get(ah,'YLim'));
 
-reset_disp_info(main_figure);
 
 end

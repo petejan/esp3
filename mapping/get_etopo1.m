@@ -39,19 +39,19 @@ etopo_file=fullfile(whereisEcho,'private','ETOPO1_Bed_g_gmt4.grd');
 
 lon_etopo=ncread(etopo_file,'x');
 lat_etopo=ncread(etopo_file,'y');
-
+dr=0.0167;
 LongLim(LongLim>180)=LongLim(LongLim>180)-360;
 
 if latlim(1)<=latlim(2)
-    idx_lat=find(lat_etopo>=latlim(1)&lat_etopo<=latlim(2));
+    idx_lat=find(lat_etopo>=latlim(1)-dr&lat_etopo<=latlim(2))+dr;
 else
-    idx_lat=union(find(lat_etopo>=latlim(1)&lat_etopo<=90),find(lat_etopo>=-90&lat_etopo<=latlim(2)));
+    idx_lat=union(find(lat_etopo>=latlim(1)-dr&lat_etopo<=90),find(lat_etopo>=-90&lat_etopo<=latlim(2)+dr));
 end
 
 if LongLim(1)<=LongLim(2)
-    idx_lon=find(lon_etopo>=LongLim(1)&lon_etopo<=LongLim(2));
+    idx_lon=find(lon_etopo>=LongLim(1)-dr&lon_etopo<=LongLim(2)+dr);
 else
-    idx_lon=union(find(lon_etopo>=LongLim(1)&lon_etopo<=180),find(lon_etopo>=-180&lon_etopo<=LongLim(2)));
+    idx_lon=union(find(lon_etopo>=LongLim(1)-dr&lon_etopo<=180),find(lon_etopo>=-180&lon_etopo<=LongLim(2)+dr));
 end
 
 if nansum(diff(idx_lat)>1)>0 

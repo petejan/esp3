@@ -1,4 +1,4 @@
-function save_gps_callback(~,~,main_figure)
+function save_att_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
@@ -10,18 +10,18 @@ layer=getappdata(main_figure,'Layer');
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
 
 trans_obj=layer.Transceivers(idx_freq);
-gps_obj=trans_obj.GPSDataPing;
+att_obj=trans_obj.AttitudeNavPing;
 filenames=layer.Filename;
 
 for i=1:length(filenames)
     
     [path_f,fileN_ori,~]=fileparts(filenames{i});
-    fileN=fullfile(path_f,[fileN_ori,'_gps_data.csv']);
+    fileN=fullfile(path_f,[fileN_ori,'_att_data.csv']);
     
     idx_f=find(trans_obj.Data.FileId==i);
-    gps_obj.save_gps_to_file(fileN,idx_f);
+    att_obj.save_attitude_to_file(fileN,idx_f);
     
-    fprintf('Position for file %s saved\n',fileN);
+    fprintf('Attiitude for file %s saved\n',fileN);
     
     [stat,~]=system(['start notepad++ ' fileN]);
     
@@ -29,7 +29,6 @@ for i=1:length(filenames)
         disp('You should install Notepad++...');
         system(['start ' fileN]);
     end
-    
 
     
 end

@@ -13,7 +13,7 @@ if Filename==0
     return;
 end
 
-attitude_full=csv_to_attitude(PathToFile,Filename);
+attitude_full=attitude_nav_cl.load_att_from_file(fullfile(PathToFile,Filename));
 
 layer.add_attitude(attitude_full);
 

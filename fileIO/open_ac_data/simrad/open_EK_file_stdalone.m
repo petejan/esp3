@@ -150,12 +150,27 @@ if ~isequal(Filename_cell, 0)
             end
             [~,fname,~]=fileparts(idx_raw_obj.filename);
             gps_file=fullfile(path_f,[fname '_gps.csv']);
+            att_file=fullfile(path_f,[fname '_att.csv']);
             
-            if exist(gps_file,'file')==2
+            if exist(gps_file,'file')==2&&~exist(att_file,'file')
                 fprintf('Using _gps.csv file as GPS input for file %s\n',Filename);
                 idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)')));
                 [~,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
-                gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file); 
+                gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
+            elseif ~exist(gps_file,'file')&&exist(att_file,'file')==2
+                fprintf('Using _att.csv file as Attitude input for file %s\n',Filename);
+                idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
+                    cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
+                    cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
+                [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
+                idx_NMEA=find(idx_NMEA_gps(idx_GPS,:));
+                [gps_data_tmp,~]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
+                attitude_full= attitude_nav_cl.load_att_from_file(att_file);
+            elseif exist(gps_file,'file')==2&&exist(att_file,'file')==2
+                fprintf('Using _att.csv file as Attitude input for file %s\n',Filename);
+                attitude_full= attitude_nav_cl.load_att_from_file(att_file);
+                fprintf('Using _gps.csv file as GPS input for file %s\n',Filename);
+                gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
             else
                 idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
                     cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
@@ -265,12 +280,13 @@ if ~isequal(Filename_cell, 0)
             end
             
             layers(uu)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
+
         catch err
             id_rem=union(id_rem,uu);
             disp(err.message);
             fprintf('Could not open files %s\n',Filename);
             if ~isdeployed
-               rethrow(err); 
+                rethrow(err);
             end
         end
     end

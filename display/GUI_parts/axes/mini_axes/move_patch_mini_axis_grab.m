@@ -69,7 +69,7 @@ end
         set(main_axes,'xlim',[nanmin(patch_obj.Vertices(:,1)) nanmax(patch_obj.Vertices(:,1))]);
         set(main_axes,'ylim',[nanmin(patch_obj.Vertices(:,2)) nanmax(patch_obj.Vertices(:,2))]);
         
-        reset_disp_info(main_figure)
+        
 
         
     end

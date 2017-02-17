@@ -36,6 +36,7 @@ else
 end
 
 if ~isempty(heading)
+    heading(heading==-999)=nan;
         axh=axes(h_fig,'nextplot','add','OuterPosition',[0 0 0.5 0.5]);
         axh.YAxis.TickLabelFormat  = '%g^\\circ';
         plot(axh,time,heading,'k');

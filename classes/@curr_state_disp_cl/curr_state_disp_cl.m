@@ -99,7 +99,7 @@ classdef curr_state_disp_cl <handle
         end
         
         function cax=getCaxField(obj,field)
-           idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),field));
+           idx_field=find(cellfun(@(x) strcmpi(field,x),obj.Fieldnames));
             if ~isempty(idx_field)
                 cax=obj.Caxes{idx_field};
             else
