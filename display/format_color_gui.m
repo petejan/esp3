@@ -10,7 +10,7 @@ for i=1:length(fig)
     % tabgroup_obj=findobj(fig(i),'Type','uitabgroup');
     % set(tabgroup_obj,'BackgroundColor','White','bordertype','line');
     
-    tab_obj=findobj(fig(i),'Type','uitab');
+    tab_obj=findobj(fig(i),'Type','uitab','-property','BackgroundColor');
     set(tab_obj,'BackgroundColor',background_col);
     
     control_obj=findobj(fig(i),'Type','uicontrol','-not',{'Style','PushButton','-or','Style','togglebutton'});
