@@ -132,8 +132,8 @@ switch mode
     otherwise
 end
 
-if length(unique(x_box))<4&&length(unique(y_box))<4
-    return;
+if length(x_box)<4||length(y_box)<4
+     return;
 end
         hp_a=patch(ah,'XData',x_box(1:4),'YData',y_box(1:4),'FaceColor',col,'tag','SelectArea','FaceAlpha',0.5,'EdgeColor',col);
 
