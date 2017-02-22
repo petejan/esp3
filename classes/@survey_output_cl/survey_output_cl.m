@@ -39,7 +39,12 @@ classdef survey_output_cl < handle
             obj.regionSumVbscf = struct('snapshot',mat_de,'stratum',cell_de,'transect',mat_de,'file',cell_de,'region_id',mat_de,'num_h_slices',mat_de,'num_v_slices',mat_de,'region_vbscf',mat_de,'vbscf_values',cell_de,'time_start',cell_de,'time_end',cell_de);
             obj.regionsIntegrated= struct('snapshot',mat_de,'stratum',cell_de,'transect',mat_de,'file',cell_de,'Region',cell_de,'RegOutput',cell_de);
         end
-        
+        function delete(obj)
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
     end
     
 end

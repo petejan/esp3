@@ -38,17 +38,9 @@ else
     dt=0;
 end
 
+gps_data=gps_data_cl.load_gps_from_file(fullfile(PathToFile,Filename));
 
-for i=1:length(Filename)
-    gps_data_temp=gps_data_cl.load_gps_from_file(fullfile(PathToFile,Filename{i}));
-    gps_data_temp=gps_data_temp.clean_gps_track();
-    gps_data_temp.Time=gps_data_temp.Time+dt/24; 
-    if i>1
-        gps_data=concatenate_GPSData(gps_data,gps_data_temp);
-    else
-        gps_data=gps_data_temp;
-    end
-end
+gps_data.Time=gps_data.Time+dt/24;
 layer.replace_gps_data_layer(gps_data);
 
 setappdata(main_figure,'Layer',layer);

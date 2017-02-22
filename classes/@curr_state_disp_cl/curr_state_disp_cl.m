@@ -22,8 +22,8 @@ classdef curr_state_disp_cl <handle
         NbLayers
         Cmap
         Font
-        Bot_changed_flag 
-        Reg_changed_flag%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
+        Bot_changed_flag
+        Reg_changed_flag %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
     end
     
     methods
@@ -60,7 +60,7 @@ classdef curr_state_disp_cl <handle
             
             obj.Fieldnames={'sv','sp','power','angle','target','snr','phi','y'};
             obj.Caxes={[-70 -35],[-60 -30],[-200 0],[-10 10],[-60 -30],[0 30],[-180 180],[-200 0]};
-
+            
             obj.setTypeCax();
             
         end
@@ -68,20 +68,20 @@ classdef curr_state_disp_cl <handle
     
     methods
         
-         function setCax(obj,cax)
-             if cax(2)>cax(1)
-                 idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
-                 if ~isempty(idx_field)
-                     obj.Caxes{idx_field}=cax;
-                     obj.Cax=cax;
-                 else
-                     obj.Cax=cax;
-                 end
-             end
+        function setCax(obj,cax)
+            if cax(2)>cax(1)
+                idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
+                if ~isempty(idx_field)
+                    obj.Caxes{idx_field}=cax;
+                    obj.Cax=cax;
+                else
+                    obj.Cax=cax;
+                end
+            end
         end
-          
+        
         function setTypeCax(obj)
-            [cax,obj.Type]=init_cax(obj.Fieldname);  
+            [cax,obj.Type]=init_cax(obj.Fieldname);
             
             idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
             if ~isempty(idx_field)
@@ -99,14 +99,22 @@ classdef curr_state_disp_cl <handle
         end
         
         function cax=getCaxField(obj,field)
-           idx_field=find(cellfun(@(x) strcmpi(field,x),obj.Fieldnames));
+            idx_field=find(cellfun(@(x) strcmpi(field,x),obj.Fieldnames));
             if ~isempty(idx_field)
                 cax=obj.Caxes{idx_field};
             else
                 cax=obj.Cax;
             end
         end
-                
+        
+        function delete(obj)
+            
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
+        
     end
     
 end

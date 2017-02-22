@@ -79,7 +79,9 @@ classdef attitude_nav_cl
             struct_obj.Pitch=obj.Pitch(idx_pings);
             struct_obj.Heave=obj.Heave(idx_pings);
             struct_obj.Yaw=obj.Yaw(idx_pings);
-
+            
+            
+            
             struct_obj.Time=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),(num2cell(obj.Time(idx_pings))),'UniformOutput',0);
             
             struct2csv(struct_obj,fileN);
@@ -113,31 +115,55 @@ classdef attitude_nav_cl
         
     end
     
-     methods(Static)
+    methods(Static)
         
-         
-         function obj=load_att_from_file(fileN)
-             
-             try
-                 temp=csv2struct(fileN);
-                 fields = isfield(temp,{'Heading','Roll','Heave','Pitch','Yaw','Time'});
-                 temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
-                 temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
-                 time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time);
-                 
-                 if all(fields)
-                     obj=attitude_nav_cl('Heave',temp.Heave,'Heading',temp.Heading,'Yaw',temp.Yaw,'Pitch',temp.Pitch,'Roll',temp.Roll,'Time',time_temp);
-                 else
-                     [pathf,filen,ext]=fileparts(fileN);
-                     obj=csv_to_attitude(pathf,[filen ext]);
-                 end
-                 
-             catch
-                 [pathf,filen,ext]=fileparts(fileN);
-                 obj=csv_to_attitude(pathf,[filen ext]);
-             end
-         end
         
+        function obj=load_att_from_file(fileN)
+            if ~iscell(fileN)
+                fileN={fileN};
+            end
+            
+            for ifi=1:length(fileN)
+                fprintf('Importing attitude from file %s\n',fileN{ifi});
+                try
+                    temp=csv2struct(fileN{ifi});
+                    fields = isfield(temp,{'Heading','Roll','Heave','Pitch','Yaw','Time'});
+                    temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
+                    temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
+                    time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time);
+                    
+                    if iscell(temp.Heading)
+                        temp.Heading=nan(size(temp.Time));
+                    end
+                    
+                    if all(fields)
+                        obj_temp=attitude_nav_cl('Heave',temp.Heave,'Heading',temp.Heading,'Yaw',temp.Yaw,'Pitch',temp.Pitch,'Roll',temp.Roll,'Time',time_temp);
+                    else
+                        [pathf,filen,ext]=fileparts(fileN{ifi});
+                        obj_temp=csv_to_attitude(pathf,[filen ext]);
+                    end
+                    
+                catch
+                    [pathf,filen,ext]=fileparts(fileN{ifi});
+                    obj_temp=csv_to_attitude(pathf,[filen ext]);
+                end
+                fprintf('Attitude import finished\n');
+                if ifi==1
+                    obj=obj_temp;
+                else
+                    obj=concatenate_AttitudeNavPing(obj,obj_temp);
+                end
+                
+            end
+        end
+        
+        function delete(obj)
+            
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
         
         
         

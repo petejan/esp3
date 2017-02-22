@@ -13,6 +13,6 @@ elseif all(isfield(att_struct,{'pitch','roll','yaw','datetime'}))
     time=cellfun(@(x) datenum(x,'yyyy-mm-ddTHH:MM:SS'),att_struct.datetime(1:end-1));
     attitude_full=attitude_nav_cl('Yaw',att_struct.yaw,'Pitch',att_struct.pitch,'Roll',att_struct.roll,'Time',time);
 else
-    attitude_full=attitude_nav_cl.empty();;
+    attitude_full=attitude_nav_cl.empty();
 end
 end

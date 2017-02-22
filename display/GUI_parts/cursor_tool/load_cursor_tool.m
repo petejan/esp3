@@ -11,8 +11,8 @@ if nb_layers>0
 else
     layers_Str={'--'};
     layers_Str_comp={'--'};
-    layers=layer_cl();
     layer=layer_cl();
+    layers=layers;
 end
 
 [path_lay,~]=layer.get_path_files();

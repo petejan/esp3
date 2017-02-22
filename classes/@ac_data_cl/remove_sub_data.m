@@ -19,7 +19,7 @@ for ii=1:length(fields)
         for icell=1:length(data.SubData(idx).Memap)
             fname{icell}=data.SubData(idx).Memap{icell}.Filename;
         end
-        data.SubData(idx).delete();
+ %data.SubData(idx).delete();
         data.SubData(idx)=[];
         data.Type(idx)=[];
         data.Fieldname(idx)=[];

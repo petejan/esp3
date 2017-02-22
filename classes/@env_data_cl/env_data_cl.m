@@ -43,6 +43,13 @@ classdef env_data_cl < handle
             end
             
         end
+        function delete(obj)
+            
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
         
         
         function  obj=set_svp(obj,depth,soundspeed)

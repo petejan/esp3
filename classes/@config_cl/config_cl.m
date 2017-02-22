@@ -49,7 +49,7 @@ classdef config_cl
         Version='';
         PulseDurationFM=[];
         ArticleNumber=0;
-
+        
     end
     
     methods
@@ -94,7 +94,7 @@ classdef config_cl
                 'Angle Sensitivity Alongship',...
                 'Angle Sensitivity Athwartship'};
             
-             fields_fmt={'%s',...
+            fields_fmt={'%s',...
                 '%s',...
                 '%s',...
                 'ver: %d',...
@@ -122,7 +122,13 @@ classdef config_cl
             end
             config_str = [config_str '</ul></html>'];
         end
-        
+        function delete(obj)
+            
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
     end
 end
-    
+

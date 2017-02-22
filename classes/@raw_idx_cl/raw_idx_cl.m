@@ -14,7 +14,7 @@ classdef raw_idx_cl
     methods
         function obj = curve_cl(varargin)
             p = inputParser;
-                       
+            
             addParameter(p,'filename','',@ischar);
             addParameter(p,'raw_type','',@ischar);
             addParameter(p,'nb_samples',[],@isnumeric);
@@ -29,7 +29,7 @@ classdef raw_idx_cl
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)    
+            for i=1:length(props)
                 obj.(props{i})=results.(props{i});
                 
             end
@@ -64,6 +64,13 @@ classdef raw_idx_cl
         function time_dg=get_time_dg(idx_obj,type)
             time_dg=idx_obj.time_dg(strcmp(idx_obj.type_dg,type));
         end
- 
+        
+        function delete(obj)
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
+        
     end
 end

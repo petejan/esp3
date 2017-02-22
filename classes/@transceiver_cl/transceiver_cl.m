@@ -91,6 +91,13 @@ classdef transceiver_cl < handle
             obj.setBottom(p.Results.Bottom);
         end
         
+        function delete(obj)
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
+        
         function range=get_transceiver_range(obj,varargin)
             if nargin>=2
                 idx=varargin{1};
@@ -101,9 +108,9 @@ classdef transceiver_cl < handle
             if ~isempty(obj.Config.TransducerOffsetZ)
                 range=range+obj.Config.TransducerOffsetZ;
             end
-                        
+            
         end
-              
+        
         
         
         

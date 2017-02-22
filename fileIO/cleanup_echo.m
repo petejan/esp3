@@ -16,12 +16,17 @@ while i>=1
     i=i-1;
 end
 
+dndobj=getappdata(main_figure,'Dndobj');
+delete(dndobj);
 
 appdata = get(main_figure,'ApplicationData');
 fns = fieldnames(appdata);
 for ii = 1:numel(fns)
     rmappdata(main_figure,fns{ii});
 end
-
+ 
+% dnd_control=findobj(main_figure,'class','dndcontrol');
+%  
+% delete(dnd_control);
 
 delete(main_figure);

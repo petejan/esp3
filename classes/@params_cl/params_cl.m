@@ -111,12 +111,17 @@ classdef params_cl
                 else
                     str_temp=sprintf(fields_fmt{ifi},param_obj.(fields{ifi})(idx_ping));
                 end
-            
-            param_str = [param_str '<li><i>' fields_name{ifi} ': </i>' str_temp '</li>'];
+                
+                param_str = [param_str '<li><i>' fields_name{ifi} ': </i>' str_temp '</li>'];
             end
             param_str = [param_str '</ul></html>'];
         end
-        
+        function delete(obj)
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
     end
     
 end

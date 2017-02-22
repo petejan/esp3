@@ -4,13 +4,14 @@ function load_lines_tab(main_figure,option_tab_panel)
 lines_tab_comp.lines_tab=uitab(option_tab_panel,'Title','Lines');
 
 
-    list_lines={'--'};
-    utc_str='00:00:00';
-    dist_diff_str=0;
-    range_diff_str=0;
+list_lines={'--'};
+utc_str='00:00:00';
+dist_diff_str=0;
+range_diff_str=0;
 
-
-
+   
+    
+ 
 uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Lines','units','normalized','Position',[0.5 0.8 0.1 0.1]);
 lines_tab_comp.tog_line=uicontrol(lines_tab_comp.lines_tab,'Style','popupmenu','String',list_lines,'Value',length(list_lines),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_line,main_figure});
 
@@ -37,8 +38,8 @@ uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import from XM
 
 set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Lines_tab',lines_tab_comp);
-end
 
+end
 
 
 function tog_line(~,~,main_figure)

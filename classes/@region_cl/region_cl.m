@@ -1,6 +1,6 @@
 
 classdef region_cl
-    properties 
+    properties
         Name
         ID
         Tag
@@ -20,10 +20,10 @@ classdef region_cl
         Cell_w_unit
         Cell_h
         Cell_h_unit
-  
+        
     end
     
-
+    
     
     methods
         function obj = region_cl(varargin)
@@ -58,16 +58,16 @@ classdef region_cl
             addParameter(p,'Cell_h',10,@isnumeric);
             addParameter(p,'Cell_w_unit','pings',check_w_unit);
             addParameter(p,'Cell_h_unit','meters',check_h_unit);
-
+            
             parse(p,varargin{:});
             
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)   
+            for i=1:length(props)
                 obj.(props{i})=results.(props{i});
             end
-			 
+            
             switch obj.Shape
                 case 'Rectangular'
                     obj.X_cont=[];
@@ -98,7 +98,7 @@ classdef region_cl
                     obj.Y_cont=[];
                     obj.MaskReg=[];
             end
-        
+            
         end
         
         function str=print(obj)
@@ -127,10 +127,15 @@ classdef region_cl
                 case 'Polygon'
                     mask=obj.MaskReg;
             end
-
+            
+        end
+        function delete(obj)
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
         end
         
-          
     end
 end
 

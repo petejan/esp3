@@ -14,18 +14,24 @@ else
     return;
 end
 
-[Filename,path_line]= uigetfile({fullfile(path_f,'*.evl;*.dat;*.txt;*.mat;*converted.cnv;SUPERVISOR*.log')}, 'Pick a line file','MultiSelect','off');
-if Filename==0
-    return;
+[Filename,path_line]= uigetfile({fullfile(path_f,'*.evl;*.dat;*.txt;*.mat;*converted.cnv;SUPERVISOR*.log')}, 'Pick a line file','MultiSelect','on');
+
+if~iscell(Filename)
+    if Filename==0
+        return;
+    end
+    Filename={Filename};
 end
 
-line=import_line(path_line,Filename);
-
-if isempty(line)
-    return;
+for i=1:length(Filename)
+    line=import_line(path_line,Filename{i});
+    
+    if isempty(line)
+        continue
+    end
+    
+    layer.add_lines(line);
 end
-
-layer.add_lines(line);
 
 setappdata(main_figure,'Lines_tab',lines_tab_comp);
 setappdata(main_figure,'Layer',layer);

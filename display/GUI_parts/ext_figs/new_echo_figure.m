@@ -24,10 +24,12 @@ parse(p,main_figure,varargin{:});
 
 if ~isempty(main_figure)
     hfigs=getappdata(main_figure,'ExternalFigures');
-    hfigs(~isvalid(hfigs))=[];
-    idx_tag=find(strcmpi({hfigs(:).Tag},p.Results.Tag));
-    if ~isempty(idx_tag)
-        delete(hfigs(idx_tag));
+    if ~isempty(hfigs)
+        hfigs(~isvalid(hfigs))=[];
+        idx_tag=find(strcmpi({hfigs(:).Tag},p.Results.Tag));
+        if ~isempty(idx_tag)
+            delete(hfigs(idx_tag));
+        end
     end
 end
 
@@ -69,9 +71,14 @@ end
 
 javaFrame = get(fig_handle,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+
 if ~isempty(main_figure)
     curr_disp=getappdata(main_figure,'Curr_disp');
+    if ~isempty(curr_disp)
     font=curr_disp.Font;
+    else
+       font=[];
+    end   
 else
     font=[];
 end

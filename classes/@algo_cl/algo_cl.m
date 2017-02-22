@@ -18,9 +18,9 @@ classdef algo_cl
             parse(p,varargin{:});
             
             results=p.Results;
-             
+            
             obj.Name=results.Name;
-                     
+            
             obj.Function=init_func(obj.Name);
             obj.Varargin=init_varargin(obj.Name);
             if ~isempty(obj.Varargin)
@@ -35,7 +35,13 @@ classdef algo_cl
             obj.Varargout=init_varargout(obj.Name);
             
         end
-        
+        function delete(obj)
+            
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
         
         
     end

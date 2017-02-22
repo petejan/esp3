@@ -21,7 +21,7 @@ for ix=1:length(line_file_str)
     
     if isempty(line_xml_tot)
         pres(ix)=0;
-        fprintf('Cannot parse bottom file for %s\n',layer_obj.Filename{ix});
+        fprintf('Cannot parse bottom line for %s\n',layer_obj.Filename{ix});
         continue;
     end
     

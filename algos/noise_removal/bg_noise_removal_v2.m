@@ -23,7 +23,6 @@ addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
 
-f_s_sig=round(1/(trans_obj.Params.SampleInterval(1)));
 c=1500;
 FreqStart=(trans_obj.Params.FrequencyStart(1));
 FreqEnd=(trans_obj.Params.FrequencyEnd(1));

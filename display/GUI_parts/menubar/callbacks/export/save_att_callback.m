@@ -21,7 +21,7 @@ for i=1:length(filenames)
     idx_f=find(trans_obj.Data.FileId==i);
     att_obj.save_attitude_to_file(fileN,idx_f);
     
-    fprintf('Attiitude for file %s saved\n',fileN);
+    fprintf('Attitude for file %s saved\n',fileN);
     
     [stat,~]=system(['start notepad++ ' fileN]);
     

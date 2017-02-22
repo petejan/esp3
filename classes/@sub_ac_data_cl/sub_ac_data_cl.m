@@ -54,6 +54,24 @@ classdef sub_ac_data_cl < handle
 
             
         end
+        
+        function delete(obj)
+           
+            if ~isdeployed 
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+%             for icell=1:length(obj.Memap)
+%                 
+% %             if ~isdeployed
+% %                 disp(['Deleting file' ,obj.Memap{icell}.Filename]);
+% %             end
+% %               
+% %                file=obj.Memap{icell}.Filename;
+% %                obj.Memap{icell}=[];
+% %                delete(file);
+%             end
+        end
 
     end
     

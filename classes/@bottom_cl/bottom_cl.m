@@ -55,6 +55,12 @@ classdef bottom_cl
             samples=bot_obj.Sample_idx(:);
         end
         
+        function delete(obj)
+            c = class(obj);
+            if ~isdeployed
+                disp(['ML object destructor called for class ',c])
+            end
+        end
     end
 end
 

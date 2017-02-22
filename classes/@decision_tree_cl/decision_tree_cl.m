@@ -13,33 +13,33 @@ classdef decision_tree_cl
             parse(p,XMLFileName);
             
             if exist(XMLFileName,'file')>0
-            [obj.Variables,obj.Nodes]=parse_classification_xml(XMLFileName);
+                [obj.Variables,obj.Nodes]=parse_classification_xml(XMLFileName);
             else
-               warning('Could not find Classification XML file') ;
-               obj.Variables={};
-               obj.Nodes={};
+                warning('Could not find Classification XML file') ;
+                obj.Variables={};
+                obj.Nodes={};
             end
         end
         
         
         function IDs=get_node_ids(obj)
-            IDs=nan(1,length(obj.Nodes));  
+            IDs=nan(1,length(obj.Nodes));
             for i=1:length(obj.Nodes)
-               IDs(i)=obj.Nodes{i}.id;
+                IDs(i)=obj.Nodes{i}.id;
             end
         end
         
-         function IDs=get_condition_node(obj)
-            IDs=[];  
+        function IDs=get_condition_node(obj)
+            IDs=[];
             for i=1:length(obj.Nodes)
                 if isfield(obj.Nodes{i},'Condition')
                     IDs=[IDs obj.Nodes{i}.id];
                 end
             end
-         end
+        end
         
         function IDs=get_class_node(obj)
-            IDs=[];  
+            IDs=[];
             for i=1:length(obj.Nodes)
                 if isfield(obj.Nodes{i},'Class')
                     IDs=[IDs obj.Nodes{i}.id];
@@ -47,17 +47,23 @@ classdef decision_tree_cl
             end
         end
         
-        function node=get_node(obj,id)        
+        function node=get_node(obj,id)
             IDs=obj.get_node_ids();
             idx=find(IDs==id);
             
             if ~isempty(idx)
-               node=obj.Nodes{idx}; 
+                node=obj.Nodes{idx};
             else
-               node={};
-            end  
+                node={};
+            end
         end
-        
+        function delete(obj)
+            
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
         
     end
     

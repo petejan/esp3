@@ -6,8 +6,6 @@ if isempty(layer)
     return;
 end
 
-
-
 write_line_to_line_xml(layer);
 
 end

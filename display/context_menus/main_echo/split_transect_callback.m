@@ -24,7 +24,7 @@ xdata=trans.Data.get_numbers();
 
 
 [~,idx_ping]=nanmin(abs(xdata-x));
-idx_ping
+
 t_n=trans.Data.Time(idx_ping);
 surv=cell(1,2);
 idx_split=0;

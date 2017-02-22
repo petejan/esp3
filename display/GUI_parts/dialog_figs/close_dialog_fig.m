@@ -1,7 +1,15 @@
 function answer=close_dialog_fig(main_figure)
 
-
-    curr_disp=getappdata(main_figure,'Curr_disp');
+    if ~isempty(main_figure)
+        curr_disp=getappdata(main_figure,'Curr_disp');
+        if ~isempty(curr_disp)
+            font=curr_disp.Font;
+        else
+            font=[];
+        end
+    else
+        font=[];
+    end
     QuestFig=new_echo_figure(main_figure,'units','pixels','position',[200 200 200 100],...
         'WindowStyle','modal','Visible','on','resize','off');
     movegui(QuestFig,'center');
@@ -20,7 +28,7 @@ function answer=close_dialog_fig(main_figure)
         'String','No',...
         'Callback',@decision_callback,'Value',0);
     
-    format_color_gui(QuestFig,curr_disp.Font);
+    format_color_gui(QuestFig,font);
     drawnow;
     answer='';
     

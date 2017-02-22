@@ -1,12 +1,13 @@
 function obj=create_line_from_SupervisorLog(filename)
     [timestamp,pressure] = importSupervisorLog(filename,2,inf);
-    timestamp(end)=[];
+   
     if isempty(pressure)
         obj=[];
         return; 
     end
-    timestamp(end)=[];
     pressure(end)=[];
+    timestamp(end)=[];
+
     len=nanmin(length(timestamp),length(pressure));
     timestamp=timestamp(1:len);
     pressure=pressure(1:len);

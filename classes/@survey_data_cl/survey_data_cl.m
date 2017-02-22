@@ -26,7 +26,7 @@ classdef survey_data_cl
             addParameter(p,'Comment',' ',ver_fmt);
             addParameter(p,'Voyage','',ver_fmt);
             addParameter(p,'StartTime',0,@isnumeric);
-            addParameter(p,'EndTime',1,@isnumeric);      
+            addParameter(p,'EndTime',1,@isnumeric);
             parse(p,varargin{:});
             
             results=p.Results;
@@ -70,14 +70,19 @@ classdef survey_data_cl
             
         end
         
-        function i_str=print_survey_data(obj)  
+        function i_str=print_survey_data(obj)
             i_str=sprintf('%s Snap %d, Strat. %s, Trans. %d',...
-                obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect); 
+                obj.Voyage,obj.Snapshot,obj.Stratum,obj.Transect);
             if obj.Snapshot==0&&strcmp(obj.Stratum,'')&&obj.Transect==0
                 i_str='';
             end
         end
-        
+        function delete(obj)
+            if ~isdeployed
+                c = class(obj);
+                disp(['ML object destructor called for class ',c])
+            end
+        end
         
     end
 end

@@ -15,7 +15,7 @@ elseif ~isempty(obj.Heading)
     obj_out=attitude_nav_cl('Heading',heading_pings,'Time',time);
 else
     obj_out=attitude_nav_cl('Time',time);
-
+    
 end
         
         
