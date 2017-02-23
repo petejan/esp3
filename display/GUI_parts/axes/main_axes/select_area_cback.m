@@ -3,6 +3,7 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;

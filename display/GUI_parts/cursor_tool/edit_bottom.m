@@ -14,13 +14,15 @@ switch lower(curr_disp.Cmap)
         line_col='r';
         
 end
+
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 xdata=layer.Transceivers(idx_freq).Data.get_numbers();
 ydata=layer.Transceivers(idx_freq).Data.get_range();
 %xdata=double(get(axes_panel_comp.main_echo,'XData'));
 %ydata=double(get(axes_panel_comp.main_echo,'YData'));
-
+x_lim=get(ah,'xlim');
+y_lim=get(ah,'ylim');
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
@@ -38,8 +40,8 @@ cp = ah.CurrentPoint;
 xinit(1) =cp(1,1);
 yinit(1)=cp(1,2);
 u=1;
-if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
-    return
+if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
+    return;
 end
 
 switch src.SelectionType
