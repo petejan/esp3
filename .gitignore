@@ -17,6 +17,8 @@ local.properties
 .loadpath
 *.asv
 *.exe
+*.jar
+*.png
 
 
 
