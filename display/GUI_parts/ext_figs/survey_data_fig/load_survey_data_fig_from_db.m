@@ -51,9 +51,10 @@ else
             'MenuBar','none',...
             'Name','SurveyData','Tag',sprintf('logbook_%s',data_survey{2}));
         
-        surv_data_table.snap=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.65 0.96 0.1 0.03],'String','Titles','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.strat=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.75 0.96 0.1 0.03],'String','Species','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.trans=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.file=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.65 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.snap=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.7250 0.96 0.075 0.03],'String','Snap','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.strat=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.8 0.96 0.075 0.03],'String','Strat','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.trans=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.875 0.96 0.075 0.03],'String','Trans','Value',1,'Callback',{@search_callback,surv_data_fig});
         
         
         uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
@@ -407,25 +408,48 @@ function search_callback(~,~,surv_fig)
 surv_data_table=getappdata(surv_fig,'surv_data_table');
 data_ori=getappdata(surv_fig,'data_ori');
 text_search=regexprep(get(surv_data_table.search_box,'string'),'[^\w'']','');
-title_search=get(table.title_box,'value');
-voyage_search=get(table.voyage_box,'value');
-species_search=get(table.species_box,'value');
+
+file=get(surv_data_table.file,'value');
+snap=get(surv_data_table.snap,'value');
+strat=get(surv_data_table.strat,'value');
+trans=get(surv_data_table.trans,'value');
 
 
-if isempty(text_search)||(~title_search)
+if isempty(text_search)||(~file&&~snap&&~trans&&~strat)
     data=data_ori;
 else
     
+     if snap>0
+        idx_snap=cell2mat(data_ori(:,3))==snap;
+    else
+        idx_snap=zeros(size(data_ori,1),1);
+     end
     
-    strat=regexprep(data_ori(:,4),'[^\w'']','');
-    out_strat=regexpi(strat,text_search);
-    idx_strat=cellfun(@(x) ~isempty(x),out_strat);
+     
+     if trans>0
+        idx_trans=cell2mat(data_ori(:,5))==trans;
+    else
+        idx_trans=zeros(size(data_ori,1),1);
+    end
     
-    files=regexprep(data_ori(:,2),'[^\w'']','');
-    out_files=regexpi(files,text_search);
-    idx_files=cellfun(@(x) ~isempty(x),out_files);
+    if strat>0
+        strats=regexprep(data_ori(:,4),'[^\w'']','');
+        out_strat=regexpi(strats,text_search);
+        idx_strat=cellfun(@(x) ~isempty(x),out_strat);
+    else
+        idx_strat=zeros(size(data_ori,1),1);
+    end
     
-    data=data_ori(idx_strat|idx_files,:);
+    if file>0
+        files=regexprep(data_ori(:,2),'[^\w'']','');
+        out_files=regexpi(files,text_search);
+        idx_files=cellfun(@(x) ~isempty(x),out_files);
+    else
+        idx_files=zeros(size(data_ori,1),1);
+    end
+    
+    data=data_ori(idx_snap|idx_strat|idx_files|idx_trans,:);
+    
 end
 
 set(surv_data_table.table_main,'Data',data);
