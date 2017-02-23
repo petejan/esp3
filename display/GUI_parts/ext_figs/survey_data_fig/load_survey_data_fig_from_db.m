@@ -51,11 +51,15 @@ else
             'MenuBar','none',...
             'Name','SurveyData','Tag',sprintf('logbook_%s',data_survey{2}));
         
+        surv_data_table.snap=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.65 0.96 0.1 0.03],'String','Titles','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.strat=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.75 0.96 0.1 0.03],'String','Species','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.trans=uicontrol(script_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.85 0.96 0.1 0.03],'String','Voyage','Value',1,'Callback',{@search_callback,surv_data_fig});
+        
         
         uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
         uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.45 0.96 0.1 0.03],'String','Search :');
         
-        surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.2 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
+        surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.1 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
     else
         return;
     end
@@ -403,9 +407,12 @@ function search_callback(~,~,surv_fig)
 surv_data_table=getappdata(surv_fig,'surv_data_table');
 data_ori=getappdata(surv_fig,'data_ori');
 text_search=regexprep(get(surv_data_table.search_box,'string'),'[^\w'']','');
+title_search=get(table.title_box,'value');
+voyage_search=get(table.voyage_box,'value');
+species_search=get(table.species_box,'value');
 
 
-if isempty(text_search)
+if isempty(text_search)||(~title_search)
     data=data_ori;
 else
     

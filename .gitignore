@@ -17,7 +17,8 @@ local.properties
 .loadpath
 *.asv
 *.exe
-deploy/
+
+
 
 
 # External tool builders
@@ -218,3 +219,4 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+deploy/
