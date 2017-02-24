@@ -96,6 +96,7 @@ end
 
     function end_bt_edit()
         reset_disp_info(main_figure);
+        curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);

@@ -433,9 +433,7 @@ else
     end
     
     if strat>0
-        strats=regexprep(data_ori(:,4),'[^\w'']','');
-        out_strat=regexpi(strats,text_search);
-        idx_strat=cellfun(@(x) ~isempty(x),out_strat);
+        idx_strat=strcmpi(data_ori(:,4),text_search);
     else
         idx_strat=zeros(size(data_ori,1),1);
     end

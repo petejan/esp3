@@ -7,7 +7,7 @@ function delete_layer_callback(~,~,main_figure)
         return;
     end
     
-    
+    check_saved_bot_reg(main_figure);
     if length(layers)==1
         warning('You cannot delete the last layer standing');
         return;

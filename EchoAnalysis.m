@@ -1,6 +1,6 @@
 function EchoAnalysis(varargin)
 global DEBUG;
-DEBUG=1;
+DEBUG=0;
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 

@@ -27,9 +27,9 @@ m_bot_reg_xml = uimenu(m_bot_reg,'Label','XML','Tag','menucvs');
 uimenu(m_bot_reg_xml,'Label','Save Bottom/Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,0,0});
 uimenu(m_bot_reg_xml,'Label','Save Bottom to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,0,[]});
 uimenu(m_bot_reg_xml,'Label','Save Regions to xml','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],0});
-uimenu(m_bot_reg_xml,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,0},'separator','on');
-uimenu(m_bot_reg_xml,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,0,[]});
-uimenu(m_bot_reg_xml,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,[],0});
+uimenu(m_bot_reg_xml,'Label','Load Bottom/Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,-1,-1},'separator','on');
+uimenu(m_bot_reg_xml,'Label','Load Bottom from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,-1,[]});
+uimenu(m_bot_reg_xml,'Label','Load Regions from xml','Callback',{@import_bot_regs_from_xml_callback,main_figure,[],-1});
 
 m_bot_reg_db = uimenu(m_bot_reg,'Label','DB','Tag','menucvs');
 uimenu(m_bot_reg_db,'Label','Save Bottom/Regions to db','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,1,1});
