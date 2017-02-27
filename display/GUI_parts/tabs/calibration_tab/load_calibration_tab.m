@@ -16,6 +16,7 @@ if isempty(layer)
 end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
 
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s):',curr_disp.Freq/1e3),'units','normalized','Position',[0.1 0.85 0.5 0.1]);
 
@@ -23,36 +24,48 @@ calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_
        
 
 if ~strcmp(layer.Filetype,'CREST')
-    if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
-        cal_cw=get_cal(layer.Transceivers(idx_freq));
+    if strcmp(trans_obj.Mode,'CW')
+        cal_cw=get_cal(trans_obj);
         
         uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Gain (dB)','units','normalized','Position',[0.1 0.7 0.2 0.1]);
         calibration_tab_comp.G0=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.7 0.1 0.1],'string',num2str(cal_cw.G0,'%.2f'),'callback',{@apply_calibration,main_figure});
         
         uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Sa Corr (dB)','units','normalized','Position',[0.1 0.55 0.2 0.1]);
         calibration_tab_comp.SACORRECT=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.55 0.1 0.1],'string',num2str(cal_cw.SACORRECT,'%.2f'),'callback',{@apply_calibration,main_figure});
-        
+%         
+%         uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','ES Corr (dB)','units','normalized','Position',[0.1 0.4 0.2 0.1]);
+%         calibration_tab_comp.EsOffset=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(trans_obj.Config.EsOffset,'%.2f'),'callback',{@apply_triangle_wave_corr_cback,main_figure});
+%       
+%         if trans_obj.need_escorr()==0
+%             set(calibration_tab_comp.EsOffset,'Enable','off');
+%         end
+       
         
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Save','callback',{@save_CW_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
         uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Reprocess','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
+    
+    
+       
     else
        
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Disp. Cal. Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.8 0.6 0.15 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process TS Cal','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.80 0.1 0.15 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process EBA Cal','callback',{@reprocess_EBA_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Disp. Cal. Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.5 0.1 0.15 0.2]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process TS Cal','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.65 0.1 0.15 0.2]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process EBA Cal','callback',{@reprocess_EBA_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
         
     end
     
-     calibration_tab_comp.sphere=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',list_spheres(),'unit','normalized','position',[0.5 0.6 0.2 0.1]);
+    calibration_tab_comp.sphere=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',list_spheres(),'unit','normalized','position',[0.5 0.6 0.2 0.1]);
   
-    uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0.1 0.4 0.2 0.1]);
-    calibration_tab_comp.att=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.4 0.1 0.1],'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
+    env_group=uibuttongroup(calibration_tab_comp.calibration_tab,'units','normalized','Position',[0.75 0.4 0.2 0.5]);
     
-    uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Temp. (degC)','units','normalized','Position',[0.1 0.25 0.2 0.1]);
-    calibration_tab_comp.temp=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.25 0.1 0.1],'string',num2str(layer.EnvData.Temperature,'%.1f'),'callback',{@save_envdata_callback,main_figure});
+    uicontrol(env_group,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0 0.01 0.4 0.3]);
+    calibration_tab_comp.att=uicontrol(env_group,'style','edit','unit','normalized','position',[0.4 0.01 0.5 0.3],'string',num2str(trans_obj.Params.Absorption(1)*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
     
-     uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Salinity. (PSU)','units','normalized','Position',[0.1 0.1 0.2 0.1]);
-    calibration_tab_comp.sal=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.1 0.1 0.1],'string',num2str(layer.EnvData.Salinity,'%.1f'),'callback',{@save_envdata_callback,main_figure});
+    uicontrol(env_group,'Style','Text','String','Temp. (degC)','units','normalized','Position',[0 0.32 0.4 0.3]);
+    calibration_tab_comp.temp=uicontrol(env_group,'style','edit','unit','normalized','position',[0.4 0.32 0.5 0.3],'string',num2str(layer.EnvData.Temperature,'%.1f'),'callback',{@save_envdata_callback,main_figure});
+    
+     uicontrol(env_group,'Style','Text','String','Salinity. (PSU)','units','normalized','Position',[0 0.63 0.4 0.3]);
+    calibration_tab_comp.sal=uicontrol(env_group,'style','edit','unit','normalized','position',[0.4 0.63 0.5 0.3],'string',num2str(layer.EnvData.Salinity,'%.1f'),'callback',{@save_envdata_callback,main_figure});
    
     
     
@@ -181,6 +194,31 @@ setappdata(main_figure,'Layer',layer);
 loadEcho(main_figure);
 
 end
+
+% function apply_triangle_wave_corr_cback(~,~,main_figure)
+% curr_disp=getappdata(main_figure,'Curr_disp');
+% layer=getappdata(main_figure,'Layer');
+% calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
+% 
+% i=find_freq_idx(layer,curr_disp.Freq);
+% 
+% trans_obj=layer.Transceivers(i);
+% 
+% esOffset=str2double(get(calibration_tab_comp.EsOffset,'String'));
+% 
+% if isnan(esOffset)
+%     set(calibration_tab_comp.EsOffset,'String',num2str(trans_obj.Config.EsOffset,'%.2f'));
+%     return;
+% end
+% 
+% if trans_obj.need_escorr()
+%     trans_obj.correctTriangleWave('EsOffset',esOffset);
+%     set(calibration_tab_comp.EsOffset,'String',num2str(trans_obj(i).Config.EsOffset,'%.2f'));
+%     trans_obj.computeSpSv(layer.EnvData);
+%     set(calibration_tab_comp.EsOffset,'String',num2str(trans_obj.Config.EsOffset,'%.2f'));
+% end
+% 
+% end
 
 function save_CW_calibration(~,~,main_figure)
 apply_calibration([],[],main_figure);

@@ -2,7 +2,7 @@ function ftype=get_ftype(filename)
 ftype='';
 if exist(filename,'file')>0
     
-    [~,~,end_file]=fileparts(filename);
+    [~,fname,end_file]=fileparts(filename);
     
     if strcmp(end_file,'.lst')
         ftype='fcv30';
@@ -29,7 +29,11 @@ if exist(filename,'file')>0
             if hex2dec('FD02')==dgType
                 ftype='asl';
             else
-                ftype='dfile';
+                if fname(1)=='d'&&isempty(end_file)
+                     ftype='dfile';
+                else
+                    ftype='unknown';
+                end
             end
             
     end

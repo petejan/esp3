@@ -188,10 +188,8 @@ if ~isequal(Filename_cell, 0)
             
             if p.Results.GPSOnly==0
                 for i =1:length(trans_obj)
-                    if strcmp(trans_obj(i).Config.TransceiverName(1:4),'ES70') || strcmp(trans_obj(i).Config.TransceiverName(1:4),'ES60')
-                        for ki=1:length(trans_obj)
-                            trans_obj(i).correctTriangleWave('EsOffset',p.Results.EsOffset);
-                        end
+                    if trans_obj(i).need_escorr()
+                        trans_obj(i).correctTriangleWave('EsOffset',p.Results.EsOffset);
                     end
                 end
                 if ~isempty(cal)

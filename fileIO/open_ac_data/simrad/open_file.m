@@ -109,123 +109,128 @@ else
     
 end
 
-if iscell(Filename)
-    Filename_tmp=Filename{1};
-else
-    Filename_tmp=Filename;
-end
+
 
 if isempty(Filename)
     return;
 end
-
-if ~isequal(Filename, 0)
-    ftype=get_ftype(Filename_tmp);
-else
+if isequal(Filename, 0)
     return;
+end
+if ~iscell(Filename)
+    Filename_tot={Filename};
+else
+    Filename_tot=Filename;
+end
+
+
+
+ftype_cell=cell(1,length(Filename_tot));
+for ifi=1:length(Filename_tot)
+    ftype_cell{ifi}=get_ftype(Filename_tot{ifi});
 end
 
 setappdata(main_figure,'Layer',layer);
 
 
-if ~iscell(Filename)
-    Filename={Filename};
-end
 
+[ftype_unique,~,ic]=unique(ftype_cell);
 
-
-
-if ~isequal(Filename, 0)
+for itype=1:length(ftype_unique)
+    
+    Filename=Filename_tot(ic==itype);
+    ftype=ftype_unique{itype};
     enabled_obj=findobj(main_figure,'Enable','on');
     set(enabled_obj,'Enable','off');
-        switch ftype
-            case {'EK60','EK80','dfile'}
-                
-                missing_files=find_survey_data_db(Filename);    
-                
-                if ~isempty(missing_files)
-                    choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
-                        'Incomplete',...
-                        'Yes','No',...
-                        'Yes');
-                    % Handle response
-                    switch choice
-                        case 'Yes'
-                            Filename=union(Filename,missing_files);
-                        case 'No'
-                        otherwise
-                            return;
-                    end
-                    
-                    
-                end
-        end
-        
-        
-        ping_start=1;
-        ping_end=Inf;
-        
-        switch ftype
-            case 'fcv30'
-                for ifi=1:length(Filename)
-                    open_FCV30_file(main_figure,Filename{ifi});
-                end
-                
-            case {'EK60','EK80'}
-                %            profile on;
-                open_raw_file(main_figure,Filename,[],ping_start,ping_end);
-                %             profile off;
-                %             profile viewer;
-            case 'asl'
-                open_asl_files(main_figure,Filename);
-            case 'dfile'
-                choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
-                    'd-file/raw_file',...
-                    'd-file','raw file', ...
-                    'd-file');
-                % Handle response
-                switch choice
-                    case 'raw file'
-                        dfile=0;
-                    case 'd-file'
-                        dfile=1;
-                end
-                
-                if isempty(choice)
-                    return;
-                end
-                
-                choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
-                    'Bottom/Region',...
-                    'Yes','No', ...
-                    'No');
+    
+    switch ftype
+        case {'EK60','EK80','dfile'}
+            
+            missing_files=find_survey_data_db(Filename);
+            
+            if ~isempty(missing_files)
+                choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
+                    'Incomplete',...
+                    'Yes','No',...
+                    'Yes');
                 % Handle response
                 switch choice
                     case 'Yes'
-                        CVSCheck=1;
-                        
+                        Filename=union(Filename,missing_files);
                     case 'No'
-                        CVSCheck=0;
+                    otherwise
+                        return;
                 end
                 
-                if isempty(choice)
-                    CVSCheck=0;
-                end
                 
-                switch dfile
-                    case 1
-                        open_dfile_crest(main_figure,Filename,CVSCheck);
-                    case 0
-                        open_dfile(main_figure,Filename,CVSCheck);
-                end
-                
-        end
-
+            end
+    end
     
-    set(enabled_obj,'Enable','on');
-    hide_status_bar(main_figure);
-    loadEcho(main_figure);
+    
+    ping_start=1;
+    ping_end=Inf;
+    
+    switch ftype
+        case 'fcv30'
+            for ifi=1:length(Filename)
+                open_FCV30_file(main_figure,Filename{ifi});
+            end
+            
+        case {'EK60','EK80'}
+            %            profile on;
+            open_raw_file(main_figure,Filename,[],ping_start,ping_end);
+            %             profile off;
+            %             profile viewer;
+        case 'asl'
+            open_asl_files(main_figure,Filename);
+        case 'dfile'
+            choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
+                'd-file/raw_file',...
+                'd-file','raw file', ...
+                'd-file');
+            % Handle response
+            switch choice
+                case 'raw file'
+                    dfile=0;
+                case 'd-file'
+                    dfile=1;
+            end
+            
+            if isempty(choice)
+                return;
+            end
+            
+            choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
+                'Bottom/Region',...
+                'Yes','No', ...
+                'No');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    CVSCheck=1;
+                    
+                case 'No'
+                    CVSCheck=0;
+            end
+            
+            if isempty(choice)
+                CVSCheck=0;
+            end
+            
+            switch dfile
+                case 1
+                    open_dfile_crest(main_figure,Filename,CVSCheck);
+                case 0
+                    open_dfile(main_figure,Filename,CVSCheck);
+            end
+            
+    end
 end
+
+set(enabled_obj,'Enable','on');
+hide_status_bar(main_figure);
+loadEcho(main_figure);
+
 
 
 end

@@ -74,6 +74,7 @@ for isn=1:length(snapshots)
                 
                 for ifiles=1:length(filenames_cell)
                     fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
+                    
                     if isfield(transects{itr},'EsError')
                         es_offset=transects{itr}.EsError(ifiles);
                     else

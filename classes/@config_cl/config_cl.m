@@ -49,6 +49,7 @@ classdef config_cl
         Version='';
         PulseDurationFM=[];
         ArticleNumber=0;
+        EsOffset=0;
         
     end
     

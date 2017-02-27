@@ -17,7 +17,7 @@ for j = 1:period
 end
 % Ideally, the minimum standard deviation will give the appropriate zero error ping number
 [val_std, zero_error_ping] = nanmin(fit.std);
-if val_std>0.2
+if val_std>0.1
     disp('It does not look like there is a triangle wave error here...');
     data_c=data;
     mean_corrected_value=0;
