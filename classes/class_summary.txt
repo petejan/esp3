@@ -26,9 +26,11 @@ METHODS :
 - HM findobj(H, varargin)
 - prop findprop(object, propname)
 - TF ge(A, B)
-- varargout get_caxis(rhs1)
 - varargout get_datamat(rhs1)
 - varargout get_nb_pings_per_file(rhs1)
+- varargout get_numbers(rhs1)
+- varargout get_range(rhs1)
+- varargout get_samples(rhs1)
 - varargout get_subdatamat(rhs1)
 - TF gt(A, B)
 - validity isvalid(obj)
@@ -38,6 +40,7 @@ METHODS :
 - notify(sources, eventname)
 - notify(sources, eventname, eventdata)
 - varargout remove_sub_data(rhs1)
+- varargout replace_sub_data(rhs1)
 
 
 ---------------------------------------------------------
@@ -47,9 +50,11 @@ PROPERTIES :
 - Name
 - Function
 - Varargin
+- Varargout
 
 METHODS :
 - obj algo_cl(varargin)
+- delete(obj)
 
 
 ---------------------------------------------------------
@@ -60,30 +65,17 @@ PROPERTIES :
 - Heave
 - Pitch
 - Roll
+- Yaw
 - Time
-- SOG
 
 METHODS :
-- L addlistener(sources, eventname, callback)
-- L addlistener(sources, properties, eventname, callback)
-- L addlistener(sources, propertyname, eventname, callback)
-- L addlistener(sources, propertynames, eventname, callback)
 - obj attitude_nav_cl(varargin)
 - attitude_out concatenate_AttitudeNavPing(attitude_1, attitude_2)
-- delete(obj)
+- Static delete(obj)
 - varargout display_att(rhs1)
-- TF eq(A, B)
-- HM findobj(H, varargin)
-- prop findprop(object, propname)
-- TF ge(A, B)
-- TF gt(A, B)
-- validity isvalid(obj)
-- TF le(A, B)
-- TF lt(A, B)
-- TF ne(A, B)
-- notify(sources, eventname)
-- notify(sources, eventname, eventdata)
+- Static obj load_att_from_file(fileN)
 - varargout resample_attitude_nav_data(rhs1)
+- save_attitude_to_file(obj, fileN, idx_pings)
 
 
 ---------------------------------------------------------
@@ -91,15 +83,17 @@ CLASS bottom_cl:
 ---------------------------------------------------------
 PROPERTIES :
 - Origin
-- Range
 - Sample_idx
-- Double_bot_mask
 - Tag
+- Shifted
+- Version
 
 METHODS :
 - obj bottom_cl(varargin)
 - bot_out concatenate_Bottom(bot_1, bot_2)
 - varargout create_bottom_from_evl(rhs1)
+- delete(obj)
+- samples get_sample(bot_obj)
 
 
 ---------------------------------------------------------
@@ -134,12 +128,33 @@ PROPERTIES :
 - FrequencyMaximum
 - FrequencyMinimum
 - Gain
+- Impedance
+- Ztrd
 - MaxTxPowerTransducer
 - SaCorrection
 - TransducerName
+- XML_string
+- Cal_FM
+- TransducerAlphaX
+- TransducerAlphaY
+- TransducerAlphaZ
+- TransducerCustomName
+- TransducerMounting
+- TransducerOffsetX
+- TransducerOffsetY
+- TransducerOffsetZ
+- TransducerOrientation
+- TransducerSerialNumber
+- MarketSegment
+- Version
+- PulseDurationFM
+- ArticleNumber
+- EsOffset
 
 METHODS :
+- config_str config2str(config_obj)
 - obj config_cl
+- delete(obj)
 
 
 ---------------------------------------------------------
@@ -151,8 +166,11 @@ PROPERTIES :
 - Type
 - Xaxes
 - Cax
+- Fieldnames
+- Caxes
 - DispBottom
 - DispUnderBottom
+- DispBotHighVis
 - DispTracks
 - DispBadTrans
 - DispReg
@@ -162,7 +180,10 @@ PROPERTIES :
 - Grid_y
 - CurrLayerID
 - NbLayers
-- LayerMaxDispSize
+- Cmap
+- Font
+- Bot_changed_flag
+- Reg_changed_flag
 
 METHODS :
 - L addlistener(sources, eventname, callback)
@@ -175,6 +196,7 @@ METHODS :
 - HM findobj(H, varargin)
 - prop findprop(object, propname)
 - TF ge(A, B)
+- cax getCaxField(obj, field)
 - TF gt(A, B)
 - validity isvalid(obj)
 - TF le(A, B)
@@ -200,6 +222,24 @@ PROPERTIES :
 
 METHODS :
 - obj curve_cl(varargin)
+- delete(obj)
+
+
+---------------------------------------------------------
+CLASS decision_tree_cl:
+---------------------------------------------------------
+PROPERTIES :
+- Variables
+- Nodes
+
+METHODS :
+- varargout apply_classification_tree(rhs1)
+- obj decision_tree_cl(XMLFileName)
+- delete(obj)
+- IDs get_class_node(obj)
+- IDs get_condition_node(obj)
+- node get_node(obj, id)
+- IDs get_node_ids(obj)
 
 
 ---------------------------------------------------------
@@ -212,9 +252,33 @@ PROPERTIES :
 - SoundSpeed
 - Temperature
 - SVP
+- DropKeelOffset
+- DropKeelOffsetIsManual
+- Latitude
+- SoundVelocityProfile
+- SoundVelocitySource
+- WaterLevelDraft
+- WaterLevelDraftIsManual
+- TransducerName
 
 METHODS :
+- L addlistener(sources, eventname, callback)
+- L addlistener(sources, properties, eventname, callback)
+- L addlistener(sources, propertyname, eventname, callback)
+- L addlistener(sources, propertynames, eventname, callback)
+- delete(obj)
 - obj env_data_cl(varargin)
+- TF eq(A, B)
+- HM findobj(H, varargin)
+- prop findprop(object, propname)
+- TF ge(A, B)
+- TF gt(A, B)
+- validity isvalid(obj)
+- TF le(A, B)
+- TF lt(A, B)
+- TF ne(A, B)
+- notify(sources, eventname)
+- notify(sources, eventname, eventdata)
 - obj set_svp(obj, depth, soundspeed)
 
 
@@ -228,6 +292,7 @@ PROPERTIES :
 - Coefficients
 
 METHODS :
+- delete(obj)
 - obj filter_cl
 
 
@@ -242,26 +307,14 @@ PROPERTIES :
 - NMEA
 
 METHODS :
-- L addlistener(sources, eventname, callback)
-- L addlistener(sources, properties, eventname, callback)
-- L addlistener(sources, propertyname, eventname, callback)
-- L addlistener(sources, propertynames, eventname, callback)
+- gps_data_out clean_gps_track(gps_data)
 - gps_data_out concatenate_GPSData(gps_data_1, gps_data_2)
-- delete(obj)
+- Static delete(obj)
 - varargout display_speed(rhs1)
-- TF eq(A, B)
-- HM findobj(H, varargin)
-- prop findprop(object, propname)
-- TF ge(A, B)
 - obj gps_data_cl(varargin)
-- TF gt(A, B)
-- validity isvalid(obj)
-- TF le(A, B)
-- TF lt(A, B)
-- TF ne(A, B)
-- notify(sources, eventname)
-- notify(sources, eventname, eventdata)
+- Static obj load_gps_from_file(fileN)
 - varargout resample_gps_data(rhs1)
+- save_gps_to_file(obj, fileN, idx_pings)
 
 
 ---------------------------------------------------------
@@ -287,19 +340,25 @@ METHODS :
 - varargout add_bottoms_from_bot_xml(rhs1)
 - add_curves(obj, curves)
 - add_lines(obj, lines)
+- varargout add_lines_from_line_xml(rhs1)
 - varargout add_regions_from_reg_xml(rhs1)
-- varargout add_survey_data(rhs1)
-- L addlistener(sources, propertyname, eventname, callback)
-- L addlistener(sources, eventname, callback)
+- varargout add_survey_data_db(rhs1)
 - L addlistener(sources, properties, eventname, callback)
+- L addlistener(sources, propertyname, eventname, callback)
 - L addlistener(sources, propertynames, eventname, callback)
+- L addlistener(sources, eventname, callback)
 - varargout apply_classification(rhs1)
+- varargout apply_soundspeed(rhs1)
 - clear_curves(obj)
 - varargout concatenate_layers(rhs1)
 - varargout copy_algo_across(rhs1)
 - varargout copy_region_across(rhs1)
+- varargout create_bot_xml_from_db(rhs1)
+- varargout create_files_line_str(rhs1)
 - varargout create_files_str(rhs1)
+- varargout create_lay_line_xml_node(rhs1)
 - varargout create_motion_comp_subdata(rhs1)
+- varargout create_reg_xml_from_db(rhs1)
 - delete(obj)
 - varargout delete_layers(rhs1)
 - varargout disp_curves(rhs1)
@@ -307,14 +366,18 @@ METHODS :
 - TF eq(A, B)
 - varargout find_freq_idx(rhs1)
 - varargout find_layer_idx(rhs1)
+- varargout find_layer_idx_files(rhs1)
 - varargout find_layer_idx_files_path(rhs1)
 - HM findobj(H, varargin)
 - prop findprop(object, propname)
 - TF ge(A, B)
+- varargout generate_regions_for_other_freqs(rhs1)
 - varargout get(rhs1)
 - idx get_curves_per_tag(obj, tag)
 - tags get_curves_tag(obj)
+- fold_lay get_folder(layer)
 - varargout get_logbook_struct(rhs1)
+- varargout get_nb_regions(rhs1)
 - varargout get_path_files(rhs1)
 - varargout get_survey_data(rhs1)
 - varargout get_time_bound_files(rhs1)
@@ -324,22 +387,27 @@ METHODS :
 - obj layer_cl(varargin)
 - TF le(A, B)
 - varargout list_files_layers(rhs1)
+- varargout list_layers_survey_data(rhs1)
 - list list_lines(obj)
+- memap_files list_memaps(layers)
 - varargout load_bot_regs(rhs1)
-- varargout load_echo_logbook(rhs1)
+- varargout load_bottom_regions_from_folder(rhs1)
+- varargout load_echo_logbook_db(rhs1)
 - TF lt(A, B)
 - TF ne(A, B)
-- notify(sources, eventname)
 - notify(sources, eventname, eventdata)
+- notify(sources, eventname)
 - varargout prepare_classification(rhs1)
+- varargout replace_gps_data_layer(rhs1)
 - rm_line_id(obj, unique_ID)
 - rm_memaps(layer)
 - rm_region_across_id(layer, ID)
+- varargout save_bot_reg_to_db(rhs1)
 - varargout save_bot_regs(rhs1)
 - varargout set(rhs1)
 - varargout set_survey_data(rhs1)
 - varargout sort_per_survey_data(rhs1)
-- varargout update_echo_logbook_file(rhs1)
+- varargout update_echo_logbook_dbfile(rhs1)
 - varargout write_bot_to_bot_xml(rhs1)
 - varargout write_reg_to_reg_xml(rhs1)
 
@@ -357,12 +425,14 @@ PROPERTIES :
 - UTC_diff
 - Dist_diff
 - File_origin
+- Dr
 
 METHODS :
 - L addlistener(sources, eventname, callback)
 - L addlistener(sources, properties, eventname, callback)
 - L addlistener(sources, propertyname, eventname, callback)
 - L addlistener(sources, propertynames, eventname, callback)
+- change_range(obj, dr)
 - change_time(obj, dt)
 - delete(obj)
 - TF eq(A, B)
@@ -390,25 +460,29 @@ PROPERTIES :
 - Transect
 - Filename
 - Lat
-- Lon
+- Long
 - Time
 - SliceLat
-- SliceLon
+- SliceLong
 - SliceTime_S
 - SliceTime_E
 - SliceAbscf
+- Regions
 - Nb_ST
 - Nb_Tracks
 - LatLim
-- LonLim
+- LongLim
 - Proj
 - ValMax
 - Rmax
 - Coast
 - Depth_Contour
+- PlotType
+- StationCode
 
 METHODS :
 - varargout concatenate_map_input(rhs1)
+- delete(obj)
 - varargout display_map_input_cl(rhs1)
 - varargout get_str(rhs1)
 - obj map_input_cl(varargin)
@@ -435,7 +509,6 @@ METHODS :
 - HM findobj(H, varargin)
 - prop findprop(object, propname)
 - TF ge(A, B)
-- varargout generate_output(rhs1)
 - varargout getStringEorF(rhs1)
 - TF gt(A, B)
 - validity isvalid(obj)
@@ -443,6 +516,7 @@ METHODS :
 - varargout load_files_regions_from_mbs(rhs1)
 - TF lt(A, B)
 - obj mbs_cl(varargin)
+- varargout mbs_to_survey_obj(rhs1)
 - TF ne(A, B)
 - notify(sources, eventname)
 - notify(sources, eventname, eventdata)
@@ -474,6 +548,7 @@ PROPERTIES :
 - shadow_zone_extrapolate_type
 
 METHODS :
+- delete(obj)
 - obj mbs_header_cl
 
 
@@ -495,15 +570,17 @@ PROPERTIES :
 - algo
 - calCrest
 - calRaw
-- absorbtion
+- absorption
 - length
 - reg
 - reg_str
 - transducer
 - dfileNum
 - rawDir
+- EsError
 
 METHODS :
+- delete(obj)
 - obj mbs_input_cl
 
 
@@ -530,6 +607,7 @@ PROPERTIES :
 - BandWidth
 - ChannelID
 - ChannelMode
+- Frequency
 - FrequencyEnd
 - FrequencyStart
 - PulseForm
@@ -539,10 +617,13 @@ PROPERTIES :
 - Slope
 - TransducerDepth
 - TransmitPower
-- Absorbtion
+- Absorption
 
 METHODS :
-- obj params_cl
+- params_out concatenate_Params(param_1, param_2)
+- delete(obj)
+- param_str param2str(param_obj, idx_ping)
+- obj params_cl(varargin)
 
 
 ---------------------------------------------------------
@@ -589,6 +670,7 @@ PROPERTIES :
 
 METHODS :
 - obj curve_cl(varargin)
+- delete(obj)
 - nb_nmea_dg get_nb_nmea_dg(idx_obj)
 - nb_pings get_nb_pings_per_channels(idx_obj)
 - nb_samples get_nb_samples_per_channels(idx_obj)
@@ -604,6 +686,7 @@ PROPERTIES :
 - ID
 - Tag
 - Origin
+- Version
 - Unique_ID
 - Remove_ST
 - Type
@@ -612,6 +695,7 @@ PROPERTIES :
 - Shape
 - X_cont
 - Y_cont
+- MaskReg
 - Reference
 - Cell_w
 - Cell_w_unit
@@ -619,24 +703,11 @@ PROPERTIES :
 - Cell_h_unit
 
 METHODS :
-- L addlistener(sources, eventname, callback)
-- L addlistener(sources, properties, eventname, callback)
-- L addlistener(sources, propertyname, eventname, callback)
-- L addlistener(sources, propertynames, eventname, callback)
 - mask create_mask(obj)
 - delete(obj)
-- TF eq(A, B)
-- HM findobj(H, varargin)
-- prop findprop(object, propname)
-- TF ge(A, B)
-- TF gt(A, B)
-- varargout integrate_region(rhs1)
-- validity isvalid(obj)
-- TF le(A, B)
-- TF lt(A, B)
-- TF ne(A, B)
-- notify(sources, eventname)
-- notify(sources, eventname, eventdata)
+- varargout display_region(rhs1)
+- mask get_mask(obj)
+- varargout merge_regions(rhs1)
 - str print(obj)
 - obj region_cl(varargin)
 - varargout split_region(rhs1)
@@ -649,7 +720,6 @@ PROPERTIES :
 - Memap
 - Type
 - Fieldname
-- CaxisDisplay
 
 METHODS :
 - L addlistener(sources, eventname, callback)
@@ -685,6 +755,7 @@ METHODS :
 - L addlistener(sources, properties, eventname, callback)
 - L addlistener(sources, propertyname, eventname, callback)
 - L addlistener(sources, propertynames, eventname, callback)
+- varargout clean_output(rhs1)
 - delete(obj)
 - TF eq(A, B)
 - HM findobj(H, varargin)
@@ -695,13 +766,11 @@ METHODS :
 - validity isvalid(obj)
 - TF le(A, B)
 - TF lt(A, B)
-- obj mbs_cl(varargin)
 - TF ne(A, B)
 - notify(sources, eventname)
 - notify(sources, eventname, eventdata)
 - varargout print_output(rhs1)
-- varargout surv_results_to_csv(rhs1)
-- obj survey_cl
+- obj survey_cl(varargin)
 
 
 ---------------------------------------------------------
@@ -713,12 +782,15 @@ PROPERTIES :
 - Snapshot
 - Stratum
 - Transect
+- Comment
 - StartTime
 - EndTime
 
 METHODS :
+- delete(obj)
 - varargout get_files_from_surv_struct(rhs1)
 - i_str print_survey_data(obj)
+- varargout surv_data_to_logbook_db(rhs1)
 - obj survey_data_cl(varargin)
 
 
@@ -747,13 +819,15 @@ METHODS :
 - TF gt(A, B)
 - validity isvalid(obj)
 - TF le(A, B)
-- [snapshot_vec, stratum_vec, transect_vec, reg_num_vec] list_transects(surv_in_obj)
+- [snapshot_vec, stratum_vec, transect_vec, reg_num_vec, files, regs] list_transects(surv_in_obj)
 - varargout load_files_from_survey_input(rhs1)
 - TF lt(A, B)
+- varargout merge_survey_input_for_integration(rhs1)
 - TF ne(A, B)
 - notify(sources, eventname)
 - notify(sources, eventname, eventdata)
 - surv_input_obj survey_input_cl(varargin)
+- varargout survey_input_to_survey_xml(rhs1)
 
 
 ---------------------------------------------------------
@@ -811,28 +885,38 @@ PROPERTIES :
 - AttitudeNavPing
 - Algo
 - Mode
+- OffsetLine
 
 METHODS :
+- varargout TS_f_from_region(rhs1)
+- varargout add_algo(rhs1)
+- varargout add_offset_line(rhs1)
 - varargout add_region(rhs1)
-- L addlistener(sources, eventname, callback)
-- L addlistener(sources, properties, eventname, callback)
-- L addlistener(sources, propertyname, eventname, callback)
 - L addlistener(sources, propertynames, eventname, callback)
+- L addlistener(sources, propertyname, eventname, callback)
+- L addlistener(sources, properties, eventname, callback)
+- L addlistener(sources, eventname, callback)
 - varargout apply_absorption(rhs1)
+- varargout apply_algo(rhs1)
 - varargout apply_cw_cal(rhs1)
+- varargout apply_line_depth(rhs1)
 - varargout apply_soundspeed(rhs1)
 - varargout bottom_to_evl_str(rhs1)
 - varargout computeAngles(rhs1)
 - varargout computeSpSv(rhs1)
 - varargout computeSp_comp(rhs1)
 - varargout concatenate_Transceivers(rhs1)
+- varargout correctTriangleWave(rhs1)
 - varargout create_WC_region(rhs1)
 - varargout create_regions_from_linked_candidates(rhs1)
 - varargout create_track_regs(rhs1)
 - varargout create_trans_bot_xml_node(rhs1)
 - varargout create_trans_reg_xml_node(rhs1)
 - delete(obj)
+- varargout disp_config_params(rhs1)
 - TF eq(A, B)
+- varargout evaluate_algo(rhs1)
+- varargout filter_bottom(rhs1)
 - varargout find_algo_idx(rhs1)
 - [idx, found] find_reg_idx(trans, u_id)
 - [idx, found] find_reg_idx_id(trans, id)
@@ -840,40 +924,63 @@ METHODS :
 - HM findobj(H, varargin)
 - prop findprop(object, propname)
 - TF ge(A, B)
+- IDs get_IDs(obj)
+- varargout get_badtrans_perc(rhs1)
+- varargout get_bottom_idx(rhs1)
+- varargout get_bottom_range(rhs1)
 - varargout get_cal(rhs1)
+- varargout get_current_gain(rhs1)
+- varargout get_loaded_bot_reg_version(rhs1)
 - [mean_depth, Sa] get_mean_depth_from_region(obj, unique_id)
 - varargout get_phase(rhs1)
-- varargout get_pulse_Comp_length(rhs1)
+- varargout get_pulse(rhs1)
+- varargout get_pulse_Teff(rhs1)
 - varargout get_pulse_length(rhs1)
 - varargout get_reg_spec(rhs1)
+- varargout get_reg_specs_to_integrate(rhs1)
+- range get_transceiver_range(obj, varargin)
 - TF gt(A, B)
+- varargout integrate_region(rhs1)
 - validity isvalid(obj)
 - TF le(A, B)
 - idx list_regions_ID(obj, ID)
 - idx list_regions_Unique_ID(obj, ID)
 - idx list_regions_name(obj, name)
 - idx list_regions_origin(obj, origin)
+- idx list_regions_tag(obj, tag)
 - idx list_regions_type(obj, type)
 - TF lt(A, B)
+- varargout mask_from_regions(rhs1)
 - varargout mask_from_st(rhs1)
 - TF ne(A, B)
+- varargout need_escorr(rhs1)
 - id new_id(obj)
 - unique_id new_unique_id(obj)
-- notify(sources, eventname)
 - notify(sources, eventname, eventdata)
+- notify(sources, eventname)
+- varargout processSv_f_r(rhs1)
+- varargout processSv_f_r_2(rhs1)
+- varargout processTS_f_v2(rhs1)
 - list regions_to_str(obj)
+- varargout replace_gps_data_trans(rhs1)
 - rm_all_region(obj)
 - rm_region_id(obj, unique_ID)
 - rm_region_name(obj, name)
 - rm_region_name_id(obj, name, ID)
 - rm_region_origin(obj, origin)
 - rm_region_type_id(obj, type, ID)
+- rm_regions(obj)
+- rm_tracks(obj)
+- varargout setBadSector(rhs1)
 - varargout setBottom(rhs1)
 - varargout setBottom_from_evl(rhs1)
 - varargout set_ST(rhs1)
 - varargout set_cal(rhs1)
 - set_position(obj, pos_trans, trans_angle)
+- varargout shift_bottom(rhs1)
 - varargout slice_transect(rhs1)
+- varargout slice_transect2D(rhs1)
+- varargout sv_f_from_region(rhs1)
 - obj transceiver_cl(varargin)
 
 

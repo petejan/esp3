@@ -4,15 +4,15 @@ classdef layer_cl < handle
         ID_num=0;
         Filename={''};
         Filetype='';
-        Transceivers
-        OriginCrest
-        Lines
-        Frequencies
-        GPSData
-        AttitudeNav
-        EnvData
-        Curves
-        SurveyData
+        Transceivers=transceiver_cl.empty();
+        OriginCrest='';
+        Lines=[];
+        Frequencies=[];
+        GPSData=gps_data_cl();
+        AttitudeNav=attitude_nav_cl();
+        EnvData=env_data_cl();
+        Curves=[];
+        SurveyData=survey_data_cl();
     end
     
     

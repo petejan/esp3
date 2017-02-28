@@ -158,6 +158,7 @@ setappdata(main_figure,'Layer',layer_obj);
 setappdata(main_figure,'Curr_disp',curr_disp_obj);
 setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
+
 setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 movegui(main_figure,'center');
 
