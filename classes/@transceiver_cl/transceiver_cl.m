@@ -22,7 +22,7 @@
 classdef transceiver_cl < handle
     
     properties
-        Data
+        Data=ac_data_cl.empty();
         Bottom
         ST
         Tracks

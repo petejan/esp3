@@ -42,10 +42,10 @@ if ~isequal(Filename_cell, 0)
             Filename=Filename_cell{uu};
             [path_f,fileN,~]=fileparts(Filename);
             fprintf('(%.0f/%.0f) Opening file: %s\n',uu,length(Filename_cell),fileN);
-            
+            ftype=get_ftype(Filename);
             if isempty(vec_freq_init)
                 
-                ftype=get_ftype(Filename);
+              
                 
                 switch ftype
                     case 'EK80'
@@ -62,6 +62,8 @@ if ~isequal(Filename_cell, 0)
                         fid=fopen(Filename,'r');
                         [~, frequency] = readEKRaw_ReadHeader(fid);
                         fclose(fid);
+                    otherwise
+                        continue;
                 end
                 
                 if isempty(frequency)
@@ -277,7 +279,7 @@ if ~isequal(Filename_cell, 0)
                 envdata=env_data_cl.empty();
             end
             
-            layers(uu)=layer_cl('Filename',{Filename},'Filetype','EK60','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
+            layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
 
         catch err
             id_rem=union(id_rem,uu);
