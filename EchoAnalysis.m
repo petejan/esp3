@@ -81,7 +81,7 @@ main_figure = figure('Visible','on',...
 % Install mouse pointer manager in figure
 iptPointerManager(main_figure);
 
-% Get Javaframe from Figure to set the Icon )
+% Get Javaframe from Figure to set the Icon
 javaFrame = get(main_figure,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
 
@@ -172,7 +172,7 @@ setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 % Move main figure to screen center
 movegui(main_figure,'center');
 
-% Finally initlaize the display
+% Finally initialize the display
 initialize_display(main_figure);
 
 % If files were loaded in input, load them now
