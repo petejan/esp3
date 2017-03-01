@@ -128,10 +128,11 @@ uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_c
 uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
 
 
-
-% bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
-% uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
-% uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
+if ~isdeployed
+    bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
+    uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
+    uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
+end
 if ~isdeployed
     data_tools=uimenu(mhhh,'Label','Data tools');
     uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});

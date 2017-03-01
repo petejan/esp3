@@ -41,7 +41,7 @@ bot_range = trans.get_bottom_range();
 sv = trans.Data.get_datamat('sv');
 sp = trans.Data.get_datamat('sp');
 [nb_samples,nb_pings] = size(sv);
-time_r = (0:nb_samples-1) * trans.Params.SampleInterval;
+time_r = (0:nb_samples-1) * trans.Params.SampleInterval(1);
 eq_beam_angle = trans.Config.EquivalentBeamAngle;
 
 acrossangle = trans.Data.get_datamat('acrossangle');
@@ -273,7 +273,8 @@ T=time_r(end);
 true_z_bottom=nan(1,nb_pings);
 true_r_bottom=nan(1,nb_pings);
 true_range_bottom=nan(1,nb_pings);
-
+straigth_r_bottom=nan(1,nb_pings);
+straigth_z_bottom=nan(1,nb_pings);
 
 c_at_bottom=nan(1,nb_pings);
 
@@ -294,6 +295,9 @@ if ray_tray_bool==1
             [~,idx_time]=nanmin(abs(true_time_bottom(i)-2*t_ray));
             true_z_bottom(i)=z_ray(idx_time);
             true_r_bottom(i)=r_ray(idx_time);
+            straigth_z_bottom(i)=z_c(idx_time);
+            straigth_r_bottom(i)=z_c(idx_time)./tan(transmit_angles(i));
+            
             true_range_bottom(i)=sqrt(r_ray(idx_time).^2+z_ray(idx_time).^2);
             [~,idx_vel]=nanmin(abs(true_z_bottom(i)-z_c));
             c_at_bottom(i)=c(idx_vel);
@@ -305,7 +309,14 @@ if ray_tray_bool==1
             c_at_bottom(i)=nan;
             extended_range(:,i)=nan(size(extended_range,1),1);
         end
+        
     end
+    
+    straight_z_bottom=straight_range_bottom.*sin(transmit_angles);
+    straight_r_bottom=straight_range_bottom.*cos(transmit_angles);
+    
+
+    
     figure();
     hold on;
     axis ij
@@ -360,6 +371,19 @@ true_z_bottom(true_z_bottom<10)=nan;
 true_x_along = true_r_bottom.*sind(Pitch_r+trans.Config.Angles(1));
 true_y_across = sign(Roll_r+trans.Config.Angles(2)).*true_r_bottom.*cosd(Pitch_r+trans.Config.Angles(1));
 
+straight_z_bottom(straight_z_bottom<10)=nan;
+straight_x_along = straight_r_bottom.*sind(Pitch_r+trans.Config.Angles(1));
+straight_y_across = sign(Roll_r+trans.Config.Angles(2)).*straight_r_bottom.*cosd(Pitch_r+trans.Config.Angles(1));
+
+err=sqrt((true_z_bottom-straight_z_bottom).^2+(straight_x_along-true_x_along).^2+(straight_y_across-true_y_across).^2);
+
+figure();
+plot(err);
+grid on;
+xlabel('Ping Number');
+ylabel('Depth (m)');
+title('Positionning error without ray tracing');
+
 pos_mat=nan(3,nb_pings);
 trans_mov=nan(3,nb_pings);
 
@@ -376,7 +400,6 @@ end
     trans.Config.Angles(2),trans.Config.Angles(1),trans.Config.Position(1),trans.Config.Position(2),trans.Config.Position(3));
 
 pos_mat_extended=nan(size(extended_range,1),nb_pings,3);
-pos_mat_extended_uncorr=nan(size(extended_range,1),nb_pings,3);
 
 [x_center,y_center,z_center]=angles_to_pos_v3(true_range_bottom',zeros(size(straight_range_bottom')),zeros(size(straight_range_bottom')),...
     Heave_r,...
@@ -393,13 +416,6 @@ for ii=1:size(extended_range,1)
     
     pos_mat_extended(ii,:,:)=([x_temp-x_center;y_temp-y_center;z_temp-z_center]+pos_mat)';
     
-    [x_temp,y_temp,z_temp]=angles_to_pos_v3(extended_range(ii,:),-extended_along_angle(ii,:),-extended_across_angle(ii,:),...
-        0,...
-        0,...
-        0,...
-        trans.Config.Angles(2),trans.Config.Angles(1),trans.Config.Position(1),trans.Config.Position(2),trans.Config.Position(3));
-    
-    pos_mat_extended_uncorr(ii,:,:)=([x_temp-x_center;y_temp-y_center;z_temp-z_center]+pos_mat)';
 end
 
 lat_ship=trans.GPSDataPing.Lat;
@@ -409,9 +425,7 @@ z_ext=-pos_mat_extended(:,:,3);
 y_ext=pos_mat_extended(:,:,2);
 x_ext=pos_mat_extended(:,:,1);
 
-z_ext_uncorr=-pos_mat_extended_uncorr(:,:,3);
-y_ext_uncorr=pos_mat_extended_uncorr(:,:,2);
-x_ext_uncorr=pos_mat_extended_uncorr(:,:,1);
+
 
 
 mask_bs=double(bs_bottom_uncomp>-30);
@@ -500,7 +514,7 @@ shading interp
 figure();
 a31=subplot(2,1,1);
 h3=imagesc(z_ext);
-title('Depth')
+title('Depth Corr')
 colormap jet;
 grid on;
 view(2)

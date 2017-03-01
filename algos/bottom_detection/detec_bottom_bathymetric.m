@@ -175,8 +175,8 @@ for i=1:nb_pings
     end
     
     %i_display=1:500:nb_pings;
-    i_display=-1;
-    if ~any(i==i_display)&&DEBUG
+    i_display=200;
+    if any(i==i_display)
         new_echo_figure([])
         clf;
         ax1=subplot(3,1,1);
@@ -216,7 +216,7 @@ for i=1:nb_pings
         %pause;
         linkaxes([ax1,ax2,ax3],'x');
        
-        pause;
+       
         
         
     end
