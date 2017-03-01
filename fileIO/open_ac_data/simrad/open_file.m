@@ -1,4 +1,53 @@
-function  open_file(~,~,file_id,main_figure)
+function open_file(~,~,file_id,main_figure)
+% [copy_function_code_line_here_so_typical_call_to_function_shows_in_help]
+% 
+% DESCRIPTION 
+% 
+% [Very short description of the function. DELETE THIS LINE IF UNUSED]
+% 
+% USE 
+% 
+% [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
+% 
+% PROCESSING SUMMARY 
+% 
+% - [Bullet point list summary of the steps in the processing.]
+% - [DELETE THESE LINES IF UNUSED]
+% 
+% INPUT VARIABLES 
+% 
+% - [Bullet point list description of input variables.] 
+% - [Describe if required, optional or parameters..]
+% - [.. what are the valid values and what they do.]
+% - [DELETE THESE LINES IF UNUSED]
+% 
+% OUTPUT VARIABLES 
+% 
+% - [Bullet point list description of output variables.]
+% - [DELETE THESE LINES IF UNUSED]
+% 
+% RESEARCH NOTES 
+% 
+% [Describes what features are temporary or needed future developments.]
+% [Also use for paper references.]
+% [DELETE THESE LINES IF UNUSED]
+% 
+% NEW FEATURES 
+% 
+% YYYY-MM-DD: [second version. Describes the update. DELETE THIS LINE IF UNUSED]
+% YYYY-MM-DD: first version. 
+% 
+% EXAMPLE 
+%
+% % example 1:
+% [This section contains examples of valid function calls.]
+%
+% % example 2:
+% [DELETE THESE LINES IF UNUSED]
+% 
+%%% 
+% [Author(s) & Affiliation]
+%%% 
 
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
