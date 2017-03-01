@@ -174,6 +174,8 @@ movegui(main_figure,'center');
 
 % Finally initialize the display
 initialize_display(main_figure);
+% And initlaize the interactions with the user
+initialize_interactions(main_figure)
 
 % If files were loaded in input, load them now
 if ~isempty(p.Results.Filenames)
