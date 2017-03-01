@@ -80,11 +80,9 @@ main_figure = figure('Visible','on',...
 % Install mouse pointer manager in figure
 iptPointerManager(main_figure);
 
-% ?
+% Get Javaframe from Figure to set the Icon )
 javaFrame = get(main_figure,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
-
-set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
 
 % Software version
 echo_ver = get_ver();
@@ -176,10 +174,13 @@ movegui(main_figure,'center');
 % Finally initlaize the display
 initialize_display(main_figure);
 
-% ?
+% Initialize Keyboard interactions in the figure (should be moved to initialize_display really...)
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 
-% ?
+%Set wheel mouse scroll cback (should be moved to initialize_display really...)
+set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
+
+% Set minimum size of the figure (should be moved to initialize_display really...)
 try
     jProx = javaFrame.fHG2Client.getWindow;
     jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
@@ -199,20 +200,7 @@ if ~isempty(p.Results.Filenames)
     end
 end
 
-% 
-% jTextArea = javaObjectEDT('javax.swing.JTextArea', '');
-% 
-% % Create Java Swing JScrollPane
-% jScrollPane = javaObjectEDT('javax.swing.JScrollPane', jTextArea);
-% jScrollPane.setVerticalScrollBarPolicy(jScrollPane.VERTICAL_SCROLLBAR_NEVER);
-% jScrollPane.setHorizontalScrollBarPolicy(jScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-% jScrollPane.setVisible(0);
-% % Add Scrollpanel to figure
-% [~,hContainer] = javacomponent(jScrollPane,[],main_figure);
-% set(hContainer,'Units','normalized','Position',[0 0 01 1]);
-% 
-
-% Create dndcontrol for the JTextArea object
+% Create drag and drop for the figure object (should be moved to initialize_display really...)
 jObj = javaFrame.getFigurePanelContainer();
 dndcontrol.initJava();
 dndobj = dndcontrol(jObj);
@@ -221,7 +209,7 @@ dndobj = dndcontrol(jObj);
 dndobj.DropFileFcn = @fileDropFcn;
 dndobj.DropStringFcn = '';
 
-    % nested function for above dndobj
+% nested function for above dndobj
     function fileDropFcn(~,evt)
         open_dropped_file(evt,main_figure);
     end
