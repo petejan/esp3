@@ -40,8 +40,9 @@ function EchoAnalysis(varargin)
 global DEBUG;
 DEBUG=0;
 
-% ?
+% Set java window style 
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
+% Remove Javaframe warning
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
 % Checking and parsing input variables
@@ -50,7 +51,7 @@ addParameter(p,'Filenames',{},@(x) ischar(x)|iscell(x));
 addParameter(p,'SaveEcho',0,@isnumeric);
 parse(p,varargin{:});
 
-% ?
+% Do not Relaunch ESP3 if already open (in Matlab)...
 if ~isdeployed()
     esp_win = findobj(groot,'tag','ESP3');
     if~isempty(esp_win)
@@ -174,22 +175,6 @@ movegui(main_figure,'center');
 % Finally initlaize the display
 initialize_display(main_figure);
 
-% Initialize Keyboard interactions in the figure (should be moved to initialize_display really...)
-set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
-
-%Set wheel mouse scroll cback (should be moved to initialize_display really...)
-set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
-
-% Set minimum size of the figure (should be moved to initialize_display really...)
-try
-    jProx = javaFrame.fHG2Client.getWindow;
-    jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
-    setappdata(main_figure,'javaWindow',jProx);
-    %jFrame.setMaximized(true);
-catch err
-    disp(err.message);
-end
-
 % If files were loaded in input, load them now
 if ~isempty(p.Results.Filenames)
     open_file([],[],p.Results.Filenames,main_figure);
@@ -200,21 +185,8 @@ if ~isempty(p.Results.Filenames)
     end
 end
 
-% Create drag and drop for the figure object (should be moved to initialize_display really...)
-jObj = javaFrame.getFigurePanelContainer();
-dndcontrol.initJava();
-dndobj = dndcontrol(jObj);
 
-% Set Drop callback functions
-dndobj.DropFileFcn = @fileDropFcn;
-dndobj.DropStringFcn = '';
 
-% nested function for above dndobj
-    function fileDropFcn(~,evt)
-        open_dropped_file(evt,main_figure);
-    end
-
-setappdata(main_figure,'Dndobj',dndobj);
 
 end
 
