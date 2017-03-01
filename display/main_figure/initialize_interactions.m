@@ -16,15 +16,7 @@ function initialize_interactions(main_figure)
 % 
 % INPUT VARIABLES 
 % 
-% - [Bullet point list description of input variables.] 
-% - [Describe if required, optional or parameters..]
-% - [.. what are the valid values and what they do.]
-% - [DELETE THESE LINES IF UNUSED]
-% 
-% OUTPUT VARIABLES 
-% 
-% - [Bullet point list description of output variables.]
-% - [DELETE THESE LINES IF UNUSED]
+% - main_figure (required): ESP3 main figure
 % 
 % RESEARCH NOTES 
 % 
@@ -36,9 +28,8 @@ function initialize_interactions(main_figure)
 % 
 % 2017-03-02: first version. 
 % 
-% 
 %%% 
-% [Yoann Ladroit NIWA]
+% Yoann Ladroit, NIWA.
 %%% 
 
 
