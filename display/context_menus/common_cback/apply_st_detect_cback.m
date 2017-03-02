@@ -78,7 +78,7 @@ alg_name='SingleTarget';
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'idx_r',idx_r,'idx_pings',idx_pings);
-curr_disp.Bot_changed_flag=1; 
+
 hide_status_bar(main_figure);
 
 curr_disp.setField('singletarget');
