@@ -23,7 +23,7 @@ v1 = [x_lim(1) y_lim(1);x_lim(2) y_lim(1);x_lim(2) y_lim(2);x_lim(1) y_lim(2)];
 f1=[1 2 3 4];
 
 if new>0
-    pings=layer.Transceivers(idx_freq).Data.get_numbers();
+    pings=layer.Transceivers(idx_freq).get_transceiver_pings();
     range=layer.Transceivers(idx_freq).get_transceiver_range();
     nb_pings=length(pings);
     nb_samples=length(range);

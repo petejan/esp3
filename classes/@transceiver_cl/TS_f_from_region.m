@@ -11,7 +11,7 @@ parse(p,trans_obj,reg_obj,varargin{:});
 
 
 range=trans_obj.get_transceiver_range(reg_obj.Idx_r);
-pings=trans_obj.Data.get_numbers(reg_obj.Idx_pings);
+pings=trans_obj.get_transceiver_pings(reg_obj.Idx_pings);
 
 
 if ~isempty(p.Results.load_bar_comp)

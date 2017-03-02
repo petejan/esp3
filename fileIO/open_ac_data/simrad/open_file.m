@@ -21,7 +21,7 @@ function open_file(~,~,file_id,main_figure)
 %   - cell: filename(s)
 %   - 0: open dialog box to prompt user for file(s)
 %   - 1: open next file in folder
-%   - 1: open previous file in folder
+%   - 2: open previous file in folder
 % - main_figure (required): ESP3 main figure
 %
 % RESEARCH NOTES
@@ -163,14 +163,7 @@ else
             
         end
         
-    elseif ischar(file_id) % this case might be already taken care of?
-        
-        Filename = fileID;
-        
-        if isempty(Filename)
-            return;
-        end
-        
+   
     end
     
 end

@@ -10,7 +10,7 @@ layer=getappdata(main_figure,'Layer');curr_disp=getappdata(main_figure,'Curr_dis
 if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
-    Number=trans.Data.get_numbers();
+    Number=trans.get_transceiver_pings();
     Range=trans.get_transceiver_range();
     
     xdata=Number;

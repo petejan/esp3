@@ -40,7 +40,7 @@ range=double(trans_obj.get_transceiver_range());
 nb_samples=length(range);
 samples=(1:nb_samples)';
 dr=nanmean(diff(range));
-pings=double(trans_obj.Data.get_numbers());
+pings=double(trans_obj.get_transceiver_pings());
 %nb_pings=length(pings);
 time=double(trans_obj.Data.Time);
 

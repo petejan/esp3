@@ -1,24 +1,4 @@
 
-
-%
-%            Data: [1x1 ac_data_cl]
-%          Bottom: [1x1 bottom_cl]
-%         Regions: []
-%          Params: [1x1 params_cl]
-%          Config: [1x1 config_cl]
-%         Filters: [1x1 filter_cl]
-%     GPSDataPing: [1x1 gps_data_cl]
-%            Algo: [1x4 algo_cl]
-%            Mode: 'CW'
-%
-%
-%
-% Methods for class transceiver_cl:
-%
-% add_region         list_regions       rm_region          transceiver_cl
-% find_algo_idx      new_id             rm_region_type_id
-
-
 classdef transceiver_cl < handle
     
     properties
@@ -111,6 +91,15 @@ classdef transceiver_cl < handle
             
         end
         
+        function pings=get_transceiver_pings(obj,varargin)
+            if nargin>=2
+                idx=varargin{1};
+                pings=obj.Data.get_numbers(idx);
+            else
+                pings=obj.Data.get_numbers();
+            end
+
+        end
         
         
         

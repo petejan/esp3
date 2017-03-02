@@ -15,7 +15,7 @@ trans=layer.Transceivers(idx_freq);
 Range=trans.get_transceiver_range();
 Bottom=trans.Bottom;
 Time=trans.Data.Time;
-Number=trans.Data.get_numbers();
+Number=trans.get_transceiver_pings();
 Samples=trans.Data.get_samples();
 
 if ~isempty(trans.OffsetLine)

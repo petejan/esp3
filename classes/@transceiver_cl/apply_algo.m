@@ -12,6 +12,7 @@ addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,algo_name,varargin{:});
 
 [idx_alg,alg_found]=find_algo_idx(trans_obj,algo_name);
+
 if alg_found==0
     algo_obj=init_algos(algo_name);
     trans_obj.add_algo(algo_obj);

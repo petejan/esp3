@@ -34,7 +34,7 @@ end
 for uui=select
    
     range=double(layer.Transceivers(uui).get_transceiver_range());
-    ping_num=layer.Transceivers(uui).Data.get_numbers();
+    ping_num=layer.Transceivers(uui).get_transceiver_pings();
     
     mask=layer.Transceivers(uui).mask_from_regions();
     
@@ -164,7 +164,7 @@ for uui=select
     end
     
     if idx_freq==uui
-        plot(ah,layer.Transceivers(uui).Data.get_numbers(idx_pings),range_sph,'.r','linewidth',2);
+        plot(ah,layer.Transceivers(uui).get_transceiver_pings(idx_pings),range_sph,'.r','linewidth',2);
     end
     
     

@@ -58,7 +58,7 @@ for iax=1:length(main_axes_tot)
     
     alpha_in=0.4;
     
-    Number=trans.Data.get_numbers();
+    Number=trans.get_transceiver_pings();
     Range=trans.get_transceiver_range();
     
     

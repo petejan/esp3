@@ -15,7 +15,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
-xdata=trans.Data.get_numbers();
+xdata=trans.get_transceiver_pings();
 
 x_lim=[xdata(idx_ping) xdata(idx_ping)+diff(get(ah,'XLim'))];
 

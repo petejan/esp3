@@ -27,7 +27,7 @@ y=nanmin(y,y_lim(2));
 
 
 xlab_str='Ping Number';
-xdata=trans.Data.get_numbers();
+xdata=trans.get_transceiver_pings();
 
 ydata=trans.get_transceiver_range();
 [~,idx_ping]=nanmin(abs(xdata-x));

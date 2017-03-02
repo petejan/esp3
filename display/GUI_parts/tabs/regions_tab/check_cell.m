@@ -6,7 +6,7 @@ region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
-nb_pings=length(layer.Transceivers(idx_freq).Data.get_numbers());
+nb_pings=length(layer.Transceivers(idx_freq).get_transceiver_pings());
 nb_samples=length(layer.Transceivers(idx_freq).get_transceiver_range());
 
 w_units=get(region_tab_comp.cell_w_unit,'string');

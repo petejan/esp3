@@ -7,7 +7,7 @@ end
 
 screensize = getpixelposition(ax);
 
-xdata=layer.Transceivers(idx_freq).Data.get_numbers();
+xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
 ydata=layer.Transceivers(idx_freq).get_transceiver_range();
 
 if new==0

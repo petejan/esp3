@@ -29,6 +29,8 @@ addParameter(p,'TS_threshold',defaultTsThr,checkTsThr);
 addParameter(p,'PLDL',defaultPLDL,checkPLDL);
 addParameter(p,'MinNormPL',defaultMinNormPL,checkNormPL);
 addParameter(p,'MaxNormPL',defaultMaxNormPL,checkNormPL);
+addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
+addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
 addParameter(p,'MaxBeamComp',defaultMaxBeamComp,checkBeamComp);
 addParameter(p,'MaxStdMinAxisAngle',defaultMaxStdMinAxisAngle,checkMaxStdMinAxisAngle);
 addParameter(p,'MaxStdMajAxisAngle',defaultMaxStdMajAxisAngle,checkMaxStdMajAxisAngle);
@@ -37,6 +39,27 @@ addParameter(p,'load_bar_comp',[]);
 
 
 parse(p,trans_obj,varargin{:});
+if isempty(p.Results.idx_r)
+    idx_r=1:length(trans_obj.get_transceiver_range());
+else
+    idx_r=p.Results.idx_r;
+end
+
+if isempty(p.Results.idx_pings)
+    idx_pings=1:length(trans_obj.get_transceiver_pings());
+else
+    idx_pings=p.Results.idx_pings;
+end
+
+idx_r=idx_r(:);
+idx_pings=idx_pings(:)';
+
+Number_tot=trans_obj.get_transceiver_pings();
+Range_tot=trans_obj.get_transceiver_range();
+nb_samples_tot=length(Range_tot);
+nb_pings_tot=length(Number_tot);
+
+
 max_TS=-10;
 
 trans_obj.rm_tracks();
@@ -44,9 +67,9 @@ trans_obj.rm_tracks();
 
 switch p.Results.DataType
     case 'CW'
-        TS=trans_obj.Data.get_datamat(p.Results.Type);
+        TS=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
         if isempty(TS)
-            TS=trans_obj.Data.get_datamat('sp');
+            TS=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
         end
         if isempty(TS)
             disp('Can''t find single targets with no Sp datagram...');
@@ -54,8 +77,8 @@ switch p.Results.DataType
             return;
         end
     case 'FM'
-        TSun=trans_obj.Data.get_datamat('spunmatched');
-        TS=trans_obj.Data.get_datamat('sp');
+        TSun=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','spunmatched');
+        TS=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
 
 
@@ -65,41 +88,53 @@ idx_bad_data=trans_obj.list_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
     curr_reg=trans_obj.Regions(idx_bad_data(jj));
-    mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
+    idx_r_inter=intersect(curr_reg.Idx_r,idx_r);
+    idx_p_inter=intersect(curr_reg.Idx_pings,idx_pings);
+    mask_reg=curr_reg.create_mask();
+    mask(idx_r_inter-idx_r(1)+1,idx_p_inter-idx_pings(1)+1)=mask(idx_r_inter-idx_r(1)+1,idx_p_inter-idx_pings(1)+1)...
+        +mask_reg(idx_r_inter-curr_reg.Idx_r(1)+1,idx_p_inter-curr_reg.Idx_pings(1)+1);
 end
+
 
 TS(mask>=1)=-999;
 
 
 [nb_samples,nb_pings]=size(TS);
 
-Idx_samples_lin=reshape(1:nb_samples*nb_pings,nb_samples,nb_pings);
+Idx_samples_lin=reshape(1:nb_samples_tot*nb_pings_tot,nb_samples_tot,nb_pings_tot);
+Idx_samples_lin=Idx_samples_lin(idx_r,idx_pings);
 
-Bottom=trans_obj.get_bottom_range();
+Bottom=trans_obj.get_bottom_range(idx_pings);
 
-Range=repmat(trans_obj.get_transceiver_range(1:nb_samples),1,nb_pings);
+Range=repmat(trans_obj.get_transceiver_range(idx_r),1,nb_pings);
 
 under_bottom=Range>repmat(Bottom,nb_samples,1);
 TS(under_bottom)=-999;
 
-idx_r_max=find(trans_obj.get_transceiver_range()==nanmax(Range(TS>-999)));%%TODO but
+if ~any(TS(:)>-999)
+    single_targets=[];
+    return;
+end
+
+idx_r_max=find(trans_obj.get_transceiver_range(idx_r)==nanmax(Range(TS>-999)));%%TODO but
 
 %%%%%%%Remove all unnecessary data%%%%%%%%
-
+idx_r(idx_r_max:end)=[];
 TS(idx_r_max:end,:)=[];
 Idx_samples_lin(idx_r_max:end,:)=[];
 [nb_samples,nb_pings]=size(TS);
-along=trans_obj.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AlongAngle');
-athwart=trans_obj.Data.get_subdatamat(1:nb_samples,1:nb_pings,'field','AcrossAngle');
+along=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','AlongAngle');
+athwart=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','AcrossAngle');
+
 if isempty(along)||isempty(along)
     disp('Cannot compute single targets.... No angles');
     single_targets=[];
     return;
 end
 
-Range=repmat(trans_obj.get_transceiver_range(1:nb_samples),1,nb_pings);
-Samples=repmat((1:nb_samples)',1,nb_pings);
-Ping=repmat(trans_obj.Data.get_numbers(),nb_samples,1);
+Range=repmat(trans_obj.get_transceiver_range(idx_r),1,nb_pings);
+Samples=repmat(idx_r',1,nb_pings);
+Ping=repmat(trans_obj.get_transceiver_pings(idx_pings),nb_samples,1);
 
 
 [T,Np]=trans_obj.get_pulse_length();
@@ -387,11 +422,11 @@ if isempty(roll)
     heave=zeros(1,size(TS,2));
 end
 
-heading_mat=repmat(heading,nb_samples,1);
-roll_mat=repmat(roll,nb_samples,1);
-pitch_mat=repmat(pitch,nb_samples,1);
-heave_mat=repmat(heave,nb_samples,1);
-dist_mat=repmat(dist,nb_samples,1);
+heading_mat=repmat(heading(idx_pings),nb_samples,1);
+roll_mat=repmat(roll(idx_pings),nb_samples,1);
+pitch_mat=repmat(pitch(idx_pings),nb_samples,1);
+heave_mat=repmat(heave(idx_pings),nb_samples,1);
+dist_mat=repmat(dist(idx_pings),nb_samples,1);
 
 single_targets.Dist=dist_mat(idx_target_lin);
 single_targets.Roll=roll_mat(idx_target_lin);

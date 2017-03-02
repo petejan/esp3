@@ -20,7 +20,7 @@ x=nanmin(x,x_lim(2));
 % y=nanmax(y,y_lim(1));
 % y=nanmin(y,y_lim(2));
 
-xdata=trans.Data.get_numbers();
+xdata=trans.get_transceiver_pings();
 
 
 [~,idx_ping]=nanmin(abs(xdata-x));

@@ -13,9 +13,10 @@ uimenu(context_menu,'Label','Display Region','Callback',{@display_region_callbac
 uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
+
+
 analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
-
 uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
 uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,reg_curr,main_figure});
 uimenu(analysis_menu,'Label','Display Region Integration values (NASC)','Callback',{@reg_integrated_callback,reg_curr,main_figure});
@@ -27,6 +28,14 @@ if strcmp(layer.Transceivers(idx_freq).Mode,'FM')
     uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,main_figure});
     uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,main_figure});
 end
+
+
+algo_menu=uimenu(context_menu,'Label','Algorithms');
+uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_detect_cback,reg_curr,main_figure,'v1'});
+uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,reg_curr,main_figure,'v2'});
+uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,reg_curr,main_figure});
+
+
 end
 
 function copy_region_callback(~,~,reg_curr,main_figure)
@@ -98,7 +107,6 @@ bar(x,pdf);
 grid on;
 ylabel('Pdf');
 xlabel(xlab);
-
 
 end
 

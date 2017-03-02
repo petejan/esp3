@@ -1,6 +1,6 @@
 function bot_idx=get_bottom_idx(trans_obj,varargin)
 
-nb_pings=length(trans_obj.Data.get_numbers());
+nb_pings=length(trans_obj.get_transceiver_pings());
 
 Bottom_idx=trans_obj.Bottom.get_sample();
 if isempty(Bottom_idx)

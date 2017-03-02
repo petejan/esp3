@@ -127,7 +127,7 @@ order_axes(main_figure);
 switch mode
     case 'horizontal'
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-        x=layer.Transceivers(idx_freq).Data.get_numbers();
+        x=layer.Transceivers(idx_freq).get_transceiver_pings();
         x_box=([x(1) x(end)  x(end) x(1) x(1)]);
     case 'vertical'
     otherwise

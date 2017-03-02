@@ -14,7 +14,7 @@ x=cp(1,1);
 x=nanmax(x,x_lim(1));
 x=nanmin(x,x_lim(2));
 
-xdata=trans_obj.Data.get_numbers();
+xdata=trans_obj.get_transceiver_pings();
 
 [~,idx_ping]=nanmin(abs(xdata-x));
 

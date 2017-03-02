@@ -23,6 +23,7 @@ classdef algo_cl
             
             obj.Function=init_func(obj.Name);
             obj.Varargin=init_varargin(obj.Name);
+            
             if ~isempty(obj.Varargin)
                 fields_in=fieldnames(obj.Varargin);
                 for i=1:length(fields_in)

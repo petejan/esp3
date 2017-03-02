@@ -125,7 +125,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         switch mode
             case 'horizontal'
                 idx_r=idx_r+idx_r_ori-1;
-                idx_pings=1:length(layer.Transceivers(idx_freq).Data.get_numbers());
+                idx_pings=1:length(layer.Transceivers(idx_freq).get_transceiver_pings());
             case 'vertical'
                 idx_r=1:length(layer.Transceivers(idx_freq).get_transceiver_range());
                 idx_pings=idx_pings+idx_ping_ori-1;
