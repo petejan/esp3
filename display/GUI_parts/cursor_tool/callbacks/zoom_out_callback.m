@@ -7,7 +7,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 trans=layer.Transceivers(idx_freq);
 
 
-xdata_tot=trans.Data.get_numbers();       
+xdata_tot=trans.get_transceiver_pings();       
 ydata_tot=trans.get_transceiver_range();
 
 ah=axes_panel_comp.main_axes;

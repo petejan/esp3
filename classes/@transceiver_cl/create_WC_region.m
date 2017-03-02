@@ -23,13 +23,13 @@ parse(p,trans_obj,varargin{:});
 
 switch p.Results.Cell_w_unit
     case 'pings'
-        xdata=trans_obj.Data.get_numbers();  
+        xdata=trans_obj.get_transceiver_pings();  
     case 'meters'
         if ~isempty(trans_obj.GPSDataPing.Dist)
             xdata=trans_obj.GPSDataPing.Dist;
         else
             p.Results.Cell_w_unit='pings';
-            xdata=trans_obj.Data.get_numbers();
+            xdata=trans_obj.get_transceiver_pings();
         end
 end
 

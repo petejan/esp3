@@ -2,7 +2,7 @@ function load_axis_panel(main_figure)
 
 if isappdata(main_figure,'Axes_panel')
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
-    delete(axes_panel_comp.axes_pane);
+    delete(axes_panel_comp.axes_panel);
     rmappdata(main_figure,'Axes_panel');
 end
 

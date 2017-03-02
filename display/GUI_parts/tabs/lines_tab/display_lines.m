@@ -7,7 +7,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 curr_time=layer.Transceivers(idx_freq).Data.Time;
-curr_pings=layer.Transceivers(idx_freq).Data.get_numbers();
+curr_pings=layer.Transceivers(idx_freq).get_transceiver_pings();
 curr_dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
 main_axes=axes_panel_comp.main_axes;

@@ -5,7 +5,7 @@ ydata=double(get(main_echo,'YData'));
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
-Number=trans.Data.get_numbers();
+Number=trans.get_transceiver_pings();
 Range=trans.get_transceiver_range();
 
 [~,idx_ping_ori]=nanmin(abs(xdata(1)-Number));

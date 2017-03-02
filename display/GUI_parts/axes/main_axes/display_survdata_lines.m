@@ -7,7 +7,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
 ax=axes_panel_comp.main_axes;
-xdata=layer.Transceivers(idx_freq).Data.get_numbers();
+xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
 ydata=layer.Transceivers(idx_freq).get_transceiver_range();
 
 u=findobj(ax,'Tag','surv_id');

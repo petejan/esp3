@@ -24,8 +24,8 @@ addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
-addParameter(p,'idx_r',[],@isnumeric);
-addParameter(p,'idx_pings',[],@isnumeric);
+addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
+addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'thr_echo',-35,check_thr_bottom);
@@ -36,7 +36,6 @@ addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
 
-
 if isempty(p.Results.idx_r)
     idx_r=1:length(trans_obj.get_transceiver_range());
 else
@@ -44,7 +43,7 @@ else
 end
 
 if isempty(p.Results.idx_pings)
-    idx_pings=1:length(trans_obj.Data.get_numbers());
+    idx_pings=1:length(trans_obj.get_transceiver_pings());
 else
     idx_pings=p.Results.idx_pings;
 end

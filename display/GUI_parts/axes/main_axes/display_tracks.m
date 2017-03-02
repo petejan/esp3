@@ -7,7 +7,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj=layer.Transceivers(idx_freq);
 ST=trans_obj.ST;
 tracks=trans_obj.Tracks;
-xdata=trans_obj.Data.get_numbers();
+xdata=trans_obj.get_transceiver_pings();
 
 X_st=xdata(ST.Ping_number);
 Z_st=ST.Target_range_disp;

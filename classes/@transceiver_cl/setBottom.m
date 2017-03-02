@@ -10,7 +10,7 @@ if isempty(bottom_obj)
 end
 
 range=obj.get_transceiver_range();
-pings=obj.Data.get_numbers();
+pings=obj.get_transceiver_pings();
 
 IdxBad=find(bottom_obj.Tag==0);
 

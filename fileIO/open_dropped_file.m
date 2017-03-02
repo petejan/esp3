@@ -86,7 +86,7 @@ for ifi=1:length(ftype)
                 
         end
     catch
-        warning('Could not import file(s)');
+        warning('Could not load file(s)');
     end
 end
 

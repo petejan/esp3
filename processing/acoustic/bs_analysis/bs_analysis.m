@@ -34,7 +34,7 @@ bw_mean = (trans.Config.BeamWidthAlongship+trans.Config.BeamWidthAthwartship)/4/
 t_angle = atan(sqrt(tand(trans.Config.Angles(2)).^2+tand(trans.Config.Angles(1)).^2));
 
 %time=trans.Data.Time;
-number = trans.Data.get_numbers();
+number = trans.get_transceiver_pings();
 
 bot_range = trans.get_bottom_range();
 

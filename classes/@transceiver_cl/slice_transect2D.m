@@ -47,7 +47,7 @@ idx_valid=trans_obj.Data.Time>=st&trans_obj.Data.Time<=et;
 
 switch cell_units_w
     case 'pings'
-        cell_hori_ref=trans_obj.Data.get_numbers(idx_valid);
+        cell_hori_ref=trans_obj.get_transceiver_pings(idx_valid);
     case 'meters'
         cell_hori_ref=trans_obj.GPSDataPing.Dist(idx_valid);
 end

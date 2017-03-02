@@ -31,11 +31,11 @@ try
     end
     
     algo_node=get_childs(xml_struct,'algos');
-    algo_vec=[];
     Algos=get_algos(algo_node);
+    algo_vec(length(Algos))=algo_cl();
     
-    for ial=1:length(Algos)
-       algo_vec=[algo_vec algo_cl('Name',Algos{ial}.Name,'Varargin',Algos{ial}.Varargin)];  
+    for ial=1:length(algo_vec)
+       algo_vec(ial)=algo_cl('Name',Algos{ial}.Name,'Varargin',Algos{ial}.Varargin);  
     end
 
 catch

@@ -32,7 +32,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
-xdata_tot=trans.Data.get_numbers();
+xdata_tot=trans.get_transceiver_pings();
 ydata_tot=trans.get_transceiver_range();
 
 [x_lim,y_lim]=compute_xylim_zoom(x_lim,y_lim,'VerticalScrollCount',callbackdata.VerticalScrollCount,...
