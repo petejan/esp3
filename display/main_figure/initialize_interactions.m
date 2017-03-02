@@ -3,16 +3,21 @@ function initialize_interactions(main_figure)
 % 
 % DESCRIPTION 
 % 
-% Initialize user interactions with main figure
+% Initialize user interactions with ESP3 main figure
 % 
 % USE 
 % 
-% [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
+% [This section contains a more detailed description of what the function does and how to use it, for the interested user to have an overall understanding of its function] 
+% This is a text file containing the basic comment template to add at the
+% start of any new ESP3 function to serve as function help. 
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 % 
 % PROCESSING SUMMARY 
 % 
-% - [Bullet point list summary of the steps in the processing.]
-% - [DELETE THESE LINES IF UNUSED]
+% [This section contains bullet point list of major processing steps, for the very interested user to have a clear understanding of the function works before reading its details]
+% - Function does this first
+% - Then it does this
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 % 
 % INPUT VARIABLES 
 % 
@@ -20,9 +25,8 @@ function initialize_interactions(main_figure)
 % 
 % RESEARCH NOTES 
 % 
-% [Describes what features are temporary or needed future developments.]
-% [Also use for paper references.]
-% [DELETE THESE LINES IF UNUSED]
+% [This section describes what features are temporary, needed future developments and paper references.]
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 % 
 % NEW FEATURES 
 % 

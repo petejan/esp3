@@ -3,7 +3,7 @@ function open_file(~,~,file_id,main_figure)
 %
 % DESCRIPTION
 %
-% Main function to open new file(s)
+% ESP3 main function to open new file(s)
 %
 % USE
 %

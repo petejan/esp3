@@ -1,4 +1,61 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+function EchoAnalysis(varargin)
+% EchoAnalysis(varargin)
+%
+% DESCRIPTION
+%
+% ESP3 Main function
+%          |
+%         /|\
+%        / | \
+%       /  |  \
+%      /   |___\   
+%    _/____|______   
+%     \___________\   written by Yoann Ladroit
+%        / \          in 2016
+%       /   \
+%      / <>< \    Fisheries Acoustics
+%     /<>< <><\   NIWA - National Institute of Water & Atmospheric Research
+%
+% USE
+%
+% Run this function without input variables to launch empty ESP3, or with
+% input file names to open. Use the SaveEcho optional parameter to print
+% out contents of any input file.
+%
+% PROCESSING SUMMARY
+%
+% - Defining the app's main window
+% - Read ESP3 config file
+% - Create temporary data folder
+% - Initialize empty layer, process and layers objects
+% - Store objects in app main figure
+% - Initialize the display and the interactions with the user
+% - If files were loaded in input, load them now
+%
+% INPUT VARIABLES
+%
+% - 'Filenames' (optional): Valid options:
+%   - char: filename to open
+%   - cell: filename(s) to open
+% - 'SaveEcho' (optional): Valid options:
+%   - 1: print content of input file and closes ESP3
+%
+% RESEARCH NOTES
+%
+% NA
+%
+% NEW FEATURES
+%
+% 2017-03-02: commented and header added (Alex)
+%
+% EXAMPLE
+%
+% EchoAnalysis; % launches ESP3
+% EchoAnalysis('Filenames','my_file.raw'); % launches ESP3 and opens 'my_file.raw'.
+% EchoAnalysis('Filenames','my_file.raw','SaveEcho',1); % launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.
+%
+% LICENCE/COPYRIGHT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % Copyright 2017 NIWA
 % 
 % Permission is hereby granted, free of charge, to any person obtaining a
@@ -18,24 +75,12 @@
 % DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 % OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 % USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ESP3 Main function
-%          |
-%         /|\
-%        / | \
-%       /  |  \
-%      /   |___\   
-%    _/____|______   
-%     \___________\   written by Yoann Ladroit
-%        / \          in 2016
-%       /   \
-%      / <>< \    Fisheries Acoustics
-%     /<>< <><\   NIWA - National Institute of Water & Atmospheric Research
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-function EchoAnalysis(varargin)
+%
+%%%
+% Yoann Ladroit, NIWA.
+%%%
 
 global DEBUG;
 DEBUG=0;
@@ -179,6 +224,7 @@ initialize_interactions(main_figure)
 % If files were loaded in input, load them now
 if ~isempty(p.Results.Filenames)
     open_file([],[],p.Results.Filenames,main_figure);
+    % If request was made to print display: print and close ESP3
     if p.Results.SaveEcho>0
         save_echo(main_figure);
         cleanup_echo(main_figure);

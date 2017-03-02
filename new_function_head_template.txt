@@ -2,48 +2,62 @@
 %
 % DESCRIPTION
 %
-% [Very short description of the function. DELETE THIS LINE IF UNUSED]
+% [This section containg a very short description of the function, for the user to know this is part of ESP3 and what it is]
+% Template of ESP3 function header.
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % USE
 %
-% [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
+% [This section contains a more detailed description of what the function does and how to use it, for the interested user to have an overall understanding of its function] 
+% This is a text file containing the basic comment template to add at the
+% start of any new ESP3 function to serve as function help. 
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % PROCESSING SUMMARY
 %
-% - [Bullet point list summary of the steps in the processing.]
-% - [DELETE THESE LINES IF UNUSED]
+% [This section contains bullet point list of major processing steps, for the very interested user to have a clear understanding of the function works before reading its details]
+% - Function does this first
+% - Then it does this
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % INPUT VARIABLES
 %
-% - [Bullet point list description of input variables.]
-% - [Describe if required, optional or parameters..]
-% - [.. what are the valid values and what they do.]
-% - [DELETE THESE LINES IF UNUSED]
+% [This section contains bullet points of input variables with types and description]
+% - output_variable_1 (required): Valid Options:
+%	- char: description
+%	- cell: description
+% - output_variable_2 (optional): Valid Options:
+%	- 1xN numeric array: description
+% - output_variable_3 (parameter): Valid Options:
+%	- struct: description
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % OUTPUT VARIABLES
 %
-% - [Bullet point list description of output variables.]
-% - [DELETE THESE LINES IF UNUSED]
+% [This section contains bullet points of output variables]
+% - output_variable_1: type and description
+% - output_variable_2: type and description
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % RESEARCH NOTES
 %
-% [Describes what features are temporary or needed future developments.]
-% [Also use for paper references.]
-% [DELETE THESE LINES IF UNUSED]
+% [This section describes what features are temporary, needed future developments and paper references.]
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % NEW FEATURES
 %
-% YYYY-MM-DD: [second version. Describes the update. DELETE THIS LINE IF UNUSED]
+% [This section contains dates and descriptions of major updates]
+% YYYY-MM-DD: second version. Describes the update.
 % YYYY-MM-DD: first version.
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 % EXAMPLE
 %
-% % example 1:
 % [This section contains examples of valid function calls.]
-%
-% % example 2:
-% [DELETE THESE LINES IF UNUSED]
+% example_use_1; % comment on what this does.
+% example_use_2: % comment on what this line does.
+% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
 %%%
-% [Author(s) & Affiliation]
+% Yoann Ladroit, NIWA
 %%%
