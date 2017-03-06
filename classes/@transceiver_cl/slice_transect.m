@@ -5,7 +5,7 @@ init_reg=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth
 
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'reg',init_reg,@(x) isstruct(x)||isempty(x));
-addParameter(p,'Slice_w',100,@(x) x>0);
+addParameter(p,'Slice_w',50,@(x) x>0);
 addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',Inf,@(x) x>0);
@@ -39,9 +39,11 @@ if p.Results.EndTime==1
 else
     et=p.Results.EndTime;
 end
-
-idx_valid=find(trans_obj.Data.Time>=st&trans_obj.Data.Time<=et);
-
+if ~isempty(trans_obj.GPSDataPing.Lat)
+     idx_valid=find(trans_obj.Data.Time(:)>=st&trans_obj.Data.Time(:)<=et&~isnan(trans_obj.GPSDataPing.Lat(:)));
+else
+     idx_valid=find(trans_obj.Data.Time>=st&trans_obj.Data.Time<=et);
+end
 
 switch Slice_units
     case 'pings'
@@ -114,6 +116,7 @@ for iuu=1:length(idx_reg)
     i_reg=i_reg+1;
     reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
     regCellInt=trans_obj.integrate_region(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],'denoised',p.Results.Denoised);
+    
     if isempty(regCellInt.Sv_mean_lin)
         i_reg=i_reg-1;
         continue;

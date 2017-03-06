@@ -51,7 +51,7 @@ fclose(fid);
 time=linspace(start_time,end_time,length(lat));
 
 gps_data=gps_data_cl('Lat',lat,'Long',lon,'Time',time,'NMEA','Esp2');
-attitude_data=attitude_nav_cl('Heading',heading,'SOG',sog,'Time',time);
+attitude_data=attitude_nav_cl('Heading',heading,'Time',time);
 
 
 

@@ -101,9 +101,7 @@ for usnap=1:length(snap)
 end
 
 if ~strcmp(field,'Tag')
-    u_plot=gobjects(1,length(obj.Snapshot));
-    u_plot_slice=gobjects(1,length(obj.Snapshot));
-    
+
     for usnap=1:length(snap)
         if p.Results.oneMap==0
             idx_snap=find(obj.Snapshot==snap(usnap));
@@ -119,11 +117,11 @@ if ~strcmp(field,'Tag')
         
         for uui=1:length(idx_snap)
             if ~isempty(obj.Long{idx_snap(uui)})
-                u_plot(idx_snap(uui))=m_plot(n_ax(usnap),obj.Long{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
-                set(u_plot(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
+                gobj=m_plot(n_ax(usnap),obj.Long{idx_snap(uui)},obj.Lat{idx_snap(uui)},'color','b','linewidth',2,'Tag','Nav');
+                set(gobj,'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
                 m_plot(n_ax(usnap),obj.Long{idx_snap(uui)}(1),obj.Lat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
                 if~isempty(main_figure)
-                    create_context_menu_track(main_figure,hfig,u_plot(idx_snap(uui)));
+                    create_context_menu_track(main_figure,hfig,gobj);
                 end
                 if ~isempty(obj.StationCode{idx_snap(uui)})
                     m_text(nanmean(obj.Long{idx_snap(uui)}),nanmean(obj.Lat{idx_snap(uui)}),obj.StationCode{idx_snap(uui)},'parent',n_ax(usnap),'color','r');
@@ -136,9 +134,11 @@ if ~strcmp(field,'Tag')
                 if isempty(obj.Long{idx_snap(uui)})
                     m_plot(n_ax(usnap),obj.SliceLong{idx_snap(uui)}(1),obj.SliceLat{idx_snap(uui)}(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
                 end
-                u_plot_slice(idx_snap(uui))=m_plot(n_ax(usnap),obj.SliceLong{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'.k','Tag','Nav');
-                set(u_plot_slice(idx_snap(uui)),'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
-                
+                gobj=m_plot(n_ax(usnap),obj.SliceLong{idx_snap(uui)},obj.SliceLat{idx_snap(uui)},'.k','Tag','Nav');
+                set(gobj,'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
+                if~isempty(main_figure)
+                    create_context_menu_track(main_figure,hfig,gobj);
+                end
                 if ~strcmp(field,'Tag')
                     switch lower(obj.PlotType)
                         case {'log10' 'db'}
@@ -154,13 +154,13 @@ if ~strcmp(field,'Tag')
                             
                     end
                     idx_rings=find(ring_size>0);
-                    m_range_ring(obj.SliceLong{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap));
-                    
-                
-                    
+                    gobj=m_range_ring(obj.SliceLong{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap),'Tag','Nav');
+                    set(gobj,'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
                     if~isempty(main_figure)
-                        create_context_menu_track(main_figure,hfig,u_plot_slice(idx_snap(uui)));
+                        create_context_menu_track(main_figure,hfig,gobj);
                     end
+                    
+
                 end
             end
         end

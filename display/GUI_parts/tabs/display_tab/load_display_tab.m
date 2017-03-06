@@ -25,11 +25,15 @@ set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_c
 
 cax=[0 1];
 
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Max','units','normalized','Position',[0.7 0.8 0.15 0.1]);
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Min','units','normalized','Position',[0.7 0.6 0.15 0.1]);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','TS(dB)','units','normalized','Position',[0.65 0.6 0.1 0.1]);
+display_tab_comp.TS=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.75 0.6 0.05 0.1],'string',-50,'callback',{@set_TS_cback,main_figure});
 
-display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.8 0.05 0.1],'string',cax(2));
-display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.85 0.6 0.05 0.1],'string',cax(1));
+
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Max','units','normalized','Position',[0.8 0.8 0.1 0.1]);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Min','units','normalized','Position',[0.8 0.6 0.1 0.1]);
+
+display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.9 0.8 0.05 0.1],'string',cax(2));
+display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.9 0.6 0.05 0.1],'string',cax(1));
 set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_caxis,main_figure});
 
 uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.8725 0.25 0.1 0.15],'callback',{@display_attitude_cback,main_figure});

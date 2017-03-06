@@ -153,6 +153,7 @@ for iax=1:length(main_axes_tot)
                         x_text=nanmean(x_reg{jj});
                         y_text=nanmean(y_reg{jj});
                     end
+                    
                     if ~any(strcmpi(reg_curr.Name,'school'))
                         line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                     end

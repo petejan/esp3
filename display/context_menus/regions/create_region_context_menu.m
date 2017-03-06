@@ -4,6 +4,7 @@ context_menu=uicontextmenu(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
     reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure};

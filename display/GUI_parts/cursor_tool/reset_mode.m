@@ -14,8 +14,7 @@ for i=1:length(childs)
 end
 
 iptPointerManager(main_figure,'enable');
-set(main_figure,'Pointer','arrow');
-set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
+initialize_interactions(main_figure,0);
 create_context_menu_main_echo(main_figure);
 create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
 end

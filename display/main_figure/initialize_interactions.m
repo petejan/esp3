@@ -1,36 +1,37 @@
-function initialize_interactions(main_figure)
+function initialize_interactions(main_figure,new)
 % initialize_interactions(main_figure)
-% 
-% DESCRIPTION 
-% 
+%
+% DESCRIPTION
+%
 % Initialize user interactions with main figure
-% 
-% USE 
-% 
+%
+% USE
+%
 % [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
-% 
-% PROCESSING SUMMARY 
-% 
+%
+% PROCESSING SUMMARY
+%
 % - [Bullet point list summary of the steps in the processing.]
 % - [DELETE THESE LINES IF UNUSED]
-% 
-% INPUT VARIABLES 
-% 
+%
+% INPUT VARIABLES
+%
 % - main_figure (required): ESP3 main figure
-% 
-% RESEARCH NOTES 
-% 
+% - new: 0 or 1. 0 if refreshing 1 if first time you are loading
+%
+% RESEARCH NOTES
+%
 % [Describes what features are temporary or needed future developments.]
 % [Also use for paper references.]
 % [DELETE THESE LINES IF UNUSED]
-% 
-% NEW FEATURES 
-% 
-% 2017-03-02: first version. 
-% 
-%%% 
+%
+% NEW FEATURES
+%
+% 2017-03-02: first version.
+%
+%%%
 % Yoann Ladroit, NIWA.
-%%% 
+%%%
 
 
 % Set Pointer to Arrow
@@ -48,26 +49,28 @@ set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
 %Set pointer motion cback
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 
-size_max = get(0, 'MonitorPositions');
 
-try
-    javaFrame = get(main_figure,'JavaFrame');
-    % Set minimum size of the figure
-    jProx = javaFrame.fHG2Client.getWindow;
-    jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
-    setappdata(main_figure,'javaWindow',jProx);
-    %jFrame.setMaximized(true);
-    
-    % Create drag and drop for the figure object
-    jObj = javaFrame.getFigurePanelContainer();
-    dndcontrol.initJava();
-    dndobj = dndcontrol(jObj);
-    % Set Drop callback functions
-    dndobj.DropFileFcn = @fileDropFcn;
-    dndobj.DropStringFcn = '';
-    setappdata(main_figure,'Dndobj',dndobj);
-catch err
-    disp(err.message);
+if new
+    size_max = get(0, 'MonitorPositions');
+    try
+        javaFrame = get(main_figure,'JavaFrame');
+        % Set minimum size of the figure
+        jProx = javaFrame.fHG2Client.getWindow;
+        jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
+        setappdata(main_figure,'javaWindow',jProx);
+        %jFrame.setMaximized(true);
+        
+        % Create drag and drop for the figure object
+        jObj = javaFrame.getFigurePanelContainer();
+        dndcontrol.initJava();
+        dndobj = dndcontrol(jObj);
+        % Set Drop callback functions
+        dndobj.DropFileFcn = @fileDropFcn;
+        dndobj.DropStringFcn = '';
+        setappdata(main_figure,'Dndobj',dndobj);
+    catch err
+        disp(err.message);
+    end   
 end
 
 % nested function for above dndobj

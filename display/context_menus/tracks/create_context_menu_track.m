@@ -1,8 +1,10 @@
 function create_context_menu_track(main_figure,hfig,line)
 context_menu=uicontextmenu(hfig);
-line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Load/Display this Line(s)','Callback',{@activate_line_callback,main_figure,hfig});
 uimenu(context_menu,'Label','Export Track to CSV','Callback',{@export_track_callback,hfig});
+for i=1:length(line)
+    line(i).UIContextMenu=context_menu;
+end
 end
 
 

@@ -17,8 +17,8 @@ output=layers.list_layers_survey_data();
 
 [snaps,strat,trans,regs_trans]=surv_in_obj.merge_survey_input_for_integration();
 [~,~,strat_vec_num]=unique(strat);
-strat_couple=unique([snaps;strat_vec_num]','rows');
-trans_triple=unique([snaps;strat_vec_num;trans]','rows');
+strat_couple=unique([snaps(:)';strat_vec_num(:)']','rows');
+trans_triple=unique([snaps(:)';strat_vec_num(:)';trans(:)']','rows');
 
 reg_nb_vec=cellfun(@length,regs_trans);
 surv_out_obj=survey_output_cl(size(strat_couple,1),size(trans_triple,1),nansum(reg_nb_vec));
@@ -101,7 +101,7 @@ for isn=1:length(snaps)
             gps_tot=gps_add;
         end
         
-        gps_add.Long(gps_tot.Long>180)=gps_add.Long(gps_tot.Long>180)-360;
+        gps_add.Long(gps_add.Long>180)=gps_add.Long(gps_add.Long>180)-360;
         idx_pings=1:length(gps_add.Time);
         idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
         idx_good_pings_dist=intersect(idx_good_pings_add,find(~isnan(gps_add.Lat(:))));
@@ -178,7 +178,7 @@ for isn=1:length(snaps)
         reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_t);
         
         [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
-        %[sliced_output_2D,regCellInt_tot]=slice_transect2D(trans_obj,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
+        %[sliced_output_2D,regCellInt_tot]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
         
         Output_echo=[Output_echo sliced_output];
         
@@ -273,6 +273,7 @@ for isn=1:length(snaps)
     
     
     %% Transect Summary
+    idx_s=intersect(idx_good_pings,find(~isnan(gps_tot.Long)));
     surv_out_obj.transectSum.snapshot(i_trans) = snap_num;
     surv_out_obj.transectSum.stratum{i_trans} = strat_name;
     surv_out_obj.transectSum.transect(i_trans) = trans_num;
@@ -280,12 +281,12 @@ for isn=1:length(snaps)
     surv_out_obj.transectSum.mean_d(i_trans) = nanmean(good_bot_tot); % mean_d
     surv_out_obj.transectSum.pings(i_trans) = length(idx_good_pings); % pings %
     surv_out_obj.transectSum.av_speed(i_trans) = av_speed_tot; % av_speed
-    surv_out_obj.transectSum.start_lat(i_trans) = gps_tot.Lat(idx_good_pings(1)); % start_lat
-    surv_out_obj.transectSum.start_lon(i_trans) = gps_tot.Long(idx_good_pings(1)); % start_lon
-    surv_out_obj.transectSum.finish_lat(i_trans) = gps_tot.Lat(idx_good_pings(end)); % finish_lat
-    surv_out_obj.transectSum.finish_lon(i_trans) = gps_tot.Long(idx_good_pings(end)); % finish_lon
-    surv_out_obj.transectSum.time_start(i_trans) = gps_tot.Time(idx_good_pings(1)); % finish_lat
-    surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_good_pings(end)); % finish_lon
+    surv_out_obj.transectSum.start_lat(i_trans) = gps_tot.Lat(idx_s(1)); % start_lat
+    surv_out_obj.transectSum.start_lon(i_trans) = gps_tot.Long(idx_s(1)); % start_lon
+    surv_out_obj.transectSum.finish_lat(i_trans) = gps_tot.Lat(idx_s(end)); % finish_lat
+    surv_out_obj.transectSum.finish_lon(i_trans) = gps_tot.Long(idx_s(end)); % finish_lon
+    surv_out_obj.transectSum.time_start(i_trans) = gps_tot.Time(idx_s(1)); % finish_lat
+    surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_s(end)); % finish_lon
     surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
     surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
     

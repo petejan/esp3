@@ -4,7 +4,7 @@ p = inputParser;
 
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'regIDs',[],@isnumeric);
-addParameter(p,'cell_w',100,@(x) x>0);
+addParameter(p,'cell_w',50,@(x) x>0);
 addParameter(p,'cell_units_w','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'cell_h',10,@(x) x>0);
 addParameter(p,'StartTime',0,@(x) x>0);
@@ -24,11 +24,11 @@ else
     idx_reg=1:length(trans_obj.Regions);
 end
 
-if isempty(idx_reg)
-    output=[];
-    regCellInt={};
-    return;
-end
+% if isempty(idx_reg)
+%     output=[];
+%     regCellInt={};
+%     return;
+% end
 
 if p.Results.StartTime==0
     st=trans_obj.Data.Time(1);
@@ -132,7 +132,7 @@ if ~isempty(trans_obj.ST.TS_comp)
     end
 end
 i_reg=0;
-regCellInt={};
+regCellInt=cell(1,length(idx_reg));
 
 
 for iuu=1:length(idx_reg)
@@ -148,7 +148,9 @@ for iuu=1:length(idx_reg)
         
     end
     
-    regCellInt{i_reg}=trans_obj.integrate_region(reg_curr);
+ 
+    i_reg=i_reg+1;
+    regCellInt{i_reg}=trans_obj.integrate_region(reg_curr,'horiExtend',[st et]);
     regCellIntCurr=regCellInt{i_reg};
     Sv_mean_lin=regCellIntCurr.Sv_mean_lin_esp2;
     Sa_lin = regCellIntCurr.Sa_lin;%sum up all abcsf per vertical slice
@@ -169,12 +171,15 @@ for iuu=1:length(idx_reg)
             iy = r_start>=cells_vert_S(j) &  r_start<cells_vert_E(j);
             i_tot =iy & ix & ~att;
             att(i_tot)=1;
-            nb_good_pings(j,k)=nanmax(nansum(regCellIntCurr.Nb_good_pings_esp2(i_tot)),nb_good_pings(j,k));
-            cell_abscf(j,k) = cell_abscf(j,k)+nansum(Sa_lin(i_tot)./nanmax(regCellIntCurr.Nb_good_pings_esp2(ix)));
+            nb_good_pings(j,k)=nansum(regCellIntCurr.Nb_good_pings(i_tot));
+            cell_abscf(j,k) = cell_abscf(j,k)+nansum(Sa_lin(i_tot)./nanmax(regCellIntCurr.Nb_good_pings(ix)));
             cell_vbscf(j,k) = nansum([cell_vbscf(j,k) nanmean(Sv_mean_lin(i_tot))]);
         end
     end
 end
+
+
+
 
 output.cell_abscf=cell_abscf;
 output.cell_vbscf=cell_vbscf;

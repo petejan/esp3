@@ -60,6 +60,7 @@ data_temp(:,idx_bad_red)=Inf;
 
 bot_vec=layer.Transceivers(idx_freq).get_bottom_range(idx_pings);
 n_bot=size(alpha_map,2);
+
 if round(length(bot_vec)/n_bot)==length(bot_vec)/n_bot
     bot_vec_red=bot_vec(1:length(bot_vec)/n_bot:end);
 else
