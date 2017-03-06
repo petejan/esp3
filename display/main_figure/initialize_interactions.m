@@ -1,6 +1,5 @@
 function initialize_interactions(main_figure,new)
 % initialize_interactions(main_figure)
-<<<<<<< HEAD
 %
 % DESCRIPTION
 %
@@ -31,7 +30,6 @@ function initialize_interactions(main_figure,new)
 % 2017-03-02: first version.
 %
 %%%
-=======
 % 
 % DESCRIPTION 
 % 
@@ -65,7 +63,6 @@ function initialize_interactions(main_figure,new)
 % 2017-03-02: first version. 
 % 
 %%% 
->>>>>>> b34623d06e293d3bf0bd1fdb788fee6bbab3525c
 % Yoann Ladroit, NIWA.
 %%%
 
