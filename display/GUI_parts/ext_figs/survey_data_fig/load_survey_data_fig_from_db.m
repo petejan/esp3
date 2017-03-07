@@ -259,6 +259,11 @@ db_file=fullfile(path_f,'echo_logbook.db');
 
 dbconn=sqlite(db_file,'connect');
 
+if dbconn.IsReadOnly
+   fprintf('Database file is readonly... Check file permissions\n');
+   return;
+end
+
 %dbconn.fetch(sprintf('delete from logbook where Filename like "%s" and StartTime=%.0f',filename,st));
 dbconn.insert('logbook',{'Filename' 'Snapshot' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
     {filename snap strat trans st et comm});

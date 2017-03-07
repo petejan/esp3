@@ -10,6 +10,14 @@ addParameter(p,'load_bar_comp',[],@(x) isempty(x)|isstruct(x));
 parse(p,trans_obj,reg_obj,varargin{:});
 
 output_reg=trans_obj.integrate_region(reg_obj);
+if isempty(output_reg)
+    Sv_f=[];
+    f_vec=[];
+    pings=[];
+    r_tot=[];
+    return;
+end
+
 [N_y,N_x]=size(output_reg.Ping_S);
 
 

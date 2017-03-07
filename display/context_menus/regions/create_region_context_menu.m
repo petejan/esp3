@@ -51,6 +51,9 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 regCellInt=layer.Transceivers(idx_freq).integrate_region(reg_curr);
+if isempty(regCellInt)
+    return;
+end
 
 fprintf('NASC (esp2): %.0f\n', 4*pi*1852^2*nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2)));
 fprintf('NASC (v2): %.0f\n', 4*pi*1852^2*nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings)));

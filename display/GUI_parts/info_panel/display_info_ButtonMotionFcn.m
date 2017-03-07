@@ -123,8 +123,11 @@ try
             end
         end
         
-        
-        xy_string=sprintf('Range: %.2fm Range Corr: %.2fm\n  Sample: %.0f Ping #:%.0f of  %.0f',Range(idx_r),Range(idx_r)+Depth_corr(idx_ping),Samples(idx_r),Number(idx_ping),Number(end));
+        if Depth_corr(idx_ping)~=0
+            xy_string=sprintf('Range: %.2fm Range Corr: %.2fm\n  Sample: %.0f Ping #:%.0f of  %.0f',Range(idx_r),Range(idx_r)+Depth_corr(idx_ping),Samples(idx_r),Number(idx_ping),Number(end));
+        else
+            xy_string=sprintf('Range: %.2fm\n  Sample: %.0f Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
+        end
         if ~isempty(Lat)
             pos_string=sprintf('Lat: %.6f \n Long:%.6f',Lat(idx_ping),Long(idx_ping));
         else

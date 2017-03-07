@@ -194,6 +194,11 @@ end
 
 Mask(idx_rem)=0;
 
+if~any(Mask(:))
+    output=[];
+    return;
+end
+
 cell_w=region.Cell_w;
 cell_h=region.Cell_h;
 

@@ -117,6 +117,11 @@ for iuu=1:length(idx_reg)
     reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
     regCellInt=trans_obj.integrate_region(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],'denoised',p.Results.Denoised);
     
+    if isempty(regCellInt)
+        i_reg=i_reg-1;
+        continue;
+    end
+    
     if isempty(regCellInt.Sv_mean_lin)
         i_reg=i_reg-1;
         continue;

@@ -43,6 +43,7 @@ for isn=1:length(snapshots)
         cal_strat=get_cal_node(cal_snap,stratum{ist});
         for itr=1:length(transects)
            show_status_bar(p.Results.gui_main_handle);
+           
            try
                 filenames_cell=transects{itr}.files;
                 trans_num=transects{itr}.number;
@@ -71,7 +72,7 @@ for isn=1:length(snapshots)
                 
                 layers_in=[];
                 fType=cell(1,length(filenames_cell));
-                
+                already_proc=zeros(1,length(filenames_cell));
                 for ifiles=1:length(filenames_cell)
                     fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                     
@@ -88,6 +89,12 @@ for isn=1:length(snapshots)
                         found_lay=0;
                     end
                     
+                    if ~isempty(layers_new)
+                        [idx_lay_new,found_lay_new]=layers_new.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
+                    else
+                        found_lay_new=0;
+                    end
+                    
                     if ~isempty(layers_in)
                         [idx_lay_in,found_lay_in]=layers_in.find_layer_idx_files_path(fileN,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]));
                     else
@@ -97,6 +104,12 @@ for isn=1:length(snapshots)
                     
                     if found_lay_in==1
                         fType{ifiles}=layers_in(idx_lay_in(1)).Filetype;
+                        continue;
+                    end
+                    
+                    if found_lay_new==1
+                        fType{ifiles}=layers_new(idx_lay_new(1)).Filetype;
+                        already_proc(ifiles)=1;
                         continue;
                     end
                     
@@ -157,11 +170,15 @@ for isn=1:length(snapshots)
                     end
                 end
                 
+                if all(already_proc)
+                    continue;
+                end
                 
                 if isempty(layers_in)
                     warning('Could not find any files in this transect...');
                     continue;
                 end
+                
                 fType_in=cell(1,length(layers_in));
                 dates_out=nan(1,length(layers_in));
                 for ilay_in=1:length(layers_in)
@@ -274,6 +291,8 @@ for isn=1:length(snapshots)
                                     layer_new.set_survey_data(surv);
                             end
                             layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'bot_ver',bot_ver,'reg_ver',reg_ver);
+                            layer_new.add_lines_from_line_xml();
+
                     end
                     
                     

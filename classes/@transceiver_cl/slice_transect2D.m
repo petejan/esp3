@@ -151,6 +151,12 @@ for iuu=1:length(idx_reg)
  
     i_reg=i_reg+1;
     regCellInt{i_reg}=trans_obj.integrate_region(reg_curr,'horiExtend',[st et]);
+    if isempty(regCellInt{i_reg})
+        i_reg=i_reg-1;
+        continue;
+    end
+
+    
     regCellIntCurr=regCellInt{i_reg};
     Sv_mean_lin=regCellIntCurr.Sv_mean_lin_esp2;
     Sa_lin = regCellIntCurr.Sa_lin;%sum up all abcsf per vertical slice

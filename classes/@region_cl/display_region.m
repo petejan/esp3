@@ -19,6 +19,11 @@ else
     output_reg=trans_obj;
 end
 
+if isempty(output_reg)
+    h_fig=[];
+    return;
+end
+
 cax=p.Results.Cax;
 
 sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
