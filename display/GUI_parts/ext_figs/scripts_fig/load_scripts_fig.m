@@ -47,8 +47,8 @@ switch flag
         uimenu(rc_menu,'Label','Run on Crest Files','Callback',{@run_script_callback_v2,script_fig,main_figure,flag},'tag','crest');
         uimenu(rc_menu,'Label','Run on Raw Files','Callback',{@run_script_callback_v2,script_fig,main_figure,flag},'tag','raw');
         uimenu(rc_menu,'Label','Generate Equivalent XML Script','Callback',{@generate_xml_scripts_callback,script_fig,main_figure});
-       uimenu(rc_menu,'Label','Populate Logbook from MBS Script','Callback',{@populate_logbook_from_script_callback,script_fig,main_figure});
-  
+        uimenu(rc_menu,'Label','Populate Logbook from MBS Script','Callback',{@populate_logbook_from_script_callback,script_fig,main_figure});
+        
     case 'xml'
         uimenu(rc_menu,'Label','Run','Callback',{@run_script_callback_v2,script_fig,main_figure,flag});
         uimenu(rc_menu,'Label','Check Script','Callback',{@check_xml_scripts_callback,script_fig,main_figure});
@@ -111,9 +111,11 @@ surv_obj=survey_cl();
 surv_obj.SurvInput=mbs.mbs_to_survey_obj('type','raw');
 infos=surv_obj.SurvInput.Infos;
 for ifile=1:length(mbs.Input.snapshot)
-    fprintf('Adding Survey Data for File %s\n',mbs.Input.rawFileName{ifile});
-    surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',mbs.Input.snapshot(ifile),'Stratum',mbs.Input.stratum{ifile},'Transect',mbs.Input.transect(ifile));                         
-    layer_cl.empty.update_echo_logbook_dbfile('Filename',fullfile(mbs.Input.rawDir{ifile},mbs.Input.rawFileName{ifile}),'SurveyData',surv,'Voyage',infos.Voyage,'SurveyName',infos.SurveyName);
+    if ~strcmpi(mbs.Input.rawFileName{ifile},'')
+        fprintf('Adding Survey Data for File %s\n',mbs.Input.rawFileName{ifile});
+        surv=survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',mbs.Input.snapshot(ifile),'Stratum',mbs.Input.stratum{ifile},'Transect',mbs.Input.transect(ifile));
+        layer_cl.empty.update_echo_logbook_dbfile('Filename',fullfile(mbs.Input.rawDir{ifile},mbs.Input.rawFileName{ifile}),'SurveyData',surv,'Voyage',infos.Voyage,'SurveyName',infos.SurveyName);
+    end
 end
 
 end
@@ -180,7 +182,7 @@ app_path=getappdata(main_figure,'App_path');
 switch flag
     case 'mbs'
         if~strcmp(selected_scripts,'')
-            [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',selected_scripts{end},'Rev',[]); 
+            [fileNames,outDir]=get_mbs_from_esp2(app_path.cvs_root,'MbsId',selected_scripts{end},'Rev',[]);
             [stat,~]=system(['start notepad++ ' fileNames{1}]);
             if stat~=0
                 disp('You should install Notepad++...');
@@ -190,7 +192,7 @@ switch flag
             rmdir(outDir,'s');
         end
         
-    case 'xml' 
+    case 'xml'
         [stat,~]=system(['start notepad++ ' fullfile(app_path.scripts,selected_scripts{end})]);
         if stat~=0
             disp('You should install Notepad++...');

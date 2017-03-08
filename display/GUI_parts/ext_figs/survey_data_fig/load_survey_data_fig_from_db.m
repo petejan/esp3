@@ -72,6 +72,11 @@ dbconn.close();
 nb_lines=size(data_logbook,1);
 survDataSummary=cell(nb_lines,11);
 
+if nb_lines==0
+    close(surv_data_fig);
+    return;
+end
+
 survDataSummary(:,1)=cell(nb_lines,1);
 survDataSummary(:,2)=data_logbook(:,1);
 survDataSummary(:,3)=data_logbook(:,2);

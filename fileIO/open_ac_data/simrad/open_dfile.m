@@ -1,6 +1,6 @@
-function  open_dfile(hObject,Filename_cell,CVScheck)
-layers=getappdata(hObject,'Layers');
-app_path=getappdata(hObject,'App_path');
+function  open_dfile(main_figure,Filename_cell,CVScheck)
+layers=getappdata(main_figure,'Layers');
+app_path=getappdata(main_figure,'App_path');
 
 
 
@@ -18,6 +18,12 @@ if ~isequal(Filename_cell, 0)
         [path_f,~,~]=fileparts(FileName);
         ifileInfo = parse_ifile(FileName);
         RawFilename=ifileInfo.rawFileName;
+        
+        if strcmp(RawFilename,'')
+           warning('Could not find associated .*raw file');
+           open_dfile_crest(main_figure,Filename,CVSCheck); 
+           return;
+        end
         
         survey_data=survey_data_cl('Snapshot',ifileInfo.snapshot,'Stratum',ifileInfo.stratum,'Transect',ifileInfo.transect);
         origin=FileName;
@@ -48,7 +54,7 @@ if ~isequal(Filename_cell, 0)
     
     layer=layer_temp(end);
     layers=[layer_temp,layers];
-    setappdata(hObject,'Layer',layer);
-    setappdata(hObject,'Layers',layers);
+    setappdata(main_figure,'Layer',layer);
+    setappdata(main_figure,'Layers',layers);
     
 end

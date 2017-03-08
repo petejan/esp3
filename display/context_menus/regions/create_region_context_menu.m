@@ -20,7 +20,7 @@ analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
 uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
 uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,reg_curr,main_figure});
-uimenu(analysis_menu,'Label','Display Region Integration values (NASC)','Callback',{@reg_integrated_callback,reg_curr,main_figure});
+uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,reg_curr,main_figure});
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
 uimenu(freq_analysis_menu,'Label','Display Frequency response','Callback',{@freq_response_reg_callback,main_figure});
@@ -55,9 +55,8 @@ if isempty(regCellInt)
     return;
 end
 
-fprintf('NASC (esp2): %.0f\n', 4*pi*1852^2*nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings_esp2)));
-fprintf('NASC (v2): %.0f\n', 4*pi*1852^2*nansum(nansum(regCellInt.Sa_lin))./nansum(nanmax(regCellInt.Nb_good_pings)));
-fprintf('NASC: %.0f\n', nanmean(nansum(regCellInt.NASC)));
+display_region_stat_fig(main_figure,regCellInt);
+
 end
 
 

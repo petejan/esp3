@@ -26,7 +26,7 @@ active_reg.Type=data_type;
 tag=get(region_tab_comp.tag,'string');
 id=ceil(str2double(get(region_tab_comp.id,'string')));
 
-if isnan(id)||id<0
+if isnan(id)||id<=0
     id=active_reg.id;
 end
 set(region_tab_comp.id,'string',num2str(id,'%.0f'));

@@ -164,10 +164,13 @@ if ~strcmp(p.Results.Filename,'')
     
     db_file=fullfile(path_f,'echo_logbook.db');
     
-    dbconn=sqlite(db_file,'connect');
+    
+    
     if ~(exist(db_file,'file')==2)
         initialize_echo_logbook_dbfile(path_f,0)
     end
+    
+    dbconn=sqlite(db_file,'connect');
     survey_data=dbconn.fetch('select * from survey');
     
     
@@ -184,7 +187,7 @@ if ~strcmp(p.Results.Filename,'')
     
     if ~isempty(survey_data{2})
         if ~any(strcmp(p.UsingDefaults,'Voyage'))
-            survdata_temp.Voyae=results.Voyage;
+            survdata_temp.Voyage=results.Voyage;
         else
             survdata_temp.Voyage=survey_data{2};
         end
