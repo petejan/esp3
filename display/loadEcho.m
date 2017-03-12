@@ -4,7 +4,7 @@ if isempty(main_figure)
     return;
 end
 
-set(main_figure,'WindowButtonMotionFcn','');
+remove_interactions(main_figure);
 rm_listeners(main_figure);
 layer=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');

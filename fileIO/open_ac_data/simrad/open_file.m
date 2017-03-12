@@ -43,7 +43,7 @@ layer = getappdata(main_figure,'Layer');
 app_path = getappdata(main_figure,'App_path');
 
 % About to open a new file so check if there are unsaved new bottom and
-% regions 
+% regions
 check_saved_bot_reg(main_figure);
 
 % Exit if input file was bad (put this at beginning and through input
@@ -113,7 +113,7 @@ else
             return;
         end
         
-        % find all files in path      
+        % find all files in path
         f = dir(file_path);
         file_list = ({f(~cellfun(@isempty,regexp({f.name},'(A$|raw$|lst$|^d.*\d$)'))).name}');
         
@@ -163,7 +163,7 @@ else
             
         end
         
-   
+        
     end
     
 end
@@ -172,7 +172,8 @@ end
 if isempty(Filename)
     return;
 end
-if isequal(Filename, 0)
+if isequal(Filename, 0);
+    
     return;
 end
 
@@ -189,12 +190,11 @@ for ifi = 1:length(Filename_tot)
     ftype_cell{ifi} = get_ftype(Filename_tot{ifi});
 end
 
-% Not sure why we need to do this here as layer was not changed
-setappdata(main_figure,'Layer',layer);
-
 % Find each ftypes in list to batch process the opening
 [ftype_unique,~,ic] = unique(ftype_cell);
-
+% ?
+enabled_obj = findobj(main_figure,'Enable','on');
+set(enabled_obj,'Enable','off');
 % File opening section, by type of file
 for itype = 1:length(ftype_unique)
     
@@ -202,9 +202,7 @@ for itype = 1:length(ftype_unique)
     Filename = Filename_tot(ic==itype);
     ftype = ftype_unique{itype};
     
-    % ?
-    enabled_obj = findobj(main_figure,'Enable','on');
-    set(enabled_obj,'Enable','off');
+    
     
     % Figure if the files requested to be open are part of a transect that
     % include other files not requested to be opened. This functionality is
@@ -223,12 +221,16 @@ for itype = 1:length(ftype_unique)
                     case 'Yes'
                         Filename = union(Filename,missing_files);
                     case 'No'
+                        
                     otherwise
                         return;
                 end
             end
         otherwise
-            return; 
+            for ifi=1:length(Filename)
+                fprintf('Unrecognized File type for Filename %s\n',Filename{ifi});
+            end
+            continue;
     end
     
     % Load all pings by default
@@ -266,7 +268,7 @@ for itype = 1:length(ftype_unique)
                     dfile = 1;
             end
             if isempty(choice)
-                return;
+                continue;
             end
             
             % Prompt user to load bottom and regions and handle the answer
@@ -293,8 +295,10 @@ for itype = 1:length(ftype_unique)
             end
             
         otherwise
-            
-            return;
+            for ifi=1:length(Filename)
+                fprintf('Unrecognized File type for Filename %s\n',Filename{ifi});
+            end
+            continue;
             
     end
 end

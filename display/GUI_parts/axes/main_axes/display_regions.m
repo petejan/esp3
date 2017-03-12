@@ -1,6 +1,10 @@
 
 function display_regions(main_figure,varargin)
 
+if ~isdeployed
+   disp('Display regions') 
+end
+
 layer=getappdata(main_figure,'Layer');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

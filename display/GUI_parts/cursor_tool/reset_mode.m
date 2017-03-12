@@ -8,10 +8,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
 axes(ah);
 childs=findall(main_figure,'type','uitoggletool');
-
-for i=1:length(childs)
-    set(childs(i),'state','off');
-end
+set(childs,'state','off');
 
 iptPointerManager(main_figure,'enable');
 initialize_interactions(main_figure,0);

@@ -1,5 +1,7 @@
 function listenCursorMode(src,listdata,main_figure)
-%disp('ListenCursorMode')
+if~isdeployed
+    disp('ListenCursorMode')
+end
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 info_panel_comp=getappdata(main_figure,'Info_panel');
 cur_str=sprintf('Cursor mode: %s',listdata.AffectedObject.CursorMode);
@@ -21,9 +23,9 @@ switch listdata.AffectedObject.CursorMode
         reset_mode(0,0,main_figure);
         iptPointerManager(main_figure,'disable');
         set(main_figure,'Pointer','cross');
-        set(main_figure,'WindowButtonDownFcn',@create_region);      
+        set(main_figure,'WindowButtonDownFcn',@create_region);
     case 'Normal'
-
+        
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);
 end

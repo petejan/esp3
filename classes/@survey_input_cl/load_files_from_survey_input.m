@@ -231,7 +231,7 @@ for isn=1:length(snapshots)
                                     
                                 otherwise
                                     
-                                    layers_out_temp=shuffle_layers(layers_in(idx_unique(itype)==idx_out),'multi_layer',0);
+                                    layers_out_temp=shuffle_layers(layers_in(idx_unique(itype)==idx_out),'multi_layer',-1);
                                     clear layers_in;
                                     
                             end
