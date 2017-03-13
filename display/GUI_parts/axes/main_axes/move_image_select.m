@@ -1,14 +1,14 @@
-function move_patch_select(src,~,main_figure)
+function move_image_select(src,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-patch_obj=src;
+image_obj=src;
 ah=axes_panel_comp.main_axes;
 
-if isempty(patch_obj.Vertices)||~strcmp(curr_disp.CursorMode,'Normal')
+if isempty(image_obj.XData)||~strcmp(curr_disp.CursorMode,'Normal')
     return;
 end
 
@@ -20,13 +20,12 @@ if strcmp(current_fig.SelectionType,'normal')
     x0 = cp(1,1);
     y0 = cp(1,2);
     
-%     x_lim=get(ah,'xlim');
-%     y_lim=get(ah,'ylim');
+
     xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
     ydata=layer.Transceivers(idx_freq).Data.get_range();
     
-    dx_patch=nanmax(patch_obj.Vertices(:,1))-nanmin(patch_obj.Vertices(:,1));
-    dy_patch=nanmax(patch_obj.Vertices(:,2))-nanmin(patch_obj.Vertices(:,2));
+    dx_image=nanmax(image_obj.XData(:))-nanmin(image_obj.XData(:));
+    dy_image=nanmax(image_obj.YData(:))-nanmin(image_obj.YData(:));
     
     current_fig.WindowButtonMotionFcn = @wbmcb;
     current_fig.WindowButtonUpFcn = @wbucb;
@@ -36,32 +35,31 @@ end
         x1 = cp(1,1);
         y1 = cp(1,2);
         
+
+        new_XData=image_obj.XData+(x1-x0);
+        new_YData=image_obj.YData+(y1-y0);
         
-        d_move=[x1 y1]-[x0 y0];
-        
-        new_vert=patch_obj.Vertices+repmat(d_move,4,1);
-        
-        if any(new_vert(:,1)<xdata(1))
-            new_vert(:,1)=[xdata(1) xdata(1)+dx_patch xdata(1)+dx_patch xdata(1)];
+        if any(new_XData<xdata(1))
+            new_XData=[xdata(1) xdata(1)+dx_image xdata(1)+dx_image xdata(1)];
         end
         
-        if any(new_vert(:,1)>xdata(end))
-            new_vert(:,1)=[xdata(end)-dx_patch xdata(end) xdata(end) xdata(end)-dx_patch];
+        if any(new_XData>xdata(end))
+            new_XData=[xdata(end)-dx_image xdata(end) xdata(end) xdata(end)-dx_image];
         end
         
-        if any(new_vert(:,2)<ydata(1))
-            new_vert(:,2)=[ydata(1) ydata(1) ydata(1)+dy_patch ydata(1)+dy_patch];
+        if any(new_YData<ydata(1))
+            new_YData=[ydata(1) ydata(1) ydata(1)+dy_image ydata(1)+dy_image];
         end
         
-        if any(new_vert(:,2)>ydata(end))
-            new_vert(:,2)=[ydata(end)-dy_patch ydata(end)-dy_patch ydata(end) ydata(end)];
+        if any(new_YData>ydata(end))
+           new_YData=[ydata(end)-dy_image ydata(end)-dy_image ydata(end) ydata(end)];
         end
         
-        patch_obj.Vertices=new_vert;
+        image_obj.XData=new_XData;
+        image_obj.YData=new_YData;
         
         x0=x1;
         y0=y1;
-
         
     end
 

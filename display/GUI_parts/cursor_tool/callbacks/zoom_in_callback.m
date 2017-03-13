@@ -3,7 +3,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
-switch src.SelectionType
+switch main_figure.SelectionType
     case 'normal'
         mode='rectangular';
     case 'alt'
@@ -50,8 +50,8 @@ y_box=yinit;
 hp=line(x_box,y_box,'color',col_line,'linewidth',1,'parent',ah);
 
 
-src.WindowButtonMotionFcn = @wbmcb;
-src.WindowButtonUpFcn = @wbucb;
+main_figure.WindowButtonMotionFcn = @wbmcb;
+main_figure.WindowButtonUpFcn = @wbucb;
 order_axes(main_figure);
 
     function wbmcb(~,~)
@@ -91,10 +91,10 @@ order_axes(main_figure);
         
     end
 
-    function wbucb(src,~)
+    function wbucb(~,~)
         delete(hp);
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
+        main_figure.WindowButtonMotionFcn = '';
+        main_figure.WindowButtonUpFcn = '';
         
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);

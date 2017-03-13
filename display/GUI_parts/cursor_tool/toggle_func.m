@@ -36,7 +36,6 @@ switch src.State
             case 'bt'
                 set(main_figure,'Pointer','arrow');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)mark_bad_transmit(src,envdata,main_figure));
-
             case 'ed_bot'
                 set(main_figure,'Pointer','crosshair');
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)edit_bottom(src,envdata,main_figure));

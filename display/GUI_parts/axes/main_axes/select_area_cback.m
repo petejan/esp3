@@ -1,4 +1,6 @@
 function select_area_cback(src,~,main_figure)
+
+% main_figure=ancestor(src,'figure');
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
@@ -8,12 +10,9 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
-
 switch src.SelectionType
-    case 'normal'
-        
-        return;
-       
+    case 'normal'   
+        return;    
     case 'alt'
         
         modifier = get(src,'CurrentModifier');
@@ -141,7 +140,7 @@ end
         
         create_select_area_context_menu(hp_a,main_figure);
         enterFcn =  @(figHandle, currentPoint)...
-            set(figHandle, 'Pointer', 'fleur');
+        set(figHandle, 'Pointer', 'fleur');
         iptSetPointerBehavior(hp_a,enterFcn);
         set(hp_a,'ButtonDownFcn',{@move_patch_select,main_figure});
         

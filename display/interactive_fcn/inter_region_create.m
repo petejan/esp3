@@ -147,6 +147,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         end
         delete(txt);
         delete(hp);
+        
         reset_disp_info(main_figure);
         feval(func,main_figure,idx_r,idx_pings);
         

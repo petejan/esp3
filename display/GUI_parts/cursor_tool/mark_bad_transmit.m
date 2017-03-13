@@ -27,7 +27,7 @@ else
     set_val=0;
 end
 
-%clear_lines(ah)
+
 
 switch lower(curr_disp.Cmap)
     case 'esp2'
@@ -37,7 +37,6 @@ switch lower(curr_disp.Cmap)
         
 end
 
-% range=layer.Transceivers(idx_freq).get_transceiver_range();
 
 cp = ah.CurrentPoint;
 xinit = cp(1,1);

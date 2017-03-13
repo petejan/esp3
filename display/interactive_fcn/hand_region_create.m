@@ -92,14 +92,14 @@ main_figure.WindowButtonUpFcn = @wbucb;
             [~,poly_r(i)]=nanmin(abs(yinit(i)-double(ydata)));
             
         end
+        clear_lines(ah)
+        delete(txt);
         if length(poly_pings)<=2
             return;
         end
         poly_pings=[poly_pings poly_pings(1)];
         poly_r=[poly_r poly_r(1)];
         reset_disp_info(main_figure);
-        clear_lines(ah)
-        delete(txt);
 
         feval(func,main_figure,poly_r,poly_pings);
         curr_disp.CursorMode='Normal';

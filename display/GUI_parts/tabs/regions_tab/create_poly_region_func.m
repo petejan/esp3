@@ -5,6 +5,7 @@ if isempty(poly_r)||isempty(poly_pings)
     return;
 end
 
+
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');

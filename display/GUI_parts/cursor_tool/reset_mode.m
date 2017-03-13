@@ -9,7 +9,7 @@ ah=axes_panel_comp.main_axes;
 axes(ah);
 childs=findall(main_figure,'type','uitoggletool');
 set(childs,'state','off');
-
+set(axes_panel_comp.bad_transmits,'ButtonDownFcn','');
 iptPointerManager(main_figure,'enable');
 initialize_interactions(main_figure,0);
 create_context_menu_main_echo(main_figure);

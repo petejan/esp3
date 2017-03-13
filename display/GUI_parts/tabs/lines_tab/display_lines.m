@@ -57,7 +57,7 @@ for i=1:length(list_line)
         color='r';
     end
     plot(main_axes,x_line,y_line,'color',color,'linewidth',2,'tag','lines','visible',vis);
-    %text(main_axes,nanmean(x_line(:)),nanmean(y_line(:)),active_line.Tag,'visible',vis,'FontAngle','italic','Fontsize',10,'tag','lines')
+    text(main_axes,nanmean(x_line(:)),nanmean(y_line(:)),active_line.Tag,'visible',vis,'FontAngle','italic','Fontsize',10,'tag','lines','color',color)
 end
 
 end
