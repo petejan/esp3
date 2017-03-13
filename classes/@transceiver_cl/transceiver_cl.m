@@ -146,6 +146,10 @@ classdef transceiver_cl < handle
             end
         end
         
+        function tags=get_tags(obj)
+            tags=unique({obj.Regions(:).Tag});
+        end
+        
         function IDs=get_IDs(obj)
             IDs=zeros(1,length(obj.Regions));
             for i=1:length(IDs)

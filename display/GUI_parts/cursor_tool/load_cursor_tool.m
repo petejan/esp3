@@ -24,7 +24,7 @@ if isappdata(main_figure,'Cursor_mode_tool')
     cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
     [idx_curr,~]=layers.find_layer_idx(layer.ID_num);
     
-    if cursor_mode_tool_comp.jCombo.ItemCount~=nb_layers
+    if cursor_mode_tool_comp.jCombo.ItemCount~=nb_layers||nb_layers==1
         set(cursor_mode_tool_comp.jCombo, 'ActionPerformedCallback','');
         cursor_mode_tool_comp.jCombo.removeAllItems();
         
@@ -83,8 +83,8 @@ setappdata(main_figure,'Cursor_mode_tool',cursor_mode_tool_comp);
 end
 
 function change_layer(hCombo, ~,main_figure)
-
-disp('Change_layer')
+% profile on;
+% disp('Change_layer')
 
 layers=getappdata(main_figure,'Layers');
 if isempty(layers)
@@ -106,7 +106,8 @@ check_saved_bot_reg(main_figure);
 setappdata(main_figure,'Layer',layer);
 loadEcho(main_figure);
 
-
+% profile off;
+% profile viewer; 
 
 end
 

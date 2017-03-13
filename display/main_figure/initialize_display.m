@@ -1,8 +1,10 @@
 function initialize_display(main_figure)
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.5 .3],'tag','option_tab_panel');
-algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3],'tag','algo_tab_panel');
+opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.5 .3]);
+algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3]);
+setappdata(main_figure,'option_tab_panel',opt_panel);
+setappdata(main_figure,'algo_tab_panel',algo_panel);
 
 create_menu(main_figure);
 load_cursor_tool(main_figure);

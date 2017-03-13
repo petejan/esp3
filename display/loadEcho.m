@@ -88,7 +88,8 @@ curr_disp.Reg_changed_flag = 0;
 setappdata(main_figure,'Curr_disp',curr_disp);
 reset_mode([],[],main_figure);
 update_display(main_figure,flag);
-format_color_gui(main_figure,curr_disp.Font);
+
+
 init_listeners(main_figure);
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 

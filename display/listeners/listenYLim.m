@@ -1,5 +1,7 @@
 function listenYLim(~,~,main_figure)
 % profile on;
+wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
+
 set(main_figure,'WindowButtonMotionFcn','');
 
 update_axis_panel(main_figure,0);
@@ -27,8 +29,9 @@ new_vert(:,1)=[x_lim(1) x_lim(2) x_lim(2) x_lim(1)];
 new_vert(:,2)=[y_lim(1) y_lim(1) y_lim(2) y_lim(2)];
 set(patch_obj,'Vertices',new_vert);
 
-display_info_ButtonMotionFcn([],[],main_figure,1);
 reset_disp_info(main_figure);
+
+set(main_figure,'WindowButtonMotionFcn',wbmf_ori);
 
 % profile off;
 % profile viewer

@@ -1,6 +1,7 @@
 
 function display_regions(main_figure,varargin)
 
+%profile on;
 if ~isdeployed
    disp('Display regions') 
 end
@@ -104,7 +105,7 @@ for iax=1:length(main_axes_tot)
         x_reg_poly=[x(reg_curr.Idx_pings(:)') x(reg_curr.Idx_pings(end))*ones(size(reg_curr.Idx_r(:)')) x(reg_curr.Idx_pings) x(reg_curr.Idx_pings(1))*ones(size(reg_curr.Idx_r(:)'))];
         y_reg_poly=[y(reg_curr.Idx_r(1))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))' y(reg_curr.Idx_r(end))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))'];
         
-        if nansum(inpolygon(x_reg_poly,y_reg_poly,rect_lim_x,rect_lim_y))==0&&nansum(inpolygon(rect_lim_x,rect_lim_y,x_reg_rect,y_reg_rect))==0
+        if ~any(inpolygon(x_reg_poly,y_reg_poly,rect_lim_x,rect_lim_y))&&~any(inpolygon(rect_lim_x,rect_lim_y,x_reg_rect,y_reg_rect))
             continue;
         end
         
@@ -145,6 +146,7 @@ for iax=1:length(main_axes_tot)
                 y_reg=cell(1,length(idx_x));
                 
                 nb_cont=length(idx_x);
+                len_cont=0;
                 for jj=1:nb_cont
                     
                     idx_x_out{jj}=idx_x{jj}+reg_curr.Idx_pings(1)-1;
@@ -152,8 +154,9 @@ for iax=1:length(main_axes_tot)
                     
                     x_reg{jj}=x(idx_x_out{jj});
                     y_reg{jj}=y(idx_y_out{jj})';
-                    
-                    if ~isempty(idx_x)
+                    len_cont_curr=length(x_reg{jj});
+                    if ~isempty(idx_x)&&len_cont_curr>=len_cont
+                        len_cont=len_cont_curr;
                         x_text=nanmean(x_reg{jj});
                         y_text=nanmean(y_reg{jj});
                     end
@@ -179,6 +182,7 @@ for iax=1:length(main_axes_tot)
         end
         
     end
-    
+%     profile off;
+%     profile viewer;
 end
 

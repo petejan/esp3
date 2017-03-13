@@ -24,19 +24,11 @@ switch curr_disp.Cmap
         col_line='k';
 end
 
-xdata=double(get(axes_panel_comp.main_echo,'XData'));
-ydata=double(get(axes_panel_comp.main_echo,'YData'));
-
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans=layer.Transceivers(idx_freq);
-bot=trans.Bottom;
 
-Number=trans.get_transceiver_pings();
-nb_pings=length(Number);
+xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
 
-if isempty(bot.Sample_idx)
-    bot.Sample_idx=nan(1,nb_pings);
-end
 
 cp = ah.CurrentPoint;
 u=1;
@@ -45,9 +37,17 @@ yinit=nan(1,1e4);
 xinit(1) = cp(1,1);
 yinit(1)=cp(1,2);
 
-if xinit(1)<xdata(1)||xinit(1)>xdata(end)||yinit(1)<1||yinit(1)>ydata(end)
-    return
+xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
+
+x_lim=get(ah,'xlim');
+y_lim=get(ah,'ylim');
+
+if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
+    return;
 end
+
+
 axes(ah);
 hold on;
 hp=line(xinit,yinit,'color',col_line,'linewidth',1);
@@ -62,7 +62,11 @@ main_figure.WindowButtonUpFcn = @wbucb;
         xinit(u) = cp(1,1);
         yinit(u) = cp(1,2);
         str_txt=sprintf('%.2f m',cp(1,2));
-        set(hp,'XData',xinit,'YData',yinit);
+        if isvalid(hp)
+            set(hp,'XData',xinit,'YData',yinit);
+        else
+            hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1);
+        end
         set(txt,'position',[cp(1,1) cp(1,2) 0],'string',str_txt);
         drawnow;
     end
@@ -96,9 +100,8 @@ main_figure.WindowButtonUpFcn = @wbucb;
         reset_disp_info(main_figure);
         clear_lines(ah)
         delete(txt);
-        [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
-        
-        feval(func,main_figure,poly_r+idx_r_ori-1,poly_pings+idx_ping_ori-1);
+
+        feval(func,main_figure,poly_r,poly_pings);
         curr_disp.CursorMode='Normal';
         
         main_figure.Pointer = 'arrow';

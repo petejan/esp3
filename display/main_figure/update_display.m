@@ -1,7 +1,7 @@
 function update_display(main_figure,new)
 
 set(main_figure,'WindowButtonMotionFcn','');
-opt_panel=findobj(main_figure,'Tag','option_tab_panel');
+opt_panel=getappdata(main_figure,'option_tab_panel');
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)

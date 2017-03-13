@@ -2,6 +2,7 @@ function format_color_gui(fig,font_choice)
 %background_col=get(groot,'defaultUicontrolBackgroundColor');
 
 background_col='white';
+
 for i=1:length(fig)
     set(fig(i),'Color',background_col);
     panel_obj=findobj(fig(i),'Type','uipanel');

@@ -1,5 +1,6 @@
 function inter_region_create(main_figure,mode,func)
 
+layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
@@ -20,13 +21,19 @@ switch curr_disp.Cmap
         col_line='k';
 end
 
-
 clear_lines(ah);
 
-xdata=get(axes_panel_comp.main_echo,'XData');
-ydata=get(axes_panel_comp.main_echo,'YData');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
+%xdata=double(get(axes_panel_comp.main_echo,'XData'));
+%ydata=double(get(axes_panel_comp.main_echo,'YData'));
+x_lim=get(ah,'xlim');
+y_lim=get(ah,'ylim');
 cp = ah.CurrentPoint;
 
+
+u=1;
 switch mode
     case 'rectangular'
         xinit = cp(1,1);
@@ -40,7 +47,7 @@ switch mode
 end
 
 
-if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
+if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
     return;
 end
 
@@ -60,6 +67,11 @@ main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
+        
+        u=u+1;
+
+        display_info_ButtonMotionFcn([],[],main_figure,1);
+  
         
         switch mode
             case 'rectangular'
@@ -89,7 +101,13 @@ main_figure.WindowButtonUpFcn = @wbucb;
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
         str_txt=sprintf('%.2f m',cp(1,2));
-        set(hp,'XData',x_box,'YData',y_box);
+        
+        if isvalid(hp)
+            set(hp,'XData',x_box,'YData',y_box);
+        else
+            hp=plot(ah,x_box,x_box,'color',col_line,'linewidth',1,'Tag','bottom_temp');
+        end
+
         set(txt,'position',[cp(1,1) cp(1,2) 0],'string',str_txt);
         
     end
@@ -102,10 +120,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         layer=getappdata(main_figure,'Layer');
         
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-        
-        [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
-        
-        
+
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
         
@@ -124,14 +139,11 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
         switch mode
             case 'horizontal'
-                idx_r=idx_r+idx_r_ori-1;
+
                 idx_pings=1:length(layer.Transceivers(idx_freq).get_transceiver_pings());
             case 'vertical'
                 idx_r=1:length(layer.Transceivers(idx_freq).get_transceiver_range());
-                idx_pings=idx_pings+idx_ping_ori-1;
-            otherwise
-                idx_r=idx_r+idx_r_ori-1;
-                idx_pings=idx_pings+idx_ping_ori-1;
+
         end
         delete(txt);
         delete(hp);
