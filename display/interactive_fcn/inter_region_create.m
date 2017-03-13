@@ -31,7 +31,12 @@ ydata=layer.Transceivers(idx_freq).Data.get_range();
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
 cp = ah.CurrentPoint;
+xinit = cp(1,1);
+yinit = cp(1,2);
 
+if xinit<x_lim(1)||xinit>x_lim(end)||yinit<y_lim(1)||yinit>y_lim(end)
+    return;
+end
 
 u=1;
 switch mode
@@ -46,10 +51,6 @@ switch mode
         yinit = ydata(1);
 end
 
-
-if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
-    return;
-end
 
 
 x_box=xinit;

@@ -47,12 +47,19 @@ end
 
 
 
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
+xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
+ydata=layer.Transceivers(idx_freq).Data.get_range();
 
-xdata=get(axes_panel_comp.main_echo,'XData');
-ydata=get(axes_panel_comp.main_echo,'YData');
+x_lim=get(ah,'xlim');
+y_lim=get(ah,'ylim');
 cp = ah.CurrentPoint;
-
+xinit = cp(1,1);
+yinit = cp(1,2);
+if xinit<x_lim(1)||xinit>x_lim(end)||yinit<y_lim(1)||yinit>y_lim(end)
+    return;
+end
 switch mode
     case 'rectangular'
         xinit = cp(1,1);
@@ -65,10 +72,6 @@ switch mode
         yinit = ydata(1);
 end
 
-
-if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
-    return;
-end
 
 x_box=xinit;
 y_box=yinit;
@@ -83,8 +86,7 @@ order_axes(main_figure);
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
-        
-        
+            
         switch mode
             case 'rectangular'
                 X = [xinit,cp(1,1)];

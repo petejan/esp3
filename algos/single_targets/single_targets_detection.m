@@ -434,6 +434,22 @@ single_targets.Pitch=pitch_mat(idx_target_lin);
 single_targets.Heave=heave_mat(idx_target_lin);
 single_targets.Heading=heading_mat(idx_target_lin);
 
-
+old_single_targets=trans_obj.ST;
+if~isempty(old_single_targets)
+    if ~isempty(old_single_targets.TS_comp)
+        
+        idx_rem=(old_single_targets.idx_r>=idx_r(1)&old_single_targets.idx_r<=idx_r(end))&(old_single_targets.Ping_number>=idx_pings(1)&old_single_targets.Ping_number<=idx_pings(end));
+        
+        props=fields(old_single_targets);
+        
+        for i=1:length(props)
+            if length(old_single_targets.(props{i}))==length(idx_rem)
+            old_single_targets.(props{i})(idx_rem)=[];
+            single_targets.(props{i})=[old_single_targets.(props{i})(:)' single_targets.(props{i})(:)'];
+            end
+        end
+    end
+    
+    single_targets.nb_valid_targets=length(single_targets.TS_comp);
 end
 

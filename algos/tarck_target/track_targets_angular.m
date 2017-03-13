@@ -53,9 +53,35 @@ addParameter(p,'Min_Pings_Track',default_Min_Pings_Track,check_accept);
 addParameter(p,'Max_Gap_Track',default_Max_Gap_Track,check_accept);
 addParameter(p,'load_bar_comp',[]);
 
+addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
+addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
+
 parse(p,trans_obj,varargin{:});
 
+if isempty(p.Results.idx_r)
+    idx_r=1:length(trans_obj.get_transceiver_range());
+else
+    idx_r=p.Results.idx_r;
+end
+
+if isempty(p.Results.idx_pings)
+    idx_pings=1:length(trans_obj.get_transceiver_pings());
+else
+    idx_pings=p.Results.idx_pings;
+end
+
+idx_r=idx_r(:);
+idx_pings=idx_pings(:)';
+
 ST=trans_obj.ST;
+
+% idx_rem=(old_single_targets.idx_r>=idx_r(1)&old_single_targets.idx_r<=idx_r(end))&(old_single_targets.Ping_number>=idx_pings(1)&old_single_targets.Ping_number<=idx_pings(end));
+% 
+% props=fields(old_single_targets);
+% 
+% for i=1:length(props)
+%     ST.(props{i})(idx_rem)=[];
+% end
 
 nb_targets=length(ST.TS_comp);
 if nb_targets==0
