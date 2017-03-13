@@ -1,36 +1,6 @@
 function initialize_interactions(main_figure,new)
 % initialize_interactions(main_figure)
 %
-% DESCRIPTION
-%
-% Initialize user interactions with main figure
-%
-% USE
-%
-% [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
-%
-% PROCESSING SUMMARY
-%
-% - [Bullet point list summary of the steps in the processing.]
-% - [DELETE THESE LINES IF UNUSED]
-%
-% INPUT VARIABLES
-%
-% - main_figure (required): ESP3 main figure
-% - new: 0 or 1. 0 if refreshing 1 if first time you are loading
-%
-% RESEARCH NOTES
-%
-% [Describes what features are temporary or needed future developments.]
-% [Also use for paper references.]
-% [DELETE THESE LINES IF UNUSED]
-%
-% NEW FEATURES
-%
-% 2017-03-02: first version.
-%
-%%%
-% 
 % DESCRIPTION 
 % 
 % Initialize user interactions with ESP3 main figure
@@ -52,6 +22,7 @@ function initialize_interactions(main_figure,new)
 % INPUT VARIABLES 
 % 
 % - main_figure (required): ESP3 main figure
+% - new: 0 or 1. 0 if refreshing 1 if first time you are loading
 % 
 % RESEARCH NOTES 
 % 
