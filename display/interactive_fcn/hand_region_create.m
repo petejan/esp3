@@ -67,7 +67,12 @@ main_figure.WindowButtonUpFcn = @wbucb;
         else
             hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1);
         end
-        set(txt,'position',[cp(1,1) cp(1,2) 0],'string',str_txt);
+        
+        if isvalid(txt)
+            set(txt,'position',[cp(1,1) cp(1,2) 0],'string',str_txt);
+        else
+            txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+        end
         drawnow;
     end
 

@@ -10,7 +10,6 @@ end
 
 time_corr(isnan(time_corr))=trans_obj.Data.Time(isnan(time_corr))+nanmean(time_corr(:)-trans_obj.Data.Time(:));
 
-
 range_line=resample_data_v2(line_obj.Range,line_obj.Time,time_corr);
 range_line(isnan(range_line))=0;
 line_obj_2=line_cl('Tag',line_obj.Tag,'Range',range_line,'Time',trans_obj.Data.Time,'File_origin',line_obj.File_origin,'UTC_diff',line_obj.UTC_diff);

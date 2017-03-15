@@ -177,7 +177,8 @@ for isn=1:length(snaps)
         
         reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_t);
         
-        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Denoised',surv_in_obj.Options.Denoised);
+        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),...
+            'Denoised',surv_in_obj.Options.Denoised,'motion_correction',surv_in_obj.Options.Motion_correction);
         %[sliced_output_2D,regCellInt_tot]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
         
         Output_echo=[Output_echo sliced_output];

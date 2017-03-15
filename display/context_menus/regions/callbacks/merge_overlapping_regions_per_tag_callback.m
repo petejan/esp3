@@ -12,7 +12,11 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     tag=layer.Transceivers(idx_freq).get_tags();
     for t=1:1:length(tag)
         idx=layer.Transceivers(idx_freq).list_regions_tag(tag{t});
-        new_regions=[new_regions layer.Transceivers(idx_freq).Regions(idx).merge_regions()];
+        regions_tmps=layer.Transceivers(idx_freq).Regions(idx).merge_regions();
+        for i=1:length(regions_tmps)
+            regions_tmps(i).Tag=tag{t};
+        end
+        new_regions=[new_regions regions_tmps];
     end
     layer.Transceivers(idx_freq).rm_all_region();
     layer.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));

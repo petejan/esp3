@@ -2,13 +2,54 @@ function create_context_menu_bottom(main_figure,bottom_line)
 
 context_menu=uicontextmenu(main_figure);
 bottom_line.UIContextMenu=context_menu;
-uimenu(context_menu,'Label','Display Bottom Region','Callback',{@display_bottom_region_callback,main_figure});
-uimenu(context_menu,'Label','Filter Bottom','Callback',{@filter_bottom_callback,main_figure});
-
+uimenu(context_menu,'Label','Display Bottom Region','Callback',@display_bottom_region_callback);
+uimenu(context_menu,'Label','Filter Bottom','Callback',@filter_bottom_callback);
+uimenu(context_menu,'Label','Display Slope estimation','Callback',@slope_est_callback);
+uimenu(context_menu,'Label','Display Shadow zone estimation','Callback',@shadow_zone_est_callback);
 
 end
 
-function display_bottom_region_callback(~,~,main_figure)
+
+function shadow_zone_est_callback(src,~)
+main_figure=ancestor(src,'Figure');
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+
+shadow_zone_height_est = trans_obj.get_shadow_zone_height_est();
+
+fig_handle=new_echo_figure(main_figure,'Tag','shodow_zone');
+ax=axes(fig_handle);
+plot(ax,shadow_zone_height_est);
+grid(ax,'on');
+xlabel(ax,'Ping number')
+ylabel(ax,'Shadow Zone (m)');
+
+end
+
+function slope_est_callback(src,~)
+main_figure=ancestor(src,'Figure');
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+
+slope_est=trans_obj.get_slope_est();
+
+fig_handle=new_echo_figure(main_figure,'Tag','slope_est');
+ax=axes(fig_handle);
+plot(ax,slope_est);
+grid(ax,'on');
+xlabel(ax,'Ping number')
+ylabel(ax,'Slope (deg)');
+
+end
+
+function display_bottom_region_callback(src,~)
+main_figure=ancestor(src,'Figure');
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -33,8 +74,8 @@ reg_wc.display_region(trans_obj);
 
 end
 
-function filter_bottom_callback(~,~,main_figure)
-
+function filter_bottom_callback(src,~)
+main_figure=ancestor(src,'Figure');
 prompt={'Filter Width (in pings)'};
 defaultanswer={'10'};
 

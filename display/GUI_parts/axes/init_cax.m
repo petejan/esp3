@@ -55,6 +55,9 @@ switch lower(Fieldname)
    case 'fishdensity'
         Cax=[0 30];
         Type='Fish Density';
+    case 'motioncompensation'
+        Cax=[0 12];
+        Type='Motion Compensation';
     otherwise
         Cax=[-Inf Inf];
         Type=Fieldname;

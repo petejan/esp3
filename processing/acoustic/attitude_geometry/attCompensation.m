@@ -20,5 +20,4 @@ x=sin(mu)/sin(alpha/2);
 k = 0.17083*x.^5 - 0.39660*x.^4 + 0.53851*x.^3 + 0.13764*x.^2 + 0.039645*x + 1;
 
 compensation=10*log10(k);
-compensation(abs(mu)>alpha)=nan;
 end

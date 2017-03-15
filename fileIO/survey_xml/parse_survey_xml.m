@@ -19,34 +19,13 @@ nb_cal=0;
 for i=1:nb_child
     switch xml_struct.Children(i).Name
         case 'survey'
-           Infos=get_node_att(xml_struct.Children(i));
+            Infos=get_node_att(xml_struct.Children(i));
         case 'cal'
-           nb_cal=nb_cal+1;
-           %cal_temp=get_cal_node(node,Options.Frequency,Options.EQA);
-           cal_temp=get_cal_node(xml_struct.Children(i),Options.Frequency,nan);
-           Cal=[Cal cal_temp];
+            nb_cal=nb_cal+1;
+            cal_temp=get_cal_node(xml_struct.Children(i),Options.Frequency,nan);
+            Cal=[Cal cal_temp];
         case 'options'
-           Options=get_node_att(xml_struct.Children(i));
-           if isfield(Options,'FrequenciesToLoad')
-               if ischar(Options.FrequenciesToLoad)
-                   Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
-                   if isnan(Options.FrequenciesToLoad)
-                       Options.FrequenciesToLoad=Options.Frequency;
-                   end
-               end
-                abs_ori=Options.Absorption;
-                Options.Absorption=nan(1,length(Options.FrequenciesToLoad));
-                if ischar(abs_ori)
-                    abs_temp=str2double(strsplit(abs_ori,';'));
-                    if length(abs_temp)==length(Options.FrequenciesToLoad)
-                        Options.Absorption=abs_temp;
-                    end
-                else
-                   Options.Absorption(Options.FrequenciesToLoad==Options.Frequency)=abs_ori;
-                end
-           end
-
-           
+            Options=survey_options_cl('Options',get_options_node(xml_struct.Children(i)));
         case 'algos'
             Algos=get_algos(xml_struct.Children(i));
         case 'regions_WC'
@@ -54,7 +33,7 @@ for i=1:nb_child
             Regions_WC{nb_reg}=get_node_att(xml_struct.Children(i));
         case 'snapshot'
             nb_snap=nb_snap+1;
-            Snapshots{nb_snap}=get_snapshot(xml_struct.Children(i),Options);      
+            Snapshots{nb_snap}=get_snapshot(xml_struct.Children(i),Options);
         case '#comment'
             continue;
         otherwise
@@ -65,6 +44,29 @@ survey_input=survey_input_cl('Infos',Infos,'Options',Options,'Algos',Algos,'Regi
 
 end
 
+function  Options=get_options_node(xml_node)
+Options=get_node_att(xml_node);
+
+if isfield(Options,'FrequenciesToLoad')
+    if ischar(Options.FrequenciesToLoad)
+        Options.FrequenciesToLoad=str2double(strsplit(Options.FrequenciesToLoad,';'));
+        if isnan(Options.FrequenciesToLoad)
+            Options.FrequenciesToLoad=Options.Frequency;
+        end
+    end
+    abs_ori=Options.Absorption;
+    Options.Absorption=nan(1,length(Options.FrequenciesToLoad));
+    if ischar(abs_ori)
+        abs_temp=str2double(strsplit(abs_ori,';'));
+        if length(abs_temp)==length(Options.FrequenciesToLoad)
+            Options.Absorption=abs_temp;
+        end
+    else
+        Options.Absorption(Options.FrequenciesToLoad==Options.Frequency)=abs_ori;
+    end
+end
+
+end
 
 
 function node_atts=get_node_att(node)
@@ -77,7 +79,7 @@ node_atts=[];
 
 for j=1:nb_att
     node_atts.(node.Attributes(j).Name)=node.Attributes(j).Value;
-
+    
     if ischar(node_atts.(node.Attributes(j).Name))
         if strcmpi(node_atts.(node.Attributes(j).Name),'nan')
             node_atts.(node.Attributes(j).Name)=nan;
@@ -102,21 +104,21 @@ end
 end
 
 function att_val=get_att(node,name)
-    att_val=[];
-    for iu=1:length(node.Attributes)
-        if strcmpi(node.Attributes(iu).Name,name)
+att_val=[];
+for iu=1:length(node.Attributes)
+    if strcmpi(node.Attributes(iu).Name,name)
         att_val=node.Attributes(iu).Value;
-        end
     end
+end
 end
 
 function childs=get_childs(node,name)
-    childs=[];
-    for iu=1:length(node.Children)
-        if strcmpi(node.Children(iu).Name,name)
+childs=[];
+for iu=1:length(node.Children)
+    if strcmpi(node.Children(iu).Name,name)
         childs=[childs node.Children(iu)];
-        end
     end
+end
 end
 
 function transects=get_transects(node)
@@ -126,7 +128,7 @@ transects=cell(1,length(trans_nodes));
 for iu=1:length(trans_nodes)
     trans_curr=get_node_att(trans_nodes(iu));
     bott_curr=get_childs(trans_nodes(iu),'bottom');
-    reg_curr=get_childs(trans_nodes(iu),'region'); 
+    reg_curr=get_childs(trans_nodes(iu),'region');
     trans_curr.Bottom=get_node_att(bott_curr);
     trans_curr.Regions=cell(1,length(reg_curr));
     
@@ -147,7 +149,7 @@ for iu=1:length(trans_nodes)
     trans_curr.Cal=Cal;
     transects{iu}=trans_curr;
 end
-    
+
 end
 
 function snapshot_struct=get_snapshot(node,options)
@@ -164,20 +166,26 @@ end
 snapshot_struct.Cal=Cal;
 
 for i=1:length(stratum)
-    strat_curr.Name=get_att(stratum(i),'name');
-    strat_curr.Transects=get_transects(stratum(i));
-    if isnumeric(strat_curr.Name)
-           strat_curr.Name=num2str(strat_curr.Name,'%.0f');
-    end
-    
-    cals=get_childs(stratum(i),'cal');
-    Cal=[];
-    for ii=1:length(cals)
-        cal_temp=get_cal_node(cals(i),options.Frequency,nan);
-        Cal=[Cal cal_temp];
-    end
-    strat_curr.Cal=Cal;
+    strat_curr=get_strat_node(stratum(i),options);
     snapshot_struct.Stratum{i}=strat_curr;
 end
 
+end
+
+function strat_curr=get_strat_node(stratum,options)
+    strat_curr.Name=get_att(stratum,'name');
+    strat_curr.Transects=get_transects(stratum);
+    if isnumeric(strat_curr.Name)
+        strat_curr.Name=num2str(strat_curr.Name,'%.0f');
+    end
+
+    cals=get_childs(stratum,'cal');
+    Cal=[];
+    for ii=1:length(cals)
+        cal_temp=get_cal_node(cals,options.Frequency,nan);
+        Cal=[Cal cal_temp];
+    end
+    
+    strat_curr.Cal=Cal;
+    strat_curr.Options=update_options(options,get_options_node(get_childs(stratum,'options')));
 end

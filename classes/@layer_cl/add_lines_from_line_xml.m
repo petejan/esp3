@@ -44,6 +44,11 @@ for ix=1:length(line_file_str)
                 
         end
         layer_obj.add_lines(line);
+        if strcmpi(line.Tag,'offset')
+           for i=1:length(layer_obj.Transceivers)
+               layer_obj.Transceivers(i).add_offset_line(line);
+           end
+        end
     end
     
 end

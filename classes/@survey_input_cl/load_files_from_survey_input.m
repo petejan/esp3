@@ -14,7 +14,6 @@ parse(p,surv_input_obj,varargin{:});
 
 datapath=p.Results.PathToMemmap;
 infos=surv_input_obj.Infos;
-options=surv_input_obj.Options;
 regions_wc=surv_input_obj.Regions_WC;
 algos=surv_input_obj.Algos;
 
@@ -41,6 +40,7 @@ for isn=1:length(snapshots)
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
         cal_strat=get_cal_node(cal_snap,stratum{ist});
+        options=stratum{ist}.Options;
         for itr=1:length(transects)
            show_status_bar(p.Results.gui_main_handle);
            
@@ -271,13 +271,16 @@ for isn=1:length(snapshots)
                                 end
                         end
    
-                        if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
-                            layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
+                        if ~isnan(Absorption(options.FrequenciesToLoad==curr_freq))
+                            layer_new.Transceivers(i_freq).apply_absorption(Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
                         else
                             fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                         end
                         
-
+                        if options.Options.Motion_correction
+                            create_motion_comp_subdata(layer_new,i_freq);
+                        end
+                        
                     end
                     
                     
@@ -295,9 +298,7 @@ for isn=1:length(snapshots)
 
                     end
                     
-                    
-                    
-                    
+                           
                     
                     for ial=1:length(algos)
                         if isempty(algos{ial}.Varargin.Frequencies)

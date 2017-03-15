@@ -60,6 +60,7 @@ if isempty(layer.Lines)
 end
 
 line_offset=layer.Lines(get(lines_tab_comp.tog_line,'value'));
+line_offset.Tag='Offset';
 layer.Transceivers(idx_freq).add_offset_line(line_offset);
 
 display_offset_echogram(main_figure);

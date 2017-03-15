@@ -10,7 +10,7 @@ addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','mete
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',Inf,@(x) x>0);
 addParameter(p,'Denoised',0,@isnumeric);
-
+addParameter(p,'Motion_correction',0,@isnumeric)
 parse(p,trans_obj,varargin{:});
 
 reg=p.Results.reg;
@@ -115,7 +115,8 @@ for iuu=1:length(idx_reg)
     
     i_reg=i_reg+1;
     reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
-    regCellInt=trans_obj.integrate_region(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],'denoised',p.Results.Denoised);
+    regCellInt=trans_obj.integrate_region(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],...
+        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
     
     if isempty(regCellInt)
         i_reg=i_reg-1;

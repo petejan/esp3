@@ -40,9 +40,9 @@ set(region_tab_comp.cell_w_unit,'string',w_units);
 
 if ~isempty(layer.Transceivers(idx_freq).Regions)
     reg_curr=layer.Transceivers(idx_freq).Regions(idx_reg);
-    shape_types=get(region_tab_comp.shape_type,'string');
-    shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
-    set(region_tab_comp.shape_type,'value',shape_type_idx);
+%     shape_types=get(region_tab_comp.shape_type,'string');
+%     shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
+%     set(region_tab_comp.shape_type,'value',shape_type_idx);
     
     data_types=get(region_tab_comp.data_type,'string');
     data_type_idx=find(strcmp(reg_curr.Type,data_types));

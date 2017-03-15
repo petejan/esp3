@@ -5,7 +5,8 @@ addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
 addRequired(p,'region',@(x) isa(x,'region_cl'));
 addParameter(p,'vertExtend',[0 Inf],@isnumeric);
 addParameter(p,'horiExtend',[0 Inf],@isnumeric);
-addParameter(p,'denoised',0,@isnumeric)
+addParameter(p,'denoised',0,@isnumeric);
+addParameter(p,'motion_correction',0,@isnumeric);
 
 
 parse(p,trans_obj,region,varargin{:});
@@ -26,6 +27,15 @@ if p.Results.denoised>0
     end
 else
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
+end
+
+if p.Results.motion_correction>0
+     motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncorrection');
+     if ~isempty(motion_corr)
+        Sv_reg=Sv_reg-motion_corr;  
+     else
+        disp('Cannot find motion corrected Sv, integrating normal Sv.') 
+     end
 end
 %Sv_reg(Sv_reg<-80)=-999;
 

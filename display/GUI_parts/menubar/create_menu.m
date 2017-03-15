@@ -138,6 +138,7 @@ if ~isdeployed
     data_tools=uimenu(mhhh,'Label','Data tools');
     uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
     uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
+    uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@create_motion_compensation_echogramm_cback,main_figure});
 end
 
 

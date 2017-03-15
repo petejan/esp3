@@ -38,7 +38,8 @@ if ~isempty(new_layers)
             new_layers(i).add_lines_from_line_xml();
         catch err
             disp(err.message);
-            fprintf('Could not load lines for layer %s',list_layers(new_layers(i),'nb_char',80));
+            laystr=list_layers(new_layers(i),'nb_char',80);
+            fprintf('Could not load lines for layer %s',laystr{1});
         end
     end
 else
