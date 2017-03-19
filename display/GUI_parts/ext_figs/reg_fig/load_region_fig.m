@@ -30,8 +30,7 @@ else
             'Resize','on',...
             'MenuBar','none',...
             'Name','','Tag','regions_list');
-        
-        
+            
     else
         return;
     end
