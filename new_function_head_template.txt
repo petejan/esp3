@@ -1,12 +1,10 @@
-% [copy_function_code_line_here_so_typical_call_to_function_shows_in_help]
-%
-% DESCRIPTION
+%% [my_Matlab_function_name.m]
 %
 % [This section containg a very short description of the function, for the user to know this is part of ESP3 and what it is]
 % Template of ESP3 function header.
 % [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %
-% USE
+%% USE
 %
 % [This section contains a more detailed description of what the function does and how to use it, for the interested user to have an overall understanding of its function] 
 % This is a text file containing the basic comment template to add at the

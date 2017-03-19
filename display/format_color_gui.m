@@ -1,7 +1,11 @@
 function format_color_gui(fig,font_choice)
 %background_col=get(groot,'defaultUicontrolBackgroundColor');
 
-background_col='white';
+%-- Alex change: BackgroundColor proprety of uitab doesn't like names and
+%prefer RGB triplet (at least on R0216b)
+% background_col = 'white';
+background_col = [1 1 1];
+%--
 
 for i=1:length(fig)
     set(fig(i),'Color',background_col);

@@ -1,0 +1,443 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>EchoAnalysis.m</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-20"><meta name="DC.source" content="EchoAnalysis.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>EchoAnalysis.m</h1><!--introduction--><p>ESP3 Main function</p><pre>        |
+       /|\
+      / | \
+     /  |  \
+    /   |___\
+  _/____|______
+   \___________\   written by Yoann Ladroit
+      / \          in 2016
+     /   \
+    / &lt;&gt;&lt; \    Fisheries Acoustics
+   /&lt;&gt;&lt; &lt;&gt;&lt;\   NIWA - National Institute of Water &amp; Atmospheric Research</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Help</a></li><li><a href="#2">Function</a></li><li><a href="#4">Debug</a></li><li><a href="#5">Set java window style and remove Javaframe warning</a></li><li><a href="#6">Checking and parsing input variables</a></li><li><a href="#7">Do not Relaunch ESP3 if already open (in Matlab)...</a></li><li><a href="#8">Get monitor's dimensions</a></li><li><a href="#9">Defining the app's main window</a></li><li><a href="#10">Install mouse pointer manager in figure</a></li><li><a href="#11">Get Javaframe from Figure to set the Icon</a></li><li><a href="#12">Software version</a></li><li><a href="#13">Default font size for Controls and Panels</a></li><li><a href="#14">Software main path</a></li><li><a href="#15">Read ESP3 config file</a></li><li><a href="#16">Create temporary data folder</a></li><li><a href="#17">Managing existing files in temporary data folder</a></li><li><a href="#18">Initialize empty layer, process and layers objects</a></li><li><a href="#19">Store objects in app main figure</a></li><li><a href="#20">Move main figure to screen center</a></li><li><a href="#21">Initialize the display and the interactions with the user</a></li><li><a href="#22">If files were loaded in input, load them now</a></li></ul></div><h2 id="1">Help</h2><p><b>USE</b></p><p>Run this function without input variables to launch empty ESP3, or with input file names to open. Use the SaveEcho optional parameter to print out contents of any input file.</p><p><b>INPUT VARIABLES</b></p><p>'Filenames' (optional). Valid options:</p><div><ul><li>char: filename to open</li><li>cell: filename(s) to open</li></ul></div><p>'SaveEcho' (optional). Valid options:</p><div><ul><li>1: print content of input file and closes ESP3</li></ul></div><p><b>RESEARCH NOTES</b></p><p>NA</p><p><b>NEW FEATURES</b></p><div><ul><li>2017-03-17: reformatting comment and header for compatibility with publish</li><li>2017-03-02: commented and header added (Alex)</li></ul></div><p><b>EXAMPLE</b></p><pre class="language-matlab">EchoAnalysis; <span class="comment">% launches ESP3</span>
+EchoAnalysis(<span class="string">'Filenames'</span>,<span class="string">'my_file.raw'</span>); <span class="comment">% launches ESP3 and opens 'my_file.raw'.</span>
+EchoAnalysis(<span class="string">'Filenames'</span>,<span class="string">'my_file.raw'</span>,<span class="string">'SaveEcho'</span>,1); <span class="comment">% launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.</span>
+</pre><p><b>AUTHOR, AFFILIATION &amp; COPYRIGHT</b></p><p>Yoann Ladroit, NIWA.</p><p>Copyright 2017 NIWA</p><p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p><p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p><h2 id="2">Function</h2><pre class="codeinput"><span class="keyword">function</span> EchoAnalysis(varargin)
+</pre><h2 id="4">Debug</h2><pre class="codeinput"><span class="keyword">global</span> DEBUG;
+DEBUG=0;
+</pre><h2 id="5">Set java window style and remove Javaframe warning</h2><pre class="codeinput">javax.swing.UIManager.setLookAndFeel(<span class="string">'com.sun.java.swing.plaf.windows.WindowsLookAndFeel'</span>);
+warning(<span class="string">'off'</span>,<span class="string">'MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame'</span>);
+</pre><h2 id="6">Checking and parsing input variables</h2><pre class="codeinput">p = inputParser;
+addParameter(p,<span class="string">'Filenames'</span>,{},@(x) ischar(x)|iscell(x));
+addParameter(p,<span class="string">'SaveEcho'</span>,0,@isnumeric);
+parse(p,varargin{:});
+</pre><h2 id="7">Do not Relaunch ESP3 if already open (in Matlab)...</h2><pre class="codeinput"><span class="keyword">if</span> ~isdeployed()
+    esp_win = findobj(groot,<span class="string">'tag'</span>,<span class="string">'ESP3'</span>);
+    <span class="keyword">if</span>~isempty(esp_win)
+        figure(esp_win);
+        <span class="keyword">return</span>;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><h2 id="8">Get monitor's dimensions</h2><pre class="codeinput">size_max = get(0, <span class="string">'MonitorPositions'</span>);
+</pre><h2 id="9">Defining the app's main window</h2><pre class="codeinput">main_figure = figure(<span class="string">'Visible'</span>,<span class="string">'on'</span>,<span class="keyword">...</span>
+                     <span class="string">'Units'</span>,<span class="string">'pixels'</span>,<span class="keyword">...</span>
+                     <span class="string">'Position'</span>,[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3)/4*3 size_max(1,4)/4*3],<span class="keyword">...</span><span class="comment"> %Position and size normalized to the screen size ([left, bottom, width, height])</span>
+                     <span class="string">'Color'</span>,<span class="string">'White'</span>,<span class="keyword">...</span>
+                     <span class="string">'Name'</span>,<span class="string">'ESP3'</span>,<span class="keyword">...</span>
+                     <span class="string">'Tag'</span>,<span class="string">'ESP3'</span>,<span class="keyword">...</span>
+                     <span class="string">'NumberTitle'</span>,<span class="string">'off'</span>,<span class="keyword">...</span>
+                     <span class="string">'Resize'</span>,<span class="string">'on'</span>,<span class="keyword">...</span>
+                     <span class="string">'MenuBar'</span>,<span class="string">'none'</span>,<span class="keyword">...</span>
+                     <span class="string">'Toolbar'</span>,<span class="string">'none'</span>,<span class="keyword">...</span>
+                     <span class="string">'visible'</span>,<span class="string">'off'</span>,<span class="keyword">...</span>
+                     <span class="string">'DockControls'</span>,<span class="string">'off'</span>,<span class="keyword">...</span>
+                     <span class="string">'CloseRequestFcn'</span>,@closefcn_clean);
+</pre><h2 id="10">Install mouse pointer manager in figure</h2><pre class="codeinput">iptPointerManager(main_figure);
+</pre><h2 id="11">Get Javaframe from Figure to set the Icon</h2><pre class="codeinput">javaFrame = get(main_figure,<span class="string">'JavaFrame'</span>);
+javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),<span class="string">'icons'</span>,<span class="string">'echoanalysis.png'</span>)));
+</pre><h2 id="12">Software version</h2><pre class="codeinput">echo_ver = get_ver();
+fprintf(<span class="string">'Version %s\n'</span>,echo_ver);
+</pre><pre class="codeoutput">Version 0.0.0.0 Do not use for integration
+</pre><h2 id="13">Default font size for Controls and Panels</h2><pre class="codeinput">set(0,<span class="string">'DefaultUicontrolFontSize'</span>,10);
+set(0,<span class="string">'DefaultUipanelFontSize'</span>,10);
+</pre><h2 id="14">Software main path</h2><pre class="codeinput">main_path = whereisEcho();
+<span class="keyword">if</span> ~isdeployed
+    update_path(main_path);
+<span class="keyword">end</span>
+update_java_path(main_path);
+</pre><pre class="codeoutput">postgresql-9.4.1212.jre6.jar added to java path
+sqlite-jdbc-3.15.1.jar added to java path
+</pre><h2 id="15">Read ESP3 config file</h2><pre class="codeinput">[app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,<span class="string">'config'</span>,<span class="string">'config_echo.xml'</span>));
+</pre><h2 id="16">Create temporary data folder</h2><pre class="codeinput"><span class="keyword">try</span>
+    <span class="keyword">if</span> ~isdir(app_path.data_temp)
+        mkdir(app_path.data_temp);
+        disp(<span class="string">'Data Folder Created'</span>)
+        disp(app_path.data_temp)
+    <span class="keyword">end</span>
+<span class="keyword">catch</span>
+    disp(<span class="string">'Error: Unable to create Data Folder'</span>)
+    disp(app_path.data_temp);
+    disp(<span class="string">'Creating new config_echo.xml file'</span>)
+    delete(fullfile(main_path,<span class="string">'config'</span>,<span class="string">'config_echo.xml'</span>));
+    [app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,<span class="string">'config'</span>,<span class="string">'config_echo.xml'</span>));
+<span class="keyword">end</span>
+</pre><h2 id="17">Managing existing files in temporary data folder</h2><pre class="codeinput">files_in_temp=dir(fullfile(app_path.data_temp,<span class="string">'*.bin'</span>));
+
+idx_old=[];
+<span class="keyword">for</span> uu=1:length(files_in_temp)
+    <span class="keyword">if</span> (now-files_in_temp(uu).datenum)&gt;1
+        idx_old = union(idx_old,uu);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">if</span> ~isempty(idx_old)
+
+    <span class="comment">% by default, don't delete</span>
+    delete_files=0;
+
+    choice = questdlg(<span class="string">'There are files your ESP3 temp folder, do you want to delete them?'</span>,<span class="string">'Delete files?'</span>,<span class="string">'Yes'</span>,<span class="string">'No'</span>,<span class="string">'No'</span>);
+
+    <span class="keyword">switch</span> choice
+        <span class="keyword">case</span> <span class="string">'Yes'</span>
+            delete_files = 1;
+        <span class="keyword">case</span> <span class="string">'No'</span>
+            delete_files = 0;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> isempty(choice)
+        <span class="keyword">return</span>;
+    <span class="keyword">end</span>
+
+    <span class="keyword">if</span> delete_files == 1
+        <span class="keyword">for</span> i = 1:length(idx_old)
+            <span class="keyword">if</span> exist(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name),<span class="string">'file'</span>) == 2
+                delete(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name));
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+</pre><h2 id="18">Initialize empty layer, process and layers objects</h2><pre class="codeinput">layer_obj=layer_cl.empty();
+process_obj=process_cl.empty();
+layers=layer_obj;
+</pre><h2 id="19">Store objects in app main figure</h2><pre class="codeinput">setappdata(main_figure,<span class="string">'Layers'</span>,layers);
+setappdata(main_figure,<span class="string">'Layer'</span>,layer_obj);
+setappdata(main_figure,<span class="string">'Curr_disp'</span>,curr_disp_obj);
+setappdata(main_figure,<span class="string">'App_path'</span>,app_path);
+setappdata(main_figure,<span class="string">'Process'</span>,process_obj);
+setappdata(main_figure,<span class="string">'ExternalFigures'</span>,matlab.ui.Figure.empty());
+</pre><h2 id="20">Move main figure to screen center</h2><pre class="codeinput">movegui(main_figure,<span class="string">'center'</span>);
+</pre><h2 id="21">Initialize the display and the interactions with the user</h2><pre class="codeinput">initialize_display(main_figure);
+initialize_interactions(main_figure,1)
+</pre><pre class="codeoutput">Loading Toolbar
+ML object destructor called for class layer_cl
+ML object destructor called for class env_data_cl
+</pre><img vspace="5" hspace="5" src="EchoAnalysis_01.png" alt=""> <h2 id="22">If files were loaded in input, load them now</h2><pre class="codeinput"><span class="keyword">if</span> ~isempty(p.Results.Filenames)
+    open_file([],[],p.Results.Filenames,main_figure);
+    <span class="comment">% If request was made to print display: print and close ESP3</span>
+    <span class="keyword">if</span> p.Results.SaveEcho&gt;0
+        save_echo(main_figure);
+        cleanup_echo(main_figure);
+        delete(main_figure);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+</pre><pre class="codeinput"><span class="keyword">end</span>
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% EchoAnalysis.m
+%
+% ESP3 Main function
+%
+%          |
+%         /|\
+%        / | \
+%       /  |  \
+%      /   |___\   
+%    _/____|______   
+%     \___________\   written by Yoann Ladroit
+%        / \          in 2016
+%       /   \
+%      / <>< \    Fisheries Acoustics
+%     /<>< <><\   NIWA - National Institute of Water & Atmospheric Research
+%
+%% Help
+%
+% *USE*
+%
+% Run this function without input variables to launch empty ESP3, or with
+% input file names to open. Use the SaveEcho optional parameter to print
+% out contents of any input file.
+%
+% *INPUT VARIABLES*
+%
+% 'Filenames' (optional). Valid options:
+% 
+% * char: filename to open
+% * cell: filename(s) to open
+%
+% 'SaveEcho' (optional). Valid options:
+%
+% * 1: print content of input file and closes ESP3
+%
+% *RESEARCH NOTES*
+%
+% NA
+%
+% *NEW FEATURES*
+%
+% * 2017-03-17: reformatting comment and header for compatibility with publish
+% * 2017-03-02: commented and header added (Alex)
+%
+% *EXAMPLE*
+%
+%   EchoAnalysis; % launches ESP3
+%   EchoAnalysis('Filenames','my_file.raw'); % launches ESP3 and opens 'my_file.raw'.
+%   EchoAnalysis('Filenames','my_file.raw','SaveEcho',1); % launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA.
+%
+% Copyright 2017 NIWA
+% 
+% Permission is hereby granted, free of charge, to any person obtaining a
+% copy of this software and associated documentation files (the
+% "Software"), to deal in the Software without restriction, including
+% without limitation the rights to use, copy, modify, merge, publish,
+% distribute, sublicense, and/or sell copies of the Software, and to permit
+% persons to whom the Software is furnished to do so, subject to the
+% following conditions: The above copyright notice and this permission
+% notice shall be included in all copies or substantial portions of the
+% Software.
+% 
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+% OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+% MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+% NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+% DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+% OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+% USE OR OTHER DEALINGS IN THE SOFTWARE.
+%
+
+%% Function
+function EchoAnalysis(varargin)
+
+
+%% Debug
+global DEBUG;
+DEBUG=0;
+
+
+%% Set java window style and remove Javaframe warning
+javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
+warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
+
+
+%% Checking and parsing input variables
+p = inputParser;
+addParameter(p,'Filenames',{},@(x) ischar(x)|iscell(x));
+addParameter(p,'SaveEcho',0,@isnumeric);
+parse(p,varargin{:});
+
+%% Do not Relaunch ESP3 if already open (in Matlab)...
+if ~isdeployed()
+    esp_win = findobj(groot,'tag','ESP3');
+    if~isempty(esp_win)
+        figure(esp_win);
+        return;
+    end
+end
+
+%% Get monitor's dimensions
+size_max = get(0, 'MonitorPositions');
+
+%% Defining the app's main window
+main_figure = figure('Visible','on',...
+                     'Units','pixels',...
+                     'Position',[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3)/4*3 size_max(1,4)/4*3],... %Position and size normalized to the screen size ([left, bottom, width, height])
+                     'Color','White',...
+                     'Name','ESP3',...
+                     'Tag','ESP3',...
+                     'NumberTitle','off',...   
+                     'Resize','on',...
+                     'MenuBar','none',...
+                     'Toolbar','none',...
+                     'visible','off',...
+                     'DockControls','off',...
+                     'CloseRequestFcn',@closefcn_clean);
+                 
+%% Install mouse pointer manager in figure
+iptPointerManager(main_figure);
+
+%% Get Javaframe from Figure to set the Icon
+javaFrame = get(main_figure,'JavaFrame');
+javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+
+%% Software version
+echo_ver = get_ver();
+fprintf('Version %s\n',echo_ver);
+
+%% Default font size for Controls and Panels
+set(0,'DefaultUicontrolFontSize',10);
+set(0,'DefaultUipanelFontSize',10);
+
+%% Software main path
+main_path = whereisEcho();
+if ~isdeployed
+    update_path(main_path);
+end
+update_java_path(main_path);
+
+%% Read ESP3 config file
+[app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
+
+%% Create temporary data folder
+try
+    if ~isdir(app_path.data_temp)
+        mkdir(app_path.data_temp);
+        disp('Data Folder Created')
+        disp(app_path.data_temp)
+    end
+catch 
+    disp('Error: Unable to create Data Folder')
+    disp(app_path.data_temp);
+    disp('Creating new config_echo.xml file')
+    delete(fullfile(main_path,'config','config_echo.xml'));
+    [app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
+end
+
+%% Managing existing files in temporary data folder
+files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
+
+idx_old=[];
+for uu=1:length(files_in_temp)
+    if (now-files_in_temp(uu).datenum)>1
+        idx_old = union(idx_old,uu);
+    end
+end
+
+if ~isempty(idx_old)
+    
+    % by default, don't delete
+    delete_files=0;
+    
+    choice = questdlg('There are files your ESP3 temp folder, do you want to delete them?','Delete files?','Yes','No','No');
+    
+    switch choice
+        case 'Yes'
+            delete_files = 1;
+        case 'No'
+            delete_files = 0;
+    end
+    
+    if isempty(choice)
+        return;
+    end
+    
+    if delete_files == 1
+        for i = 1:length(idx_old)
+            if exist(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name),'file') == 2
+                delete(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name));
+            end
+        end
+    end
+    
+end
+
+%% Initialize empty layer, process and layers objects
+layer_obj=layer_cl.empty();
+process_obj=process_cl.empty();
+layers=layer_obj;
+
+%% Store objects in app main figure
+setappdata(main_figure,'Layers',layers);
+setappdata(main_figure,'Layer',layer_obj);
+setappdata(main_figure,'Curr_disp',curr_disp_obj);
+setappdata(main_figure,'App_path',app_path);
+setappdata(main_figure,'Process',process_obj);
+setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
+
+%% Move main figure to screen center
+movegui(main_figure,'center');
+
+%% Initialize the display and the interactions with the user
+initialize_display(main_figure);
+initialize_interactions(main_figure,1)
+
+%% If files were loaded in input, load them now
+if ~isempty(p.Results.Filenames)
+    open_file([],[],p.Results.Filenames,main_figure);
+    % If request was made to print display: print and close ESP3
+    if p.Results.SaveEcho>0
+        save_echo(main_figure);
+        cleanup_echo(main_figure);
+        delete(main_figure);
+    end
+end
+
+
+
+
+end
+
+
+
+##### SOURCE END #####
+--></body></html>

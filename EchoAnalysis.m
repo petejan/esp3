@@ -1,9 +1,7 @@
-function EchoAnalysis(varargin)
-% EchoAnalysis(varargin)
-%
-% DESCRIPTION
+%% EchoAnalysis.m
 %
 % ESP3 Main function
+%
 %          |
 %         /|\
 %        / | \
@@ -16,45 +14,43 @@ function EchoAnalysis(varargin)
 %      / <>< \    Fisheries Acoustics
 %     /<>< <><\   NIWA - National Institute of Water & Atmospheric Research
 %
-% USE
+%% Help
+%
+% *USE*
 %
 % Run this function without input variables to launch empty ESP3, or with
 % input file names to open. Use the SaveEcho optional parameter to print
 % out contents of any input file.
 %
-% PROCESSING SUMMARY
+% *INPUT VARIABLES*
 %
-% - Defining the app's main window
-% - Read ESP3 config file
-% - Create temporary data folder
-% - Initialize empty layer, process and layers objects
-% - Store objects in app main figure
-% - Initialize the display and the interactions with the user
-% - If files were loaded in input, load them now
+% 'Filenames' (optional). Valid options:
+% 
+% * char: filename to open
+% * cell: filename(s) to open
 %
-% INPUT VARIABLES
+% 'SaveEcho' (optional). Valid options:
 %
-% - 'Filenames' (optional): Valid options:
-%   - char: filename to open
-%   - cell: filename(s) to open
-% - 'SaveEcho' (optional): Valid options:
-%   - 1: print content of input file and closes ESP3
+% * 1: print content of input file and closes ESP3
 %
-% RESEARCH NOTES
+% *RESEARCH NOTES*
 %
 % NA
 %
-% NEW FEATURES
+% *NEW FEATURES*
 %
-% 2017-03-02: commented and header added (Alex)
+% * 2017-03-17: reformatting comment and header for compatibility with publish
+% * 2017-03-02: commented and header added (Alex)
 %
-% EXAMPLE
+% *EXAMPLE*
 %
-% EchoAnalysis; % launches ESP3
-% EchoAnalysis('Filenames','my_file.raw'); % launches ESP3 and opens 'my_file.raw'.
-% EchoAnalysis('Filenames','my_file.raw','SaveEcho',1); % launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.
+%   EchoAnalysis; % launches ESP3
+%   EchoAnalysis('Filenames','my_file.raw'); % launches ESP3 and opens 'my_file.raw'.
+%   EchoAnalysis('Filenames','my_file.raw','SaveEcho',1); % launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.
 %
-% LICENCE/COPYRIGHT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA.
 %
 % Copyright 2017 NIWA
 % 
@@ -76,27 +72,28 @@ function EchoAnalysis(varargin)
 % OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 % USE OR OTHER DEALINGS IN THE SOFTWARE.
 %
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-%%%
-% Yoann Ladroit, NIWA.
-%%%
 
+%% Function
+function EchoAnalysis(varargin)
+
+
+%% Debug
 global DEBUG;
 DEBUG=0;
 
-% Set java window style 
+
+%% Set java window style and remove Javaframe warning
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
-% Remove Javaframe warning
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
-% Checking and parsing input variables
+
+%% Checking and parsing input variables
 p = inputParser;
 addParameter(p,'Filenames',{},@(x) ischar(x)|iscell(x));
 addParameter(p,'SaveEcho',0,@isnumeric);
 parse(p,varargin{:});
 
-% Do not Relaunch ESP3 if already open (in Matlab)...
+%% Do not Relaunch ESP3 if already open (in Matlab)...
 if ~isdeployed()
     esp_win = findobj(groot,'tag','ESP3');
     if~isempty(esp_win)
@@ -105,10 +102,10 @@ if ~isdeployed()
     end
 end
 
-% Get monitor's dimensions
+%% Get monitor's dimensions
 size_max = get(0, 'MonitorPositions');
 
-% Defining the app's main window
+%% Defining the app's main window
 main_figure = figure('Visible','on',...
                      'Units','pixels',...
                      'Position',[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3)/4*3 size_max(1,4)/4*3],... %Position and size normalized to the screen size ([left, bottom, width, height])
@@ -123,32 +120,32 @@ main_figure = figure('Visible','on',...
                      'DockControls','off',...
                      'CloseRequestFcn',@closefcn_clean);
                  
-% Install mouse pointer manager in figure
+%% Install mouse pointer manager in figure
 iptPointerManager(main_figure);
 
-% Get Javaframe from Figure to set the Icon
+%% Get Javaframe from Figure to set the Icon
 javaFrame = get(main_figure,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
 
-% Software version
+%% Software version
 echo_ver = get_ver();
 fprintf('Version %s\n',echo_ver);
 
-% Default font size for Controls and Panels
+%% Default font size for Controls and Panels
 set(0,'DefaultUicontrolFontSize',10);
 set(0,'DefaultUipanelFontSize',10);
 
-% Software main path
+%% Software main path
 main_path = whereisEcho();
 if ~isdeployed
     update_path(main_path);
 end
 update_java_path(main_path);
 
-% Read ESP3 config file
+%% Read ESP3 config file
 [app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 
-% Create temporary data folder
+%% Create temporary data folder
 try
     if ~isdir(app_path.data_temp)
         mkdir(app_path.data_temp);
@@ -163,7 +160,7 @@ catch
     [app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 end
 
-% Managing existing files in temporary data folder
+%% Managing existing files in temporary data folder
 files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
 
 idx_old=[];
@@ -201,12 +198,12 @@ if ~isempty(idx_old)
     
 end
 
-% Initialize empty layer, process and layers objects
+%% Initialize empty layer, process and layers objects
 layer_obj=layer_cl.empty();
 process_obj=process_cl.empty();
 layers=layer_obj;
 
-% Store objects in app main figure
+%% Store objects in app main figure
 setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Layer',layer_obj);
 setappdata(main_figure,'Curr_disp',curr_disp_obj);
@@ -214,14 +211,14 @@ setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 
-% Move main figure to screen center
+%% Move main figure to screen center
 movegui(main_figure,'center');
 
-% Finally initialize the display and the interactions with the user
+%% Initialize the display and the interactions with the user
 initialize_display(main_figure);
 initialize_interactions(main_figure,1)
 
-% If files were loaded in input, load them now
+%% If files were loaded in input, load them now
 if ~isempty(p.Results.Filenames)
     open_file([],[],p.Results.Filenames,main_figure);
     % If request was made to print display: print and close ESP3

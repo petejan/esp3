@@ -1,42 +1,42 @@
-function open_file(~,~,file_id,main_figure)
-% open_file(~,~,file_id,main_figure)
-%
-% DESCRIPTION
+%% open_file.m
 %
 % ESP3 main function to open new file(s)
 %
-% USE
+%% Help
 %
-% [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
+% *USE*
 %
-% PROCESSING SUMMARY
+% todo
 %
-% - [Bullet point list summary of the steps in the processing.]
-% - [DELETE THESE LINES IF UNUSED]
+% *INPUT VARIABLES*
 %
-% INPUT VARIABLES
+% 'file_id' (required): Valid options:
 %
-% - file_id (required): Valid options:
-%   - char: filename
-%   - cell: filename(s)
-%   - 0: open dialog box to prompt user for file(s)
-%   - 1: open next file in folder
-%   - 2: open previous file in folder
-% - main_figure (required): ESP3 main figure
+% * char: filename
+% * cell: filename(s)
+% * 0: open dialog box to prompt user for file(s)
+% * 1: open next file in folder
+% * 2: open previous file in folder
 %
-% RESEARCH NOTES
+% 'main_figure' (required): ESP3 main figure
 %
-% - Could upgrade input variables management to input parser
-% - Update if new files format to be supported
-% - Not sure why the ~,~ at the beginning?
+% *RESEARCH NOTES*
 %
-% NEW FEATURES
+% * Could upgrade input variables management to input parser
+% * Update if new files format to be supported
+% * Not sure why the ~,~ at the beginning?
 %
-% 2017-03-02: Comments and header Alex
+% *NEW FEATURES*
 %
-%%%
-% Yoann Ladroit, NIWA.
-%%%
+% * 2017-03-17: reformatting comment and header for compatibility with publish
+% * 2017-03-02: Comments and header Alex
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function open_file(~,~,file_id,main_figure)
 
 % Grab current layer (files data) and paths
 layer = getappdata(main_figure,'Layer');
