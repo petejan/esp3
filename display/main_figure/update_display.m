@@ -24,6 +24,7 @@ if new==1
     update_lines_tab(main_figure);
     load_calibration_tab(main_figure,opt_panel);
     load_info_panel(main_figure);
+    load_region_fig(main_figure,1,[]);
 end
 
 update_axis_panel(main_figure,new);

@@ -10,8 +10,17 @@ if isempty(cont)
 end
 
 [x,y,~]=C2xyz(cont);
-
+idx_rem=[];
 for i=1:length(x)
    x{i}=x{i}-1; 
    y{i}=y{i}-1;
+   if length(x{i})<3
+       idx_rem=union(idx_rem,i);
+   end
 end
+
+y(idx_rem)=[];
+x(idx_rem)=[];
+
+
+

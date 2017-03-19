@@ -271,13 +271,13 @@ for isn=1:length(snapshots)
                                 end
                         end
    
-                        if ~isnan(Absorption(options.FrequenciesToLoad==curr_freq))
-                            layer_new.Transceivers(i_freq).apply_absorption(Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
+                        if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))
+                            layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad==curr_freq)/1e3);
                         else
                             fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                         end
                         
-                        if options.Options.Motion_correction
+                        if options.Motion_correction
                             create_motion_comp_subdata(layer_new,i_freq);
                         end
                         

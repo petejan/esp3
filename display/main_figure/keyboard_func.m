@@ -203,7 +203,9 @@ switch callbackdata.Key
         if ~isempty(get(gco,'Tag'))
             switch get(gco,'Tag')
                 case {'region','region_text'}
+                    id=get(gco,'Userdata');
                     trans.rm_region_id(get(gco,'Userdata'));
+                    load_region_fig(main_figure,1,-id);
                     update_regions_tab(main_figure,[]);
                     display_regions(main_figure,'both');
                     order_stacks_fig(main_figure);order_axes(main_figure);

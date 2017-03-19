@@ -16,7 +16,6 @@ switch shape
         inter_region_create(main_figure,mode,@create_region_func)
 end
 order_axes(main_figure);
-
 curr_disp.Reg_changed_flag=1;
 setappdata(main_figure,'Curr_disp',curr_disp);
 end

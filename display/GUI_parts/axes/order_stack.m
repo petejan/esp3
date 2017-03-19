@@ -11,6 +11,6 @@ select_area=findobj(echo_ax,'tag','SelectArea');
 
 zoom_area=findobj(echo_ax,'tag','zoom_area');
 
-uistack([text_disp;zoom_area;lines;select_area;regions;regions_cont;bt_im;echo_im],'top');
+uistack([zoom_area;text_disp;lines;select_area;regions;regions_cont;bt_im;echo_im],'top');
 echo_ax.Layer='top';
 end

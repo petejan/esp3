@@ -226,11 +226,15 @@ for itype = 1:length(ftype_unique)
                         return;
                 end
             end
+            
+        case {'asl','fcv30'}
+            
         otherwise
             for ifi=1:length(Filename)
                 fprintf('Unrecognized File type for Filename %s\n',Filename{ifi});
             end
             continue;
+            
     end
     
     % Load all pings by default

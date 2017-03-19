@@ -1,5 +1,5 @@
 
-function activate_region_callback(obj,cbackdata,reg_curr,main_figure)
+function activate_region_callback(obj,~,reg_curr,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -76,6 +76,9 @@ update_regions_tab(main_figure,idx_reg);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 
+if ~(isa(obj,'patch')||isa(obj,'image')) 
+    return;
+end
 
 switch main_figure.SelectionType
     case 'normal'

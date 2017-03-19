@@ -22,5 +22,5 @@ set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
 update_regions_tab(main_figure,1);
 order_stacks_fig(main_figure);
-
+load_region_fig(main_figure,1,[]);
 end

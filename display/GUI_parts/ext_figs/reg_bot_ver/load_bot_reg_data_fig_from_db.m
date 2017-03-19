@@ -2,17 +2,15 @@ function load_bot_reg_data_fig_from_db(main_figure)
 layer=getappdata(main_figure,'Layer');
 
 
-if isempty(layer)
-    
+if isempty(layer) 
     return;
 else
-    [path_xml,reg_bot_file_str,bot_file_str]=layer.create_files_str();
-    
+    [path_xml,reg_bot_file_str,bot_file_str]=layer.create_files_str();   
 end
 
 version_bot=[];
 version_reg=[];
-comments_reg={};
+%comments_reg={};
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
@@ -26,8 +24,6 @@ for ip=1:length(path_xml)
         continue;
     end
     
-    %surv_data_struct=import_survey_data_db(db_file);
-    
     dbconn=sqlite(db_file,'connect');
     
     regions_db_temp=dbconn.fetch(sprintf('select Version,Comment from region where Filename is "%s" order by datetime(Save_time)',reg_bot_file_str{ip}));
@@ -35,7 +31,7 @@ for ip=1:length(path_xml)
     dbconn.close();
     
     if ~isempty(regions_db_temp)
-        [version_reg,id_unique,~]=union(version_reg,cell2mat(regions_db_temp(:,1)),'stable');
+        [version_reg,~,~]=union(version_reg,cell2mat(regions_db_temp(:,1)),'stable');
     end
     
     if ~isempty(bottom_db_temp)
@@ -160,7 +156,7 @@ set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
 update_regions_tab(main_figure,1);
 order_stacks_fig(main_figure);
-
+load_region_fig(main_figure,1,[]);
 
 end
 
