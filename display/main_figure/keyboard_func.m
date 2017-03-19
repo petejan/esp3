@@ -136,7 +136,12 @@ switch callbackdata.Key
         end
         %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
     case {'4' 'numpad4'}
-        curr_disp.CursorMode='Create Region';
+        switch curr_disp.CursorMode
+            case 'Create Region'
+                curr_disp.CursorMode='Normal';
+            otherwise
+                curr_disp.CursorMode='Create Region';
+        end
     case {'5' 'numpad5'}
         curr_disp.CursorMode='Normal';
         reset_mode(0,0,main_figure);

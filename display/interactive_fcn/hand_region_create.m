@@ -107,8 +107,8 @@ main_figure.WindowButtonUpFcn = @wbucb;
         reset_disp_info(main_figure);
 
         feval(func,main_figure,poly_r,poly_pings);
-        curr_disp.CursorMode='Normal';
+        curr_disp.CursorMode='Create Region';
         
-        main_figure.Pointer = 'arrow';
+
     end
 end
