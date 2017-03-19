@@ -17,7 +17,7 @@ end
 
 
 db_file=fullfile(path_f,'echo_logbook.db');
-   
+
 if ~(exist(db_file,'file')==2)
     initialize_echo_logbook_dbfile(path_f,0)
 end
@@ -27,6 +27,8 @@ end
 dbconn=sqlite(db_file,'connect');
 
 data_survey=dbconn.fetch('select * from survey');
+dbconn.close();
+
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('logbook_%s',data_survey{2})));
@@ -38,7 +40,6 @@ if ~isempty(idx_tag)
     else
         surv_data_fig=hfigs(idx_tag(1));
         surv_data_table=getappdata(surv_data_fig,'surv_data_table');
-        delete(surv_data_table.table_main);
     end
 else
     if reload==0
@@ -51,106 +52,161 @@ else
             'MenuBar','none',...
             'Name','SurveyData','Tag',sprintf('logbook_%s',data_survey{2}));
         
-        surv_data_table.file=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.65 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.snap=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.7250 0.96 0.075 0.03],'String','Snap','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.strat=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.8 0.96 0.075 0.03],'String','Strat','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.trans=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.875 0.96 0.075 0.03],'String','Trans','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.file=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.55 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.snap=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.6250 0.96 0.075 0.03],'String','Snap','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.strat=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.7 0.96 0.075 0.03],'String','Strat','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.trans=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.775 0.96 0.075 0.03],'String','Trans','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.reg=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.850 0.96 0.075 0.03],'String','Tag','Value',1,'Callback',{@search_callback,surv_data_fig});
         
         
-        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.4 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
-        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.45 0.96 0.1 0.03],'String','Search :');
+        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
+        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
         
-        surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.55 0.96 0.1 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
+        surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.45 0.96 0.1 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
     else
         return;
     end
 end
 
-data_logbook=dbconn.fetch('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook order by datetime(StartTime)');
-dbconn.close();
+if reload==0
+    dbconn=sqlite(db_file,'connect');
+    data_logbook=dbconn.fetch('select Filename from logbook order by datetime(StartTime)');
+    dbconn.close();   
+    nb_lines=size(data_logbook,1);
 
-nb_lines=size(data_logbook,1);
-survDataSummary=cell(nb_lines,11);
+    if nb_lines==0
+        close(surv_data_fig);
+        return;
+    end
+    
+    dbconn=sqlite(db_file,'connect');
+    survDataSummary=update_data_table(dbconn,[],data_logbook,path_f);
 
-if nb_lines==0
-    close(surv_data_fig);
-    return;
+    dbconn.close();
+    
+  
+    % Column names and column format
+    columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
+    columnformat = {'logical' 'char','numeric','char','numeric','logical','char','char','char','char','numeric'};
+    
+    
+    % Create the uitable
+    surv_data_table.table_main = uitable('Parent',surv_data_fig,...
+        'Data', survDataSummary,...
+        'ColumnName', columnname,...
+        'ColumnFormat', columnformat,...
+        'ColumnEditable', [true false true true true false false true false false false],...
+        'Units','Normalized','Position',[0 0 1 0.95],...
+        'RowName',[]);
+    
+    set(surv_data_fig,'SizeChangedFcn',@resize_table);
+    
+    pos_t = getpixelposition(surv_data_table.table_main);
+    set(surv_data_table.table_main,'ColumnWidth',...
+        num2cell(pos_t(3)*[1/36,4*1/18, 1/18, 1/18, 1/18,1/36,3*1/36, 4*1/18, 2*1/18,2*1/18, 1/36]));
+    set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_fig,main_figure});
+    %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
+    
+    
+    rc_menu = uicontextmenu(surv_data_fig);
+    surv_data_table.table_main.UIContextMenu =rc_menu;
+    select_menu=uimenu(rc_menu,'Label','Select');
+    process_menu=uimenu(rc_menu,'Label','Process');
+    survey_menu=uimenu(rc_menu,'Label','SurveyData');
+    uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig,app_path.scripts});
+    uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
+    uimenu(select_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
+    uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
+    uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
+    uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
+    uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
+    uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
+    uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});
+    uimenu(survey_menu,'Label','Export to Html and display','Callback',{@export_metadata_to_html_callback,main_figure});
+    uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
+    
+    
+    setappdata(surv_data_fig,'path_data',path_f);
+    setappdata(surv_data_fig,'surv_data_table',surv_data_table);
+    setappdata(surv_data_fig,'data_ori',survDataSummary);
+    
+    new_echo_figure(main_figure,'fig_handle',surv_data_fig);
+    
+else
+    path_f=getappdata(surv_data_fig,'path_data');
+    data_ori=getappdata(surv_data_fig,'data_ori');
+    dbconn=sqlite(db_file,'connect');
+    data_ori_new=update_data_table(dbconn,data_ori,layer.Filename,path_f);
+    setappdata(surv_data_fig,'data_ori',data_ori_new);
+    set(surv_data_table.table_main,'Data',data_ori_new);
+    dbconn.close();
+    search_callback([],[],surv_data_fig);
+end
 end
 
-survDataSummary(:,1)=cell(nb_lines,1);
-survDataSummary(:,2)=data_logbook(:,1);
-survDataSummary(:,3)=data_logbook(:,2);
-survDataSummary(:,4)=data_logbook(:,3);
-survDataSummary(:,5)=data_logbook(:,4);
-survDataSummary(:,8)=data_logbook(:,5);
-survDataSummary(:,9)=data_logbook(:,6);
-survDataSummary(:,10)=data_logbook(:,7);
-survDataSummary(:,11)=num2cell(1:nb_lines);
-
-for i=1:nb_lines
-    [path_xml,bot_file_str,reg_file_str]=create_bot_reg_xml_fname(fullfile(path_f,data_logbook{i,1}));
-    survDataSummary{i,6}=exist(fullfile(path_xml,bot_file_str),'file')==2;
-    survDataSummary{i,7}=exist(fullfile(path_xml,reg_file_str),'file')==2;
-    survDataSummary{i,1}=false;
+function data_ori_new=update_data_table(dbconn,data_ori,filename_cell,path_f)
+data_ori_new=data_ori;
+for i=1:length(filename_cell)
+    [~,file_c,ext_c]=fileparts(filename_cell{i});
+    data_logbook_to_up=dbconn.fetch(sprintf('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook where Filename = ''%s''',[file_c ext_c]));
+    
+    if~isempty(data_ori_new)
+        idx_mod=find(strcmpi(data_ori_new(:,2),[file_c ext_c]));
+    else
+        idx_mod=[];
+    end
+    if~isempty(idx_mod)
+        data_ori_new(idx_mod,:)=[];
+    end
+    
+    nb_lines_new=size(data_logbook_to_up,1);
+    new_entry=cell(nb_lines_new,11);
+    new_entry(:,1)=cell(nb_lines_new,1);
+    new_entry(:,2)=data_logbook_to_up(:,1);
+    new_entry(:,3)=data_logbook_to_up(:,2);
+    new_entry(:,4)=data_logbook_to_up(:,3);
+    new_entry(:,5)=data_logbook_to_up(:,4);
+    new_entry(:,8)=data_logbook_to_up(:,5);
+    new_entry(:,9)=data_logbook_to_up(:,6);
+    new_entry(:,10)=data_logbook_to_up(:,7);
+    new_entry(:,11)=num2cell(1:nb_lines_new);
+    
+    for il=1:nb_lines_new
+        [path_xml,bot_file_str,reg_file_str]=create_bot_reg_xml_fname(fullfile(path_f,data_logbook_to_up{il,1}));
+        new_entry{il,6}=exist(fullfile(path_xml,bot_file_str),'file')==2;
+        if exist(fullfile(path_xml,reg_file_str),'file')==2
+            tags = list_tags_only_regions_xml(fullfile(path_xml,reg_file_str));
+            if ~isempty(tags)
+                str_reg=cell2mat(cellfun(@(x) [ x ' ' ], unique(tags), 'UniformOutput', false));
+                new_entry{il,7}=str_reg;
+            else
+               new_entry{il,7}=''; 
+            end
+        else
+            new_entry{il,7}='';
+        end
+        new_entry{il,1}=false;
+    end
+    
+    data_ori_new=[data_ori_new;new_entry];
+    
 end
+[~,idx_sort]=sort(data_ori_new(:,9));
+data_ori_new=data_ori_new(idx_sort,:);
+data_ori_new(:,11)=num2cell(1:size(data_ori_new,1));
 
-% Column names and column format
-columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
-columnformat = {'logical' 'char','numeric','char','numeric','logical','logical','char','char','char','numeric'};
-
-
-% Create the uitable
-surv_data_table.table_main = uitable('Parent',surv_data_fig,...
-    'Data', survDataSummary,...
-    'ColumnName', columnname,...
-    'ColumnFormat', columnformat,...
-    'ColumnEditable', [true false true true true false false true false false false],...
-    'Units','Normalized','Position',[0 0 1 0.95],...
-    'RowName',[]);
-
-set(surv_data_fig,'SizeChangedFcn',@resize_table)
-
-pos_t = getpixelposition(surv_data_table.table_main);
-set(surv_data_table.table_main,'ColumnWidth',{pos_t(3)/36,4*pos_t(3)/18, pos_t(3)/18, pos_t(3)/18, pos_t(3)/18,pos_t(3)/36,pos_t(3)/36, 3*pos_t(3)/18, 3*pos_t(3)/18,3*pos_t(3)/18, pos_t(3)/18/2});
-set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_fig,main_figure});
-%set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
-
-
-rc_menu = uicontextmenu(surv_data_fig);
-surv_data_table.table_main.UIContextMenu =rc_menu;
-select_menu=uimenu(rc_menu,'Label','Select');
-process_menu=uimenu(rc_menu,'Label','Process');
-survey_menu=uimenu(rc_menu,'Label','SurveyData');
-uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig,app_path.scripts});
-uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
-uimenu(select_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
-uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
-uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
-uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
-uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
-uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
-uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});
-uimenu(survey_menu,'Label','Export to Html and display','Callback',{@export_metadata_to_html_callback,main_figure});
-uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
-
-
-setappdata(surv_data_fig,'path_data',path_f);
-setappdata(surv_data_fig,'surv_data_table',surv_data_table);
-setappdata(surv_data_fig,'data_ori',survDataSummary);
-
-new_echo_figure(main_figure,'fig_handle',surv_data_fig);
 end
 
 function resize_table(src,~)
 table=findobj(src,'Type','uitable');
 
 if~isempty(table)
-   column_width=table.ColumnWidth;
-   pos_f=getpixelposition(src);
-   width_t_old=nansum([column_width{:}]);
-   width_t_new=pos_f(3);
-   new_width=cellfun(@(x) x/width_t_old*width_t_new,column_width,'un',0);
-   set(table,'ColumnWidth',new_width);  
+    column_width=table.ColumnWidth;
+    pos_f=getpixelposition(src);
+    width_t_old=nansum([column_width{:}]);
+    width_t_new=pos_f(3);
+    new_width=cellfun(@(x) x/width_t_old*width_t_new,column_width,'un',0);
+    set(table,'ColumnWidth',new_width);
 end
 
 end
@@ -223,7 +279,7 @@ text(evt.IntersectionPoint(1),evt.IntersectionPoint(2),file_list{idx},'Tag','fna
 end
 
 
-function edit_surv_data_db(src,evt,surv_data_fig,main_figure)%change that so that data are entered into db straight away
+function edit_surv_data_db(src,evt,surv_data_fig,main_figure)%TODO change that so that data are entered into db straight away
 if isempty(evt.Indices)
     return;
 end
@@ -256,17 +312,17 @@ end
 path_f=getappdata(surv_data_fig,'path_data');
 
 db_file=fullfile(path_f,'echo_logbook.db');
-    if ~(exist(db_file,'file')==2)
-        initialize_echo_logbook_dbfile(path_f,0)
-    end
+if ~(exist(db_file,'file')==2)
+    initialize_echo_logbook_dbfile(path_f,0)
+end
 
 %surv_data_struct=import_survey_data_db(db_file);
 
 dbconn=sqlite(db_file,'connect');
 
 if dbconn.IsReadOnly
-   fprintf('Database file is readonly... Check file permissions\n');
-   return;
+    fprintf('Database file is readonly... Check file permissions\n');
+    return;
 end
 
 %dbconn.fetch(sprintf('delete from logbook where Filename like "%s" and StartTime=%.0f',filename,st));
@@ -423,20 +479,20 @@ file=get(surv_data_table.file,'value');
 snap=get(surv_data_table.snap,'value');
 strat=get(surv_data_table.strat,'value');
 trans=get(surv_data_table.trans,'value');
+reg=get(surv_data_table.reg,'value');
 
-
-if isempty(text_search)||(~file&&~snap&&~trans&&~strat)
+if isempty(text_search)||(~file&&~snap&&~trans&&~strat&&~reg)
     data=data_ori;
 else
     
-     if snap>0
+    if snap>0
         idx_snap=cell2mat(data_ori(:,3))==snap;
     else
         idx_snap=zeros(size(data_ori,1),1);
-     end
+    end
     
-     
-     if trans>0
+    
+    if trans>0
         idx_trans=cell2mat(data_ori(:,5))==trans;
     else
         idx_trans=zeros(size(data_ori,1),1);
@@ -456,7 +512,15 @@ else
         idx_files=zeros(size(data_ori,1),1);
     end
     
-    data=data_ori(idx_snap|idx_strat|idx_files|idx_trans,:);
+    if reg>0
+        regs=regexprep(data_ori(:,7),'[^\w'']','');
+        out_regs=regexpi(regs,text_search);
+        idx_regs=cellfun(@(x) ~isempty(x),out_regs);
+    else
+        idx_regs=zeros(size(data_ori,1),1);
+    end
+    
+    data=data_ori(idx_snap|idx_strat|idx_files|idx_trans|idx_regs,:);
     
 end
 

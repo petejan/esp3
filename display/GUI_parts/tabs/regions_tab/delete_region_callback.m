@@ -31,6 +31,7 @@ if ~isempty(list_reg)
     update_regions_tab(main_figure,1);
     display_regions(main_figure,'both');
     order_stacks_fig(main_figure);
+    load_region_fig(main_figure,1,-ID);
 else
     return
 end

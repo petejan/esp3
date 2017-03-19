@@ -14,6 +14,7 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     display_regions(main_figure,'both');
     update_regions_tab(main_figure,[]);
     order_stacks_fig(main_figure);
+    load_region_fig(main_figure,1,[]);
 end
 
 end

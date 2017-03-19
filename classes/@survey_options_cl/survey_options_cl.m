@@ -43,18 +43,20 @@ classdef survey_options_cl
             
             
             for i=1:length(props_options)
-                options.(props_options{i})=results.Options.(props_options{i});
+                if isprop(options,props_options{i})
+                    options.(props_options{i})=results.Options.(props_options{i});
+                end
             end
+              
+            options.FrequenciesToLoad=union(options.FrequenciesToLoad,results.Options.Frequency);
             
-            if isempty(results.Options.FrequenciesToLoad)
-                options.FrequenciesToLoad=union(results.Options.FrequenciesToLoad,results.Options.Frequency);
-            end
+            abs_ori=options.Absorption;
             options.Absorption=nan(1,length(options.FrequenciesToLoad));
             
-            if length(results.Options.Absorption)==1
-                options.Absorption(options.FrequenciesToLoad==options.Frequency)=results.Options.Absorption;
-            elseif length(results.Options.Absorption)==length(options.FrequenciesToLoad)
-                options.Absorption=results.Options.Absorption;
+            if length(abs_ori)==1
+                options.Absorption(options.FrequenciesToLoad==options.Frequency)=abs_ori;
+            elseif length(abs_ori)==length(options.FrequenciesToLoad)
+                options.Absorption=abs_ori;
             end
             
             for i=1:length(options.FrequenciesToLoad)

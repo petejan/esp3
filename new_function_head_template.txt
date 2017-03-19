@@ -23,12 +23,12 @@
 % INPUT VARIABLES
 %
 % [This section contains bullet points of input variables with types and description]
-% - output_variable_1 (required): Valid Options:
+% - input_variable_1 (required): Valid Options:
 %	- char: description
 %	- cell: description
-% - output_variable_2 (optional): Valid Options:
+% - input_variable_2 (optional): Valid Options:
 %	- 1xN numeric array: description
-% - output_variable_3 (parameter): Valid Options:
+% - input_variable_3 (parameter): Valid Options:
 %	- struct: description
 % [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
 %

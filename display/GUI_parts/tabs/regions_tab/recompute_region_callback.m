@@ -27,7 +27,7 @@ tag=get(region_tab_comp.tag,'string');
 id=ceil(str2double(get(region_tab_comp.id,'string')));
 
 if isnan(id)||id<=0
-    id=active_reg.id;
+    id=active_reg.ID;
 end
 set(region_tab_comp.id,'string',num2str(id,'%.0f'));
 
@@ -69,5 +69,6 @@ setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,[]);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
+load_region_fig(main_figure,1,[]);
 
 end

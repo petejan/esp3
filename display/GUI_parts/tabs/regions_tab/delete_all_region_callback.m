@@ -14,8 +14,9 @@ if ~isempty(list_reg)
     setappdata(main_figure,'Layer',layer);
     update_regions_tab(main_figure,[]);
     display_regions(main_figure,'both');
+    load_region_fig(main_figure,1,[]);
 else
-    return
+    return;
 end
 
 

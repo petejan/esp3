@@ -40,6 +40,7 @@ for ir=1:length(trans_obj.Regions)
         region_node.setAttribute('Unique_ID',num2str(splitted_reg(irs).Unique_ID,'%.0f'));
         region_node.setAttribute('Cell_w',num2str(splitted_reg(irs).Cell_w,'%.0f'));
         region_node.setAttribute('Cell_h',num2str(splitted_reg(irs).Cell_h,'%.0f'));
+        
         if splitted_reg(irs).Remove_ST==1
             region_node.setAttribute('Remove_ST',num2str(splitted_reg(irs).Remove_ST,'%.0f'));
         end

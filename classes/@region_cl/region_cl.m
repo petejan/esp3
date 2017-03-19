@@ -92,6 +92,17 @@ classdef region_cl
                         obj.Y_cont=results.Y_cont;
                         obj.MaskReg=(obj.create_mask());
                     end
+                    idx_rem=[];
+                    for i=1:length(obj.X_cont)
+                        if length(obj.X_cont{i})<3
+                            idx_rem=union(idx_rem,i);
+                        end
+                    end
+                    
+                    obj.X_cont(idx_rem)=[];
+                    obj.Y_cont(idx_rem)=[];
+                    
+                    
                 otherwise
                     obj.Shape='Rectangular';
                     obj.X_cont=[];

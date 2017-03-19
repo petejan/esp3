@@ -127,6 +127,7 @@ display_regions(main_figure,'both');
 set_alpha_map(main_figure);
 update_regions_tab(main_figure,length(trans_obj.Regions));
 order_stacks_fig(main_figure);
+load_region_fig(main_figure,1,[]);
 
 end
 

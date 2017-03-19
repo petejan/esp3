@@ -81,9 +81,9 @@ layer.Transceivers(idx_freq).add_region(reg_temp);
 
 setappdata(main_figure,'Layer',layer);
 
-
 update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
 order_axes(main_figure);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
+load_region_fig(main_figure,1,[]);
 end
