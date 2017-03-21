@@ -103,7 +103,7 @@ layers_out=[];
 for icell=1:length(new_layers_sorted)
     new_layers_sorted_tmp=new_layers_sorted{icell}.sort_per_survey_data();
     for icell_tmp=1:length(new_layers_sorted_tmp)
-            layers_out=[layers_out shuffle_layers(new_layers_sorted_tmp{icell_tmp},'multi_layer',-1)];
+            layers_out=[layers_out shuffle_layers(new_layers_sorted_tmp{icell_tmp},'multi_layer',0)];
     end
 end
 

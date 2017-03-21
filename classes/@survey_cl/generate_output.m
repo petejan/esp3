@@ -57,6 +57,7 @@ for isn=1:length(snaps)
     
     nb_bad_trans=0;
     nb_ping_tot=0;
+    
     for i_test_bt=idx_lay
         layer_obj_tr=layers(output.Layer_idx(i_test_bt));
         idx_freq=layer_obj_tr.find_freq_idx(surv_in_obj.Options.Frequency);
@@ -88,6 +89,8 @@ for isn=1:length(snaps)
     av_speed=nan(1,length(idx_lay));
     idx_good_pings=[];
     iping0=0;
+
+    
     for i=1:length(idx_lay)
         layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
         idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
@@ -103,7 +106,7 @@ for isn=1:length(snaps)
         
         gps_add.Long(gps_add.Long>180)=gps_add.Long(gps_add.Long>180)-360;
         idx_pings=1:length(gps_add.Time);
-        idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(:)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(:)))));
+        idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(i)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(i)))));
         idx_good_pings_dist=intersect(idx_good_pings_add,find(~isnan(gps_add.Lat(:))));
         
         if ~isempty(idx_good_pings_dist)
@@ -177,11 +180,16 @@ for isn=1:length(snaps)
         
         reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_t);
         
-        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),...
-            'Denoised',surv_in_obj.Options.Denoised,'motion_correction',surv_in_obj.Options.Motion_correction);
+        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,...
+            'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),...
+            'Denoised',surv_in_obj.Options.Denoised,...
+            'Motion_correction',surv_in_obj.Options.Motion_correction,...
+            'Shadow_zone',surv_in_obj.Options.Shadow_zone,...
+            'Shadow_zone_height',surv_in_obj.Options.Shadow_zone_height);
         %[sliced_output_2D,regCellInt_tot]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
         
         Output_echo=[Output_echo sliced_output];
+
         
         for j=1:length(regs)
             i_reg=i_reg+1;
@@ -267,7 +275,7 @@ for isn=1:length(snaps)
             
             %% Region echo integral for Transect Summary
             eint =eint + nansum(nansum(regCellInt.Sa_lin(:)));
-            
+
         end%end of regions iteration for this file
     end%end of layer iteration for this transect
     
@@ -290,7 +298,7 @@ for isn=1:length(snaps)
     surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_s(end)); % finish_lon
     surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
     surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
-    
+
     %Tracks/ST transect summary
     surv_out_obj.transectSumTracks.snapshot(i_trans) = snap_num;
     surv_out_obj.transectSumTracks.stratum{i_trans} = strat_name;
@@ -320,6 +328,7 @@ for isn=1:length(snaps)
     surv_out_obj.slicedTransectSum.slice_abscf{i_trans} = [Output_echo(:).slice_abscf]; % slice_abscf
     surv_out_obj.slicedTransectSum.slice_nb_tracks{i_trans} = [Output_echo(:).slice_nb_tracks];
     surv_out_obj.slicedTransectSum.slice_nb_st{i_trans} = [Output_echo(:).slice_nb_st];
+    surv_out_obj.slicedTransectSum.slice_shadow_zone_abscf{i_trans}=[Output_echo(:).shadow_zone_slice_abscf];
     catch err
         disp(err.message);
         warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);

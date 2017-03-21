@@ -9,8 +9,14 @@ if isempty(layer)
         return;
     end
 else
-    [path_lay,~]=get_path_files(layer);
-    path_f=path_lay{1};
+    switch layer.Filetype
+        case 'CREST'
+            return;
+        otherwise
+            [path_lay,~]=get_path_files(layer);
+            path_f=path_lay{1};
+    end
+    
 end
 
 

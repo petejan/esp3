@@ -6,12 +6,16 @@ algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3]);
 setappdata(main_figure,'option_tab_panel',opt_panel);
 setappdata(main_figure,'algo_tab_panel',algo_panel);
 
+
+
 create_menu(main_figure);
 load_cursor_tool(main_figure);
 toolbar_obj=findobj(main_figure,'Tag','toolbar_esp3');
 toolbar_obj_enable=findobj(toolbar_obj,'Enable','on');
 set(toolbar_obj_enable,'Enable','off');
 load_display_tab(main_figure,opt_panel);
+load_layer_tab(main_figure,opt_panel);
+
 display_tab_comp=getappdata(main_figure,'Display_tab');
 
 load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.50]);
@@ -29,6 +33,7 @@ load_track_target_tab(main_figure,algo_panel);
 load_axis_panel(main_figure);
 
 
+
 format_color_gui(main_figure,curr_disp.Font);
 
 set(main_figure,'Visible','on');
@@ -39,6 +44,9 @@ load_info_panel(main_figure);
 
 
 end
+
+
+
 
 
 

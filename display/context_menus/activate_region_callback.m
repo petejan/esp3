@@ -32,6 +32,28 @@ end
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
 
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.Data.get_range();
+
+x_reg_lim=xdata(reg_curr.Idx_pings);
+y_reg_lim=ydata(reg_curr.Idx_r);
+
+
+ah=axes_panel_comp.main_axes;
+x_lim=get(ah,'xlim');
+y_lim=get(ah,'ylim');
+
+if any(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||any(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
+    
+    dx=diff(x_lim);
+    dy=diff(y_lim);
+    
+    x_lim_new= [nanmean(x_reg_lim)-dx/2 nanmean(x_reg_lim)+dx/2];
+    y_lim_new= [nanmean(y_reg_lim)-dy/2 nanmean(y_reg_lim)+dy/2];
+    
+    set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
+end
+
 ah=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
 
 
@@ -71,12 +93,15 @@ for i=1:length(ah)
     set(reg_patch_in,'FaceColor',in_data_col,'EdgeColor',in_data_col);
     
 end
+
+
+
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,idx_reg);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 
-if ~(isa(obj,'patch')||isa(obj,'image')) 
+if ~(isa(obj,'matlab.graphics.primitive.Patch')||isa(obj,'matlab.graphics.primitive.Image')) 
     return;
 end
 

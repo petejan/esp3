@@ -10,7 +10,9 @@ addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','mete
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',Inf,@(x) x>0);
 addParameter(p,'Denoised',0,@isnumeric);
-addParameter(p,'Motion_correction',0,@isnumeric)
+addParameter(p,'Shadow_zone',0,@isnumeric);
+addParameter(p,'Shadow_zone_height',0,@isnumeric);
+addParameter(p,'Motion_correction',0,@isnumeric);
 parse(p,trans_obj,varargin{:});
 
 reg=p.Results.reg;
@@ -56,11 +58,16 @@ bins=unique([bin_ref(1):Slice_w:bin_ref(end) bin_ref(end)]);
 binStart = bins(1:end-1);
 binEnd = bins(2:end);
 
+        
+
+
 
 numSlices = length(binStart); % num_slices
 slice_abscf=zeros(1,length(binStart));
 nb_tracks=zeros(1,length(binStart));
 nb_st=zeros(1,length(binStart));
+shadow_zone_slice_abscf=zeros(1,length(binStart));
+shadow_zone_mean_height=zeros(1,length(binStart));
 nb_good_pings=zeros(1,length(binStart));
 idx_bins_S=nan(1,length(binStart));
 idx_bins_E=nan(1,length(binStart));
@@ -95,10 +102,43 @@ if ~isempty(trans_obj.Tracks)
     att_tr=zeros(1,length(trans_obj.Tracks.target_id));
     for k = 1:length(binStart);
         ix = (ping_num_track>=binStart(k) &  ping_num_track<binEnd(k))& ~att_tr;
+        if~any(ix)
+            continue;
+        end
         att_tr(ix)=1;
         nb_tracks(k)=nansum(ix);
     end
 end
+
+if p.Results.Shadow_zone
+    [output_shadow_reg,~,shadow_height_est]=trans_obj.estimate_shadow_zone('Shadow_zone_height',p.Results.Shadow_zone_height,...
+        'StartTime',st,'EndTime',et,...
+        'Slice_w',Slice_w,'Slice_units',Slice_units,...
+        'Denoised',p.Results.Denoised,...
+        'Motion_correction',p.Results.Motion_correction);
+    
+        
+        Sa_lin = nansum(output_shadow_reg.Sa_lin,1)./nanmax(output_shadow_reg.Nb_good_pings_esp2,1);%sum up all abcsf per vertical slice
+        att=zeros(1,length(Sa_lin));
+        switch Slice_units
+            case 'pings'
+                t_start=nanmax(output_shadow_reg.Ping_S,[],1);
+            case 'meters'
+                t_start=nanmax(output_shadow_reg.Dist_S,[],1);
+        end
+        
+        for k = 1:length(binStart); % sum up abscf data according to bins
+            ix = (t_start>=binStart(k) &  t_start<binEnd(k))& ~att;
+            
+           att(ix)=1;
+           if~any(ix)
+               continue;
+           end
+           shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(nanmin(output_shadow_reg.Ping_S(ix)))));
+           shadow_zone_slice_abscf(k) = (slice_abscf(k)+nansum(Sa_lin(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
+        end
+end
+
 
 i_reg=0;
 regCellIntOut={};
@@ -129,18 +169,21 @@ for iuu=1:length(idx_reg)
     end
     regs{i_reg}=reg_curr;
     
-    Sa_lin = nansum(regCellInt.Sa_lin)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
+    Sa_lin = nansum(regCellInt.Sa_lin,1)./nanmax(regCellInt.Nb_good_pings_esp2,[],1);%sum up all abcsf per vertical slice
     att=zeros(1,length(Sa_lin));
     switch Slice_units
         case 'pings'
-            t_start=nanmax(regCellInt.Ping_S);
+            t_start=nanmax(regCellInt.Ping_S,[],1);
         case 'meters'
-            t_start=nanmax(regCellInt.Dist_S);
+            t_start=nanmax(regCellInt.Dist_S,[],1);
     end
     
     for k = 1:length(binStart); % sum up abscf data according to bins
         ix = (t_start>=binStart(k) &  t_start<binEnd(k))& ~att;
         att(ix)=1;
+        if~any(ix)
+            continue;
+        end
         nb_good_pings(k)=nanmax(nansum(regCellInt.Nb_good_pings_esp2(ix)),nb_good_pings(k));
         slice_abscf(k) = (slice_abscf(k)+nansum(Sa_lin(ix)));
     end
@@ -151,6 +194,8 @@ output.slice_abscf=slice_abscf;
 output.slice_size=Slice_w;
 output.num_slices=numSlices;
 output.nb_good_pings=nb_good_pings;
+output.shadow_zone_slice_abscf=shadow_zone_slice_abscf;
+output.shadow_zone_mean_height=shadow_zone_mean_height;
 if ~isempty(trans_obj.GPSDataPing.Lat)
     output.slice_lat=trans_obj.GPSDataPing.Lat(idx_M)';
     output.slice_lon=trans_obj.GPSDataPing.Long(idx_M)';

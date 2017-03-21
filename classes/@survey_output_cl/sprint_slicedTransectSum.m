@@ -6,7 +6,7 @@ str=sprintf('\n# Sliced Transect Summary\n#snapshot stratum transect slice_lengt
 prec={'%0.f,' '%s,' '%0.f,' '%0.f,' '%0.f,'};
 fields=fieldnames(slicedTransectSum);
 for k = 1:length(slicedTransectSum.snapshot)
-    for iu=1:length(fields)-7
+    for iu=1:length(fields)-8
         if iscell(slicedTransectSum.(fields{iu}))
             str=[str sprintf(prec{iu}, slicedTransectSum.(fields{iu}){k})];
         else

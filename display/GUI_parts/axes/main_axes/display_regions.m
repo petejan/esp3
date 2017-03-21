@@ -150,7 +150,7 @@ for iax=1:length(main_axes_tot)
                 for jj=1:nb_cont
                     
                     idx_x_out{jj}=idx_x{jj}+reg_curr.Idx_pings(1)-1;
-                    idx_y_out{jj}=idx_y{jj}+reg_curr.Idx_r(1);
+                    idx_y_out{jj}=idx_y{jj}+reg_curr.Idx_r(1)-1;
                     try
                         x_reg{jj}=x(idx_x_out{jj});
                         y_reg{jj}=y(idx_y_out{jj})';

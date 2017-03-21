@@ -56,7 +56,7 @@ reg_fig_comp.cell_h_unit=uicontrol(reg_fig,'Style','popupmenu','String',units_h,
 
 data_type={'Data' 'Bad Data'};
 data_idx=1;
-uicontrol(reg_fig,'Style','Text','String','Data Type','units','normalized','Position',[0 0.5 0.2 0.1]);
+uicontrol(reg_fig,'Style','Text','String','Data Type','units','normalized','BackgroundColor','White','Position',[0 0.5 0.2 0.1]);
 reg_fig_comp.data_type=uicontrol(reg_fig,'Style','popupmenu','String',data_type,'Value',data_idx,'units','normalized','Position', [0.2 0.5 0.2 0.1]);
 
 set(reg_fig_comp.tog_ref,'callback',{@change_ref_callback,reg_fig_comp})

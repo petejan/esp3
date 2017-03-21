@@ -11,7 +11,7 @@ fn = fieldnames(esp2mbsdata.stratum(1,1));
 for i = 4:length(fn);
     strat_data_echo=nan(1,length(echobsdata.stratum));
     strat_data_esp2=nan(1,length(esp2mbsdata.stratum));
-
+    strat=cell(1,length(echobsdata.stratum));
     for j = 1:length(echobsdata.stratum)
         strat_num=[];
         for k=1:length(esp2mbsdata.stratum)
@@ -42,7 +42,7 @@ for i = 4:length(fn);
     title(sprintf('Snapshot: %.0f : %s',echobsdata.stratum(1,j).snapshot,fn{i}));
     set(ax,'xtick',1:length(strat_data_echo),'xticklabel',strat);
     hold off;
-    pause();
+    pause(1);
 
     if abs(diff_strata_mean) < 0.001
         fprintf(1, 'Stratum Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
@@ -64,7 +64,7 @@ for i = 4:length(fn);
     
     trans_data_echo=nan(1,length(echobsdata.transect_summary));
     trans_data_esp2=nan(1,length(echobsdata.transect_summary));
-
+    label=cell(1,length(echobsdata.transect_summary));
     for j = 1:length(echobsdata.transect_summary)
         trans_num=[];
         for k=1:length(esp2mbsdata.transect_summary)
@@ -96,7 +96,7 @@ for i = 4:length(fn);
     set(ax,'xtick',1:length(trans_data_echo),'xticklabel',label);
     set(ax,'XTickLabelRotation',-90);
     hold off;
-    pause();
+  pause(1);
 
     if abs(diff_trans_mean) < 0.001
         fprintf(1, 'Transect Summary %s : matlabmbs is on average the same than esp2mbs\n', fn{i});
@@ -145,7 +145,7 @@ for i = 3:length(fn);
             title(sprintf('Sliced Transect: %0.f Stratum: %s',echobsdata.transect(1,j).transect,echobsdata.transect(1,j).stratum));
             hold off;
             xlabel('Slice Number');
-            pause();
+            pause(1);
         end
         
         
@@ -206,7 +206,7 @@ for i = 7:length(fn);
     set(ax,'xtick',1:length(region_data_echo),'xticklabel',label_reg);
     set(ax,'XTickLabelRotation',-90);
     hold off;
-    pause();
+    pause(1);
 
     
     region_data_diff_mean=nansum(region_data_echo-region_data_esp2)/nansum(region_data_esp2);
@@ -260,7 +260,7 @@ for i = 6:length(fn);
             legend('Matlab','Esp2')
             title(sprintf('Region vbscf values \n Region: %0.f File: %s',echobsdata.region_detail(1,j).region_id,echobsdata.region_detail(1,j).filename));
             hold off;
-            pause();
+            pause(1);
         end
         
         if length(region_vbscf_echo{j}(:))~=length(region_vbscf_esp2{j}(:))
@@ -323,7 +323,7 @@ for i = 7:length(fn);
         legend('Matlab','Esp2')
         title(sprintf('Region abscf \n Region: %0.f File: %s',echobsdata.region(1,j).region_id,echobsdata.region(1,j).filename));
         hold off;
-        pause();
+        pause(1);
 
         
  

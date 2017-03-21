@@ -4,49 +4,85 @@ context_menu=uicontextmenu(main_figure);
 bottom_line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Display Bottom Region','Callback',@display_bottom_region_callback);
 uimenu(context_menu,'Label','Filter Bottom','Callback',@filter_bottom_callback);
-uimenu(context_menu,'Label','Display Slope estimation','Callback',@slope_est_callback);
-uimenu(context_menu,'Label','Display Shadow zone estimation','Callback',@shadow_zone_est_callback);
+% uimenu(context_menu,'Label','Display Slope estimation','Callback',@slope_est_callback);
+% uimenu(context_menu,'Label','Display Shadow zone height estimation','Callback',@shadow_zone_est_callback);
+uimenu(context_menu,'Label','Display Shadow zone content estimation (10m X 10m)','Callback',@shadow_zone_content_est_callback);
 
 end
 
+% 
+% function shadow_zone_est_callback(src,~)
+% main_figure=ancestor(src,'Figure');
+% 
+% layer=getappdata(main_figure,'Layer');
+% curr_disp=getappdata(main_figure,'Curr_disp');
+% idx_freq=find_freq_idx(layer,curr_disp.Freq);
+% trans_obj=layer.Transceivers(idx_freq);
+% 
+% [shadow_zone_height_est,~] = trans_obj.get_shadow_zone_height_est();
+% 
+% fig_handle=new_echo_figure(main_figure,'Tag','shadow_zone');
+% ax=axes(fig_handle);
+% plot(ax,shadow_zone_height_est);
+% grid(ax,'on');
+% xlabel(ax,'Ping number')
+% ylabel(ax,'Shadow Zone (m)');
+% 
+% end
 
-function shadow_zone_est_callback(src,~)
+function shadow_zone_content_est_callback(src,~)
 main_figure=ancestor(src,'Figure');
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+ah=axes_panel_comp.main_axes;
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-shadow_zone_height_est = trans_obj.get_shadow_zone_height_est();
+[outer_reg,slope_est,shadow_height_est]=trans_obj.estimate_shadow_zone('DispReg',1);
 
-fig_handle=new_echo_figure(main_figure,'Tag','shodow_zone');
-ax=axes(fig_handle);
-plot(ax,shadow_zone_height_est);
-grid(ax,'on');
-xlabel(ax,'Ping number')
-ylabel(ax,'Shadow Zone (m)');
+fig_handle=new_echo_figure(main_figure,'Tag','shadow_zone');
+ax1=axes(fig_handle,'nextplot','add','units','normalized','OuterPosition',[0 0.5 1 0.5]);
+yyaxis(ax1,'left');
+plot(ax1,shadow_height_est);
+grid(ax1,'on');
+xlabel(ax1,'Ping number')
+ylabel(ax1,'Shadow Zone (m)');
+yyaxis(ax1,'right');
+plot(ax1,slope_est);
+xlabel(ax1,'Ping number')
+ylabel(ax1,'Slope (deg)');
 
-end
 
-function slope_est_callback(src,~)
-main_figure=ancestor(src,'Figure');
+ax2=axes(fig_handle,'nextplot','add','units','normalized','OuterPosition',[0 0 1 0.5]);
+plot((outer_reg.Ping_E+outer_reg.Ping_S)/2,pow2db_perso(outer_reg.Sv_mean_lin),'k')
+xlabel(ax2,'Ping number')
+ylabel(ax2,'Sv mean(m)')
+grid(ax2,'on');
 
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
-
-slope_est=trans_obj.get_slope_est();
-
-fig_handle=new_echo_figure(main_figure,'Tag','slope_est');
-ax=axes(fig_handle);
-plot(ax,slope_est);
-grid(ax,'on');
-xlabel(ax,'Ping number')
-ylabel(ax,'Slope (deg)');
+linkaxes([ah,ax1,ax2],'x');
 
 end
+% 
+% function slope_est_callback(src,~)
+% main_figure=ancestor(src,'Figure');
+% 
+% layer=getappdata(main_figure,'Layer');
+% curr_disp=getappdata(main_figure,'Curr_disp');
+% idx_freq=find_freq_idx(layer,curr_disp.Freq);
+% trans_obj=layer.Transceivers(idx_freq);
+% 
+% slope_est=trans_obj.get_slope_est();
+% 
+% fig_handle=new_echo_figure(main_figure,'Tag','slope_est');
+% ax=axes(fig_handle);
+% plot(ax,slope_est);
+% grid(ax,'on');
+% xlabel(ax,'Ping number')
+% ylabel(ax,'Slope (deg)');
+% 
+% end
 
 function display_bottom_region_callback(src,~)
 main_figure=ancestor(src,'Figure');

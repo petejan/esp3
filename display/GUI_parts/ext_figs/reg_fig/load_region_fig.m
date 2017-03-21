@@ -70,7 +70,7 @@ else
             reg_table_data=update_data_table(region_mod,reg_table.table_main.Data);
             set(reg_table.table_main,'Data',reg_table_data);
         else
-            idx_mod=find(reg_table.table_main.Data{:,10}==abs(reg_uniqueID));
+            idx_mod=find([reg_table.table_main.Data{:,10}]==abs(reg_uniqueID));
             if ~isempty(idx_mod)
                 reg_table.table_main.Data(idx_mod,:)=[];
             end
@@ -91,8 +91,11 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 regions=trans_obj.Regions;
-
+if isempty(evt.Indices)
+    return;
+end
 [idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(1),10});
+
 if ~found
     return;
 end
@@ -107,7 +110,7 @@ reg_table_data_new=cell(nb_regions,10);
 
 for i=1:length(regions)
     if~isempty(reg_table_data)
-        idx_mod=find(reg_table_data{:,10}==regions(i).Unique_ID);
+        idx_mod=find([reg_table_data{:,10}]==regions(i).Unique_ID);
     else
         idx_mod=[];
     end

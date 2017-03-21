@@ -33,11 +33,9 @@ else
         else
             out_cell={IDs{i_sub_reg},[],[]};
         end
-        if out_cell{1}==0 
-            idx_temp=trans_obj.list_regions_type('Data');
-        else
-            idx_temp=trans_obj.list_regions_ID(abs(out_cell{1}));
-        end
+
+        idx_temp=trans_obj.list_regions_ID(abs(out_cell{1}));
+
         for i_temp=1:length(idx_temp)
             reg_temp=trans_obj.get_reg_spec(idx_temp(i_temp));
             if ~isempty(out_cell{2});

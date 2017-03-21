@@ -5,7 +5,7 @@ classdef survey_options_cl
         Es60_correction=0;
         Motion_correction=0;
         Shadow_zone=0;
-        Shadow_zone_heigth=10;
+        Shadow_zone_height=10;
         Vertical_slice_size=10;
         Vertical_slice_units='meters';
         Horizontal_slice_size=10;
@@ -27,7 +27,7 @@ classdef survey_options_cl
             default_absorption_f=[18000 38000 70000 120000 200000];
             default_options=struct('Use_exclude_regions',1,'Absorption',nan,'Es60_correction',nan,'Motion_correction',0,...
                 'Vertical_slice_size',100,'Vertical_slice_units','pings','Horizontal_slice_size',10,'Remove_tracks',0,'Remove_ST',0,'Denoised',0,...
-                'Frequency',38000,'FrequenciesToLoad',[],'ClassifySchool',0,'BadTransThr',100,'Soundspeed',nan,'SaveBot',0,'SaveReg',0,'Shadow_zone',0,'Shadow_zone_heigth',0);
+                'Frequency',38000,'FrequenciesToLoad',[],'ClassifySchool',0,'BadTransThr',100,'Soundspeed',nan,'SaveBot',0,'SaveReg',0,'Shadow_zone',0,'Shadow_zone_height',0);
             
             p = inputParser;
             

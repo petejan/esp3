@@ -18,7 +18,7 @@ end
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s):',curr_disp.Freq/1e3),'units','normalized','Position',[0.1 0.85 0.5 0.1]);
+calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s):',curr_disp.Freq/1e3),'units','normalized','Position',[0.1 0.85 0.5 0.1],'BackgroundColor','White');
 
   calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.55 0.85 0.1 0.1],'string',num2str(layer.EnvData.SoundSpeed,'%.0f'),'callback',{@change_soundspeed_cback,main_figure});
        
@@ -27,10 +27,10 @@ if ~strcmp(layer.Filetype,'CREST')
     if strcmp(trans_obj.Mode,'CW')
         cal_cw=get_cal(trans_obj);
         
-        uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Gain (dB)','units','normalized','Position',[0.1 0.7 0.2 0.1]);
+        uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Gain (dB)','units','normalized','Position',[0.1 0.7 0.2 0.1],'BackgroundColor','White');
         calibration_tab_comp.G0=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.7 0.1 0.1],'string',num2str(cal_cw.G0,'%.2f'),'callback',{@apply_calibration,main_figure});
         
-        uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Sa Corr (dB)','units','normalized','Position',[0.1 0.55 0.2 0.1]);
+        uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','Sa Corr (dB)','units','normalized','Position',[0.1 0.55 0.2 0.1],'BackgroundColor','White');
         calibration_tab_comp.SACORRECT=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.3 0.55 0.1 0.1],'string',num2str(cal_cw.SACORRECT,'%.2f'),'callback',{@apply_calibration,main_figure});
 %         
 %         uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String','ES Corr (dB)','units','normalized','Position',[0.1 0.4 0.2 0.1]);

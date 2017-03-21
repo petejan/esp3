@@ -8,8 +8,7 @@ if isempty(layer)
     return;
 end
 
-if new==1
-    load_cursor_tool(main_figure);
+if new==1  
     init_grid_val(main_figure);
     update_bottom_tab(main_figure);
     update_bottom_tab_v2(main_figure);
@@ -25,6 +24,7 @@ if new==1
     load_calibration_tab(main_figure,opt_panel);
     load_info_panel(main_figure);
     load_region_fig(main_figure,1,[]);
+    update_layer_tab(main_figure);
 end
 
 update_axis_panel(main_figure,new);

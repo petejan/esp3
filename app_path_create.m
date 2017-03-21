@@ -5,7 +5,7 @@ app_path_cvs_root=':local:Z:\';
 app_path_data_root='X:\';
 app_path_data='X:\';
 app_path_scripts='X:\echo_scripts';
-
+app_path_results='X:\echo_results';
 p = inputParser;
 
 addParameter(p,'data_temp',app_path_data_temp,@ischar);
@@ -13,6 +13,7 @@ addParameter(p,'cvs_root',app_path_cvs_root,@ischar);
 addParameter(p,'data_root',app_path_data_root,@ischar);
 addParameter(p,'data',app_path_data,@ischar);
 addParameter(p,'scripts',app_path_scripts,@ischar);
+addParameter(p,'results',app_path_results,@ischar);
 
 parse(p,varargin{:});
 

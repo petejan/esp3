@@ -7,6 +7,8 @@ addParameter(p,'vertExtend',[0 Inf],@isnumeric);
 addParameter(p,'horiExtend',[0 Inf],@isnumeric);
 addParameter(p,'denoised',0,@isnumeric);
 addParameter(p,'motion_correction',0,@isnumeric);
+addParameter(p,'intersect_only',0,@isnumeric);
+
 
 
 parse(p,trans_obj,region,varargin{:});
@@ -30,7 +32,7 @@ else
 end
 
 if p.Results.motion_correction>0
-     motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncorrection');
+     motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncompensation');
      if ~isempty(motion_corr)
         Sv_reg=Sv_reg-motion_corr;  
      else
@@ -82,20 +84,48 @@ if isempty(dist)
     lon=nan(size(time));
 end
 
-idx=list_regions_type(trans_obj,'Bad Data');
 
+
+if p.Results.intersect_only==1
+    Sv_reg_save=Sv_reg;
+    Sv_reg=nan(size(Sv_reg));
+    idx=list_regions_type(trans_obj,'Data');
+    for i=idx
+        curr_reg=trans_obj.Regions(i);
+        if curr_reg.Unique_ID==region.Unique_ID
+            continue;
+        end
+        
+        idx_r_curr=curr_reg.Idx_r;
+        idx_pings_curr=curr_reg.Idx_pings;
+        [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
+        [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
+        switch curr_reg.Shape
+            case 'Polygon'
+                mask=curr_reg.MaskReg;
+                Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
+                Sv_temp(mask(idx_r_from_curr,idx_pings_from_curr)==0)=NaN;
+            otherwise
+                Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
+        end
+    
+    Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
+    end
+end
+
+idx=list_regions_type(trans_obj,'Bad Data');
 for i=idx
     curr_reg=trans_obj.Regions(i);
     if curr_reg.Unique_ID==region.Unique_ID
         continue;
     end
+    
     idx_r_curr=curr_reg.Idx_r;
     idx_pings_curr=curr_reg.Idx_pings;
     [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
     [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
     
     switch curr_reg.Shape
-        
         case 'Polygon'
             mask=curr_reg.MaskReg;
             Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
@@ -106,6 +136,11 @@ for i=idx
     Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
     
 end
+
+
+   
+
+
 
 
 IdxBad=find(trans_obj.Bottom.Tag==0);
@@ -213,8 +248,8 @@ cell_w=region.Cell_w;
 cell_h=region.Cell_h;
 
 
-X0=nanmin(x_mat(:));
-X1=nanmax(x_mat(:));
+X0=nanmin(x_mat(Mask));
+X1=nanmax(x_mat(Mask));
 
 X=X0:cell_w:X1;
 X=[X X1];
@@ -225,14 +260,14 @@ N_x=length(X)-1;
 
 switch region.Reference
     case 'Surface'
-        Y0=nanmin(y_mat(:));
-        Y1=nanmax(y_mat(:));
+        Y0=nanmin(y_mat(Mask));
+        Y1=nanmax(y_mat(Mask));
         Y=Y0:cell_h:Y1;
         Y=[Y Y1];                
         y_c=(Y(2:end)+Y(1:end-1))/2;
         y_res=abs(Y(2:end)-Y(1:end-1))/2;
     otherwise
-        Y1=nanmin(y_mat(:));
+        Y1=nanmin(y_mat(Mask));
         Y=0:-cell_h:Y1;
         Y=[Y Y1];
         Y=unique(Y);

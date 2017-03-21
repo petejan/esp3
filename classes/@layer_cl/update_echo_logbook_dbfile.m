@@ -157,7 +157,7 @@ for ilay=1:length(layers_obj)
 end
 
 
-if ~strcmp(p.Results.Filename,'')
+if exist(p.Results.Filename,'file')==2
     [start_time,end_time]=start_end_time_from_file(p.Results.Filename);
     survdata_temp=p.Results.SurveyData;
     [path_f,file_r,end_file]=fileparts(p.Results.Filename);

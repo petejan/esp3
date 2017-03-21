@@ -156,6 +156,7 @@ function snapshot_struct=get_snapshot(node,options)
 snapshot_struct.Number=get_att(node,'number');
 snapshot_struct.Folder=get_att(node,'folder');
 stratum=get_childs(node,'stratum');
+snapshot_struct.Options=update_options(options,get_options_node(get_childs(node,'options')));
 snapshot_struct.Stratum=cell(1,length(stratum));
 cals=get_childs(node,'cal');
 Cal=[];
@@ -166,10 +167,10 @@ end
 snapshot_struct.Cal=Cal;
 
 for i=1:length(stratum)
-    strat_curr=get_strat_node(stratum(i),options);
+    strat_curr=get_strat_node(stratum(i),snapshot_struct.Options);
     snapshot_struct.Stratum{i}=strat_curr;
 end
-
+    
 end
 
 function strat_curr=get_strat_node(stratum,options)

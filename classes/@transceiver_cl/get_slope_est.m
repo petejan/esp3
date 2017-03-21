@@ -1,5 +1,5 @@
-function slope_est = get_slope_est( trans_obj,varargin )
-% slope_est = get_slope_est( trans_obj,'width',10 )
+function [slope_est,bot_range] = get_slope_est( trans_obj,varargin )
+% [slope_est,bot_range] = get_slope_est( trans_obj,'width',10 )
 %
 % DESCRIPTION
 %
@@ -19,6 +19,7 @@ function slope_est = get_slope_est( trans_obj,varargin )
 % OUTPUT VARIABLES
 %
 % slope_est : estimated slope
+% bot_range : bottom range corrected from transducer depth
 %
 % RESEARCH NOTES
 %

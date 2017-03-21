@@ -30,6 +30,13 @@ layers_new=[];
 for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
+    
+    if isfield(snapshots{isn},'Options')
+        options=snapshots{isn}.Options;
+    else
+        options=surv_input_obj.Options;
+    end
+    
     try
         cal_snap=get_cal_node(cal_opt,snapshots{isn});
     catch
@@ -40,7 +47,9 @@ for isn=1:length(snapshots)
         strat_name=stratum{ist}.Name;
         transects=stratum{ist}.Transects;
         cal_strat=get_cal_node(cal_snap,stratum{ist});
-        options=stratum{ist}.Options;
+        if isfield(stratum{ist},'Options')
+            options=stratum{ist}.Options;
+        end
         for itr=1:length(transects)
            show_status_bar(p.Results.gui_main_handle);
            
