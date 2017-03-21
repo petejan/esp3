@@ -1,55 +1,42 @@
+%% plot_hist_st_callback.m
+%
+% Callback plotting histogram of detected single target on currently
+% displayed frequency.
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: Handle to main ESP3 window
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-02: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function plot_hist_st_callback(~,~,main_figure)
 
-%  plot_hist_st_callback(~,~,main_figure)
-%
-% DESCRIPTION
-%
-% -Callback Plotting histogramm of detected Single target on currently
-% displayed frequency
-%
-% USE
-%
-% [A bit more detailed description of how to use the function. DELETE THIS LINE IF UNUSED]
-%
-% PROCESSING SUMMARY
-%
-% - [Bullet point list summary of the steps in the processing.]
-% - [DELETE THESE LINES IF UNUSED]
-%
-% INPUT VARIABLES
-%
-% - [Bullet point list description of input variables.]
-% - [Describe if required, optional or parameters..]
-% - [.. what are the valid values and what they do.]
-% - [DELETE THESE LINES IF UNUSED]
-%
-% OUTPUT VARIABLES
-%
-% - [Bullet point list description of output variables.]
-% - [DELETE THESE LINES IF UNUSED]
-%
-% RESEARCH NOTES
-%
-% [Describes what features are temporary or needed future developments.]
-% [Also use for paper references.]
-% [DELETE THESE LINES IF UNUSED]
-%
-% NEW FEATURES
-%
-% YYYY-MM-DD: [second version. Describes the update. DELETE THIS LINE IF UNUSED]
-% 2017-03-02: first version.
-%
-% EXAMPLE
-%
-% % example 1:
-% [This section contains examples of valid function calls.]
-%
-% % example 2:
-% [DELETE THESE LINES IF UNUSED]
-%
-%%%
-% Yoann Ladroit NIWA
-%%%
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)

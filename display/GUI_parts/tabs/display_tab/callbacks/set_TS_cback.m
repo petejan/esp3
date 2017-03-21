@@ -1,45 +1,41 @@
-
-function set_TS_cback(~,~,main_figure)
-% set_TS_cback(~,~,main_figure)
-%
-% DESCRIPTION
+%% set_TS_cback.m
 %
 % Callback to change TS for biomass visualisation
 %
-% USE
-%%
-% PROCESSING SUMMARY
+%% Help
 %
-% - [Bullet point list summary of the steps in the processing.]
-% - [DELETE THESE LINES IF UNUSED]
+% *USE*
 %
-% INPUT VARIABLES
+% TODO
 %
-% - ESP3 figure
+% *INPUT VARIABLES*
 %
+% * |main_figure|: Handle to main ESP3 window
 %
-% RESEARCH NOTES
+% *OUTPUT VARIABLES*
 %
-% [Describes what features are temporary or needed future developments.]
-% [Also use for paper references.]
-% [DELETE THESE LINES IF UNUSED]
+% NA
 %
-% NEW FEATURES
+% *RESEARCH NOTES*
 %
-% YYYY-MM-DD: [second version. Describes the update. DELETE THIS LINE IF UNUSED]
-% 2017-03-06: first version.
+% TODO
 %
-% EXAMPLE
+% *NEW FEATURES*
 %
-% % example 1:
-% [This section contains examples of valid function calls.]
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-06: first version (Yoann Ladroit)
 %
-% % example 2:
-% [DELETE THESE LINES IF UNUSED]
+% *EXAMPLE*
 %
-%%%
-% Yoann Ladroit NIWA
-%%%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function set_TS_cback(~,~,main_figure)
+
 
 layer=getappdata(main_figure,'Layer');
 display_tab_comp=getappdata(main_figure,'Display_tab');

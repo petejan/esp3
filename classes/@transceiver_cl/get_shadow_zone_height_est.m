@@ -1,40 +1,48 @@
-function [shadow_zone_height_est,slope_est] = get_shadow_zone_height_est( trans_obj ,varargin)
-% shadow_zone_height_est = get_shadow_zone_height_est( trans_obj)
-%
-% DESCRIPTION
+%% get_shadow_zone_height_est.m
 %
 % Gives a shadow zone height estimation
 %
-% USE
+%% Help
 %
-% PROCESSING SUMMARY
+% *USE*
 %
-% INPUT VARIABLES
+% TODO
 %
-% - trans_obj: transceiver_cl
-%       
-% OUTPUT VARIABLES
+% *INPUT VARIABLES*
 %
-% shadow_zone_height_est : shadow zone height estimation
+% * |trans_obj|: Object of class |transceiver_cl| (Required)
 %
-% RESEARCH NOTES
+% *OUTPUT VARIABLES*
 %
-% NEW FEATURES
+% * |shadow_zone_height_est|: Shadow zone height estimation
+% * |slope_est|: TODO
 %
-% 2017-03-15: first version.
-% EXAMPLE
+% *RESEARCH NOTES*
 %
+% TODO: complete header and in-code commenting
 %
-%%%
-% Yoann Ladroit& NIWA
-%%%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-15: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
+%% Function
+function [shadow_zone_height_est,slope_est] = get_shadow_zone_height_est( trans_obj ,varargin)
 
+% Checking and parsin input variables
 p = inputParser;
-
 addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
-
 parse(p,trans_obj,varargin{:});
+
+
 faBW=trans_obj.Config.BeamWidthAlongship;
 psBW=trans_obj.Config.BeamWidthAthwartship;
 beam_angle=nanmean(faBW+psBW)/2;

@@ -1,0 +1,188 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>estimate_shadow_zone.m</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-03-22"><meta name="DC.source" content="estimate_shadow_zone.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>estimate_shadow_zone.m</h1><!--introduction--><p>TODO</p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Help</a></li><li><a href="#2">Function</a></li><li><a href="#4">Checking and parsing input variables</a></li></ul></div><h2 id="1">Help</h2><p><b>USE</b></p><p>TODO</p><p><b>INPUT VARIABLES</b></p><div><ul><li><tt>trans_obj</tt>: Object of class <tt>transceiver_cl</tt> (Required)</li><li><tt>Slice_w</tt>: Slice width (Optional. Positive num. Default: <tt>10</tt>).</li><li><tt>Slice_units</tt>: Units for slice width (Optional. Char with valid options: <tt>'pings'</tt> or <tt>'meters'</tt>. Default: <tt>'meters'</tt>).</li><li><tt>StartTime</tt>: Start time (Optional. Positive num. Default: <tt>0</tt>).</li><li><tt>EndTime</tt>: End time (Optional. Positive num. Default: <tt>Inf</tt>).</li><li><tt>Motion_correction</tt>: Motion correction (Optional. Num. Default: <tt>0</tt>).</li><li><tt>Denoised</tt>: TODO (Optional. Num. Default: <tt>0</tt>).</li><li><tt>Shadow_zone_height</tt>: TODO (Optional. Num. Default: <tt>10</tt>).</li><li><tt>DispReg</tt> TODO (Optional. Default: <tt>0</tt>).</li></ul></div><p><b>OUTPUT VARIABLES</b></p><div><ul><li><tt>output_reg</tt>: TODO</li><li><tt>slope_est</tt>: TODO</li><li><tt>shadow_height_est</tt>: TODO</li></ul></div><p><b>RESEARCH NOTES</b></p><p>TODO: complete header and in-code commenting</p><p><b>NEW FEATURES</b></p><div><ul><li>2017-03-21: first version.</li></ul></div><p><b>EXAMPLE</b></p><p>TODO</p><p><b>AUTHOR, AFFILIATION &amp; COPYRIGHT</b></p><p>Yoann Ladroit, NIWA. Type <tt>help EchoAnalysis.m</tt> for copyright information.</p><h2 id="2">Function</h2><pre class="codeinput"><span class="keyword">function</span> [output_reg,slope_est,shadow_height_est] = estimate_shadow_zone(trans_obj,varargin)
+</pre><h2 id="4">Checking and parsing input variables</h2><pre class="codeinput">p = inputParser;
+addRequired(p,<span class="string">'trans_obj'</span>,@(trans_obj) isa(trans_obj,<span class="string">'transceiver_cl'</span>));
+addParameter(p,<span class="string">'Slice_w'</span>,10,@(x) x&gt;0);
+addParameter(p,<span class="string">'Slice_units'</span>,<span class="string">'meters'</span>,@(unit) ~isempty(strcmp(unit,{<span class="string">'pings'</span>,<span class="string">'meters'</span>})));
+addParameter(p,<span class="string">'StartTime'</span>,0,@(x) x&gt;0);
+addParameter(p,<span class="string">'EndTime'</span>,Inf,@(x) x&gt;0);
+addParameter(p,<span class="string">'Motion_correction'</span>,0,@isnumeric);
+addParameter(p,<span class="string">'Denoised'</span>,0,@isnumeric);
+addParameter(p,<span class="string">'Shadow_zone_height'</span>,10,@isnumeric);
+addParameter(p,<span class="string">'DispReg'</span>,0);
+parse(p,trans_obj,varargin{:});
+
+reg_sh = trans_obj.create_WC_region(<span class="keyword">...</span>
+    <span class="string">'y_min'</span>,p.Results.Shadow_zone_height,<span class="keyword">...</span>
+    <span class="string">'y_max'</span>,0,<span class="keyword">...</span>
+    <span class="string">'Ref'</span>,<span class="string">'Bottom'</span>,<span class="keyword">...</span>
+    <span class="string">'Cell_w'</span>,p.Results.Slice_w,<span class="keyword">...</span>
+    <span class="string">'Cell_h'</span>,p.Results.Shadow_zone_height,<span class="keyword">...</span>
+    <span class="string">'Cell_w_unit'</span>,p.Results.Slice_units,<span class="keyword">...</span>
+    <span class="string">'Cell_h_unit'</span>,<span class="string">'meters'</span>);
+<span class="comment">%</span>
+<span class="comment">% trans_obj.add_region(reg_sh);</span>
+
+<span class="comment">% if p.Results.DispReg&gt;=0</span>
+<span class="comment">%     reg_sh.display_region(trans_obj);</span>
+<span class="comment">% end</span>
+
+output_reg = trans_obj.integrate_region(reg_sh,<span class="string">'horiExtend'</span>,[p.Results.StartTime p.Results.EndTime],<span class="keyword">...</span>
+        <span class="string">'denoised'</span>,p.Results.Denoised,<span class="string">'motion_correction'</span>,p.Results.Motion_correction,<span class="string">'intersect_only'</span>,1);
+
+[shadow_height_est,slope_est] = trans_obj.get_shadow_zone_height_est();
+</pre><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% estimate_shadow_zone.m
+%
+% TODO
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |trans_obj|: Object of class |transceiver_cl| (Required)
+% * |Slice_w|: Slice width (Optional. Positive num. Default: |10|).
+% * |Slice_units|: Units for slice width (Optional. Char with valid options: |'pings'|
+% or |'meters'|. Default: |'meters'|).
+% * |StartTime|: Start time (Optional. Positive num. Default: |0|). 
+% * |EndTime|: End time (Optional. Positive num. Default: |Inf|).
+% * |Motion_correction|: Motion correction (Optional. Num. Default: |0|). 
+% * |Denoised|: TODO (Optional. Num. Default: |0|).
+% * |Shadow_zone_height|: TODO (Optional. Num. Default: |10|).
+% * |DispReg| TODO (Optional. Default: |0|).
+%
+% *OUTPUT VARIABLES*
+%
+% * |output_reg|: TODO
+% * |slope_est|: TODO
+% * |shadow_height_est|: TODO
+%
+% *RESEARCH NOTES*
+%
+% TODO: complete header and in-code commenting
+%
+% *NEW FEATURES*
+%
+% * 2017-03-21: first version.
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function [output_reg,slope_est,shadow_height_est] = estimate_shadow_zone(trans_obj,varargin)
+
+%% Checking and parsing input variables
+p = inputParser;
+addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
+addParameter(p,'Slice_w',10,@(x) x>0);
+addParameter(p,'Slice_units','meters',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
+addParameter(p,'StartTime',0,@(x) x>0);
+addParameter(p,'EndTime',Inf,@(x) x>0);
+addParameter(p,'Motion_correction',0,@isnumeric);
+addParameter(p,'Denoised',0,@isnumeric);
+addParameter(p,'Shadow_zone_height',10,@isnumeric);
+addParameter(p,'DispReg',0);
+parse(p,trans_obj,varargin{:});
+
+reg_sh = trans_obj.create_WC_region(...
+    'y_min',p.Results.Shadow_zone_height,...
+    'y_max',0,...
+    'Ref','Bottom',...
+    'Cell_w',p.Results.Slice_w,...
+    'Cell_h',p.Results.Shadow_zone_height,...
+    'Cell_w_unit',p.Results.Slice_units,...
+    'Cell_h_unit','meters');
+% 
+% trans_obj.add_region(reg_sh);
+
+% if p.Results.DispReg>=0
+%     reg_sh.display_region(trans_obj);
+% end
+
+output_reg = trans_obj.integrate_region(reg_sh,'horiExtend',[p.Results.StartTime p.Results.EndTime],...
+        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'intersect_only',1);
+
+[shadow_height_est,slope_est] = trans_obj.get_shadow_zone_height_est();
+
+
+
+
+##### SOURCE END #####
+--></body></html>

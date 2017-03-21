@@ -1,44 +1,46 @@
-function initialize_interactions(main_figure,new)
-% initialize_interactions(main_figure)
+%% initialize_interactions.m
 %
-% DESCRIPTION 
-% 
 % Initialize user interactions with ESP3 main figure
-% 
-% USE 
-% 
-% [This section contains a more detailed description of what the function does and how to use it, for the interested user to have an overall understanding of its function] 
-% This is a text file containing the basic comment template to add at the
-% start of any new ESP3 function to serve as function help. 
-% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
-% 
-% PROCESSING SUMMARY 
-% 
-% [This section contains bullet point list of major processing steps, for the very interested user to have a clear understanding of the function works before reading its details]
-% - Function does this first
-% - Then it does this
-% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
-% 
-% INPUT VARIABLES 
-% 
-% - main_figure (required): ESP3 main figure
-% - new: 0 or 1. 0 if refreshing 1 if first time you are loading
-% 
-% RESEARCH NOTES 
-% 
-% [This section describes what features are temporary, needed future developments and paper references.]
-% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
-% 
-% NEW FEATURES 
-% 
-% 2017-03-02: first version. 
-% 
-%%% 
-% Yoann Ladroit, NIWA.
-%%%
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: Handle to main ESP3 window (Required).
+% * |new|: Flag for refreshing or first time load (Required. |0| if
+% refreshing or |1| if first-time loading).
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-02: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
+%% Function
+function initialize_interactions(main_figure,new)
 
-% Set Pointer to Arrow
+%%% Set Interactions
+
+% Pointer to Arrow
 set(main_figure,'Pointer','arrow');
 
 % Initialize Mouse interactions in the figure
@@ -47,13 +49,13 @@ set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdat
 % Initialize Keyboard interactions in the figure
 set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 
-%Set wheel mouse scroll cback
+% Set wheel mouse scroll cback
 set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
 
-%Set pointer motion cback
+% Set pointer motion cback
 set(main_figure,'WindowButtonMotionFcn',{@display_info_ButtonMotionFcn,main_figure,0});
 
-
+%%% Java stuff in case of first-time loading 
 if new
     size_max = get(0, 'MonitorPositions');
     try
