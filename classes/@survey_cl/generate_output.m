@@ -328,7 +328,9 @@ for isn=1:length(snaps)
     surv_out_obj.slicedTransectSum.slice_abscf{i_trans} = [Output_echo(:).slice_abscf]; % slice_abscf
     surv_out_obj.slicedTransectSum.slice_nb_tracks{i_trans} = [Output_echo(:).slice_nb_tracks];
     surv_out_obj.slicedTransectSum.slice_nb_st{i_trans} = [Output_echo(:).slice_nb_st];
-    surv_out_obj.slicedTransectSum.slice_shadow_zone_abscf{i_trans}=[Output_echo(:).shadow_zone_slice_abscf];
+    slice_shadow_zone_abscf_temp=[Output_echo(:).shadow_zone_slice_abscf];
+    slice_shadow_zone_abscf_temp(surv_out_obj.slicedTransectSum.slice_abscf{i_trans}==0)=0;
+    surv_out_obj.slicedTransectSum.slice_shadow_zone_abscf{i_trans}=slice_shadow_zone_abscf_temp;
     catch err
         disp(err.message);
         warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);

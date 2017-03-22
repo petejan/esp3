@@ -86,7 +86,7 @@ uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','
 
 
 
-set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
 end
 

@@ -30,7 +30,7 @@ set(bad_ping_tab_comp.BS_std_bool,'value',algo.BS_std_bool);
 set(bad_ping_tab_comp.BS_std_sl,'value',algo.BS_std);
 set(bad_ping_tab_comp.BS_std_ed,'string',num2str(get(bad_ping_tab_comp.BS_std_sl,'Value'),'%.0f'));
 
-set(findall(bad_ping_tab_comp.bad_ping_tab, '-property', 'Enable'), 'Enable', 'on');
+%set(findall(bad_ping_tab_comp.bad_ping_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'Bad_ping_tab',bad_ping_tab_comp);
 end

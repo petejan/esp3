@@ -23,7 +23,7 @@ uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','File Selec
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.3 0.15],'callback',{@process,main_figure,0});
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all current layers','units','normalized','pos',[0.6 0.50 0.3 0.15],'callback',{@process,main_figure,1});
 
-set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Processing_tab',processing_tab_comp);
 
 end

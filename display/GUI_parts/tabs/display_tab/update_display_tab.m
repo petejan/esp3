@@ -32,7 +32,7 @@ set(display_tab_comp.tog_axes,'String',Axes_type,'Value',idx_axes);
 set(display_tab_comp.caxis_up,'String',num2str(curr_disp.Cax(2),'%.0f'));
 set(display_tab_comp.caxis_down,'String',num2str(curr_disp.Cax(1),'%.0f'));
 
-set(findall(display_tab_comp.display_tab, '-property', 'Enable'), 'Enable', 'on');
+%set(findall(display_tab_comp.display_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Display_tab',display_tab_comp);

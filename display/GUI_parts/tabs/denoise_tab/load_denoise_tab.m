@@ -35,7 +35,7 @@ uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','uni
 uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
 
-set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Denoise_tab',denoise_tab_comp);
 
 end

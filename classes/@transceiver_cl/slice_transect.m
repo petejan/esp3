@@ -6,12 +6,12 @@ init_reg=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'reg',init_reg,@(x) isstruct(x)||isempty(x));
 addParameter(p,'Slice_w',50,@(x) x>0);
-addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
+addParameter(p,'Slice_units','meters',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',Inf,@(x) x>0);
 addParameter(p,'Denoised',0,@isnumeric);
 addParameter(p,'Shadow_zone',0,@isnumeric);
-addParameter(p,'Shadow_zone_height',0,@isnumeric);
+addParameter(p,'Shadow_zone_height',10,@isnumeric);
 addParameter(p,'Motion_correction',0,@isnumeric);
 parse(p,trans_obj,varargin{:});
 
@@ -116,7 +116,7 @@ if p.Results.Shadow_zone
         'Slice_w',Slice_w,'Slice_units',Slice_units,...
         'Denoised',p.Results.Denoised,...
         'Motion_correction',p.Results.Motion_correction);
-    
+    if ~isempty(output_shadow_reg)
         
         Sa_lin = nansum(output_shadow_reg.Sa_lin,1)./nanmax(output_shadow_reg.Nb_good_pings_esp2,1);%sum up all abcsf per vertical slice
         att=zeros(1,length(Sa_lin));
@@ -130,13 +130,14 @@ if p.Results.Shadow_zone
         for k = 1:length(binStart); % sum up abscf data according to bins
             ix = (t_start>=binStart(k) &  t_start<binEnd(k))& ~att;
             
-           att(ix)=1;
-           if~any(ix)
-               continue;
-           end
-           shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(nanmin(output_shadow_reg.Ping_S(ix)))));
-           shadow_zone_slice_abscf(k) = (slice_abscf(k)+nansum(Sa_lin(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
+            att(ix)=1;
+            if~any(ix)
+                continue;
+            end
+            shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(nanmin(output_shadow_reg.Ping_S(ix)))));
+            shadow_zone_slice_abscf(k) = (slice_abscf(k)+nansum(Sa_lin(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
         end
+    end
 end
 
 

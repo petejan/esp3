@@ -43,7 +43,7 @@ set(processing_tab_comp.school_detec,'Value',school_detect_algo);
 set(processing_tab_comp.single_target,'Value',single_target_alg);
 set(processing_tab_comp.track_target,'Value',track_target_alg);
 
-set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'on');
+%set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'Processing_tab',processing_tab_comp);
 

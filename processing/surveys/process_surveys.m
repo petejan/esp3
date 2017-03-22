@@ -18,8 +18,9 @@ layers_out=p.Results.layers;
 if ~iscell(Filenames)
     Filenames={Filenames};
 end
-% enabled_obj=findobj(p.Results.gui_main_handle,'Enable','on');
-% set(enabled_obj,'Enable','off');
+%profile on;
+enabled_obj=findobj(p.Results.gui_main_handle,'Enable','on');
+set(enabled_obj,'Enable','off');
 for i=1:length(Filenames)
     try
         surv_obj=survey_cl();
@@ -100,6 +101,7 @@ for i=1:length(Filenames)
     end
     
 end
+set(enabled_obj(isvalid(enabled_obj)),'Enable','on');
 
 hide_status_bar(p.Results.gui_main_handle);
 loadEcho(p.Results.gui_main_handle);

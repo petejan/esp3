@@ -78,7 +78,7 @@ uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String',str_delete,'u
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String',str_delete_all,'units','normalized','pos',[0.7+0.0625 0.3 0.0625 0.15],'callback',{@delete_all_region_callback,main_figure});
 uicontrol(region_tab_comp.region_tab,'Style','pushbutton','String','Del. Across Freq.','TooltipString','Delete Across Frequencies','units','normalized','pos',[0.825 0.3 0.125 0.15],'callback',{@rm_over_freq_callback,main_figure});
 
-set(findall(region_tab_comp.region_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(region_tab_comp.region_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Region_tab',region_tab_comp);
 end
 

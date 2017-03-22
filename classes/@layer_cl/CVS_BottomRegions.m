@@ -44,7 +44,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
             bot= get_bottom_from_esp2(PathToFile,FileName,voyage,cvsroot,bot_rev); 
             layer.Transceivers(idx_freq).setBottom(bot);
         end
-        
+
         if reg_cvs==1
             display(['converting regions for dfile ' FileName]);
             regions = get_regions_from_esp2(PathToFile,FileName,voyage,cvsroot,reg_rev);

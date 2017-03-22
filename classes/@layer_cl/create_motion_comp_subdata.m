@@ -1,9 +1,12 @@
 function compensation=create_motion_comp_subdata(layer,idx_freq)
-
+trans_obj=layer.Transceivers(idx_freq);
+if ismember('motioncompensation',trans_obj.Data.Fieldname)
+    return;
+end
 roll=layer.AttitudeNav.Roll;
 pitch=layer.AttitudeNav.Pitch;
 time_att=layer.AttitudeNav.Time;
-trans_obj=layer.Transceivers(idx_freq);
+
 time_pings_start=trans_obj.Data.Time;
 time_ping_vec=(trans_obj.Data.get_samples()-1)*trans_obj.Params.SampleInterval(1);
 

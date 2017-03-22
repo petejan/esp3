@@ -14,16 +14,17 @@ trans_obj=layer.Transceivers(idx_freq);
 [output_2D,~]=trans_obj.slice_transect2D('Reference','Surface');
 idx_reg=trans_obj.list_regions_type('Data');
 reg_tot=trans_obj.get_reg_spec(idx_reg);               
-output_1D=trans_obj.slice_transect('reg',reg_tot);
+output_1D=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',1);
 
 figure();
 plot(10*log10(output_1D.slice_abscf));
 hold on;
+plot(10*log10(output_1D.slice_abscf+output_1D.shadow_zone_slice_abscf));
 plot(10*log10(nansum(output_2D.cell_abscf)));
 grid on;
 xlabel('Slice Number');
 ylabel('Asbcf (dB)');
-legend('1D','2D');
+legend('1D','1D Shadow Zone','2D');
 
 cax=curr_disp.getCaxField('sv');
 [cmap,~,~,col_grid,~]=init_cmap(curr_disp.Cmap);

@@ -64,7 +64,7 @@ uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','unit
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BottomDetection'});
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
-set(findall(bottom_tab_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(bottom_tab_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Bottom_tab',bottom_tab_comp);
 end
 

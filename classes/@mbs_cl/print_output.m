@@ -71,7 +71,7 @@
                     fprintf(fid,['%0.f,%s,%0.f,%s,%0.f,%0.f,%0.f,%.5e', efstring, '\n'], mbs.Output.regionSumVbscf.Data{k,:});
                 end
                 
-                if fid ~= 1;
+                if i>=1;
                     fclose(fid);
                 end
             end

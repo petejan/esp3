@@ -325,6 +325,7 @@ for i=1:N_x
         idx_bin_x=((((x-x_c(i)))<x_res(i))&(((x-x_c(i)))>=-x_res(i)));
     end
     idx_red=find(Mask&repmat(idx_bin_x,length(y),1));
+    
     idx_bin_good_x=idx_bin_x;
     
     idx_bin_good_x(IdxBad_reg-idx_pings(1)+1)=0;

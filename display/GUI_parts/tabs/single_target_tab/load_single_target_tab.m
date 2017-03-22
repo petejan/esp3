@@ -55,7 +55,7 @@ uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String'
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.4 0.05 0.1 0.1],'callback',{@save_algos,main_figure});
 
-set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Single_target_tab',single_target_tab_comp);
 end
 

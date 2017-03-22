@@ -69,7 +69,7 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     set(region_tab_comp.cell_h,'string',cell_h);
     setappdata(main_figure,'Region_tab',region_tab_comp);
 end
-set(findall(region_tab_comp.region_tab, '-property', 'Enable'), 'Enable', 'on');
+%set(findall(region_tab_comp.region_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'Region_tab',region_tab_comp);
 

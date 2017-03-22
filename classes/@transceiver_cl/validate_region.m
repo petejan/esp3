@@ -1,8 +1,8 @@
-%% update_layer_tab.m
+%% my_Matlab_function_name.m
 %
 % _This section contains a very short description of the function, for the
 % user to know this is part of ESP3 and what it is. Example below to
-% replace. Delete these lines._ 
+% replace. Delete these lines._
 %
 % Template of ESP3 function header.
 %
@@ -13,15 +13,15 @@
 % _This section contains a more detailed description of what the function
 % does and how to use it, for the interested user to have an overall
 % understanding of its function. Example below to replace. Delete these
-% lines._  
+% lines._
 %
 % This is a text file containing the basic comment template to add at the
-% start of any new ESP3 function to serve as function help. 
+% start of any new ESP3 function to serve as function help.
 %
 % *INPUT VARIABLES*
 %
 % _This section contains bullet points of input variables with types and
-% description. Example below to replace. Delete these lines._  
+% description. Example below to replace. Delete these lines._
 %
 % 'output_variable_1' (required). Valid Options:
 %
@@ -39,7 +39,7 @@
 % *OUTPUT VARIABLES*
 %
 % _This section contains bullet points of output variables. Example below
-% to replace. Delete these lines._ 
+% to replace. Delete these lines._
 %
 % * 'output_variable_1': type and description
 % * 'output_variable_2': type and description
@@ -65,7 +65,7 @@
 % _This section contains examples of valid function calls. Note that
 % example lines start with 3 white spaces so that the publish function
 % shows them correctly as matlab code. Example below to replace. Delete
-% these lines._ 
+% these lines._
 %
 %   example_use_1; % comment on what this does.
 %   example_use_2: % comment on what this line does.
@@ -73,35 +73,44 @@
 % *AUTHOR, AFFILIATION & COPYRIGHT*
 %
 % _This last section contains at least author name and affiliation. Delete
-% these lines._ 
+% these lines._
 %
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
+function region = validate_region(trans_obj,region,varargin)
 
-function update_layer_tab(main_figure)
-layer_tab_comp=getappdata(main_figure,'Layer_tab');
-layers=getappdata(main_figure,'Layers');
-layer=getappdata(main_figure,'Layer');
-if isempty(layer)
-    return;
+p = inputParser;
+
+addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
+addRequired(p,'region',@(obj) isa(obj,'region_cl')||isempty(obj));
+
+
+parse(p,trans_obj,region,varargin{:});
+
+pings_t=trans_obj.get_transceiver_pings();
+Idx_r=trans_obj.get_transceiver_range();
+
+
+switch region.Shape
+    case 'Rectangular'
+        region.Idx_pings=intersect((1:length(pings_t)),region.Idx_pings);
+        region.Idx_r=intersect((1:length(Idx_r)),region.Idx_r);
+    case 'Polygon'
+        region.Idx_pings=intersect((1:length(pings_t)),region.Idx_pings);
+        region.Idx_r=intersect((1:length(Idx_r)),region.Idx_r);
+        region.MaskReg=region.MaskReg(1:length(region.Idx_r),1:length(region.Idx_pings));
+        [x,y]=cont_from_mask(region.MaskReg);
+        if ~isempty(y)
+            region.X_cont=x;
+            region.Y_cont=y;
+            region.MaskReg=(region.MaskReg);
+        else
+            region.Shape='Rectangular';
+            region.X_cont=[];
+            region.Y_cont=[];
+            region.MaskReg=[];
+        end
+        
 end
-drawnow;
-nb_layer=length(layers);
-data=cell(nb_layer,2);
 
-
-layers_Str_comp=list_layers(layers);
-data(:,1)=layers_Str_comp;
-data(:,2)=num2cell([layers(:).ID_num]);
-
-% [~,idx_sort]=sort([data{:,2}]);
-% data=data(idx_sort,:);
-[idx,~]=find_layer_idx(layers,layer.ID_num);
-
-data(idx,1)=strcat('<html><b>',data(idx,1),'</b></html>');
-
-layer_tab_comp.table.Data=data;
-
-setappdata(main_figure,'Layer_tab',layer_tab_comp);
-end

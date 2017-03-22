@@ -36,7 +36,7 @@ uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import from XM
 
 
 
-set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');
+%set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Lines_tab',lines_tab_comp);
 
 end

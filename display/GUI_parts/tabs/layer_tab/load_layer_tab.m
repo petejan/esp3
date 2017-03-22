@@ -80,7 +80,16 @@
 %% Function
 
 function load_layer_tab(main_figure,tab_panel)
-layer_tab_comp.layer_tab=uitab(tab_panel,'Title','Layers');
+
+switch tab_panel.Type
+    case 'uitabgroup'
+        layer_tab_comp.layer_tab=uitab(tab_panel,'Title','Layers');
+        tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+        layer_tab_comp.layer_tab.UIContextMenu=tab_menu;
+        uimenu(tab_menu,'Label','Undock Layer List','Callback',{@undock_layer_tab_callback,main_figure,'out_figure'});
+    case 'figure'
+        layer_tab_comp.layer_tab=tab_panel;
+end
 
 layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
     'Data', [],...
@@ -95,7 +104,6 @@ layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
 set(layer_tab_comp.layer_tab,'SizeChangedFcn',{@resize_table,main_figure});
     
 
-
 jtable = findjobj(layer_tab_comp.table);
 
 policy = javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
@@ -105,13 +113,14 @@ pos_t = getpixelposition(layer_tab_comp.table);
 
 set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
 
-rc_menu = uicontextmenu(main_figure);
-    layer_tab_comp.table.UIContextMenu =rc_menu;
-    uimenu(rc_menu,'Label','Delete selected layer(s)','Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
+rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+layer_tab_comp.table.UIContextMenu =rc_menu;
+uimenu(rc_menu,'Label','Delete selected layer(s)','Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
 selected_layers=[];
 
 setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
+update_layer_tab(main_figure);
 end
 function delete_layers_callback(~,~,table,main_figure)
     layers=getappdata(main_figure,'Layers');
@@ -137,11 +146,11 @@ function delete_layers_callback(~,~,table,main_figure)
         
         layers=layers.delete_layers(layer.ID_num);
         layer=layers(nanmin(idx,length(layers)));
-        setappdata(main_figure,'Layers',layers);
-        setappdata(main_figure,'Layer',layer);
-        loadEcho(main_figure);
+       
     end
-
+    setappdata(main_figure,'Layers',layers);
+    setappdata(main_figure,'Layer',layer);
+    loadEcho(main_figure);
 end
 
 function goto_layer_cback(src,evt,main_figure)
@@ -189,7 +198,7 @@ if isempty(layer_tab_comp)
 end
 table=layer_tab_comp.table;
 
-if~isempty(table)
+if~isempty(table)&&isvalid(table)
     column_width=table.ColumnWidth;
     pos_f=getpixelposition(layer_tab_comp.layer_tab);
     width_t_old=nansum([column_width{:}]);

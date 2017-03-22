@@ -46,11 +46,12 @@ set(bottom_tab_comp.Shift_bot_sl,'value',algo.shift_bot);
 set(bottom_tab_comp.Shift_bot_ed,'string',num2str(get(bottom_tab_comp.Shift_bot_sl,'Value'),'%.2f'));
 
 set(bottom_tab_comp.denoised,'value',algo.denoised);
-set(findall(bottom_tab_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'on');
+%set(findall(bottom_tab_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'on');
 
 if isempty(dist)
     set([bottom_tab_comp.horz_filt_sl bottom_tab_comp.horz_filt_ed], 'Enable', 'off');
 end
+
 setappdata(main_figure,'Bottom_tab',bottom_tab_comp);
 
 end
