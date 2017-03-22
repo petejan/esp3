@@ -24,8 +24,7 @@ switch listdata.AffectedObject.CursorMode
         iptPointerManager(main_figure,'disable');
         set(main_figure,'Pointer','cross');
         set(main_figure,'WindowButtonDownFcn',@create_region);
-    case 'Normal'
-        
+    case 'Normal'     
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);
 end

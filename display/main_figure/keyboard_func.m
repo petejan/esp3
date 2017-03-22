@@ -144,7 +144,6 @@ switch callbackdata.Key
         end
     case {'5' 'numpad5'}
         curr_disp.CursorMode='Normal';
-        reset_mode(0,0,main_figure);
     case {'b','pagedown'}
         
         switch curr_disp.DispUnderBottom
