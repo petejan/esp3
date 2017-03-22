@@ -1,4 +1,4 @@
-%%[phi, theta] = splitbeam_angle_to_spherical(fa, ps)
+%% splitbeam_angle_to_spherical.m
 %
 % TODO: write short description of function
 %
@@ -10,11 +10,13 @@
 %
 % *INPUT VARIABLES*
 %
-% * |input_variable_1|: TODO: write description and info on variable
+% * |fa|: TODO: write description and info on variable
+% * |ps|: TODO: write description and info on variable
 %
 % *OUTPUT VARIABLES*
 %
-% * |output_variable_1|: TODO: write description and info on variable
+% * |phi|: TODO: write description and info on variable
+% * |theta|: TODO: write description and info on variable
 %
 % *RESEARCH NOTES*
 %
@@ -22,7 +24,8 @@
 %
 % *NEW FEATURES*
 %
-% * YYYY-MM-DD: first version (Author). TODO: complete date and comment
+% * 2017-03-23: header and comments updated (Alex Schimel)
+% * 2017-03-22: first version (Yoann Ladroit)
 %
 % *EXAMPLE*
 %
@@ -33,18 +36,19 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-
-
 function [phi, theta] = splitbeam_angle_to_spherical(fa, ps)
-% Convert the cartesian angles to conical angle.
+
+%%% Convert angles from cartesian to conical
 t1 = tan(ps);
 t2 = tan(fa);
-phi = atan(sqrt(t1.*t1 + t2.*t2)) ; % angle off transducer axis
+phi = atan(sqrt(t1.*t1 + t2.*t2)); % angle off transducer axis
 theta = atan2(t1, t2); % rotation about transducer axis
 
-% Convert the angles so that we get negative phi's to allow for plotting of
-% complete beam pattern slice arcs
+%%% Convert the angles so that we get negative phis to allow for plotting of complete beam pattern slice arcs
 i = find(theta < 0);
 phi(i) = -phi(i);
 theta(i) = pi/2+theta(i);
+
+
+
 end
