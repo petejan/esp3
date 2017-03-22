@@ -1,42 +1,44 @@
-function [tags,channelID,freq,IDs,ver] = list_tags_regions_xml(reg_xml_file)
-% [tags,channelID,freq,IDs,ver] = list_tags_regions_xml(reg_xml_file)
-%
-% DESCRIPTION
+%% list_tags_regions_xml.m
 %
 % List tags contained in a region XML file
 %
-% USE
+%% Help
 %
+% *USE*
 %
-% PROCESSING SUMMARY
+% TODO
 %
+% *INPUT VARIABLES*
 %
-% INPUT VARIABLES
+% * |reg_xml_file|: Full path to region XML file.
 %
-% -reg_xml_file: full path to region XML file
+% *OUTPUT VARIABLES*
 %
-% OUTPUT VARIABLES
+% * |tags|: Cell containing tags for each regions.
+% * |channelID|: Cell channel containing for which the region has been defined
+% * |freq|: Vector containing frequency for which the region has been defined
+% * |IDs|: Vector containing region IDs
+% * |ver|: Version of the database that is in the file (-1 is XML only)
 %
-% -tags: cell containing tags for each regions
-% -channelID: cell channel containing for which the region has been defined
-% -freq: vector containing frequency for which the region has been defined
-% -IDs: vector containing region IDs
-% -version of the database that is in the file (-1 is XML only)
+% *RESEARCH NOTES*
 %
-% RESEARCH NOTES
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-16: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
-%
-% NEW FEATURES
-%
-% 2017-03-16: first version.
-%
-% EXAMPLE
-%
-%
-%%%
-% Yoann Ladroit NIWA
-%%%
-
+%% Function
+function [tags,channelID,freq,IDs,ver] = list_tags_regions_xml(reg_xml_file)
 
 
 [region_xml,ver]=parse_region_xml(reg_xml_file);

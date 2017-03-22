@@ -1,34 +1,43 @@
-function app_path_main = whereisEcho()
-% app_path_main = whereisEcho()
-%
-% DESCRIPTION
+%% whereisEcho.m
 %
 % Returns ESP3's path (where it's being run)
 %
-% USE
+%% Help
+%
+% *USE*
 %
 % Just checks whether the version is deployed or as Matlab code and applie
 % simple code to determine current path.
 %
-% OUTPUT VARIABLES
-%
-% - app_path_main (char): ESP3's path
-%
-% RESEARCH NOTES
+% *INPUT VARIABLES*
 %
 % NA
 %
-% NEW FEATURES
+% *OUTPUT VARIABLES*
 %
-% 2017-03-02: commented and header added (Alex)
+% * |app_path_main|: ESP3's path (char).
 %
-% EXAMPLE
+% *RESEARCH NOTES*
 %
-% app_path_main = whereisEcho();
+% NA
 %
-%%%
-% Yoann Ladroit, NIWA
-%%%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-02: commented and header added (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+%   app_path_main = whereisEcho();
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function app_path_main = whereisEcho()
+
 
 if isdeployed % Stand-alone mode.
     

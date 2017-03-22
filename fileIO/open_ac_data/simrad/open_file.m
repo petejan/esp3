@@ -6,19 +6,19 @@
 %
 % *USE*
 %
-% todo
+% TODO
 %
 % *INPUT VARIABLES*
 %
-% 'file_id' (required): Valid options:
+% * |file_id| File ID (Required. Valid options: char for a single filename,
+% cell for one or several filenames, |0| to open dialog box to prompt user
+% for file(s), |1| to open next file in folder or |2| to open previous file
+% in folder.
+% * |main_figure|: Handle to main ESP3 window (Required).
 %
-% * char: filename
-% * cell: filename(s)
-% * 0: open dialog box to prompt user for file(s)
-% * 1: open next file in folder
-% * 2: open previous file in folder
+% *OUTPUT VARIABLES*
 %
-% 'main_figure' (required): ESP3 main figure
+% NA
 %
 % *RESEARCH NOTES*
 %
@@ -28,8 +28,10 @@
 %
 % *NEW FEATURES*
 %
-% * 2017-03-17: reformatting comment and header for compatibility with publish
-% * 2017-03-02: Comments and header Alex
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-17: reformatting comment and header for compatibility with publish (Alex Schimel)
+% * 2017-03-02: Comments and header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
 %
 % *AUTHOR, AFFILIATION & COPYRIGHT*
 %
@@ -38,21 +40,20 @@
 %% Function
 function open_file(~,~,file_id,main_figure)
 
-% Grab current layer (files data) and paths
+%%% Grab current layer (files data) and paths
 layer = getappdata(main_figure,'Layer');
 app_path = getappdata(main_figure,'App_path');
 
-% About to open a new file so check if there are unsaved new bottom and
-% regions
+%%% Check if there are unsaved new bottom and regions
 check_saved_bot_reg(main_figure);
 
-% Exit if input file was bad (put this at beginning and through input
-% parser)
+%%% Exit if input file was bad 
+% (put this at beginning and through input parser)
 if isempty(file_id)
     return;
 end
 
-% Get a default path for the file selection dialog box
+%%% Get a default path for the file selection dialog box
 if ~isempty(layer)
     [path_lay,~] = layer.get_path_files();
     if ~isempty(path_lay)
@@ -67,7 +68,7 @@ else
     file_path = app_path.data;
 end
 
-% Grab filename(s) to open
+%%% Grab filename(s) to open
 if iscell(file_id) || ischar(file_id) % if input variable is the filename(s) itself
     
     Filename = file_id;
@@ -168,7 +169,7 @@ else
     
 end
 
-% Exit if still no file at this point (shouldn't be?)
+%%% Exit if still no file at this point (shouldn't be?)
 if isempty(Filename)
     return;
 end
@@ -177,25 +178,26 @@ if isequal(Filename, 0);
     return;
 end
 
-% Turn filename to cell if still not done at this point (shouldn't be?)
+%%% Turn filename to cell if still not done at this point (shouldn't be?)
 if ~iscell(Filename)
     Filename_tot = {Filename};
 else
     Filename_tot = Filename;
 end
 
-% Get types of files to open
+%%% Get types of files to open
 ftype_cell = cell(1,length(Filename_tot));
 for ifi = 1:length(Filename_tot)
     ftype_cell{ifi} = get_ftype(Filename_tot{ifi});
 end
 
-% Find each ftypes in list to batch process the opening
+%%% Find each ftypes in list to batch process the opening
 [ftype_unique,~,ic] = unique(ftype_cell);
 % ?
 enabled_obj = findobj(main_figure,'Enable','on');
 set(enabled_obj,'Enable','off');
-% File opening section, by type of file
+
+%%% File opening section, by type of file
 for itype = 1:length(ftype_unique)
     
     % Grab filenames for this ftype
@@ -307,13 +309,13 @@ for itype = 1:length(ftype_unique)
     end
 end
 
-%?
+%%% TODO: comment
 set(enabled_obj,'Enable','on');
 
-%?
+%%% TODO: comment
 hide_status_bar(main_figure);
 
-% Update display?
+%%% Update display?
 loadEcho(main_figure);
 
 

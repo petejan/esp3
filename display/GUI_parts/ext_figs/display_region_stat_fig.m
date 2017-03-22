@@ -1,32 +1,42 @@
-function hfig=display_region_stat_fig(main_figure,regIntStruct)
-%
-% DESCRIPTION
+%% display_region_stat_fig.m
 %
 % Display figure with table summarizing region stats.
 %
-% INPUT VARIABLES
+%% Help
 %
-% [This section contains bullet points of input variables with types and description]
-% - main_figure: handle to main ESP3 window
-% - regIntStruct: output from integrate_region
-% OUTPUT VARIABLES
+% *USE*
 %
-% [This section contains bullet points of output variables]
-% - hfig: handle to created figure
-% RESEARCH NOTES
+% TODO
 %
-% [This section describes what features are temporary, needed future developments and paper references.]
+% *INPUT VARIABLES*
+%
+% * |main_figure|: Handle to main ESP3 window
+% * |regIntStruct|: Output from integrate_region
+%
+% *OUTPUT VARIABLES*
+%
+% * |hfig|: Handle to created figure
+%
+% *RESEARCH NOTES*
+%
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-07: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
-% NEW FEATURES
-%
-% [This section contains dates and descriptions of major updates]
-% YYYY-MM-DD: second version. Describes the update.
-% 2017-03-07: first version.
-%
-%
-%%%
-% Yoann Ladroit, NIWA
-%%%
+%% Function
+function hfig = display_region_stat_fig(main_figure,regIntStruct)
+
 
 hfig=new_echo_figure(main_figure,'Tag','reg_stat','Resize','off','Units','pixels','Position',[200 200 400 400]);
 

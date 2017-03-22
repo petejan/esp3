@@ -1,3 +1,40 @@
+%% zoom_in_callback.m
+%
+% TODO
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |src|: TODO
+% * |main_figure|: TODO
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: complete header and in-code commenting
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments (Alex Schimel)
+% * 2017-03-21: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function zoom_in_callback(src,~,main_figure)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');

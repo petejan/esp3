@@ -1,39 +1,41 @@
+%% loadEcho.m
+%
+% TODO
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: Handle to main ESP3 window
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2017-03-13: comments and header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function loadEcho(main_figure)
-% loadEcho(main_figure)
-%
-% DESCRIPTION
-%
-% [This section containg a very short description of the function, for the user to know this is part of ESP3 and what it is]
-% Template of ESP3 function header.
-% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
-%
-% USE
-%
-% [This section contains a more detailed description of what the function does and how to use it, for the interested user to have an overall understanding of its function] 
-% This is a text file containing the basic comment template to add at the
-% start of any new ESP3 function to serve as function help. 
-% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
-%
-% PROCESSING SUMMARY
-%
-% [This section contains bullet point list of major processing steps, for the very interested user to have a clear understanding of the function works before reading its details]
-% - Function does this first
-% - Then it does this
-% [REPLACE THESE LINES WITH ACTUAL CONTENT OR DELETE IF UNUSED]
-%
-% INPUT VARIABLES
-%
-% - main_figure (required): ESP3 main figure
-%
-% RESEARCH NOTES
-%
-% NEW FEATURES
-%
-% 2017-03-13: comments and header by alex.
-%
-%%%
-% Yoann Ladroit, NIWA.
-%%%
 
 if isempty(main_figure)
     return;

@@ -1,27 +1,59 @@
+%% read_evr.m
+%
+% Read in the 2D region export format file from Echoview. Returns the
+% region data in a array of structures. 
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |filename|: TODO
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
+% * 2015-12-XX: updated with more output in the struct to get more informations (Yoann Ladroit)
+% * 2013-09-XX: adjusted (Johannes Oeffner)
+% * 2012-08-XX: added lines to read detection settings and all notes lines (Johannes Oeffner)
+% * 2009-03-XX: first version (Gavin Macaulay)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Gavin Macaulay, Johannes Oeffner, Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function reg = read_evr(filename)
 
-% A function to read in the 2D region export format file from Echoview.
-% Returns the region data in a array of structures.
-
-% Written by Gavin Macaulay, March 2009 (adjusted by Johannes Oeffner, September 2013) 
-% added lines to read detection settings and all notes lines, Johannes Oeffner, August 2012
-% Updated with more output in the struct to get more informations... Yoann
-% Ladroit December 2015
-
+%%% open file
 fid = fopen(filename);
-
 if fid == -1
    disp(['Unable to open file: ' filename])
    return
 end
 
-% Read the header lines
+%%% Read the header lines
 version = fgetl(fid); % version header line
 line = fgetl(fid); % number of regions line
 num_regions = sscanf(line, '%d');
 junk = fgetl(fid); % blank line
 
-% Read the region definitions
+%%% Read the region definitions
 for i = 1:num_regions
     info_str = fgetl(fid); % region info line 13 4 16 0 3 -1 1 20101110 2207462930  64.8681 20101110 2208104020  79.0708
     info_cell=textscan(info_str,'%d %d %d %d %d %d %d %s %s %f %s %s %f');

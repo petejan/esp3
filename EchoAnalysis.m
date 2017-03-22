@@ -24,14 +24,13 @@
 %
 % *INPUT VARIABLES*
 %
-% 'Filenames' (optional). Valid options:
-% 
-% * char: filename to open
-% * cell: filename(s) to open
+% * 'Filenames': Filenames to load (Optional. char or cell).
+% * 'SaveEcho': Flag to print window (Optional. If |1|, print content of
+% input file and closes ESP3).
 %
-% 'SaveEcho' (optional). Valid options:
+% *OUTPUT VARIABLES*
 %
-% * 1: print content of input file and closes ESP3
+% NA
 %
 % *RESEARCH NOTES*
 %
@@ -39,8 +38,10 @@
 %
 % *NEW FEATURES*
 %
-% * 2017-03-17: reformatting comment and header for compatibility with publish
-% * 2017-03-02: commented and header added (Alex)
+% * 2017-03-22: reformatting header according to new template (Alex Schimel)
+% * 2017-03-17: reformatting comment and header for compatibility with publish (Alex Schimel)
+% * 2017-03-02: commented and header added (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
 %
 % *EXAMPLE*
 %
