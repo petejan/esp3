@@ -55,9 +55,6 @@ order_stacks_fig(main_figure);
 order_stacks_fig(main_figure);
 reset_disp_info(main_figure);
 
-if length(layers)==1 && new==1
-    enabled_obj=findobj(main_figure,'Enable','off');
-    set(enabled_obj,'Enable','on');
-end
+
 
 end

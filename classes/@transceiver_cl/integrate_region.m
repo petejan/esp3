@@ -34,7 +34,7 @@ end
 if p.Results.motion_correction>0
      motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncompensation');
      if ~isempty(motion_corr)
-        Sv_reg=Sv_reg-motion_corr;  
+        Sv_reg=Sv_reg+motion_corr;  
      else
         disp('Cannot find motion corrected Sv, integrating normal Sv.') 
      end

@@ -1,6 +1,6 @@
-function compensation=create_motion_comp_subdata(layer,idx_freq)
+function compensation=create_motion_comp_subdata(layer,idx_freq,force)
 trans_obj=layer.Transceivers(idx_freq);
-if ismember('motioncompensation',trans_obj.Data.Fieldname)
+if ismember('motioncompensation',trans_obj.Data.Fieldname)&&force==0
     return;
 end
 roll=layer.AttitudeNav.Roll;

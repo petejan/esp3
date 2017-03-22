@@ -73,7 +73,7 @@ if found_field == 0
     curr_disp.setField(field);
 end
 setappdata(main_figure,'Curr_disp',curr_disp);
-
+old_nb=curr_disp.NbLayers;
 if ~isempty(layer)
     if layer.ID_num==curr_disp.CurrLayerID && nb_layers==curr_disp.NbLayers
         flag = 0;
@@ -92,6 +92,10 @@ update_display(main_figure,flag);
 init_listeners(main_figure);
 reset_mode([],[],main_figure);
 
+if old_nb==0
+    enabled_obj=findobj(main_figure,'Enable','off');
+    set(enabled_obj,'Enable','on');
+end
 
 
 

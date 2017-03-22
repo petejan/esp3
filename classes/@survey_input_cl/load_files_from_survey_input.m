@@ -287,7 +287,7 @@ for isn=1:length(snapshots)
                         end
                         
                         if options.Motion_correction
-                            create_motion_comp_subdata(layer_new,i_freq);
+                            create_motion_comp_subdata(layer_new,i_freq,0);
                         end
                         
                     end
