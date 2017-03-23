@@ -42,7 +42,7 @@ for uui=idx_sort
         
         TS_f=Sp_f+Compensation_f;
 
-       [cmap,col_ax,col_lab,col_grid,~]=init_cmap(curr_disp.Cmap);
+       [cmap,col_ax,col_lab,col_grid,~,~]=init_cmap(curr_disp.Cmap);
        df=nanmean(diff(f_vec))/1e3;
         fig=figure();
         ax=axes();

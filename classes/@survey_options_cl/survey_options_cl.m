@@ -47,7 +47,7 @@ classdef survey_options_cl
                     options.(props_options{i})=results.Options.(props_options{i});
                 end
             end
-              
+            
             options.FrequenciesToLoad=union(options.FrequenciesToLoad,results.Options.Frequency);
             
             abs_ori=options.Absorption;
@@ -83,5 +83,13 @@ classdef survey_options_cl
             end
         end
         
+        function myStruct = struct(x)
+            publicProperties = properties(x);
+            myStruct = struct();
+            for iField = 1:numel(publicProperties)
+                myStruct.(publicProperties{iField}) = x.(publicProperties{iField});
+            end
+            
+        end
     end
 end

@@ -3,10 +3,13 @@ function activate_region_callback(obj,~,reg_curr,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-
-if ~strcmpi(curr_disp.CursorMode,'Normal')
-    return;
+if~isdeployed()
+    fprintf('Activate region %.0f\n',reg_curr.ID);
 end
+
+if ~ismember(curr_disp.CursorMode,{'Normal','Create Region'})
+     return;
+ end
 
 switch curr_disp.Cmap
     
@@ -26,6 +29,9 @@ trans_obj=layer.Transceivers(idx_freq);
 [idx_reg,found]=trans_obj.find_reg_idx(reg_curr.Unique_ID);
 
 if found==0
+     if~isdeployed()
+        fprintf('Could not find region %.0f\n',reg_curr.ID);
+    end
     return;
 end
 
@@ -43,10 +49,10 @@ ah=axes_panel_comp.main_axes;
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
 
-if any(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||any(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
+if all(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||all(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
     
-    dx=diff(x_lim);
-    dy=diff(y_lim);
+    dx=nanmax(diff(x_lim),(x_reg_lim(end)-x_reg_lim(1)));
+    dy=nanmax(diff(y_lim),(y_reg_lim(end)-y_reg_lim(1)));
     
     x_lim_new= [nanmean(x_reg_lim)-dx/2 nanmean(x_reg_lim)+dx/2];
     y_lim_new= [nanmean(y_reg_lim)-dy/2 nanmean(y_reg_lim)+dy/2];
@@ -101,16 +107,25 @@ update_regions_tab(main_figure,idx_reg);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 
+if ~ismember(curr_disp.CursorMode,{'Normal'})
+    return;
+end
+
 if ~(isa(obj,'matlab.graphics.primitive.Patch')||isa(obj,'matlab.graphics.primitive.Image')) 
+    fprintf('Not moving this is %s\n',class(obj));
     return;
 end
 
 switch main_figure.SelectionType
     case 'normal'
+
         modifier = get(main_figure,'CurrentModifier');
         control = ismember({'alt'},modifier);
         
         if ~any(control)
+            if~isdeployed()
+                fprintf('Not Moving, did not see alt\n');
+            end
             return;
         end
 

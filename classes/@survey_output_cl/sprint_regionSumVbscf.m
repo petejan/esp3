@@ -9,7 +9,7 @@ prec={'%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%0.f,' '%0.f,' '%.5e,'};
 fields=fieldnames(regionSumVbscf);
 for k = 1:length(regionSumVbscf.snapshot)
     
-    for iu=1:length(fields)-3
+    for iu=1:length(prec)
         switch fields{iu}
             case 'file'
                 for ifs=1:length(regionSumVbscf.(fields{iu}){k})

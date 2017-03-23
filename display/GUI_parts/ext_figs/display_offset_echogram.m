@@ -19,7 +19,7 @@ ax=axes('Parent',h_fig,'Units','Normalized','position',[0 0 1 1],'xticklabel',{}
 pax=imagesc(ax,ping_new_mat(1,:),range_new_mat(:,1),data_new);
 cax=curr_disp.getCaxField(curr_disp.Fieldname);
 caxis(ax,cax);
-[cmap,~,~,~,~]=init_cmap(curr_disp.Cmap);
+[cmap,~,~,~,~,~]=init_cmap(curr_disp.Cmap);
 colormap(ax,cmap);
 
 axis(ax,'ij');

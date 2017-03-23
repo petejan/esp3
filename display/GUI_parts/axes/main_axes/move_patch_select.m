@@ -8,7 +8,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 patch_obj=src;
 ah=axes_panel_comp.main_axes;
 
-if isempty(patch_obj.Vertices)||~strcmp(curr_disp.CursorMode,'Normal')
+if isempty(patch_obj.Vertices)||~ismember(curr_disp.CursorMode,{'Normal'})
     return;
 end
 

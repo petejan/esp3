@@ -10,12 +10,12 @@ shape_idx=get(region_tab_comp.shape_type,'value');
 shape=shapes{shape_idx};
 main_figure.Pointer = 'cross';
 switch shape
-    case 'Polygon'
+    case 'Hand Drawn'
         hand_region_create(main_figure,@create_poly_region_func)
+    case 'Polygon'
+        poly_region_create(main_figure,@create_poly_region_func);
     otherwise
-        inter_region_create(main_figure,mode,@create_region_func)
+        inter_region_create(main_figure,mode,@create_region_func);
 end
-order_axes(main_figure);
-curr_disp.Reg_changed_flag=1;
-setappdata(main_figure,'Curr_disp',curr_disp);
+
 end

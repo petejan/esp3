@@ -76,30 +76,40 @@ for i=1:length(Filenames)
         warning('Problem loading files from %s\n',Filenames{i});
         continue;
     end
+    
     try
         surv_obj.generate_output(layers_new);
-        if isempty(p.Results.gui_main_handle)
-        [PathToFile,~,~]=fileparts(layers_new(end).Filename{1});
-        else
-           app_path=getappdata(p.Results.gui_main_handle,'App_path');
-           PathToFile=app_path.results;
-           if exist(PathToFile,'dir')==0
-               mkdir(PathToFile);
-           end
-        end
-        save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
-        outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
-        surv_obj.print_output(outputFile);
-        fprintf(1,'Results save to %s \n',outputFile);
-        
         layers_out=[layers_old layers_new];
-        layers_out=reorder_layers_time(layers_out);
-        
+        layers_out=reorder_layers_time(layers_out);    
     catch err
         disp(err.message);
         warning('Could not process survey described in file %s\n',Filenames{i});
     end
     
+    try
+        if isempty(p.Results.gui_main_handle)
+            [PathToFile,~,~]=fileparts(layers_new(end).Filename{1});
+        else
+            app_path=getappdata(p.Results.gui_main_handle,'App_path');
+            PathToFile=app_path.results;
+            if exist(PathToFile,'dir')==0
+                mkdir(PathToFile);
+            end
+        end
+        save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
+        outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
+        surv_obj.print_output(outputFile);
+        fprintf(1,'Results save to %s \n',outputFile);
+        outputFileXLS=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_xls_output.xls']);
+        surv_obj.print_output_xls(outputFileXLS);
+        fprintf(1,'Results save to %s \n',outputFileXLS);
+        
+    catch err
+        disp(err.message);
+        warning('Could not save results for survey described in file %s\n',Filenames{i});
+    end
+        
+
 end
 set(enabled_obj(isvalid(enabled_obj)),'Enable','on');
 

@@ -7,7 +7,7 @@ prec={'%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%0.f,'};
 
 fields=fieldnames(regionSumAbscf);
 for k = 1:length(regionSumAbscf.snapshot)
-    for iu=1:length(fields)-6
+    for iu=1:length(prec)
         switch fields{iu}
             case 'file'
                 for ifs=1:length(regionSumAbscf.(fields{iu}){k})

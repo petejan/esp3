@@ -5,7 +5,7 @@ str=sprintf('\n# Stratum Summary\n#snapshot stratum no_transects abscf_mean absc
 prec={'%0.f,' '%s,' '%0.f,' '%.5e,' '%.5e,' '%.5e,' '%.5e'};
 fields=fieldnames(stratumSum);
 for k = 1:length(stratumSum.snapshot)
-    for iu=1:length(fields)-2
+    for iu=1:length(prec)
         if iscell(stratumSum.(fields{iu}))
             str=[str sprintf(prec{iu}, stratumSum.(fields{iu}){k})];
         else

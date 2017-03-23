@@ -56,7 +56,10 @@
                 %% Region vbscf
                 str=surv_obj.SurvOutput.sprint_regionSumVbscf();
                 fwrite(fid,str);
-
+                
+                if fid~=1
+                    fclose(fid);
+                end
             end
             
         end

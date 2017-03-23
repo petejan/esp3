@@ -215,7 +215,7 @@ for itype = 1:length(ftype_unique)
             if ~isempty(missing_files)
                 % If there are, prompt user if they want them added to the
                 % list of files to open
-                choice = questdlg('It looks like you are trying to open incomplete transects... Do you want load the rest as well?', ...
+                choice = questdlg(sprintf('It looks like you are trying to open incomplete transects (%.0f missing files)... Do you want load the rest as well?',numel(missing_files)), ...
                     'Incomplete',... % title bar
                     'Yes','No',...   % buttons
                     'Yes');          % default choice

@@ -8,7 +8,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 image_obj=src;
 ah=axes_panel_comp.main_axes;
 
-if isempty(image_obj.XData)||~strcmp(curr_disp.CursorMode,'Normal')
+if isempty(image_obj.XData)||~ismember(curr_disp.CursorMode,{'Normal'})
     return;
 end
 

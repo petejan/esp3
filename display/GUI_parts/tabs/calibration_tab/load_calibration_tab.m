@@ -183,11 +183,23 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
-    
-    new_cal.G0=str2double(get(calibration_tab_comp.G0,'string'));
-    new_cal.SACORRECT=str2double(get(calibration_tab_comp.SACORRECT,'string'));
+    old_cal=layer.Transceivers(idx_freq).get_cal();
+
+    if ~isnan(str2double(get(calibration_tab_comp.G0,'string')))
+        new_cal.G0=str2double(get(calibration_tab_comp.G0,'string'));
+    else
+        new_cal.G0=old_cal.G0;
+    end
+   
+    if ~isnan(str2double(get(calibration_tab_comp.SACORRECT,'string')))
+        new_cal.SACORRECT=str2double(get(calibration_tab_comp.SACORRECT,'string'));
+    else
+        new_cal.SACORRECT=old_cal.SACORRECT;
+    end
+        
     
     layer.Transceivers(idx_freq).apply_cw_cal(new_cal);
+    update_calibration_tab(main_figure);
 end
 
 setappdata(main_figure,'Layer',layer);

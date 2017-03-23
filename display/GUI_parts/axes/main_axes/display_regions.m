@@ -34,7 +34,7 @@ if ~isempty(varargin)
     mini_ax_comp=getappdata(main_figure,'Mini_axes');
     switch varargin{1}
         case 'both'
-            main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
+            main_axes_tot=[mini_ax_comp.mini_ax axes_panel_comp.main_axes];
         case 'mini'
             main_axes_tot=mini_ax_comp.mini_ax;
         case 'main'
@@ -149,6 +149,8 @@ for iax=1:length(main_axes_tot)
                     
                     nb_cont=length(idx_x);
                     len_cont=0;
+                    x_text=0;
+                    y_text=0;
                     for jj=1:nb_cont
                         
                         idx_x_out{jj}=idx_x{jj}+reg_curr.Idx_pings(1)-1;

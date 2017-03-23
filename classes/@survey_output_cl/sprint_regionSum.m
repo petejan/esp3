@@ -5,7 +5,7 @@ str=sprintf('\n# Region Summary\n#snapshot stratum transect file region_id ref s
 prec={'%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%s,' '%0.f,' '%0.f,' '%0.3f,' '%0.3f,' '%0.3f,' '%0.5f,' '%.5e,' '%.5e\n'};
 fields=fieldnames(regionSum);
 for k = 1:length(regionSum.snapshot)
-    for iu=1:length(fields)-3
+    for iu=1:length(prec)
         switch fields{iu}
             case 'file'
                 for ifs=1:length(regionSum.(fields{iu}){k})

@@ -43,7 +43,7 @@ set(region_tab_comp.cell_w_unit ,'callback',{@tog_units,main_figure});
 set(region_tab_comp.cell_h_unit ,'callback',{@tog_units,main_figure});
 
 %shape_type={'Vertical' 'Horizontal' 'Rectangular' 'Polygon'};
-shape_type={'Rectangular' 'Polygon'};
+shape_type={'Rectangular' 'Hand Drawn' 'Polygon'};
 shape_idx=find(strcmp(shape_type,reg_curr.Shape));
 %shape_type={'Rectangular'};
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Shape','units','normalized','Position',[0 0.85 0.2 0.1]);

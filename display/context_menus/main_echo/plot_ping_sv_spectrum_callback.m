@@ -52,7 +52,7 @@ for uui=idx_sort
         [Sv_f,f_vec,r_disp]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_ping,range,Np,cal,cal_eba);
 
 
-       [cmap,col_ax,col_lab,col_grid,~]=init_cmap(curr_disp.Cmap);
+       [cmap,col_ax,col_lab,col_grid,~,~]=init_cmap(curr_disp.Cmap);
        df=nanmean(diff(f_vec))/1e3;
         fig=figure();
         ax=axes();

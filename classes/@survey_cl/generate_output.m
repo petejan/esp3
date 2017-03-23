@@ -298,7 +298,9 @@ for isn=1:length(snaps)
     surv_out_obj.transectSum.time_end(i_trans) = gps_tot.Time(idx_s(end)); % finish_lon
     surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
     surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
+    surv_out_obj.transectSum.shadow_zone_abscf(i_trans)=nansum([Output_echo(:).shadow_zone_slice_abscf].*[Output_echo(:).nb_good_pings])/surv_out_obj.transectSum.pings(i_trans);
 
+    
     %Tracks/ST transect summary
     surv_out_obj.transectSumTracks.snapshot(i_trans) = snap_num;
     surv_out_obj.transectSumTracks.stratum{i_trans} = strat_name;
@@ -351,44 +353,26 @@ for isn = 1:length(snapshots)
     
     for j = 1:length(strats)
         i_strat=i_strat+1;
-        % loop over all strata and get Data subset
+
         jx = strcmpi(surv_out_obj.transectSum.stratum(ix), strats{j});
         idx=ix(jx);
         
         surv_out_obj.stratumSum.snapshot(i_strat) =surv_out_obj.transectSum.snapshot(idx(1));
         surv_out_obj.stratumSum.stratum{i_strat} =surv_out_obj.transectSum.stratum{idx(1)};
         surv_out_obj.stratumSum.time_start(i_strat) = nanmin(surv_out_obj.transectSum.time_start(idx));
-        surv_out_obj.stratumSum.time_end(i_strat) = nanmin(surv_out_obj.transectSum.time_end(idx));
+        surv_out_obj.stratumSum.time_end(i_strat) = nanmax(surv_out_obj.transectSum.time_end(idx));
         surv_out_obj.stratumSum.no_transects(i_strat) = length(surv_out_obj.transectSum.transect(idx));
-        sum_abscf=nansum(surv_out_obj.transectSum.abscf(idx));
-        surv_out_obj.stratumSum.abscf_mean(i_strat) =sum_abscf/surv_out_obj.stratumSum.no_transects(i_strat) ;
-        sum_sq_abscf=nansum((surv_out_obj.transectSum.abscf(idx)).^2);
-        
+
         dist=surv_out_obj.transectSum.dist(idx);
         trans_abscf=surv_out_obj.transectSum.abscf(idx);
-        abscf_mean_j=surv_out_obj.stratumSum.abscf_mean(i_strat);
+        trans_abscf_with_shz=trans_abscf+surv_out_obj.transectSum.shadow_zone_abscf(idx);
+
+        [surv_out_obj.stratumSum.abscf_mean(i_strat),surv_out_obj.stratumSum.abscf_sd(i_strat)]=calc_abscf_and_sd(trans_abscf);
+        [surv_out_obj.stratumSum.abscf_wmean(i_strat),surv_out_obj.stratumSum.abscf_var(i_strat)]=calc_weighted_abscf_and_var(trans_abscf,dist);
         
-        nb_trans_j=surv_out_obj.stratumSum.no_transects(i_strat);
+        [surv_out_obj.stratumSum.abscf_with_shz_mean(i_strat),surv_out_obj.stratumSum.abscf_with_shz_sd(i_strat)]=calc_abscf_and_sd(trans_abscf_with_shz);
+        [surv_out_obj.stratumSum.abscf_with_shz_wmean(i_strat),surv_out_obj.stratumSum.abscf_with_shz_var(i_strat)]=calc_weighted_abscf_and_var(trans_abscf_with_shz,dist);
         
-        if surv_out_obj.stratumSum.no_transects(i_strat)>1
-            %surv_out_obj.stratumSum.abscf_sd(i_strat) = sqrt((sum_sq_abscf-abscf_mean_j.^2.*nb_trans_j)/(nb_trans_j-1)); %
-            surv_out_obj.stratumSum.abscf_sd(i_strat) = sqrt(nansum((trans_abscf-abscf_mean_j).^2)/(nb_trans_j-1)); %
-        else
-            surv_out_obj.stratumSum.abscf_sd(i_strat)=0;
-        end
-        
-        surv_out_obj.stratumSum.abscf_wmean(i_strat) = nansum(dist.*trans_abscf)/...
-            nansum(dist); % abscf_wmean according to esp2 formula
-        abscf_wmean_j=surv_out_obj.stratumSum.abscf_wmean(i_strat);
-        
-        if nb_trans_j>1
-            surv_out_obj.stratumSum.abscf_var(i_strat) = (nansum(dist.^2.*trans_abscf.^2)...
-                -2*abscf_wmean_j*nansum(dist.^2.*trans_abscf)+...
-                abscf_wmean_j^2*nansum(dist.^2))*...
-                nb_trans_j/((nb_trans_j-1)*nansum(dist)^2); % abscf_var according to esp2 formula
-        else
-            surv_out_obj.stratumSum.abscf_var(i_strat)=0;
-        end
         
     end
 end
@@ -398,5 +382,29 @@ surv_obj.clean_output();
 
 end
 
+function [abscf_wmean,abscf_var]=calc_weighted_abscf_and_var(trans_abscf,dist)
+abscf_wmean= nansum(dist.*trans_abscf)/ nansum(dist);
+nb_trans=length(trans_abscf);
+
+if nb_trans>1
+    abscf_var = (nansum(dist.^2.*trans_abscf.^2)...
+        -2*abscf_wmean*nansum(dist.^2.*trans_abscf)+...
+        abscf_wmean^2*nansum(dist.^2))*...
+        nb_trans/((nb_trans-1)*nansum(dist)^2); 
+else
+    abscf_var=0;
+end
+end
+
+function [abscf_mean,abscf_sd]=calc_abscf_and_sd(trans_abscf)
+nb_trans=length(trans_abscf);
+abscf_mean= nansum(trans_abscf)/nb_trans;
+
+if nb_trans>1
+    abscf_sd = sqrt(nansum((trans_abscf-abscf_mean).^2)/(nb_trans-1));
+else
+    abscf_sd=0;
+end
+end
 
 

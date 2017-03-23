@@ -57,8 +57,8 @@ switch src.SelectionType
                 src.WindowButtonMotionFcn = @wbmcb;
             case 'extend'
                 u=u+1;
-                enabled_obj=findobj(main_figure,'Enable','on');
-                set(enabled_obj,'Enable','off');
+%                 enabled_obj=findobj(main_figure,'Enable','on');
+%                 set(enabled_obj,'Enable','off');
                 src.WindowButtonMotionFcn = @wbmcb_ext;
                 src.WindowButtonDownFcn = @wbdcb_ext;
                 %set(main_figure,'WindowScrollWheelFcn','');      
@@ -104,7 +104,7 @@ end
                  wbucb(src,[]);
                  %set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
                  src.WindowButtonDownFcn = @(src,envdata)edit_bottom(src,envdata,main_figure);
-                 set(enabled_obj,'Enable','on');
+%                  set(enabled_obj,'Enable','on');
                  return;
          end
 

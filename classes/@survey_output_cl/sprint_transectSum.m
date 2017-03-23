@@ -5,7 +5,7 @@ str=sprintf('\n# Transect Summary\n#snapshot stratum transect dist vbscf abscf m
 prec={'%0.f,' '%s,' '%0.f,' '%0.4f,' '%.5e,' '%.5e,' '%0.3f,' '%0.f,' '%0.5f,' '%0.4f,' '%0.4f,' '%0.4f,' '%0.4f'};
 fields=fieldnames(transectSum);
 for k = 1:length(transectSum.snapshot)
-    for iu=1:length(fields)-2
+    for iu=1:length(prec)
         if iscell(transectSum.(fields{iu}))
             str=[str sprintf(prec{iu}, transectSum.(fields{iu}){k})];
         else

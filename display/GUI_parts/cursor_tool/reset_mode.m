@@ -7,6 +7,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 childs=findall(main_figure,'type','uitoggletool');
 set(childs,'state','off');
+set(main_figure,'Pointer','arrow');
 iptPointerManager(main_figure,'enable');
 initialize_interactions(main_figure,0);
 create_context_menu_main_echo(main_figure);

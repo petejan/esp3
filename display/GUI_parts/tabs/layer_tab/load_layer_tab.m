@@ -161,30 +161,28 @@ layer=getappdata(main_figure,'Layer');
 
 if ~isempty(evt.Indices)
     if size(evt.Indices,1)==1
-        % fig=ancestor(src,'figure');
-        % switch fig.SelectionType
-        %     case 'open'
-        modifier = get(main_figure,'CurrentModifier');
+        fig=ancestor(src,'figure');
+        modifier = get(fig,'CurrentModifier');
         control = ismember({'shift' 'control'},modifier);
         if ~any(control)
+            
             if layer.ID_num==src.Data{evt.Indices(1),2}
                 return;
             end
+            
             [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
             layer=layers(idx);
-            
-            
-        end
-    end
-    setappdata(main_figure,'Layers',layers);
+            setappdata(main_figure,'Layers',layers);
             setappdata(main_figure,'Layer',layer);
             check_saved_bot_reg(main_figure);
             loadEcho(main_figure);
-    selected_layers=[src.Data{evt.Indices(:,1),2}];
-   
+            
+        end
+        
+    end  
+    selected_layers=[src.Data{evt.Indices(:,1),2}]; 
 else
     selected_layers=[];
-       
 end
 
 setappdata(src,'SelectedLayers',selected_layers);

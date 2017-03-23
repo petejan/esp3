@@ -9,7 +9,7 @@ switch main_figure.SelectionType
     case 'normal'
         
     otherwise
-        curr_disp.CursorMode='Normal';
+%         curr_disp.CursorMode='Normal';
         return;
 end
 axes_panel_comp.bad_transmits.UIContextMenu=[];
@@ -56,10 +56,9 @@ end
 x_box=xinit;
 y_box=yinit;
 
-axes(ah);
-hold on;
-hp=line(x_box,y_box,'color',col_line,'linewidth',1);
-txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+
+hp=line(ah,x_box,y_box,'color',col_line,'linewidth',1);
+txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
 uistack(hp,'top');
 
 main_figure.WindowButtonMotionFcn = @wbmcb;
@@ -156,7 +155,6 @@ main_figure.WindowButtonUpFcn = @wbucb;
         reset_disp_info(main_figure);
         feval(func,main_figure,idx_r,idx_pings);
         
-        curr_disp.CursorMode='Create Region';
        
     end
 

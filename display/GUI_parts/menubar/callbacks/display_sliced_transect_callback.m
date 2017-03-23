@@ -27,7 +27,7 @@ ylabel('Asbcf (dB)');
 legend('1D','1D Shadow Zone','2D');
 
 cax=curr_disp.getCaxField('sv');
-[cmap,~,~,col_grid,~]=init_cmap(curr_disp.Cmap);
+[cmap,~,~,col_grid,~,~]=init_cmap(curr_disp.Cmap);
 alpha_map=ones(size(output_2D.cell_vbscf));
 alpha_map(10*log10(output_2D.cell_vbscf)<cax(1))=0;
 

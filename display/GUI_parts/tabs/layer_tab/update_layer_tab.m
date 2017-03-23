@@ -46,17 +46,23 @@ nb_layer=length(layers);
 data=cell(nb_layer,2);
 
 
+
 layers_Str_comp=list_layers(layers);
 data(:,1)=layers_Str_comp;
 data(:,2)=num2cell([layers(:).ID_num]);
 
-% [~,idx_sort]=sort([data{:,2}]);
-% data=data(idx_sort,:);
+
 [idx,~]=find_layer_idx(layers,layer.ID_num);
 
 data(idx,1)=strcat('<html><b>',data(idx,1),'</b></html>');
 
+jTable = findjobj(layer_tab_comp.table); % hTable is the handle to the uitable object
+jScrollPane = jTable.getComponent(0);
+currentViewPos = jScrollPane.getViewPosition; % save current position
 layer_tab_comp.table.Data=data;
+pause(0); % without this drawnow the following line appeared to do nothing
+jScrollPane.setViewPosition(currentViewPos);% reset the scroll bar to original position
+
 
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
 end

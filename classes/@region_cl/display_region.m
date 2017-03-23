@@ -65,7 +65,7 @@ caxis(cax);
 
 colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
 grid on;
-[cmap,~,~,col_grid,~]=init_cmap(p.Results.Cmap);
+[cmap,~,~,col_grid,~,~]=init_cmap(p.Results.Cmap);
 colormap(ax_in,cmap);
 set(ax_in,'GridColor',col_grid);
 

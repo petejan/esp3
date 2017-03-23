@@ -38,7 +38,7 @@ if ~isempty(list_reg)
             disp('No calibration file');
             cal=[];
         end
-        [cmap,~,~,col_grid,~]=init_cmap(curr_disp.Cmap);
+        [cmap,~,~,col_grid,~,~]=init_cmap(curr_disp.Cmap);
         
 
         [Sv_f,f_vec,ping_mat,r_mat]=trans_obj.sv_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba,'load_bar_comp',load_bar_comp);

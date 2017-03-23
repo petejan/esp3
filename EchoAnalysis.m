@@ -165,7 +165,7 @@ end
 files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
 
 idx_old=[];
-for uu=1:length(files_in_temp)
+for uu=1:numel(files_in_temp)
     if (now-files_in_temp(uu).datenum)>1
         idx_old = union(idx_old,uu);
     end
@@ -190,7 +190,7 @@ if ~isempty(idx_old)
     end
     
     if delete_files == 1
-        for i = 1:length(idx_old)
+        for i = 1:numel(idx_old)
             if exist(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name),'file') == 2
                 delete(fullfile(app_path.data_temp,files_in_temp(idx_old(i)).name));
             end

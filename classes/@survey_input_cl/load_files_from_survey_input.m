@@ -147,6 +147,9 @@ for isn=1:length(snapshots)
                                         'PathToMemmap',datapath);
                                 case 'dfile'
                                     new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
+                                otherwise
+                                    fprintf('Unrecognized file type for file %s',fileN);
+                                    continue
                             end
                             [~,found]=new_lay.find_freq_idx(options.Frequency);
                             if found==0

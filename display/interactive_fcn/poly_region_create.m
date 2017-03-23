@@ -1,4 +1,4 @@
-function hand_region_create(main_figure,func)
+function poly_region_create(main_figure,func)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -8,7 +8,7 @@ ah=axes_panel_comp.main_axes;
 
 
 switch main_figure.SelectionType
-    case 'normal'
+    case 'extend'
         
     otherwise
 %         curr_disp.CursorMode='Normal';
@@ -31,12 +31,12 @@ ydata=layer.Transceivers(idx_freq).Data.get_range();
 
 
 cp = ah.CurrentPoint;
-u=1;
+
 xinit=nan(1,1e4);
 yinit=nan(1,1e4);
 xinit(1) = cp(1,1);
 yinit(1)=cp(1,2);
-
+u=2;
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
 ydata=layer.Transceivers(idx_freq).Data.get_range();
 
@@ -47,22 +47,26 @@ if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end
     return;
 end
 
+
 hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
 
-main_figure.WindowButtonMotionFcn = @wbmcb;
-main_figure.WindowButtonUpFcn = @wbucb;
+% enabled_obj=findobj(main_figure,'Enable','on');
+% set(enabled_obj,'Enable','off');
+main_figure.WindowButtonMotionFcn = @wbmcb_ext;
+main_figure.WindowButtonDownFcn = @wbdcb_ext;
 
-    function wbmcb(~,~)
-        cp = ah.CurrentPoint;
-        u=u+1;
-        xinit(u) = cp(1,1);
-        yinit(u) = cp(1,2);
+   function wbmcb_ext(~,~)
+       
+        cp=ah.CurrentPoint;
+        xinit(u)=cp(1,1);
+        yinit(u)=cp(1,2);
+        display_info_ButtonMotionFcn([],[],main_figure,1);
         
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
         else
-            hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1);
+            hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1,'Tag','reg_temp');
         end
         
         if isvalid(txt)
@@ -70,7 +74,45 @@ main_figure.WindowButtonUpFcn = @wbucb;
         else
             txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
         end
-        drawnow;
+   end
+
+    function wbdcb_ext(~,~)
+        
+        switch main_figure.SelectionType
+            case {'open' 'alt'}
+
+                wbucb(main_figure,[]);
+
+                set(main_figure,'WindowButtonDownFcn',@create_region);
+%                 set(enabled_obj,'Enable','on');
+                return;
+        end
+        
+        check_xy();
+        u=length(xinit)+1;
+        
+        main_figure.WindowButtonMotionFcn = @wbmcb_ext;
+
+        if isvalid(hp)
+            set(hp,'XData',xinit,'YData',yinit);
+        else
+            hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1,'Tag','reg_temp');
+        end
+        
+        
+    end
+
+    function check_xy()
+        xinit(isnan(xinit))=[];
+        yinit(isnan(yinit))=[];
+        x_rem=xinit>xdata(end)|xinit<xdata(1);
+        y_rem=yinit>ydata(end)|yinit<ydata(1);
+
+        xinit(x_rem|y_rem)=[];
+        yinit(x_rem|y_rem)=[];
+        
+%         [x_f,IA,~] = unique(xinit);
+%         y_f=yinit(IA);
     end
 
     function wbucb(main_figure,~)
@@ -96,6 +138,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         end
         clear_lines(ah)
         delete(txt);
+        delete(hp);
         if length(poly_pings)<=2
             return;
         end

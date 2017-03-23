@@ -118,8 +118,8 @@ if p.Results.Shadow_zone
         'Motion_correction',p.Results.Motion_correction);
     if ~isempty(output_shadow_reg)
         
-        Sa_lin = nansum(output_shadow_reg.Sa_lin,1)./nanmax(output_shadow_reg.Nb_good_pings_esp2,1);%sum up all abcsf per vertical slice
-        att=zeros(1,length(Sa_lin));
+        Sa_lin_sh = nansum(output_shadow_reg.Sa_lin,1)./nanmax(output_shadow_reg.Nb_good_pings_esp2,1);%sum up all abcsf per vertical slice
+        att=zeros(1,length(Sa_lin_sh));
         switch Slice_units
             case 'pings'
                 t_start=nanmax(output_shadow_reg.Ping_S,[],1);
@@ -135,7 +135,7 @@ if p.Results.Shadow_zone
                 continue;
             end
             shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(nanmin(output_shadow_reg.Ping_S(ix)))));
-            shadow_zone_slice_abscf(k) = (slice_abscf(k)+nansum(Sa_lin(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
+            shadow_zone_slice_abscf(k) = (shadow_zone_slice_abscf(k)+nansum(Sa_lin_sh(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
         end
     end
 end
