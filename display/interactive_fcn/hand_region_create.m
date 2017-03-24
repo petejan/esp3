@@ -7,11 +7,12 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
 
 
+
 switch main_figure.SelectionType
     case 'normal'
         
     otherwise
-%         curr_disp.CursorMode='Normal';
+        %         curr_disp.CursorMode='Normal';
         return;
 end
 axes_panel_comp.bad_transmits.UIContextMenu=[];
@@ -47,6 +48,10 @@ if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end
     return;
 end
 
+
+set(main_figure,'KeyPressFcn',{@check_esc});
+
+
 hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
 
@@ -77,7 +82,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
         main_figure.WindowButtonMotionFcn = '';
         main_figure.WindowButtonUpFcn = '';
-        
+        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
@@ -96,16 +101,32 @@ main_figure.WindowButtonUpFcn = @wbucb;
         end
         clear_lines(ah)
         delete(txt);
+        delete(hp);
+        
         if length(poly_pings)<=2
             return;
         end
         poly_pings=[poly_pings poly_pings(1)];
         poly_r=[poly_r poly_r(1)];
         reset_disp_info(main_figure);
-
-        feval(func,main_figure,poly_r,poly_pings);
-
         
+        feval(func,main_figure,poly_r,poly_pings);
+        
+        
+        
+    end
 
+
+    function check_esc(~,callbackdata)
+        switch callbackdata.Key
+            
+            case {'escape'}
+                xinit=[];
+                yinit=[];
+                wbucb(main_figure,[]);
+                set(main_figure,'WindowButtonDownFcn',@create_region);
+                return;
+                
+        end
     end
 end

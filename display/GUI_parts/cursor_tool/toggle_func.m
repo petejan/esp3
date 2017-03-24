@@ -13,7 +13,7 @@ for i=1:length(childs)
         set(childs(i),'state','off');
     end
 end
-
+initialize_interactions(main_figure,0);
 region_tab_comp=getappdata(main_figure,'Region_tab');
 set(region_tab_comp.create_button,'value',get(region_tab_comp.create_button,'Min'));
 

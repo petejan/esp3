@@ -1,6 +1,6 @@
 
 function create_region(main_figure,~)
-curr_disp=getappdata(main_figure,'Curr_disp');
+
 region_tab_comp=getappdata(main_figure,'Region_tab');
 modes=get(region_tab_comp.mode,'string');
 mode_idx=get(region_tab_comp.mode,'value');
@@ -9,6 +9,7 @@ shapes=get(region_tab_comp.shape_type,'string');
 shape_idx=get(region_tab_comp.shape_type,'value');
 shape=shapes{shape_idx};
 main_figure.Pointer = 'cross';
+
 switch shape
     case 'Hand Drawn'
         hand_region_create(main_figure,@create_poly_region_func)

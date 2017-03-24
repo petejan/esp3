@@ -51,7 +51,7 @@ switch mode
         yinit = ydata(1);
 end
 
-
+set(main_figure,'KeyPressFcn',@check_esc);
 
 x_box=xinit;
 y_box=yinit;
@@ -124,7 +124,13 @@ main_figure.WindowButtonUpFcn = @wbucb;
         layer=getappdata(main_figure,'Layer');
         
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-
+        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        if isempty(y_box)||isempty(x_box)
+                    delete(txt);
+                     delete(hp);
+            return;
+        end
+        
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
         
@@ -143,7 +149,6 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
         switch mode
             case 'horizontal'
-
                 idx_pings=1:length(layer.Transceivers(idx_freq).get_transceiver_pings());
             case 'vertical'
                 idx_r=1:length(layer.Transceivers(idx_freq).get_transceiver_range());
@@ -156,6 +161,18 @@ main_figure.WindowButtonUpFcn = @wbucb;
         feval(func,main_figure,idx_r,idx_pings);
         
        
+    end
+
+ function check_esc(~,callbackdata)
+        switch callbackdata.Key
+            
+            case {'escape'}
+                x_box=[];
+                y_box=[];
+                wbucb(main_figure,[]);
+                return;
+                
+        end
     end
 
 end

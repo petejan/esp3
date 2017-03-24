@@ -46,7 +46,7 @@ y_lim=get(ah,'ylim');
 if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
     return;
 end
-
+set(main_figure,'KeyPressFcn',@check_esc);
 
 hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
@@ -119,7 +119,7 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         
         main_figure.WindowButtonMotionFcn = '';
         main_figure.WindowButtonUpFcn = '';
-        
+        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
@@ -149,6 +149,18 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         feval(func,main_figure,poly_r,poly_pings);
 
         
+    end
 
+    function check_esc(~,callbackdata)
+        switch callbackdata.Key
+            
+            case {'escape'}
+                xinit=[];
+                yinit=[];
+                wbucb(main_figure,[]);
+                set(main_figure,'WindowButtonDownFcn',@create_region);
+                return;
+                
+        end
     end
 end

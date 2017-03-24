@@ -43,25 +43,30 @@ if isempty(layer)
 end
 drawnow;
 nb_layer=length(layers);
-data=cell(nb_layer,2);
+data_new=cell(nb_layer,2);
 
-
+% data_old=layer_tab_comp.table.Data;
 
 layers_Str_comp=list_layers(layers);
-data(:,1)=layers_Str_comp;
-data(:,2)=num2cell([layers(:).ID_num]);
-
-
+data_new(:,1)=layers_Str_comp;
+data_new(:,2)=num2cell([layers(:).ID_num]);
 [idx,~]=find_layer_idx(layers,layer.ID_num);
-
-data(idx,1)=strcat('<html><b>',data(idx,1),'</b></html>');
-
-jTable = findjobj(layer_tab_comp.table); % hTable is the handle to the uitable object
-jScrollPane = jTable.getComponent(0);
-currentViewPos = jScrollPane.getViewPosition; % save current position
-layer_tab_comp.table.Data=data;
-pause(0); % without this drawnow the following line appeared to do nothing
-jScrollPane.setViewPosition(currentViewPos);% reset the scroll bar to original position
+% if~isempty(data_old)
+%  [~,b,c]=intersect([data_new{:,2}],[data_old{:,2}]);
+% else
+%    b=[];
+%    c=[];
+% end
+% if all(b==c)&&~isempty(b)&&size(data_new)
+%     idx_mod=find(~strcmp(data_new(:,1),data_old(:,1)));
+%     for i=1:idx_mod
+%         layer_tab_comp.table.Data{i,1}=data_new{i,1};
+%     end
+%     
+% else
+    layer_tab_comp.table.Data=data_new;
+% end
+layer_tab_comp.table.Data{idx,1}=strcat('<html><b>',data_new{idx,1},'</b></html>');
 
 
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
