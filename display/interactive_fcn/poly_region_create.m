@@ -1,3 +1,40 @@
+%% poly_region_create.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: TODO: write description and info on variable
+% * |func|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-24: header (Alex Schimel)
+% * 2017-03-24: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function poly_region_create(main_figure,func)
 
 layer=getappdata(main_figure,'Layer');
@@ -11,7 +48,7 @@ switch main_figure.SelectionType
     case 'extend'
         
     otherwise
-%         curr_disp.CursorMode='Normal';
+        %         curr_disp.CursorMode='Normal';
         return;
 end
 axes_panel_comp.bad_transmits.UIContextMenu=[];
@@ -56,8 +93,8 @@ txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
 main_figure.WindowButtonMotionFcn = @wbmcb_ext;
 main_figure.WindowButtonDownFcn = @wbdcb_ext;
 
-   function wbmcb_ext(~,~)
-       
+    function wbmcb_ext(~,~)
+        
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
@@ -74,17 +111,17 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         else
             txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
         end
-   end
+    end
 
     function wbdcb_ext(~,~)
         
         switch main_figure.SelectionType
             case {'open' 'alt'}
-
+                
                 wbucb(main_figure,[]);
-
+                
                 set(main_figure,'WindowButtonDownFcn',@create_region);
-%                 set(enabled_obj,'Enable','on');
+                %                 set(enabled_obj,'Enable','on');
                 return;
         end
         
@@ -92,7 +129,7 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         u=length(xinit)+1;
         
         main_figure.WindowButtonMotionFcn = @wbmcb_ext;
-
+        
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
         else
@@ -107,12 +144,12 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         yinit(isnan(yinit))=[];
         x_rem=xinit>xdata(end)|xinit<xdata(1);
         y_rem=yinit>ydata(end)|yinit<ydata(1);
-
+        
         xinit(x_rem|y_rem)=[];
         yinit(x_rem|y_rem)=[];
         
-%         [x_f,IA,~] = unique(xinit);
-%         y_f=yinit(IA);
+        %         [x_f,IA,~] = unique(xinit);
+        %         y_f=yinit(IA);
     end
 
     function wbucb(main_figure,~)
@@ -145,10 +182,10 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         poly_pings=[poly_pings poly_pings(1)];
         poly_r=[poly_r poly_r(1)];
         reset_disp_info(main_figure);
-
-        feval(func,main_figure,poly_r,poly_pings);
-
         
-
+        feval(func,main_figure,poly_r,poly_pings);
+        
+        
+        
     end
 end
