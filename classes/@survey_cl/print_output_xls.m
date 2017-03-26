@@ -69,7 +69,7 @@ trans_fields=fieldnames(str_obj);
 for i=1:size(str_obj_cell,1)
     
     if ~isempty(strfind(trans_fields{i},'time'))
-        str_obj_cell{i}=datestr(str_obj_cell{i},'dd/mm/yyyy HH:MM:SS');
+        str_obj_cell{i}=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),num2cell(str_obj_cell{i}),'UniformOutput',0);
     end
     
     if isnumeric(str_obj_cell{i})
