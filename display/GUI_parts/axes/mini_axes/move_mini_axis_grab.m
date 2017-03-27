@@ -1,9 +1,10 @@
 function move_mini_axis_grab(src,~,main_figure)
 
-mini_axes_comp=getappdata(main_figure,'Mini_axes');
-ah=mini_axes_comp.mini_ax;
 
 current_fig=gcf;
+wbmf_ori=get(current_fig,'WindowButtonMotionFcn');
+wbuf_ori=get(current_fig,'WindowButtonUpFcn');
+
 
 if strcmp(current_fig.SelectionType,'normal')
     cp = current_fig.CurrentPoint;
@@ -19,8 +20,8 @@ end
 
     function wbucb(~,~)
         current_fig.Pointer = 'arrow';
-        current_fig.WindowButtonMotionFcn = '';
-        current_fig.WindowButtonUpFcn = '';
+        current_fig.WindowButtonMotionFcn = wbmf_ori;
+        current_fig.WindowButtonUpFcn = wbuf_ori;
         
        if nansum(cp(:)<0)||nansum(cp>pos(3:4))
            undock_mini_axes_callback(src,[],main_figure,'out_figure')

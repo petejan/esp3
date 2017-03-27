@@ -48,14 +48,7 @@ bottom_tab_v2_comp.Shift_bot_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style',
 bottom_tab_v2_comp.Shift_bot_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(bottom_tab_v2_comp.Shift_bot_sl,'Value'),'%.1f'));
 set(bottom_tab_v2_comp.Shift_bot_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Shift_bot_ed,'%g'});
 set(bottom_tab_v2_comp.Shift_bot_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Shift_bot_sl,'%g'});
-% 
-% set(bottom_tab_v2_comp.Shift_bot_sl,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
-%     {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_v2_comp.Shift_bot_ed,'%.2f'),...
-%     @(src,evtdata) shift_bottom_callback_v2(src,evtdata,main_figure)})));
-% set(bottom_tab_v2_comp.Shift_bot_ed,'callback',@(src,evtdata)(cellfun(@(x)feval(x,src,evtdata),...
-%     {@(src,evtdata) sync_Sl_ed(src,evtdata,bottom_tab_v2_comp.Shift_bot_sl,'%.2f'),...
-%     @(src,evtdata) shift_bottom_callback_v2(src,evtdata,main_figure)})));
-
+ 
 bottom_tab_v2_comp.denoised=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','checkbox','Value',0,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.3 0.3 0.1]);
 
 uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});

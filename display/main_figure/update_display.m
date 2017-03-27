@@ -1,5 +1,6 @@
 function update_display(main_figure,new)
 
+wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
 set(main_figure,'WindowButtonMotionFcn','');
 opt_panel=getappdata(main_figure,'option_tab_panel');
 layer=getappdata(main_figure,'Layer');
@@ -55,6 +56,7 @@ order_stacks_fig(main_figure);
 reset_disp_info(main_figure);
 curr_disp = getappdata(main_figure,'Curr_disp');
 curr_disp.UIupdate=0;
+set(main_figure,'WindowButtonMotionFcn',wbmf_ori);
 %setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

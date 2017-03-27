@@ -51,7 +51,7 @@ switch mode
         yinit = ydata(1);
 end
 
-set(main_figure,'KeyPressFcn',@check_esc);
+%set(main_figure,'KeyPressFcn',@check_esc);
 
 x_box=xinit;
 y_box=yinit;
@@ -60,6 +60,9 @@ y_box=yinit;
 hp=line(ah,x_box,y_box,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
 uistack(hp,'top');
+wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
+wbuf_ori=get(main_figure,'WindowButtonUpFcn');
+
 
 main_figure.WindowButtonMotionFcn = @wbmcb;
 main_figure.WindowButtonUpFcn = @wbucb;
@@ -118,13 +121,13 @@ main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbucb(main_figure,~)
         
-        main_figure.WindowButtonMotionFcn = '';
-        main_figure.WindowButtonUpFcn = '';
+        main_figure.WindowButtonMotionFcn = wbmf_ori;
+        main_figure.WindowButtonUpFcn = wbuf_ori;
         
         layer=getappdata(main_figure,'Layer');
         
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        %set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         if isempty(y_box)||isempty(x_box)
                     delete(txt);
                      delete(hp);

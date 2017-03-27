@@ -74,19 +74,19 @@ switch algo_name
         old_tag=trans_obj.Bottom.Tag;  
         trans_obj.setBottom(bottom_cl('Origin','Algo_v3',...
             'Sample_idx',bottom,...
-            'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
+            'Tag',old_tag));
     case'BottomDetectionV2'
         old_tag=trans_obj.Bottom.Tag; 
         trans_obj.setBottom(bottom_cl('Origin','Algo_v4',...
             'Sample_idx',bottom,...
-            'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
+            'Tag',old_tag));
     case 'BadPings'
 
         tag=double(idx_noise_sector==0);
         
         trans_obj.Bottom=bottom_cl('Origin','Algo_v2_bp',...
             'Sample_idx',bottom,...
-            'Tag',tag,'Shifted',algo_obj.Varargin.shift_bot);
+            'Tag',tag);
     case 'Denoise'
         if ~isempty(power_unoised)
             trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);

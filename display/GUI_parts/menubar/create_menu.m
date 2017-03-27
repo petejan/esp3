@@ -134,12 +134,14 @@ if ~isdeployed
     uimenu(bs_tools,'Label','Load SVP','Callback',{@load_svp_callback,main_figure});
     uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
 end
+
+ data_tools=uimenu(mhhh,'Label','Data tools');
 if ~isdeployed
-    data_tools=uimenu(mhhh,'Label','Data tools');
-    uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
+    uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});  
     uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
-    uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@create_motion_compensation_echogramm_cback,main_figure});
 end
+uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@create_motion_compensation_echogramm_cback,main_figure});
+
 
 
 

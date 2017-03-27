@@ -49,11 +49,14 @@ if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end
 end
 
 
-set(main_figure,'KeyPressFcn',{@check_esc});
+%set(main_figure,'KeyPressFcn',{@check_esc});
 
 
 hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
+wbuf_ori=get(main_figure,'WindowButtonUpFcn');
+
 
 main_figure.WindowButtonMotionFcn = @wbmcb;
 main_figure.WindowButtonUpFcn = @wbucb;
@@ -80,9 +83,9 @@ main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbucb(main_figure,~)
         
-        main_figure.WindowButtonMotionFcn = '';
-        main_figure.WindowButtonUpFcn = '';
-        set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        main_figure.WindowButtonMotionFcn = wbmf_ori;
+        main_figure.WindowButtonUpFcn = wbuf_ori;
+        %set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
