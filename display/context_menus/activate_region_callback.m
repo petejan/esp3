@@ -112,7 +112,7 @@ if ~ismember(curr_disp.CursorMode,{'Normal'})
 end
 
 if ~(isa(obj,'matlab.graphics.primitive.Patch')||isa(obj,'matlab.graphics.primitive.Image')) 
-    fprintf('Not moving this is %s\n',class(obj));
+    %fprintf('Not moving this is %s\n',class(obj));
     return;
 end
 

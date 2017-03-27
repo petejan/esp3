@@ -24,7 +24,7 @@ if ~isempty(list_reg)
     update_regions_tab(main_figure,nanmax(idx-1,1));
     display_regions(main_figure,'both');
     order_stacks_fig(main_figure);
-    load_region_fig(main_figure,1,-ID);
+    update_reglist_tab(main_figure,[],0);
 else
     return
 end

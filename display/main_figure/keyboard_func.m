@@ -210,8 +210,7 @@ switch callbackdata.Key
                     id=get(gco,'Userdata'); 
                     idx= trans.list_regions_Unique_ID(id);
                     trans.rm_region_id(get(gco,'Userdata'));     
-                   
-                    load_region_fig(main_figure,1,-id);
+                    update_reglist_tab(main_figure,-id,0);
                     update_regions_tab(main_figure,nanmax(idx-1,1));
                     display_regions(main_figure,'both');
                     order_stacks_fig(main_figure);order_axes(main_figure);
