@@ -5,7 +5,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=layer.find_freq_idx(curr_disp.Freq);
 
-context_menu=uicontextmenu(main_figure);
+context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'));
 axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
 analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});

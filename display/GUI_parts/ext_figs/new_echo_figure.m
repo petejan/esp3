@@ -44,7 +44,6 @@ if isempty(p.Results.fig_handle)
         'Resize',p.Results.Resize,...
         'MenuBar',p.Results.MenuBar,...
         'ToolBar',p.Results.Toolbar,...
-        'DockControls','off',...
         'CloseRequestFcn',{p.Results.CloseRequestFcn,main_figure},...
         'ButtonDownFcn',{p.Results.ButtonDownFcn,main_figure},...
         'WindowScrollWheelFcn',{p.Results.WindowScrollWheelFcn,main_figure},...
@@ -56,7 +55,6 @@ else
     fields_in=fieldnames(p.Results);
     fig_handle.NumberTitle='off';
     fig_handle.Color='White';
-    fig_handle.DockControls='off';
     for ifi=1:length(fields_in)
         if ~any(strcmp(fields_in{ifi},p.UsingDefaults))&&isprop(fig_handle,fields_in{ifi})
             set(fig_handle,fields_in{ifi},p.Results.(fields_in{ifi}));
@@ -71,6 +69,8 @@ end
 
 javaFrame = get(fig_handle,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+set(javaFrame, 'GroupName','ESP3');
+
 
 if ~isempty(main_figure)
     curr_disp=getappdata(main_figure,'Curr_disp');

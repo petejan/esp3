@@ -87,6 +87,9 @@ DEBUG=0;
 javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
+desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
+desktop.addGroup('ESP3');
+
 
 %% Checking and parsing input variables
 p = inputParser;
@@ -107,8 +110,7 @@ end
 size_max = get(0, 'MonitorPositions');
 
 %% Defining the app's main window
-main_figure = figure('Visible','on',...
-                     'Units','pixels',...
+main_figure = figure('Units','pixels',...
                      'Position',[size_max(1,1) size_max(1,2)+1/8*size_max(1,4) size_max(1,3)/4*3 size_max(1,4)/4*3],... %Position and size normalized to the screen size ([left, bottom, width, height])
                      'Color','White',...
                      'Name','ESP3',...
@@ -118,7 +120,7 @@ main_figure = figure('Visible','on',...
                      'MenuBar','none',...
                      'Toolbar','none',...
                      'visible','off',...
-                     'DockControls','off',...
+                     'WindowStyle','normal',...
                      'CloseRequestFcn',@closefcn_clean);
                  
 %% Install mouse pointer manager in figure
@@ -126,7 +128,9 @@ iptPointerManager(main_figure);
 
 %% Get Javaframe from Figure to set the Icon
 javaFrame = get(main_figure,'JavaFrame');
+set(javaFrame,'GroupName','ESP3');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+
 
 %% Software version
 echo_ver = get_ver();
@@ -212,8 +216,8 @@ setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 
-%% Move main figure to screen center
-movegui(main_figure,'center');
+% %% Move main figure to screen center
+% movegui(main_figure,'center');
 
 %% Initialize the display and the interactions with the user
 initialize_display(main_figure);

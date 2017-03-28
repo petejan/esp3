@@ -40,10 +40,11 @@ function load_track_target_tab(main_figure,algo_tab_panel)
 
 track_target_tab_comp.track_target_tab=uitab(algo_tab_panel,'Title','Target Tracking');
 
-x_ini=0.05;
-y_ini=0.95;
+x_ini=0.0;
+y_ini=1;
 x_sep=0.02;
 y_sep=0.02;
+
 
 pos=create_pos_2(6,4,x_ini,y_ini,x_sep,y_sep);
 

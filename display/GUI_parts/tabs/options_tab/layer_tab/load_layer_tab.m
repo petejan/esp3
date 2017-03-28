@@ -58,7 +58,7 @@ layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
     'CellSelectionCallback',{@goto_layer_cback,main_figure} );
 
 set(layer_tab_comp.layer_tab,'SizeChangedFcn',{@resize_table,main_figure});
-    
+set(layer_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});   
 
 jtable = findjobj(layer_tab_comp.table);
 
@@ -79,7 +79,7 @@ setappdata(main_figure,'Layer_tab',layer_tab_comp);
 update_layer_tab(main_figure);
 end
 
-function delete_layers_callback(~,~,table,main_figure)
+function delete_layers_callback(src,~,table,main_figure)
     layers=getappdata(main_figure,'Layers');
     layer=getappdata(main_figure,'Layer');
     selected_layers=getappdata(table,'SelectedLayers');
@@ -108,6 +108,16 @@ function delete_layers_callback(~,~,table,main_figure)
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);
     loadEcho(main_figure);
+end
+
+
+
+function keypresstable(src,evt,main_figure)
+switch evt.Key
+    case 'delete'
+       delete_layers_callback(src,[],src,main_figure)
+end
+
 end
 
 function goto_layer_cback(src,evt,main_figure)

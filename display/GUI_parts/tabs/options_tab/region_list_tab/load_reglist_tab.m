@@ -71,6 +71,11 @@ pos_t = getpixelposition(reglist_tab_comp.table);
 set(reglist_tab_comp.table,'ColumnWidth',...
     num2cell(pos_t(3)*[5/20 1/20 2/20 2/20 2/20 2/20 2/20 2/20 2/20 0]));
 
+
+rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+reglist_tab_comp.table.UIContextMenu =rc_menu;
+uimenu(rc_menu,'Label','Delete region(s)','Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
+uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,reglist_tab_comp.table,main_figure});
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
 
@@ -78,14 +83,31 @@ update_reglist_tab(main_figure,[],1);
 end
 
 
-function keypresstable(src,evt,main_figure)
-switch evt.Key
-    case 'delete'
+function display_regions_callback(src,~,table,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+idx=getappdata(table,'SelectedRegs');
+if ~isempty(idx)
+    for i=1:numel(idx)
+        [ireg,found]=trans_obj.find_reg_idx(idx(i));
+        if found==0
+            continue;
+        end
+        reg_curr=trans_obj.Regions(ireg);
+        reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap,'main_figure',main_figure);
+  
+    end
+end
+end
+
+function delete_regions_callback(src,~,table,main_figure)
         layer=getappdata(main_figure,'Layer');
         curr_disp=getappdata(main_figure,'Curr_disp');
         idx_freq=find_freq_idx(layer,curr_disp.Freq);
         trans_obj=layer.Transceivers(idx_freq);
-        idx=getappdata(src,'SelectedRegs');
+        idx=getappdata(table,'SelectedRegs');
         if ~isempty(idx)
             for i=1:numel(idx)
                 trans_obj.rm_region_id(idx(i));
@@ -94,6 +116,14 @@ switch evt.Key
             update_regions_tab(main_figure,nanmax(idx(end)-1,1));
             display_regions(main_figure,'both');
         end
+end
+
+
+
+function keypresstable(src,evt,main_figure)
+switch evt.Key
+    case 'delete'
+        delete_regions_callback(src,[],src,main_figure);
 end
 
 end

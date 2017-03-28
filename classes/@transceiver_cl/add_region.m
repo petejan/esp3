@@ -21,6 +21,11 @@ Split=p.Results.Split;
 for i=1:length(regions)
     trans_obj.rm_region_id(regions(i).Unique_ID);
     regions(i)=trans_obj.validate_region(regions(i));
+    
+    if numel(regions(i).Idx_pings)<2||numel(regions(i).Idx_r)<2
+        continue;
+    end
+    
     if ~strcmpi(Tag,'')
         if ~iscell(Tag)
             regions(i).Tag=Tag;

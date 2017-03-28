@@ -68,42 +68,46 @@ if ~isempty(roll)
     yyaxis(ax,'left');
     ax.YAxis(1).Color = 'r';
     plot(ax,time,heave,'r');
-    xlabel('Time(s)');
-    ylabel('Heave (m)');
+    xlabel(ax,'Time(s)');
+    ylabel(ax,'Heave (m)');
+    
     
     yyaxis(ax,'right');
     plot(ax,time,pitch,'k');
     plot(ax,time,roll,'color',[0 0.5 0]);
     ax.YAxis(2).Color = 'k';
     ax.YAxis(2).TickLabelFormat  = '%g^\\circ';
-    legend('Heave','Pitch','Roll','Location','northeast')
-    legend('boxoff')
-    ylabel('Attitude');
-    grid on; 
+    legend(ax,'Heave','Pitch','Roll','Location','northeast')
+    legend(ax,'boxoff')
+    ylabel(ax,'Attitude');
+    grid(ax,'on');
+    box(ax,'on');
 else
     ax=[];
 end
 
 if ~isempty(heading)
     heading(heading==-999)=nan;
-        axh=axes(h_fig,'nextplot','add','OuterPosition',[0 0 0.5 0.5]);
-        axh.YAxis.TickLabelFormat  = '%g^\\circ';
-        plot(axh,time,heading,'k');
-        xlabel('Time(s)');
-        ylabel('Heading');
-        grid on;
-
+    axh=axes(h_fig,'nextplot','add','OuterPosition',[0 0 0.5 0.5]);
+    axh.YAxis.TickLabelFormat  = '%g^\\circ';
+    plot(axh,time,heading,'k');
+    xlabel(axh,'Time(s)');
+    ylabel(axh,'Heading');
+    grid(axh,'on');
+    box(axh,'on');
+    
 else
-   axh=[]; 
+    axh=[];
 end
 
 if ~isempty(yaw)
-        axy=axes(h_fig,'nextplot','add','OuterPosition',[0.5 0 0.5 0.5]);
-        axy.YAxis.TickLabelFormat  = '%g^\\circ';
-        plot(axy,time,yaw,'k');
-        xlabel('Time(s)');
-        ylabel('Yaw');
-        grid on;
+    axy=axes(h_fig,'nextplot','add','OuterPosition',[0.5 0 0.5 0.5]);
+    axy.YAxis.TickLabelFormat  = '%g^\\circ';
+    plot(axy,time,yaw,'k');
+    xlabel(axy,'Time(s)');
+    ylabel(axy,'Yaw');
+    grid(axy,'on');
+    box(axy,'on');
 else
     axy=[];
 end

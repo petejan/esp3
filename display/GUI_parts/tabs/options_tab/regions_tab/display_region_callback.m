@@ -20,8 +20,6 @@ if isempty(reg_curr)
         return;
     end
 end
-
-new_echo_figure(main_figure,'fig_handle',reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap),...
-    'Tag',sprintf('Region %.0f',reg_curr.Unique_ID),'Name',reg_curr.print());
+reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap,'main_figure',main_figure);
 
 end

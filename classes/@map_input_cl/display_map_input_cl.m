@@ -14,7 +14,7 @@ field=p.Results.field;
 
 
 if isempty(hfig)
-     hfig=new_echo_figure([],'Name','Navigation','Tag','nav');
+     hfig=new_echo_figure(main_figure,'Name','Navigation','Tag','nav');
 end
 
 

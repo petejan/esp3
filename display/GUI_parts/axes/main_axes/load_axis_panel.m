@@ -1,4 +1,4 @@
-function load_axis_panel(main_figure)
+function load_axis_panel(main_figure,axes_panel)
 
 if isappdata(main_figure,'Axes_panel')
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -6,7 +6,8 @@ if isappdata(main_figure,'Axes_panel')
     rmappdata(main_figure,'Axes_panel');
 end
 
-axes_panel_comp.axes_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0.05 1 .65],'BackgroundColor',[1 1 1],'tag','axes_panel');
+axes_panel_comp.axes_panel=axes_panel;
+
 axes_panel_comp.main_axes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Units','normalized',...
     'Position',[0 0 1 1],...
     'XAxisLocation','bottom',...

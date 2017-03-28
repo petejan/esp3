@@ -1,15 +1,15 @@
 function load_single_target_tab(main_figure,algo_tab_panel)
 
-single_target_tab_comp.single_target_tab=uitab(algo_tab_panel,'Title','Single Target Detection');
+single_target_tab_comp.single_target_tab=uitab(algo_tab_panel,'Title','Single Targets');
 
 
 algo=algo_cl('Name','SingleTarget');
 varin=algo.Varargin;
 
-x_ini=0.05;
-y_ini=0.95;
-x_sep=0.1;
-y_sep=0.1;
+x_ini=0.0;
+y_ini=1;
+x_sep=0.02;
+y_sep=0.02;
 
 pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
@@ -39,9 +39,9 @@ uicontrol(parameters_2,'Style','text','units','normalized','string','Std. Ac. An
 single_target_tab_comp.MaxStdMajAxisAngle=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.MaxStdMajAxisAngle),'BackgroundColor','white','callback',{@ check_fmt_box,0,45,varin.MaxStdMajAxisAngle,'%.1f'});
 
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
 
 %set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Single_target_tab',single_target_tab_comp);

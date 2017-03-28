@@ -152,7 +152,7 @@ if reload==0
     %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
     
     
-    rc_menu = uicontextmenu(surv_data_fig);
+    rc_menu = uicontextmenu(ancestor(surv_data_table.table_main,'figure'));
     surv_data_table.table_main.UIContextMenu =rc_menu;
     select_menu=uimenu(rc_menu,'Label','Select');
     process_menu=uimenu(rc_menu,'Label','Process');

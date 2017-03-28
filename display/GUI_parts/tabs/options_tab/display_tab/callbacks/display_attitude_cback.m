@@ -48,7 +48,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layers_Str=list_layers(layer);
 new_figs=layer.Transceivers(idx_freq).AttitudeNavPing.display_att(main_figure);
 for i=1:length(new_figs)
-    new_echo_figure(main_figure,'fig_handle',new_figs(i),'Tag',sprintf('attitude%.0f',layer.ID_num),'Name',sprintf('Attitude  %s',layers_Str{1}));
+    set(new_figs(i),'Tag',sprintf('attitude%.0f',layer.ID_num),'Name',sprintf('Attitude  %s',layers_Str{1}));
 end
 
 end

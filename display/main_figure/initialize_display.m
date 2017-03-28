@@ -36,13 +36,13 @@
 %% Function
 function initialize_display(main_figure)
 
+opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.5 .3]);
+algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3]);
 curr_disp=getappdata(main_figure,'Curr_disp');
-opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.6 .3]);
-algo_panel=uitabgroup(main_figure,'Position',[0.6 .7 0.4 .3]);
+axes_panel=uipanel(main_figure,'Units','Normalized','Position',[0 0.05 1 0.65],'BackgroundColor',[1 1 1],'tag','axes_panel');
+
 setappdata(main_figure,'option_tab_panel',opt_panel);
 setappdata(main_figure,'algo_tab_panel',algo_panel);
-
-
 
 create_menu(main_figure);
 load_cursor_tool(main_figure);
@@ -63,16 +63,17 @@ load_denoise_tab(main_figure,algo_panel);
 load_school_detect_tab(main_figure,algo_panel);
 load_single_target_tab(main_figure,algo_panel);
 load_track_target_tab(main_figure,algo_panel);
-load_axis_panel(main_figure);
+load_axis_panel(main_figure,axes_panel);
 
 format_color_gui(main_figure,curr_disp.Font);
 obj_enable=findobj(main_figure,'Enable','on','-not','Type','uimenu');
 set(obj_enable,'Enable','off');
 set(main_figure,'Visible','on');
-drawnow;
 movegui(main_figure,'center');
+drawnow;
 load_loading_bar(main_figure);
 load_info_panel(main_figure);
+
 
 
 end

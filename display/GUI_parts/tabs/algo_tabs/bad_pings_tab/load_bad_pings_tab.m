@@ -43,10 +43,10 @@ bad_ping_tab_comp.bad_ping_tab=uitab(algo_tab_panel,'Title','Bad Transmit');
 algo=algo_cl('Name','BadPings');
 varin=algo.Varargin;
 
-x_ini=0.05;
-y_ini=0.95;
-x_sep=0.1;
-y_sep=0.1;
+x_ini=0.0;
+y_ini=1;
+x_sep=0.02;
+y_sep=0.02;
 
 pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
@@ -67,9 +67,9 @@ bad_ping_tab_comp.thr_spikes_Below=uicontrol(parameters_1,'Style','Edit','units'
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Bottom Algo Version','units','normalized','Position',[0.7 0.8 0.2 0.1]);
 bad_ping_tab_comp.version=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','popupmenu','Value',1,'String',{'V1','V2'},'units','normalized','Position',[0.7 0.7 0.2 0.1]);
 
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BadPings'});
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'BadPings'});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
 
 setappdata(main_figure,'Bad_ping_tab',bad_ping_tab_comp);
 end

@@ -44,8 +44,8 @@ varin=algo.Varargin;
 
 x_ini=0.0;
 y_ini=1;
-x_sep=0.1;
-y_sep=0.1;
+x_sep=0.02;
+y_sep=0.02;
 
 pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
@@ -85,9 +85,9 @@ uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Defaults Values
 list_params={'--','Flat Hard','Flat Soft','Hills'};
 bottom_tab_v2_comp.default_params=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','popupmenu','String',list_params,'Value',1,'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BottomDetection'});
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
+uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
+uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'BottomDetection'});
+uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
 
 
 setappdata(main_figure,'Bottom_tab_v2',bottom_tab_v2_comp);

@@ -37,7 +37,7 @@
 %% Function
 function create_context_menu_bottom(main_figure,bottom_line)
 
-context_menu=uicontextmenu(main_figure);
+context_menu=uicontextmenu(ancestor(bottom_line,'figure'));
 bottom_line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Display Bottom Region','Callback',@display_bottom_region_callback);
 uimenu(context_menu,'Label','Filter Bottom','Callback',@filter_bottom_callback);

@@ -196,37 +196,40 @@ try
         set(allchild(axh), 'visible',get(axh,'visible'))
         
         hfigs=getappdata(main_figure,'ExternalFigures');
-        hfigs(~isvalid(hfigs))=[];
-        idx_fig=find(strcmp({hfigs(:).Tag},'nav'));
-        for iu=idx_fig
-            if isvalid(hfigs(iu))
-                hAllAxes = findobj(hfigs(iu),'type','axes');
-                if isappdata(hfigs(iu),'Map_info')
-                    Map_info=getappdata(hfigs(iu),'Map_info');
-                    m_proj(Map_info.Proj,'long',Map_info.LongLim,'lat',Map_info.LatLim);
-                end
-                if ~isempty(Long)
-                    for iui=1:length(hAllAxes)
-                        delete(findobj(hAllAxes(iui),'tag','boat_pos'));
-                        m_plot(hAllAxes(iui),Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k','tag','boat_pos')
+        if ~isempty(hfigs)
+            hfigs(~isvalid(hfigs))=[];
+        end
+        if ~isempty(hfigs)
+            idx_fig=find(strcmp({hfigs(:).Tag},'nav'));
+            for iu=idx_fig
+                if isvalid(hfigs(iu))
+                    hAllAxes = findobj(hfigs(iu),'type','axes');
+                    if isappdata(hfigs(iu),'Map_info')
+                        Map_info=getappdata(hfigs(iu),'Map_info');
+                        m_proj(Map_info.Proj,'long',Map_info.LongLim,'lat',Map_info.LatLim);
+                    end
+                    if ~isempty(Long)
+                        for iui=1:length(hAllAxes)
+                            delete(findobj(hAllAxes(iui),'tag','boat_pos'));
+                            m_plot(hAllAxes(iui),Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k','tag','boat_pos')
+                        end
                     end
                 end
             end
-        end
-
-        idx_fig=find(strcmp({hfigs(:).Tag},sprintf('attitude%.0f',layer.ID_num)));
-        t1=(t_n-Time(1))*24*60*60;
-        for iu=idx_fig
-            if isvalid(hfigs(iu))
-                hAllAxes = findobj(hfigs(iu),'type','axes');
+            
+            idx_fig=find(strcmp({hfigs(:).Tag},sprintf('attitude%.0f',layer.ID_num)));
+            t1=(t_n-Time(1))*24*60*60;
+            for iu=idx_fig
+                if isvalid(hfigs(iu))
+                    hAllAxes = findobj(hfigs(iu),'type','axes');
                     for iui=1:length(hAllAxes)
                         delete(findobj(hAllAxes(iui),'tag','time_bar'));
                         plot(hAllAxes(iui),[t1 t1],hAllAxes(iui).YLim,'r','tag','time_bar')
                     end
+                end
+                
             end
-
         end
-        
         
     end
     

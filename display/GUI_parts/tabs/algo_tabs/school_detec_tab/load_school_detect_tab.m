@@ -42,10 +42,10 @@ school_detect_tab_comp.school_detect_tab=uitab(algo_tab_panel,'Title','School De
 algo=algo_cl('Name','SchoolDetection');
 varin=algo.Varargin;
 
-x_ini=0.05;
-y_ini=0.95;
-x_sep=0.1;
-y_sep=0.1;
+x_ini=0.0;
+y_ini=1;
+x_sep=0.02;
+y_sep=0.02;
 
 pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
@@ -84,9 +84,9 @@ school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','nor
 
 
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
 
 %set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
