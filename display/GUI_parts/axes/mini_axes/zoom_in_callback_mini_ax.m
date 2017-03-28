@@ -1,4 +1,43 @@
+%% zoom_in_callback_mini_ax.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |src|: TODO: write description and info on variable
+% * |evt|: TODO: write description and info on variable
+% * |main_figure|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function zoom_in_callback_mini_ax(src,evt,main_figure)
+
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=mini_ax_comp.mini_ax;

@@ -1,4 +1,41 @@
+%% create_poly_region_func.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: TODO: write description and info on variable
+% * |poly_r|: TODO: write description and info on variable
+% * |poly_pings|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
+%% Function
 function create_poly_region_func(main_figure,poly_r,poly_pings)
 
 if isempty(poly_r)||isempty(poly_pings)

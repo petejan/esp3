@@ -1,3 +1,40 @@
+%% create_regions_from_linked_candidates.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |trans|: TODO: write description and info on variable
+% * |linked_candidates|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function create_regions_from_linked_candidates(trans,linked_candidates,varargin)
 
 p = inputParser;
