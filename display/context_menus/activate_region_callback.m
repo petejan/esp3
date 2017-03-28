@@ -45,7 +45,7 @@ if~isdeployed()
     fprintf('Activate region %.0f\n',reg_curr.ID);
 end
 
-if ~ismember(curr_disp.CursorMode,{'Normal','Create Region'})
+if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'})
      return;
  end
 
