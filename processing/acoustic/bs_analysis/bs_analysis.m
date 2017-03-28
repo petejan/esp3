@@ -232,7 +232,7 @@ title('Sv (dB)')
 
 linkaxes([ax1 ax2 ax3]);
 
-layer.AttitudeNav.display_att();
+layer.AttitudeNav.display_att([]);
 
 z_temp=layer.EnvData.SVP.depth;
 c_temp=layer.EnvData.SVP.soundspeed;

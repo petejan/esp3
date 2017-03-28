@@ -11,7 +11,7 @@ layers_Str=list_layers(layer);
 hfig=new_echo_figure(main_figure,'Name',sprintf('Navigation  %s',layers_Str{1}),'Tag','nav');
 map_input.display_map_input_cl('hfig',hfig,'main_figure',main_figure);
 
-new_fig=layer.Transceivers(idx_freq).GPSDataPing.display_speed();
+new_fig=layer.Transceivers(idx_freq).GPSDataPing.display_speed(main_figure);
 new_echo_figure(main_figure,'fig_handle',new_fig,'Tag','speed','Name',sprintf('Speed  %s',layers_Str{1}));
 
 

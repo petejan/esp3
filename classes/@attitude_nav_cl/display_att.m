@@ -1,9 +1,21 @@
-function h_fig=display_att(obj)
+function h_fig=display_att(obj,parenth)
 
 if isempty(obj.Time)
     h_fig=[];
     return;
 end
+
+if ~isempty(parenth)
+    axes_panel_comp=getappdata(parenth,'Axes_panel');
+    if~isempty(axes_panel_comp)
+        ah=axes_panel_comp.main_axes;
+    else
+        ah=[];
+    end
+else
+    ah=[];
+end
+
 
 
 heading=obj.Heading;
@@ -13,7 +25,7 @@ heave=obj.Heave;
 yaw=obj.Yaw;
 time=(obj.Time-obj.Time(1))*24*60*60;
 
-h_fig=new_echo_figure([],'Name','Attitude','Tag','attitude');
+h_fig=new_echo_figure(parenth,'Name','Attitude','Tag','attitude');
 if ~isempty(roll)
     ax= axes(h_fig,'nextplot','add','OuterPosition',[0 0.5 1 0.5]);
     yyaxis(ax,'left');
@@ -59,6 +71,6 @@ else
     axy=[];
 end
 
-linkaxes([ax axh axy],'x');
+linkaxes([ah ax axh axy],'x');
 
 end

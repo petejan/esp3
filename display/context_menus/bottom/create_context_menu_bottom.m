@@ -40,7 +40,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-[outer_reg,slope_est,shadow_height_est]=trans_obj.estimate_shadow_zone('DispReg',1);
+[outer_reg,slope_est,shadow_height_est]=trans_obj.estimate_shadow_zone('DispReg',1,'intersect_only',0);
 
 fig_handle=new_echo_figure(main_figure,'Tag','shadow_zone');
 ax1=axes(fig_handle,'nextplot','add','units','normalized','OuterPosition',[0 0.5 1 0.5]);
