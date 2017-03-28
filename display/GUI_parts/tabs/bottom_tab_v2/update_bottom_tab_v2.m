@@ -13,35 +13,21 @@ end
 range=layer.Transceivers(idx_freq).get_transceiver_range();
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
-algo=algo_obj.Varargin;
+algo_varin=algo_obj.Varargin;
 
 
-set(bottom_tab_v2_comp.Thr_bottom_sl,'value',algo.thr_bottom);
-set(bottom_tab_v2_comp.Thr_bottom_ed,'string',num2str(get(bottom_tab_v2_comp.Thr_bottom_sl,'Value'),'%.0f'));
-
-set(bottom_tab_v2_comp.r_min_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
-set(bottom_tab_v2_comp.r_min_sl,'value',nanmax(algo.r_min,range(1)));
-set(bottom_tab_v2_comp.r_min_ed,'string',num2str(get(bottom_tab_v2_comp.r_min_sl,'Value'),'%.1f'));
-
-set(bottom_tab_v2_comp.r_max_sl,'max',layer.Transceivers(idx_freq).Data.Range(end));
-set(bottom_tab_v2_comp.r_max_sl,'value',nanmin(algo.r_max,range(end)));
-set(bottom_tab_v2_comp.r_max_ed,'string',num2str(get(bottom_tab_v2_comp.r_max_sl,'Value'),'%.1f'));
-
-set(bottom_tab_v2_comp.thr_echo_sl,'value',algo.thr_echo);
-set(bottom_tab_v2_comp.thr_echo_ed,'string',num2str(get(bottom_tab_v2_comp.thr_echo_sl,'Value'),'%.0f'));
-
-set(bottom_tab_v2_comp.thr_cum_sl,'value',algo.thr_cum);
-set(bottom_tab_v2_comp.thr_cum_ed,'string',num2str(get(bottom_tab_v2_comp.thr_cum_sl,'Value'),'%.2f'));
+set(bottom_tab_v2_comp.thr_bottom,'string',num2str(algo_varin.thr_bottom,'%.0f'));
+set(bottom_tab_v2_comp.r_min,'string',num2str(algo_varin.r_min,'%.2f'),'callback',{@check_fmt_box,range(1),range(end),algo_varin.r_min,'%.2f'});
+set(bottom_tab_v2_comp.r_max,'string',num2str(algo_varin.r_max,'%.2f'),'callback',{@check_fmt_box,range(1),range(end),algo_varin.r_max,'%.2f'});
+set(bottom_tab_v2_comp.thr_backstep,'string',num2str(algo_varin.thr_backstep,'%.0f'))
+set(bottom_tab_v2_comp.thr_echo,'string',num2str(algo_varin.thr_echo,'%.0f'));
+set(bottom_tab_v2_comp.thr_cum,'string',num2str(algo_varin.thr_cum,'%g'));
+set(bottom_tab_v2_comp.shift_bot,'string',num2str(algo_varin.shift_bot,'%.2f'));
 
 
-set(bottom_tab_v2_comp.Thr_backstep_sl,'value',algo.thr_backstep);
-set(bottom_tab_v2_comp.Thr_backstep_ed,'string',num2str(get(bottom_tab_v2_comp.Thr_backstep_sl,'Value'),'%.0f'));
+set(bottom_tab_v2_comp.denoised,'value',algo_varin.denoised);
 
-set(bottom_tab_v2_comp.Shift_bot_sl,'value',algo.shift_bot);
-set(bottom_tab_v2_comp.Shift_bot_ed,'string',num2str(get(bottom_tab_v2_comp.Shift_bot_sl,'Value'),'%.2f'));
 
-set(bottom_tab_v2_comp.denoised,'value',algo.denoised);
-%set(findall(bottom_tab_v2_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'Bottom_tab_v2',bottom_tab_v2_comp);
 

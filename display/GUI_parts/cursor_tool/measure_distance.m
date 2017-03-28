@@ -25,6 +25,8 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
 
+wbmcb_ori=src.WindowButtonMotionFcn;
+
 range=layer.Transceivers(idx_freq).get_transceiver_range();
 gps_data=layer.Transceivers(idx_freq).GPSDataPing;
 
@@ -42,7 +44,6 @@ click_num=1;
 
 switch src.SelectionType
     case {'normal'}
-        set(main_figure,'WindowScrollWheelFcn','');
         hp=plot(ah,xinit,yinit,line_col,'linewidth',1,'Tag','measurement');
         ht=text(ah,xinit,yinit,'','Tag','measurement_text','Color',text_col);
         add_point(cp(1,1),cp(1,2));
@@ -63,9 +64,8 @@ end
             case {'alt'}
                 delete(hp);
                 delete(ht)
-                src.WindowButtonMotionFcn = '';
+                src.WindowButtonMotionFcn = wbmcb_ori;
                 set(main_figure,'WindowButtonDownFcn',@(src,envdata)measure_distance(src,envdata,main_figure));
-                set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
                 reset_disp_info(main_figure);
                 return;
         end

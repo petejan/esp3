@@ -3,6 +3,8 @@ function copy_axes_callback(src,~,main_figure)
 obj=gco;
 if isa(obj,'matlab.graphics.primitive.Patch')&&strcmp(src.SelectionType,'normal')
     
+    wbucb_ori=src.WindowButtonUpFcn;
+    wbmcb_ori=src.WindowButtonMotionFcn;
     
     src.WindowButtonMotionFcn = @wbmcb;
     src.WindowButtonUpFcn = @wbucb;
@@ -30,8 +32,8 @@ end
         end
         
         src.Pointer = 'arrow';
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
+        src.WindowButtonMotionFcn = wbmcb_ori;
+        src.WindowButtonUpFcn = wbucb_ori;
 
     end
 

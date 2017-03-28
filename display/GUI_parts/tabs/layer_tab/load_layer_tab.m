@@ -122,6 +122,7 @@ setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
 update_layer_tab(main_figure);
 end
+
 function delete_layers_callback(~,~,table,main_figure)
     layers=getappdata(main_figure,'Layers');
     layer=getappdata(main_figure,'Layer');
@@ -170,13 +171,13 @@ if ~isempty(evt.Indices)
                 return;
             end
             
+            
             [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
             layer=layers(idx);
             setappdata(main_figure,'Layers',layers);
             setappdata(main_figure,'Layer',layer);
             check_saved_bot_reg(main_figure);
-            loadEcho(main_figure);
-            
+            loadEcho(main_figure);   
         end
         
     end  

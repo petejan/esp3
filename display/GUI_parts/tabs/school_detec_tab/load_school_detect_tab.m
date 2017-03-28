@@ -1,62 +1,55 @@
 function load_school_detect_tab(main_figure,algo_tab_panel)
 
-
 school_detect_tab_comp.school_detect_tab=uitab(algo_tab_panel,'Title','School Detection');
 
-pos=create_pos_algo_new(5,2);
+algo=algo_cl('Name','SchoolDetection');
+varin=algo.Varargin;
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Candidate Minimum length(m)','units','normalized','Position',pos{1,1});
-school_detect_tab_comp.l_min_can_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',500,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
-school_detect_tab_comp.l_min_can_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(school_detect_tab_comp.l_min_can_sl,'Value'),'%.1f'));
-set(school_detect_tab_comp.l_min_can_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.l_min_can_ed,'%.1f'});
-set(school_detect_tab_comp.l_min_can_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.l_min_can_sl,'%.1f'});
+x_ini=0.05;
+y_ini=0.95;
+x_sep=0.1;
+y_sep=0.1;
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Candidate Minimum Heigth(m)','units','normalized','Position',pos{2,1});
-school_detect_tab_comp.h_min_can_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',500,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
-school_detect_tab_comp.h_min_can_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(school_detect_tab_comp.h_min_can_sl,'Value'),'%.1f'));
-set(school_detect_tab_comp.h_min_can_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.h_min_can_ed,'%.1f'});
-set(school_detect_tab_comp.h_min_can_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.h_min_can_sl,'%.1f'});
+pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
+
+parameters_1=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
+
+uicontrol(parameters_1,'Style','text','units','normalized','string','Candidate Min. Len(m)','pos',pos{1,1},'HorizontalAlignment','right');
+school_detect_tab_comp.l_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.l_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.l_min_can,'%.2f'});
 
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Total Minimum length(m)','units','normalized','Position',pos{3,1});
-school_detect_tab_comp.l_min_tot_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',500,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
-school_detect_tab_comp.l_min_tot_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{3,3},'string',num2str(get(school_detect_tab_comp.l_min_tot_sl,'Value'),'%.1f'));
-set(school_detect_tab_comp.l_min_tot_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.l_min_tot_ed,'%.1f'});
-set(school_detect_tab_comp.l_min_tot_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.l_min_tot_sl,'%.1f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','Candidate Min. Hgth(m)','pos',pos{2,1},'HorizontalAlignment','right');
+school_detect_tab_comp.h_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.h_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.h_min_can,'%.2f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Total Minimum height(m)','units','normalized','Position',pos{4,1});
-school_detect_tab_comp.h_min_tot_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',500,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
-school_detect_tab_comp.h_min_tot_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(school_detect_tab_comp.h_min_tot_sl,'Value'),'%.1f'));
-set(school_detect_tab_comp.h_min_tot_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.h_min_tot_ed,'%.1f'});
-set(school_detect_tab_comp.h_min_tot_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.h_min_tot_sl,'%.1f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Maximum horizontal linking (m)','units','normalized','Position',pos{1,4});
-school_detect_tab_comp.horz_link_max_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',500,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
-school_detect_tab_comp.horz_link_max_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(school_detect_tab_comp.horz_link_max_sl,'Value'),'%.1f'));
-set(school_detect_tab_comp.horz_link_max_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.horz_link_max_ed,'%.1f'});
-set(school_detect_tab_comp.horz_link_max_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.horz_link_max_sl,'%.1f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','Tot. Min. Len(m)','pos',pos{3,1},'HorizontalAlignment','right');
+school_detect_tab_comp.l_min_tot=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.l_min_tot),'BackgroundColor','white','callback',{@ check_fmt_box,0,10000,varin.l_min_tot,'%.2f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','text','String','Maximum vertical linking (m)','units','normalized','Position',pos{2,4});
-school_detect_tab_comp.vert_link_max_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',20,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
-school_detect_tab_comp.vert_link_max_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{2,6},'string',num2str(get(school_detect_tab_comp.vert_link_max_sl,'Value'),'%.1f'));
-set(school_detect_tab_comp.vert_link_max_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.vert_link_max_ed,'%.1f'});
-set(school_detect_tab_comp.vert_link_max_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.vert_link_max_sl,'%.1f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','text','String','Minimum sample number','units','normalized','Position',pos{3,4});
-school_detect_tab_comp.nb_min_sples_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',0,'Max',1000,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,5});
-school_detect_tab_comp.nb_min_sples_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(school_detect_tab_comp.nb_min_sples_sl,'Value'),'%.0f'));
-set(school_detect_tab_comp.nb_min_sples_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.nb_min_sples_ed,'%.0f'});
-set(school_detect_tab_comp.nb_min_sples_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.nb_min_sples_sl,'%.0f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','Tot. Min. Hgth(m)','pos',pos{4,1},'HorizontalAlignment','right');
+school_detect_tab_comp.h_min_tot=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.h_min_tot),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.h_min_tot,'%.2f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','text','String','Sv Threshold (dB)','units','normalized','Position',pos{4,4});
-school_detect_tab_comp.sv_thr_sl=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','slider','Min',-120,'Max',-30,'Value',-50,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,5});
-school_detect_tab_comp.sv_thr_ed=uicontrol(school_detect_tab_comp.school_detect_tab,'style','edit','unit','normalized','position',pos{4,6},'string',num2str(get(school_detect_tab_comp.sv_thr_sl,'Value'),'%.0f'));
-set(school_detect_tab_comp.sv_thr_sl,'callback',{@sync_Sl_ed,school_detect_tab_comp.sv_thr_ed,'%.0f'});
-set(school_detect_tab_comp.sv_thr_ed,'callback',{@sync_Sl_ed,school_detect_tab_comp.sv_thr_sl,'%.0f'});
+parameters_2=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.32 0.2 0.32 0.7],'fontsize',11);
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.05 0.1 0.1],'callback',{@validate,main_figure});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.4 0.05 0.1 0.1],'callback',{@save_algos,main_figure});
+uicontrol(parameters_2,'Style','text','units','normalized','string','Max. horz. link(m)','pos',pos{1,1},'HorizontalAlignment','right');
+school_detect_tab_comp.horz_link_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.horz_link_max),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.horz_link_max,'%.2f'});
+
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Max. vert. link(m)','pos',pos{2,1},'HorizontalAlignment','right');
+school_detect_tab_comp.vert_link_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.vert_link_max),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.vert_link_max,'%.2f'});
+
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Min. sple number','pos',pos{3,1},'HorizontalAlignment','right');
+school_detect_tab_comp.nb_min_sples=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.nb_min_sples),'BackgroundColor','white','callback',{@ check_fmt_box,0,1000,varin.nb_min_sples,'%.0f'});
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Thr.(dB)','pos',pos{4,1},'HorizontalAlignment','right');
+school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,-10,varin.Sv_thr,'%.0f'});
+
+
+
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
 %set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);

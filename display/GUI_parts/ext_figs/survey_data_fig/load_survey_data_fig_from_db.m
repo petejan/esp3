@@ -291,26 +291,27 @@ if isempty(evt.Indices)
 end
 
 data_ori=getappdata(surv_data_fig,'data_ori');
-if isnan(src.Data{evt.Indices(1),evt.Indices(2)})
+
+if isnan(src.Data{evt.Indices(1,1),evt.Indices(1,2)})
     src.Data{evt.Indices(1),evt.Indices(2)}=0;
 end
 
-idx_struct=src.Data{evt.Indices(1),11};
+idx_struct=src.Data{evt.Indices(1,1),11};
 
-switch evt.Indices(2)
+switch evt.Indices(1,2)
     case {1}
-        data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
+        data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1),evt.Indices(1,2)};
         setappdata(surv_data_fig,'data_ori',data_ori);
         return;
     case{3,4,5,8}
-        filename=src.Data{evt.Indices(1),2};
-        snap=src.Data{evt.Indices(1),3};
-        strat=src.Data{evt.Indices(1),4};
-        trans=src.Data{evt.Indices(1),5};
-        st=src.Data{evt.Indices(1),9};
-        et=src.Data{evt.Indices(1),10};
-        comm=src.Data{evt.Indices(1),8};
-        data_ori{idx_struct,evt.Indices(2)}=src.Data{evt.Indices(1),evt.Indices(2)};
+        filename=src.Data{evt.Indices(1,1),2};
+        snap=src.Data{evt.Indices(1,1),3};
+        strat=src.Data{evt.Indices(1,1),4};
+        trans=src.Data{evt.Indices(1,1),5};
+        st=src.Data{evt.Indices(1,1),9};
+        et=src.Data{evt.Indices(1,1),10};
+        comm=src.Data{evt.Indices(1,1),8};
+        data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1,1),evt.Indices(1,2)};
     otherwise
         return;
 end

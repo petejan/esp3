@@ -11,32 +11,24 @@ if found==0
 end
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
-algo=algo_obj.Varargin;
+varin=algo_obj.Varargin;
 
 
-set(school_detect_tab_comp.l_min_can_sl,'value',algo.l_min_can);
-set(school_detect_tab_comp.l_min_can_ed,'string',num2str(get(school_detect_tab_comp.l_min_can_sl,'Value'),'%.1f'));
+set(school_detect_tab_comp.l_min_can,'string',num2str(varin.l_min_can,'%.2f'));
 
-set(school_detect_tab_comp.h_min_can_sl,'value',algo.h_min_can);
-set(school_detect_tab_comp.h_min_can_ed,'string',num2str(get(school_detect_tab_comp.h_min_can_sl,'Value'),'%.1f'));
+set(school_detect_tab_comp.h_min_can,'string',num2str(varin.h_min_can,'%.2f'));
 
-set(school_detect_tab_comp.l_min_tot_sl,'value',algo.l_min_tot);
-set(school_detect_tab_comp.l_min_tot_ed,'string',num2str(get(school_detect_tab_comp.l_min_tot_sl,'Value'),'%.1f'));
+set(school_detect_tab_comp.l_min_tot,'string',num2str(varin.l_min_tot,'%.2f'));
 
-set(school_detect_tab_comp.h_min_tot_sl,'value',algo.h_min_tot);
-set(school_detect_tab_comp.h_min_tot_ed,'string',num2str(get(school_detect_tab_comp.h_min_tot_sl,'Value'),'%.1f'));
+set(school_detect_tab_comp.h_min_tot,'string',num2str(varin.h_min_tot,'%.2f'));
 
-set(school_detect_tab_comp.horz_link_max_sl,'value',algo.horz_link_max);
-set(school_detect_tab_comp.horz_link_max_ed,'string',num2str(get(school_detect_tab_comp.horz_link_max_sl,'Value'),'%.1f'));
+set(school_detect_tab_comp.horz_link_max,'string',num2str(varin.horz_link_max,'%.2f'));
 
-set(school_detect_tab_comp.vert_link_max_sl,'value',algo.vert_link_max);
-set(school_detect_tab_comp.vert_link_max_ed,'string',num2str(get(school_detect_tab_comp.vert_link_max_sl,'Value'),'%.1f'));
+set(school_detect_tab_comp.vert_link_max,'string',num2str(varin.vert_link_max,'%.2f'));
 
-set(school_detect_tab_comp.nb_min_sples_sl,'value',algo.nb_min_sples);
-set(school_detect_tab_comp.nb_min_sples_ed,'string',num2str(get(school_detect_tab_comp.nb_min_sples_sl,'Value'),'%.0f'));
+set(school_detect_tab_comp.nb_min_sples,'string',num2str(varin.nb_min_sples,'%.0f'));
 
-set(school_detect_tab_comp.sv_thr_sl,'value',algo.Sv_thr);
-set(school_detect_tab_comp.sv_thr_ed,'string',num2str(get(school_detect_tab_comp.sv_thr_sl,'Value'),'%.0f'));
+set(school_detect_tab_comp.Sv_thr,'string',num2str(varin.Sv_thr,'%.0f'));
 
 %set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'on');
 

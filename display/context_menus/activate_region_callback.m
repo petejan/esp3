@@ -3,6 +3,7 @@ function activate_region_callback(obj,~,reg_curr,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
+
 if~isdeployed()
     fprintf('Activate region %.0f\n',reg_curr.ID);
 end

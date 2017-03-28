@@ -46,6 +46,8 @@ if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
     return
 end
 
+ wbucb_ori=src.WindowButtonUpFcn;
+ wbmcb_ori=src.WindowButtonMotionFcn;
 
 switch src.SelectionType
     case {'normal','alt'}
@@ -80,8 +82,6 @@ end
     function wbucb(src,~)
         
         delete(hp);
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
         src.Pointer = 'arrow';
         [~,idx_start]=min(abs(xdata-min(x_bad)));
         [~,idx_end]=min(abs(xdata-max(x_bad)));
@@ -94,6 +94,8 @@ end
     end
 
     function end_bt_edit()
+        src.WindowButtonMotionFcn = wbmcb_ori;
+        src.WindowButtonUpFcn = wbucb_ori;
         reset_disp_info(main_figure);
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Layer',layer);

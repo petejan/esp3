@@ -44,6 +44,9 @@ if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end
     return;
 end
 
+ wbucb_ori=src.WindowButtonUpFcn;
+ wbmcb_ori=src.WindowButtonMotionFcn;
+
 switch src.SelectionType
     case {'normal','alt','extend'}
         hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
@@ -51,7 +54,7 @@ switch src.SelectionType
         switch src.SelectionType
             case 'normal'
                 src.WindowButtonUpFcn = @wbucb;
-                 src.WindowButtonMotionFcn = @wbmcb;
+                src.WindowButtonMotionFcn = @wbmcb;
             case 'alt'
                 src.WindowButtonUpFcn = @wbucb_alt;   
                 src.WindowButtonMotionFcn = @wbmcb;
@@ -141,9 +144,6 @@ end
 
     function wbucb(src,~)
         
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
-
         delete(hp);
         
        [x_f,y_f]=check_xy();
@@ -174,8 +174,6 @@ end
 
     function wbucb_alt(src,~)
         
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
 
         delete(hp);
         x_min=nanmin(xinit);
@@ -192,7 +190,8 @@ end
 
 
     function end_bottom_edit()
-        
+        src.WindowButtonMotionFcn = wbmcb_ori;
+        src.WindowButtonUpFcn = wbucb_ori;
         layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Curr_disp',curr_disp);

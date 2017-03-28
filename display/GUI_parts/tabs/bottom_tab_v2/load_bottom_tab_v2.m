@@ -1,62 +1,110 @@
 function load_bottom_tab_v2(main_figure,algo_tab_panel)
 
-bottom_tab_v2_comp.bottom_tab=uitab(algo_tab_panel,'Title','Bottom Detect Option V2');
+bottom_tab_v2_comp.bottom_tab=uitab(algo_tab_panel,'Title','Bottom Detect V2');
 
-pos=create_pos_algo_new(5,2);
+algo=algo_cl('Name','BottomDetectionV2');
+varin=algo.Varargin;
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','BS Thr(dB)','units','normalized','Position',pos{1,1});
-bottom_tab_v2_comp.Thr_bottom_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',-80,'Max',-10,'Value',-35,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
-bottom_tab_v2_comp.Thr_bottom_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(bottom_tab_v2_comp.Thr_bottom_sl,'Value'),'%.0f'));
-set(bottom_tab_v2_comp.Thr_bottom_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Thr_bottom_ed,'%.0f'});
-set(bottom_tab_v2_comp.Thr_bottom_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Thr_bottom_sl,'%.0f'});
+x_ini=0.05;
+y_ini=0.95;
+x_sep=0.1;
+y_sep=0.1;
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Minimum Depth(m)','units','normalized','Position',pos{2,1});
-bottom_tab_v2_comp.r_min_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',0,'Max',1,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
-bottom_tab_v2_comp.r_min_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(bottom_tab_v2_comp.r_min_sl,'Value'),'%.1f'));
-set(bottom_tab_v2_comp.r_min_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.r_min_ed,'%.1f'});
-set(bottom_tab_v2_comp.r_min_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.r_min_sl,'%.1f'});
+pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
+parameters_1=uipanel(bottom_tab_v2_comp.bottom_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Maximum Depth(m)','units','normalized','Position',pos{3,1});
-bottom_tab_v2_comp.r_max_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',0,'Max',1,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
-bottom_tab_v2_comp.r_max_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,3},'string',num2str(get(bottom_tab_v2_comp.r_max_sl,'Value'),'%.1f'));
-set(bottom_tab_v2_comp.r_max_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.r_max_ed,'%.1f'});
-set(bottom_tab_v2_comp.r_max_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.r_max_sl,'%.1f'});
-
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Backstep Thr (dB)','units','normalized','Position',pos{4,1});
-bottom_tab_v2_comp.Thr_backstep_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',-12,'Max',12,'Value',-1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
-bottom_tab_v2_comp.Thr_backstep_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(bottom_tab_v2_comp.Thr_backstep_sl,'Value'),'%.0f'));
-set(bottom_tab_v2_comp.Thr_backstep_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Thr_backstep_ed,'%.0f'});
-set(bottom_tab_v2_comp.Thr_backstep_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Thr_backstep_sl,'%.0f'});
-
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Thr Around Echo (dB)','units','normalized','Position',pos{1,4});
-bottom_tab_v2_comp.thr_echo_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',-80,'Max',-3,'Value',-40,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
-bottom_tab_v2_comp.thr_echo_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(bottom_tab_v2_comp.thr_echo_sl,'Value'),'%.0f'));
-set(bottom_tab_v2_comp.thr_echo_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_echo_ed,'%.0f'});
-set(bottom_tab_v2_comp.thr_echo_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_echo_sl,'%.0f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','BS thr(dB)','pos',pos{1,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.thr_bottom=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.thr_bottom),'BackgroundColor','white','callback',{@ check_fmt_box,-80,-15,varin.thr_bottom,'%.0f'});
 
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Cumulative Thr','units','normalized','Position',pos{2,4},'Tooltipstring','Higher for harder bottom.');
-bottom_tab_v2_comp.thr_cum_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',0,'Max',1,'Value',0.01,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
-bottom_tab_v2_comp.thr_cum_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{2,6},'string',num2str(get(bottom_tab_v2_comp.thr_cum_sl,'Value'),'%.2f'));
-set(bottom_tab_v2_comp.thr_cum_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_cum_ed,'%g'});
-set(bottom_tab_v2_comp.thr_cum_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.thr_cum_sl,'%g'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','Min Depth(m)','pos',pos{2,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.r_min=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.r_min),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.r_min,'%.2f'});
 
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Shift Bottom up(m)','units','normalized','Position',pos{3,4});
-bottom_tab_v2_comp.Shift_bot_sl=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','slider','Min',-50,'Max',50,'Value',0,'SliderStep',[0.005 0.01],'units','normalized','Position',pos{3,5});
-bottom_tab_v2_comp.Shift_bot_ed=uicontrol(bottom_tab_v2_comp.bottom_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(bottom_tab_v2_comp.Shift_bot_sl,'Value'),'%.1f'));
-set(bottom_tab_v2_comp.Shift_bot_sl,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Shift_bot_ed,'%g'});
-set(bottom_tab_v2_comp.Shift_bot_ed,'callback',{@sync_Sl_ed,bottom_tab_v2_comp.Shift_bot_sl,'%g'});
- 
+uicontrol(parameters_1,'Style','text','units','normalized','string','Max Depth(m)','pos',pos{3,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.r_max=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.r_max),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.r_max,'%.2f'});
+
+
+uicontrol(parameters_1,'Style','text','units','normalized','string','Back Thr(dB)','pos',pos{4,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.thr_backstep=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.thr_backstep),'BackgroundColor','white','callback',{@ check_fmt_box,-12,6,varin.thr_backstep,'%.0f'});
+
+parameters_2=uipanel(bottom_tab_v2_comp.bottom_tab,'title','','Position',[0.32 0.2 0.3 0.7],'fontsize',11);
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Around Echo Thr(dB)','pos',pos{1,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.thr_echo=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.thr_echo),'BackgroundColor','white','callback',{@ check_fmt_box,-60,-3,varin.thr_echo,'%.0f'});
+
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Cumul.Thr(%)','pos',pos{2,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.thr_cum=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.thr_cum),'BackgroundColor','white','callback',{@ check_fmt_box,0,0.9,varin.thr_cum,'%.g'});
+
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Shift Bottom(m)','pos',pos{3,1},'HorizontalAlignment','right');
+bottom_tab_v2_comp.shift_bot=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.shift_bot),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.shift_bot,'%.2f'});
 bottom_tab_v2_comp.denoised=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','checkbox','Value',0,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.3 0.3 0.1]);
+
+
+uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
+list_params={'--','Flat Hard','Flat Soft','Hills'};
+bottom_tab_v2_comp.default_params=uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','popupmenu','String',list_params,'Value',1,'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
 
 uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
 uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'BottomDetection'});
 uicontrol(bottom_tab_v2_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
-%set(findall(bottom_tab_v2_comp.bottom_tab, '-property', 'Enable'), 'Enable', 'off');
+
 setappdata(main_figure,'Bottom_tab_v2',bottom_tab_v2_comp);
+
+
+end
+
+function load_default_params(src,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+return;
+end
+    
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+
+
+[idx_algo,found]=find_algo_idx(trans_obj,'BottomDetectionV2');
+if found==0
+    return
+end
+
+
+switch src.String{src.Value}
+    case 'Flat Hard'
+        
+        trans_obj.Algo(idx_algo).Varargin.thr_bottom=-30;
+        trans_obj.Algo(idx_algo).Varargin.thr_backstep= 1;
+        trans_obj.Algo(idx_algo).Varargin.thr_echo= -20;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 0.1;
+        trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
+        
+    case 'Flat Soft'        
+        trans_obj.Algo(idx_algo).Varargin.thr_bottom= -40;
+        trans_obj.Algo(idx_algo).Varargin.thr_backstep= -3;
+        trans_obj.Algo(idx_algo).Varargin.thr_echo= -30;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-6;
+        trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
+        
+    case 'Hills'
+        trans_obj.Algo(idx_algo).Varargin.thr_bottom= -45;
+        trans_obj.Algo(idx_algo).Varargin.thr_backstep= -3;
+        trans_obj.Algo(idx_algo).Varargin.thr_echo= -20;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-6;
+        trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
+        
+    otherwise
+        return;
+end
+setappdata(main_figure,'Layer',layer);
+update_bottom_tab_v2(main_figure);
+
 end
 
 

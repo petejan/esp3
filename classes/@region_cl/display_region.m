@@ -107,5 +107,5 @@ ax_vert.YTick=(y_disp(1):reg_obj.Cell_h:y_disp(end))+reg_obj.Cell_h/2;
 ax_vert.YAxis.TickLabelFormat='%.0gm';
 linkaxes([ax_in ax_vert],'y');
 linkaxes([ax_in ax_horz],'x');
-set(ax_in,'Xlim',[x_disp(1)-reg_obj.Cell_w/2 x_disp(end)+reg_obj.Cell_w/2]);
-set(ax_in,'Ylim',[y_disp(1)-reg_obj.Cell_h/2 y_disp(end)+reg_obj.Cell_h/2]);
+set(ax_in,'Xlim',[nanmin(x_disp)-reg_obj.Cell_w/2 nanmax(x_disp)+reg_obj.Cell_w/2]);
+set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/2]);

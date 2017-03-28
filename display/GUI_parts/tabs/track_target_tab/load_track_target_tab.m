@@ -11,7 +11,6 @@ y_sep=0.02;
 pos=create_pos_2(6,4,x_ini,y_ini,x_sep,y_sep);
 
 
-
 alpha_beta=uipanel(track_target_tab_comp.track_target_tab,'title','Alpha/Beta tracking','Position',[0.01 0.03 0.5 0.94],'fontsize',11,'Tag','alpha_beta');
 
 uicontrol(alpha_beta,'Style','text','units','normalized','string','Along','pos',pos{1,2},'HorizontalAlignment','left');

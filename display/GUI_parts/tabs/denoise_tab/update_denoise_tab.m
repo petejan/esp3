@@ -14,24 +14,18 @@ if found==0
 end
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
-algo_denoise_var=algo_obj.Varargin;
+varin=algo_obj.Varargin;
 
 range=layer.Transceivers(idx_freq).get_transceiver_range();
 pings=layer.Transceivers(idx_freq).get_transceiver_pings();
 
-set(denoise_tab_comp.HorzFilt_sl,'max',length(pings));
-set(denoise_tab_comp.HorzFilt_sl,'value',nanmin(algo_denoise_var.HorzFilt,length(pings)));
-set(denoise_tab_comp.HorzFilt_ed,'string',num2str(get(denoise_tab_comp.HorzFilt_sl,'Value'),'%.0f'));
+set(denoise_tab_comp.HorzFilt,'string',num2str(nanmin(varin.HorzFilt,length(pings)),'%.0f'),'callback',{@ check_fmt_box,1,length(pings),varin.HorzFilt,'%.0f'});
 
-set(denoise_tab_comp.VertFilt_sl,'max',range(end));
-set(denoise_tab_comp.VertFilt_sl,'value',nanmin(algo_denoise_var.VertFilt,range(end)));
-set(denoise_tab_comp.VertFilt_ed,'string',num2str(get(denoise_tab_comp.VertFilt_sl,'Value'),'%.1f'));
+set(denoise_tab_comp.VertFilt,'string',num2str(nanmin(varin.VertFilt,range(end)),'%.2f'),'callback',{@ check_fmt_box,0,range(end),varin.VertFilt,'%.2f'});
 
-set(denoise_tab_comp.NoiseThr_sl,'value',algo_denoise_var.NoiseThr);
-set(denoise_tab_comp.NoiseThr_ed,'string',num2str(get(denoise_tab_comp.NoiseThr_sl,'Value'),'%.0f'));
+set(denoise_tab_comp.NoiseThr,'string',num2str(varin.NoiseThr,'%.0f'));
 
-set(denoise_tab_comp.SNRThr_sl,'value',algo_denoise_var.SNRThr);
-set(denoise_tab_comp.SNRThr_ed,'string',num2str(get(denoise_tab_comp.SNRThr_sl,'Value'),'%.0f'));
+set(denoise_tab_comp.SNRThr,'string',num2str(varin.SNRThr,'%.0f'));
 
 %set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'on');
 
