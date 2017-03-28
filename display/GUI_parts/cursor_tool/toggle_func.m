@@ -49,9 +49,7 @@ switch src.State
                 set(main_figure,'Pointer','cross');
                 set(main_figure,'WindowButtonDownFcn',@create_region);
             otherwise 
-                set(main_figure,'Pointer','arrow');
-                set(main_figure,'WindowButtonDownFcn',@(src,envdata)select_area_cback(src,envdata,main_figure));
-                 
+                reset_mode(0,0,main_figure);    
         end
     case 'off'
         reset_mode(0,0,main_figure);

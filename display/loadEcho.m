@@ -92,7 +92,8 @@ update_display(main_figure,flag);
 waitfor(curr_disp,'UIupdate',0)
 
 init_listeners(main_figure);
-reset_mode([],[],main_figure);
+curr_disp = getappdata(main_figure,'Curr_disp');
+curr_disp.CursorMode='Normal';
 
 if old_nb==0
     enabled_obj=findobj(main_figure,'Enable','off');
