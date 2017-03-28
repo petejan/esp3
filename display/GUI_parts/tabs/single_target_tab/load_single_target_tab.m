@@ -1,59 +1,47 @@
 function load_single_target_tab(main_figure,algo_tab_panel)
 
-
-
 single_target_tab_comp.single_target_tab=uitab(algo_tab_panel,'Title','Single Target Detection');
 
 
-pos=create_pos_algo_new(5,2);
+algo=algo_cl('Name','SingleTarget');
+varin=algo.Varargin;
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','Text','String','TS Threshold (dB)','units','normalized','Position',pos{1,1});
-single_target_tab_comp.TS_threshold_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',-120,'Max',-20,'Value',-50,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,2});
-single_target_tab_comp.TS_threshold_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{1,3},'string',num2str(get(single_target_tab_comp.TS_threshold_sl,'Value'),'%.0f'));
-set(single_target_tab_comp.TS_threshold_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.TS_threshold_ed,'%.0f'});
-set(single_target_tab_comp.TS_threshold_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.TS_threshold_sl,'%.0f'});
+x_ini=0.05;
+y_ini=0.95;
+x_sep=0.1;
+y_sep=0.1;
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','Text','String','PLDL','units','normalized','Position',pos{2,1});
-single_target_tab_comp.PLDL_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',6,'Max',30,'Value',12,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,2});
-single_target_tab_comp.PLDL_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{2,3},'string',num2str(get(single_target_tab_comp.PLDL_sl,'Value'),'%.0f'));
-set(single_target_tab_comp.PLDL_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.PLDL_ed,'%.0f'});
-set(single_target_tab_comp.PLDL_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.PLDL_sl,'%.0f'});
+pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
+parameters_1=uipanel(single_target_tab_comp.single_target_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','Text','String','Minimum Norm Echo Length','units','normalized','Position',pos{3,1});
-single_target_tab_comp.MinNormPL_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',0,'Max',10,'Value',0,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,2});
-single_target_tab_comp.MinNormPL_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{3,3},'string',num2str(get(single_target_tab_comp.MinNormPL_sl,'Value'),'%.1f'));
-set(single_target_tab_comp.MinNormPL_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.MinNormPL_ed,'%.1f'});
-set(single_target_tab_comp.MinNormPL_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.MinNormPL_sl,'%.1f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','TS thr(dB)','pos',pos{1,1},'HorizontalAlignment','right');
+single_target_tab_comp.TS_threshold=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.TS_threshold),'BackgroundColor','white','callback',{@ check_fmt_box,-120,-10,varin.TS_threshold,'%.0f'});
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','Text','String','Max Norm Echo Length','units','normalized','Position',pos{4,1});
-single_target_tab_comp.MaxNormPL_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',0,'Max',10,'Value',10,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{4,2});
-single_target_tab_comp.MaxNormPL_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{4,3},'string',num2str(get(single_target_tab_comp.MaxNormPL_sl,'Value'),'%.1f'));
-set(single_target_tab_comp.MaxNormPL_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxNormPL_ed,'%.1f'});
-set(single_target_tab_comp.MaxNormPL_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxNormPL_sl,'%.1f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','PLDL(dB)','pos',pos{2,1},'HorizontalAlignment','right');
+single_target_tab_comp.PLDL=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.PLDL),'BackgroundColor','white','callback',{@ check_fmt_box,1,12,varin.PLDL,'%.0f'});
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','Text','String','Maximum Beam Compensation','units','normalized','Position',pos{1,4});
-single_target_tab_comp.MaxBeamComp_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',3,'Max',18,'Value',6,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{1,5});
-single_target_tab_comp.MaxBeamComp_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{1,6},'string',num2str(get(single_target_tab_comp.MaxBeamComp_sl,'Value'),'%.0f'));
-set(single_target_tab_comp.MaxBeamComp_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxBeamComp_ed,'%.0f'});
-set(single_target_tab_comp.MaxBeamComp_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxBeamComp_sl,'%.0f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','Min Norm PL','pos',pos{3,1},'HorizontalAlignment','right');
+single_target_tab_comp.MinNormPL=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.MinNormPL),'BackgroundColor','white','callback',{@ check_fmt_box,0.2,2,varin.MinNormPL,'%.1f'});
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','text','String','Max AlongShip angle phase std','units','normalized','Position',pos{2,4});
-single_target_tab_comp.MaxStdMinAxisAngle_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',0,'Max',30,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{2,5});
-single_target_tab_comp.MaxStdMinAxisAngle_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{2,6},'string',num2str(get(single_target_tab_comp.MaxStdMinAxisAngle_sl,'Value'),'%.1f'));
-set(single_target_tab_comp.MaxStdMinAxisAngle_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxStdMinAxisAngle_ed,'%.1f'});
-set(single_target_tab_comp.MaxStdMinAxisAngle_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxStdMinAxisAngle_sl,'%.1f'});
+uicontrol(parameters_1,'Style','text','units','normalized','string','Max Norm PL','pos',pos{4,1},'HorizontalAlignment','right');
+single_target_tab_comp.MaxNormPL=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.MaxNormPL),'BackgroundColor','white','callback',{@ check_fmt_box,0.2,2,varin.MaxNormPL,'%.1f'});
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','text','String','Max AcrossShip angle phase std','units','normalized','Position',pos{3,4});
-single_target_tab_comp.MaxStdMajAxisAngle_sl=uicontrol(single_target_tab_comp.single_target_tab,'Style','slider','Min',0,'Max',30,'Value',1,'SliderStep',[0.01 0.1],'units','normalized','Position',pos{3,5});
-single_target_tab_comp.MaxStdMajAxisAngle_ed=uicontrol(single_target_tab_comp.single_target_tab,'style','edit','unit','normalized','position',pos{3,6},'string',num2str(get(single_target_tab_comp.MaxStdMajAxisAngle_sl,'Value'),'%.1f'));
-set(single_target_tab_comp.MaxStdMajAxisAngle_sl,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxStdMajAxisAngle_ed,'%.1f'});
-set(single_target_tab_comp.MaxStdMajAxisAngle_ed,'callback',{@sync_Sl_ed,single_target_tab_comp.MaxStdMajAxisAngle_sl,'%.1f'});
+parameters_2=uipanel(single_target_tab_comp.single_target_tab,'title','','Position',[0.32 0.2 0.32 0.7],'fontsize',11);
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Max. Beam Comp.','pos',pos{1,1},'HorizontalAlignment','right');
+single_target_tab_comp.MaxBeamComp=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.MaxBeamComp),'BackgroundColor','white','callback',{@ check_fmt_box,3,18,varin.MaxBeamComp,'%.0f'});
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Std. Al. Angle Std.(deg)','pos',pos{2,1},'HorizontalAlignment','right');
+single_target_tab_comp.MaxStdMinAxisAngle=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.MaxStdMinAxisAngle),'BackgroundColor','white','callback',{@ check_fmt_box,0,45,varin.MaxStdMinAxisAngle,'%.1f'});
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Std. Ac. Angle Std.(al)','pos',pos{3,1},'HorizontalAlignment','right');
+single_target_tab_comp.MaxStdMajAxisAngle=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.MaxStdMajAxisAngle),'BackgroundColor','white','callback',{@ check_fmt_box,0,45,varin.MaxStdMajAxisAngle,'%.1f'});
 
 
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.05 0.1 0.1],'callback',{@validate,main_figure});
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.4 0.05 0.1 0.1],'callback',{@save_algos,main_figure});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.1 0.1 0.15],'callback',{@validate,main_figure});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.7 0.1 0.1 0.15],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.1 0.1 0.15],'callback',{@save_algos,main_figure});
 
 %set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Single_target_tab',single_target_tab_comp);

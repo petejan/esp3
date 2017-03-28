@@ -51,11 +51,11 @@ pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
 parameters_1=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Candidate Min. Len(m)','pos',pos{1,1},'HorizontalAlignment','right');
+uicontrol(parameters_1,'Style','text','units','normalized','string','Can. Min. Len(m)','pos',pos{1,1},'HorizontalAlignment','right');
 school_detect_tab_comp.l_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.l_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.l_min_can,'%.2f'});
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Candidate Min. Hgth(m)','pos',pos{2,1},'HorizontalAlignment','right');
+uicontrol(parameters_1,'Style','text','units','normalized','string','Can. Min. Hgth(m)','pos',pos{2,1},'HorizontalAlignment','right');
 school_detect_tab_comp.h_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.h_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.h_min_can,'%.2f'});
 
 

@@ -11,29 +11,22 @@ if found==0
      return
 end
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
-algo=algo_obj.Varargin;
+varin=algo_obj.Varargin;
 
 
-set(single_target_tab_comp.TS_threshold_sl,'value',algo.TS_threshold);
-set(single_target_tab_comp.TS_threshold_ed,'string',num2str(get(single_target_tab_comp.TS_threshold_sl,'Value'),'%.0f'));
+set(single_target_tab_comp.TS_threshold,'string',num2str(varin.TS_threshold,'%.0f'));
 
-set(single_target_tab_comp.PLDL_sl,'value',algo.PLDL);
-set(single_target_tab_comp.PLDL_ed,'string',num2str(get(single_target_tab_comp.PLDL_sl,'Value'),'%.0f'));
+set(single_target_tab_comp.PLDL,'string',num2str(varin.PLDL,'%.0f'));
 
-set(single_target_tab_comp.MinNormPL_sl,'value',algo.MinNormPL);
-set(single_target_tab_comp.MinNormPL_ed,'string',num2str(get(single_target_tab_comp.MinNormPL_sl,'Value'),'%.1f'));
+set(single_target_tab_comp.MinNormPL,'string',num2str(varin.MinNormPL,'%.1f'));
 
-set(single_target_tab_comp.MaxNormPL_sl,'value',algo.MaxNormPL);
-set(single_target_tab_comp.MaxNormPL_ed,'string',num2str(get(single_target_tab_comp.MaxNormPL_sl,'Value'),'%.1f'));
+set(single_target_tab_comp.MaxNormPL,'string',num2str(varin.MaxNormPL,'%.1f'));
 
-set(single_target_tab_comp.MaxBeamComp_sl,'value',algo.MaxBeamComp);
-set(single_target_tab_comp.MaxBeamComp_ed,'string',num2str(get(single_target_tab_comp.MaxBeamComp_sl,'Value'),'%.0f'));
+set(single_target_tab_comp.MaxBeamComp,'string',num2str(varin.MaxBeamComp,'%.0f'));
 
-set(single_target_tab_comp.MaxStdMinAxisAngle_sl,'value',algo.MaxStdMinAxisAngle);
-set(single_target_tab_comp.MaxStdMinAxisAngle_ed,'string',num2str(get(single_target_tab_comp.MaxStdMinAxisAngle_sl,'Value'),'%.1f'));
+set(single_target_tab_comp.MaxStdMinAxisAngle,'string',num2str(varin.MaxStdMinAxisAngle,'%.1f'));
 
-set(single_target_tab_comp.MaxStdMajAxisAngle_sl,'value',algo.MaxStdMajAxisAngle);
-set(single_target_tab_comp.MaxStdMajAxisAngle_ed,'string',num2str(get(single_target_tab_comp.MaxStdMajAxisAngle_sl,'Value'),'%.1f'));
+set(single_target_tab_comp.MaxStdMajAxisAngle,'string',num2str(varin.MaxStdMajAxisAngle,'%.1f'));
 
 
 %set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'on');

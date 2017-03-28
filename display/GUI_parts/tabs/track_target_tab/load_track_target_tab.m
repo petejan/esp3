@@ -117,7 +117,7 @@ user_entry = str2double(get(hObject,'string'));
 if isnan(user_entry)||user_entry<min_max(1)||user_entry>min_max(2)
     set(hObject,'string',min_max(1));
     warndlg(['Input outside range [' num2str(min_max(1)) ' ' num2str(min_max(2)) ']'] ,'Bad Input','modal')
-    uicontrol(hObject)
+    uicontrol(hObject);
 end
 end
 

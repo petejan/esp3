@@ -26,10 +26,11 @@ if exist(FileN,'file')==2
     surv_data_struct.SurveyName(:)={SurveyName};
     if ~isfield(surv_data_struct,'Comment');
         surv_data_struct.Comment=cell(1,length(surv_data_struct.Stratum));
-        surv_data_struct.Comment={''};
+        surv_data_struct.Comment(:)={''};
     end
     surv_data_struct.StartTime=zeros(1,length(surv_data_struct.Stratum));
     surv_data_struct.EndTime=ones(1,length(surv_data_struct.Stratum));
+    
     
     for i=1:length(surv_data_struct.Stratum)
         
