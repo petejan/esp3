@@ -43,8 +43,9 @@ denoise_tab_comp.denoise_tab=uitab(algo_tab_panel,'Title','Denoise');
 algo=algo_cl('Name','Denoise');
 varin=algo.Varargin;
 
-x_ini=0.05;
-y_ini=0.95;
+
+x_ini=0.0;
+y_ini=1;
 x_sep=0.1;
 y_sep=0.1;
 

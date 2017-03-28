@@ -47,7 +47,7 @@ load_bar_comp.status_bar.setText('Shuffling layers');
 layers_out=[];
 
 for icell=1:length(new_layers_sorted)
-    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
+    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
 end
 
 

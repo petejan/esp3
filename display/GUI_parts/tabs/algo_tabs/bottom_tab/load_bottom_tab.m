@@ -42,8 +42,8 @@ bottom_tab_comp.bottom_tab=uitab(algo_tab_panel,'Title','Bottom Detect');
 algo=algo_cl('Name','BottomDetection');
 varin=algo.Varargin;
 
-x_ini=0.05;
-y_ini=0.95;
+x_ini=0.0;
+y_ini=1;
 x_sep=0.1;
 y_sep=0.1;
 
