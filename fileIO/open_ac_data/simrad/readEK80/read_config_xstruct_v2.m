@@ -101,16 +101,16 @@ if isfield(conf,'Transducers')
         end
         
         fields=fieldnames(config_temp);
-        
-        for jj=1:length(fields)
-            
-            val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
-            if any(isnan(val_temp))
-                config(i_trans).(fields{jj})=config_temp.(fields{jj});
-            else
-                config(i_trans).(fields{jj})=val_temp;
+        for itrans_out=i_trans
+            for jj=1:length(fields)
+                
+                val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
+                if any(isnan(val_temp))
+                    config(itrans_out).(fields{jj})=config_temp.(fields{jj});
+                else
+                    config(itrans_out).(fields{jj})=val_temp;
+                end
             end
-            
         end
     end
     

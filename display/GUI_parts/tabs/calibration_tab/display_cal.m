@@ -12,16 +12,19 @@ layer=getappdata(main_figure,'Layer');
     
     ax_1=subplot(3,1,1);
     hold(ax_1,'on');
+    grid(ax_1,'on');
     xlabel('kHz')
-    ylabel('TS(dB)')
+    ylabel('G(dB)')
 
     ax_2=subplot(3,1,2);
     hold(ax_2,'on');
+     grid(ax_2,'on')
     xlabel('Frequency (kHz)')
     ylabel('BeamWidth(deg)')
     
     ax_3=subplot(3,1,3);
     hold(ax_3,'on');
+     grid(ax_3,'on')
     xlabel('Frequency (kHz)')
     ylabel('EBA(dB)')
 

@@ -90,6 +90,5 @@ for ifi=1:length(ftype)
     end
 end
 
-loadEcho(main_figure);
 
 end

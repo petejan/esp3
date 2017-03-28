@@ -90,10 +90,11 @@ hide_status_bar(main_figure);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 order_stacks_fig(main_figure);
-reset_disp_info(main_figure);
+
 curr_disp = getappdata(main_figure,'Curr_disp');
 curr_disp.UIupdate=0;
 set(main_figure,'WindowButtonMotionFcn',wbmf_ori);
+reset_disp_info(main_figure);
 %setappdata(main_figure,'Curr_disp',curr_disp);
 
 end
