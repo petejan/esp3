@@ -1,4 +1,42 @@
+%% toggle_func.m
+%
+% TODO
+%
+%% Help
+%
+% *USE*
+%
+% TODO
+%
+% *INPUT VARIABLES*
+%
+% * |src|: TODO
+% * |main_figure|: Handle to main ESP3 window
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function toggle_func(src, ~,main_figure)
+
 %cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 %curr_disp=getappdata(main_figure,'Curr_disp');
