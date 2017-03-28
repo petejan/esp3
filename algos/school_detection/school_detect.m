@@ -43,24 +43,35 @@ addParameter(p,'h_min_tot',default_h_min_tot,check_h_min_tot);
 addParameter(p,'horz_link_max',default_horz_link_max,check_horz_link_max);
 addParameter(p,'vert_link_max',default_vert_link_max,check_vert_link_max);
 addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
+addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
+addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
 addParameter(p,'depth_max',15000,@isnumeric);
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
 
+if isempty(p.Results.idx_r)
+    idx_r=1:numel(trans_obj.get_transceiver_range());
+else
+    idx_r=p.Results.idx_r;
+end
 
+if isempty(p.Results.idx_pings)
+    idx_pings=1:numel(trans_obj.get_transceiver_pings());
+else
+    idx_pings=p.Results.idx_pings;
+end
 
-Sv_mat=trans_obj.Data.get_datamat(p.Results.Type);
-
+Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
 if isempty(Sv_mat)
-    Sv_mat=trans_obj.Data.get_datamat('sv');
+   Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
 end
 
 
-range=trans_obj.get_transceiver_range();
-dist_pings=trans_obj.GPSDataPing.Dist;
+range=trans_obj.get_transceiver_range(idx_r);
+dist_pings=trans_obj.GPSDataPing.Dist(idx_pings);
 
-Bottom=trans_obj.get_bottom_range();
+Bottom=trans_obj.get_bottom_range(idx_pings);
 
 [~,Np]=trans_obj.get_pulse_Teff();
 Sv_thr=p.Results.Sv_thr;
@@ -77,13 +88,13 @@ nb_min_sples=p.Results.nb_min_sples;
 
 [nb_samples,~]=size(Sv_mat);
 mask=zeros(size(Sv_mat));
-idx_bad=(trans_obj.Bottom.Tag==0);
+idx_bad=(trans_obj.Bottom.Tag(idx_pings)==0);
 
 idx_bad_data=trans_obj.list_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
    curr_reg=trans_obj.Regions(idx_bad_data(jj));
-   mask(curr_reg.Idx_r,curr_reg.Idx_pings)=mask(curr_reg.Idx_r,curr_reg.Idx_pings)+curr_reg.create_mask();
+   mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)=mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)+curr_reg.create_mask();
 end
 mask(:,idx_bad)=1;
 
@@ -105,9 +116,11 @@ Sv_mask=ceil(filter(ones(h_filter,1)/h_filter,1,Sv_mask));
 
 
 candidates=find_candidates_v3(Sv_mask,range,dist_pings,l_min_can,h_min_can,nb_min_sples,'mat',p.Results.load_bar_comp);
-linked_candidates=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot,p.Results.load_bar_comp);
+linked_candidates_mini=link_candidates_v2(candidates,dist_pings,range,horz_link_max,vert_link_max,l_min_tot,h_min_tot,p.Results.load_bar_comp);
 
+linked_candidates=zeros(numel(trans_obj.get_transceiver_range()),numel(trans_obj.get_transceiver_pings()));
 
+linked_candidates(idx_r,idx_pings)=linked_candidates_mini;
 
 
 

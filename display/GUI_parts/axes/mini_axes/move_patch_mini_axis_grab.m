@@ -10,6 +10,9 @@ if isempty(patch_obj.Vertices)
 end
 
 current_fig=gcf;
+wbmf_ori=get(current_fig,'WindowButtonMotionFcn');
+wbuf_ori=get(current_fig,'WindowButtonUpFcn');
+
 
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
@@ -61,8 +64,8 @@ end
 
     function wbucb(~,~)
         
-        current_fig.WindowButtonMotionFcn = '';
-        current_fig.WindowButtonUpFcn = '';
+        current_fig.WindowButtonMotionFcn = wbmf_ori;
+        current_fig.WindowButtonUpFcn = wbuf_ori;
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
         

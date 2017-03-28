@@ -48,6 +48,9 @@ y_box=yinit;
 
 hp=line(x_box,y_box,'color',col_line,'linewidth',1,'parent',ah);
 
+wbmf_ori=get(current_fig,'WindowButtonMotionFcn');
+wbuf_ori=get(current_fig,'WindowButtonUpFcn');
+
 current_fig.WindowButtonMotionFcn = @wbmcb;
 current_fig.WindowButtonUpFcn = @wbucb;
 order_axes(main_figure);
@@ -91,8 +94,8 @@ order_axes(main_figure);
 
     function wbucb(src,~)
         delete(hp);
-        current_fig.WindowButtonMotionFcn = '';
-        current_fig.WindowButtonUpFcn = '';
+        current_fig.WindowButtonMotionFcn = wbmf_ori;
+        current_fig.WindowButtonUpFcn = wbuf_ori;
         
         if length(x_box)==1&&length(y_box)==1
             move_patch_mini_axis(src,evt,main_figure);        

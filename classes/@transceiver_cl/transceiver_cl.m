@@ -208,6 +208,17 @@ classdef transceiver_cl < handle
             obj.Regions=reg_new;
         end
         
+         function rm_region_name_idx_r_idx_p(obj,name,idx_r,idx_p)
+            reg_curr=obj.Regions;
+            reg_new=[];
+            for i=1:length(reg_curr)
+                if ~strcmpi((reg_curr(i).Name),(name))||(isempty(intersect(idx_r,reg_curr(i).Idx_r))||isempty(intersect(idx_p,reg_curr(i).Idx_pings)))%TODO
+                    reg_new=[reg_new reg_curr(i)];
+                end
+            end
+            obj.Regions=reg_new;
+        end
+        
         function rm_regions(obj)
             reg_new=[];
             

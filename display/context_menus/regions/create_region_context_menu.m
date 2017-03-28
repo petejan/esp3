@@ -60,9 +60,7 @@ display_region_stat_fig(main_figure,regCellInt);
 
 end
 
-function display_regions_list_callback(~,~,main_figure)
-    load_region_fig(main_figure,0,[]);
-end
+
 
 
 function disp_hist_region_callback(~,~,reg_curr,main_figure)

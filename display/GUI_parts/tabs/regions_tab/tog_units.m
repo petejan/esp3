@@ -26,13 +26,13 @@ switch get(src,'tag')
         val=str2double(get(region_tab_comp.cell_w,'string'));
         switch w_unit
             case 'pings'
-                val=val/dx;
+                val=val/dx;set(region_tab_comp.cell_w,'string',num2str(val,'%.0f'));
             case 'meters'
-                val=val*dx;
+                val=val*dx;set(region_tab_comp.cell_w,'string',num2str(val,'%.2f'));
                 
         end
         region_tab_comp.cell_w_unit_curr=w_unit_idx;
-        set(region_tab_comp.cell_w,'string',num2str(val,'%.0f'));
+        
     case 'h'
         if region_tab_comp.cell_h_unit_curr==h_unit_idx
             return;
@@ -40,12 +40,12 @@ switch get(src,'tag')
         val=str2double(get(region_tab_comp.cell_h,'string'));
         switch h_unit
             case 'samples'
-                val=val/dr;
+                val=val/dr;set(region_tab_comp.cell_h,'string',num2str(val,'%.0f'));
             case 'meters'
-                val=val*dr;
+                val=val*dr;set(region_tab_comp.cell_h,'string',num2str(val,'%.2f'));
         end
         region_tab_comp.cell_h_unit_curr=h_unit_idx;
-        set(region_tab_comp.cell_h,'string',num2str(val,'%.0f'));
+        
 end
 setappdata(main_figure,'Region_tab',region_tab_comp);
 end

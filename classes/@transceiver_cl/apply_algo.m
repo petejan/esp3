@@ -74,19 +74,19 @@ switch algo_name
         old_tag=trans_obj.Bottom.Tag;  
         trans_obj.setBottom(bottom_cl('Origin','Algo_v3',...
             'Sample_idx',bottom,...
-            'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
+            'Tag',old_tag));
     case'BottomDetectionV2'
         old_tag=trans_obj.Bottom.Tag; 
         trans_obj.setBottom(bottom_cl('Origin','Algo_v4',...
             'Sample_idx',bottom,...
-            'Tag',old_tag,'Shifted',algo_obj.Varargin.shift_bot));
+            'Tag',old_tag));
     case 'BadPings'
 
         tag=double(idx_noise_sector==0);
         
         trans_obj.Bottom=bottom_cl('Origin','Algo_v2_bp',...
             'Sample_idx',bottom,...
-            'Tag',tag,'Shifted',algo_obj.Varargin.shift_bot);
+            'Tag',tag);
     case 'Denoise'
         if ~isempty(power_unoised)
             trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);
@@ -95,7 +95,7 @@ switch algo_name
             trans_obj.Data.replace_sub_data('snr',SNR);
         end
     case 'SchoolDetection'
-        trans_obj.rm_region_name('School');
+        trans_obj.rm_region_name_idx_r_idx_p('School',p.Results.idx_r,p.Results.idx_pings);
         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',20,'cell_h',10);
     case 'SingleTarget'
         trans_obj.set_ST(single_targets);

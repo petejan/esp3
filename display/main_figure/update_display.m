@@ -1,5 +1,6 @@
 function update_display(main_figure,new)
 
+wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
 set(main_figure,'WindowButtonMotionFcn','');
 opt_panel=getappdata(main_figure,'option_tab_panel');
 layer=getappdata(main_figure,'Layer');
@@ -22,8 +23,8 @@ if new==1
     update_lines_tab(main_figure);
     load_calibration_tab(main_figure,opt_panel);
     load_info_panel(main_figure);
-    load_region_fig(main_figure,1,[]);
     update_layer_tab(main_figure);
+    update_reglist_tab(main_figure,[],new)
 end
 
 update_axis_panel(main_figure,new);
@@ -55,6 +56,7 @@ order_stacks_fig(main_figure);
 reset_disp_info(main_figure);
 curr_disp = getappdata(main_figure,'Curr_disp');
 curr_disp.UIupdate=0;
+set(main_figure,'WindowButtonMotionFcn',wbmf_ori);
 %setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

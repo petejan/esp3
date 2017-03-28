@@ -16,22 +16,15 @@ if ~isempty(list_reg)
         active_reg=trans_obj.Regions(idx_reg);
         ID=active_reg.Unique_ID;
     end
+    idx= layer.Transceivers(idx_freq).list_regions_Unique_ID(ID);
     layer.Transceivers(idx_freq).rm_region_id(ID);
     
-    list_reg = layer.Transceivers(idx_freq).regions_to_str();
-    
-    if ~isempty(list_reg)
-        set(region_tab_comp.tog_reg,'value',1)
-        set(region_tab_comp.tog_reg,'string',list_reg);
-    else
-        set(region_tab_comp.tog_reg,'value',1)
-        set(region_tab_comp.tog_reg,'string',{'--'});
-    end
+
     setappdata(main_figure,'Layer',layer);
-    update_regions_tab(main_figure,1);
+    update_regions_tab(main_figure,nanmax(idx-1,1));
     display_regions(main_figure,'both');
     order_stacks_fig(main_figure);
-    load_region_fig(main_figure,1,-ID);
+    update_reglist_tab(main_figure,[],0);
 else
     return
 end

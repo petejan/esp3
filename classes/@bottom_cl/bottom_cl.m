@@ -4,7 +4,6 @@ classdef bottom_cl
         Origin='';
         Sample_idx=[];
         Tag=[];
-        Shifted=0;
         Version=-1;
     end
     
@@ -16,7 +15,6 @@ classdef bottom_cl
             addParameter(p,'Origin','',@ischar);
             addParameter(p,'Sample_idx',[],@isnumeric);
             addParameter(p,'Tag',[],@(x) isnumeric(x)||islogical(x));
-            addParameter(p,'Shifted',0,@(x) isnumeric(x)); 
             addParameter(p,'Version',-1,@isnumeric);
           
             parse(p,varargin{:});

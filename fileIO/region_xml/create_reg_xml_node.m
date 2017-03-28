@@ -27,8 +27,8 @@ for ir=1:length(reg_xml.Regions)
         region_node.setAttribute('Cell_h_unit',reg_curr.Cell_h_unit);
         region_node.setAttribute('ID',num2str(reg_curr.ID,'%.0f'));
         region_node.setAttribute('Unique_ID',num2str(reg_curr.Unique_ID,'%.0f'));
-        region_node.setAttribute('Cell_w',num2str(reg_curr.Cell_w,'%.0f'));
-        region_node.setAttribute('Cell_h',num2str(reg_curr.Cell_h,'%.0f'));
+        region_node.setAttribute('Cell_w',num2str(reg_curr.Cell_w,'%.2f'));
+        region_node.setAttribute('Cell_h',num2str(reg_curr.Cell_h,'%.2f'));
         
         if isfield(reg_curr,'Remove_ST')
             region_node.setAttribute('Remove_ST',num2str(reg_curr.Remove_ST,'%.0f'));

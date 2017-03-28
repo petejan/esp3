@@ -88,7 +88,7 @@ setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,[]);
 display_regions(main_figure,'both');
 set_alpha_map(main_figure);
-load_region_fig(main_figure,1,[]);
+update_reglist_tab(main_figure,[],0);
 order_stacks_fig(main_figure);
 end
 

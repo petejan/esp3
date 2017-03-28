@@ -19,6 +19,7 @@ load_lines_tab(main_figure,opt_panel);
 load_calibration_tab(main_figure,opt_panel);
 load_processing_tab(main_figure,opt_panel);
 load_layer_tab(main_figure,opt_panel);
+load_reglist_tab(main_figure,opt_panel);
 load_bottom_tab(main_figure,algo_panel);
 load_bottom_tab_v2(main_figure,algo_panel);
 load_bad_pings_tab(main_figure,algo_panel);
