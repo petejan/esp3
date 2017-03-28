@@ -1,3 +1,41 @@
+%% create_region_context_menu.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |reg_plot|: TODO: write description and info on variable
+% * |main_figure|: TODO: write description and info on variable
+% * |reg_curr|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function create_region_context_menu(reg_plot,main_figure,reg_curr)
 
 context_menu=uicontextmenu(main_figure);

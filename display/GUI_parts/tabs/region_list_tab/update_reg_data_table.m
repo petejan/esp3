@@ -1,4 +1,41 @@
-function reg_table_data_new=update_reg_data_table(regions,reg_table_data)
+%% update_reg_data_table.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |regions|: TODO: write description and info on variable
+% * |reg_table_data|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |reg_table_data_new|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * 2017-03-28: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function reg_table_data_new = update_reg_data_table(regions,reg_table_data)
 
 nb_regions=length(regions);
 reg_table_data_new=cell(nb_regions,10);

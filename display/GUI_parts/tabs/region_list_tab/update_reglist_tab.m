@@ -1,4 +1,43 @@
+%% update_reglist_tab.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: TODO: write description and info on variable
+% * |reg_uniqueID|: TODO: write description and info on variable
+% * |new|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * 2017-03-28: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function update_reglist_tab(main_figure,reg_uniqueID,new)
+
 layer=getappdata(main_figure,'Layer');
 reglist_tab_comp=getappdata(main_figure,'Reglist_tab');
 if isempty(layer)||isempty(reglist_tab_comp)

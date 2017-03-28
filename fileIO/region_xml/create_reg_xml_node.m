@@ -1,4 +1,42 @@
-function docNode=create_reg_xml_node(docNode,reg_xml,ver)
+%% create_reg_xml_node.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |docNode|: TODO: write description and info on variable
+% * |reg_xml|: TODO: write description and info on variable
+% * |ver|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |docNode|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-28: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function docNode = create_reg_xml_node(docNode,reg_xml,ver)
 
 p = inputParser;
 addRequired(p,'docNode',@(docnode) isa(docNode,'org.apache.xerces.dom.DocumentImpl'));
