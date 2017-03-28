@@ -1,4 +1,41 @@
-function h_fig=display_speed(obj,parenth)
+%% display_speed.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |obj|: TODO: write description and info on variable
+% * |parenth|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |h_fig|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-29: header (Alex Schimel).
+% * YYYY-MM-DD: first version (Author). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function h_fig = display_speed(obj,parenth)
 
 if isempty(obj.Time)
     h_fig=[];

@@ -20,6 +20,7 @@
 % * |Denoised|: TODO (Optional. Num. Default: |0|).
 % * |Shadow_zone_height|: TODO (Optional. Num. Default: |10|).
 % * |DispReg| TODO (Optional. Default: |0|).
+% * |intersect_only| TODO (Optional. Default: |1|).
 %
 % *OUTPUT VARIABLES*
 %

@@ -1,7 +1,48 @@
+%% bs_analysis.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |layer|: TODO (Required. TODO).
+% * |IdxFreq|: TODO (Optional. Num. Default: |1|). 
+% * |PhiStdThr|: TODO (Optional. Num. Default: |20|).
+% * |TransAngle|: TODO (Optional. Num. Default: |[0 45]|). 
+% * |PosTrans|: TODO (Optional. Num. Default: |[-5;-5;-5]|).
+% * |AttCal|: TODO (Optional. Num. Default: |[0 0]|).
+% * |RayTrayBool| TODO (Optional. Num. Default: |0|).
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-03-29: header (Alex Schimel).
+% * YYYY-MM-DD: first version (Author). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function bs_analysis(layer, varargin)
 
 p = inputParser;
-
 addRequired( p,'layer',       @(obj) isa(obj,'layer_cl'));
 addParameter(p, 'IdxFreq',    1,          @isnumeric);
 addParameter(p, 'PhiStdThr',  20,         @isnumeric);
