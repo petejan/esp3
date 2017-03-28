@@ -48,7 +48,6 @@ for ii=1:length(reg_plot)
     reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure};
 end
 
-uimenu(context_menu,'Label','Regions List','Callback',{@display_regions_list_callback,main_figure});
 uimenu(context_menu,'Label','Display Region','Callback',{@display_region_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
 uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
