@@ -82,6 +82,9 @@ school_detect_tab_comp.nb_min_sples=uicontrol(parameters_2,'Style','Edit','units
 uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Thr.(dB)','pos',pos{4,1},'HorizontalAlignment','right');
 school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,-10,varin.Sv_thr,'%.0f'});
 
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
+list_params={'--','Long Layers','Round Large','Small Long','Small Round','Tiny Round'};
+school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','popupmenu','String',list_params,'Value',1,'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
 
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
@@ -94,6 +97,74 @@ end
 
 
 
+function load_default_params(src,~,main_figure)
+layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+    return;
+end
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+
+[idx_algo,found]=find_algo_idx(trans_obj,'SchoolDetection');
+if found==0
+    return
+end
+
+switch src.String{src.Value}
+    
+    case 'Long Layers'
+        trans_obj.Algo(idx_algo).Varargin.l_min_can=100;
+        trans_obj.Algo(idx_algo).Varargin.l_min_tot=200;
+        trans_obj.Algo(idx_algo).Varargin.h_min_can=10;
+        trans_obj.Algo(idx_algo).Varargin.h_min_tot=20;
+        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=1000;
+        trans_obj.Algo(idx_algo).Varargin.horz_link_max=50;
+        trans_obj.Algo(idx_algo).Varargin.vert_link_max=5;
+    case 'Round Large'
+        trans_obj.Algo(idx_algo).Varargin.l_min_can=20;
+        trans_obj.Algo(idx_algo).Varargin.h_min_can=20;
+        trans_obj.Algo(idx_algo).Varargin.h_min_tot=50;
+        trans_obj.Algo(idx_algo).Varargin.l_min_tot=50;
+        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=1000;
+        trans_obj.Algo(idx_algo).Varargin.horz_link_max=10;
+        trans_obj.Algo(idx_algo).Varargin.vert_link_max=10;
+    case 'Small Long'
+        trans_obj.Algo(idx_algo).Varargin.l_min_can=5;
+        trans_obj.Algo(idx_algo).Varargin.h_min_can=0.5;
+        trans_obj.Algo(idx_algo).Varargin.l_min_tot=10;
+        trans_obj.Algo(idx_algo).Varargin.h_min_tot=1;
+        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=100;
+        trans_obj.Algo(idx_algo).Varargin.horz_link_max=2;
+        trans_obj.Algo(idx_algo).Varargin.vert_link_max=0.5;
+        
+    case 'Small Round'
+        trans_obj.Algo(idx_algo).Varargin.l_min_can=0.5;
+        trans_obj.Algo(idx_algo).Varargin.l_min_tot=1;
+        trans_obj.Algo(idx_algo).Varargin.h_min_can=0.5;
+        trans_obj.Algo(idx_algo).Varargin.h_min_tot=1;
+        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=50;
+        trans_obj.Algo(idx_algo).Varargin.horz_link_max=0.5;
+        trans_obj.Algo(idx_algo).Varargin.vert_link_max=0.5;
+        
+     case 'Tiny Round'
+        trans_obj.Algo(idx_algo).Varargin.l_min_can=0.5;
+        trans_obj.Algo(idx_algo).Varargin.l_min_tot=0.5;
+        trans_obj.Algo(idx_algo).Varargin.h_min_can=0.5;
+        trans_obj.Algo(idx_algo).Varargin.h_min_tot=0.5;
+        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=50;
+        trans_obj.Algo(idx_algo).Varargin.horz_link_max=0.5;
+        trans_obj.Algo(idx_algo).Varargin.vert_link_max=0.5;
+        
+    otherwise
+        return;
+end
+setappdata(main_figure,'Layer',layer);
+update_school_detect_tab(main_figure);
+
+end
 
 
 

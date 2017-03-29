@@ -117,7 +117,7 @@ switch class(Ext_obj)
             if p.Results.SliceSize>0
                 idx_reg=1:length(layers(i).Transceivers(idx_freq).Regions);
                 idx_bad=zeros(1,length(idx_reg));
-                IDs=layers(i).Transceivers(idx_freq).get_IDs();
+                IDs=layers(i).Transceivers(idx_freq).get_reg_IDs();
                 for ireg=1:length(idx_reg)
                     if strcmpi(layers(i).Transceivers(idx_freq).Regions(ireg).Type,'Bad Data')
                         idx_bad(ireg)=1;

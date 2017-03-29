@@ -98,7 +98,7 @@ classdef transceiver_cl < handle
             else
                 pings=obj.Data.get_numbers();
             end
-
+            
         end
         
         
@@ -121,7 +121,7 @@ classdef transceiver_cl < handle
             end
         end
         
-        function idx=list_regions_origin(obj,origin)
+        function idx=find_regions_origin(obj,origin)
             if isempty(obj.Regions)
                 idx=[];
             else
@@ -130,7 +130,7 @@ classdef transceiver_cl < handle
         end
         
         
-        function idx=list_regions_type(obj,type)
+        function idx=find_regions_type(obj,type)
             if isempty(obj.Regions)
                 idx=[];
             else
@@ -138,7 +138,7 @@ classdef transceiver_cl < handle
             end
         end
         
-        function idx=list_regions_tag(obj,tag)
+        function idx=find_regions_tag(obj,tag)
             if isempty(obj.Regions)
                 idx=[];
             else
@@ -146,19 +146,33 @@ classdef transceiver_cl < handle
             end
         end
         
-        function tags=get_tags(obj)
-            tags=unique({obj.Regions(:).Tag});
+        function tags=get_reg_tags(obj)
+            if isempty(obj.Regions)
+                tags={};
+            else
+                
+                tags=unique({obj.Regions(:).Tag});
+            end
         end
         
-        function IDs=get_IDs(obj)
-            IDs=zeros(1,length(obj.Regions));
-            for i=1:length(IDs)
-                IDs(i)=obj.Regions(i).ID;
+        function IDs=get_reg_IDs(obj)
+            if isempty(obj.Regions)
+                IDs=[];
+            else
+                IDs=[obj.Regions(:).ID];
             end
         end
         
         
-        function idx=list_regions_ID(obj,ID)
+        function IDs=get_reg_Unique_IDs(obj)
+            if isempty(obj.Regions)
+                IDs=[];
+            else
+                IDs=[obj.Regions(:).Unique_ID];
+            end
+        end
+        
+        function idx=find_regions_ID(obj,ID)
             if isempty(obj.Regions)
                 idx=[];
             else
@@ -169,7 +183,7 @@ classdef transceiver_cl < handle
             end
         end
         
-        function idx=list_regions_Unique_ID(obj,ID)
+        function idx=find_regions_Unique_ID(obj,ID)
             if isempty(obj.Regions)
                 idx=[];
             else
@@ -180,7 +194,7 @@ classdef transceiver_cl < handle
             end
         end
         
-        function idx=list_regions_name(obj,name)
+        function idx=find_regions_name(obj,name)
             if isempty(obj.Regions)
                 idx=[];
             else
@@ -208,7 +222,7 @@ classdef transceiver_cl < handle
             obj.Regions=reg_new;
         end
         
-         function rm_region_name_idx_r_idx_p(obj,name,idx_r,idx_p)
+        function rm_region_name_idx_r_idx_p(obj,name,idx_r,idx_p)
             reg_curr=obj.Regions;
             reg_new=[];
             for i=1:length(reg_curr)
@@ -369,7 +383,7 @@ classdef transceiver_cl < handle
             end
             active_reg=obj.Regions(reg_idx);
             Sv=obj.Data.get_datamat('sv');
-            idx=list_regions_type(obj,'Bad Data');
+            idx=find_regions_type(obj,'Bad Data');
             
             for i=idx
                 curr_reg=obj.Regions(i);

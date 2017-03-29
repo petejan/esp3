@@ -45,7 +45,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
-    reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure};
+    reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure,1};
 end
 
 uimenu(context_menu,'Label','Display Region','Callback',{@display_region_callback,reg_curr,main_figure});

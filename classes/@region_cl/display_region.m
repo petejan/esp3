@@ -89,7 +89,7 @@ switch(reg_obj.Reference)
         y_disp=-nanmean(output_reg.y_node+output_reg.height/2,2);
 end
 mat_size=size(sv_disp);
-h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',sprintf('Region %.0f',reg_obj.Unique_ID),'Units','Normalized','Position',[0.1 0.2 0.8 0.6]);
+h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',sprintf('Region %.0f',reg_obj.Unique_ID),'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked');
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 title(ax_in,tt);
 if  ~any(mat_size==1)
@@ -99,7 +99,7 @@ end
 %shading(ax_in,'interp')
 ax_in.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
 ax_in.YTick=sort((y_disp(1):reg_obj.Cell_h:y_disp(end)));
-caxis(cax);
+caxis(ax_in,cax);
 
 colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
 grid on;
@@ -108,16 +108,16 @@ colormap(ax_in,cmap);
 set(ax_in,'GridColor',col_grid);
 
 if strcmp(reg_obj.Reference,'Surface')
-    axis ij
+    axis(ax_in,'ij')
 end
 
 
 
 ax_horz=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.1 0.7 0.15],'nextplot','add','box','on');
-plot(x_disp,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,1)),'r');
-grid on;
-xlabel(sprintf('%s',reg_obj.Cell_w_unit))
-ylabel('Sv mean(dB)')
+plot(ax_horz,x_disp,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,1)),'r');
+grid(ax_horz,'on');
+xlabel(ax_horz,sprintf('%s',reg_obj.Cell_w_unit))
+ylabel(ax_horz,'Sv mean(dB)')
 ax_horz.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
 ax_horz.XTickLabelRotation=90;
 
@@ -129,17 +129,17 @@ switch reg_obj.Cell_w_unit
 end
 
 ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
-plot(pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2)),y_disp,'r');
-xlabel('Sv mean (db)')
+plot(ax_vert,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2)),y_disp,'r');
+xlabel(ax_vert,'Sv mean (db)')
 
 if strcmp(reg_obj.Reference,'Surface')
-    axis ij;
-    ylabel(sprintf('Depth (%s)',reg_obj.Cell_h_unit));
+    axis(ax_vert,'ij');
+    ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
 else
-    ylabel(sprintf('Above bottom(%s)',reg_obj.Cell_h_unit));
+    ylabel(ax_vert,sprintf('Above bottom(%s)',reg_obj.Cell_h_unit));
 end
 
-grid on;
+grid(ax_vert,'on');
 ax_vert.YTick=(y_disp(1):reg_obj.Cell_h:y_disp(end))+reg_obj.Cell_h/2;
 
 ax_vert.YAxis.TickLabelFormat='%.0gm';

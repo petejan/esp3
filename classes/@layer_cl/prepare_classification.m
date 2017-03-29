@@ -59,7 +59,7 @@ for uu=idx_to_process
     end
 
 end
-idx_school_120 = layer.Transceivers(idx_120).list_regions_name('School');
+idx_school_120 = layer.Transceivers(idx_120).find_regions_name('School');
 
 if ~isempty(idx_school_120)
     layer.copy_region_across(idx_120,layer.Transceivers(idx_120).Regions(idx_school_120),idx_38);

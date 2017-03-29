@@ -50,7 +50,7 @@ trans_obj=layer.Transceivers(idx_freq);
 regions=trans_obj.Regions;
 if ~isempty(reg_uniqueID)&&new==0
     if reg_uniqueID>=0
-        region_mod=regions(trans_obj.list_regions_Unique_ID(reg_uniqueID));
+        region_mod=regions(trans_obj.find_regions_Unique_ID(reg_uniqueID));
         reg_table_data=update_reg_data_table(region_mod,reglist_tab_comp.table.Data);
         set(reglist_tab_comp.table,'Data',reg_table_data);
     else

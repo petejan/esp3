@@ -5,7 +5,7 @@ nb_pings=diff(trans_obj.Data.Number)+1;
 
 mask=zeros(nb_samples,nb_pings);
 
-idx=list_regions_type(trans_obj,'Data');
+idx=trans_obj.find_regions_type('Data');
 
 for i=idx
     curr_reg=trans_obj.Regions(i);
@@ -15,7 +15,7 @@ for i=idx
     mask(idx_r_curr,idx_pings_curr)= mask_temp;
 end
 
-idx=list_regions_type(trans_obj,'Bad Data');
+idx=trans_obj.find_regions_type('Bad Data');
 for i=idx
     curr_reg=trans_obj.Regions(i);
     mask_temp=curr_reg.create_mask();

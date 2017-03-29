@@ -147,7 +147,7 @@ if ~isempty(evt.Indices)
         end
         
     end  
-    selected_layers=[src.Data{evt.Indices(:,1),2}]; 
+    selected_layers=unique([src.Data{evt.Indices(:,1),2}]); 
 else
     selected_layers=[];
 end

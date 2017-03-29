@@ -73,9 +73,10 @@ set(reglist_tab_comp.table,'ColumnWidth',...
 
 
 rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
-reglist_tab_comp.table.UIContextMenu =rc_menu;
-uimenu(rc_menu,'Label','Delete region(s)','Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
+reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT color="REd"><b>Delete region(s)</b></Font> ';
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,reglist_tab_comp.table,main_figure});
+uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
+
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
 
@@ -108,12 +109,14 @@ function delete_regions_callback(src,~,table,main_figure)
         idx_freq=find_freq_idx(layer,curr_disp.Freq);
         trans_obj=layer.Transceivers(idx_freq);
         idx=getappdata(table,'SelectedRegs');
+        
         if ~isempty(idx)
+            idx_reg=trans_obj.find_regions_Unique_ID(idx(end));
             for i=1:numel(idx)
                 trans_obj.rm_region_id(idx(i));
             end
             update_reglist_tab(main_figure,[],0);
-            update_regions_tab(main_figure,nanmax(idx(end)-1,1));
+            update_regions_tab(main_figure,nanmax(idx_reg-1,1));            
             display_regions(main_figure,'both');
         end
 end
@@ -139,7 +142,7 @@ if isempty(evt.Indices)
     setappdata(src,'SelectedRegs',[]);
     return;
 else
-    selected_regs=[src.Data{evt.Indices(:,1),end}];
+    selected_regs=unique([src.Data{evt.Indices(:,1),end}]);
     setappdata(src,'SelectedRegs',selected_regs);
 end
 [idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(end,1),10});
@@ -148,7 +151,7 @@ if ~found
     return;
 end
 active_reg=regions(idx_reg);
-activate_region_callback([],[],active_reg,main_figure);
+activate_region_callback([],[],active_reg,main_figure,1);
 end
 
 

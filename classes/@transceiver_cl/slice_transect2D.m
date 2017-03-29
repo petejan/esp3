@@ -19,9 +19,9 @@ cell_h=p.Results.cell_h;
 
 
 if ~isempty(p.Results.regIDs)
-    idx_reg=trans_obj.list_regions_ID(p.Results.regIDs);
+    idx_reg=trans_obj.find_regions_ID(p.Results.regIDs);
 else
-    idx_reg=1:length(trans_obj.Regions);
+    idx_reg=1:numel(trans_obj.Regions);
 end
 
 % if isempty(idx_reg)

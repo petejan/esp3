@@ -103,9 +103,17 @@ if isempty(Sv_mat)
    Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
 end
 
-
 range=trans_obj.get_transceiver_range(idx_r);
-dist_pings=trans_obj.GPSDataPing.Dist(idx_pings);
+dist=trans_obj.GPSDataPing.Dist;
+
+if nanmean(diff(dist))>0
+    dist_pings=dist(idx_pings);
+else
+    warning('No Distance was computed, using ping instead of distance for school detection');
+    dist_pings=trans_obj.get_transceiver_pings(idx_pings)';
+end
+
+
 
 Bottom=trans_obj.get_bottom_range(idx_pings);
 
@@ -126,7 +134,7 @@ nb_min_sples=p.Results.nb_min_sples;
 mask=zeros(size(Sv_mat));
 idx_bad=(trans_obj.Bottom.Tag(idx_pings)==0);
 
-idx_bad_data=trans_obj.list_regions_type('Bad Data');
+idx_bad_data=trans_obj.find_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
    curr_reg=trans_obj.Regions(idx_bad_data(jj));
@@ -143,14 +151,14 @@ end
 
 Sv_mask_ori(range>=p.Results.depth_max,:)=0;
     
-h_filter=2*Np;
+
 
 Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);
 %Sv_mask=Sv_mask_ori;
-
-Sv_mask=floor(filter2(ones(h_filter,1)/h_filter,double(Sv_mask>0),'same'));
-Sv_mask=ceil(filter2(ones(h_filter,1)/h_filter,Sv_mask,'same'));
-
+% h_filter=2*Np;
+% Sv_mask=floor(filter2(ones(h_filter,1)/h_filter,double(Sv_mask>0),'same'));
+% Sv_mask=ceil(filter2(ones(h_filter,1)/h_filter,Sv_mask,'same'));
+% 
 
 
 

@@ -89,7 +89,7 @@ end
 if p.Results.intersect_only==1
     Sv_reg_save=Sv_reg;
     Sv_reg=nan(size(Sv_reg));
-    idx=list_regions_type(trans_obj,'Data');
+    idx=trans_obj.find_regions_type('Data');
     for i=idx
         curr_reg=trans_obj.Regions(i);
         if curr_reg.Unique_ID==region.Unique_ID
@@ -113,7 +113,7 @@ if p.Results.intersect_only==1
     end
 end
 
-idx=list_regions_type(trans_obj,'Bad Data');
+idx=trans_obj.find_regions_type('Bad Data');
 for i=idx
     curr_reg=trans_obj.Regions(i);
     if curr_reg.Unique_ID==region.Unique_ID

@@ -62,25 +62,25 @@ bot_x_val=[nanmin(vert_val(~(vert_val==-Inf))) nanmax(vert_val)];
 
 v=new_echo_figure(main_figure,'Tag','profile_v');
 axv=axes(v);
-hold on;
-title(sprintf('Vertical Profile for Ping: %.0f',idx_ping))
+hold(axv,'on');
+title(axv,sprintf('Vertical Profile for Ping: %.0f',idx_ping))
 plot(axv,vert_val,ydata,'k');
-hold on;
+hold(axv,'on');
 plot(axv,bot_x_val,[bot_val bot_val],'r');
-grid on;
-ylabel('Range(m)')
-xlabel(ylab_str);
-axis ij;
+grid(axv,'on');
+ylabel(axv,'Range(m)')
+xlabel(axv,ylab_str);
+axis(axv,'ij');
 linkaxes([ax_main axv],'y');
 
 h=new_echo_figure(main_figure,'Tag','profile_h');
 axh=axes(h);
-hold on;
-title(sprintf('Horizontal Profile for sample: %.0f, Range: %.2fm',idx_r,y))
+hold(axh,'on');
+title(axh,sprintf('Horizontal Profile for sample: %.0f, Range: %.2fm',idx_r,y))
 plot(axh,xdata,horz_val,'r');
-grid on;
-xlabel(xlab_str);
-ylabel(ylab_str);
+grid(axh,'on');
+xlabel(axh,xlab_str);
+ylabel(axh,ylab_str);
 linkaxes([ax_main axh],'x');
 switch curr_disp.Xaxes
     case 'Time'

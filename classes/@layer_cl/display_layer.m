@@ -64,26 +64,10 @@ switch lower(deblank(fieldname))
         data_mat=data;
 end
 
-
-
 data_mat=(real(data_mat));
 
 set(main_echo,'XData',xdata(idx_ping),'YData',ydata(idx_r),'CData',(data_mat));
 
-
-% 
-% y=ydata(idx_r(1:dr:end));
-% y_mat=bsxfun(@plus,y,linspace(0,20,length(xdata(idx_ping(1:dp:end)))));
-% x_mat=bsxfun(@plus,zeros(length(y),1),xdata(idx_ping(1:dp:end)));
-% 
-% figure(10);
-% a=pcolor(x_mat,y_mat,real(data_mat));
-% tic;
-% set(a,'XData',x_mat,'YData',y_mat,'CData',real(data_mat));
-% 
-% shading interp;
-% axis ij;
-% toc;
 
 if length(xdata(idx_ping))>1
     set(ax,'xlim',[xdata(idx_ping(1)) xdata(idx_ping(end))]);

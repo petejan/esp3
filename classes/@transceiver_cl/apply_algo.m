@@ -133,8 +133,31 @@ switch algo_name
             trans_obj.Data.replace_sub_data('snr',SNR);
         end
     case 'SchoolDetection'
+        
+        if ~isempty(p.Results.idx_pings)
+            dd=nanmean(diff(trans_obj.GPSDataPing.Dist(p.Results.idx_pings)));
+        else
+            dd=nanmean(diff(trans_obj.GPSDataPing.Dist()));
+        end
+        
+        if ~isempty(p.Results.idx_r)
+            dr=nanmean(diff(trans_obj.get_transceiver_range(p.Results.idx_r)));
+        else
+            dr=nanmean(diff(trans_obj.get_transceiver_range()));
+        end
+
+        if dd>0
+            w_unit='meters';
+            cell_w=nanmax(algo_obj.Varargin.l_min_can/2,2*dd);
+        else
+           w_unit='pings';
+           cell_w=round(nanmax(algo_obj.Varargin.l_min_can/2,2*dd));
+        end
+
+
         trans_obj.rm_region_name_idx_r_idx_p('School',p.Results.idx_r,p.Results.idx_pings);
-        trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit','meters','h_unit','meters','cell_w',20,'cell_h',10);
+        trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit','meters',...
+            'cell_w',cell_w,'cell_h',nanmax(dr*2,algo_obj.Varargin.h_min_can/10));
     case 'SingleTarget'
         trans_obj.set_ST(single_targets);
     case 'TrackTarget'

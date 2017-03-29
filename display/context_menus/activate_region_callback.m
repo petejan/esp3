@@ -36,7 +36,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function activate_region_callback(obj,~,reg_curr,main_figure)
+function activate_region_callback(obj,~,reg_curr,main_figure,repos)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -47,101 +47,88 @@ end
 
 if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'})
      return;
- end
-
-switch curr_disp.Cmap
-    
-    case 'esp2'
-        ac_data_col=[0 1 0];
-        in_data_col=[1 0 0];
-        txt_col='w';
-    otherwise
-        ac_data_col=[1 0 0];
-        in_data_col=[0 1 0];
-        txt_col='k';
 end
+
+[ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
+
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-[idx_reg,found]=trans_obj.find_reg_idx(reg_curr.Unique_ID);
-
-if found==0
-     if~isdeployed()
-        fprintf('Could not find region %.0f\n',reg_curr.ID);
-    end
-    return;
-end
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
 
-xdata=trans_obj.get_transceiver_pings();
-ydata=trans_obj.Data.get_range();
-
-x_reg_lim=xdata(reg_curr.Idx_pings);
-y_reg_lim=ydata(reg_curr.Idx_r);
-
-
-ah=axes_panel_comp.main_axes;
-x_lim=get(ah,'xlim');
-y_lim=get(ah,'ylim');
-
-if all(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||all(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
+if repos>0
+    xdata=trans_obj.get_transceiver_pings();
+    ydata=trans_obj.Data.get_range();
     
-    dx=nanmax(diff(x_lim),(x_reg_lim(end)-x_reg_lim(1)));
-    dy=nanmax(diff(y_lim),(y_reg_lim(end)-y_reg_lim(1)));
+    x_reg_lim=xdata(reg_curr.Idx_pings);
+    y_reg_lim=ydata(reg_curr.Idx_r);
     
-    x_lim_new= [nanmean(x_reg_lim)-dx/2 nanmean(x_reg_lim)+dx/2];
-    y_lim_new= [nanmean(y_reg_lim)-dy/2 nanmean(y_reg_lim)+dy/2];
     
-    set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
+    ah=axes_panel_comp.main_axes;
+    x_lim=get(ah,'xlim');
+    y_lim=get(ah,'ylim');
+    
+    if all(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||all(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
+        
+        dx=nanmax(diff(x_lim),(x_reg_lim(end)-x_reg_lim(1)));
+        dy=nanmax(diff(y_lim),(y_reg_lim(end)-y_reg_lim(1)));
+        
+        x_lim_new= [nanmean(x_reg_lim)-dx/2 nanmean(x_reg_lim)+dx/2];
+        y_lim_new= [nanmean(y_reg_lim)-dy/2 nanmean(y_reg_lim)+dy/2];
+        
+        set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
+    end
 end
-
 ah=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
 
-
+idx_reg_ac=1;
 for i=1:length(ah)
-    
     reg_text=findobj(ah(i),'Tag','region_text');
     set(reg_text,'color',txt_col);
     
-    reg_lines_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','line','-not','color',ac_data_col);
-    reg_lines_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','line','-not','color',in_data_col);
-    set(reg_lines_ac,'color',ac_data_col);
-    set(reg_lines_in,'color',in_data_col);
-    
-    reg_image_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',ac_data_col);
-    if ~isempty(reg_image_ac)
-        cdata=get(reg_image_ac,'CData');
-        cdata(:,:,1)=ac_data_col(1);
-        cdata(:,:,2)=ac_data_col(2);
-        cdata(:,:,3)=ac_data_col(3);
-        set(reg_image_ac,'Cdata',cdata);
-    end
-    
-    reg_image_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','Image','-not','color',in_data_col);
-    if ~isempty(reg_image_in)
-        for i_inac=1:length(reg_image_in)
-            cdata=get(reg_image_in(i_inac),'CData');
-            cdata(:,:,1)=in_data_col(1);
-            cdata(:,:,2)=in_data_col(2);
-            cdata(:,:,3)=in_data_col(3);
-            set(reg_image_in(i_inac),'Cdata',cdata);
+    for ireg=1:numel(trans_obj.Regions)
+        if trans_obj.Regions(ireg).Unique_ID==reg_curr.Unique_ID
+            idx_reg_ac=ireg;
+            col=ac_data_col;
+            switch trans_obj.Regions(ireg).Type
+                case 'Data'
+                    col=ac_data_col;
+                case 'Bad Data'
+                    col=ac_bad_data_col;
+            end
+        else
+            switch trans_obj.Regions(ireg).Type
+                case 'Data'
+                    col=in_data_col;
+                case 'Bad Data'
+                    col=in_bad_data_col;
+            end
         end
-    end
-    reg_patch_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-and','Type','Patch','-not','FaceColor',ac_data_col);
-    set(reg_patch_ac,'FaceColor',ac_data_col,'EdgeColor',ac_data_col);
-    
-    reg_patch_in=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-not','UserData',reg_curr.Unique_ID,'-and','Type','Patch','-not','FaceColor',in_data_col);
-    set(reg_patch_in,'FaceColor',in_data_col,'EdgeColor',in_data_col);
-    
+        reg_lines_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','line','-not','color',col);
+        set(reg_lines_ac,'color',col);
+        if ~isempty(reg_lines_ac)
+            reg_image_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Image','-not','color',col);
+            
+            if ~isempty(reg_image_ac)
+                cdata=get(reg_image_ac,'CData');
+                cdata(:,:,1)=col(1);
+                cdata(:,:,2)=col(2);
+                cdata(:,:,3)=col(3);
+                set(reg_image_ac,'Cdata',cdata);
+            end
+        end
+        reg_patch_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Patch','-not','FaceColor',col);
+        set(reg_patch_ac,'FaceColor',col,'EdgeColor',col);
+    end 
 end
 
 
 
 setappdata(main_figure,'Layer',layer);
-update_regions_tab(main_figure,idx_reg);
+update_regions_tab(main_figure,idx_reg_ac);
 order_axes(main_figure);
 order_stacks_fig(main_figure);
 
@@ -195,6 +182,7 @@ switch main_figure.SelectionType
         
         update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
         order_axes(main_figure);
+        clear_regions(main_figure,reg_curr.Unique_ID);
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);
         

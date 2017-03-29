@@ -48,7 +48,7 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     new_regions=[];
     tag=layer.Transceivers(idx_freq).get_tags();
     for t=1:1:length(tag)
-        idx=layer.Transceivers(idx_freq).list_regions_tag(tag{t});
+        idx=layer.Transceivers(idx_freq).find_regions_tag(tag{t});
         regions_tmps=layer.Transceivers(idx_freq).Regions(idx).merge_regions();
         for i=1:length(regions_tmps)
             regions_tmps(i).Tag=tag{t};

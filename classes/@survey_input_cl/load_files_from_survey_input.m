@@ -378,7 +378,7 @@ for isn=1:length(snapshots)
                     if options.ClassifySchool>0
                         [idx_120,found_120]=find_freq_idx(layer_new,120000);
                         if found_120>0
-                            idx_school_120 = layer_new.Transceivers(idx_120).list_regions_name('School');
+                            idx_school_120 = layer_new.Transceivers(idx_120).find_regions_name('School');
                             if ~isempty(idx_school_120)
                                 if idx_freq~=idx_120
                                     layer_new.copy_region_across(idx_120,layer_new.Transceivers(idx_120).Regions,idx_freq);
@@ -390,7 +390,7 @@ for isn=1:length(snapshots)
                             end
                         end
                         
-                        idx_schools=layer_new.Transceivers(idx_freq).list_regions_name('School');
+                        idx_schools=layer_new.Transceivers(idx_freq).find_regions_name('School');
                         if ~isempty(idx_schools)
                             layer_new.apply_classification(idx_freq,idx_schools,0);
                         end

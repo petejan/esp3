@@ -247,7 +247,7 @@ switch callbackdata.Key
             switch get(gco,'Tag')
                 case {'region','region_text'}
                     id=get(gco,'Userdata'); 
-                    idx= trans.list_regions_Unique_ID(id);
+                    idx= trans.find_regions_Unique_ID(id);
                     trans.rm_region_id(get(gco,'Userdata'));     
                     update_reglist_tab(main_figure,-id,0);
                     update_regions_tab(main_figure,nanmax(idx-1,1));

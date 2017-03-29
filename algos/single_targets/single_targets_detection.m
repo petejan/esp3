@@ -84,7 +84,7 @@ end
 
 mask=zeros(size(TS));
 
-idx_bad_data=trans_obj.list_regions_type('Bad Data');
+idx_bad_data=trans_obj.find_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
     curr_reg=trans_obj.Regions(idx_bad_data(jj));

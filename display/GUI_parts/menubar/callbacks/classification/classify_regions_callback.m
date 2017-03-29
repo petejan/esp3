@@ -57,7 +57,7 @@ end
 
 idx_to_process=[idx_18 idx_38 idx_120];
 
-idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+idx_school_38 = layer.Transceivers(idx_38).find_regions_name('School');
 
 if ~isempty(idx_school_38)
          choice = questdlg('Do you want to detect schools using Gauthier/Oeffner parameters (1) your own (2), or those already detected (3)?', ...
@@ -108,7 +108,7 @@ for i=1:length(layer.Transceivers)
 end
 
 layer.prepare_classification(idx_to_process,reprocess,own);
-idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+idx_school_38 = layer.Transceivers(idx_38).find_regions_name('School');
 
 if isempty(idx_school_38)
     warning('Cannot find 38 kHz Schools...Pass...');
@@ -118,7 +118,7 @@ end
     
 
 
-idx_school_38 = layer.Transceivers(idx_38).list_regions_name('School');
+idx_school_38 = layer.Transceivers(idx_38).find_regions_name('School');
 
 for ii=1:length(idx_school_38)
     new_fig=layer.apply_classification(idx_38,idx_school_38(ii),1);

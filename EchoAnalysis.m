@@ -89,6 +89,8 @@ warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
 desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
 desktop.addGroup('ESP3');
+desktop.addGroup('Regions');
+desktop.addGroup('Logbook');
 
 
 %% Checking and parsing input variables
@@ -128,6 +130,7 @@ iptPointerManager(main_figure);
 
 %% Get Javaframe from Figure to set the Icon
 javaFrame = get(main_figure,'JavaFrame');
+javaFrame.fHG2Client.setClientDockable(true);
 set(javaFrame,'GroupName','ESP3');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
 

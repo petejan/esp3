@@ -24,7 +24,7 @@ if isempty(reg)
 end
 
 if ~isempty(~isnan([reg(:).id]))
-    idx_reg=trans_obj.list_regions_ID([reg(:).id]);
+    idx_reg=trans_obj.find_regions_ID([reg(:).id]);
 else
     idx_reg=[];
 end

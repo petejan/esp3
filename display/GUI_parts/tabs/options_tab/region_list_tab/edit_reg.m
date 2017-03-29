@@ -68,8 +68,18 @@ active_reg.ID=id;
 active_reg.Tag=src.Data{evt.Indices(1,1),3};
 active_reg.Type=src.Data{evt.Indices(1,1),4};
 active_reg.Reference=src.Data{evt.Indices(1,1),5};
-active_reg.Cell_w=src.Data{evt.Indices(1,1),6};
+if ~isnan(src.Data{evt.Indices(1,1),6})
+    active_reg.Cell_w=src.Data{evt.Indices(1,1),6};
+else
+    src.Data{evt.Indices(1,1),6}=active_reg.Cell_w;
+end
 active_reg.Cell_w_unit=src.Data{evt.Indices(1,1),7};
+
+if ~isnan(src.Data{evt.Indices(1,1),6})
+   active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
+else
+    src.Data{evt.Indices(1,1),8}=active_reg.Cell_h;
+end
 active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
 active_reg.Cell_h_unit=src.Data{evt.Indices(1,1),9};
 layer.Transceivers(idx_freq).add_region(active_reg);

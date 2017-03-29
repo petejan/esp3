@@ -23,7 +23,7 @@ for ireg=1:length(regs_t)
 end
 
 if any(strcmp(IDs,''))>0
-    idx_temp=trans_obj.list_regions_type('Data');
+    idx_temp=trans_obj.find_regions_type('Data');
     reg_temp=trans_obj.get_reg_spec(idx_temp);
     reg_tot=[reg_tot reg_temp];
 else
@@ -34,7 +34,7 @@ else
             out_cell={IDs{i_sub_reg},[],[]};
         end
 
-        idx_temp=trans_obj.list_regions_ID(abs(out_cell{1}));
+        idx_temp=trans_obj.find_regions_ID(abs(out_cell{1}));
 
         for i_temp=1:length(idx_temp)
             reg_temp=trans_obj.get_reg_spec(idx_temp(i_temp));
@@ -53,7 +53,7 @@ else
 end
 
 for in=1:length(names)
-    idx_temp=trans_obj.list_regions_name(names{in});
+    idx_temp=trans_obj.find_regions_name(names{in});
     if ~isempty(idx_temp)
         reg_temp=trans_obj.get_reg_spec(idx_temp);
         reg_tot=[reg_tot reg_temp];
@@ -61,7 +61,7 @@ for in=1:length(names)
 end
 
 for in=1:length(tags)
-    idx_temp=trans_obj.list_regions_tag(tags{in});
+    idx_temp=trans_obj.find_regions_tag(tags{in});
     if ~isempty(idx_temp)
         reg_temp=trans_obj.get_reg_spec(idx_temp);
         reg_tot=[reg_tot reg_temp];

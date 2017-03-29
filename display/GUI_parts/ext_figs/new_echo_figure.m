@@ -15,23 +15,14 @@ addParameter(p,'WindowScrollWheelFcn',@do_nothing,@(x) isa(x,'function_handle'))
 addParameter(p,'ButtonDownFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'KeyPressFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowStyle','normal',@ischar);
+addParameter(p,'Group','ESP3',@ischar);
 addParameter(p,'Visible','on',@ischar);
 addParameter(p,'Tag','',@ischar);
 addParameter(p,'Cmap','',@ischar);
 
 parse(p,main_figure,varargin{:});
 
-
-if ~isempty(main_figure)
-    hfigs=getappdata(main_figure,'ExternalFigures');
-    if ~isempty(hfigs)
-        hfigs(~isvalid(hfigs))=[];
-        idx_tag=find(strcmpi({hfigs(:).Tag},p.Results.Tag));
-        if ~isempty(idx_tag)
-            delete(hfigs(idx_tag));
-        end
-    end
-end
+hfigs=clean_echo_figures(main_figure,'Tag',p.Results.Tag);
 
 if isempty(p.Results.fig_handle)
     fig_handle=figure('Units',p.Results.Units,...
@@ -69,8 +60,10 @@ end
 
 javaFrame = get(fig_handle,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
-set(javaFrame, 'GroupName','ESP3');
+javaFrame.fHG2Client.setClientDockable(true);
+set(javaFrame,'GroupName',p.Results.Group);
 
+   
 
 if ~isempty(main_figure)
     curr_disp=getappdata(main_figure,'Curr_disp');
