@@ -187,12 +187,13 @@ str=get(src,'string');
 layer.load_bot_regs('bot_ver',[],'reg_ver',str2double(str(id)));
 
 
+update_regions_tab(main_figure,1);
+update_reglist_tab(main_figure,[],0);
 display_regions(main_figure,'both');
+
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
-update_regions_tab(main_figure,1);
 order_stacks_fig(main_figure);
- update_reglist_tab(main_figure,[],0);
 
 end
 

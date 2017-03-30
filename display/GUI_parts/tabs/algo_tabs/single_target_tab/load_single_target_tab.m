@@ -32,10 +32,10 @@ parameters_2=uipanel(single_target_tab_comp.single_target_tab,'title','','Positi
 uicontrol(parameters_2,'Style','text','units','normalized','string','Max. Beam Comp.','pos',pos{1,1},'HorizontalAlignment','right');
 single_target_tab_comp.MaxBeamComp=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.MaxBeamComp),'BackgroundColor','white','callback',{@ check_fmt_box,3,18,varin.MaxBeamComp,'%.0f'});
 
-uicontrol(parameters_2,'Style','text','units','normalized','string','Std. Al. Angle Std.(deg)','pos',pos{2,1},'HorizontalAlignment','right');
+uicontrol(parameters_2,'Style','text','units','normalized','string',[char(hex2dec('0394')) ' Along Angle(' char(hex2dec('00B0')) ')'],'pos',pos{2,1},'HorizontalAlignment','right');
 single_target_tab_comp.MaxStdMinAxisAngle=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.MaxStdMinAxisAngle),'BackgroundColor','white','callback',{@ check_fmt_box,0,45,varin.MaxStdMinAxisAngle,'%.1f'});
 
-uicontrol(parameters_2,'Style','text','units','normalized','string','Std. Ac. Angle Std.(al)','pos',pos{3,1},'HorizontalAlignment','right');
+uicontrol(parameters_2,'Style','text','units','normalized','string',[char(hex2dec('0394')) ' Across Angle(' char(hex2dec('00B0')) ')'],'pos',pos{3,1},'HorizontalAlignment','right');
 single_target_tab_comp.MaxStdMajAxisAngle=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.MaxStdMajAxisAngle),'BackgroundColor','white','callback',{@ check_fmt_box,0,45,varin.MaxStdMajAxisAngle,'%.1f'});
 
 

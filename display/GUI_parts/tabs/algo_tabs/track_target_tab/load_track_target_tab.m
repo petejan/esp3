@@ -71,7 +71,7 @@ track_target_tab_comp.ExcluDistMajAxis=uicontrol(alpha_beta,'Style','Edit','unit
 track_target_tab_comp.ExcluDistRange=uicontrol(alpha_beta,'Style','Edit','units','normalized','pos',pos{4,4},'string',num2str(1),'BackgroundColor','white','callback',{@check_box,[0 50]});
 
 
-uicontrol(alpha_beta,'Style','text','units','normalized','string','Angle Uncert.(deg)','pos',pos{5,1},'HorizontalAlignment','right');
+uicontrol(alpha_beta,'Style','text','units','normalized','string',['Angle Uncert.(' char(hex2dec('00B0')) ')'],'pos',pos{5,1},'HorizontalAlignment','right');
 track_target_tab_comp.MaxStdMinorAxisAngle=uicontrol(alpha_beta,'Style','Edit','units','normalized','pos',pos{5,2},'string',num2str(1),'BackgroundColor','white','callback',{@check_box,[0 50]});
 track_target_tab_comp.MaxStdMajorAxisAngle=uicontrol(alpha_beta,'Style','Edit','units','normalized','pos',pos{5,3},'string',num2str(1),'BackgroundColor','white','callback',{@check_box,[0 50]});
 

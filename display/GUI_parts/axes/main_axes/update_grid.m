@@ -67,6 +67,5 @@ switch lower(curr_disp.Xaxes)
 end
 set(axes_panel_comp.haxes,'xticklabels',labels);
 
-order_axes(main_figure);
 
 end

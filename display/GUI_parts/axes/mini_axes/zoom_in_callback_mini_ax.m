@@ -92,7 +92,7 @@ wbuf_ori=get(current_fig,'WindowButtonUpFcn');
 
 current_fig.WindowButtonMotionFcn = @wbmcb;
 current_fig.WindowButtonUpFcn = @wbucb;
-order_axes(main_figure);
+
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;

@@ -23,6 +23,7 @@ end
 
 range=trans_obj.get_transceiver_range(reg_obj.Idx_r);
 pings=trans_obj.get_transceiver_pings(reg_obj.Idx_pings);
+
 [~,Np]=trans_obj.get_pulse_length();
 
 if ~isempty(p.Results.load_bar_comp)

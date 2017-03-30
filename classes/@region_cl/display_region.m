@@ -102,15 +102,14 @@ ax_in.YTick=sort((y_disp(1):reg_obj.Cell_h:y_disp(end)));
 caxis(ax_in,cax);
 
 colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
-grid on;
+
 [cmap,~,~,col_grid,~,~]=init_cmap(p.Results.Cmap);
 colormap(ax_in,cmap);
 set(ax_in,'GridColor',col_grid);
-
+grid(ax_in,'on');
 if strcmp(reg_obj.Reference,'Surface')
     axis(ax_in,'ij')
 end
-
 
 
 ax_horz=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.1 0.7 0.15],'nextplot','add','box','on');

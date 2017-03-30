@@ -162,7 +162,6 @@ if ~isempty(survey_input_obj.Snapshots)
     xmlwrite(p.Results.xml_filename,docNode);
     %type(xml_file);
     if p.Results.open_file
-        open(p.Results.xml_filename);
         [stat,~]=system(['start notepad++ ' p.Results.xml_filename]);
         if stat~=0
             disp('You should install Notepad++...');

@@ -60,10 +60,10 @@ if ~isempty(list_reg)
 
     setappdata(main_figure,'Layer',layer);
     update_regions_tab(main_figure,nanmax(idx-1,1));
-    
+    update_reglist_tab(main_figure,[],0);
     display_regions(main_figure,'both');
     order_stacks_fig(main_figure);
-    update_reglist_tab(main_figure,[],0);
+    
 else
     return
 end

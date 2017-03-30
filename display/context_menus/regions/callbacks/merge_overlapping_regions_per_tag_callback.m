@@ -46,7 +46,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 if ~isempty(layer.Transceivers(idx_freq).Regions)
     new_regions=[];
-    tag=layer.Transceivers(idx_freq).get_tags();
+    tag=layer.Transceivers(idx_freq).get_reg_tags();
     for t=1:1:length(tag)
         idx=layer.Transceivers(idx_freq).find_regions_tag(tag{t});
         regions_tmps=layer.Transceivers(idx_freq).Regions(idx).merge_regions();
@@ -57,10 +57,12 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     end
     layer.Transceivers(idx_freq).rm_all_region();
     layer.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
-    display_regions(main_figure,'both');
-    update_regions_tab(main_figure,[]);
-    order_stacks_fig(main_figure);
+    
+    update_regions_tab(main_figure,[]);    
     update_reglist_tab(main_figure,[],0);
+    display_regions(main_figure,'both');
+    order_stacks_fig(main_figure);
+
 end
 
 end

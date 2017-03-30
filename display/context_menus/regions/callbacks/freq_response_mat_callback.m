@@ -38,30 +38,12 @@ if ~isempty(list_reg)
             disp('No calibration file');
             cal=[];
         end
-        [cmap,~,~,col_grid,~,~]=init_cmap(curr_disp.Cmap);
+        [cmap,~,~,~,~,~]=init_cmap(curr_disp.Cmap);
         
 
         [Sv_f,f_vec,ping_mat,r_mat]=trans_obj.sv_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba,'load_bar_comp',load_bar_comp);
-%         [~,idx_freq]=nanmin(abs(f_vec/1e3-floor(nanmean(f_vec/1e3))));
-%         
-%         fig=new_echo_figure([],'Tag',sprintf('SV(f)Region %.0f',active_reg.Unique_ID));
-%         ax=axes(fig,'units','normalized','Position',[0.1 0.2 0.85 0.7]);
-%         im=imagesc(ax,ping_mat,r_mat,Sv_f(:,:,idx_freq)');
-%         title(ax,sprintf('%.0fkHz',f_vec(idx_freq)/1e3));
-%         ylabel(ax,'Range(m)');
-%         xlabel(ax,'Ping Number');
-%         axis(ax,'ij');
-%         colormap(ax,cmap);
-%         caxis(ax,curr_disp.getCaxField('sv'));
-%         set(ax,'GridColor',col_grid);
-%         caxis(curr_disp.getCaxField('sv'));
-%         uicontrol(fig,'Style','slider','Min',f_vec(1)/1e3,'Max',f_vec(end)/1e3,'Value',floor(nanmean(f_vec/1e3)),'SliderStep',[0.01 0.1],...
-%             'units','normalized','Position',[0.2 0.05 0.6 0.05],'Callback',{@change_freq_cback,Sv_f,f_vec,im,ax});
-%         set(im,'alphadata',double(Sv_f(:,:,idx_freq)'>ax.CLim(1)));
-%         grid(ax,'on');
-%         new_echo_figure(main_figure,'fig_handle',fig,'Name','Sv(f)','Name',active_reg.print());
-%         colorbar(ax);
-%         
+        
+    
         pings=ping_mat(1,:);
         range=r_mat(:,1);
         
@@ -74,7 +56,7 @@ if ~isempty(list_reg)
         
         [X,Y,Z] = meshgrid(f_vec/1e3,pings,range);
         
-        fig=new_echo_figure([]);
+        fig=new_echo_figure(main_figure,'Name','Sv(f)','Tag',sprintf('SvRegion2 %.0f',active_reg.Unique_ID));
         ax=axes(fig,'units','normalized','Position',[0.15 0.2 0.85 0.7]);  
         
         
@@ -107,7 +89,8 @@ if ~isempty(list_reg)
        uicontrol(fig,'Style','slider','Min',pings(1),'Max',pings(end),'Value',pings(end),'SliderStep',[0.01 0.1],...
            'units','normalized','Position',[0.05 0.1 0.01 0.4],'Callback',{@change_freq_cback_2,Sv_f_per,pings,Y,hy,ax,'p'});
        grid(ax,'on');
-       new_echo_figure(main_figure,'fig_handle',fig,'Name','Sv(f)','Tag',sprintf('SvRegion2 %.0f',active_reg.Unique_ID));
+       rotate3d(ax,'on');
+      
         
         
         

@@ -125,7 +125,6 @@ display_file_lines(main_figure);
 display_regions(main_figure,'both');
 display_survdata_lines(main_figure);
 set_alpha_map(main_figure);
-order_axes(main_figure);
 order_stacks_fig(main_figure);
 
 setappdata(main_figure,'Layer',layer);
@@ -165,7 +164,6 @@ display_file_lines(main_figure);
 display_regions(main_figure,'both');
 display_survdata_lines(main_figure);
 set_alpha_map(main_figure);
-order_axes(main_figure);
 order_stacks_fig(main_figure);
 
 setappdata(main_figure,'Layer',layer);

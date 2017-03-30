@@ -91,7 +91,6 @@ wbmcb_ori=main_figure.WindowButtonMotionFcn;
 wbucb_ori=main_figure.WindowButtonUpFcn;
 main_figure.WindowButtonMotionFcn = @wbmcb;
 main_figure.WindowButtonUpFcn = @wbucb;
-order_axes(main_figure);
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;

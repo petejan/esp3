@@ -87,7 +87,6 @@ else
     curr_disp.CursorMode='Normal';
 end
 setappdata(main_figure,'Curr_disp',curr_disp);
-order_axes(main_figure);
 
 
 end

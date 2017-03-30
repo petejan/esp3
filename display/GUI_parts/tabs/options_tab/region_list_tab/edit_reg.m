@@ -85,6 +85,8 @@ active_reg.Cell_h_unit=src.Data{evt.Indices(1,1),9};
 layer.Transceivers(idx_freq).add_region(active_reg);
 
 setappdata(main_figure,'Layer',layer);
+
+
 update_regions_tab(main_figure,[]);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);

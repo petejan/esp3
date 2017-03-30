@@ -87,8 +87,7 @@ display_survdata_lines(main_figure);
 
 set_alpha_map(main_figure);
 hide_status_bar(main_figure);
-order_axes(main_figure);
-order_stacks_fig(main_figure);
+order_axes(main_figure); 
 order_stacks_fig(main_figure);
 
 curr_disp = getappdata(main_figure,'Curr_disp');

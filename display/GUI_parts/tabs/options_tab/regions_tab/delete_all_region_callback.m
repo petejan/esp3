@@ -57,8 +57,9 @@ switch choice
             layer.Transceivers(idx_freq).rm_regions();
             setappdata(main_figure,'Layer',layer);
             update_regions_tab(main_figure,[]);
-            display_regions(main_figure,'both');
             update_reglist_tab(main_figure,[],0);
+            display_regions(main_figure,'both');
+            
         else
             return;
         end

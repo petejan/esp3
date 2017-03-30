@@ -129,8 +129,7 @@ end
 
 setappdata(main_figure,'Layer',layer);
 update_regions_tab(main_figure,idx_reg_ac);
-order_axes(main_figure);
-order_stacks_fig(main_figure);
+
 
 if ~ismember(curr_disp.CursorMode,{'Normal'})
     return;
@@ -181,7 +180,6 @@ switch main_figure.SelectionType
         setappdata(main_figure,'Layer',layer);
         
         update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
-        order_axes(main_figure);
         clear_regions(main_figure,reg_curr.Unique_ID);
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);

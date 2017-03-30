@@ -73,8 +73,13 @@ for iax=1:length(main_axes_tot)
         try
             reg_curr=trans.Regions(i);
             id_reg=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',reg_curr.Unique_ID);
+           
             
             if ~isempty(id_reg)
+                id_text=findobj(main_axes,{'tag','region_text'},'-and','UserData',reg_curr.Unique_ID);
+                if ~isempty(id_text)
+                    set(id_text,'String',reg_curr.Tag);
+                end
                 continue;
             end
             

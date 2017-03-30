@@ -63,8 +63,10 @@ new_fig=layer.apply_classification(idx_freq,idx_reg,1);
 hfigs=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);
-display_regions(main_figure,'both');
+
 update_regions_tab(main_figure,[]);
-order_stacks_fig(main_figure);
 update_reglist_tab(main_figure,[],0);
+display_regions(main_figure,'both');
+order_stacks_fig(main_figure);
+
 end

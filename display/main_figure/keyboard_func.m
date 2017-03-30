@@ -44,6 +44,7 @@ cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 % if ~any(strcmpi(curr_disp.CursorMode,{'Normal','Edit Bottom'}))
 %     return;
 % end
+% profile on;
 
 layer=getappdata(main_figure,'Layer');curr_disp=getappdata(main_figure,'Curr_disp');
 if ~isempty(layer)
@@ -252,7 +253,7 @@ switch callbackdata.Key
                     update_reglist_tab(main_figure,-id,0);
                     update_regions_tab(main_figure,nanmax(idx-1,1));
                     display_regions(main_figure,'both');
-                    order_stacks_fig(main_figure);order_axes(main_figure);
+                    order_stacks_fig(main_figure);
             end
         end
     case 'l'
@@ -279,5 +280,8 @@ switch callbackdata.Key
         
 end
 
-order_axes(main_figure);
+% 
+% profile off;
+% 
+% profile viewer;
 end

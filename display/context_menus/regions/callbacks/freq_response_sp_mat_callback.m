@@ -31,27 +31,7 @@ if ~isempty(list_reg)
 
         [TS_f,f_vec,pings,range]=trans_obj.TS_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'dp',3,'load_bar_comp',load_bar_comp);
         
-%         f_val=floor(nanmean(f_vec));
-%         [~,idx_freq]=nanmin(abs(f_vec-f_val));
-%         f_val=f_vec(idx_freq);
-%         
-%         fig=new_echo_figure([]);
-%         ax=axes(fig,'units','normalized','Position',[0.1 0.2 0.85 0.7]);
-%         im=imagesc(ax,pings,range,TS_f(:,:,idx_freq)');
-%         title(ax,sprintf('%.0fkHz',f_val/1e3));
-%         ylabel(ax,'Range(m)');
-%         xlabel(ax,'Ping Number');
-%         axis(ax,'ij');
-%         colormap(ax,cmap);
-%         caxis(ax,curr_disp.getCaxField('sp'));
-%         set(ax,'GridColor',col_grid);
-%         caxis(curr_disp.getCaxField('sv'));
-%         uicontrol(fig,'Style','slider','Min',f_vec(1)/1e3,'Max',f_vec(end)/1e3,'Value',f_val/1e3,'SliderStep',[0.01 0.1],...
-%             'units','normalized','Position',[0.2 0.05 0.6 0.05],'Callback',{@change_freq_cback,TS_f,f_vec,im,ax});
-%         set(im,'alphadata',double(TS_f(:,:,idx_freq)'>ax.CLim(1)));
-%         grid(ax,'on');colorbar(ax);
-%         new_echo_figure(main_figure,'fig_handle',fig,'Name','Sp(f)','Tag',sprintf('SpRegion %.0f',active_reg.Unique_ID));
-%         
+  
         
         TS_f_per=permute(TS_f,[1 3 2]);
         
@@ -62,7 +42,8 @@ if ~isempty(list_reg)
         
         [X,Y,Z] = meshgrid(f_vec/1e3,pings,range);
         
-        fig=new_echo_figure([]);
+        fig=new_echo_figure(main_figure,'Name','Sp(f)','Tag',sprintf('SpRegion2 %.0f',active_reg.Unique_ID));
+      
         ax=axes(fig,'units','normalized','Position',[0.15 0.2 0.85 0.7]);  
         set(ax,'zdir','reverse','ydir','reverse','box','on');
         grid(ax,'on');
@@ -93,7 +74,7 @@ if ~isempty(list_reg)
        uicontrol(fig,'Style','slider','Min',pings(1),'Max',pings(end),'Value',pings(end),'SliderStep',[0.01 0.1],...
            'units','normalized','Position',[0.05 0.1 0.01 0.4],'Callback',{@change_freq_cback_2,TS_f_per,pings,Y,hy,ax,'p'});
        grid(ax,'on');
-       new_echo_figure(main_figure,'fig_handle',fig,'Name','Sp(f)','Tag',sprintf('SpRegion2 %.0f',active_reg.Unique_ID));
+       rotate3d(ax,'on');
         
         
     end

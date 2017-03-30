@@ -23,5 +23,5 @@ end
 curr_disp.setCax(cax);
 
 setappdata(main_figure,'Layer',layer);
-order_axes(main_figure);
+
 end

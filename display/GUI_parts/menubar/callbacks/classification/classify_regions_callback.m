@@ -129,10 +129,10 @@ setappdata(main_figure,'ExternalFigures',hfigs);
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
-
-display_regions(main_figure,'both');
-update_regions_tab(main_figure,[]);
-order_stacks_fig(main_figure);
+update_regions_tab(main_figure,1);
 update_reglist_tab(main_figure,[],0);
+display_regions(main_figure,'both');
+order_stacks_fig(main_figure);
+
 
 end
