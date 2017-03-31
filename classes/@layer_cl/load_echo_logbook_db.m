@@ -11,6 +11,7 @@ pathtofile=unique(pathtofile);
 
 for ip=1:length(pathtofile)
     fileN=fullfile(pathtofile{ip},'echo_logbook.db');
+    
     if exist(fileN,'file')==0
         initialize_echo_logbook_dbfile(pathtofile{ip},0);
     end

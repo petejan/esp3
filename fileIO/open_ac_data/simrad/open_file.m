@@ -194,8 +194,7 @@ end
 %%% Find each ftypes in list to batch process the opening
 [ftype_unique,~,ic] = unique(ftype_cell);
 % ?
-enabled_obj = findobj(main_figure,'Enable','on');
-set(enabled_obj,'Enable','off');
+
 
 %%% File opening section, by type of file
 for itype = 1:length(ftype_unique)
@@ -308,9 +307,6 @@ for itype = 1:length(ftype_unique)
             
     end
 end
-
-%%% TODO: comment
-set(enabled_obj,'Enable','on');
 
 %%% TODO: comment
 hide_status_bar(main_figure);
