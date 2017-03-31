@@ -281,9 +281,10 @@ else
 end
 
 for ifreq=1:length(freq_vec)
-    new_echo_figure(main_figure,'ButtonDownFcn',@display_filename_callback,'Tag',sprintf('bp%.0fkHz\n',freq_vec(ifreq)/1e3));
-    plot_temp=plot(nb_bad_pings{ifreq}./nb_pings{ifreq}*100,'--+');
-    grid on;
+    h_fig=new_echo_figure(main_figure,'ButtonDownFcn',@display_filename_callback,'Tag',sprintf('bp%.0fkHz\n',freq_vec(ifreq)/1e3));
+    ax=axes(h_fig);
+    plot_temp=plot(ax,nb_bad_pings{ifreq}./nb_pings{ifreq}*100,'--+');
+    grid(ax,'on');
     %set(ax,'XTick',1:length(files_out{ifreq}),'XTickLabels',files_out{ifreq},'XTickLabelRotation',45);
     ylabel('%')
     title(sprintf('Bad pings percentage for %.0fkHz',freq_vec(ifreq)/1e3));

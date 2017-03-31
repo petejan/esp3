@@ -55,10 +55,11 @@ layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
     'Units','Normalized',...
     'Position',[0.01 0 0.98 1],...
     'RowName',[],...
-    'CellSelectionCallback',{@goto_layer_cback,main_figure} );
+    'CellSelectionCallback',{@goto_layer_cback,main_figure},...
+    'BusyAction','cancel');
 
 set(layer_tab_comp.layer_tab,'SizeChangedFcn',{@resize_table,main_figure});
-set(layer_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});   
+set(layer_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});
 
 jtable = findjobj(layer_tab_comp.table);
 
@@ -72,6 +73,9 @@ set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
 rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
 layer_tab_comp.table.UIContextMenu =rc_menu;
 uimenu(rc_menu,'Label','Delete selected layer(s)','Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
+uiproc=uimenu(rc_menu,'Label','Processing');
+uimenu(uiproc,'Label','Plot Pitch and Roll against bad pings','Callback',{@pitch_roll_analysis_callback,layer_tab_comp.table,main_figure});
+
 selected_layers=[];
 
 setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);
@@ -80,34 +84,39 @@ update_layer_tab(main_figure);
 end
 
 function delete_layers_callback(src,~,table,main_figure)
-    layers=getappdata(main_figure,'Layers');
-    layer=getappdata(main_figure,'Layer');
-    selected_layers=getappdata(table,'SelectedLayers');
+layers=getappdata(main_figure,'Layers');
+layer=getappdata(main_figure,'Layer');
+selected_layers=getappdata(table,'SelectedLayers');
+
+if isempty(layer)
+    return;
+end
+
+if isempty(selected_layers)
+    return;
+end
+
+for i=1:length(selected_layers)
+    check_saved_bot_reg(main_figure);
     
-    if isempty(layer)
+    if length(layers)==1
+        warning('You cannot delete the last layer standing');
+        setappdata(main_figure,'Layers',layers);
+        setappdata(main_figure,'Layer',layer);
+        loadEcho(main_figure);
+        
         return;
     end
     
-    if isempty(selected_layers)
-        return;
-    end
+    [idx,~]=find_layer_idx(layers,selected_layers(i));
     
-    for i=1:length(selected_layers)
-        check_saved_bot_reg(main_figure);
-        if length(layers)==1
-            warning('You cannot delete the last layer standing');
-            return;
-        end
-        
-        [idx,~]=find_layer_idx(layers,selected_layers(i));
-        
-        layers=layers.delete_layers(layer.ID_num);
-        layer=layers(nanmin(idx,length(layers)));
-       
-    end
-    setappdata(main_figure,'Layers',layers);
-    setappdata(main_figure,'Layer',layer);
-    loadEcho(main_figure);
+    layers=layers.delete_layers(layer.ID_num);
+    layer=layers(nanmin(idx,length(layers)));
+    
+end
+setappdata(main_figure,'Layers',layers);
+setappdata(main_figure,'Layer',layer);
+loadEcho(main_figure);
 end
 
 
@@ -115,7 +124,7 @@ end
 function keypresstable(src,evt,main_figure)
 switch evt.Key
     case 'delete'
-       delete_layers_callback(src,[],src,main_figure)
+        delete_layers_callback(src,[],src,main_figure)
 end
 
 end
@@ -143,11 +152,11 @@ if ~isempty(evt.Indices)
             setappdata(main_figure,'Layers',layers);
             setappdata(main_figure,'Layer',layer);
             check_saved_bot_reg(main_figure);
-            loadEcho(main_figure);   
+            loadEcho(main_figure);
         end
         
-    end  
-    selected_layers=unique([src.Data{evt.Indices(:,1),2}]); 
+    end
+    selected_layers=unique([src.Data{evt.Indices(:,1),2}]);
 else
     selected_layers=[];
 end
