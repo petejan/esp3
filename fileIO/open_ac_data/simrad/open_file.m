@@ -193,8 +193,6 @@ end
 
 %%% Find each ftypes in list to batch process the opening
 [ftype_unique,~,ic] = unique(ftype_cell);
-% ?
-
 
 %%% File opening section, by type of file
 for itype = 1:length(ftype_unique)
@@ -202,8 +200,6 @@ for itype = 1:length(ftype_unique)
     % Grab filenames for this ftype
     Filename = Filename_tot(ic==itype);
     ftype = ftype_unique{itype};
-    
-    
     
     % Figure if the files requested to be open are part of a transect that
     % include other files not requested to be opened. This functionality is
