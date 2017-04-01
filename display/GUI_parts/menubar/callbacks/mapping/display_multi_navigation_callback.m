@@ -8,7 +8,6 @@ if nansum(isnan(map_input.LatLim))>=1
     return;
 end
 
-hfig=map_input.display_map_input_cl('main_figure',main_figure,'oneMap',1);
-new_echo_figure(main_figure,'fig_handle',hfig);
+map_input.display_map_input_cl('main_figure',main_figure,'oneMap',1);
 
 end

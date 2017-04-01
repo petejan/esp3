@@ -77,20 +77,20 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
     
     ax_2=axes(hfig,'nextplot','add','OuterPosition',[0 0 1 0.33]);
     plot(ax_2,bad_ping_pc,'b');
-   
     ax_2.YAxis(1).Color = 'k';
     ax_2.YAxis(1).TickLabelFormat  = '%.0f ';
     ylabel(ax_2,'Bad Ping Percentage');
     grid(ax_2,'on');
     box(ax_2,'on');
     linkaxes([ax ax_1 ax_2],'x')
+    ax.XLim=([1 numel(pitch_grad_av)]);
     
     P_roll = polyfit(bad_ping_pc,roll_grad_av,1);
     x_bad=nanmin(bad_ping_pc):nanmax(bad_ping_pc);
     hfig_2=new_echo_figure(main_figure,'Tag','rollbadanalysis','Name','Roll change rate against Bad Pings');
     ax_3= axes(hfig_2,'nextplot','add','OuterPosition',[0 0 1 1]);
     plot(ax_3,bad_ping_pc,roll_grad_av,'.b');
-     plot(ax_3,x_bad,polyval(P_roll,x_bad));
+    plot(ax_3,x_bad,polyval(P_roll,x_bad));
     xlabel(ax_3,'Bad Ping Percentage');
     ylabel(ax_3,'Average Roll Change rate');
     title(ax_3,sprintf('Corr (Pearson): %.2f',corr(bad_ping_pc',roll_grad_av')));
@@ -111,6 +111,8 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
     
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);
+    
+    
  
 
 end
