@@ -2,7 +2,9 @@ function load_scripts_fig(main_figure,scriptsSummary,flag)
 
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
-idx_tag=find(strcmpi({hfigs(:).Tag},sprintf('Scripting%s',flag)));
+tag=sprintf('Scripting%s',flag);
+idx_tag=find(strcmpi({hfigs(:).Tag},tag));
+
 if ~isempty(idx_tag)
     figure(hfigs(idx_tag(1)))
     return;
@@ -12,9 +14,9 @@ end
 columnname = {'Title','Species','Survey','Areas','Author','Script','Created'};
 columnformat = {'char','char','char','char','char','char','char'};
 
-script_fig = figure('Units','Pixels','Position',[100 100 800 600],'Resize','off',...
+script_fig = new_echo_figure(main_figure,'Units','Pixels','Position',[100 100 800 600],'Resize','off',...
     'Name',sprintf('Scripting (%s)',flag),...
-    'Tag',sprintf('Scripting%s',flag),...
+    'Tag',tag,...
     'MenuBar','none');%No Matlab Menu)
 
 uicontrol(script_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.15 0.03],'String','Search: ');
@@ -61,8 +63,6 @@ selected_scripts={''};
 setappdata(script_fig,'SelectedScripts',selected_scripts);
 setappdata(script_fig,'script_table',script_table);
 setappdata(script_fig,'DataOri',scriptsSummary);
-
-new_echo_figure(main_figure,'fig_handle',script_fig);
 
 end
 
