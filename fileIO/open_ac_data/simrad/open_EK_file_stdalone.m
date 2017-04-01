@@ -85,6 +85,7 @@ if ~isequal(Filename_cell, 0)
                             [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to load','PromptString','Choose Frequencies to load','InitialValue',1:length(vec_freq_tot));
                         end
                         if val==0||isempty(select)
+                            id_rem=union(id_rem,uu);
                             continue;
                         else
                             vec_freq=vec_freq_tot(select);

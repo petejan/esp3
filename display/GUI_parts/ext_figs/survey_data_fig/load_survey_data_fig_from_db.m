@@ -118,9 +118,9 @@ end
 if reload==0
     dbconn=sqlite(db_file,'connect');
     data_logbook=dbconn.fetch('select Filename from logbook order by datetime(StartTime)');
-    dbconn.close();   
+    dbconn.close();
     nb_lines=size(data_logbook,1);
-
+    
     if nb_lines==0
         close(surv_data_fig);
         return;
@@ -128,10 +128,10 @@ if reload==0
     
     dbconn=sqlite(db_file,'connect');
     survDataSummary=update_data_table(dbconn,[],data_logbook,path_f);
-
+    
     dbconn.close();
     
-  
+    
     % Column names and column format
     columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
     columnformat = {'logical' 'char','numeric','char','numeric','logical','char','char','char','char','numeric'};
@@ -142,6 +142,7 @@ if reload==0
         'Data', survDataSummary,...
         'ColumnName', columnname,...
         'ColumnFormat', columnformat,...
+        'CellSelectionCallback',{@cell_select_cback,main_figure},...
         'ColumnEditable', [true false true true true false false true false false false],...
         'Units','Normalized','Position',[0 0 1 0.95],...
         'RowName',[]);
@@ -171,7 +172,7 @@ if reload==0
     uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
     uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});
     uimenu(survey_menu,'Label','Export to Html and display','Callback',{@export_metadata_to_html_callback,main_figure});
-   
+    
     
     
     setappdata(surv_data_fig,'path_data',path_f);
@@ -228,7 +229,7 @@ for i=1:length(filename_cell)
                 str_reg=cell2mat(cellfun(@(x) [ x ' ' ], unique(tags), 'UniformOutput', false));
                 new_entry{il,7}=str_reg;
             else
-               new_entry{il,7}=''; 
+                new_entry{il,7}='';
             end
         else
             new_entry{il,7}='';
@@ -325,6 +326,17 @@ axes(ax);
 text(evt.IntersectionPoint(1),evt.IntersectionPoint(2),file_list{idx},'Tag','fname');
 
 
+end
+
+function cell_select_cback(src,evt,main_figure)
+parent=ancestor(src,'figure');
+pathf=getappdata(parent,'path_data');
+switch parent.SelectionType
+    case 'open'
+        if ~isempty(evt.Indices)
+            open_file([],[],fullfile(pathf,src.Data{evt.Indices(1,1),2}),main_figure)
+        end
+end
 end
 
 
