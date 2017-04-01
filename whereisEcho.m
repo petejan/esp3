@@ -47,11 +47,7 @@ if isdeployed % Stand-alone mode.
 else % MATLAB mode.
     
     % get full path and filename for the main function
-    temp_path=which('EchoAnalysis');
-    
-    % keep only the path
-    idx_temp=strfind(temp_path,'\');
-    app_path_main=temp_path(1:idx_temp(end));
+    app_path_main=fileparts(which('EchoAnalysis'));
     
 end
 

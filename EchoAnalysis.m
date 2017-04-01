@@ -84,7 +84,9 @@ DEBUG=0;
 
 
 %% Set java window style and remove Javaframe warning
-javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
+if ispc
+    javax.swing.UIManager.setLookAndFeel('com.sun.java.swing.plaf.windows.WindowsLookAndFeel');
+end
 warning('off','MATLAB:HandleGraphics:ObsoletedProperty:JavaFrame');
 
 desktop = com.mathworks.mde.desk.MLDesktop.getInstance;
@@ -129,10 +131,12 @@ main_figure = figure('Units','pixels',...
 iptPointerManager(main_figure);
 
 %% Get Javaframe from Figure to set the Icon
-javaFrame = get(main_figure,'JavaFrame');
-javaFrame.fHG2Client.setClientDockable(true);
-set(javaFrame,'GroupName','ESP3');
-javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+if ispc
+    javaFrame = get(main_figure,'JavaFrame');
+    javaFrame.fHG2Client.setClientDockable(true);
+    set(javaFrame,'GroupName','ESP3');
+    javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));
+end
 
 
 %% Software version
