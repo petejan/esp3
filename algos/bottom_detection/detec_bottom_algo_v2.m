@@ -14,7 +14,7 @@ check_thr_bottom=@(x)(x>=-120&&x<=-10);
 default_thr_echo=-12;
 check_thr_echo=@(x)(x>=-20&&x<=-3);
 
-check_shift_bot=@(x)(x>=0);
+check_shift_bot=@isnumeric;
 
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
@@ -227,10 +227,9 @@ BS_filter=(20*log10(filter(ones(4*Np,1),1,10.^(BS/20)))).*Bottom_region;
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
 
-if p.Results.shift_bot>0
-    Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
-    Bottom(Bottom<=0)=1;
-end
+
+Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
+Bottom(Bottom<=0)=1;
 
 
 

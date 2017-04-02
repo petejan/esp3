@@ -353,7 +353,7 @@ for isn=1:length(snapshots)
                                          if isfield(regions_wc{irewc},'t_max')
                                              t_max=datenum(regions_wc{irewc}.t_max,'yyyy/mm/dd HH:MM:SS');
                                          else
-                                             t_max=0;
+                                             t_max=Inf;
                                          end
                                         
                                         reg_wc=layer_new.Transceivers(idx_freq).create_WC_region(...

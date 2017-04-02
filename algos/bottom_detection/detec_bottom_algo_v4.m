@@ -208,10 +208,10 @@ BS_filter(Bottom_region==0)=nan;
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
 
-if p.Results.shift_bot>0
-    Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
-    Bottom(Bottom<=0)=1;
-end
+
+Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
+Bottom(Bottom<=0)=1;
+
 
 t1=toc(t0);
 fprintf('Bottom detected in %0.2fs\n',t1);

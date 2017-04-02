@@ -85,29 +85,48 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
     linkaxes([ax ax_1 ax_2],'x')
     ax.XLim=([1 numel(pitch_grad_av)]);
     
+    P_roll_1 = polyfit(bad_ping_pc,roll_std,1);
     P_roll = polyfit(bad_ping_pc,roll_grad_av,1);
     x_bad=nanmin(bad_ping_pc):nanmax(bad_ping_pc);
     hfig_2=new_echo_figure(main_figure,'Tag','rollbadanalysis','Name','Roll change rate against Bad Pings');
     ax_3= axes(hfig_2,'nextplot','add','OuterPosition',[0 0 1 1]);
+    yyaxis(ax_3,'left');
+    ax_3.YAxis(1).Color = 'b';
     plot(ax_3,bad_ping_pc,roll_grad_av,'.b');
     plot(ax_3,x_bad,polyval(P_roll,x_bad));
-    xlabel(ax_3,'Bad Ping Percentage');
     ylabel(ax_3,'Average Roll Change rate');
-    title(ax_3,sprintf('Corr (Pearson): %.2f',corr(bad_ping_pc',roll_grad_av')));
+    yyaxis(ax_3,'right');
+    ax_3.YAxis(2).Color = 'r';
+    plot(ax_3,bad_ping_pc,roll_std,'.r');
+    plot(ax_3,x_bad,polyval(P_roll_1,x_bad));
+    xlabel(ax_3,'Bad Ping Percentage');
+
+    title(ax_3,sprintf('Corr (Pearson) with change rate: %.2f\n Corr (Pearson) with std: %.2f\n',corr(bad_ping_pc',roll_grad_av'),corr(bad_ping_pc',roll_std')));
     grid(ax_3,'on');
     box(ax_3,'on');
+    axis(ax_3,'square');
     
     
+    P_pitch_1 = polyfit(bad_ping_pc,pitch_std,1);
     P_pitch = polyfit(bad_ping_pc,pitch_grad_av,1);
     hfig_3=new_echo_figure(main_figure,'Tag','pitchbadanalysis','Name','Pitch change rate against Bad Pings');
     ax_4= axes(hfig_3,'nextplot','add','OuterPosition',[0 0 1 1]);
+    yyaxis(ax_4,'left');
+    ax_4.YAxis(1).Color = 'b';
     plot(ax_4,bad_ping_pc,pitch_grad_av,'.b');
     plot(ax_4,x_bad,polyval(P_pitch,x_bad));
-    title(ax_4,sprintf('Corr (Pearson): %.2f',corr(bad_ping_pc',pitch_grad_av')));
-    xlabel(ax_4,'Bad Ping Percentage');
     ylabel(ax_4,'Average Pitch Change rate');
+    yyaxis(ax_4,'right');
+    ax_4.YAxis(2).Color = 'r';
+    plot(ax_4,bad_ping_pc,pitch_std,'.r');
+    plot(ax_4,x_bad,polyval(P_pitch_1,x_bad));
+    ylabel(ax_4,'Pitch Std');
+    title(ax_4,sprintf('Corr (Pearson) with change rate: %.2f\n Corr (Pearson) with std: %.2f\n',corr(bad_ping_pc',pitch_grad_av'),corr(bad_ping_pc',pitch_std')));
+    xlabel(ax_4,'Bad Ping Percentage');
+    
     grid(ax_4,'on');
     box(ax_4,'on');
+    axis(ax_4,'square');
     
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);

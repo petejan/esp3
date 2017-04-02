@@ -21,7 +21,7 @@ check_spikes=@(x)(x>=0&&x<=20);
 default_idx_r_max=Inf;
 default_spikes=4;
 check_filt=@(x)(x>=0);
-check_shift_bot=@(x)x>=0;
+check_shift_bot=@isnumeric;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));

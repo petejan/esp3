@@ -121,7 +121,7 @@ BS_lin(isnan(BS_lin))=0;
 
 BS_lin_red=BS_lin(idx_r_min:idx_r_max,:);
 
-  
+
 filter_fun = @(block_struct) max(block_struct.data(:));
 BS_filtered_bot_lin=blockproc(BS_lin_red,[heigh_b_filter b_filter],filter_fun);
 [nb_samples_red,~]=size(BS_filtered_bot_lin);
@@ -195,7 +195,7 @@ Bottom=nanmax(Bottom_temp,Bottom_temp_2);
 backstep=nanmax([1 Np]);
 
 for i=1:nb_pings
-    if mod(i,floor(nb_pings/100))==1  
+    if mod(i,floor(nb_pings/100))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar,'Value',i);
         end
@@ -208,7 +208,7 @@ for i=1:nb_pings
         else
             continue;
         end
-
+        
         while bs_val>=BS_ping(Bottom(i))+thr_backstep &&bs_val>-999
             if Bottom(i)-(backstep-idx_max_tmp+1)>0
                 Bottom(i)=Bottom(i)-(backstep-idx_max_tmp+1);
@@ -235,10 +235,8 @@ BS_filter(Bottom_region==0)=nan;
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
 
-if p.Results.shift_bot>0
-    Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
-    Bottom(Bottom<=0)=1;
-end
+Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
+Bottom(Bottom<=0)=1;
 
 t1=toc(t0);
 fprintf('Bottom detected in %0.2fs\n',t1);

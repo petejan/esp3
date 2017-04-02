@@ -104,13 +104,13 @@ for iax=1:length(main_axes_tot)
             y_reg_rect=y([reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end)]);
             
             
-            x_reg_poly=[x(reg_curr.Idx_pings(:)') x(reg_curr.Idx_pings(end))*ones(size(reg_curr.Idx_r(:)')) x(reg_curr.Idx_pings) x(reg_curr.Idx_pings(1))*ones(size(reg_curr.Idx_r(:)'))];
-            y_reg_poly=[y(reg_curr.Idx_r(1))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))' y(reg_curr.Idx_r(end))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))'];
-            
-            if ~any(inpolygon(x_reg_poly,y_reg_poly,rect_lim_x,rect_lim_y))&&~any(inpolygon(rect_lim_x,rect_lim_y,x_reg_rect,y_reg_rect))
-                continue;
-            end
-            
+%             x_reg_poly=[x(reg_curr.Idx_pings(:)') x(reg_curr.Idx_pings(end))*ones(size(reg_curr.Idx_r(:)')) x(reg_curr.Idx_pings) x(reg_curr.Idx_pings(1))*ones(size(reg_curr.Idx_r(:)'))];
+%             y_reg_poly=[y(reg_curr.Idx_r(1))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))' y(reg_curr.Idx_r(end))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))'];
+%             
+%             if ~any(inpolygon(x_reg_poly,y_reg_poly,rect_lim_x,rect_lim_y))&&~any(inpolygon(rect_lim_x,rect_lim_y,x_reg_rect,y_reg_rect))
+%                 continue;
+%             end
+%             
             
             switch reg_curr.Shape
                 case 'Rectangular'

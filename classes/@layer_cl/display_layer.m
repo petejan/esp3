@@ -27,24 +27,25 @@ end
 nb_samples=length(idx_r);
 nb_pings=length(idx_ping);
 
-outputSize=nanmin(screensize(3:4),[nb_pings nb_samples]);
+%outputSize=nanmin(screensize(3:4),[nb_pings nb_samples]);
 
 
-dr=nanmax(floor(nb_samples/outputSize(2)),1);
-dp=nanmax(floor(nb_pings/outputSize(1)),1);
-% dp=1;
-% dr=1;
+% dr=nanmax(floor(nb_samples/outputSize(2)),1);
+% dp=nanmax(floor(nb_pings/outputSize(1)),1);
+dp=1;
+dr=1;
+% profile on;
+%data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+data=layer.Transceivers(idx_freq).Data.get_datamat(fieldname);
+% profile off;
+% profile viewer;
+% % 
 
-data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
-
-switch lower(fieldname)
-    case {'sv','sp','power'}
-        
-end
 
 if isempty(data)
     fieldname= layer.Transceivers(idx_freq).Data.Fieldname{1};
-    data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+    data=layer.Transceivers(idx_freq).Data.get_datamat(fieldname);
+    %data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
 end
 
 if isempty(data)
@@ -66,15 +67,22 @@ end
 
 data_mat=(real(data_mat));
 
-set(main_echo,'XData',xdata(idx_ping),'YData',ydata(idx_r),'CData',(data_mat));
+% x_data_disp=xdata(idx_ping);
+% y_data_disp=ydata(idx_r);
 
 
-if length(xdata(idx_ping))>1
-    set(ax,'xlim',[xdata(idx_ping(1)) xdata(idx_ping(end))]);
+x_data_disp=xdata;
+y_data_disp=ydata;
+
+set(main_echo,'XData',x_data_disp,'YData',y_data_disp,'CData',data_mat);
+
+
+if length(x_data_disp)>1
+    set(ax,'xlim',[x_data_disp(1) x_data_disp(end)]);
 end
 
-if length(ydata(idx_r))>1
-    set(ax,'ylim',[ydata(idx_r(1)) ydata(idx_r(end))]);
+if length(y_data_disp)>1
+    set(ax,'ylim',[y_data_disp(1) y_data_disp(end)]);
 end
 
 end
