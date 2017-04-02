@@ -4,7 +4,7 @@ wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
 
 set(main_figure,'WindowButtonMotionFcn','');
 % 
-% update_axis_panel(main_figure,0);
+update_axis_panel(main_figure,0);
 set_axes_position(main_figure);
 update_cmap(main_figure);
 reverse_y_axis(main_figure);

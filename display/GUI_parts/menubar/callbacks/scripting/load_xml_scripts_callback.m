@@ -29,9 +29,10 @@ function [xml_surveys_input,xml_files]=get_xml_scripts(scripts)
 xml_surveys_input={};
 xml_files={};
 Filenames=dir(fullfile(scripts,'*.xml'));
+[~,idx_sort]=sort([Filenames(:).datenum],'descend');
 
 k=0;
-for i=1:length(Filenames)
+for i=idx_sort
     try
         xml_surveys_input_tmp=parse_survey_xml(fullfile(scripts,Filenames(i).name));
     catch
