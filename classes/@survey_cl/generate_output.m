@@ -299,7 +299,7 @@ for isn=1:length(snaps)
     surv_out_obj.transectSum.vbscf(i_trans) = eint/(surv_out_obj.transectSum.mean_d(i_trans)*surv_out_obj.transectSum.pings(i_trans)); % vbscf according to Esp2 formula
     surv_out_obj.transectSum.abscf(i_trans) = eint/surv_out_obj.transectSum.pings(i_trans); % abscf according to Esp2 formula
     surv_out_obj.transectSum.shadow_zone_abscf(i_trans)=nansum([Output_echo(:).shadow_zone_slice_abscf].*[Output_echo(:).nb_good_pings])/surv_out_obj.transectSum.pings(i_trans);
-
+    surv_out_obj.transectSum.tot_pings=numel(gps_tot);
     
     %Tracks/ST transect summary
     surv_out_obj.transectSumTracks.snapshot(i_trans) = snap_num;

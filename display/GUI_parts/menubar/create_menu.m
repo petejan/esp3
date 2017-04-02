@@ -172,14 +172,13 @@ if ~isdeployed
     uimenu(bs_tools,'Label','Execute BS analysis','Callback',{@bs_analysis_callback,main_figure});
 end
 
- data_tools=uimenu(mhhh,'Label','Data tools');
+data_tools=uimenu(mhhh,'Label','Data tools');
 if ~isdeployed
-    uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});  
-    uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
+    uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
+    
 end
 uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@create_motion_compensation_echogramm_cback,main_figure});
-
-
+uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
 
 
 curves_tools=uimenu(mhhh,'Label','Curves');
@@ -195,7 +194,9 @@ track_tools=uimenu(mhhh,'Label','Single Targets');
 uimenu(track_tools,'Label','Plot Histogram from Single Targets','Callback',{@plot_hist_st_callback,main_figure});
 
 mbs = uimenu(main_figure,'Label','Scripting','Tag','menumbs');
-uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
+if ~isdeployed
+    uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
+end
 uimenu(mbs,'Label','XML Scripts','Callback',{@load_xml_scripts_callback,main_figure},'separator','on');
 uimenu(mbs,'Label','Plot survey results from Survey Output files','Callback',{@plot_survey_results_callback,main_figure});
 
