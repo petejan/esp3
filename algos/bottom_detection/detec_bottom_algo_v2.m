@@ -1,3 +1,50 @@
+%% detec_bottom_algo_v2.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |trans_obj|: TODO: write description and info on variable
+% * |denoised|: TODO description (Optional. Num or logical. Default: 0).
+% * |r_min|: TODO description (Optional. Num. Default: default_idx_r_min).
+% * |r_max|: TODO description (Optional. Num. Default: default_idx_r_max).
+% * |thr_bottom|: TODO description (Optional. Default: default_thr_bottom).
+% * |thr_echo|: TODO description (Optional. Default: default_thr_echo).
+% * |shift_bot|: TODO description (Optional. Default: 0).
+% * |load_bar_comp|: TODO description (Optional. Default: []);
+%
+% *OUTPUT VARIABLES*
+%
+% * |Bottom|: TODO: write description and info on variable
+% * |Double_bottom_region|: TODO: write description and info on variable
+% * |BS_bottom|: TODO: write description and info on variable
+% * |idx_bottom|: TODO: write description and info on variable
+% * |idx_ringdown|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel).
+% * YYYY-MM-DD: first version (Yoann Ladroit). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v2(trans_obj,varargin)
 
 %profile on;

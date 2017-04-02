@@ -1,3 +1,39 @@
+%% detec_bottom_algo_v3.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% TODO
+%
+% *OUTPUT VARIABLES*
+%
+% TODO
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel).
+% * YYYY-MM-DD: first version (Yoann Ladroit). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v3(trans_obj,varargin)
 
 %profile on;

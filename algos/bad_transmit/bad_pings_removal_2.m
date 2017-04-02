@@ -1,3 +1,59 @@
+%% bad_pings_removal_2.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |trans_obj|: TODO: write description and info on variable
+% * |denoised|: TODO description (Optional. Num or logical. Default: 0).
+% * |thr_bottom|: TODO description (Optional. TODO)
+% * |thr_echo|: TODO description (Optional. Default: -40. TODO).
+% * |thr_cum|: TODO description (Optional. Default: 0.01. TODO).
+% * |thr_backstep|: TODO description (Optional. TODO).
+% * |vert_filt|: TODO description (Optional. Default: 10. TODO).
+% * |horz_filt|: TODO description (Optional. Default: 50. TODO).
+% * |r_min|: TODO description (Optional. Num).
+% * |r_max|: TODO description (Optional. Num).
+% * |BS_std|: TODO description (Optional).
+% * |BS_std_bool|: TODO description (Optional. Num or logical. Default:|true|).
+% * |thr_spikes_Above|: TODO description (Optional).
+% * |thr_spikes_Below|: TODO description (Optional).
+% * |Above|: TODO description (Optional. Num or logical. Default:|true|).
+% * |Below|: TODO description (Optional. Num or logical. Default:|true|).
+% * |shift_bot|: TODO description (Optional. Default: 0).
+% * |botDetecVer|: TODO description (Optional. Default: 'V2').
+% * |load_bar_comp|: TODO description (Optional. Default: empty);
+%
+% *OUTPUT VARIABLES*
+%
+% * |Bottom|: TODO: write description and info on variable
+% * |Double_bottom_region|: TODO: write description and info on variable
+% * |idx_noise_sector|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel).
+% * YYYY-MM-DD: first version (Yoann Ladroit). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [Bottom,Double_bottom_region,idx_noise_sector]=bad_pings_removal_2(trans_obj,varargin)
 global DEBUG
 
