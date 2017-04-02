@@ -10,7 +10,7 @@
 %
 % *INPUT VARIABLES*
 %
-% * |main_figure|: TODO: write description and info on variable
+% * |main_figure|: Handle to main ESP3 window
 %
 % *OUTPUT VARIABLES*
 %

@@ -1,3 +1,41 @@
+%% generate_output.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |surv_obj|: TODO: write description and info on variable
+% * |layers|: TODO: write description and info on variable
+% * |PathToMemmap|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel). 
+% * YYYY-MM-DD: first version (Yoann Ladroit). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function generate_output(surv_obj,layers,varargin)
 
 p = inputParser;

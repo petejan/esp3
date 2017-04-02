@@ -1,3 +1,47 @@
+%% display_layer.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |layer|: TODO: write description and info on variable
+% * |freq|: TODO: write description and info on variable
+% * |fieldname|: TODO: write description and info on variable
+% * |ax|: TODO: write description and info on variable
+% * |main_echo|: TODO: write description and info on variable
+% * |x|: TODO: write description and info on variable
+% * |y|: TODO: write description and info on variable
+% * |new|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |dr|: TODO: write description and info on variable
+% * |dp|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel). 
+% * YYYY-MM-DD: first version (Yoann Ladroit). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [dr,dp]=display_layer(layer,freq,fieldname,ax,main_echo,x,y,new)
 
 [idx_freq,found]=layer.find_freq_idx(freq);
