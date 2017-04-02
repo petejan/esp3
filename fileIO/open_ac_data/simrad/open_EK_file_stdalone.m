@@ -1,5 +1,50 @@
+%% open_EK_file_stdalone.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |Filename_cell|: TODO write description (Required. Char or cell). 
+% * |PathToMemmap|: TODO write description (Optional. Char, Default: TODO).
+% * |Calibration|: TODO write description (Optional. Default: empty num).
+% * |Frequencies|: TODO write description (Optional. Default: empty num).
+% * |PingRange|: TODO write description (Optional. Default: [1 inf]).
+% * |SampleRange|: TODO write description (Optional. Default: [1 inf]).
+% * |FieldNames|: TODO write description (Optional. Default: empty cell).
+% * |EsOffset|: TODO write description (Optional. Default: empty num).
+% * |GPSOnly|: TODO write description (Optional. Default: 0).
+% * |LoadEKbot|: TODO write description (Optional. Default: 0).
+% * |load_bar_comp|: TODO write description (Optional. Default: empty num).
+%
+% *OUTPUT VARIABLES*
+%
+% * |layers|: TODO write description,
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel)
+% * YYYY-MM-DD: first version (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
-function  layers=open_EK_file_stdalone(Filename_cell,varargin)
+%% Function
+function layers = open_EK_file_stdalone(Filename_cell,varargin)
 
 p = inputParser;
 

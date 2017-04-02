@@ -1,3 +1,41 @@
+%% pitch_roll_analysis_callback.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |src|: TODO: write description and info on variable
+% * |table|: TODO: write description and info on variable
+% * |main_figure|: Handle to main ESP3 window
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-02: header (Alex Schimel).
+% * 2017-04-01: first version (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function pitch_roll_analysis_callback(src,~,table,main_figure)
 
  layers=getappdata(main_figure,'Layers');
