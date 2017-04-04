@@ -86,6 +86,7 @@ for ifi=1:length(ftype)
                 
         end
     catch
+        loadEcho(main_figure);
         warning('Could not load file(s)');
     end
 end

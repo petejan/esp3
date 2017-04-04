@@ -5,7 +5,7 @@ p = inputParser;
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'regIDs',[],@isnumeric);
 addParameter(p,'cell_w',50,@(x) x>0);
-addParameter(p,'cell_units_w','meters',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
+addParameter(p,'cell_units_w','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'cell_h',10,@(x) x>0);
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',1,@(x) x>0);

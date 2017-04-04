@@ -42,16 +42,16 @@ if isempty(obj.Time)
     return;
 end
 
-if ~isempty(parenth)
-    axes_panel_comp=getappdata(parenth,'Axes_panel');
-    if~isempty(axes_panel_comp)
-        ah=axes_panel_comp.main_axes;
-    else
-        ah=[];
-    end
-else
-    ah=[];
-end
+% if ~isempty(parenth)
+%     axes_panel_comp=getappdata(parenth,'Axes_panel');
+%     if~isempty(axes_panel_comp)
+%         ah=axes_panel_comp.main_axes;
+%     else
+%         ah=[];
+%     end
+% else
+%     ah=[];
+% end
 
 
 dist=obj.Dist;
@@ -70,6 +70,6 @@ else
     h_fig=[];
 end
 
-linkaxes([ah ax],'x');
+%linkaxes([ah ax],'x');
 
 end

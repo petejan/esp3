@@ -6,7 +6,7 @@ init_reg=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'reg',init_reg,@(x) isstruct(x)||isempty(x));
 addParameter(p,'Slice_w',50,@(x) x>0);
-addParameter(p,'Slice_units','meters',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
+addParameter(p,'Slice_units','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',Inf,@(x) x>0);
 addParameter(p,'Denoised',0,@isnumeric);

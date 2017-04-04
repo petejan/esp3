@@ -14,14 +14,14 @@ trans_obj=layer.Transceivers(idx_freq);
 [output_2D,~]=trans_obj.slice_transect2D('Reference','Surface');
 idx_reg=trans_obj.find_regions_type('Data');
 reg_tot=trans_obj.get_reg_spec(idx_reg);               
-output_1D=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',1);
+output_1D=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',0);
 
 fig_disp=new_echo_figure(main_figure,'Tag','Sliced Transect 1D');
 ax=axes(fig_disp);
 plot(ax,10*log10(output_1D.slice_abscf));
 hold(ax,'on');
 plot(ax,10*log10(output_1D.slice_abscf+output_1D.shadow_zone_slice_abscf));
-plot(ax10*log10(nansum(output_2D.cell_abscf)));
+plot(ax,10*log10(nansum(output_2D.cell_abscf)));
 grid(ax,'on');
 xlabel(ax,'Slice Number');
 ylabel(ax,'Asbcf (dB)');
@@ -42,6 +42,8 @@ set(ax,'GridColor',col_grid);
 colormap(ax,cmap);caxis(cax);
 xlabel(ax,'Distance (meters)');
 ylabel(ax,'Range (meters)')
+
+
 
 
 
