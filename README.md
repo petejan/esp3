@@ -1,6 +1,6 @@
 The complete source code of ESP3 in MATLAB is available here.
 
-For users without MATLAB licences, you will find a windows installer with the latest packaged version in the LFS of the repository.
+For users without MATLAB licences, you will find a windows installer somewhere?
 For it to run you need to install [Matlab MCR R2016a (9.0.1)](https://au.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/win64/MCR_R2016a_win64_installer.exe), then run the installer and you should be good to go.
 
 Copyright 2017 NIWA
