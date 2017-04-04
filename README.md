@@ -1,5 +1,3 @@
-# Welcome to the ESP3 project development page!
-
 ![EchoAnalysis.png](https://bitbucket.org/repo/g4Kg5e/images/2024943680-EchoAnalysis.png)
 
 # What is ESP3?
