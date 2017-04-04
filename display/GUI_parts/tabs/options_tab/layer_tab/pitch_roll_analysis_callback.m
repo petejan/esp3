@@ -78,17 +78,15 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
     ax_1= axes(hfig,'nextplot','add','OuterPosition',[0 0.66 1 0.33]);
     yyaxis(ax_1,'left');
     ax_1.YAxis(1).Color = 'r';
-    plot(ax_1,roll_std,'r');
+    plot(ax_1,roll_std,'-^r');
     ax_1.YAxis(1).TickLabelFormat  = '%g^\\circ';
-    ylabel(ax_1,'Roll Std (^\\circ)');
+    ylabel(ax_1,'Roll Std (deg)');
     
       
     yyaxis(ax_1,'right');
-    plot(ax_1,roll_grad_av,'k');
+    plot(ax_1,roll_grad_av,'-sk');
     ax_1.YAxis(2).Color = 'k';
     ax_1.YAxis(2).TickLabelFormat  = '%g^\\circ/s';
-    legend(ax_1,'\Delta Roll','Roll rate change','Location','northeast')
-    legend(ax_1,'boxoff')
     ylabel(ax_1,'Average Roll Change rate');
     grid(ax_1,'on');
     box(ax_1,'on');
@@ -96,25 +94,23 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
     ax= axes(hfig,'nextplot','add','OuterPosition',[0 0.33 1 0.33]);
     yyaxis(ax,'left');
     ax.YAxis(1).Color = 'r';
-    plot(ax,pitch_std,'r');
+    plot(ax,pitch_std,'-^r');
     ax.YAxis(1).TickLabelFormat  = '%g^\\circ';
     ylabel(ax,'Pitch Std (deg)');
     
     
     
     yyaxis(ax,'right');
-    plot(ax,pitch_grad_av,'color','k');
+    plot(ax,pitch_grad_av,'-sk');
     ax.YAxis(2).Color = 'k';
     ax.YAxis(2).TickLabelFormat  = '%g^\\circ/s';
-    legend(ax,'\Delta Pitch','Pitch rate change','Location','northeast')
-    legend(ax,'boxoff')
     ylabel(ax,'Average Pitch Change rate');
     grid(ax,'on');
     box(ax,'on');
     
     
     ax_2=axes(hfig,'nextplot','add','OuterPosition',[0 0 1 0.33]);
-    plot(ax_2,bad_ping_pc,'b');
+    plot(ax_2,bad_ping_pc,'-xb');
     ax_2.YAxis(1).Color = 'k';
     ax_2.YAxis(1).TickLabelFormat  = '%.0f ';
     ylabel(ax_2,'Bad Ping Percentage');
@@ -122,6 +118,7 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
     box(ax_2,'on');
     linkaxes([ax ax_1 ax_2],'x')
     ax.XLim=([1 numel(pitch_grad_av)]);
+    xlabel(ax_2,'Transect Number');
     
     P_roll_1 = polyfit(bad_ping_pc,roll_std,1);
     P_roll = polyfit(bad_ping_pc,roll_grad_av,1);
