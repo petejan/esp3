@@ -1,5 +1,3 @@
-Yoann Ladroit, NIWA.
-
 Copyright 2017 NIWA
 
  Permission is hereby granted, free of charge, to any person obtaining a
@@ -21,3 +19,4 @@ Copyright 2017 NIWA
  USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Yoann.ladroit@niwa.co.nz
+Yoann Ladroit, NIWA.
