@@ -18,5 +18,5 @@ Copyright 2017 NIWA
  OTHERWISE, ARISING FROM,OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
  USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Yoann.ladroit@niwa.co.nz
 Yoann Ladroit, NIWA.
+Yoann.ladroit@niwa.co.nz
