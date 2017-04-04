@@ -1,7 +1,8 @@
-The complete source code of ESP3 in MATLAB is available here.
+![EchoAnalysis.png](https://bitbucket.org/repo/g4Kg5e/images/2024943680-EchoAnalysis.png)
 
-For users without MATLAB licences, you will find a windows installer somewhere?
-For it to run you need to install [Matlab MCR R2016a (9.0.1)](https://au.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/win64/MCR_R2016a_win64_installer.exe), then run the installer and you should be good to go.
+Welcome to the ESP3 software bitbucket development page. You will find here the complete source code of ESP3, written in MATLAB. You will need MATLAB R2016a at the latest.
+
+A compiled version is available (where?) for users without MATLAB licences. You will only need to install [Matlab MCR R2016a (9.0.1)](https://au.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/win64/MCR_R2016a_win64_installer.exe), then run the ESP3 installer and you should be good to go.
 
 Copyright 2017 NIWA
 
