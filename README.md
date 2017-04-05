@@ -2,7 +2,7 @@
 
 # What is ESP3?
 
-ESP3 is an open-source software for visualizing and processing fisheries acoustics data, written in MATLAB. It is developed and is maintained by the deepwater fisheries acoustics team at NIWA (Wellington, New Zealand). Contributions to the project are encouraged!
+ESP3 is an open-source software package for visualizing and processing fisheries acoustics data, written in MATLAB, and developed by the deepwater fisheries acoustics team at NIWA (Wellington, New Zealand). Coding contributions are encouraged!
 
 # How do I get it and run it?
 
@@ -16,11 +16,11 @@ You have two options:
 
 * Next, download and run [the installer for the ESP3 compiled version](https://sourceforge.net/projects/esp3/files/).
 
-# I have MATLAB. How do I get the source code and run the program?
+# I have MATLAB. How do I get the source code and run the software?
 
-Follow the Downloads link in the menu bar on the left and it will get you the latest version of the project's source code. Once downloaded on your local machine, just run "EchoAnalysis.m" from the ESP3 root folder.
+Follow the Downloads link in the menu bar on the left and it will get you the latest version of the project's source code. Once downloaded on your local machine, just run "EchoAnalysis.m" from the "ESP3" root folder.
 
-If it runs well, we encourage you to install Git and "fork" the project, rather than simply downloading it. Doing so will also download the source code but allow you to keep it updated to the latest version. [Learn about version controlling, Git and "forking" here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git)
+If it runs well, we encourage you to install Git and "fork" the project. Doing so will also download the source code but in a way that will allow you to keep it updated to the latest version if you so wish. [Learn about version controlling, Git and "forking" here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git).
 
 If you're familiar with Git, don't hesitate to clone the project and help contributing.
 
