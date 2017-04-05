@@ -2,7 +2,15 @@
 
 # What is ESP3?
 
-ESP3 is an open-source software package for visualizing and processing fisheries acoustics data, written in MATLAB, and developed by the deepwater fisheries acoustics team at NIWA (Wellington, New Zealand). Coding contributions are encouraged!
+ESP3 is an open-source software package for visualizing and processing fisheries acoustics data, developed by the deepwater fisheries acoustics team at NIWA (Wellington, New Zealand).
+
+It is written in MATLAB (and contributions to the code are welcome), but it can be run **even if you don't have a MATLAB licence**. See details below.
+
+# What can ESP3 do?
+
+ESP3 is designed for single-beam and split-beam data. Currently supported data formats are SIMRAD (.raw) and a small number of other formats. The software allows calibration and echo-integration and a number of algorithms are coded in, including bad pings identification, automated bottom detection, single targets identification and tracking, schools identification, etc.
+
+ESP3 is currently under active development so keep an eye on it. More algorithms regularly show up. 
 
 # How do I get it and run it?
 
