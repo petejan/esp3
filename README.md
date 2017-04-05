@@ -6,13 +6,13 @@ ESP3 is an open-source software package for visualizing and processing fisheries
 
 It is written in MATLAB (and contributions to the code from MATLAB users are welcome), but a **compiled version is available for non-MATLAB users**. See details below.
 
-# Sounds cool. What can ESP3 do?
+# What can ESP3 do?
 
 ESP3 is designed for single-beam and split-beam data. Currently supported data formats are SIMRAD (.raw) and a small number of other formats. The software allows calibration and echo-integration and a number of algorithms are coded in, including bad pings identification, automated bottom detection, single targets identification and tracking, schools identification, etc.
 
 ESP3 is currently under active development so keep an eye on it. More algorithms regularly show up. 
 
-# Awesome! How do I get it and run it?
+# How do I get ESP3 and run it?
 
 You have two options:
 
@@ -30,7 +30,7 @@ Simple. First, download and install the free [Matlab Compiler Runtime R2016a (9.
 
 Follow the Downloads link in the menu bar on the left and it will get you the latest version of the project's source code. Once downloaded on your local machine, just run "EchoAnalysis.m" from the "ESP3" root folder.
 
-# It's great, but how do I stay up-to-date. Do I have to re-download a new version every time it comes out?
+# How do I stay up-to-date with the latest developments? Do I have to re-download a new version every time it comes out?
 
 You can, but a better way would be for you to install Git and "fork" the project. Doing so will also download the source code and Git will allow you to keep it updated to the latest version if you so wish. [Learn about version controlling, Git and "forking" here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git).
 
@@ -42,7 +42,7 @@ And if down the line you wish to suggest to integrate bits of your code to the m
 
 # I know MATLAB and I know Git. Can I join the development team?
 
-Clone away, buddy. Welcome and thanks
+Clone away, buddy.
 
 # Copyright
 
