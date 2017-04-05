@@ -4,7 +4,7 @@
 
 ESP3 is an open-source software package for visualizing and processing fisheries acoustics data, developed by the deepwater fisheries acoustics team at NIWA (Wellington, New Zealand).
 
-It is written in MATLAB (and contributions to the code are welcome), but it can be run **even if you don't have a MATLAB licence**. See details below.
+It is written in MATLAB (and contributions to the code from MATLAB users are welcome), but a **compiled version is available for non-MATLAB users**. See details below.
 
 # What can ESP3 do?
 
