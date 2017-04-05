@@ -6,31 +6,43 @@ ESP3 is an open-source software package for visualizing and processing fisheries
 
 It is written in MATLAB (and contributions to the code from MATLAB users are welcome), but a **compiled version is available for non-MATLAB users**. See details below.
 
-# What can ESP3 do?
+# Sounds cool. What can ESP3 do?
 
 ESP3 is designed for single-beam and split-beam data. Currently supported data formats are SIMRAD (.raw) and a small number of other formats. The software allows calibration and echo-integration and a number of algorithms are coded in, including bad pings identification, automated bottom detection, single targets identification and tracking, schools identification, etc.
 
 ESP3 is currently under active development so keep an eye on it. More algorithms regularly show up. 
 
-# How do I get it and run it?
+# Awesome! How do I get it and run it?
 
 You have two options:
 
 1. If you have **MATLAB R2016a** (or more recent) and a small number of **required toolboxes**, you can simply get the source code and run it.
 
-2. If you don't use MATLAB (or don't have the necessary version and toolboxes), you can download and run the stand-alone, compiled version:
+2. If you don't use MATLAB (or don't have the necessary version and toolboxes), you can download and run the stand-alone, compiled version.
 
-* First, download and install the free [Matlab Compiler Runtime R2016a (9.0.1)](https://au.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/win64/MCR_R2016a_win64_installer.exe).
+More details below.
 
-* Next, download and run [the installer for the ESP3 compiled version](https://sourceforge.net/projects/esp3/files/).
+# I don't have/use/understand MATLAB and even if I did, I just want the software up-and-running on my PC, not the source code. How do I do that?
 
-# I have MATLAB. How do I get the source code and run the software?
+Simple. First, download and install the free [Matlab Compiler Runtime R2016a (9.0.1)](https://au.mathworks.com/supportfiles/downloads/R2016a/deployment_files/R2016a/installers/win64/MCR_R2016a_win64_installer.exe). Next, download and run [the installer for the ESP3 compiled version](https://sourceforge.net/projects/esp3/files/).
+
+# I have MATLAB. How do I get the source code and how do I run it?
 
 Follow the Downloads link in the menu bar on the left and it will get you the latest version of the project's source code. Once downloaded on your local machine, just run "EchoAnalysis.m" from the "ESP3" root folder.
 
-If it runs well, we encourage you to install Git and "fork" the project. Doing so will also download the source code but in a way that will allow you to keep it updated to the latest version if you so wish. [Learn about version controlling, Git and "forking" here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git).
+# It's great, but how do I stay up-to-date. Do I have to re-download a new version every time it comes out?
 
-If you're familiar with Git, don't hesitate to clone the project and help contributing.
+You can, but a better way would be for you to install Git and "fork" the project. Doing so will also download the source code and Git will allow you to keep it updated to the latest version if you so wish. [Learn about version controlling, Git and "forking" here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git).
+
+# I can code some MATLAB. I'm keen to code my own algorithms and extensions for it. Can I do that?
+
+Yes. Fork the project and do any updates and modifications you want. They'll stay on your copy without affecting the development of the main branch. And you can always integrate the latest changes made on the main branch back into your forked copy (see Git functions "sync" and "merge").
+
+And if down the line you wish to suggest to integrate bits of your code to the main branch, you can do that too through "pull requests".
+
+# I know MATLAB and I know Git. Can I join the development team?
+
+Clone away, buddy. Welcome and thanks
 
 # Copyright
 
