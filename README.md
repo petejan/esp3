@@ -16,7 +16,7 @@ ESP3 is currently under active development so keep an eye on this page. More alg
 
 You have two options:
 
-1. If you have **MATLAB R2016a** (or more recent) and a small number of **required toolboxes**, you can simply get the source code and run it within the MATLAB environment.
+1. If you have **MATLAB R2016a** (or more recent) and a small number of **required toolboxes** (Signal Processing Toolbox, Image Processing Toolbox,Statistics and Machine Learning Toolbox, Curve Fitting Toolbo), you can simply get the source code and run it within the MATLAB environment.
 
 2. If you don't use MATLAB (or don't have the necessary version and toolboxes), you can download and run the stand-alone, compiled version.
 
