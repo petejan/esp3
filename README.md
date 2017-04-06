@@ -16,7 +16,7 @@ ESP3 is currently under active development so keep an eye on this page. More alg
 
 You have two options:
 
-1. If you have **MATLAB R2016a** (or more recent) and a small number of **required toolboxes** (Signal Processing Toolbox, Image Processing Toolbox,Statistics and Machine Learning Toolbox, Curve Fitting Toolbo), you can simply get the source code and run it within the MATLAB environment.
+1. If you have **MATLAB R2016a** (or more recent) and a small number of **required toolboxes** (Signal Processing, Image Processing, Statistics and Machine Learning, Curve Fitting), you can simply get the source code and run it within the MATLAB environment.
 
 2. If you don't use MATLAB (or don't have the necessary version and toolboxes), you can download and run the stand-alone, compiled version.
 
@@ -28,11 +28,14 @@ Simple. First, download and install the free [Matlab Compiler Runtime R2016a (9.
 
 # I have MATLAB. How do I get the source code and how do I run it?
 
-The easieast is to clone the repository on your machine, as a simple download will not include some of the required files (git clone https://bitbucket.org/echoanalysis/esp3.git). We suggest using [Sourcetree](https://www.sourcetreeapp.com/) if you are not familiar with Git. If you are, you will need Git-LFS installed on your machine to be able to get all the required files. Once you've cloned it, just launch "EchoAnalysis.m" from the "ESP3" root folder.
+Do **not** use the download link on the menu bar on the left as it will not include some of the files required to run ESP3. 
+
+The best option is to install Git and/or a Git client (we suggest [Sourcetree](https://www.sourcetreeapp.com/)) on your machine and then clone and check-out the repository. [Learn about Git and version controlling here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git).
+ You will also need Git-LFS installed to be able to get all the required files. Once you have the repository on your machine, just launch "EchoAnalysis.m" from the "ESP3" root folder. 
 
 # How do I stay up-to-date with the latest developments? Do I have to re-download a new version every time it comes out?
 
-For the compiled version, yes. For the MATLAB version, you also can but a better way would be for you to install Git and "fork" the project. Doing so will also download the source code and Git will allow you to keep it updated to the latest version if you so wish. [Learn about version controlling, Git and "forking" here](https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git).
+For the compiled version, yes. For the MATLAB version, Git will allow you to keep it updated to the latest version if you so wish.
 
 # I can code some MATLAB. I'm keen to code my own algorithms and extensions for it. Can I do that?
 
