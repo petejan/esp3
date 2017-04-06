@@ -28,7 +28,7 @@ Simple. First, download and install the free [Matlab Compiler Runtime R2016a (9.
 
 # I have MATLAB. How do I get the source code and how do I run it?
 
-Follow the "Downloads" link in the menu bar on the left and it will get you the latest version of the project's source code. Once downloaded on your local machine, just run "EchoAnalysis.m" from the "ESP3" root folder.
+The easieast is to clone the repository on your machine, as a simple download will not include some of the required files. We suggest using Sourcetree if you are not familiar with Git. If you are you will need Git-LFS installed on your machine. Once you've cloned it, just launch "EchoAnalysis.m" from the "ESP3" root folder.
 
 # How do I stay up-to-date with the latest developments? Do I have to re-download a new version every time it comes out?
 
