@@ -2,6 +2,12 @@ function [nmea,nmea_type]=parseNMEA(nmea_string)
 
 idx = strfind(nmea_string, ',');
 
+if isempty(idx)
+    nmea=struct();
+    nmea_type='invalid';
+    return;
+end
+
 type = upper(nmea_string(2:idx(1) - 1));
 nmeadata = nmea_string(idx(1) + 1:end);
 %  remove checksum - add trailing comma for output lacking last field
