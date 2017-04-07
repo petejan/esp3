@@ -161,13 +161,13 @@ update_java_path(main_path);
 try
     if ~isdir(app_path.data_temp)
         mkdir(app_path.data_temp);
-        disp('Data Folder Created')
+        disp('Data Tep Folder Created')
         disp(app_path.data_temp)
     end
+    
 catch 
-    disp('Error: Unable to create Data Folder')
-    disp(app_path.data_temp);
-    disp('Creating new config_echo.xml file')
+    disp('Error: Unable to create temporary data Folder')
+    disp('Creating new config_echo.xml file with stadard path and options')
     delete(fullfile(main_path,'config','config_echo.xml'));
     [app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
 end

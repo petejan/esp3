@@ -160,14 +160,7 @@ check_path_callback(edit_box,[],path_fig);
 end
 
 function validate_path(~,~,path_fig,main_fig)
-layer=getappdata(main_fig,'Layer');
-curr_disp=getappdata(main_fig,'Curr_disp');
-if ~isempty(layer)
-    idx_freq=find_freq_idx(layer,curr_disp.Freq);
-    algos=layer.Transceivers(idx_freq).Algo;
-else
-    algos=[];
-end
+
 app_path=getappdata(path_fig,'AppPath_temp');
 setappdata(main_fig,'App_path',app_path);
 main_path=whereisEcho();

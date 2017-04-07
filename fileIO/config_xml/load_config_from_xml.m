@@ -17,6 +17,8 @@ try
     xml_struct=parseXML(xml_file);
     app_node=get_childs(xml_struct,'AppPath');
     app_path=get_node_att(app_node);
+    
+    
     disp_node=get_childs(xml_struct,'Display');
     disp_struct=get_node_att(disp_node);
     fields=fieldnames(disp_struct);
