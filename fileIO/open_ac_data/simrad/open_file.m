@@ -294,7 +294,11 @@ for itype = 1:length(ftype_unique)
                 case 0
                     open_dfile(main_figure,Filename,CVSCheck);
             end
-            
+        case 'invalid'
+             for ifi=1:length(Filename)
+                fprintf('Could not open %s\n',Filename{ifi});
+            end
+            continue;
         otherwise
             for ifi=1:length(Filename)
                 fprintf('Unrecognized File type for Filename %s\n',Filename{ifi});

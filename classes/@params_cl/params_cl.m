@@ -15,7 +15,7 @@ classdef params_cl
         Slope=nan;
         TransducerDepth=nan;
         TransmitPower=nan;
-        Absorption=nan;
+        Absorption=nan; 
     end
     methods
         function obj=params_cl(varargin)

@@ -44,7 +44,7 @@ if ~isempty(pings)
     params_obj.PulseLength=pings.pulselength;
     params_obj.SampleInterval=pings.sampleinterval;
     params_obj.Slope=nan(1,length(pings.time));
-    params_obj.TransducerDepth=zeros(size(pings.transmitpower));
+    params_obj.TransducerDepth=pings.transducerdepth;
     params_obj.TransmitPower=pings.transmitpower;
     params_obj.Absorption=double(pings.absorptioncoefficient);
 end

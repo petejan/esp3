@@ -87,6 +87,9 @@ uimenu(m_import,'Label','Import Attitude from .csv or 3DM*.log file','Callback',
 uimenu(m_import,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
 uimenu(m_import,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
 
+uimenu(m_import,'Label','Import Regions from LSSS .snap','Callback',{@import_from_lsss_snap_callback,main_figure});
+
+
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
 uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});

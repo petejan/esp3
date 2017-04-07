@@ -53,6 +53,7 @@ if ~ischar(Filename)
 end
 
 regions=create_regions_from_evr(fullfile(PathToFile,Filename),layer.Transceivers(idx_freq).get_transceiver_range(),layer.Transceivers(idx_freq).Data.Time);
+
 if ~isempty(regions)
     layer.Transceivers(idx_freq).add_region(regions);
     setappdata(main_figure,'Layer',layer);

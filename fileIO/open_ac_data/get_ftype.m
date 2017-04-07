@@ -12,11 +12,13 @@ if exist(filename,'file')>0
     fid = fopen(filename, 'r');
     if fid==-1
         warning('Cannot open file');
+        ftype='invalid';
         return;
     end
     fread(fid,1, 'int32', 'l');
     [dgType, ~] =read_dgHeader(fid,0);
     fclose(fid);
+    
     switch dgType
         case 'XML0'
             ftype='EK80';
