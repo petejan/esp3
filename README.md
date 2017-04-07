@@ -58,3 +58,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 # Contact
 Yoann Ladroit, NIWA.
 Yoann.ladroit@niwa.co.nz
+
+Alexandre C.G.Schimel,NIWA
+Alexandre.Schimel@niwa.co.nz
+
+Pablo Escobar-Flores,NIWA
+Pablo.Escobar@niwa.co.nz
