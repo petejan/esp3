@@ -7,9 +7,13 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-[path_f,~,~]=fileparts(layer.Filename{1});
+[path_f,file_f,~]=fileparts(layer.Filename{1});
 
-[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.snap')}, 'Pick a .snap','MultiSelect','off');
+
+default_filename_snap=fullfile(path_f,[file_f '.snap']);
+%default_filename_work=fullfile(path_f,[file_f '.work']);
+
+[Filename,PathToFile]= uigetfile({fullfile(path_f,'*.snap;*.work')}, 'Pick a *.snap or *.work',default_filename_snap,'MultiSelect','off');
 if isempty(Filename)||isnumeric(Filename)
     return;
 end
