@@ -13,7 +13,7 @@ range=trans_obj.get_transceiver_range();
 trans_obj.rm_region_name('LSSS Erased');
 
 if ~isempty(erased)
-    idx_chan=find(erased.channel(:).channelID==channelID);
+    idx_chan=find([erased.channel(:).channelID]==channelID);
     for i=1:length(erased.channel(idx_chan))
         reg=create_reg_lsss_erased(erased.channel(idx_chan),'Bad Data','LSSS Erased',range,trans_obj.Params.TransducerDepth);
         trans_obj.add_region(reg);
@@ -39,11 +39,11 @@ bot=trans_obj.Bottom;
 if ~isempty(exclude)
     
     for i=1:length(exclude)
-        [~, startPing] = min(abs(exclude(i).startTime - Sv.pings(f).time));
+        [~, startPing] = min(abs(exclude(i).startTime - trans_obj.Params.Time));
         endPing = startPing + exclude(i).numOfPings;
         
         tag=ones(size(bot.Tag));
-        tag(startPing:endPing)=1;
+        tag(startPing:endPing)=0;
         trans_obj.Bottom.Tag=tag;
     end
 end
@@ -59,12 +59,13 @@ mask=zeros(numel(range),nb_pings);
 dr=nanmean(diff(range));
 for ip=1:length(poly.x)
     nb_sect=size(poly.y{ip},1);
+    ping_start=poly.x(ip);
     for it=1:nb_sect
         r1=poly.y{ip}(it,1)-td(ip);
         r2=r1+poly.y{ip}(it,2);
         idx_r=round(r1/dr):round(r2/dr);
         idx_r(idx_r<=0|idx_r>=nb_samples)=[];
-        mask(idx_r,ip)=1;
+        mask(idx_r,ping_start)=1;
     end
 end
 
@@ -94,9 +95,14 @@ function reg=create_reg_lsss(poly,id,type,name,range,td)
 
 nb_pings=length(td);
 X_cont=poly.x;
-idx_rem=X_cont>nb_pings|X_cont<=0;
-X_cont(idx_rem)=[];
-Y_cont=resample_data_v2(1:length(range),range,poly.y(~idx_rem)-td(X_cont),'Opt','Nearest');
+
+X_cont(X_cont>nb_pings)=nb_pings;
+X_cont(X_cont<=0)=1;
+y=poly.y-td(X_cont);
+y(y>range(end))=range(end);
+y(y<=range(1))=range(1);
+
+Y_cont=resample_data_v2(1:length(range),range,y,'Opt','Nearest');
 Idx_pings=nanmin(X_cont):nanmax(X_cont);
 Idx_r=nanmin(Y_cont):nanmax(Y_cont);
 X_cont=[X_cont X_cont(1)];

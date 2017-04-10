@@ -54,6 +54,7 @@ for uu=idx_to_process
                 'vert_link_max',5,...
                 'depth_max',400)));
         end
+        layer.Transceivers(uu).apply_algo('SchoolDetection');
     else
         layer.Transceivers(uu).rm_region_name('School');
     end

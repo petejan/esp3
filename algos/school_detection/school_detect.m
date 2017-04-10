@@ -69,7 +69,7 @@ check_nb_min_sples=@(l)(l>0);
 
 
 addRequired(p,'trans_obj',check_trans_class);
-addParameter(p,'Type','sv',@ischar);
+addParameter(p,'Type','svdenoised',@ischar);
 addParameter(p,'Sv_thr',default_Sv_thr,check_Sv_thr);
 addParameter(p,'Sv_max',default_Sv_max,check_Sv_max);%only affect display
 addParameter(p,'l_min_can',default_l_min_can,check_l_min_can);
@@ -82,6 +82,7 @@ addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
 addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
 addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
 addParameter(p,'depth_max',15000,@isnumeric);
+addParameter(p,'depth_min',0,@isnumeric);
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
@@ -100,7 +101,7 @@ end
 
 Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
 if isempty(Sv_mat)
-   Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
+   Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
 
 range=trans_obj.get_transceiver_range(idx_r);
@@ -151,9 +152,11 @@ end
 
 Sv_mask_ori(range>=p.Results.depth_max,:)=0;
     
-
+Sv_mask_ori(range<=p.Results.depth_min,:)=0;
+   
 
 Sv_mask=double((filter2(ones(3,3),Sv_mask_ori,'same'))>1);
+
 %Sv_mask=Sv_mask_ori;
 % h_filter=2*Np;
 % Sv_mask=floor(filter2(ones(h_filter,1)/h_filter,double(Sv_mask>0),'same'));
