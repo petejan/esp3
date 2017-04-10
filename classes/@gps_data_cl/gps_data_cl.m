@@ -46,7 +46,7 @@ classdef gps_data_cl
                 
                 if length(obj.Long)>=2
                     
-                    d_dist=m_lldist(obj.Lat,obj.Long);
+                    d_dist=m_lldist(obj.Long,obj.Lat);
                     
                     d_dist(isnan(d_dist))=0;
                     dist_disp=[0;cumsum(d_dist)]*1000;%In meters!!!!!!!!!!!!!!!!!!!!!
@@ -95,7 +95,7 @@ classdef gps_data_cl
                 gps_data_out=gps_data;
                 return;
             end
-            [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,2*1e-6,0);
+            [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,5*1e-6,0);
             gps_data_out=gps_data_cl('Lat',gps_data.Lat(id_keep),'Long',gps_data.Long(id_keep),'Time',gps_data.Time(id_keep),'NMEA',gps_data.NMEA);
         end
         

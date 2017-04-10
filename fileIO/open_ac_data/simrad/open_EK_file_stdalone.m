@@ -231,8 +231,7 @@ if ~isequal(Filename_cell, 0)
             gps_data=gps_data_tmp.clean_gps_track();
             %gps_data=gps_data_tmp;
             if isempty(attitude_full)||~any(attitude_full.Roll)
-                attitude_full=mru0_att;
-                
+                attitude_full=mru0_att;  
             end
             
             if p.Results.GPSOnly==0
