@@ -24,6 +24,7 @@ classdef curr_state_disp_cl <handle
         Font
         Bot_changed_flag
         UIupdate
+        Proj
         Reg_changed_flag %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
     end
     
@@ -34,6 +35,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Freq',38000,@isnumeric);
             addParameter(p,'Fieldname','sv',@ischar);
             addParameter(p,'DispBottom','on',@ischar);
+            addParameter(p,'Proj','Lambert Conformal Conic',@ischar);
             addParameter(p,'DispBotHighVis','off',@ischar);
             addParameter(p,'DispUnderBottom','on',@ischar);
             addParameter(p,'DispTracks','on',@ischar);

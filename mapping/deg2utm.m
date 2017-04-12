@@ -47,7 +47,7 @@ function  [x,y,utmzone] = deg2utm(Lat,Lon)
 
 % Argument checking
 %
-error(nargchk(2, 2, nargin));  %2 arguments required
+narginchk(2, 2);  %2 arguments required
 n1=length(Lat);
 n2=length(Lon);
 if (n1~=n2)

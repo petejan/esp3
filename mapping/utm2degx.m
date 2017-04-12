@@ -51,7 +51,7 @@ function  [Lat,Lon] = utm2degx(xx,yy,utmzone)
 
 % Argument checking
 %
-error(nargchk(3, 3, nargin)); %3 arguments required
+narginchk(3, 3); %3 arguments required
 n1=length(xx);
 n2=length(yy);
 n3=size(utmzone,1);

@@ -15,16 +15,16 @@ range_diff_str=0;
 uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Lines','units','normalized','Position',[0.5 0.8 0.1 0.1]);
 lines_tab_comp.tog_line=uicontrol(lines_tab_comp.lines_tab,'Style','popupmenu','String',list_lines,'Value',length(list_lines),'units','normalized','Position', [0.6 0.8 0.3 0.1],'callback',{@tog_line,main_figure});
 
-uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Time (hh:mm:ss)','units','normalized','Position',[0 0.6 0.15 0.1]);
-lines_tab_comp.time_h_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.15 0.6 0.15 0.1],'string',utc_str,'callback',{@change_time_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Time (hh:mm:ss)','units','normalized','Position',[0 0.6 0.2 0.1]);
+lines_tab_comp.time_h_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.2 0.6 0.15 0.1],'string',utc_str,'callback',{@change_time_callback,main_figure});
 % lines_tab_comp.time_m_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.20 0.6 0.03 0.1],'string',utc_str,'callback',{@change_time_callback,main_figure});
 % lines_tab_comp.time_s_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.25 0.6 0.03 0.1],'string',utc_str,'callback',{@change_time_callback,main_figure});
 
-uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Dist. from vessel (m)','units','normalized','Position',[0.3 0.6 0.15 0.1]);
-lines_tab_comp.Dist_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.5 0.6 0.05 0.1],'string',dist_diff_str,'callback',{@change_dist_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Dist. from sounder (m)','units','normalized','Position',[0 0.4 0.2 0.1]);
+lines_tab_comp.Dist_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.2 0.4 0.05 0.1],'string',dist_diff_str,'callback',{@change_dist_callback,main_figure});
 
-uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Vertical offset (m)','units','normalized','Position',[0.6 0.6 0.15 0.1]);
-lines_tab_comp.Range_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.8 0.6 0.05 0.1],'string',range_diff_str,'callback',{@change_range_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Vertical offset (m)','units','normalized','Position',[0 0.2 0.2 0.1]);
+lines_tab_comp.Range_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.2 0.2 0.05 0.1],'string',range_diff_str,'callback',{@change_range_callback,main_figure});
 
 
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.35 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});

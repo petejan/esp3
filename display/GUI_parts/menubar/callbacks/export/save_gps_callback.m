@@ -1,4 +1,4 @@
-function save_gps_callback(~,~,main_figure)
+function save_gps_callback(~,~,main_figure,def)
 
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
@@ -16,8 +16,11 @@ filenames=layer.Filename;
 for i=1:length(filenames)
     
     [path_f,fileN_ori,~]=fileparts(filenames{i});
-    fileN=fullfile(path_f,[fileN_ori,'_gps_data.csv']);
-    
+    if def==1 
+        fileN=fullfile(path_f,[fileN_ori,'_gps.csv']);
+    else
+        fileN=fullfile(path_f,[fileN_ori,'_gps_data.csv']);
+    end
     idx_f=find(trans_obj.Data.FileId==i);
     gps_obj.save_gps_to_file(fileN,idx_f);
     

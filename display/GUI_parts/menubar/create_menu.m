@@ -76,7 +76,7 @@ uimenu(m_bot_reg_db,'Label','Load Bottom and/or Regions from db','Callback',{@ma
 
 eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
-uimenu(eport_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure});
+uimenu(eport_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure,0});
 uimenu(eport_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
 uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
 
@@ -168,6 +168,9 @@ uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callba
 uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_callback,main_figure});
 uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
 
+towbody_tools=uimenu(mhhh,'Label','Towed body Tools');
+uimenu(towbody_tools,'Label','Correct position based on cable angle and towbody depth','Callback',{@correct_pos_angle_depth_cback,main_figure});
+
 
 if ~isdeployed
     bs_tools=uimenu(mhhh,'Label','Backscatter Analysis');
@@ -214,6 +217,111 @@ uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@help_menu,main_figure});
 setappdata(main_figure,'main_menu',main_menu);
 
 end
+
+
+function correct_pos_angle_depth_cback(src,~,main_figure)
+
+layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+    return;
+end
+
+prompt={'Towing cable angle (in degree)','Towbody depth'};
+defaultanswer={'25','500'};
+
+answer=inputdlg(prompt,'Correct position',1,defaultanswer);
+
+if isempty(answer)
+    answer=defaultanswer;
+end
+
+
+angle_deg=str2double(answer{1});
+
+if isnan(angle_deg)
+     warning('Invalid Angle');
+    return;
+end
+
+depth_m=str2double(answer{2});
+
+if isnan(depth_m)
+     warning('Invalid Depth');
+    return;
+end
+
+distance=depth_m/tand(angle_deg);
+
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+
+gps_data=trans_obj.GPSDataPing;
+
+heading=heading_from_lat_long(gps_data.Lat,gps_data.Long);
+
+%heading=trans_obj.AttitudeNavPing.Heading';
+heading=nanmean(heading);
+
+
+%[x_ship,y_ship,Zone]=wgs2utm(gps_data.Lat,gps_data.Long);
+[x_ship,y_ship,Zone]=deg2utm(gps_data.Lat,gps_data.Long);
+
+
+heading=90-heading;
+
+Y_new=y_ship-distance*sind(heading);%E
+X_new=x_ship-distance*cosd(heading);%N
+
+[new_lat,new_long] = utm2degx(X_new,Y_new,num2str(Zone));
+
+LongLim=[nanmin(gps_data.Long) nanmax(gps_data.Long)];
+
+LatLim=[nanmin(gps_data.Lat) nanmax(gps_data.Lat)];
+
+[LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.3);
+
+
+
+hfig=new_echo_figure(main_figure,'Name','Navigation','Tag','nav');
+ax=axes(hfig,'Nextplot','add');
+m_proj(curr_disp.Proj,'long',LongLim,'lat',LatLim);
+m_plot(ax,gps_data.Long(1),gps_data.Lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
+m_plot(ax,gps_data.Long,gps_data.Lat,'Color','k','tag','Nav');
+m_plot(ax,new_long(1),new_lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
+m_plot(ax,new_long,new_lat,'Color','r','tag','Nav');
+m_grid('box','fancy','tickdir','in','parent',ax);
+
+% Construct a questdlg with three options
+choice = questdlg('Would you like to use this corrected track (in red)?', ...
+	'?', ...
+	'Yes','No','No');
+close(hfig);
+
+switch choice
+    case 'Yes'
+        save_gps_callback([],[],main_figure,1);
+    case 'No'
+        return;
+        
+end
+
+
+trans_obj.GPSDataPing.Lat=new_lat;
+trans_obj.GPSDataPing.Long=new_long;
+
+update_map_tab(main_figure);
+
+setappdata(main_figure,'Curr_disp',curr_disp);
+setappdata(main_figure,'Layer',layer);
+
+set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_mini','mini');
+
+end
+
 
 function manage_version_calllback(~,~,main_figure)
 

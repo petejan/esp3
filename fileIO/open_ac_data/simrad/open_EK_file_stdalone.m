@@ -234,6 +234,8 @@ if ~isequal(Filename_cell, 0)
                 attitude_full=mru0_att;  
             end
             
+            
+            
             if p.Results.GPSOnly==0
                 for i =1:length(trans_obj)
                     if trans_obj(i).need_escorr()
