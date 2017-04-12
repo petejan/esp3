@@ -100,7 +100,7 @@ for i=1:length(Filenames)
         outputFile=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);
         surv_obj.print_output(outputFile);
         fprintf(1,'Results save to %s \n',outputFile);
-        outputFileXLS=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_xls_output.xls']);
+        outputFileXLS=fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_xls_output.xlsx']);
         surv_obj.print_output_xls(outputFileXLS);
         fprintf(1,'Results save to %s \n',outputFileXLS);
         

@@ -37,6 +37,9 @@
 %% Function
 function print_output_xls(surv_obj,file)
 
+if exist(file,'file')>0
+    delete(file);
+end
 warning('off','MATLAB:xlswrite:AddSheet');
 infos=surv_obj.SurvInput.Infos;
 info_sheet=[fieldnames(infos) struct2cell(infos)];
@@ -56,8 +59,61 @@ transectSumSheet=struct_to_sheet(trans_sum);
 
 xlswrite(file,transectSumSheet',3);
 
+slice_trans_sum=surv_obj.SurvOutput.slicedTransectSum;
 
 
+row_start=1;
+for i=1:numel(slice_trans_sum.snapshot)
+    [sheet_info,sheet_tot]=sliced_struct_to_sheet(slice_trans_sum,i);
+    rangeStr = sprintf( 'A%d', row_start );
+    xlswrite(file,sheet_info,4,rangeStr);
+    row_start=row_start+size(sheet_info,1);
+    rangeStr = sprintf( 'A%d', row_start );
+    xlswrite(file,sheet_tot,4,rangeStr);
+    row_start=row_start+size(sheet_tot,1)+1;
+end
+
+end
+
+function [sheet_info,sheet_tot]=sliced_struct_to_sheet(str_obj,idx)
+fields=fieldnames(str_obj);
+
+idx_info=[];
+idx_tot=[];
+i_info=0;
+i_tot=0;
+for i=1:numel(fields)
+    if iscell(str_obj.(fields{i}))
+        curr_f=str_obj.(fields{i}){idx};
+    else
+        curr_f=str_obj.(fields{i})(idx);
+    end
+    if numel(curr_f)==1||ischar(curr_f)
+        
+        i_info=i_info+1;
+        idx_info=union(idx_info,i);
+        str_obj_cell_info_rfmt{i_info}=curr_f;
+        if ~isempty(strfind(fields{i},'time'))
+            str_obj_cell_info_rfmt{i_info}=datestr(curr_f,'dd/mm/yyyy HH:MM:SS');
+        end
+        
+    else
+        i_tot=i_tot+1;
+        idx_tot=union(idx_tot,i);
+        
+        if ~isempty(strfind(fields{i},'time'))
+            curr_f=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),num2cell(curr_f),'UniformOutput',0);
+        end
+        
+        if isnumeric(curr_f)
+            str_obj_cell_tot_rfmt(i_tot,:)=num2cell(curr_f);
+        else
+            str_obj_cell_tot_rfmt(i_tot,:)=curr_f;
+        end
+    end
+end
+sheet_info=[fields(idx_info) str_obj_cell_info_rfmt'];
+sheet_tot=[fields(idx_tot) str_obj_cell_tot_rfmt];
 end
 
 function sheet=struct_to_sheet(str_obj)
