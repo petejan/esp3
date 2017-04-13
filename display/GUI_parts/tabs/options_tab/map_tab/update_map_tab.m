@@ -9,7 +9,10 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 if isempty(layer)
     return;
 end
-grid(map_tab_comp.ax,'on');
+delete(map_tab_comp.ax);
+map_tab_comp.ax=axes('Parent',map_tab_comp.map_tab,'Units','normalized','box','on',...
+    'OuterPosition',[0 0 1 1],'visible','on','NextPlot','add','box','on','tag','nav');
+
 lat=layer.GPSData.Lat;
 long=layer.GPSData.Long;
 
@@ -18,7 +21,7 @@ LongLim=[nanmin(long) nanmax(long)];
 LatLim=[nanmin(lat) nanmax(lat)];
 
 [LatLimExt,LongLimExt]=ext_lat_lon_lim(LatLim,LongLim,0.3);
-delete(map_tab_comp.tracks)
+
 list_proj=m_getproj;
 proj={list_proj(:).name};
 proj_i=curr_disp.Proj;
@@ -44,7 +47,8 @@ map_tab_comp.LongLim=LongLim;
 map_tab_comp.LatLim=LatLim;
 map_tab_comp.tracks(1)=m_plot(map_tab_comp.ax,long(1),lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
 map_tab_comp.tracks(2)=m_plot(map_tab_comp.ax,long,lat,'Color','k','tag','Nav');
-%m_grid('box','fancy','tickdir','in','parent',map_tab_comp.ax);
+m_grid('tickdir','in','axes',map_tab_comp.ax);
+
 setappdata(main_figure,'Map_tab',map_tab_comp);
 setappdata(main_figure,'Curr_disp',curr_disp);
 

@@ -2,7 +2,7 @@ function load_map_tab(main_figure,tab_panel)
 
 switch tab_panel.Type
     case 'uitabgroup'
-        map_tab_comp.map_tab=uitab(tab_panel,'Title','Map');
+        map_tab_comp.map_tab=uitab(tab_panel,'Title','Map','backgroundcolor','w');
         tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
         map_tab_comp.map_tab.UIContextMenu=tab_menu;
         uimenu(tab_menu,'Label','Undock map','Callback',{@undock_map_tab_callback,main_figure,'out_figure'});
@@ -10,9 +10,7 @@ switch tab_panel.Type
         map_tab_comp.map_tab=tab_panel;
 end
 
-map_tab_comp.ax=axes('Parent',map_tab_comp.map_tab,'Units','normalized','box','on',...
-    'Position',[0 0 1 1],'visible','on','NextPlot','add','box','on','tag','nav');
-
+map_tab_comp.ax=[];
 map_tab_comp.tracks=[];
 map_tab_comp.boat_pos=[];
 map_tab_comp.Proj=[];
