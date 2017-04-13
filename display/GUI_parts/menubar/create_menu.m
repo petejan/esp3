@@ -233,7 +233,7 @@ defaultanswer={'25','500'};
 answer=inputdlg(prompt,'Correct position',1,defaultanswer);
 
 if isempty(answer)
-    answer=defaultanswer;
+    return;
 end
 
 
@@ -292,7 +292,7 @@ m_plot(ax,gps_data.Long(1),gps_data.Lat(1),'Marker','o','Markersize',10,'Color',
 m_plot(ax,gps_data.Long,gps_data.Lat,'Color','k','tag','Nav');
 m_plot(ax,new_long(1),new_lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
 m_plot(ax,new_long,new_lat,'Color','r','tag','Nav');
-m_grid('box','fancy','tickdir','in','parent',ax);
+m_grid('box','fancy','tickdir','in','axes',ax);
 
 % Construct a questdlg with three options
 choice = questdlg('Would you like to use this corrected track (in red)?', ...
@@ -302,15 +302,15 @@ close(hfig);
 
 switch choice
     case 'Yes'
+        trans_obj.GPSDataPing.Lat=new_lat;
+        trans_obj.GPSDataPing.Long=new_long;
+        layer.replace_gps_data_layer(trans_obj.GPSDataPing);
         save_gps_callback([],[],main_figure,1);
     case 'No'
         return;
         
 end
 
-
-trans_obj.GPSDataPing.Lat=new_lat;
-trans_obj.GPSDataPing.Long=new_long;
 
 update_map_tab(main_figure);
 

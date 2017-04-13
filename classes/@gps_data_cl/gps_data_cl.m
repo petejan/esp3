@@ -95,7 +95,7 @@ classdef gps_data_cl
                 gps_data_out=gps_data;
                 return;
             end
-            [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,2*1e-6,0);
+            [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,1e-6,0);
             gps_data_out=gps_data_cl('Lat',gps_data.Lat(id_keep),'Long',gps_data.Long(id_keep),'Time',gps_data.Time(id_keep),'NMEA',gps_data.NMEA);
         end
         

@@ -45,5 +45,6 @@ layer.replace_gps_data_layer(gps_data);
 
 setappdata(main_figure,'Layer',layer);
 update_axis_panel(main_figure,0)
+update_map_tab(main_figure);x
 
 end

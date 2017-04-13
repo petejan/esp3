@@ -1,4 +1,4 @@
-%% display_navigation_callback.m
+%% display_speed_callback.m
 %
 % TODO: write short description of function
 %
@@ -34,19 +34,12 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function display_navigation_callback(~,~,main_figure)
+function display_speed_callback(~,~,main_figure)
 % profile on;
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-map_input=map_input_cl.map_input_cl_from_obj(layer,'SliceSize',0);
-if nansum(isnan(map_input.LatLim))>=1
-    return;
-end
-layers_Str=list_layers(layer);
-hfig=map_input.display_map_input_cl('main_figure',main_figure);
-set(hfig,'Name',sprintf('Navigation  %s',layers_Str{1}));
 
 new_fig=layer.Transceivers(idx_freq).GPSDataPing.display_speed(main_figure);
 set(new_fig,'Tag','speed','Name',sprintf('Speed  %s',layers_Str{1}));
