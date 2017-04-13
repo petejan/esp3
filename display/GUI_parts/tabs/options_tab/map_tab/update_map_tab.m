@@ -9,9 +9,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 if isempty(layer)
     return;
 end
-delete(map_tab_comp.ax);
-map_tab_comp.ax=axes('Parent',map_tab_comp.map_tab,'Units','normalized','box','on',...
-    'OuterPosition',[0 0 1 1],'visible','on','NextPlot','add','box','on','tag','nav');
+delete(get(map_tab_comp.ax,'children'));
 
 lat=layer.GPSData.Lat;
 long=layer.GPSData.Long;

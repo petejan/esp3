@@ -238,7 +238,7 @@ end;
 [X,Y]=feval(MAP_PROJECTION.routine,'box');
 
 if strcmp(gbox,'on');
-    line(X(:),Y(:),'linestyle','-','linewidth',glinewidth,'color',gcolor,'tag','m_grid_box','clipping','off');
+    line(ax,X(:),Y(:),'linestyle','-','linewidth',glinewidth,'color',gcolor,'tag','m_grid_box','clipping','off');
 end;
 
 % Axes background - to defeat the inverthardcopy, I need a non-white border (the edgecolor),
@@ -311,12 +311,12 @@ if ~IsOctave,
     set(ax,'children',hh);
     set(0, 'ShowHiddenHandles', show);
     
-end;
+end
 
 
 % X-axis labels and grid
 
-if ~isempty(xtick),
+if ~isempty(xtick)
     
     % Tricky thing - if we are drawing a map with the poles, its nasty when the lines get too close
     % together. So we can sort of fudge this by altering MAP_VAR_LIST.lats to be slightly smaller,
@@ -341,7 +341,7 @@ if ~isempty(xtick),
     % down on the number of children hanging onto the axes).
     
     [n,m]=size(X);
-    line(reshape([X;NaN+ones(1,m)],(n+1)*m,1),reshape([Y;NaN+ones(1,m)],(n+1)*m,1),...
+    line(ax,reshape([X;NaN+ones(1,m)],(n+1)*m,1),reshape([Y;NaN+ones(1,m)],(n+1)*m,1),...
         'linestyle',glinestyle,'color',gcolor,'linewidth',0.1,'tag','m_grid_xgrid');
     
     % Get the tick data
@@ -351,24 +351,30 @@ if ~isempty(xtick),
     
     if strcmp(gxticklabeldir,'middle'),
         if lgI==size(X,1) & strcmp(gxaxisloc,'top'),  % Check to see if the projection supports this option.
-            vert='bottom';horiz='center';drawticks=1;
+            vert='bottom';
+            horiz='center';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+90;
         elseif lgI==1 & strcmp(gxaxisloc,'bottom')
-            vert='top';horiz='center';drawticks=1;
+            vert='top';
+            horiz='center';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi-90;
         else
-            vert='middle';horiz='center';lgIp1=lgI+1;drawticks=0;
+            vert='middle';
+            horiz='center';lgIp1=lgI+1;drawticks=0;
             xx=X(lgI,:); yy=Y(lgI,:);rotang=atan2(Y(lgIp1,:)-Y(lgI,:),X(lgIp1,:)-X(lgI,:))*180/pi-90;
         end;
     else
         if lgI==size(X,1) & strcmp(gxaxisloc,'top'),  % Check to see if the projection supports this option.
-            vert='middle';horiz='left';drawticks=1;
+            vert='middle';
+            horiz='left';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+180;
         elseif lgI==1 & strcmp(gxaxisloc,'bottom')
-            vert='middle';;horiz='right';drawticks=1;
+            vert='middle';
+            horiz='right';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi;
         else
-            vert='top';;horiz='center';lgIp1=lgI+1;drawticks=0;
+            vert='top';
+            horiz='center';lgIp1=lgI+1;drawticks=0;
             xx=X(lgI,:); yy=Y(lgI,:);rotang=atan2(Y(lgIp1,:)-Y(lgI,:),X(lgIp1,:)-X(lgI,:))*180/pi;
         end;
     end;
@@ -383,9 +389,9 @@ if ~isempty(xtick),
     end;
     if drawticks,
         [n,m]=size(ltx);
-        line(reshape([ltx;NaN+ones(1,m)],(n+1)*m,1),reshape([lty;NaN+ones(1,m)],(n+1)*m,1),...
+        line(ax,reshape([ltx;NaN+ones(1,m)],(n+1)*m,1),reshape([lty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_xticks-lower','clipping','off');
-        line(reshape([utx;NaN+ones(1,m)],(n+1)*m,1),reshape([uty;NaN+ones(1,m)],(n+1)*m,1),...
+        line(ax,reshape([utx;NaN+ones(1,m)],(n+1)*m,1),reshape([uty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_xticks-upper','clipping','off');
     end;
     
@@ -395,7 +401,7 @@ if ~isempty(xtick),
     
     for k=ik,
         [rotang(k), horizk, vertk] = upright(rotang(k), horiz, vert);
-        text(xx(k),yy(k),labs{k},'horizontalalignment',horizk,'verticalalignment',vertk, ...
+        text(ax,xx(k),yy(k),labs{k},'horizontalalignment',horizk,'verticalalignment',vertk, ...
             'rotation',rotang(k),'fontsize',gfontsize*scl(k),'color',gcolor,...
             'tag','m_grid_xticklabel','fontname',gfontname);
     end;
@@ -417,7 +423,7 @@ if ~isempty(ytick),
     
     % Draw the grid
     [n,m]=size(X);
-    line(reshape([X;NaN+ones(1,m)],(n+1)*m,1),reshape([Y;NaN+ones(1,m)],(n+1)*m,1),...
+    line(ax,reshape([X;NaN+ones(1,m)],(n+1)*m,1),reshape([Y;NaN+ones(1,m)],(n+1)*m,1),...
         'linestyle',glinestyle,'color',gcolor,'linewidth',0.1,'tag','m_grid_ygrid');
     
     % Get the tick data
@@ -440,10 +446,12 @@ if ~isempty(ytick),
             horiz='center';vert='top';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+270;
         elseif ltI==1 & strcmp(gyaxisloc,'left');
-            horiz='center';vert='bottom';drawticks=1;
+            horiz='center';
+            vert='bottom';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi+90;
         else
-            horiz='left';vert='middle';ltIp1=ltI+1;drawticks=0;
+            horiz='left';
+            vert='middle';ltIp1=ltI+1;drawticks=0;
             xx=X(ltI,:); yy=Y(ltI,:);rotang=atan2(Y(ltIp1,:)-Y(ltI,:),X(ltIp1,:)-X(ltI,:))*180/pi+90;
         end;
     end;
@@ -458,9 +466,9 @@ if ~isempty(ytick),
     end;
     if drawticks,
         [n,m]=size(ltx);
-        line(reshape([ltx;NaN+ones(1,m)],(n+1)*m,1),reshape([lty;NaN+ones(1,m)],(n+1)*m,1),...
+        line(ax,reshape([ltx;NaN+ones(1,m)],(n+1)*m,1),reshape([lty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_yticks-left','clipping','off');
-        line(reshape([utx;NaN+ones(1,m)],(n+1)*m,1),reshape([uty;NaN+ones(1,m)],(n+1)*m,1),...
+        line(ax,reshape([utx;NaN+ones(1,m)],(n+1)*m,1),reshape([uty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_yticks-right','clipping','off');
     end;
     
@@ -469,7 +477,7 @@ if ~isempty(ytick),
     
     for k=ik,
         [rotang(k), horizk, vertk] = upright(rotang(k), horiz, vert);
-        text(xx(k),yy(k),labs{k},'horizontalalignment',horizk,'verticalalignment',vertk,...
+        text(ax,xx(k),yy(k),labs{k},'horizontalalignment',horizk,'verticalalignment',vertk,...
             'rotation',rotang(k),'fontsize',gfontsize*scl(k),'color',gcolor,...
             'tag','m_grid_yticklabel','fontname',gfontname);
     end;
