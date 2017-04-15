@@ -1,4 +1,4 @@
-function [x_out,y_out,idx_keep]=DouglasPeucker(x,y,epsilon,i_start)
+function [x_out,y_out,idx_keep]=DouglasPeucker(x,y,epsilon,i_start,nb_max,nb_ite)
 % Find the point with the maximum distance
 
 len = length(x);
@@ -8,10 +8,11 @@ d = perp_dist([x(1) y(1)],[x(end) y(end)],[x y]);
 [dmax,index]=nanmax(d);
 
 % If max distance is greater than epsilon, recursively simplify
-if ( dmax > epsilon )
+if ( dmax > epsilon )&& nb_max>nb_ite
+    nb_ite=nb_ite+1;
     % Recursive call
-    [x_1,y_1,idx_keep_1] = DouglasPeucker(x(1:index),y(1:index), epsilon,i_start);
-    [x_2,y_2,idx_keep_2] = DouglasPeucker(x(index:len),y(index:len),epsilon,i_start+index-1);
+    [x_1,y_1,idx_keep_1] = DouglasPeucker(x(1:index),y(1:index), epsilon,i_start,nb_max,nb_ite);
+    [x_2,y_2,idx_keep_2] = DouglasPeucker(x(index:len),y(index:len),epsilon,i_start+index-1,nb_max,nb_ite);
     
     % Build the result list
     idx_keep=unique([idx_keep_1 idx_keep_2]);
