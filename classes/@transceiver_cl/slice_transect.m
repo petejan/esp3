@@ -200,13 +200,18 @@ output.shadow_zone_mean_height=shadow_zone_mean_height;
 if ~isempty(trans_obj.GPSDataPing.Lat)
     output.slice_lat=trans_obj.GPSDataPing.Lat(idx_M)';
     output.slice_lon=trans_obj.GPSDataPing.Long(idx_M)';
-    output.slice_lat_esp2=trans_obj.GPSDataPing.Lat(idx_S)';
-    output.slice_lon_esp2=trans_obj.GPSDataPing.Long(idx_S)';
+    output.slice_lat_s=trans_obj.GPSDataPing.Lat(idx_S)';
+    output.slice_lon_s=trans_obj.GPSDataPing.Long(idx_S)'; 
+    output.slice_lat_e=trans_obj.GPSDataPing.Lat(idx_E)';
+    output.slice_lon_e=trans_obj.GPSDataPing.Long(idx_E)';
 else
     output.slice_lat=nan(size(nb_good_pings));
     output.slice_lon=nan(size(nb_good_pings));
-    output.slice_lat_esp2=nan(size(nb_good_pings));
-    output.slice_lon_esp2=nan(size(nb_good_pings));
+    output.slice_lat_s=nan(size(nb_good_pings));
+    output.slice_lon_s=nan(size(nb_good_pings));
+    
+    output.slice_lat_e=nan(size(nb_good_pings));
+    output.slice_lon_e=nan(size(nb_good_pings));
 end
 
 output.slice_time_start=trans_obj.Data.Time(idx_S);

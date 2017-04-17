@@ -50,6 +50,10 @@ for isn=1:length(snapshots)
         if isfield(stratum{ist},'Options')
             options=stratum{ist}.Options;
         end
+        
+%         strat_type=stratum{ist}.Type;
+%         strat_radius=stratum{ist}.radius;
+%         
         for itr=1:length(transects)
            show_status_bar(p.Results.gui_main_handle);
            

@@ -176,6 +176,8 @@ end
 function strat_curr=get_strat_node(stratum,options)
     strat_curr.Name=get_att(stratum,'name');
     strat_curr.Transects=get_transects(stratum);
+    strat_curr.Type=get_att(stratum,'type');
+    strat_curr.Radius=get_att(stratum,'radius');
     if isnumeric(strat_curr.Name)
         strat_curr.Name=num2str(strat_curr.Name,'%.0f');
     end
