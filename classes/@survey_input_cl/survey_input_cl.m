@@ -26,7 +26,7 @@ classdef survey_input_cl < handle
             addParameter(p,'Options',survey_options_cl);
             addParameter(p,'Algos',{});
             addParameter(p,'Regions_WC',{});
-            addParameter(p,'Snapshots',struct('Number',0,'Folder','','Stratum',{},'Cal',[]));
+            addParameter(p,'Snapshots',{struct('Number',0,'Folder','','Stratum','','Cal',[])});
             parse(p,varargin{:});
             
             

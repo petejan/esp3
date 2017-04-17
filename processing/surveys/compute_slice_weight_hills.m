@@ -19,13 +19,13 @@ weight(~idx_sign)=(end_r(~idx_sign).^2+start_r(~idx_sign).^2)./(2*R^2);
 weight(idx_sign)=(end_r(idx_sign).^2+start_r(idx_sign).^2)./(2*R^2);
 r_dist=start_r.*sign(end_r-start_r)+(start_r-end_r)/2;
 
-hfig=figure();
+% hfig=figure();
+% 
+% ax=axes(hfig);
+% grid(ax,'on');
+% plot(ax,r_dist,weight);
 
-ax=axes(hfig);
-grid(ax,'on');
-plot(ax,r_dist,weight);
-
-
+weight(abs(r_dist)>R)=0;
 area=2*pi*R^2;
 
 end

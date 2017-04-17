@@ -1,6 +1,7 @@
 %% generate_output.m
 %
-% TODO: write short description of function
+% key function for integration of surveys. Everything happens here. It
+% needs cleaning, commenting and the output needs to be optimized.
 %
 %% Help
 %
@@ -144,7 +145,9 @@ for isn=1:length(snaps)
         
         gps_add.Long(gps_add.Long>180)=gps_add.Long(gps_add.Long>180)-360;
         idx_pings=1:length(gps_add.Time);
-        idx_good_pings_add=intersect(idx_pings,find(tag_add(:)>0&gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(i)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(i)))));
+        idx_in_transect=find(gps_add.Time(:)>=nanmin(output.StartTime(idx_lay(i)))&gps_add.Time(:)<=nanmax(output.EndTime(idx_lay(i))));
+        idx_good_pings_add=intersect(idx_pings,idx_in_transect);
+        idx_good_pings_add=intersect(idx_good_pings_add,find(tag_add(:)>0));
         idx_good_pings_dist=intersect(idx_good_pings_add,find(~isnan(gps_add.Lat(:))));
         
         if ~isempty(idx_good_pings_dist)
@@ -360,11 +363,17 @@ for isn=1:length(snaps)
     surv_out_obj.slicedTransectSum.transect(i_trans) = trans_num;
     surv_out_obj.slicedTransectSum.slice_size(i_trans) = nanmean([Output_echo(:).slice_size]); % slice_size
     surv_out_obj.slicedTransectSum.num_slices(i_trans) = nansum([Output_echo(:).num_slices]); % num_slices
-    surv_out_obj.slicedTransectSum.latitude{i_trans} = [Output_echo(:).slice_lat_esp2]; % latitude
-    surv_out_obj.slicedTransectSum.longitude{i_trans} = [Output_echo(:).slice_lon_esp2]; % longitude
+    surv_out_obj.slicedTransectSum.latitude{i_trans} = [Output_echo(:).slice_lat_s]; % latitude
+    surv_out_obj.slicedTransectSum.longitude{i_trans} = [Output_echo(:).slice_lon_s]; % longitude
+    
+    surv_out_obj.slicedTransectSum.latitude_e{i_trans} = [Output_echo(:).slice_lat_e]; % latitude
+    surv_out_obj.slicedTransectSum.longitude_e{i_trans} = [Output_echo(:).slice_lon_e]; % longitude
+   
+    surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)=surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)-360;
+    surv_out_obj.slicedTransectSum.longitude_e{i_trans}(surv_out_obj.slicedTransectSum.longitude_e{i_trans}>180)=surv_out_obj.slicedTransectSum.longitude_e{i_trans}(surv_out_obj.slicedTransectSum.longitude_e{i_trans}>180)-360;
+    
     surv_out_obj.slicedTransectSum.time_start{i_trans} = [Output_echo(:).slice_time_start]; %
     surv_out_obj.slicedTransectSum.time_end{i_trans} = [Output_echo(:).slice_time_end]; %
-    surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)=surv_out_obj.slicedTransectSum.longitude{i_trans}(surv_out_obj.slicedTransectSum.longitude{i_trans}>180)-360;
     surv_out_obj.slicedTransectSum.slice_abscf{i_trans} = [Output_echo(:).slice_abscf]; % slice_abscf
     surv_out_obj.slicedTransectSum.slice_nb_tracks{i_trans} = [Output_echo(:).slice_nb_tracks];
     surv_out_obj.slicedTransectSum.slice_nb_st{i_trans} = [Output_echo(:).slice_nb_st];
@@ -391,9 +400,34 @@ for isn = 1:length(snapshots)
     
     for j = 1:length(strats)
         i_strat=i_strat+1;
+        
+        
 
         jx = strcmpi(surv_out_obj.transectSum.stratum(ix), strats{j});
         idx=ix(jx);
+        
+        [type,radius]=surv_in_obj.get_start_type_and_radius(snapshots(isn),strats{j});
+        i_trans_strat=find(surv_out_obj.slicedTransectSum.snapshot==snapshots(isn)&strcmp(strats{j},surv_out_obj.slicedTransectSum.stratum)); 
+        il=0;
+        slice_trans_obj=surv_out_obj.slicedTransectSum;
+        switch type
+            case 'hill'
+                [~,~,lat_trans,long_trans] = find_centre(slice_trans_obj.latitude(i_trans_strat),...
+                    slice_trans_obj.longitude(i_trans_strat));
+               
+                for it=i_trans_strat
+                     il=il+1; 
+                    [surv_out_obj.slicedTransectSum.slice_hill_weight{it},~,~]=compute_slice_weight_hills(...
+                        slice_trans_obj.latitude{it},slice_trans_obj.longitude{it},...
+                        slice_trans_obj.latitude_e{it},slice_trans_obj.longitude_e{it},...
+                        lat_trans(il),long_trans(il),radius);
+                end
+            otherwise
+                 for it=i_trans_strat
+                     il=il+1; 
+                    surv_out_obj.slicedTransectSum.slice_hill_weight{it}=zeros(size(surv_out_obj.slicedTransectSum.latitude{it}));
+                end
+        end
         
         surv_out_obj.stratumSum.snapshot(i_strat) =surv_out_obj.transectSum.snapshot(idx(1));
         surv_out_obj.stratumSum.stratum{i_strat} =surv_out_obj.transectSum.stratum{idx(1)};
