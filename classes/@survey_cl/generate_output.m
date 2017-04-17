@@ -1,6 +1,6 @@
 %% generate_output.m
 %
-% key function for integration of surveys. Everything happens here. It
+% Key function for integration of surveys. Everything happens here. It
 % needs cleaning, commenting and the output needs to be optimized.
 %
 %% Help

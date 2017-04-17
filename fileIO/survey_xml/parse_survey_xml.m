@@ -1,4 +1,39 @@
-function survey_input=parse_survey_xml(xml_file)
+%% parse_survey_xml.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |xml_file|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |survey_input|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2015-12-18: first version (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function survey_input = parse_survey_xml(xml_file)
 
 xml_struct=parseXML(xml_file);
 
