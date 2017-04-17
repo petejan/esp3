@@ -1,3 +1,46 @@
+%% DouglasPeucker.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |x|: TODO: write description and info on variable
+% * |y|: TODO: write description and info on variable
+% * |epsilon|: TODO: write description and info on variable
+% * |i_start|: TODO: write description and info on variable
+% * |nb_max|: TODO: write description and info on variable
+% * |nb_ite|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |x_out|: TODO: write description and info on variable
+% * |y_out|: TODO: write description and info on variable
+% * |idx_keep|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-15: mods (Yoann Ladroit).
+% * 2017-02-02: first version, Douglas Peucker algorithm to simplify gps tracks (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [x_out,y_out,idx_keep]=DouglasPeucker(x,y,epsilon,i_start,nb_max,nb_ite)
 % Find the point with the maximum distance
 

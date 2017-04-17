@@ -1,3 +1,42 @@
+%% find_centre.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |gps_objs|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |lat_centre|: TODO: write description and info on variable
+% * |long_centre|: TODO: write description and info on variable
+% * |lat_trans|: TODO: write description and info on variable
+% * |long_trans|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-15: added centre computation for hills survey and weight computation (Yoann Ladroit).
+% * 2017-04-13: first version. Methods to find centre for hill survey (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [lat_centre,long_centre,lat_trans,long_trans] = find_centre(gps_objs)
 nb_trans=numel(gps_objs);
 

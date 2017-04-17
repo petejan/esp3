@@ -23,7 +23,7 @@
 % *NEW FEATURES*
 %
 % * 2017-03-29: header (Alex Schimel).
-% * YYYY-MM-DD: first version (Author). TODO: complete date and comment
+% * 2015-10-27: first version (Author). TODO: complete date and comment
 %
 % *EXAMPLE*
 %
@@ -35,6 +35,7 @@
 
 %% Function
 function display_speed_callback(~,~,main_figure)
+
 % profile on;
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');

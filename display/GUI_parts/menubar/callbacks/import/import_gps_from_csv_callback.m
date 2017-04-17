@@ -1,4 +1,40 @@
+%% import_gps_from_csv_callback.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |main_figure|: Handle to main ESP3 window
+%
+% *OUTPUT VARIABLES*
+%
+% NA
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-02-10: first version (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function import_gps_from_csv_callback(~,~,main_figure)
+
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
@@ -8,7 +44,6 @@ end
 [path_f,~,~]=fileparts(layer.Filename{1});
 
 [Filename,PathToFile]= uigetfile({fullfile(path_f,'*.csv;*.txt;*.mat')}, 'Pick a csv/txt/mat','MultiSelect','on');
-
 
 if isempty(Filename)
     return;
@@ -21,7 +56,6 @@ if ~iscell(Filename)
     Filename={Filename};
 end
 
-
 prompt={'Offset in hours'};
 defaultanswer={'0'};
 
@@ -33,7 +67,6 @@ end
 if ~isnan(str2double(answer{1}))
     dt=str2double(answer{1});
 else
-   
     warning('Invalid time offset');
     dt=0;
 end
@@ -45,6 +78,6 @@ layer.replace_gps_data_layer(gps_data);
 
 setappdata(main_figure,'Layer',layer);
 update_axis_panel(main_figure,0)
-update_map_tab(main_figure);x
+update_map_tab(main_figure);
 
 end

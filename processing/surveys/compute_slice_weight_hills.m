@@ -1,3 +1,46 @@
+%% compute_slice_weight_hills.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |lat_s|: TODO: write description and info on variable
+% * |long_s|: TODO: write description and info on variable
+% * |lat_e|: TODO: write description and info on variable
+% * |long_e|: TODO: write description and info on variable
+% * |lat0|: TODO: write description and info on variable
+% * |long0|: TODO: write description and info on variable
+% * |R|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |weight|: TODO: write description and info on variable
+% * |r_dist|: TODO: write description and info on variable
+% * |area|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-04-15: first version (Yoann Ladroit)
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [weight,r_dist,area]=compute_slice_weight_hills(lat_s,long_s,lat_e,long_e,lat0,long0,R)
 
 nb_slices=length(lat_s);
