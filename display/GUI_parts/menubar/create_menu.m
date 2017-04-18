@@ -251,47 +251,13 @@ if isnan(depth_m)
     return;
 end
 
-distance=depth_m/tand(angle_deg);
-
-
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
 gps_data=trans_obj.GPSDataPing;
 
-heading=heading_from_lat_long(gps_data.Lat,gps_data.Long);
-
-%heading=trans_obj.AttitudeNavPing.Heading';
-heading=mode(round(heading));
-
-
-%[x_ship,y_ship,Zone]=wgs2utm(gps_data.Lat,gps_data.Long);
-[x_ship,y_ship,Zone]=deg2utm(gps_data.Lat,gps_data.Long);
-
-
-
-Y_new=y_ship-distance*sind(heading);%E
-X_new=x_ship-distance*cosd(heading);%N
-
-[new_lat,new_long] = utm2degx(X_new,Y_new,num2str(Zone));
-
-LongLim=[nanmin(gps_data.Long) nanmax(gps_data.Long)];
-
-LatLim=[nanmin(gps_data.Lat) nanmax(gps_data.Lat)];
-
-[LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.3);
-
-
-
-hfig=new_echo_figure(main_figure,'Name','Navigation','Tag','nav');
-ax=axes(hfig,'Nextplot','add');
-m_proj(curr_disp.Proj,'long',LongLim,'lat',LatLim);
-m_plot(ax,gps_data.Long(1),gps_data.Lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
-m_plot(ax,gps_data.Long,gps_data.Lat,'Color','k','tag','Nav');
-m_plot(ax,new_long(1),new_lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
-m_plot(ax,new_long,new_lat,'Color','r','tag','Nav');
-m_grid('box','fancy','tickdir','in','axes',ax);
+[new_lat,new_long,hfig]=correct_pos_angle_depth(gps_data.Lat,gps_data.Long,angle_deg,depth_m,curr_disp.Proj);
 
 % Construct a questdlg with three options
 choice = questdlg('Would you like to use this corrected track (in red)?', ...
@@ -423,36 +389,6 @@ load_survey_data_fig_from_db(main_figure,0);
 
 end
 
-
-
-function logbook_display_callback(~,~,main_figure)
-layer=getappdata(main_figure,'Layer');
-app_path=getappdata(main_figure,'App_path');
-
-if isempty(layer)
-    path_f = uigetdir(app_path.data,'Choose data folder');
-    if path_f==0
-        return;
-    end
-else
-    [path_lay,~]=layer.get_path_files();
-    path_f=path_lay{1};
-end
-
-xmlfile=fullfile(path_f,'echo_logbook.xml');
-htmlfile=fullfile(path_f,'echo_logbook.html');
-
-if exist(xmlfile,'file')==0
-    initialize_echo_logbook_file(path_f);
-end
-
-if exist(htmlfile,'file')==0
-    xslt(xmlfile, fullfile(whereisEcho,'config','echo_logbook.xsl'), htmlfile);
-end
-
-system(sprintf('start "" "%s"',htmlfile));
-
-end
 
 
 
