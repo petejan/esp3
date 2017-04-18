@@ -41,7 +41,7 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
-drawnow;
+
 nb_layer=length(layers);
 data_new=cell(nb_layer,2);
 

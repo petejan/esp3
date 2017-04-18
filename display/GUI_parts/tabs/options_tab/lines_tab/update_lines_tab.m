@@ -6,10 +6,11 @@ list_lines = layer.list_lines();
 if ~isempty(list_lines)
     set(lines_tab_comp.tog_line,'string',list_lines);
     idx_line=get(lines_tab_comp.tog_line,'value');
-    idx_line=nanmax(length(layer.Lines),idx_line);
-    
+    idx_line=nanmin(length(layer.Lines),idx_line);
+   
     utc_diff=layer.Lines(idx_line).UTC_diff;
-    
+     %set(lines_tab_comp.tog_line,'value',idx_line);
+   
     if utc_diff<0
         start_symb='-';
     else

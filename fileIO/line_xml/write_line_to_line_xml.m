@@ -19,7 +19,7 @@ for ifile=1:length(line_file_str)
     
     line_file=docNode.getDocumentElement;
     line_file.setAttribute('version',ver);
-    docNode=layer_obj.create_lay_line_xml_node(docNode,start_time(ifile),end_time(ifile));
+    docNode=layer_obj.create_lay_line_xml_node(docNode,start_time(ifile),end_time(ifile),line_file_str{ifile});
     
     xml_file=fullfile(path_xml{ifile},line_file_str{ifile});
     xmlwrite(xml_file,docNode);

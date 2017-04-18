@@ -11,6 +11,9 @@ end
 layers_Str=list_layers(layer,'nb_char',80);
 
 [ping_new_mat,range_new_mat,data_new]=layer.Transceivers(idx_freq).apply_line_depth(curr_disp.Fieldname);
+if isempty(ping_new_mat)
+    return;
+end
 
 h_fig=new_echo_figure(main_figure,...
     'Tag',sprintf('OffsetData %.0f%.0f',layer.ID_num,idx_freq),'Name',['Offset ' layers_Str{1}]);
