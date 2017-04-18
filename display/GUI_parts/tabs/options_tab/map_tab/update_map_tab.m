@@ -25,7 +25,7 @@ proj={list_proj(:).name};
 proj_i=curr_disp.Proj;
 sucess=0;
 i=0;
-while sucess==0&&i<length(proj);
+while sucess==0&&i<length(proj)
     try
         m_proj(proj_i,'long',LongLimExt,'lat',LatLimExt);
         sucess=1;
@@ -45,7 +45,11 @@ map_tab_comp.LongLim=LongLim;
 map_tab_comp.LatLim=LatLim;
 map_tab_comp.tracks(1)=m_plot(map_tab_comp.ax,long(1),lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
 map_tab_comp.tracks(2)=m_plot(map_tab_comp.ax,long,lat,'Color','k','tag','Nav');
-m_grid('tickdir','in','axes',map_tab_comp.ax);
+try
+    m_grid('tickdir','in','axes',map_tab_comp.ax);
+catch
+    warning('area too small for ticks to display')
+end
 
 setappdata(main_figure,'Map_tab',map_tab_comp);
 setappdata(main_figure,'Curr_disp',curr_disp);
