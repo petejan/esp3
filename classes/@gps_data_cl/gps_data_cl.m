@@ -134,10 +134,12 @@ classdef gps_data_cl
                             fields = isfield(temp,{'Lat','Long','Time'});
                             temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
                             temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
-                            time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time);
+                            len_str=cellfun(@length,temp.Time);
+                            idx_keep=len_str==length('dd/mm/yyyy HH:MM:SS AM');
+                            time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time(idx_keep));
                             
                             if all(fields)
-                                obj_temp=gps_data_cl('Lat',temp.Lat,'Long',temp.Long,'Time',time_temp);
+                                obj_temp=gps_data_cl('Lat',temp.Lat(idx_keep),'Long',temp.Long(idx_keep),'Time',time_temp);
                             else
                                 obj_temp=gps_data_cl.empty();
                             end
