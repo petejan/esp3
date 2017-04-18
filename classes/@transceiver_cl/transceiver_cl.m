@@ -85,9 +85,10 @@ classdef transceiver_cl < handle
             else
                 range=obj.Data.get_range();
             end
-            if ~isempty(obj.Config.TransducerOffsetZ)
-                range=range+obj.Config.TransducerOffsetZ;
-            end
+            
+%             if ~isempty(obj.Params.TransducerDepth)
+%                 range=range+obj.Params.TransducerDepth;
+%             end
             
         end
         

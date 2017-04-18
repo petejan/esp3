@@ -72,11 +72,12 @@ set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
 
 rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
 layer_tab_comp.table.UIContextMenu =rc_menu;
-
+str_delete='<HTML><center><FONT color="Red"><b>Delete selected layers</b></Font> ';
 uiproc=uimenu(rc_menu,'Label','Processing');
 uimenu(uiproc,'Label','Plot Pitch and Roll against bad pings','Callback',{@pitch_roll_analysis_callback,layer_tab_comp.table,main_figure});
-uimenu(uiproc,'Label','Plot tracks from selected layers','Callback',{@plot_tracks_callback,layer_tab_comp.table,main_figure});
-uimenu(rc_menu,'Label','Delete selected layer(s)','Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
+uimap=uimenu(rc_menu,'Label','Mapping');
+uimenu(uimap,'Label','Plot tracks from selected layers','Callback',{@plot_tracks_callback,layer_tab_comp.table,main_figure});
+uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
 uimenu(rc_menu,'Label','Merge Selected Layers','Callback',{@merge_selected_callback,layer_tab_comp.table,main_figure});
 
 selected_layers=[];

@@ -118,7 +118,7 @@ classdef layer_cl < handle
             else
                 list=cell(1,length(obj.Lines));
                 for i=1:length(obj.Lines)
-                    [~,name,ext]=fileparts(obj.Lines(i).File_origin);
+                    [~,name,ext]=fileparts(obj.Lines(i).File_origin{1});
                     list{i}=sprintf('%s %s',obj.Lines(i).Name,[name ext]);
                 end
             end
