@@ -1,4 +1,4 @@
-function display_region_callback(~,~,reg_curr,main_figure)
+function display_region_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
@@ -10,16 +10,14 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-
-if isempty(reg_curr)
-    region_tab_comp=getappdata(main_figure,'Region_tab');
-    list_reg = trans_obj.regions_to_str();
-    if ~isempty(list_reg)
-        reg_curr=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
-    else
-        return;
-    end
+region_tab_comp=getappdata(main_figure,'Region_tab');
+list_reg = trans_obj.regions_to_str();
+if ~isempty(list_reg)
+    reg_curr=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
+else
+    return;
 end
+
 reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap,'main_figure',main_figure);
 
 end
