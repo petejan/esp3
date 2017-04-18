@@ -23,7 +23,7 @@
 % *NEW FEATURES*
 %
 % * 2017-03-28: header (Alex Schimel)
-% * YYYY-MM-DD: first version (Yoann Ladroit)
+% * 2015-06-25: first version (Yoann Ladroit)
 %
 % *EXAMPLE*
 %

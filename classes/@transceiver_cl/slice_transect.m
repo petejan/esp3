@@ -1,3 +1,49 @@
+%% slice_transect.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |trans_obj|: TODO: write description and info on variable
+% * |reg|: TODO: write description and info on variable
+% * |Slice_w|: TODO: write description and info on variable
+% * |Slice_units|: TODO: write description and info on variable
+% * |StartTime|: TODO: write description and info on variable
+% * |EndTime|: TODO: write description and info on variable
+% * |Denoised|: TODO: write description and info on variable
+% * |Shadow_zone|: TODO: write description and info on variable
+% * |Shadow_zone_height|: TODO: write description and info on variable
+% * |Motion_correction|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |output|: TODO: write description and info on variable
+% * |regs|: TODO: write description and info on variable
+% * |regCellIntOut|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2015-10-12: first version (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [output,regs,regCellIntOut]=slice_transect(trans_obj,varargin)
 
 p = inputParser;

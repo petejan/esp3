@@ -1,3 +1,45 @@
+%% load_files_from_survey_input.m
+%
+% TODO: write short description of function
+%
+%% Help
+%
+% *USE*
+%
+% TODO: write longer description of function
+%
+% *INPUT VARIABLES*
+%
+% * |surv_input_obj|: TODO: write description and info on variable
+% * |layers|: TODO: write description and info on variable
+% * |origin|: TODO: write description and info on variable
+% * |cvs_root|: TODO: write description and info on variable
+% * |PathToMemmap|: TODO: write description and info on variable
+% * |FieldNames|: TODO: write description and info on variable
+% * |gui_main_handle|: TODO: write description and info on variable
+%
+% *OUTPUT VARIABLES*
+%
+% * |layers_new|: TODO: write description and info on variable
+% * |layers_old|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2015-12-18: first version (Yoann Ladroit).
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
 function [layers_new,layers_old]=load_files_from_survey_input(surv_input_obj,varargin)
 
 p = inputParser;
