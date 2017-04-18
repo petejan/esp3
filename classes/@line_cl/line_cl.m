@@ -30,6 +30,7 @@ classdef line_cl < handle
             addParameter(p,'Dist_diff',0,@isnumeric);
             addParameter(p,'File_origin',{''},@iscell);
             
+            addParameter(p,'Dr',0,@isnumeric);
             parse(p,varargin{:});
             
             results=p.Results;

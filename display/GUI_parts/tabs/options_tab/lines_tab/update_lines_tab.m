@@ -5,8 +5,10 @@ list_lines = layer.list_lines();
 
 if ~isempty(list_lines)
     set(lines_tab_comp.tog_line,'string',list_lines);
-
-    utc_diff=layer.Lines(get(lines_tab_comp.tog_line,'value')).UTC_diff;
+    idx_line=get(lines_tab_comp.tog_line,'value');
+    idx_line=nanmax(length(layer.Lines),idx_line);
+    
+    utc_diff=layer.Lines(idx_line).UTC_diff;
     
     if utc_diff<0
         start_symb='-';
@@ -15,9 +17,9 @@ if ~isempty(list_lines)
     end
     
     set(lines_tab_comp.time_h_diff,'string',[start_symb datestr(abs(utc_diff/24),'HH:MM:SS')]);
-
-    set(lines_tab_comp.Dist_diff,'string',num2str(layer.Lines(get(lines_tab_comp.tog_line,'value')).Dist_diff,'%.0f'))
-    set(lines_tab_comp.Range_diff,'string',num2str(layer.Lines(get(lines_tab_comp.tog_line,'value')).Dr,'%.1f'));
+    
+    set(lines_tab_comp.Dist_diff,'string',num2str(layer.Lines(idx_line).Dist_diff,'%.0f'))
+    set(lines_tab_comp.Range_diff,'string',num2str(layer.Lines(idx_line).Dr,'%.1f'));
 else
     set(lines_tab_comp.tog_line,'string',{'--'});
     set(lines_tab_comp.time_h_diff,'string','00:00:00')

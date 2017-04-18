@@ -30,6 +30,8 @@ lines_tab_comp.Range_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','uni
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.35 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.45 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Use as Offset','units','normalized','pos',[0.55 0.3 0.15 0.15],'callback',{@offset_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Disp. Offset','units','normalized','pos',[0.7 0.3 0.15 0.15],'callback',{@display_offset_callback,main_figure});
+
 
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Export to XML','units','normalized','pos',[0.35 0.1 0.15 0.15],'callback',{@export_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import from XML','units','normalized','pos',[0.5 0.1 0.15 0.15],'callback',{@import_line_xml_callback,main_figure});
@@ -61,11 +63,19 @@ end
 
 line_offset=layer.Lines(get(lines_tab_comp.tog_line,'value'));
 line_offset.Tag='Offset';
+
 layer.Transceivers(idx_freq).add_offset_line(line_offset);
+display_offset_echogram(main_figure);
+  
+end
+
+function display_offset_callback(~,~,main_figure)
 
 display_offset_echogram(main_figure);
   
 end
+
+
 
 
 function delete_line_callback(~,~,main_figure)
