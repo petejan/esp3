@@ -263,14 +263,13 @@ gps_data=trans_obj.GPSDataPing;
 heading=heading_from_lat_long(gps_data.Lat,gps_data.Long);
 
 %heading=trans_obj.AttitudeNavPing.Heading';
-heading=nanmean(heading);
+heading=mode(round(heading));
 
 
 %[x_ship,y_ship,Zone]=wgs2utm(gps_data.Lat,gps_data.Long);
 [x_ship,y_ship,Zone]=deg2utm(gps_data.Lat,gps_data.Long);
 
 
-heading=90-heading;
 
 Y_new=y_ship-distance*sind(heading);%E
 X_new=x_ship-distance*cosd(heading);%N

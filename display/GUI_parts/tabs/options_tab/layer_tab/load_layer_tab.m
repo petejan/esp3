@@ -75,6 +75,7 @@ layer_tab_comp.table.UIContextMenu =rc_menu;
 
 uiproc=uimenu(rc_menu,'Label','Processing');
 uimenu(uiproc,'Label','Plot Pitch and Roll against bad pings','Callback',{@pitch_roll_analysis_callback,layer_tab_comp.table,main_figure});
+uimenu(uiproc,'Label','Plot tracks from selected layers','Callback',{@plot_tracks_callback,layer_tab_comp.table,main_figure});
 uimenu(rc_menu,'Label','Delete selected layer(s)','Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
 uimenu(rc_menu,'Label','Merge Selected Layers','Callback',{@merge_selected_callback,layer_tab_comp.table,main_figure});
 
@@ -83,6 +84,29 @@ selected_layers=[];
 setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
 update_layer_tab(main_figure);
+end
+
+function plot_tracks_callback(src,~,table,main_figure)
+layers=getappdata(main_figure,'Layers');
+selected_layers=getappdata(table,'SelectedLayers');
+
+idx=nan(1,numel(selected_layers));
+for i=1:length(selected_layers)   
+    [idx(i),~]=find_layer_idx(layers,selected_layers(i));  
+end
+
+if isempty(idx)
+    return;
+end
+
+map_input=map_input_cl.map_input_cl_from_obj(layers(idx),'SliceSize',0);
+
+if nansum(isnan(map_input.LatLim))>=1
+    return;
+end
+
+map_input.display_map_input_cl('main_figure',main_figure,'oneMap',1);
+
 end
 
 function delete_layers_callback(src,~,table,main_figure)

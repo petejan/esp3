@@ -18,5 +18,12 @@ for i=1:length(idx_snap)
     end
 end
 
+if isempty(type)
+    type='';
+end
+
+if isempty(radius)
+    radius=0;
+end
 
 end

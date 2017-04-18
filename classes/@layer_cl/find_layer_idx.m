@@ -1,11 +1,7 @@
 function [idx,found]=find_layer_idx(layers,ID)
 
-layer_id=nan(1,length(layers));
-for i=1:length(layers)
-    if isvalid(layers(i))
-        layer_id(i)=layers(i).ID_num;
-    end
-end
+layer_id=[layers(:).ID_num];
+
 idx=find(layer_id==ID,1);
 if isempty(idx)
     idx=1;

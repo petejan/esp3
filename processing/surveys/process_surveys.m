@@ -78,13 +78,14 @@ for i=1:length(Filenames)
     end
     
     try
-        surv_obj.generate_output(layers_new);
-        layers_out=[layers_old layers_new];
-        layers_out=reorder_layers_time(layers_out);    
+        surv_obj.generate_output(layers_new);           
     catch err
         disp(err.message);
         warning('Could not process survey described in file %s\n',Filenames{i});
     end
+    
+    layers_out=[layers_old layers_new];
+    layers_out=reorder_layers_time(layers_out);
     
     try
         if isempty(p.Results.gui_main_handle)
@@ -114,7 +115,6 @@ end
 set(enabled_obj(isvalid(enabled_obj)),'Enable','on');
 
 hide_status_bar(p.Results.gui_main_handle);
-loadEcho(p.Results.gui_main_handle);
 % profile off;
 % profile viewer;
 end
