@@ -135,7 +135,7 @@ classdef gps_data_cl
                             temp.Time=cellfun(@(x) strrep(x,'a.m.','AM'),temp.Time,'UniformOutput',0);
                             temp.Time=cellfun(@(x) strrep(x,'p.m.','PM'),temp.Time,'UniformOutput',0);
                             len_str=cellfun(@length,temp.Time);
-                            idx_keep=len_str==length('dd/mm/yyyy HH:MM:SS AM');
+                            idx_keep=len_str>length('dd/mm/yyyy');
                             time_temp=cellfun(@(x) datenum(x,'dd/mm/yyyy HH:MM:SS AM'),temp.Time(idx_keep));
                             
                             if all(fields)
