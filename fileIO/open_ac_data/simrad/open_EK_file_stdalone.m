@@ -189,9 +189,10 @@ if ~isequal(Filename_cell, 0)
                 continue;
             end
             
+            
+            
             [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp);
-            
-            
+    
             if ~isa(trans_obj,'transceiver_cl')
                 disp('Could not read file.')
                 continue;

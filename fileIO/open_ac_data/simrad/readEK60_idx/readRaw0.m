@@ -30,19 +30,25 @@ if data.pings(idx_data).count(i_ping) > 0
         if SampleRange(1)>1
             fread(fid,SampleRange(1)-1,'int16', 'l');
         end
-        data.pings(idx_data).power(SampleRange(1):len_load,i_ping)=(0.011758984205624*fread(fid,len_load,'int16', 'l') );
+        data_ping=fread(fid,len_load,'int16', 'l');
+        len_load=numel(data_ping);
+        data.pings(idx_data).power(SampleRange(1):len_load,i_ping)=(0.011758984205624*data_ping);
+        
         if len_tot>len_load
             fread(fid,len_tot-len_load,'int16', 'l');
         end
     end
+    
     if data.pings(idx_data).mode(i_ping) > 1
          if SampleRange(1)>1
             fread(fid,2*(SampleRange(1)-1),'int16', 'l');
          end
         angle=fread(fid,[2 len_load],'int8', 'l');
-        data.pings(idx_data).AcrossPhi(SampleRange(1):len_load,i_ping)=angle(1,:);
-        data.pings(idx_data).AlongPhi(SampleRange(1):len_load,i_ping)=angle(2,:);
-      
+        len_load=size(angle,2);
+        if len_load>0
+            data.pings(idx_data).AcrossPhi(SampleRange(1):len_load,i_ping)=angle(1,:);
+            data.pings(idx_data).AlongPhi(SampleRange(1):len_load,i_ping)=angle(2,:);
+        end
     end
         data.pings(idx_data).samplerange=[SampleRange(1) len_load];
 end
