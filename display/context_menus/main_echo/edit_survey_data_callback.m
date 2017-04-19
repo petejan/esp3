@@ -23,7 +23,7 @@ t_n=trans.Data.Time(idx_ping);
 [surv_to_modif,idx_modif]=layer.get_survdata_at_time(t_n);
 
 if idx_modif>0
-    fprintf('Modifying Survey data for %s\n',surv.print_survey_data());
+    fprintf('Modifying Survey data for %s\n',surv_to_modif.print_survey_data());
     surv_temp=surv_to_modif;
 else
     surv_temp= layer.get_survey_data('Idx',1);

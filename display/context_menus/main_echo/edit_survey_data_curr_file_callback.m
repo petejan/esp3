@@ -33,6 +33,7 @@ end
 
 surv.StartTime=start_time;
 surv.EndTime=end_time;
+
 [surv.Voyage,surv.SurveyName,surv.Snapshot,surv.Stratum,surv.Transect,cancel]=fill_survey_data_dlbox(surv,'title','Enter New Survey Data');
 
 if cancel>0
