@@ -14,7 +14,7 @@ faBW=trans_obj.Config.BeamWidthAlongship;
 psBW=trans_obj.Config.BeamWidthAthwartship;
 
 compensation=create_motion_comp(pitch,roll,time_att,time_pings_start,time_ping_vec,faBW,psBW);
-
+compensation(abs(compensation)>12)=-999;
 
 trans_obj.Data.replace_sub_data('motioncompensation',compensation)
 
