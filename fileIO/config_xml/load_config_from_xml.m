@@ -3,10 +3,11 @@ function [app_path,curr_disp,algo_vec]=load_config_from_xml(xml_file)
 p = inputParser;
 addRequired(p,'xml_file',@(obj) isa(obj,'char'));
 parse(p,xml_file);
+app_path_deflt=app_path_create();
 
 if exist(xml_file,'file')==0
     disp('Could not find XML config file. Creating a standard one');
-    app_path=app_path_create();
+    app_path=app_path_deflt;
     curr_disp=curr_state_disp_cl();
     algo_vec=init_algos();
     write_config_to_xml(app_path,curr_disp,algo_vec);
@@ -37,15 +38,22 @@ try
     algo_vec(length(Algos))=algo_cl();
     
     for ial=1:length(algo_vec)
-       algo_vec(ial)=algo_cl('Name',Algos{ial}.Name,'Varargin',Algos{ial}.Varargin);  
+        algo_vec(ial)=algo_cl('Name',Algos{ial}.Name,'Varargin',Algos{ial}.Varargin);
     end
-
+    
 catch
     disp('Could not read XML config file. Creating a standard one');
-    app_path=app_path_create();
+    app_path=app_path_deflt;
     curr_disp=curr_state_disp_cl();
     algo_vec=init_algos();
     write_config_to_xml(app_path,curr_disp,algo_vec);
 end
 
+prop_deflt=fieldnames(app_path_deflt);
+
+for iprop =1:numel(prop_deflt)
+    if~isfield(app_path,prop_deflt{iprop})
+        app_path.(prop_deflt{iprop})=app_path_deflt.(prop_deflt{iprop});
+    end
+end
 end
