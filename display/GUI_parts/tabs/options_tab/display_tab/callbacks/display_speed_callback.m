@@ -43,6 +43,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
 new_fig=layer.Transceivers(idx_freq).GPSDataPing.display_speed(main_figure);
+layers_Str=list_layers(layer);
 set(new_fig,'Tag','speed','Name',sprintf('Speed  %s',layers_Str{1}));
 % profile off;
 % profile viewer;
