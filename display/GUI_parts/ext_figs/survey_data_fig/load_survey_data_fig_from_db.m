@@ -58,8 +58,6 @@ else
 end
 
 
-
-
 db_file=fullfile(path_f,'echo_logbook.db');
 
 if ~(exist(db_file,'file')==2)
@@ -80,11 +78,12 @@ idx_tag=find(strcmpi({hfigs(:).Tag},tag));
 
 if ~isempty(idx_tag)
     if reload==0
-        figure(hfigs(idx_tag(1)))
+            figure(hfigs(idx_tag(1)));
         return;
     else
         surv_data_fig=hfigs(idx_tag(1));
         surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+        set(surv_data_table.voy,'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}))
     end
 else
     if reload==0
@@ -106,7 +105,7 @@ else
         surv_data_table.reg=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.850 0.96 0.075 0.03],'String','Tag','Value',1,'Callback',{@search_callback,surv_data_fig});
         
         
-        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
+        surv_data_table.voy=uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
         uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
         
         surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.45 0.96 0.1 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});

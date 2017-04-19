@@ -20,6 +20,31 @@ update_layer_tab(main_figure);
 load_info_panel(main_figure);
 update_mini_ax(main_figure,0);
 
+[path_lay,~]=get_path_files(layer);
+path_f=path_lay{1};
+db_file=fullfile(path_f,'echo_logbook.db');
+
+if ~(exist(db_file,'file')==2)
+    initialize_echo_logbook_dbfile(path_f,0)
+end
+
+%surv_data_struct=import_survey_data_db(db_file);
+
+dbconn=sqlite(db_file,'connect');
+
+data_survey=dbconn.fetch('select * from survey');
+dbconn.close();
+
+hfigs=getappdata(main_figure,'ExternalFigures');
+hfigs(~isvalid(hfigs))=[];
+
+if ~isempty(hfigs)
+    tag=sprintf('logbook_%s',data_survey{2});
+    idx_tag=find(strcmpi({hfigs(:).Tag},tag));
+    set(hfigs(idx_tag(1)),'Name',sprintf('%s',data_survey{2}),...
+        'Tag',tag);
+end
+
 load_survey_data_fig_from_db(main_figure,1);
 
 end
