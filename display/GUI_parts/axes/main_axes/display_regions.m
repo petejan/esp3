@@ -35,12 +35,11 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
 Number=trans.get_transceiver_pings();
-Range=trans.get_transceiver_range();
+%Range=trans.get_transceiver_range();
+Samples=trans.get_transceiver_samples();
 
-xdata=Number;
-
-x=xdata;
-y=Range;
+x=Number;
+y=Samples;
 
 alpha_in=0.4;
 for iax=1:length(main_axes_tot)

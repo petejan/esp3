@@ -23,7 +23,7 @@ if strcmp(current_fig.SelectionType,'normal')
 %     x_lim=get(ah,'xlim');
 %     y_lim=get(ah,'ylim');
     xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-    ydata=layer.Transceivers(idx_freq).Data.get_range();
+    ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
     
     dx_patch=nanmax(patch_obj.Vertices(:,1))-nanmin(patch_obj.Vertices(:,1));
     dy_patch=nanmax(patch_obj.Vertices(:,2))-nanmin(patch_obj.Vertices(:,2));

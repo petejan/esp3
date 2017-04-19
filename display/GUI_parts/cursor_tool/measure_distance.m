@@ -64,6 +64,8 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 wbmcb_ori=src.WindowButtonMotionFcn;
 
+% samples=layer.Transceivers(idx_freq).get_transceiver_samples();
+
 range=layer.Transceivers(idx_freq).get_transceiver_range();
 gps_data=layer.Transceivers(idx_freq).GPSDataPing;
 

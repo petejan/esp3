@@ -92,6 +92,20 @@ classdef transceiver_cl < handle
             
         end
         
+          function range=get_transceiver_samples(obj,varargin)
+            if nargin>=2
+                idx=varargin{1};
+                range=obj.Data.get_samples(idx);
+            else
+                range=obj.Data.get_samples();
+            end
+            
+%             if ~isempty(obj.Params.TransducerDepth)
+%                 range=range+obj.Params.TransducerDepth;
+%             end
+            
+        end
+        
         function pings=get_transceiver_pings(obj,varargin)
             if nargin>=2
                 idx=varargin{1};

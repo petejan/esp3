@@ -61,7 +61,7 @@ mini_ax_comp=getappdata(main_figure,'Mini_axes');
 
 if repos>0
     xdata=trans_obj.get_transceiver_pings();
-    ydata=trans_obj.Data.get_range();
+    ydata=trans_obj.get_transceiver_samples();
     
     x_reg_lim=xdata(reg_curr.Idx_pings);
     y_reg_lim=ydata(reg_curr.Idx_r);
@@ -163,8 +163,8 @@ switch main_figure.SelectionType
         waitfor(main_figure,'WindowButtonUpFcn','');
         
         r_min=nanmin(obj.YData);
-        range=trans_obj.get_transceiver_range();
-        [~,idx_r_min]=nanmin(abs(r_min-range));
+        samples=trans_obj.get_transceiver_samples();
+        [~,idx_r_min]=nanmin(abs(r_min-samples));
         
         idx_p_min=ceil(nanmin(obj.XData));
         

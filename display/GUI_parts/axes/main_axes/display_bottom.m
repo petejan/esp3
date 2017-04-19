@@ -7,7 +7,8 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj=layer.Transceivers(idx_freq);
 idx_bottom=trans_obj.Bottom.Sample_idx;
 xdata=trans_obj.get_transceiver_pings();
-ydata=trans_obj.get_transceiver_range();
+%ydata=trans_obj.get_transceiver_range();
+ydata=trans_obj.get_transceiver_samples();
 
 
 if ~isvalid(axes_panel_comp.bottom_plot)

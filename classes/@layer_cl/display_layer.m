@@ -52,7 +52,10 @@ end
 screensize = getpixelposition(ax);
 
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_range();
+
+ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+
+%ydata=layer.Transceivers(idx_freq).get_transceiver_range();
 
 if new==0
     [~,idx_ping_min]=nanmin(abs(xdata-x(1)));

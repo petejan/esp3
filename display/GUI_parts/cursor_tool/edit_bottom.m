@@ -56,7 +56,8 @@ end
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).Data.get_range();
+%ydata=layer.Transceivers(idx_freq).Data.get_range();
+ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
 %xdata=double(get(axes_panel_comp.main_echo,'XData'));
 %ydata=double(get(axes_panel_comp.main_echo,'YData'));
 x_lim=get(ah,'xlim');

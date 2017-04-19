@@ -16,7 +16,7 @@ Range=trans.get_transceiver_range();
 Bottom=trans.Bottom;
 Time=trans.Data.Time;
 Number=trans.get_transceiver_pings();
-Samples=trans.Data.get_samples();
+Samples=trans.get_transceiver_samples();
 
 if ~isempty(trans.OffsetLine)
     Depth_corr=trans.OffsetLine.Range;
@@ -92,7 +92,7 @@ try
         
         if idx_ping<=length(Bottom.Sample_idx)
             if ~isnan(Bottom.Sample_idx(idx_ping))
-                bot_val=Range(Bottom.Sample_idx(idx_ping));
+                bot_val=Bottom.Sample_idx(idx_ping);
             else
                 bot_val=nan;
             end
@@ -179,7 +179,7 @@ try
         set(axv_plot,'XData',vert_val,'YData',ydata_red);
         
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
-        plot(axv,bot_x_val,[bot_val bot_val],'k','Tag','curr_val');
+        plot(axv,bot_x_val,([bot_val bot_val]),'k','Tag','curr_val');
         
         
         axv_text.Position=[nanmean(bot_x_val) bot_val 0];

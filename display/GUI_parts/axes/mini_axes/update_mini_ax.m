@@ -24,9 +24,11 @@ f1=[1 2 3 4];
 
 if new>0
     pings=layer.Transceivers(idx_freq).get_transceiver_pings();
-    range=layer.Transceivers(idx_freq).get_transceiver_range();
+    %range=layer.Transceivers(idx_freq).get_transceiver_range();
+    samples=layer.Transceivers(idx_freq).get_transceiver_samples();
+    
     nb_pings=length(pings);
-    nb_samples=length(range);
+    nb_samples=length(samples);
 
     temp_size = getpixelposition(mini_axes_comp.mini_ax);
     size_mini=temp_size(3:4);
@@ -46,8 +48,8 @@ if new>0
     end
     
     data_disp=single(data_disp);
-    set(mini_axes_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[range(1) range(end)])
-    set(mini_axes_comp.mini_echo,'XData',pings,'YData',range,'CData',data_disp);
+    set(mini_axes_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[samples(1) samples(end)])
+    set(mini_axes_comp.mini_echo,'XData',pings,'YData',samples,'CData',data_disp);
 
 end
 

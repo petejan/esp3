@@ -18,7 +18,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 trans=layer.Transceivers(idx_freq);
 
 xdata_tot=trans.get_transceiver_pings();
-ydata_tot=trans.get_transceiver_range();
+ydata_tot=trans.get_transceiver_samples();
 
 [x_lim,y_lim]=compute_xylim_zoom(x_lim,y_lim,'VerticalScrollCount',plus_or_minus,...
     'x_lim_tot',[xdata_tot(1) xdata_tot(end)],'y_lim_tot',[ydata_tot(1) ydata_tot(end)]);

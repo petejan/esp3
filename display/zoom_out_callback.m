@@ -45,7 +45,7 @@ trans=layer.Transceivers(idx_freq);
 
 
 xdata_tot=trans.get_transceiver_pings();       
-ydata_tot=trans.get_transceiver_range();
+ydata_tot=trans.get_transceiver_samples();
 
 ah=axes_panel_comp.main_axes;
 switch src.SelectionType  

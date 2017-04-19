@@ -28,6 +28,7 @@ switch curr_disp.Xaxes
 end
 
 ydata_grid=layer.Transceivers(idx_freq).get_transceiver_range(idx_r);
+
  
 switch curr_disp.Xaxes
     case 'Time'
@@ -43,29 +44,33 @@ set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks
 
 set(axes_panel_comp.vaxes,'YTick',ydata(idx_yticks));
 set(axes_panel_comp.haxes,'XTick',xdata(idx_xticks));
-axes_panel_comp.vaxes.YAxis.TickLabelFormat = '  %.0f m';
+
 set(axes_panel_comp.vaxes,'box','on');
+fmt=' %.0fm';
+y_labels=cellfun(@(x) num2str(x,fmt),num2cell(ydata_grid(idx_yticks)),'UniformOutput',0);
+set(axes_panel_comp.vaxes,'yticklabels',y_labels);
+
 set(axes_panel_comp.haxes,'XTickLabelRotation',-90,'box','on');
 str_start='  ';
 
 switch lower(curr_disp.Xaxes)
     case 'time'
         h_fmt='  HH:MM:SS';
-        labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+        x_labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
     case 'number'
         fmt=[str_start '%.0f'];
         axes_panel_comp.haxes.XTickLabelMode='auto';
-        labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+        x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
     case 'distance'
         axes_panel_comp.haxes.XTickLabelMode='auto';
-        fmt=[str_start '%.0f m'];
-       labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+        fmt=[str_start '%.0fm'];
+       x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
     otherwise
         axes_panel_comp.haxes.XTickLabelMode='auto';
         fmt=[str_start '%.0f'];
-       labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+       x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
 end
-set(axes_panel_comp.haxes,'xticklabels',labels);
+set(axes_panel_comp.haxes,'xticklabels',x_labels);
 
 
 end

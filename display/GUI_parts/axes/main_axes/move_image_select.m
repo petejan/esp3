@@ -22,7 +22,7 @@ if strcmp(current_fig.SelectionType,'normal')
     
 
     xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-    ydata=layer.Transceivers(idx_freq).Data.get_range();
+    ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
     
     dx_image=nanmax(image_obj.XData(:))-nanmin(image_obj.XData(:));
     dy_image=nanmax(image_obj.YData(:))-nanmin(image_obj.YData(:));
