@@ -31,18 +31,18 @@ end
 % end
 
 if p.Results.StartTime==0
-    st=trans_obj.Data.Time(1);
+    st=trans_obj.Time(1);
 else
     st=p.Results.StartTime;
 end
 
 if p.Results.EndTime==1
-    et=trans_obj.Data.Time(end);
+    et=trans_obj.Time(end);
 else
     et=p.Results.EndTime;
 end
 
-idx_valid=trans_obj.Data.Time>=st&trans_obj.Data.Time<=et;
+idx_valid=trans_obj.Time>=st&trans_obj.Time<=et;
 
 
 switch cell_units_w
@@ -216,8 +216,8 @@ end
 
 output.cell_dist_start=trans_obj.GPSDataPing.Dist(idx_bins_S);
 output.cell_dist_end=trans_obj.GPSDataPing.Dist(idx_bins_E);
-output.cell_time_start=trans_obj.Data.Time(idx_bins_S);
-output.cell_time_end=trans_obj.Data.Time(idx_bins_E);
+output.cell_time_start=trans_obj.Time(idx_bins_S);
+output.cell_time_end=trans_obj.Time(idx_bins_E);
 output.cell_nb_tracks=nb_tracks;
 output.cell_nb_st=nb_st;
 end

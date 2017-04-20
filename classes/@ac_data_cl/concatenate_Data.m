@@ -1,13 +1,6 @@
 function data_out=concatenate_Data(data_1,data_2)
 
-if data_1.Time(1)>=data_2.Time(end)
-    data_temp=data_1;
-    data_1=data_2;
-    data_2=data_temp;
-end
-
 ff_1=data_1.Fieldname;
-
 
 new_sub_data=[];
 
@@ -21,11 +14,10 @@ for uuu=1:length(ff_1)
     end
 end
 
-time=[data_1.Time data_2.Time];
 data_out=ac_data_cl('SubData',new_sub_data,...
-    'Range',data_1.Range,...
+    'Nb_samples',data_1.Nb_samples,...
     'FileId',[data_1.FileId data_2.FileId+nanmax(data_1.FileId)],...
-    'Time',time,...
+    'Nb_pings',data_1.Nb_pings+data_2.Nb_pings,...
     'MemapName',[data_1.MemapName data_2.MemapName]);
 
 

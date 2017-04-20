@@ -33,9 +33,9 @@ for uu=1:length(trans_nb)
             for ii=1:trans_nb(uu)
                 curr_trans=curr_layer.Transceivers(ii);
                 layers_grp(uu).freqs(ii,jj)=curr_trans.Config.Frequency;
-                layers_grp(uu).time_start(ii,jj)=curr_trans.Data.Time(1);
-                layers_grp(uu).time_end(ii,jj)=curr_trans.Data.Time(end);
-                layers_grp(uu).dt(ii,jj)=(curr_trans.Data.Time(end)-curr_trans.Data.Time(1))/length(curr_trans.Data.Time);
+                layers_grp(uu).time_start(ii,jj)=curr_trans.Time(1);
+                layers_grp(uu).time_end(ii,jj)=curr_trans.Time(end);
+                layers_grp(uu).dt(ii,jj)=(curr_trans.Time(end)-curr_trans.Time(1))/length(curr_trans.Time);
                 layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.get_transceiver_range());
             end
         else
@@ -127,8 +127,8 @@ for uui=1:length(idx_to_concatenate)
             for i=1:length(new_chains)
                 for j=1:length(new_chains)
                     if ~isempty(intersect(new_chains{i},new_chains{j}))&&(j~=i)
-                        time_i=layers_in(new_chains{i}(end)).Transceivers(1).Data.Time(end)-layers_in(new_chains{i}(1)).Transceivers(1).Data.Time(1);
-                        time_j=layers_in(new_chains{j}(end)).Transceivers(1).Data.Time(end)-layers_in(new_chains{j}(1)).Transceivers(1).Data.Time(1);
+                        time_i=layers_in(new_chains{i}(end)).Transceivers(1).Time(end)-layers_in(new_chains{i}(1)).Transceivers(1).Time(1);
+                        time_j=layers_in(new_chains{j}(end)).Transceivers(1).Time(end)-layers_in(new_chains{j}(1)).Transceivers(1).Time(1);
                         
                         if time_j>=time_i
                             temp_u=setdiff(new_chains{i},new_chains{j});
@@ -156,7 +156,7 @@ for uui=1:length(idx_to_concatenate)
                 layer_conc=curr_layers(1);
                 for kk=1:length(curr_layers)-1
                     if ~isempty(layer_conc.Transceivers)
-                        t_1=layer_conc.Transceivers(1).Data.Time(end);
+                        t_1=layer_conc.Transceivers(1).Time(end);
                     elseif ~isempty(layer_conc.GPSData.Time)
                         t_1=layer_conc.GPSData.Time(end);
                     else
@@ -164,7 +164,7 @@ for uui=1:length(idx_to_concatenate)
                     end
                     
                     if ~isempty(curr_layers(kk+1).Transceivers)
-                        t_2=curr_layers(kk+1).Transceivers(1).Data.Time(end);
+                        t_2=curr_layers(kk+1).Transceivers(1).Time(end);
                     elseif ~isempty(curr_layers(kk+1).GPSData.Time)
                         t_2=curr_layers(kk+1).GPSData.Time(end);
                     else

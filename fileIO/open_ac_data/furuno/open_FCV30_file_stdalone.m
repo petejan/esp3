@@ -219,11 +219,14 @@ for iconfig=id_config
     clear echo att NMEA params header;
     trans_obj.Config=config_current;
     trans_obj.Params=params_current;
-    
+    R=R(:,1);
     trans_obj.Data=ac_data_cl('SubData',sub_ac_data_temp,...
-        'Range',R,...
-        'Time',double(params_current.Time),...
+        'Nb_samples',length(R),...
+        'Nb_pings',length(params_current.Time),...
         'MemapName',curr_name);
+    
+    trans_obj.set_transceiver_range(R);
+    trans_obj.set_transceiver_time(params_current.Time);
     
     trans_obj.computeSpSv(env_data);
     

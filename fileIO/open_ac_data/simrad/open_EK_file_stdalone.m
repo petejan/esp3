@@ -272,7 +272,7 @@ if ~isequal(Filename_cell, 0)
                         
                         for itrans=1:length(trans_obj)
                             curr_range=trans_obj(itrans).get_transceiver_range();
-                            depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Data.Time);
+                            depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Time);
                             depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth(1);
                             sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
                             sample_idx(sample_idx==1)=nan;
@@ -294,8 +294,8 @@ if ~isequal(Filename_cell, 0)
                 
                 for i =1:length(trans_obj)
                     
-                    gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Data.Time);
-                    attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Data.Time);
+                    gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Time);
+                    attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);
                     
                     main_path=whereisEcho();
                     

@@ -54,7 +54,7 @@ samples=(1:nb_samples)';
 dr=nanmean(diff(range));
 pings=double(trans_obj.get_transceiver_pings());
 %nb_pings=length(pings);
-time=double(trans_obj.Data.Time);
+time=double(trans_obj.Time);
 
 while nanmax(idx_pings)>length(pings)
     idx_pings=idx_pings-1;

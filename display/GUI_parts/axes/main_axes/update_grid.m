@@ -13,7 +13,7 @@ ydata=get(axes_panel_comp.main_echo,'YData');
 
 switch curr_disp.Xaxes
     case 'Time'
-        xdata_grid=layer.Transceivers(idx_freq).Data.Time(idx_pings);
+        xdata_grid=layer.Transceivers(idx_freq).Time(idx_pings);
     case 'Number'
         xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
     case 'Distance'

@@ -35,7 +35,6 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
 Number=trans.get_transceiver_pings();
-%Range=trans.get_transceiver_range();
 Samples=trans.get_transceiver_samples();
 
 x=Number;

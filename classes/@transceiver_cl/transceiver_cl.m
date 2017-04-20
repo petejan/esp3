@@ -3,6 +3,8 @@ classdef transceiver_cl < handle
     
     properties
         Data=ac_data_cl.empty();
+        Range
+        Time
         Bottom
         ST
         Tracks
@@ -37,6 +39,8 @@ classdef transceiver_cl < handle
             
             
             addParameter(p,'Data',ac_data_cl.empty(),check_data_class);
+            addParameter(p,'Time',[],@isnumeric);
+            addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'Bottom',bottom_cl(),check_bottom_class);
             addParameter(p,'ST',init_st_struct(),@isstruct);
             addParameter(p,'Tracks',struct('target_id',{},'target_ping_number',{}),@isstruct);
@@ -61,10 +65,10 @@ classdef transceiver_cl < handle
             
             if ~isempty(p.Results.Data)
                 if isempty(p.Results.GPSDataPing)
-                    trans_obj.GPSDataPing=gps_data_cl('Time',p.Results.Data.Time);
+                    trans_obj.GPSDataPing=gps_data_cl('Time',p.Results.Time);
                 end
                 if isempty(p.Results.AttitudeNavPing)
-                    trans_obj.AttitudeNavPing=attitude_nav_cl('Time',p.Results.Data.Time);
+                    trans_obj.AttitudeNavPing=attitude_nav_cl('Time',p.Results.Time);
                 end
             end
             
@@ -81,41 +85,42 @@ classdef transceiver_cl < handle
         function range=get_transceiver_range(trans_obj,varargin)
             if nargin>=2
                 idx=varargin{1};
-                range=trans_obj.Data.get_range(idx);
+                range=trans_obj.Range(idx);
             else
-                range=trans_obj.Data.get_range();
+                range=trans_obj.Range;
             end
             
         end
         
-         function range=set_transceiver_range(trans_obj,range)
-             
-             trans_obj.Data.set_range(range);
-             
-         end
+        function set_transceiver_range(trans_obj,range)
+            trans_obj.Range=range;
+            if size(trans_obj.Range,2)>1
+                trans_obj.Range=trans_obj.Range';
+            end
+        end
         
-          function range=get_transceiver_samples(trans_obj,varargin)
+        function set_transceiver_time(trans_obj,time)
+            trans_obj.Time=time;
+            if size(trans_obj.Time,1)>1
+                trans_obj.Time=trans_obj.Time';
+            end
+        end
+        
+          function samples=get_transceiver_samples(trans_obj,varargin)
+            samples=(1:trans_obj.Data.Nb_samples)';
             if nargin>=2
                 idx=varargin{1};
-                range=trans_obj.Data.get_samples(idx);
-            else
-                range=trans_obj.Data.get_samples();
+                samples=samples(idx);
             end
-            
-%             if ~isempty(trans_obj.Params.TransducerDepth)
-%                 range=range+trans_obj.Params.TransducerDepth;
-%             end
             
         end
         
         function pings=get_transceiver_pings(trans_obj,varargin)
+            pings=(1:trans_obj.Data.Nb_pings);
             if nargin>=2
                 idx=varargin{1};
-                pings=trans_obj.Data.get_numbers(idx);
-            else
-                pings=trans_obj.Data.get_numbers();
-            end
-            
+                pings=pings(idx);
+            end  
         end
         
         

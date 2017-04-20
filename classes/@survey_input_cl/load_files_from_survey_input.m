@@ -241,7 +241,7 @@ for isn=1:length(snapshots)
                 dates_out=nan(1,length(layers_in));
                 for ilay_in=1:length(layers_in)
                     fType_in{ilay_in}=layers_in(ilay_in).Filetype;
-                    dates_out(ilay_in)=layers_in(ilay_in).Transceivers(1).Data.Time(1);
+                    dates_out(ilay_in)=layers_in(ilay_in).Transceivers(1).Time(1);
                 end
                 
                 

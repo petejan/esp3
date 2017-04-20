@@ -35,7 +35,7 @@ end
 
 switch p.Results.Cell_h_unit
     case 'samples'
-        ydata=trans_obj.Data.get_samples();
+        ydata=trans_obj.get_transceiver_samples();
         bot_data=trans_obj.get_bottom_idx();
     case 'meters'
         ydata=trans_obj.get_transceiver_range();

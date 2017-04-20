@@ -74,7 +74,7 @@ dr = nanmean(diff(range));
 bw_mean = (trans.Config.BeamWidthAlongship+trans.Config.BeamWidthAthwartship)/4/180*pi;
 t_angle = atan(sqrt(tand(trans.Config.Angles(2)).^2+tand(trans.Config.Angles(1)).^2));
 
-%time=trans.Data.Time;
+%time=trans.Time;
 number = trans.get_transceiver_pings();
 
 bot_range = trans.get_bottom_range();
@@ -141,9 +141,9 @@ straight_range_bottom(~isnan(true_idx_bottom)) = range(true_idx_bottom(~isnan(tr
 true_time_bottom = nan(size(true_idx_bottom));
 true_time_bottom(~isnan(true_idx_bottom)) = time_r(true_idx_bottom(~isnan(true_idx_bottom)));
 
-time_recept = true_time_bottom / (24*60*60) + trans.Data.Time;
-time_recept(isnan(time_recept)) = trans.Data.Time(isnan(time_recept));
-time_trans = trans.Data.Time;
+time_recept = true_time_bottom / (24*60*60) + trans.Time;
+time_recept(isnan(time_recept)) = trans.Time(isnan(time_recept));
+time_trans = trans.Time;
 
 att_trans = layer.AttitudeNav.resample_attitude_nav_data(time_trans);
 Pitch = att_trans.Pitch(:)'+pitch_cal;

@@ -119,7 +119,7 @@ for uui=select
     disp(['mean sound speed = ' num2str(c) ' m/s'])
     disp(['sphere TS = ' num2str(sphere_ts) ' dB'])
     for it=1:length(layer.Transceivers)
-        layer.Transceivers(it).apply_soundspeed(layer.EnvData.SoundSpeed,c);  
+        layer.Transceivers(it).apply_soundspeed(c);  
     end
     layer.apply_soundspeed(c);
     layer.Transceivers(uui).apply_absorption(alpha/1e3);

@@ -46,7 +46,7 @@ if isempty(bottom_obj)
     bottom_obj=bottom_cl();
 end
 
-range=obj.get_transceiver_range();
+samples=obj.get_transceiver_samples();
 pings=obj.get_transceiver_pings();
 
 IdxBad=find(bottom_obj.Tag==0);
@@ -74,16 +74,16 @@ if ~isempty(bot_sple)
         IdxBad=IdxBad-1;
     end
     
-    new_bot_sple(new_bot_sple>length(range))=length(range);
+    new_bot_sple(new_bot_sple>length(samples))=length(samples);
     new_bot_sple(new_bot_sple<=0)=1;
     
-    new_bot_r(~isnan(new_bot_sple))=range(new_bot_sple(~isnan(new_bot_sple)));
+    new_bot_r(~isnan(new_bot_sple))=samples(new_bot_sple(~isnan(new_bot_sple)));
 end
 
 tag=ones(size(new_bot_r));
 tag(IdxBad)=0;
 
-new_bot_sple(isnan(new_bot_sple(:))&tag(:)==1)=length(range);
+new_bot_sple(isnan(new_bot_sple(:))&tag(:)==1)=length(samples);
 obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Sample_idx',new_bot_sple,'Tag',tag,'Version',bottom_obj.Version);
 
 end

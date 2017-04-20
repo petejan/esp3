@@ -5,8 +5,8 @@ classdef ac_data_cl < handle
         Fieldname
         Type
         FileId
-        Range
-        Time
+        Nb_samples
+        Nb_pings
         MemapName
     end
     
@@ -20,8 +20,8 @@ classdef ac_data_cl < handle
             
             
             addParameter(p,'SubData',[],check_sub_ac_data_class);
-            addParameter(p,'Time',[],@isnumeric);
-            addParameter(p,'Range',[],@isnumeric);
+            addParameter(p,'Nb_samples',[],@isnumeric);
+            addParameter(p,'Nb_pings',[],@isnumeric);
             addParameter(p,'FileId',[],@isnumeric);
             addParameter(p,'MemapName','',checkname);
             
@@ -39,16 +39,9 @@ classdef ac_data_cl < handle
             end
             
             if isempty(p.Results.FileId)
-                obj.FileId=ones(size(obj.Time));
+                obj.FileId=ones(1,obj.Nb_pings);
             end
             
-            if size(obj.Time,1)>1
-                obj.Time=obj.Time';
-            end
-            
-            if size(obj.Range,2)>1
-                obj.Range=obj.Range';
-            end
             
             if ~isempty(p.Results.SubData)
                 
@@ -72,12 +65,7 @@ classdef ac_data_cl < handle
             end
         end
         
-        function set_range(obj,range)
-            obj.Range=range;
-            if size(obj.Range,2)>1
-                obj.Range=obj.Range';
-            end 
-        end
+
     end
 end
 

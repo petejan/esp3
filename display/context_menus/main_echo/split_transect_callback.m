@@ -25,7 +25,7 @@ xdata=trans.get_transceiver_pings();
 
 [~,idx_ping]=nanmin(abs(xdata-x));
 
-t_n=trans.Data.Time(idx_ping);
+t_n=trans.Time(idx_ping);
 
 [surv_to_split,idx_split]=layer.get_survdata_at_time(t_n);
 

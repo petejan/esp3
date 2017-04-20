@@ -9,7 +9,7 @@ parse(p,trans_obj,docNode);
 idx_ping=find(file_id==trans_obj.Data.FileId);
 
 range=trans_obj.get_transceiver_range();
-time=trans_obj.Data.Time;
+time=trans_obj.Time;
 region_file=docNode.getDocumentElement;
 regions_node = docNode.createElement('regions');
 regions_node.setAttribute('Freq',num2str(trans_obj.Config.Frequency,'%.0f'));

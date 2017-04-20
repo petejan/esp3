@@ -24,7 +24,6 @@ f1=[1 2 3 4];
 
 if new>0
     pings=layer.Transceivers(idx_freq).get_transceiver_pings();
-    %range=layer.Transceivers(idx_freq).get_transceiver_range();
     samples=layer.Transceivers(idx_freq).get_transceiver_samples();
     
     nb_pings=length(pings);

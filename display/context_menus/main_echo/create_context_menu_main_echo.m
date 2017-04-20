@@ -58,7 +58,7 @@ xdata=trans.get_transceiver_pings();
 
 [~,idx_ping]=nanmin(abs(xdata-x));
 
-time=trans.Data.Time;
+time=trans.Time;
 t_n=time(idx_ping);
 
 

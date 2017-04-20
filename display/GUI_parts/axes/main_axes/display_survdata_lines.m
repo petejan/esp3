@@ -8,12 +8,12 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 ax=axes_panel_comp.main_axes;
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_range();
+ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
 
 u=findobj(ax,'Tag','surv_id');
 delete(u);
 
-Time=layer.Transceivers(idx_freq).Data.Time;
+Time=layer.Transceivers(idx_freq).Time;
 idx_start_time=[];
 idx_end_time=[];
 

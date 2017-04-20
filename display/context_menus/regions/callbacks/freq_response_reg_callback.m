@@ -12,7 +12,6 @@ list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 if ~isempty(list_reg)
     active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    %idx_x0=double(layer.Transceivers(idx_freq).Data.Number(1)-1);
     
     idx_pings=active_reg.Idx_pings;
     idx_r=active_reg.Idx_r;

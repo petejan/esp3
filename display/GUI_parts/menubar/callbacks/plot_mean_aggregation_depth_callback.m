@@ -30,11 +30,11 @@ if ~isempty(list_reg)
     
    idx_pings=active_reg.Idx_pings;
    idx_r=active_reg.Idx_r;
-    time=datetime(datestr(trans_obj.Data.Time(idx_pings)));
+    time=datetime(datestr(trans_obj.Time(idx_pings)));
     range=trans_obj.get_transceiver_range(idx_r);
     new_echo_figure(main_figure);
     ax1=subplot(2,1,1);
-    u=imagesc(trans_obj.Data.Time(idx_pings),range,Sv(idx_r,idx_pings));
+    u=imagesc(trans_obj.Time(idx_pings),range,Sv(idx_r,idx_pings));
     hold on;
     plot(time,mean_depth,'r','linewidth',2);
     plot(time,bot_r(idx_pings))

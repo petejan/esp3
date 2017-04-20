@@ -4,7 +4,7 @@ if isempty(data_mat)
 end
 
 nb_pings=data_obj.get_nb_pings_per_file();
-nb_samples=repmat(length(data_obj.get_samples()),1,length(nb_pings));
+nb_samples=repmat(data_obj.Nb_samples,1,length(nb_pings));
 data_mat_cell=divide_mat(data_mat,nb_samples,nb_pings);
 [idx,found]=find_field_idx(data_obj,field);
 

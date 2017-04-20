@@ -55,8 +55,8 @@ for ix=1:length(bot_file_str)
             init_bot(idx_freq)=0;
             new_bottom{idx_freq}= bottom_cl(...
                 'Origin',sprintf('XML_v%s',ver),...
-                'Sample_idx',nan(size(trans_obj.Data.Time)),...
-                'Tag',nan(size(trans_obj.Data.Time)),...
+                'Sample_idx',nan(size(trans_obj.Time)),...
+                'Tag',nan(size(trans_obj.Time)),...
                 'Version',p.Results.Version);
         end
         
@@ -66,30 +66,30 @@ for ix=1:length(bot_file_str)
                 range=bot_xml.Range;
                 tag=bot_xml.Tag;
                 
-                if time(1)<=trans_obj.Data.Time(1)
-                    [~,idx_ping_start]=nanmin(abs(trans_obj.Data.Time(1)-time(1)));
+                if time(1)<=trans_obj.Time(1)
+                    [~,idx_ping_start]=nanmin(abs(trans_obj.Time(1)-time(1)));
                     idx_start_file=1;
                 else
                     idx_ping_start=1;
-                    [~,idx_start_file]=nanmin(abs(trans_obj.Data.Time-time(1)));
+                    [~,idx_start_file]=nanmin(abs(trans_obj.Time-time(1)));
                 end
                 
-                if time(end)>=trans_obj.Data.Time(end)
-                    [~,idx_ping_end]=nanmin(abs(trans_obj.Data.Time(end)-time));
-                    idx_end_file=length(trans_obj.Data.Time);
+                if time(end)>=trans_obj.Time(end)
+                    [~,idx_ping_end]=nanmin(abs(trans_obj.Time(end)-time));
+                    idx_end_file=length(trans_obj.Time);
                 else
                     idx_ping_end=length(time);
-                    [~,idx_end_file]=nanmin(abs(trans_obj.Data.Time-time(end)));
+                    [~,idx_end_file]=nanmin(abs(trans_obj.Time-time(end)));
                 end
                 
-                if  time(end)<=trans_obj.Data.Time(1)||time(1)>=trans_obj.Data.Time(end)
+                if  time(end)<=trans_obj.Time(1)||time(1)>=trans_obj.Time(end)
                     warning('No common time between file an bottom file');
                     continue;
                 end
                 
-                depth_resampled=resample_data_v2(range(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Data.Time(idx_start_file:idx_end_file),'Opt','Nearest');
+                depth_resampled=resample_data_v2(range(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Time(idx_start_file:idx_end_file),'Opt','Nearest');
                 sample_idx=resample_data_v2((1:length(trans_obj.get_transceiver_range())),trans_obj.get_transceiver_range(),depth_resampled,'Opt','Nearest');
-                tag_resampled=resample_data_v2(tag(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Data.Time(idx_start_file:idx_end_file),'Opt','Nearest');
+                tag_resampled=resample_data_v2(tag(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Time(idx_start_file:idx_end_file),'Opt','Nearest');
                 
                 sample_idx(sample_idx==1)=nan;
                 

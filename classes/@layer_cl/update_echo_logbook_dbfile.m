@@ -139,8 +139,8 @@ for ilay=1:length(layers_obj)
                 
                 if f_processed==0
                     survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
-                    end_time=layers_obj(ilay).Transceivers(1).Data.Time(end);
-                    start_time=layers_obj(ilay).Transceivers(1).Data.Time(1);
+                    end_time=layers_obj(ilay).Transceivers(1).Time(end);
+                    start_time=layers_obj(ilay).Transceivers(1).Time(1);
                     survdata_temp.surv_data_to_logbook_db(dbconn,file_curr_short,'StartTime',start_time,'EndTime',end_time);
                 end
             end

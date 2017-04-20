@@ -15,10 +15,6 @@ Samples=trans.get_transceiver_samples();
 [~,idx_r_start]=nanmin(abs(ydata(1)-Samples));
 [~,idx_r_end]=nanmin(abs(ydata(end)-Samples));
 
-% Range=trans.get_transceiver_range();
-% [~,idx_r_start]=nanmin(abs(ydata(1)-Range));
-% [~,idx_r_end]=nanmin(abs(ydata(end)-Range));
-
 idx_pings=idx_ping_start:idx_ping_end;
 idx_samples=idx_r_start:idx_r_end;
 end

@@ -6,7 +6,7 @@ addRequired(p,'docNode',@(docnode) isa(docNode,'org.apache.xerces.dom.DocumentIm
 
 parse(p,trans_obj,docNode);
 
-time=trans_obj.Data.Time;
+time=trans_obj.Time;
 idx_ping=find(file_id==trans_obj.Data.FileId);
 bot_xml.Infos.Freq=trans_obj.Config.Frequency;
 bot_xml.Infos.ChannelID=deblank(trans_obj.Config.ChannelID);
@@ -19,7 +19,7 @@ switch ver
     case '0.2'
         bot_xml.Bottom.Ping=idx_ping-idx_ping(1)+1;
         bot_xml.Bottom.Sample=trans_obj.get_bottom_idx(idx_ping);
-        idx_rem=(bot_xml.Bottom.Sample==trans_obj.Data.Samples(end))|isnan(bot_xml.Bottom.Sample);
+        idx_rem=(bot_xml.Bottom.Sample==trans_obj.Data.Nb_sample)|isnan(bot_xml.Bottom.Sample);
         bot_xml.Bottom.Ping(idx_rem)=[];
         bot_xml.Bottom.Tag(idx_rem)=[];
         bot_xml.Bottom.Sample(idx_rem)=[];

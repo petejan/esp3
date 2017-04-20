@@ -77,20 +77,20 @@ end
 
 
 if p.Results.StartTime==0
-    st=trans_obj.Data.Time(1);
+    st=trans_obj.Time(1);
 else
     st=p.Results.StartTime;
 end
 
 if p.Results.EndTime==1
-    et=trans_obj.Data.Time(end);
+    et=trans_obj.Time(end);
 else
     et=p.Results.EndTime;
 end
 if ~isempty(trans_obj.GPSDataPing.Lat)
-     idx_valid=find(trans_obj.Data.Time(:)>=st&trans_obj.Data.Time(:)<=et&~isnan(trans_obj.GPSDataPing.Lat(:)));
+     idx_valid=find(trans_obj.Time(:)>=st&trans_obj.Time(:)<=et&~isnan(trans_obj.GPSDataPing.Lat(:)));
 else
-     idx_valid=find(trans_obj.Data.Time>=st&trans_obj.Data.Time<=et);
+     idx_valid=find(trans_obj.Time>=st&trans_obj.Time<=et);
 end
 
 switch Slice_units
@@ -260,8 +260,8 @@ else
     output.slice_lon_e=nan(size(nb_good_pings));
 end
 
-output.slice_time_start=trans_obj.Data.Time(idx_S);
-output.slice_time_end=trans_obj.Data.Time(idx_E);
+output.slice_time_start=trans_obj.Time(idx_S);
+output.slice_time_end=trans_obj.Time(idx_E);
 output.slice_nb_tracks=nb_tracks;
 output.slice_nb_st=nb_st;
 end

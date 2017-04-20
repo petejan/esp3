@@ -57,14 +57,12 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
 ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
-%xdata=double(get(axes_panel_comp.main_echo,'XData'));
-%ydata=double(get(axes_panel_comp.main_echo,'YData'));
+
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
 
 
-nb_pings=length(layer.Transceivers(idx_freq).Data.Time);
-%nb_samples=length(layer.Transceivers(idx_freq).get_transceiver_range());
+nb_pings=length(layer.Transceivers(idx_freq).Time);
 bot=layer.Transceivers(idx_freq).Bottom;
 
 

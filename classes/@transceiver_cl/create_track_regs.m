@@ -10,7 +10,7 @@ parse(p,trans_obj,varargin{:});
 
 [~,Np]=trans_obj.get_pulse_length();
 nb_samples=length(trans_obj.get_transceiver_range());
-nb_pings=length(trans_obj.Data.Time);
+nb_pings=length(trans_obj.Time);
 ST=trans_obj.ST;
 tracks=trans_obj.Tracks;
 idx_pings_st=ST.Ping_number;

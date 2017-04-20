@@ -6,8 +6,10 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-curr_time=layer.Transceivers(idx_freq).Data.Time;
+curr_time=layer.Transceivers(idx_freq).Time;
 curr_pings=layer.Transceivers(idx_freq).get_transceiver_pings();
+
+curr_range=layer.Transceivers(idx_freq).get_transceiver_range();
 curr_dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
 
 main_axes=axes_panel_comp.main_axes;
@@ -42,7 +44,7 @@ for i=1:length(list_line)
     
     time_corr(isnan(time_corr))=curr_time(isnan(time_corr))+nanmean(time_corr(:)-curr_time(:));
     y_line=resample_data_v2(active_line.Range,active_line.Time,time_corr);
-    
+    y_line=y_line./nanmean(diff(curr_range));
     
     if isempty(y_line)
         warning('Line time does not match the current layer.');

@@ -7,7 +7,7 @@ roll=layer.AttitudeNav.Roll;
 pitch=layer.AttitudeNav.Pitch;
 time_att=layer.AttitudeNav.Time;
 
-time_pings_start=trans_obj.Data.Time;
+time_pings_start=trans_obj.Time;
 time_ping_vec=(trans_obj.Data.get_samples()-1)*trans_obj.Params.SampleInterval(1);
 
 faBW=trans_obj.Config.BeamWidthAlongship;

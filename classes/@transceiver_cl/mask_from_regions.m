@@ -1,7 +1,7 @@
 function mask=mask_from_regions(trans_obj)
 
-nb_samples=diff(trans_obj.Data.Samples)+1;
-nb_pings=diff(trans_obj.Data.Number)+1;
+nb_samples=trans_obj.Data.Nb_samples;
+nb_pings=trans_obj.Data.Nb_pings;
 
 mask=zeros(nb_samples,nb_pings);
 

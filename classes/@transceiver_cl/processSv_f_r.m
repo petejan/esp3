@@ -23,7 +23,7 @@ if strcmp(trans_obj.Mode,'FM')
     range=trans_obj.get_transceiver_range();
     
     nb_samples=length(range);
-    nb_pings=length(trans_obj.Data.Time);
+    nb_pings=length(trans_obj.Time);
     range_mat=repmat(range,1,nb_pings);
     N_w=2^nextpow2(ceil(2*pulse_length*f_s_sig));
     

@@ -12,7 +12,7 @@ if isempty(surv_data_cell)
 end
 
 if ~isempty(layer_obj.Transceivers)
-    dt=nanmean(diff(layer_obj.Transceivers(1).Data.Time));
+    dt=nanmean(diff(layer_obj.Transceivers(1).Time));
 else
     dt=0;
 end
@@ -83,13 +83,13 @@ for i_cell=1:length(surv_data_cell)
         end
         
         if start_time==0&&~isempty(layer_obj.Transceivers)
-            surv_data_cell{i_cell}.StartTime=layer_obj.Transceivers(1).Data.Time(1);
+            surv_data_cell{i_cell}.StartTime=layer_obj.Transceivers(1).Time(1);
         else
             surv_data_cell{i_cell}.StartTime=start_time;
         end
         
         if end_time==1&&~isempty(layer_obj.Transceivers)
-            surv_data_cell{i_cell}.EndTime=layer_obj.Transceivers(1).Data.Time(end);
+            surv_data_cell{i_cell}.EndTime=layer_obj.Transceivers(1).Time(end);
         else
             surv_data_cell{i_cell}.EndTime=end_time;
         end

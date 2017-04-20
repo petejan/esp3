@@ -9,8 +9,8 @@ t_0=nan;
 t_1=nan;
 
 for i=1:length(layer_obj.Frequencies)
-    t_0=nanmin([t_0 layer_obj.Transceivers(i).Data.Time]);
-    t_1=nanmax([t_1 layer_obj.Transceivers(i).Data.Time]);
+    t_0=nanmin([t_0 layer_obj.Transceivers(i).Time]);
+    t_1=nanmax([t_1 layer_obj.Transceivers(i).Time]);
 end
 
 end

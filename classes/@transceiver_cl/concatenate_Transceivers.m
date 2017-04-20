@@ -6,33 +6,39 @@ elseif isempty(trans_2)
     trans_out=trans_1;
     return;
 end
+
 if length(trans_1)==length(trans_2)
+    trans_out(length(trans_1))=transceiver_cl();
     for i=1:length(trans_1)
-        trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_1(i).Data,trans_2(i).Data),...
-            'Algo',trans_1(i).Algo,...
-            'GPSDataPing',concatenate_GPSData(trans_1(i).GPSDataPing,trans_2(i).GPSDataPing),...
-            'Mode',trans_1(i).Mode,...
-            'AttitudeNavPing',concatenate_AttitudeNavPing(trans_1(i).AttitudeNavPing,trans_2(i).AttitudeNavPing),...
-            'Params',concatenate_Params(trans_1(i).Params,trans_2(i).Params),...
-            'OffsetLine',concatenate_Lines(trans_1(i).OffsetLine,trans_2(i).OffsetLine),...
-            'Config',trans_1(i).Config,...
-            'Filters',trans_1(i).Filters);
-        
-        if trans_1(i).Data.Time(1)>=trans_2(i).Data.Time(end)
-            regions_2=trans_1(i).Regions;
-            regions_1=trans_2(i).Regions;
-            new_bot=concatenate_Bottom(trans_2(i).Bottom,trans_1(i).Bottom);
-            for ir2=1:length(regions_2)
-                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_2(i).get_transceiver_pings());
-            end
+        if trans_1(i).Time(1)>=trans_2(i).Time(end)
+            trans_first=trans_2(i);
+            trans_second=trans_1(i);
         else
-            regions_1=trans_1(i).Regions;
-            regions_2=trans_2(i).Regions;
-            new_bot=concatenate_Bottom(trans_1(i).Bottom,trans_2(i).Bottom);
-            for ir2=1:length(regions_2)
-                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_1(i).get_transceiver_pings());
-            end    
+            trans_first=trans_1(i);
+            trans_second=trans_2(i);
         end
+        
+        trans_out(i)=transceiver_cl('Data',concatenate_Data(trans_first.Data,trans_second.Data),...
+            'Range',trans_first.Range,...
+            'Time',[trans_first.Time trans_second.Time],...
+            'Algo',trans_first.Algo,...
+            'GPSDataPing',concatenate_GPSData(trans_first.GPSDataPing,trans_second.GPSDataPing),...
+            'Mode',trans_first.Mode,...
+            'AttitudeNavPing',concatenate_AttitudeNavPing(trans_first.AttitudeNavPing,trans_second.AttitudeNavPing),...
+            'Params',concatenate_Params(trans_first.Params,trans_second.Params),...
+            'OffsetLine',concatenate_Lines(trans_first.OffsetLine,trans_second.OffsetLine),...
+            'Config',trans_first.Config,...
+            'Filters',trans_first.Filters);
+        
+
+            regions_1=trans_first.Regions;
+            regions_2=trans_second.Regions;
+            new_bot=concatenate_Bottom(trans_first.Bottom,trans_second.Bottom);
+            
+            for ir2=1:length(regions_2)
+                regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_first.get_transceiver_pings());
+            end    
+
         trans_out(i).setBottom(new_bot);
  
         trans_out(i).add_region(regions_1);

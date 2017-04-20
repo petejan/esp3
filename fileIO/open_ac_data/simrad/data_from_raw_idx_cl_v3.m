@@ -534,20 +534,18 @@ if p.Results.GPSOnly==0
         end
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);
-        
-        t = trans_obj(i).Params.SampleInterval(1);
-        dR = double(c .* t / 2)';
-        
-        samples=double(sample_start(i):sample_end(i));
-        range=double(samples-1)*dR*1;
+        trans_obj(i).Data=ac_data_cl('SubData',sub_ac_data_temp,...
+            'Nb_samples',size(curr_data.power,1),...
+            'Nb_pings',size(curr_data.power,2),...
+            'MemapName',curr_name);
+ 
+        range=trans_obj(i).compute_transceiver_range(c);
+        trans_obj(i).set_transceiver_range(range);
+        trans_obj(i).set_transceiver_time(data.pings(i).time);
         
 
-        trans_obj(i).Data=ac_data_cl('SubData',sub_ac_data_temp,...
-            'Range',range,...
-            'Time',double(data.pings(i).time),...
-            'MemapName',curr_name);
         
-        
+    
        
         trans_obj(i).setBottom([]);
     end

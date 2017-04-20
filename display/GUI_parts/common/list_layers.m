@@ -22,8 +22,8 @@ for i=1:nb_layers
     %file_curr=layers(i).Filename{1};
     switch layers(i).Filetype
         case 'ASL'
-            t1=floor(layers(i).Transceivers(1).Data.Time(1));
-            t2=floor(layers(i).Transceivers(1).Data.Time(end));
+            t1=floor(layers(i).Transceivers(1).Time(1));
+            t2=floor(layers(i).Transceivers(1).Time(end));
             if t1==t2
                 new_name=['ASL ' datestr(t1)];
             else

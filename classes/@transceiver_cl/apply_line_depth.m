@@ -12,7 +12,7 @@ sample_ori=trans_obj.Data.get_samples();
 range_ori=trans_obj.get_transceiver_range();
 dr=nanmean(diff(range_ori));
 
-range_line=resample_data_v2(line_obj.Range,line_obj.Time,trans_obj.Data.Time);
+range_line=resample_data_v2(line_obj.Range,line_obj.Time,trans_obj.Time);
 sample_line=round(range_line/dr);
 sample_line(isnan(sample_line))=1;
 
