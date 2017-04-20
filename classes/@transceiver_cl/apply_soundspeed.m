@@ -1,16 +1,15 @@
-function apply_soundspeed(trans_obj,old_c,new_c)
+function apply_soundspeed(trans_obj,new_c)
 
-old_range=trans_obj.Data.get_range();
-dR_old=nanmean(diff(old_range));
-dt=2*dR_old/old_c;
-dR_new= double(new_c * dt / 2);
-new_range=old_range*dR_new/dR_old;
+old_range=trans_obj.get_transceiver_range();
+new_range = compute_transceiver_range(trans_obj,new_c);
+
 [~,Np]=trans_obj.get_pulse_length();
+
 [TVG_Sp_old,TVG_Sv_old]=computeTVG(old_range,Np);
 
 [TVG_Sp_new,TVG_Sv_new]=computeTVG(new_range,Np);
 
-trans_obj.Data.Range=[new_range(1) new_range(end)];
+trans_obj.set_transceiver_range(new_range);
 
 Sv=trans_obj.Data.get_datamat('sv');
 Sp=trans_obj.Data.get_datamat('sp');

@@ -9,7 +9,7 @@ if isempty(line_obj)
 end
 sample_ori=trans_obj.Data.get_samples();
 
-range_ori=trans_obj.Data.get_range();
+range_ori=trans_obj.get_transceiver_range();
 dr=nanmean(diff(range_ori));
 
 range_line=resample_data_v2(line_obj.Range,line_obj.Time,trans_obj.Data.Time);

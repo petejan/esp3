@@ -13,6 +13,9 @@ delete(get(map_tab_comp.ax,'children'));
 
 lat=layer.GPSData.Lat;
 long=layer.GPSData.Long;
+if isempty(lat)
+    return;
+end
 
 LongLim=[nanmin(long) nanmax(long)];
 

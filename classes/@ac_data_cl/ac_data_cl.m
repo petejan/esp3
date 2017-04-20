@@ -4,11 +4,9 @@ classdef ac_data_cl < handle
         SubData
         Fieldname
         Type
-        Samples
-        Range
         FileId
+        Range
         Time
-        Number
         MemapName
     end
     
@@ -22,10 +20,8 @@ classdef ac_data_cl < handle
             
             
             addParameter(p,'SubData',[],check_sub_ac_data_class);
-            addParameter(p,'Range',[],@isnumeric);
-            addParameter(p,'Samples',[],@isnumeric);
             addParameter(p,'Time',[],@isnumeric);
-            addParameter(p,'Number',[],@isnumeric);
+            addParameter(p,'Range',[],@isnumeric);
             addParameter(p,'FileId',[],@isnumeric);
             addParameter(p,'MemapName','',checkname);
             
@@ -44,6 +40,14 @@ classdef ac_data_cl < handle
             
             if isempty(p.Results.FileId)
                 obj.FileId=ones(size(obj.Time));
+            end
+            
+            if size(obj.Time,1)>1
+                obj.Time=obj.Time';
+            end
+            
+            if size(obj.Range,2)>1
+                obj.Range=obj.Range';
             end
             
             if ~isempty(p.Results.SubData)
@@ -66,6 +70,13 @@ classdef ac_data_cl < handle
                  c = class(obj);
                 disp(['ML object destructor called for class ',c])
             end
+        end
+        
+        function set_range(obj,range)
+            obj.Range=range;
+            if size(obj.Range,2)>1
+                obj.Range=obj.Range';
+            end 
         end
     end
 end

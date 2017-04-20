@@ -291,17 +291,6 @@ if ~isequal(Filename_cell, 0)
                     continue;
                 end
                 
-                sample_start=nan(length(trans_obj),1);
-                sample_end=nan(length(trans_obj),1);
-                
-                for i =1:length(trans_obj)
-                    sample_start(i)=sample_range(1);
-                    if sample_range(2)==Inf
-                        sample_end(i) =length(trans_obj(i).get_transceiver_range())+sample_start(i)-1;
-                    else
-                        sample_end(i)=sample_range(2);
-                    end
-                end
                 
                 for i =1:length(trans_obj)
                     

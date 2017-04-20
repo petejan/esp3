@@ -23,10 +23,10 @@ if ~isempty(list_reg)
     [mean_depth,Sa]=trans_obj.get_mean_depth_from_region(active_reg.Unique_ID);
     
     Sv=trans_obj.Data.get_datamat('sv');
-
+    range=trans_obj.get_transceiver_range();
     bot_r=trans_obj.get_bottom_range;
-    bot_r(bot_r==0)=trans_obj.Data.Range(2);
-    bot_r(isnan(bot_r))=trans_obj.Data.Range(2);
+    bot_r(bot_r==0)=range(end);
+    bot_r(isnan(bot_r))=range(end);
     
    idx_pings=active_reg.Idx_pings;
    idx_r=active_reg.Idx_r;

@@ -1,6 +1,8 @@
 function numbers=get_numbers(ac_data_obj,varargin)
 
-numbers=ac_data_obj.Number(1):ac_data_obj.Number(2);
+time=ac_data_obj.Time;
+ 
+numbers=(1:length(time));
 
 if nargin>=2
     idx=varargin{1};

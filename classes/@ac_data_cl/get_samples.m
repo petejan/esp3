@@ -1,6 +1,8 @@
 function samples=get_samples(ac_data_obj,varargin)
 
-samples=(ac_data_obj.Samples(1):ac_data_obj.Samples(2))';
+range=get_range(ac_data_obj);
+ 
+samples=(1:length(range))';
 
 if nargin>=2
     idx=varargin{1};

@@ -181,9 +181,9 @@ for isn=1:length(snaps)
         %bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
         gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
         trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
-        
+        range=trans_obj.get_transceiver_range();
         if isnan(good_bot_tot)
-            good_bot_tot= trans_obj_tr.Data.Range(end);
+            good_bot_tot= range(end);
         end
         
         if ~isempty(trans_obj_tr.ST.TS_comp)

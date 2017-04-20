@@ -1,9 +1,6 @@
 function range=get_range(ac_data_obj,varargin)
 
-samples=ac_data_obj.get_samples();
-dR=(ac_data_obj.Range(2)-ac_data_obj.Range(1))/length(samples);
-
-range=(samples-1)*dR;
+range=ac_data_obj.Range;
 
 if nargin>=2
     idx=varargin{1};

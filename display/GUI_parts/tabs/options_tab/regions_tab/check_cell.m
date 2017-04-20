@@ -25,7 +25,7 @@ if isempty(h_unit_idx)
 end
 h_unit=h_units{h_unit_idx};
 
-
+ range=layer.Transceivers(idx_freq).get_transceiver_range();
 val=str2double(get(src,'string'));
 if ~isnan(val)&&val>0
     
@@ -51,8 +51,9 @@ if ~isnan(val)&&val>0
                     end
                      fmt='%.0f';
                 case 'meters'
-                    if val>layer.Transceivers(idx_freq).Data.Range(2)
-                        val=layer.Transceivers(idx_freq).Data.Range(2);
+                    
+                    if val>range(end);
+                        val=range(end);
                     end
                      fmt='%.2f';
             end

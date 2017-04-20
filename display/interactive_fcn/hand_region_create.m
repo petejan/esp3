@@ -74,7 +74,6 @@ yinit(1)=cp(1,2);
 
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
 ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
-%ydata=layer.Transceivers(idx_freq).Data.get_range();
 
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
