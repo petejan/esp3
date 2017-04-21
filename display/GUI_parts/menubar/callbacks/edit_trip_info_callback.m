@@ -12,13 +12,6 @@ surveydata=layer.get_survey_data();
 if can>0
     return;
 end
-layer.update_echo_logbook_dbfile('SurveyName',SurveyName,'Voyage',Voyage);
-update_mini_ax(main_figure,0);
-setappdata(main_figure,'Layer',layer);
-import_survey_data_callback([],[],main_figure);
-update_layer_tab(main_figure);
-load_info_panel(main_figure);
-update_mini_ax(main_figure,0);
 
 [path_lay,~]=get_path_files(layer);
 path_f=path_lay{1};
@@ -39,11 +32,25 @@ hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 
 if ~isempty(hfigs)
-    tag=sprintf('logbook_%s',data_survey{2});
-    idx_tag=find(strcmpi({hfigs(:).Tag},tag));
-    set(hfigs(idx_tag(1)),'Name',sprintf('%s',data_survey{2}),...
-        'Tag',tag);
+    tag_old=sprintf('logbook_%s',data_survey{2});
+    
+    tag_new=sprintf('logbook_%s',Voyage);
+    idx_tag=find(strcmpi({hfigs(:).Tag},tag_old));
+    if~isempty(idx_tag)
+        set(hfigs(idx_tag(1)),'Name',sprintf('%s',Voyage),...
+            'Tag',tag_new);
+    end
 end
+
+layer.update_echo_logbook_dbfile('SurveyName',SurveyName,'Voyage',Voyage);
+update_mini_ax(main_figure,0);
+setappdata(main_figure,'Layer',layer);
+import_survey_data_callback([],[],main_figure);
+update_layer_tab(main_figure);
+load_info_panel(main_figure);
+update_mini_ax(main_figure,0);
+
+
 
 load_survey_data_fig_from_db(main_figure,1);
 

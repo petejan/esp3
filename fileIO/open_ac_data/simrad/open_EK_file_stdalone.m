@@ -281,8 +281,7 @@ if ~isequal(Filename_cell, 0)
                     end
                 end
                 
-                
-                
+
                 prev_ping_start=pings_range(1);
                 pings=trans_obj(1).get_transceiver_pings();
                 prev_ping_end=pings(end);

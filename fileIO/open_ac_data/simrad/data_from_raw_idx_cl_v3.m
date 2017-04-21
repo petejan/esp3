@@ -543,10 +543,7 @@ if p.Results.GPSOnly==0
         trans_obj(i).set_transceiver_range(range);
         trans_obj(i).set_transceiver_time(data.pings(i).time);
         
-
-        
-    
-       
+ 
         trans_obj(i).setBottom([]);
     end
     
