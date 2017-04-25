@@ -37,7 +37,7 @@ for uui=idx_sort
         end
         
         range=layer.Transceivers(uui).get_transceiver_range();
-        dp=2;
+        dp=1;
         [Sp_f,Compensation_f,f_vec,r_disp]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_ping,range,dp,cal);
         
         TS_f=Sp_f+Compensation_f;

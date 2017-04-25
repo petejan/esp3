@@ -61,7 +61,8 @@ uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_anal
 uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,reg_curr,main_figure});
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
-uimenu(freq_analysis_menu,'Label','Display Frequency response','Callback',{@freq_response_reg_callback,main_figure});
+uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,main_figure,'sp'});
+uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@freq_response_reg_callback,main_figure,'sv'});
 
 if strcmp(layer.Transceivers(idx_freq).Mode,'FM')
     uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,main_figure});

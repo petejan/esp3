@@ -1,5 +1,5 @@
 
-function freq_response_reg_callback(~,~,main_figure)
+function freq_response_reg_callback(~,~,main_figure,field)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -16,10 +16,10 @@ if ~isempty(list_reg)
     idx_pings=active_reg.Idx_pings;
     idx_r=active_reg.Idx_r;
     
-    switch(curr_disp.Fieldname)
+    switch(field)
         case {'sp','spdenoised','spunmatched'}
             TS_freq_response_func(main_figure,idx_r,idx_pings)
-        case {'sv','svdenoised'}
+        case {'sv','svdenoised'}   
             Sv_freq_response_func(main_figure,idx_r,idx_pings)
         otherwise
             TS_freq_response_func(main_figure,idx_r,idx_pings)

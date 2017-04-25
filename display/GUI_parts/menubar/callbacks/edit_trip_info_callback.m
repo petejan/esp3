@@ -23,22 +23,14 @@ end
 
 %surv_data_struct=import_survey_data_db(db_file);
 
-dbconn=sqlite(db_file,'connect');
-
-data_survey=dbconn.fetch('select * from survey');
-dbconn.close();
-
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
 
-if ~isempty(hfigs)
-    tag_old=sprintf('logbook_%s',data_survey{2});
-    
-    tag_new=sprintf('logbook_%s',Voyage);
-    idx_tag=find(strcmpi({hfigs(:).Tag},tag_old));
+if ~isempty(hfigs) 
+    tag=sprintf('logbook_%s',path_f);
+    idx_tag=find(strcmpi({hfigs(:).Tag},tag));
     if~isempty(idx_tag)
-        set(hfigs(idx_tag(1)),'Name',sprintf('%s',Voyage),...
-            'Tag',tag_new);
+        set(hfigs(idx_tag(1)),'Name',sprintf('%s',Voyage));
     end
 end
 

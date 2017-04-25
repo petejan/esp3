@@ -29,7 +29,7 @@ if ~isempty(list_reg)
         [cmap,~,~,col_grid,~,~]=init_cmap(curr_disp.Cmap);
         
 
-        [TS_f,f_vec,pings,range]=trans_obj.TS_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'dp',3,'load_bar_comp',load_bar_comp);
+        [TS_f,f_vec,pings,range]=trans_obj.TS_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'dp',1,'load_bar_comp',load_bar_comp);
         
   
         

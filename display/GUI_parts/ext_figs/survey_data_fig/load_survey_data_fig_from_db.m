@@ -73,7 +73,7 @@ dbconn.close();
 
 hfigs=getappdata(main_figure,'ExternalFigures');
 hfigs(~isvalid(hfigs))=[];
-tag=sprintf('logbook_%s',data_survey{2});
+tag=sprintf('logbook_%s',path_f);
 idx_tag=find(strcmpi({hfigs(:).Tag},tag));
 
 if ~isempty(idx_tag)

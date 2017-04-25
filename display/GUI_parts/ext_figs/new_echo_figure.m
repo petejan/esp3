@@ -19,10 +19,16 @@ addParameter(p,'Group','ESP3',@ischar);
 addParameter(p,'Visible','on',@ischar);
 addParameter(p,'Tag','',@ischar);
 addParameter(p,'Cmap','',@ischar);
-
+addParameter(p,'Keep_old',0,@isnumeric);
 parse(p,main_figure,varargin{:});
 
-hfigs=clean_echo_figures(main_figure,'Tag',p.Results.Tag);
+if p.Results.Keep_old==0
+    hfigs=clean_echo_figures(main_figure,'Tag',p.Results.Tag);
+else
+     hfigs=getappdata(main_figure,'ExternalFigures');
+end
+     
+    
 
 if isempty(p.Results.fig_handle)
     fig_handle=figure('Units',p.Results.Units,...

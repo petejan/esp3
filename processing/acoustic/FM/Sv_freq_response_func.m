@@ -69,8 +69,8 @@ for uui=1:length(layer.Frequencies)
         range=layer.Transceivers(uui).get_transceiver_range();
         [nb_samples,~]=size(Sv);
         
-        [~,idx_r1]=nanmin(abs(range-range(1)));
-        [~,idx_r2]=nanmin(abs(range-range(2)));
+        [~,idx_r1]=nanmin(abs(range-r_min));
+        [~,idx_r2]=nanmin(abs(range-r_max));
         
         idx_r1=nanmax(idx_r1,1);
         idx_r2=nanmin(idx_r2,nb_samples);
@@ -82,11 +82,11 @@ for uui=1:length(layer.Frequencies)
 end
 
 
-hfig=new_echo_figure(main_figure,'Name','SV(f)','Tag','sv_freq');
+hfig=new_echo_figure(main_figure,'Name','SV(f)','Tag','sv_freq','Keep_old',1);
 %subplot(1,3,uui)
 %plot(f_vec/1e3,Sv_f,'b','linewidth',0.2);
-hold on;
-plot(f_vec/1e3,Sv_f,'r','linewidth',2)
+ah=axes(hfig);
+plot(ah,f_vec/1e3,Sv_f,'r','linewidth',2)
 %plot(f_vec/1e3,10*log10(filter2_perso(ones(1,nanmin(10,length(f_vec))),10.^(Sv_f_mean/10))),'k','linewidth',2)
 grid on;
 xlabel('kHz')
