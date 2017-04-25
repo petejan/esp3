@@ -89,7 +89,7 @@ switch mode
         yinit = ydata(1);
 end
 
-%set(main_figure,'KeyPressFcn',@check_esc);
+
 
 x_box=xinit;
 y_box=yinit;
@@ -165,7 +165,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         layer=getappdata(main_figure,'Layer');
         
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-        %set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        
         if isempty(y_box)||isempty(x_box)
                     delete(txt);
                      delete(hp);

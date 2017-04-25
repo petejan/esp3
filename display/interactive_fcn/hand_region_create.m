@@ -119,7 +119,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
         main_figure.WindowButtonMotionFcn = wbmf_ori;
         main_figure.WindowButtonUpFcn = wbuf_ori;
-        %set(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
+        
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
