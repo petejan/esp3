@@ -4,18 +4,18 @@ p = inputParser;
 
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'regIDs',[],@isnumeric);
-addParameter(p,'cell_w',50,@(x) x>0);
-addParameter(p,'cell_units_w','pings',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
-addParameter(p,'cell_h',10,@(x) x>0);
+addParameter(p,'Slice_w',50,@(x) x>0);
+addParameter(p,'Slice_w_units','meters',@(unit) ~isempty(strcmp(unit,{'pings','meters'})));
+addParameter(p,'Slice_h',10,@(x) x>0);
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',1,@(x) x>0);
 addParameter(p,'Reference','Surface',@(ref) ~isempty(strcmpi(ref,{'Surface','Bottom'})));
 
 parse(p,trans_obj,varargin{:});
 
-cell_w=p.Results.cell_w;
-cell_units_w=p.Results.cell_units_w;
-cell_h=p.Results.cell_h;
+Slice_w=p.Results.Slice_w;
+Slice_w_units=p.Results.Slice_w_units;
+Slice_h=p.Results.Slice_h;
 
 
 if ~isempty(p.Results.regIDs)
@@ -45,25 +45,25 @@ end
 idx_valid=trans_obj.Time>=st&trans_obj.Time<=et;
 
 
-switch cell_units_w
+switch Slice_w_units
     case 'pings'
-        cell_hori_ref=trans_obj.get_transceiver_pings(idx_valid);
+        Slice_hori_ref=trans_obj.get_transceiver_pings(idx_valid);
     case 'meters'
-        cell_hori_ref=trans_obj.GPSDataPing.Dist(idx_valid);
+        Slice_hori_ref=trans_obj.GPSDataPing.Dist(idx_valid);
 end
 
-cells_hori=unique([cell_hori_ref(1):cell_w:cell_hori_ref(end) cell_hori_ref(end)]);
-cell_hori_S = cells_hori(1:end-1);
-cell_hori_E = cells_hori(2:end);
+cells_hori=unique([Slice_hori_ref(1):Slice_w:Slice_hori_ref(end) Slice_hori_ref(end)]);
+Slice_hori_S = cells_hori(1:end-1);
+Slice_hori_E = cells_hori(2:end);
 
 
 switch p.Results.Reference
     case 'Surface'
         cell_vert_ref=trans_obj.get_transceiver_range();
-        cells_vert=unique([cell_vert_ref(1):cell_h:cell_vert_ref(end) cell_vert_ref(end)]);
+        cells_vert=unique([cell_vert_ref(1):Slice_h:cell_vert_ref(end) cell_vert_ref(end)]);
     case 'Bottom'
         cell_vert_ref=-trans_obj.get_transceiver_range();
-        cells_vert=unique([cell_vert_ref(1):-cell_h:cell_vert_ref(end) cell_vert_ref(end)]);
+        cells_vert=unique([cell_vert_ref(1):-Slice_h:cell_vert_ref(end) cell_vert_ref(end)]);
 end
 
 
@@ -71,7 +71,7 @@ end
 cells_vert_S = cells_vert(1:end-1);
 cells_vert_E = cells_vert(2:end);
 
-numSlices_hori = length(cell_hori_S);
+numSlices_hori = length(Slice_hori_S);
 numSlices_vert = length(cells_vert_S);
 cell_abscf=zeros(numSlices_vert,numSlices_hori);
 cell_vbscf=zeros(numSlices_vert,numSlices_hori);
@@ -85,8 +85,8 @@ idx_cells_S=nan(numSlices_vert,1);
 idx_cells_E=nan(numSlices_vert,1);
 
 for k = 1:numSlices_hori;
-    [~,idx_bins_S(k)]=nanmin(abs(cell_hori_ref-cell_hori_S(k)));
-    [~,idx_bins_E(k)]=nanmin(abs(cell_hori_ref-cell_hori_E(k)));
+    [~,idx_bins_S(k)]=nanmin(abs(Slice_hori_ref-Slice_hori_S(k)));
+    [~,idx_bins_E(k)]=nanmin(abs(Slice_hori_ref-Slice_hori_E(k)));
 end
 
 for k = 1:numSlices_vert;
@@ -96,7 +96,7 @@ end
 
 
 if ~isempty(trans_obj.ST.TS_comp)
-    switch cell_units_w
+    switch Slice_w_units
         case 'pings'
             x_st=trans_obj.ST.Ping_number;
         case 'meters'
@@ -107,7 +107,7 @@ if ~isempty(trans_obj.ST.TS_comp)
     att_st=zeros(1,length(trans_obj.ST.Ping_number));
     for k = 1:numSlices_hori;
         for j=1:numSlices_vert
-            ix = (x_st>=cell_hori_S(k) &  x_st<cell_hori_E(k))& ~att_st&(y_st>=cells_vert_S(j) &  x_st<cells_vert_E(j));
+            ix = (x_st>=Slice_hori_S(k) &  x_st<Slice_hori_E(k))& ~att_st&(y_st>=cells_vert_S(j) &  x_st<cells_vert_E(j));
             att_st(ix)=1;
             nb_st(j,k)=nansum(ix);
         end
@@ -124,7 +124,7 @@ if ~isempty(trans_obj.ST.TS_comp)
         att_tr=zeros(1,length(trans_obj.Tracks.target_id));
         for k = 1:numSlices_hori;
             for j=1:numSlices_vert
-                ix = (xs_st_track>=cell_hori_S(k) &  xs_st_track<cell_hori_E(k))& ~att_tr&(ys_st_track>=cells_vert_S(j) &  ys_st_track<cells_vert_E(j));
+                ix = (xs_st_track>=Slice_hori_S(k) &  xs_st_track<Slice_hori_E(k))& ~att_tr&(ys_st_track>=cells_vert_S(j) &  ys_st_track<cells_vert_E(j));
                 att_tr(ix)=1;
                 nb_tracks(j,k)=nansum(ix);
             end
@@ -161,7 +161,7 @@ for iuu=1:length(idx_reg)
     Sv_mean_lin=regCellIntCurr.Sv_mean_lin_esp2;
     Sa_lin = regCellIntCurr.Sa_lin;%sum up all abcsf per vertical slice
     att=zeros(size(Sa_lin));
-    switch cell_units_w
+    switch Slice_w_units
         case 'pings'
             t_start=regCellIntCurr.Ping_S;
         case 'meters'
@@ -173,23 +173,26 @@ for iuu=1:length(idx_reg)
     
     for k = 1:numSlices_hori; % sum up abscf data according to cells
         for j = 1:numSlices_vert; % sum up abscf data according to cells
-            ix = (t_start>=cell_hori_S(k) &  t_start<cell_hori_E(k));
+            ix = (t_start>=Slice_hori_S(k) &  t_start<Slice_hori_E(k));
             iy = r_start>=cells_vert_S(j) &  r_start<cells_vert_E(j);
             i_tot =iy & ix & ~att;
             att(i_tot)=1;
-            nb_good_pings(j,k)=nansum(regCellIntCurr.Nb_good_pings(i_tot));
-            cell_abscf(j,k) = cell_abscf(j,k)+nansum(Sa_lin(i_tot)./nanmax(regCellIntCurr.Nb_good_pings(ix)));
+            if ~any(i_tot(:))
+               continue; 
+            end
+            nb_good_pings(j,k)=nanmax(nb_good_pings(j,k),nansum(regCellIntCurr.Nb_good_pings(i_tot(1,:))));
+            cell_abscf(j,k) = cell_abscf(j,k)+nansum(Sa_lin(i_tot)./(regCellIntCurr.Nb_good_pings(i_tot)));
             cell_vbscf(j,k) = nansum([cell_vbscf(j,k) nanmean(Sv_mean_lin(i_tot))]);
         end
     end
 end
 
 
-
+regCellInt(cellfun(@isempty,regCellInt))=[];
 
 output.cell_abscf=cell_abscf;
 output.cell_vbscf=cell_vbscf;
-output.cell_size=cell_w;
+output.cell_size=Slice_w;
 output.num_slices=numSlices_hori;
 output.nb_good_pings=nb_good_pings;
 if ~isempty(trans_obj.GPSDataPing.Lat)
