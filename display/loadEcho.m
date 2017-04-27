@@ -42,7 +42,7 @@ if isempty(main_figure)
 end
 
 remove_interactions(main_figure);
-rm_listeners(main_figure);
+disable_listeners(main_figure);
 
 layer  = getappdata(main_figure,'Layer');
 layers = getappdata(main_figure,'Layers');
@@ -91,7 +91,7 @@ setappdata(main_figure,'Curr_disp',curr_disp);
 update_display(main_figure,flag);
 waitfor(curr_disp,'UIupdate',0)
 
-init_listeners(main_figure);
+enable_listeners(main_figure);
 curr_disp = getappdata(main_figure,'Curr_disp');
 curr_disp.CursorMode='Normal';
 

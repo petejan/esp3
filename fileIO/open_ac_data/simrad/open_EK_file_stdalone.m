@@ -334,7 +334,7 @@ if ~isequal(Filename_cell, 0)
         layers(id_rem)=[];
     end
     
-    clear data transceiver
+    clear('data','transceiver');
     
     
 end

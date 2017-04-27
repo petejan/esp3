@@ -1,6 +1,7 @@
 function init_listeners(main_figure)
 
 curr_disp_obj=getappdata(main_figure,'Curr_disp');
+
 if isappdata(main_figure,'ListenersH')
     ls=getappdata(main_figure,'ListenersH');
 else
@@ -19,6 +20,7 @@ ls=[ls addlistener(curr_disp_obj,'Fieldname','PostSet',@(src,envdata)listenField
 ls=[ls addlistener(curr_disp_obj,'Cmap','PostSet',@(src,envdata)listenCmap(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'Cax','PostSet',@(src,envdata)listenCax(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'Font','PostSet',@(src,envdata)listenFont(src,envdata,main_figure))];
+
 setappdata(main_figure,'ListenersH',ls);
 
 end

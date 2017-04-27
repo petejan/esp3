@@ -55,13 +55,16 @@ xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
 
 ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
 
-%ydata=layer.Transceivers(idx_freq).get_transceiver_range();
+% ydata_r=layer.Transceivers(idx_freq).get_transceiver_range();
 
 if new==0
     [~,idx_ping_min]=nanmin(abs(xdata-x(1)));
     [~,idx_r_min]=nanmin(abs(ydata-y(1)));
     [~,idx_ping_max]=nanmin(abs(xdata-x(2)));
     [~,idx_r_max]=nanmin(abs(ydata-y(2)));
+    if y(2)==Inf
+        idx_r_max=length(ydata_r);
+    end
     idx_ping=idx_ping_min:idx_ping_max;
     idx_r=idx_r_min:idx_r_max;
 else

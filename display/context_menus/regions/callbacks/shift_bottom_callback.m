@@ -41,7 +41,19 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+
+switch class(select_plot)
+    case 'matlab.graphics.primitive.Patch'
+        
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        
+        
+    case 'region_cl'
+        idx_pings=select_plot.Idx_pings;
+    otherwise
+        return;
+end
+
 
 
 answer=inputdlg('Enter Shifting value','Shift Bottom',1,{'0'});

@@ -9,6 +9,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 mini_axes_comp=getappdata(main_figure,'Mini_axes');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
+
 if isa(mini_axes_comp.mini_ax.Parent,'matlab.ui.Figure')
     layers_Str=list_layers(layer,'nb_char',80);
     set(mini_axes_comp.mini_ax.Parent,'Name',sprintf('Overview %s',layers_Str{1}));

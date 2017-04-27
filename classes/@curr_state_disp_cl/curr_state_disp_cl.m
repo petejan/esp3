@@ -26,6 +26,7 @@ classdef curr_state_disp_cl <handle
         UIupdate
         Proj
         Reg_changed_flag %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
+        R_disp=[1 inf];
     end
     
     methods
@@ -115,7 +116,7 @@ classdef curr_state_disp_cl <handle
             
             if ~isdeployed
                 c = class(obj);
-                disp(['ML object destructor called for class ',c])
+                disp(['ML object destructor called for class ',c]);
             end
         end
         

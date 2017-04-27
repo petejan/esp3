@@ -178,8 +178,7 @@ src.WindowButtonUpFcn = @wbucb;
         end
         hp_a=patch(ah,'XData',x_box(1:4),'YData',y_box(1:4),'FaceColor',col,'tag','SelectArea','FaceAlpha',0.5,'EdgeColor',col);
         
-        
-        create_select_area_context_menu(hp_a,main_figure);
+        create_region_context_menu(hp_a,main_figure,hp_a);
         enterFcn =  @(figHandle, currentPoint)...
             set(figHandle, 'Pointer', 'fleur');
         iptSetPointerBehavior(hp_a,enterFcn);

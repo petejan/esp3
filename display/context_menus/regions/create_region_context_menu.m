@@ -43,37 +43,61 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
+
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
-    reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure,1};
+    if isa(reg_curr,'region_cl')
+        reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure,1};
+    end
 end
 
-uimenu(context_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure});
-uimenu(context_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
-uimenu(context_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
-uimenu(context_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
-uimenu(context_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
+if isa(reg_curr,'region_cl')
+        region_menu=uimenu(context_menu,'Label','Region');
+        uimenu(region_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure});
+        uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
+        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
+        uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
+        uimenu(region_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
+end
+
+switch class(reg_curr)
+    case 'matlab.graphics.primitive.Patch'
+        idx_pings=round(nanmin(reg_curr.XData)):round(nanmax(reg_curr.XData));
+        idx_r=round(nanmin(reg_curr.YData)):round(nanmax(reg_curr.YData));
+        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+    case 'region_cl'
+        active_reg=reg_curr;
+    otherwise
+        return;
+end
 
 analysis_menu=uimenu(context_menu,'Label','Analysis');
-uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,reg_curr,main_figure});
-uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
-uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,reg_curr,main_figure});
-uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,reg_curr,main_figure});
+uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,active_reg,main_figure});
+
+if isa(reg_curr,'region_cl')
+        uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
+end
+
+uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,active_reg,main_figure});
+uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,active_reg,main_figure});
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
-uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,main_figure,'sp'});
-uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@freq_response_reg_callback,main_figure,'sv'});
+uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sp'});
+uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sv'});
 
 if strcmp(layer.Transceivers(idx_freq).Mode,'FM')
-    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,main_figure});
-    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,reg_curr,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,reg_curr,main_figure});
 end
 
 
 algo_menu=uimenu(context_menu,'Label','Algorithms');
 uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_detect_cback,reg_curr,main_figure,'v1'});
 uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,reg_curr,main_figure,'v2'});
+uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,reg_curr,main_figure});
 uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,reg_curr,main_figure});
+uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,reg_curr,main_figure});
+
 
 
 end

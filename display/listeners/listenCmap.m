@@ -1,4 +1,4 @@
-function listenCmap(~,~,main_figure)
-update_cmap(main_figure);
+function listenCmap(src,evt,main_figure)
+    update_cmap(main_figure);
 end
 

@@ -15,6 +15,7 @@ if new==0
 else
     x=[0 0];
     y=[0 0];
+    
     u=findobj(axes_panel_comp.main_axes,'Tag','SelectLine','-or','Tag','SelectArea');
     delete(u);
 end
@@ -41,8 +42,11 @@ if found==0
     return;
 end
 
+
+
 delete(axes_panel_comp.listeners);
 clear_lines(axes_panel_comp.main_axes);
+
 
 [dr,dp]=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
 str_subsampling=sprintf('Disp. SubSampling: [%.0fx%.0f]',dp,dr);
@@ -62,6 +66,4 @@ end
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 update_grid(main_figure);
-%disp('update Grid')
-%display_info_ButtonMotionFcn([],[],main_figure,1);
 end

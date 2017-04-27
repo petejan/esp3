@@ -97,7 +97,7 @@ if ~isempty(idx)
             continue;
         end
         reg_curr=trans_obj.Regions(ireg);
-        reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap,'main_figure',main_figure);
+        reg_curr.display_region(trans_obj,'main_figure',main_figure);
   
     end
 end

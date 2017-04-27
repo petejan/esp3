@@ -62,7 +62,22 @@ if isempty(output_reg)
     return;
 end
 
-cax=p.Results.Cax;
+curr_disp=getappdata(p.Results.main_figure,'Curr_disp');
+
+if ~isempty(curr_disp)
+    cax=curr_disp.getCaxField('sv');
+    cmap_name=curr_disp.Cmap;
+    
+    cmap_list=addlistener(curr_disp,'Cmap','PostSet',@(src,envdata)listenCmapReg(src,envdata));
+    cax_list=addlistener(curr_disp,'Cax','PostSet',@(src,envdata)listenCaxReg(src,envdata));
+    
+else
+    cax=p.Results.Cax;
+    cmap_name=p.Results.Cmap;
+    cmap_list=[];
+    cax_list=[];
+end
+
 
 sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
 
@@ -89,7 +104,8 @@ switch(reg_obj.Reference)
         y_disp=-nanmean(output_reg.y_node+output_reg.height/2,2);
 end
 mat_size=size(sv_disp);
-h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',sprintf('Region %.0f',reg_obj.Unique_ID),'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked');
+h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',reg_obj.tag_str(),...
+    'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked','CloseRequestFcn',@close_reg_fig);
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 title(ax_in,tt);
 if  ~any(mat_size==1)
@@ -103,7 +119,7 @@ caxis(ax_in,cax);
 
 colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
 
-[cmap,~,~,col_grid,~,~]=init_cmap(p.Results.Cmap);
+[cmap,~,~,col_grid,~,~]=init_cmap(cmap_name);
 colormap(ax_in,cmap);
 set(ax_in,'GridColor',col_grid);
 grid(ax_in,'on');
@@ -146,3 +162,22 @@ linkaxes([ax_in ax_vert],'y');
 linkaxes([ax_in ax_horz],'x');
 set(ax_in,'Xlim',[nanmin(x_disp)-reg_obj.Cell_w/2 nanmax(x_disp)+reg_obj.Cell_w/2]);
 set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/2]);
+
+    function close_reg_fig(src,~,~)
+       delete(cmap_list) ;
+       delete(cax_list) ;
+       delete(src)
+    end
+
+    function listenCmapReg(src,evt)
+        [cmap,~,~,col_grid,~,~]=init_cmap(evt.AffectedObject.Cmap);
+        colormap(ax_in,cmap);
+    end
+
+    function listenCaxReg(src,evt)
+         cax=evt.AffectedObject.getCaxField('sv');
+         caxis(ax_in,cax);
+    end
+
+end
+

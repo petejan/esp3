@@ -4,16 +4,22 @@ function [TS_f,f_vec]=freq_response_sp_mat_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
-if ~isempty(list_reg)
+switch class(reg_curr)
+    case 'matlab.graphics.primitive.Patch'
+        idx_pings=round(nanmin(reg_curr.XData)):round(nanmax(reg_curr.XData));
+        idx_r=round(nanmin(reg_curr.YData)):round(nanmax(reg_curr.YData));
+        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+    case 'region_cl'
+        active_reg=reg_curr;
+    otherwise
+        return;
+end
     show_status_bar(main_figure);
     load_bar_comp=getappdata(main_figure,'Loading_bar');
-    active_reg=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
-    
+     
     if strcmp(trans_obj.Mode,'FM')
         [cal_path,~,~]=fileparts(layer.Filename{1});
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(idx_freq),'%.0f') '.mat']);
@@ -79,7 +85,7 @@ if ~isempty(list_reg)
         
     end
     hide_status_bar(main_figure);
-end
+
 end
 
 

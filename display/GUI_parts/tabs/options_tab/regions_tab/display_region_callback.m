@@ -18,6 +18,6 @@ else
     return;
 end
 
-reg_curr.display_region(trans_obj,'Cax',curr_disp.getCaxField('sv'),'Cmap',curr_disp.Cmap,'main_figure',main_figure);
+reg_curr.display_region(trans_obj,'main_figure',main_figure);
 
 end

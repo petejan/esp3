@@ -40,9 +40,7 @@ for uui=1:length(layer.Frequencies)
         end
         
         
-        %         for kk=1:length(idx_pings)
-        %             [Sv_f_temp(:,kk),f_vec_temp(:,kk)]=processSv_f_r(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(1),range(end),cal,cal_eba,[]);
-        %         end
+
         
         [~,f_vec_temp,~]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_pings(1),range,[],cal,cal_eba);
         Sv_f_temp=nan(length(f_vec_temp),length(idx_pings));
@@ -57,6 +55,10 @@ for uui=1:length(layer.Frequencies)
         f_vec=[f_vec f_vec_temp];
         
         
+        [Sv_f_temp_2,f_vec_temp_2,~,~]=layer.Transceivers(uui).sv_f_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
+        
+        Sv_f_2=[Sv_f 10*log10(nanmean(10.^(Sv_f_temp_2'/10)))];
+        f_vec_2=[f_vec_2 f_vec_temp_2];
         
         clear f_vec_temp Sv_f_temp
     else

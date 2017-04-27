@@ -35,6 +35,10 @@
 
 %% Function
 function listenFreq(~,~,main_figure)
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+[idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
 
 opt_panel=getappdata(main_figure,'option_tab_panel');
 
@@ -51,12 +55,22 @@ update_regions_tab(main_figure,[]);
 load_calibration_tab(main_figure,opt_panel);
 load_info_panel(main_figure);
 update_reglist_tab(main_figure,[],1);
-update_axis_panel(main_figure,0);
+
+range=layer.Transceivers(idx_freq).get_transceiver_range();
+[~,y_lim_min]=nanmin(abs(range-curr_disp.R_disp(1)));
+[~,y_lim_max]=nanmin(abs(range-curr_disp.R_disp(2)));
+
+if curr_disp.R_disp(2)==Inf
+    y_lim_max=numel(range);
+end
+clear_regions(main_figure,[]);
+set(axes_panel_comp.main_axes,'ylim',[y_lim_min y_lim_max]);
+
+
 update_mini_ax(main_figure,1);
 
 display_bottom(main_figure);
 display_tracks(main_figure);
-display_regions(main_figure,'both');
 set_alpha_map(main_figure);
 order_stacks_fig(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);

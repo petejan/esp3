@@ -31,6 +31,7 @@ if ~isempty(varargin)
 else
     main_axes_tot=axes_panel_comp.main_axes;
 end
+
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans=layer.Transceivers(idx_freq);
 
@@ -41,6 +42,7 @@ x=Number;
 y=Samples;
 
 alpha_in=0.4;
+
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
     

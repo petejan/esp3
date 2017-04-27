@@ -228,7 +228,8 @@ setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 
 %% Initialize the display and the interactions with the user
 initialize_display(main_figure);
-initialize_interactions(main_figure,1)
+initialize_interactions(main_figure,1);
+init_listeners(main_figure);
 
 %% If files were loaded in input, load them now
 if ~isempty(p.Results.Filenames)

@@ -116,6 +116,10 @@ classdef region_cl
             str=sprintf('Region %s %d Type: %s Reference: %s ',obj.Name,obj.ID,obj.Type,obj.Reference);
         end
         
+        function str=tag_str(obj)
+            str=sprintf('Region %d',obj.Unique_ID);
+        end
+        
         function mask=create_mask(obj)
             nb_pings=length(obj.Idx_pings);
             nb_samples=length(obj.Idx_r);

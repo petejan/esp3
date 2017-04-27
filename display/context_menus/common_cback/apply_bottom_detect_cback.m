@@ -45,14 +45,11 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 switch class(select_plot)
     case 'matlab.graphics.primitive.Patch'
-        r=layer.Transceivers(idx_freq).get_transceiver_range();
 
         idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
-        
-        [~,idx_r_min]=nanmin(abs(r-nanmin(select_plot.YData)));
-        
-        [~,idx_r_max]=nanmin(abs(r-nanmax(select_plot.YData)));
-        idx_r=idx_r_min:idx_r_max;
+        idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+
+
     case 'region_cl'
         idx_r=select_plot.Idx_r;
         idx_pings=select_plot.Idx_pings;
