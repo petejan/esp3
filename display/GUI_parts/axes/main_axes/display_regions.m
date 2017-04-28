@@ -187,7 +187,7 @@ for iax=1:length(main_axes_tot)
             
             
             if main_axes==axes_panel_comp.main_axes
-                create_region_context_menu(reg_plot,main_figure,reg_curr);
+                create_region_context_menu(reg_plot,main_figure,reg_curr.Unique_ID);
                 enterFcn =  @(figHandle, currentPoint)...
                     set(figHandle, 'Pointer', 'hand');
                 iptSetPointerBehavior(reg_plot,enterFcn);
@@ -197,7 +197,7 @@ for iax=1:length(main_axes_tot)
         end
     end
     if nb_reg>0
-        activate_region_callback([],[],trans.Regions(active_reg),main_figure,0);
+        activate_region_callback([],[],trans.Regions(active_reg).Unique_ID,main_figure,0);
     end
     %     profile off;
     %     profile viewer;

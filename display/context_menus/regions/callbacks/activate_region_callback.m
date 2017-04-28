@@ -11,7 +11,7 @@
 % *INPUT VARIABLES*
 %
 % * |obj|: TODO: write description and info on variable
-% * |reg_curr|: TODO: write description and info on variable
+% * |ID|: TODO: write description and info on variable
 % * |main_figure|: TODO: write description and info on variable
 %
 % *OUTPUT VARIABLES*
@@ -36,10 +36,14 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function activate_region_callback(obj,~,reg_curr,main_figure,repos)
+function activate_region_callback(obj,~,ID,main_figure,repos)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+
+reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 
 if~isdeployed()
     fprintf('Activate region %.0f\n',reg_curr.ID);
@@ -52,8 +56,6 @@ end
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
 
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
 
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

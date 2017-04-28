@@ -141,7 +141,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-Transceiver=layer.Transceivers(idx_freq);
+Transceiver=layer.get_trans(curr_disp.Freq);
 list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 

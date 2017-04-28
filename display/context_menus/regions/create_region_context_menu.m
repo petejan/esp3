@@ -36,41 +36,42 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function create_region_context_menu(reg_plot,main_figure,reg_curr)
+function create_region_context_menu(reg_plot,main_figure,ID)
 
 context_menu=uicontextmenu(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.get_trans(curr_disp.Freq);
 
+switch class(ID)
+    case 'matlab.graphics.primitive.Patch'
+        idx_pings=round(nanmin(reg_curr.XData)):round(nanmax(reg_curr.XData));
+        idx_r=round(nanmin(reg_curr.YData)):round(nanmax(reg_curr.YData));
+        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+    otherwise
+        reg_curr=trans_obj.get_region_from_Unique_ID(ID);
+        active_reg=reg_curr;
+
+end
 
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
-    if isa(reg_curr,'region_cl')
-        reg_plot(ii).ButtonDownFcn={@activate_region_callback,reg_curr,main_figure,1};
+    if isnumeric(ID)
+        reg_plot(ii).ButtonDownFcn={@activate_region_callback,ID,main_figure,1};
     end
 end
 
 if isa(reg_curr,'region_cl')
         region_menu=uimenu(context_menu,'Label','Region');
-        uimenu(region_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure});
-        uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
-        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});       
-        uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,reg_curr,main_figure});
+        uimenu(region_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure,ID});
+        uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,ID,main_figure});
+        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,ID,main_figure});       
+        uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,ID,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
 end
 
-switch class(reg_curr)
-    case 'matlab.graphics.primitive.Patch'
-        idx_pings=round(nanmin(reg_curr.XData)):round(nanmax(reg_curr.XData));
-        idx_r=round(nanmin(reg_curr.YData)):round(nanmax(reg_curr.YData));
-        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
-    case 'region_cl'
-        active_reg=reg_curr;
-    otherwise
-        return;
-end
+
 
 analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,active_reg,main_figure});
@@ -79,14 +80,14 @@ if isa(reg_curr,'region_cl')
         uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
 end
 
-uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,active_reg,main_figure});
-uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,active_reg,main_figure});
+uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,ID,main_figure});
+uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,ID,main_figure});
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
 uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sp'});
 uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sv'});
 
-if strcmp(layer.Transceivers(idx_freq).Mode,'FM')
+if strcmp(trans_obj.Mode,'FM')
     uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,reg_curr,main_figure});
     uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,reg_curr,main_figure});
 end
@@ -103,10 +104,15 @@ uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_dete
 
 end
 
-function freq_diff_callback(~,~,reg_curr,main_figure)
+function freq_diff_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=layer.find_freq_idx(curr_disp.Freq);
+
+
+trans_obj=layer.get_trans(curr_disp.Freq);
+reg_curr=trans_obj.get_region_from_Unique_ID(ID);
+
 layer.copy_region_across(idx_freq,reg_curr,[]);
 frequencies=layer.Frequencies;
 n=length(layer.Frequencies);
@@ -137,7 +143,14 @@ for i=1:numel(uniquev1)
    
     output_diff  = substract_reg_outputs( output_reg_1,output_reg_2);
     if ~isempty(output_diff)
-        reg_curr.display_region(output_diff,'main_figure',main_figure,'Cax',[-10 10],'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3));
+        sv=pow2db_perso(output_diff.Sv_mean_lin(:));
+        cax_min=prctile(sv,5);
+        cax_max=prctile(sv,95);
+        cax=curr_disp.getCaxField('sv');
+        reg_curr.display_region(output_diff,'main_figure',main_figure,...
+            'alphadata',double(pow2db(output_reg_1.Sv_mean_lin)>cax(1)),...
+            'Cax',[cax_min cax_max],...
+            'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3));
     else
        fprintf('Cannot compute differences %dkHz-%dkHz\n',frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3);
     end
@@ -147,17 +160,20 @@ end
 
 end
 
-function copy_region_callback(~,~,reg_curr,main_figure)
+function copy_region_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+
+trans_obj=layer.get_trans(curr_disp.Freq);
+reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 layer.copy_region_across(idx_freq,reg_curr,[]);
 end
 
-function reg_integrated_callback(~,~,reg_curr,main_figure)
+function reg_integrated_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+curr_disp=getappdata(main_figure,'Curr_disp')
+trans_obj=layer.get_trans(curr_disp.Freq);
+reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 regCellInt=layer.Transceivers(idx_freq).integrate_region(reg_curr);
 if isempty(regCellInt)
     return;
@@ -174,9 +190,9 @@ function disp_hist_region_callback(~,~,reg_curr,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-trans=layer.Transceivers(idx_freq);
+trans=layer.get_trans(curr_disp.Freq);
+
 data=trans.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field',curr_disp.Fieldname);
 
 sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
@@ -222,6 +238,6 @@ xlabel(xlab);
 
 end
 
-function delete_region_uimenu_callback(~,~,reg_curr,main_figure)
-delete_region_callback([],[],main_figure,reg_curr.Unique_ID);
+function delete_region_uimenu_callback(~,~,ID,main_figure)
+delete_region_callback([],[],main_figure,ID);
 end

@@ -46,6 +46,7 @@ addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
 addParameter(p,'Name',reg_obj.print(),@ischar);
 addParameter(p,'Cax',init_cax('sv'),@isnumeric);
 addParameter(p,'Cmap','jet',@ischar);
+addParameter(p,'alphadata',[],@isnumeric);
 addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 
 parse(p,reg_obj,trans_obj,varargin{:});
@@ -91,7 +92,15 @@ else
 end
 
 
+
+
 sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
+
+if ~ismember('alphadata',p.UsingDefaults)&&all(size(sv_disp)==size(p.Results.alphadata))
+    alphadata=p.Results.alphadata;
+else
+   alphadata=double(sv_disp>cax(1)); 
+end
 
 
 if ~any(~isnan(sv_disp))
@@ -120,9 +129,11 @@ h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str(
     'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked','CloseRequestFcn',@close_reg_fig);
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 title(ax_in,tt);
+
+
 if  ~any(mat_size==1)
     reg_plot=pcolor(ax_in,repmat(x_disp,length(y_disp),1),repmat(y_disp,1,length(x_disp)),sv_disp);
-    set(reg_plot,'alphadata',double(sv_disp>cax(1)),'facealpha','flat','edgecolor','none');
+    set(reg_plot,'alphadata',alphadata,'facealpha','flat','edgecolor','none');
 end
 %shading(ax_in,'interp')
 ax_in.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
