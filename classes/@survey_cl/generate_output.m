@@ -233,9 +233,13 @@ for isn=1:length(snaps)
 
         
         for j=1:length(regs)
-            i_reg=i_reg+1;
+            
             reg_curr =regs{j};
             regCellInt=regCellInt_tot{j};
+            if isempty(regCellInt)
+               continue; 
+            end
+            i_reg=i_reg+1;
             startPing = regCellInt.Ping_S(1);
             stopPing = regCellInt.Ping_E(end);
             ix = (startPing:stopPing);

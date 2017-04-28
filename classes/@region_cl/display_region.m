@@ -40,9 +40,10 @@ function h_fig = display_region(reg_obj,trans_obj,varargin)
 p = inputParser;
 
 
+
 addRequired(p,'reg_obj',@(obj) isa(obj,'region_cl'));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
-
+addParameter(p,'Name',reg_obj.print(),@ischar);
 addParameter(p,'Cax',init_cax('sv'),@isnumeric);
 addParameter(p,'Cmap','jet',@ischar);
 addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
@@ -65,11 +66,22 @@ end
 curr_disp=getappdata(p.Results.main_figure,'Curr_disp');
 
 if ~isempty(curr_disp)
-    cax=curr_disp.getCaxField('sv');
-    cmap_name=curr_disp.Cmap;
+    if ismember('Cax',p.UsingDefaults)
+        cax=curr_disp.getCaxField('sv');
+        cax_list=addlistener(curr_disp,'Cax','PostSet',@(src,envdata)listenCaxReg(src,envdata));
+        
+    else
+        cax=p.Results.Cax;
+        cax_list=[];
+    end
     
-    cmap_list=addlistener(curr_disp,'Cmap','PostSet',@(src,envdata)listenCmapReg(src,envdata));
-    cax_list=addlistener(curr_disp,'Cax','PostSet',@(src,envdata)listenCaxReg(src,envdata));
+    if ismember('Cmap',p.UsingDefaults)
+        cmap_name=curr_disp.Cmap;
+        cmap_list=addlistener(curr_disp,'Cmap','PostSet',@(src,envdata)listenCmapReg(src,envdata));
+    else
+        cmap_name=p.Results.Cmap;
+        cmap_list=[];
+    end
     
 else
     cax=p.Results.Cax;
@@ -88,7 +100,7 @@ if ~any(~isnan(sv_disp))
 end
 
 
-tt=reg_obj.print();
+tt=p.Results.Name;
 
 switch reg_obj.Cell_w_unit
     case 'pings'
@@ -104,7 +116,7 @@ switch(reg_obj.Reference)
         y_disp=-nanmean(output_reg.y_node+output_reg.height/2,2);
 end
 mat_size=size(sv_disp);
-h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',reg_obj.tag_str(),...
+h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
     'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked','CloseRequestFcn',@close_reg_fig);
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 title(ax_in,tt);
@@ -164,9 +176,11 @@ set(ax_in,'Xlim',[nanmin(x_disp)-reg_obj.Cell_w/2 nanmax(x_disp)+reg_obj.Cell_w/
 set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/2]);
 
     function close_reg_fig(src,~,~)
-       delete(cmap_list) ;
-       delete(cax_list) ;
-       delete(src)
+        try
+            delete(cmap_list) ;
+            delete(cax_list) ;
+        end
+        delete(src)
     end
 
     function listenCmapReg(src,evt)
@@ -175,8 +189,8 @@ set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/
     end
 
     function listenCaxReg(src,evt)
-         cax=evt.AffectedObject.getCaxField('sv');
-         caxis(ax_in,cax);
+        cax=evt.AffectedObject.getCaxField('sv');
+        caxis(ax_in,cax);
     end
 
 end

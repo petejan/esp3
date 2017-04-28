@@ -15,7 +15,7 @@ trans_obj=layer.Transceivers(idx_freq);
 [output_2D,~]=trans_obj.slice_transect2D('Reference','Surface','Slice_w',Slice_w,'Slice_w_units',Slice_w_units);
 idx_reg=trans_obj.find_regions_type('Data');
 reg_tot=trans_obj.get_reg_spec(idx_reg);               
-[output_1D,regs,regCellIntOut]=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',0,'Slice_w',Slice_w,'Slice_units',Slice_w_units);
+[output_1D,~,~]=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',0,'Slice_w',Slice_w,'Slice_units',Slice_w_units);
 
 fig_disp=new_echo_figure(main_figure,'Tag','Sliced Transect 1D');
 ax=axes(fig_disp);

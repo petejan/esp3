@@ -8,7 +8,7 @@ addParameter(p,'horiExtend',[0 Inf],@isnumeric);
 addParameter(p,'denoised',0,@isnumeric);
 addParameter(p,'motion_correction',0,@isnumeric);
 addParameter(p,'intersect_only',0,@isnumeric);
-
+addParameter(p,'keep_bottom',0,@isnumeric);
 
 
 parse(p,trans_obj,region,varargin{:});
@@ -281,6 +281,7 @@ N_y=length(Y)-1;
 output.Sv_mean_lin_esp2=zeros(N_y,N_x);
 output.Sv_mean_lin=zeros(N_y,N_x);
 output.Sa_lin=zeros(N_y,N_x);
+
 output.nb_samples=nan(N_y,N_x);
 output.length=2*repmat(x_res,N_y,1);
 output.height=2*repmat(y_res',1,N_x);
@@ -316,7 +317,10 @@ output.Nb_good_pings_esp2=nan(N_y,N_x);
 output.PRC=nan(N_y,N_x);
 
 Sv_reg_lin=10.^(Sv_reg/10);
+
+if p.Results.keep_bottom==0
 Sv_reg_lin(y_mat_ori>=bot_mat)=nan;
+end
 
 for i=1:N_x
     if i==N_x
@@ -441,11 +445,7 @@ output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
 fields=fieldnames(output);
-% idx_zeros_lon=nansum(output.Lon_S,1)==0;
 
-% for ifi=1:length(fields)
-%     output.(fields{ifi})(:,idx_zeros_lon)=[];
-% end
 
 
 idx_zeros=find(nansum(output.Sv_mean_lin,2)==0);

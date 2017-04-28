@@ -69,7 +69,7 @@ classdef layer_cl < handle
             
             
         end
-    
+        
         function rm_memaps(layer)
             
             for kk=1:length(layer.Transceivers)
@@ -80,30 +80,41 @@ classdef layer_cl < handle
             end
         end
         
+        function trans_obj=get_trans(layer,freq)
+            [idx_freq,found]=layer.find_freq_idx(freq);
+            
+            if found==1
+                trans_obj=layer.Transceivers(idx_freq);
+            else
+                trans_obj=[];
+            end
+        end
+        
+        
         function fold_lay=get_folder(layer)
-           [folders,~,~]=cellfun(@fileparts,layer.Filename,'UniformOutput',0);
-           
-           fold_lay=unique(folders);
-           
-           if length(fold_lay)>1
-              warning('Files from multiple folder in one layer...') ;
-           end
-           
+            [folders,~,~]=cellfun(@fileparts,layer.Filename,'UniformOutput',0);
+            
+            fold_lay=unique(folders);
+            
+            if length(fold_lay)>1
+                warning('Files from multiple folder in one layer...') ;
+            end
+            
         end
         
         function memap_files=list_memaps(layers)
             memap_files={};
             ifile=0;
-           for ilay=1:length(layers)
-              for itr=1:length(layers(ilay).Transceivers)
-                 for i_sub_data=1:length(layers(ilay).Transceivers(itr).Data.SubData) 
-                     for imap=1:length(layers(ilay).Transceivers(itr).Data.SubData(i_sub_data).Memap)
-                         ifile=ifile+1;
-                         memap_files{ifile}=layers(ilay).Transceivers(itr).Data.SubData(i_sub_data).Memap{imap}.Filename;
-                     end
-                 end
-              end
-           end
+            for ilay=1:length(layers)
+                for itr=1:length(layers(ilay).Transceivers)
+                    for i_sub_data=1:length(layers(ilay).Transceivers(itr).Data.SubData)
+                        for imap=1:length(layers(ilay).Transceivers(itr).Data.SubData(i_sub_data).Memap)
+                            ifile=ifile+1;
+                            memap_files{ifile}=layers(ilay).Transceivers(itr).Data.SubData(i_sub_data).Memap{imap}.Filename;
+                        end
+                    end
+                end
+            end
         end
         
         
@@ -171,9 +182,9 @@ classdef layer_cl < handle
             obj.Curves=[];
         end
         
-         function delete(obj)
-           
-            if ~isdeployed 
+        function delete(obj)
+            
+            if ~isdeployed
                 c = class(obj);
                 disp(['ML object destructor called for class ',c])
             end

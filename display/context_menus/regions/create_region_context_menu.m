@@ -55,7 +55,8 @@ if isa(reg_curr,'region_cl')
         region_menu=uimenu(context_menu,'Label','Region');
         uimenu(region_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure});
         uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,reg_curr,main_figure});
-        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});
+        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,reg_curr,main_figure});       
+        uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,reg_curr,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
 end
@@ -97,6 +98,50 @@ uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_
 uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,reg_curr,main_figure});
 uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,reg_curr,main_figure});
 uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,reg_curr,main_figure});
+
+
+
+end
+
+function freq_diff_callback(~,~,reg_curr,main_figure)
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=layer.find_freq_idx(curr_disp.Freq);
+layer.copy_region_across(idx_freq,reg_curr,[]);
+frequencies=layer.Frequencies;
+n=length(layer.Frequencies);
+
+a=fliplr(fullfact(ones(1,2)*n));
+b=sort(a,2);
+idx=any(~diff(b')',2);
+a(idx,:)=[];
+
+a = sort(a, 2);
+[~, idx] = unique(a, 'rows');
+uniquev1 = a(idx,1);
+uniquev2 = a(idx,2);
+
+output_reg=cell(1,n);
+for i=1:n
+    trans=layer.get_trans(frequencies(i));
+    reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);    
+    output_reg{i}=trans.integrate_region(reg,'keep_bottom',1);
+end
+
+
+for i=1:numel(uniquev1)
+
+
+    output_reg_1=output_reg{uniquev1(i)};
+    output_reg_2=output_reg{uniquev2(i)};
+   
+    output_diff  = substract_reg_outputs( output_reg_1,output_reg_2);
+    if ~isempty(output_diff)
+        reg_curr.display_region(output_diff,'main_figure',main_figure,'Cax',[-10 10],'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3));
+    else
+       fprintf('Cannot compute differences %dkHz-%dkHz\n',frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3);
+    end
+end
 
 
 

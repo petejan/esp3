@@ -151,6 +151,8 @@ classdef region_cl
             end
         end
         
+        
+        h_fig = display_region(reg_obj,trans_obj,varargin)
     end
 end
 

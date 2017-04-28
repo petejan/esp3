@@ -194,6 +194,8 @@ classdef transceiver_cl < handle
             end
         end
         
+        
+        
         function idx=find_regions_ID(trans_obj,ID)
             if isempty(trans_obj.Regions)
                 idx=[];
@@ -213,6 +215,15 @@ classdef transceiver_cl < handle
                 for i=1:length(ID)
                     idx=union(idx,find([trans_obj.Regions(:).Unique_ID]==ID(i)));
                 end
+            end
+        end
+        
+        function reg=get_region_from_Unique_ID(trans_obj,ID)
+            idx=find_regions_Unique_ID(trans_obj,ID);
+            if ~isempty(idx)
+                reg=trans_obj.Regions(idx);
+            else
+                reg=[];
             end
         end
         
