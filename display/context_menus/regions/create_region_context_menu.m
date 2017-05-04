@@ -171,10 +171,10 @@ end
 
 function reg_integrated_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp')
+curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj=layer.get_trans(curr_disp.Freq);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-regCellInt=layer.Transceivers(idx_freq).integrate_region(reg_curr);
+regCellInt=trans_obj.integrate_region(reg_curr);
 if isempty(regCellInt)
     return;
 end
