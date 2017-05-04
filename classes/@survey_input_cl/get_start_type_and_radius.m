@@ -37,8 +37,12 @@
 
 %% Function
 function [type,radius] = get_start_type_and_radius(surv_in_obj,snap_num,strat_name)
+nb_snap=length(surv_in_obj.Snapshots);
+snap_numbers=nan(1,nb_snap);
 
-snap_numbers=[surv_in_obj.Snapshots{:}.Number];
+for i=1:nb_snap
+    snap_numbers(i)=[surv_in_obj.Snapshots{i}.Number];
+end
 
 idx_snap=find(snap_numbers==snap_num);
 
@@ -46,8 +50,15 @@ type='';
 radius=0;
 
 for i=1:length(idx_snap)
-    strats=surv_in_obj.Snapshots{idx_snap(i)}.Stratum;  
-    strat_names=[strats{:}.Name];
+    strats=surv_in_obj.Snapshots{idx_snap(i)}.Stratum;
+    nb_strat=numel(strats);
+    
+    strat_names=cell(1,nb_strat);
+    
+    for j=1:nb_strat
+        strat_names{j}=[strats{j}.Name];
+    end
+    
     idx_strat=find(strcmpi(strat_name,strat_names),1);
     
     if~isempty(idx_strat)

@@ -1,4 +1,4 @@
-
+    
 function display_regions(main_figure,varargin)
 
 %profile on;
