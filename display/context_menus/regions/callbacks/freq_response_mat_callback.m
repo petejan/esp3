@@ -8,17 +8,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
 
-
-switch class(reg_curr)
-    case 'matlab.graphics.primitive.Patch'
-        idx_pings=round(nanmin(reg_curr.XData)):round(nanmax(reg_curr.XData));
-        idx_r=round(nanmin(reg_curr.YData)):round(nanmax(reg_curr.YData));
-        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
-    case 'region_cl'
-        active_reg=reg_curr;
-    otherwise
-        return;
-end
+active_reg=reg_curr;
 
 show_status_bar(main_figure);
     load_bar_comp=getappdata(main_figure,'Loading_bar');

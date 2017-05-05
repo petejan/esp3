@@ -45,13 +45,12 @@ trans_obj=layer.get_trans(curr_disp.Freq);
 
 switch class(ID)
     case 'matlab.graphics.primitive.Patch'
-        idx_pings=round(nanmin(reg_curr.XData)):round(nanmax(reg_curr.XData));
-        idx_r=round(nanmin(reg_curr.YData)):round(nanmax(reg_curr.YData));
+        idx_pings=round(nanmin(reg_plot.XData)):round(nanmax(reg_plot.XData));
+        idx_r=round(nanmin(reg_plot.YData)):round(nanmax(reg_plot.YData));
         active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
     otherwise
         reg_curr=trans_obj.get_region_from_Unique_ID(ID);
         active_reg=reg_curr;
-
 end
 
 for ii=1:length(reg_plot)
@@ -77,11 +76,11 @@ analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,active_reg,main_figure});
 
 if isa(reg_curr,'region_cl')
-        uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,reg_curr,main_figure});
+        uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,ID,main_figure});
 end
 
-uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,ID,main_figure});
-uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,ID,main_figure});
+uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,active_reg,main_figure});
+uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,active_reg,main_figure});
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
 uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sp'});
@@ -94,11 +93,11 @@ end
 
 
 algo_menu=uimenu(context_menu,'Label','Algorithms');
-uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_detect_cback,reg_curr,main_figure,'v1'});
-uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,reg_curr,main_figure,'v2'});
-uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,reg_curr,main_figure});
-uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,reg_curr,main_figure});
-uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,reg_curr,main_figure});
+uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_detect_cback,active_reg,main_figure,'v1'});
+uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,active_reg,main_figure,'v2'});
+uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,active_reg,main_figure});
+uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,active_reg,main_figure});
+uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,active_reg,main_figure});
 
 
 

@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function classify_reg_callback(~,~,reg_curr,main_figure)
+function classify_reg_callback(~,~,ID,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -43,22 +43,13 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 hfigs=getappdata(main_figure,'ExternalFigures');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
-
-
-if  isempty(list_reg)
-    return;
-end
+ reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 
 if isempty(reg_curr)
-    region_tab_comp=getappdata(main_figure,'Region_tab');
-    idx_reg=get(region_tab_comp.tog_reg,'value');  
-else
-   idx_reg=layer.Transceivers(idx_freq).find_regions_Unique_ID(reg_curr.Unique_ID);
+    return; 
 end
 
 new_fig=layer.apply_classification(idx_freq,idx_reg,1);
-
 
 hfigs=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs);

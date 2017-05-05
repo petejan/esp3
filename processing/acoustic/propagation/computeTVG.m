@@ -1,6 +1,7 @@
 function [TVG_Sp,TVG_Sv]=computeTVG(range,Np)
 
-dr=nanmean(diff(range(:)));
+dr=diff(range(1: 2));
+
 r_corr = Np/2*dr;
 
 if size(range,1)==1
@@ -8,7 +9,7 @@ if size(range,1)==1
 end
 
 
-range_tvg=(range-(r_corr));
+range_tvg=(range-r_corr);
 range_tvg(range_tvg<0)=0;
 
 TVG_Sp = real(40*log10(range_tvg));
