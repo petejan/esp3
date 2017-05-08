@@ -165,10 +165,10 @@ Heave_r = att_recept.Heave(:)';
 
 Range_mat = repmat(range,1, nb_pings);
 dr=nanmean(diff(range));
-transmit_angles = (pi/2) - atan(sqrt(tand(Roll_r + trans.Config.Angles(2)) .^2 + tand(Pitch_r + trans.Config.Angles(1)) .^2));
+transmit_angles = pi/2-atan(sqrt(tand(Roll_r + trans.Config.Angles(2)) .^2 + tand(Pitch_r + trans.Config.Angles(1)) .^2));
 
 %BS = sp-10*log10(Range_mat) + 10*log10(cos(repmat(transmit_angles, nb_samples,1))) - eq_beam_angle;
-BS = sp - 10*log10(dr*2*Range_mat*sin(bw_mean).*sin(repmat(transmit_angles, nb_samples,1)))-10*log10(2);
+BS = sp - 10*log10(2*dr*Range_mat*sin(bw_mean)./cos(repmat(transmit_angles, nb_samples,1)));
 
 bs_bottom=nan(2*ext_len+1,nb_pings);
 extended_time=nan(2*ext_len+1,nb_pings);
@@ -353,8 +353,6 @@ if ray_tray_bool==1
         
     end
     
-    straight_z_bottom=straight_range_bottom.*sin(transmit_angles);
-    straight_r_bottom=straight_range_bottom.*cos(transmit_angles);
     
 
     
@@ -384,6 +382,8 @@ else
     end
 end
 
+straight_z_bottom=straight_range_bottom.*sin(transmit_angles);
+straight_r_bottom=straight_range_bottom.*cos(transmit_angles);
 
 figure();
 ap1=subplot(2,1,1);
@@ -469,7 +469,7 @@ x_ext=pos_mat_extended(:,:,1);
 
 
 
-mask_bs=double(bs_bottom_uncomp>-30);
+mask_bs=double(bs_bottom_uncomp>-30)&abs(extended_across_angle)<=bw_mean/pi*180;
 mask_bs=floor(filter2_perso(ones(2,2),mask_bs));
 mask_bs=ceil(filter2_perso(ones(3,3),mask_bs))==1;
 
@@ -537,6 +537,13 @@ X_Bottom_ext=repmat(x_ship',size(x_ext,1),1)+x_ext.*cosd(repmat(heading,size(y_e
 lat_bot_ext=reshape(lat_bot_ext,size(X_Bottom_ext,1),size(X_Bottom_ext,2));
 lon_bot_ext=reshape(lon_bot_ext,size(X_Bottom_ext,1),size(X_Bottom_ext,2));
 
+LongLim=[nanmin(lon_bot_ext(:)) nanmax(lon_bot_ext(:))];
+LatLim=[nanmin(lat_bot_ext(:)) nanmax(lat_bot_ext(:))];
+
+
+[LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.2);
+
+m_proj('lambert','long',LongLim,'lat',LatLim);
 
 
 figure();
@@ -552,30 +559,30 @@ set(h3,'alphadata',mask_bs)
 shading interp
 
 
-figure();
-a31=subplot(2,1,1);
-h3=imagesc(z_ext);
-title('Depth Corr')
-colormap jet;
-grid on;
-view(2)
-colorbar;
-set(h3,'alphadata',mask_bs)
-a32=subplot(2,1,2);
-h32=imagesc(z_ext_uncorr);
-title('Depth')
-colormap jet;
-grid on;
-colorbar;
-set(h32,'alphadata',mask_bs)
-linkaxes([a31 a32])
+bs_mean_lin=(nanmean(db2pow_perso(bs_bottom)));
+bs_mean_lin(bs_mean_lin<=0)=nan;
+bs_mean=10*log10(bs_mean_lin);
 
 
 figure();
-h1=pcolor(lat_bot_ext,lon_bot_ext,bs_bottom);
+plot(bs_mean);
+ylabel('BS(db)')
+xlabel('Ping Number')
+grid on;
+
+figure();
+plot(nanmean(bsxfun(@plus,extended_across_angle,transmit_angles/pi*180),2),pow2db(nanmean(db2pow_perso(bs_bottom),2)));
+ylabel('BS(db)')
+xlabel('Across Angle')
+grid on;
+
+
+figure();
+m_pcolor(lon_bot_ext,lat_bot_ext,bs_bottom);
+hold on;
+m_plot(long_ship(:),lat_ship(:),'b');
+
 title('BS')
-xlabel('Lat','fontsize',16)
-ylabel('Long','fontsize',16)
 zlabel('Depth(m)')
 set(gca,'fontsize',16)
 colormap jet;
@@ -583,89 +590,9 @@ grid on;
 axis square;
 colormap(gray)
 colorbar;
-shading interp
 caxis([-30 -15]);
-%caxis([nanmean(z_ext(mask_bs))-5,nanmean(z_ext(mask_bs))+5])
-set(h1,'alphadata',mask_bs,'FaceAlpha','interp','AlphaDataMapping','scaled')
-shading interp
-
-
-
-figure();
-hold on;
-h=surf(lat_bot_ext,lon_bot_ext,bs_bottom,bs_bottom);
-%scatter3(lat_ship(:),long_ship(:),Heave(:),8,'k');
-title('BS')
-xlabel('Lat','fontsize',16)
-ylabel('Long','fontsize',16)
-zlabel('Depth(m)')
-set(gca,'fontsize',16);
-colormap jet;
-grid on;
-axis square
-caxis([-30 -15]);
-colormap(gray)
-colorbar;
-set(h,'alphadata',mask_bs,'FaceAlpha','interp','AlphaDataMapping','scaled')
-shading interp
-
-
-n_p=50;
-figure();
-hold on;
-h1=pcolor(lat_bot_ext(:,1:n_p),lon_bot_ext(:,1:n_p),z_ext(:,1:n_p));
-title('Resulting Bathymetry from EK60')
-xlabel('Lat','fontsize',16)
-ylabel('Long','fontsize',16)
-zlabel('Depth(m)')
-set(gca,'fontsize',16)
-colormap jet;
-grid on;
-axis square;
-view(2)
-colormap(jet)
-colorbar;
-shading interp
-%caxis([nanmean(z_ext(mask_bs))-5,nanmean(z_ext(mask_bs))+5])
-set(h1,'alphadata',mask_bs(:,1:n_p),'FaceAlpha','interp','AlphaDataMapping','scaled')
-shading interp
-
-n_p=50;
-figure();
-hold on;
-scatter3(lat_bot_ext(mask_bs(:,1:n_p)),lon_bot_ext(mask_bs(:,1:n_p)),z_ext(mask_bs(:,1:n_p)),10*ones(size(bs_bottom(mask_bs(:,1:n_p)))),bs_bottom(mask_bs(:,1:n_p)),'filled');
-title('Resulting BS from EK60')
-xlabel('Lat','fontsize',16)
-ylabel('Long','fontsize',16)
-zlabel('Depth(m)')
-set(gca,'fontsize',16)
-colormap gray;
-grid on;
-axis square;
-view(2)
-colorbar;
-caxis([-30 -15]);
-
-
-
-
-
-n_p=50;
-figure();
-hold on;
-scatter3(lat_bot_ext(mask_bs(:,1:n_p)),lon_bot_ext(mask_bs(:,1:n_p)),z_ext(mask_bs(:,1:n_p)),10*ones(size(z_ext(mask_bs(:,1:n_p)))),z_ext(mask_bs(:,1:n_p)),'filled');
-title('Resulting Bathymetry from EK60')
-xlabel('Lat','fontsize',16)
-ylabel('Long','fontsize',16)
-zlabel('Depth(m)')
-set(gca,'fontsize',16)
-colormap jet;
-grid on;
-axis square;
-view(2)
-colormap(jet)
-colorbar;
-caxis([nanmean(z_ext(mask_bs))-5,nanmean(z_ext(mask_bs))+5])
+shading flat
+m_grid('box','fancy','tickdir','in');
 
 
 
