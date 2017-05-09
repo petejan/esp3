@@ -3,6 +3,11 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
+if any(~isvalid([axes_panel_comp.main_echo axes_panel_comp.main_axes]))
+    load_axis_panel(main_figure,axes_panel_comp.axes_panel); 
+    axes_panel_comp=getappdata(main_figure,'Axes_panel');
+end
+
 if new==0
     try
         x=double(get(axes_panel_comp.main_axes,'xlim'));

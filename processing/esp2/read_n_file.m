@@ -11,7 +11,7 @@ if fid == -1
 end
 
 %'4 LAT: 43 18.2600 S    LONG: 174 7.4600 E HDG: 164 SOG: 7.3 HDT: Depth: No HPR';
-formatSpec='%f LAT: %f %f %s    LONG: %f %f %s HDG: %f SOG: %f HDT: %f Depth: %f ';
+formatSpec='%f LAT: %f %f %c    LONG: %f %f %c HDG: %f SOG: %f HDT: %f Depth: %f ';
 
 i=0;
 while (true)
@@ -19,26 +19,26 @@ while (true)
         break;
     end
     i=i+1;
-    tline=fgetl(fid);
+    tline=strtrim(fgetl(fid));
        
-    l_old=length(tline);
-    tline = strrep(tline, ' ', ',');
-    l_new=0;
-    while l_new<l_old
-        l_old=length(tline);
-        tline = strrep(tline, ',,', ',');
-        l_new=length(tline);
-    end
+%     l_old=length(tline);
+%     tline = strrep(tline, ' ', ',');
+%     l_new=0;
+%     while l_new<l_old
+%         l_old=length(tline);
+%         tline = strrep(tline, ',,', ',');
+%         l_new=length(tline);
+%     end
     
-    out = textscan(tline,formatSpec,'delimiter',',');
-    switch out{4}{1}
+    out = textscan(tline,formatSpec);
+    switch out{4}
         case 'S'
             lat(out{1}+1)=-(double(out{2}) + out{3} / 60);
         otherwise
             lat(out{1}+1)=(double(out{2}) + out{3} / 60);
     end
     
-    switch out{7}{1}
+    switch out{7}
         case 'E'
             lon(out{1}+1)=(double(out{5}) + out{6} / 60);
         otherwise

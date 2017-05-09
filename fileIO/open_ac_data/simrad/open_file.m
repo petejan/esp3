@@ -205,7 +205,7 @@ for itype = 1:length(ftype_unique)
     % include other files not requested to be opened. This functionality is
     % not available for all types of files
     switch ftype
-        case {'EK60','EK80','dfile'}
+        case {'EK60','EK80'}
             missing_files = find_survey_data_db(Filename);
             if ~isempty(missing_files)
                 % If there are, prompt user if they want them added to the
@@ -224,7 +224,7 @@ for itype = 1:length(ftype_unique)
                 end
             end
             
-        case {'asl','fcv30'}
+        case {'asl','fcv30','dfile'}
             
         otherwise
             for ifi=1:length(Filename)

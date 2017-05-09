@@ -61,7 +61,7 @@ for i=1:length(idx_snap)
     
     idx_strat=find(strcmpi(strat_name,strat_names),1);
     
-    if~isempty(idx_strat)
+    if~isempty(idx_strat)&&isfield(strats{idx_strat},'Type')
         type=strats{idx_strat}.Type;
         radius=strats{idx_strat}.Radius;
     end

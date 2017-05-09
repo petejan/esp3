@@ -327,6 +327,9 @@ for isn=1:length(snapshots)
                                 else
                                     fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                                 end
+                            case 'dfile'
+                                
+                                
                         end
    
                         if ~isnan(options.Absorption(options.FrequenciesToLoad==curr_freq))

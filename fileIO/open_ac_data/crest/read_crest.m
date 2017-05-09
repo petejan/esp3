@@ -112,8 +112,9 @@ if ~isequal(Filename_cell, 0)
         else
             corr=zeros(size(power));
         end
+        power=power/system_calibration;
         
-        sv=20*log10(power/system_calibration)+10*log10(depth_factor)+corr;
+        sv=20*log10(power)+10*log10(depth_factor)+corr;
             
         [~,curr_filename,~]=fileparts(tempname);
         curr_name=fullfile(dir_data,curr_filename);
