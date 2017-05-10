@@ -35,7 +35,7 @@
 
 %% Function
 function listenYLim(~,~,main_figure)
-disp('listenYLim')
+%disp('listenYLim')
 % profile on;
 wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
 layer=getappdata(main_figure,'Layer');

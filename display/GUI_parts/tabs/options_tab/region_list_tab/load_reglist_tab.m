@@ -151,7 +151,7 @@ if ~found
     return;
 end
 active_reg=regions(idx_reg);
-activate_region_callback([],[],active_reg,main_figure,1);
+activate_region_callback([],[],active_reg.Unique_ID,main_figure,1);
 end
 
 

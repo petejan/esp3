@@ -54,7 +54,11 @@ parse(p,reg_obj,trans_obj,varargin{:});
 
 
 if isa(trans_obj,'transceiver_cl')
+%     profile on;
     output_reg=trans_obj.integrate_region(reg_obj);
+%     output_reg_2=trans_obj.integrate_region_v2(reg_obj);
+%     profile off;
+%     profile viewer;
 else
     output_reg=trans_obj;
 end
@@ -202,6 +206,8 @@ set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/
     function listenCaxReg(src,evt)
         cax=evt.AffectedObject.getCaxField('sv');
         caxis(ax_in,cax);
+        alphadata=double(sv_disp>cax(1));
+        set(reg_plot,'alphadata',alphadata)
     end
 
 end

@@ -128,6 +128,7 @@ for isn=1:length(snapshots)
                 layers_in=[];
                 fType=cell(1,length(filenames_cell));
                 already_proc=zeros(1,length(filenames_cell));
+                
                 for ifiles=1:length(filenames_cell)
                     fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                     
