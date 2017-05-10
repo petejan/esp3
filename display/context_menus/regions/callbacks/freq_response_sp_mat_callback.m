@@ -1,14 +1,11 @@
 
-function [TS_f,f_vec]=freq_response_sp_mat_callback(~,~,main_figure)
+function [TS_f,f_vec]=freq_response_sp_mat_callback(~,~,active_reg,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
-
-
-active_reg=reg_curr;
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');

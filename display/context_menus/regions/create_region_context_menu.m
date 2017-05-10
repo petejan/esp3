@@ -48,6 +48,7 @@ switch class(ID)
         idx_pings=round(nanmin(reg_plot.XData)):round(nanmax(reg_plot.XData));
         idx_r=round(nanmin(reg_plot.YData)):round(nanmax(reg_plot.YData));
         active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+        reg_curr=active_reg;
     otherwise
         reg_curr=trans_obj.get_region_from_Unique_ID(ID);
         active_reg=reg_curr;

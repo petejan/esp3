@@ -53,10 +53,10 @@ if strcmp(trans_obj.Mode,'FM')
     
 
     if length(y_spread)<=Nw
-         w_h=hann(length(y_spread))/(nansum(hann(length(y_spread)))/sqrt(length(y_spread)));
-        fft_vol=fft(w_h(1:length(y_spread)).*(y_spread),Nw)/Nw;
+        w_h=hann(length(y_spread))/(nansum(hann(length(y_spread))));
+        fft_vol=fft(w_h.*(y_spread),Nw)/Nw;
     else   
-        w_h=hann(Nw)/(nansum(hann(Nw))/sqrt(Nw));
+        w_h=hann(Nw)/(nansum(hann(Nw)));
         fft_vol = spectrogram(y_spread,w_h,Nw-1,Nw)/Nw;
     end
 

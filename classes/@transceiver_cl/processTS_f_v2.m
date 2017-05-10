@@ -38,9 +38,6 @@ if strcmp(trans_obj.Mode,'FM')
 
     [~,y_tx_matched]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
     
-%    y_tx_auto=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
-    
-%     y_tx_auto=xcorr(simu_pulse)/nansum(abs(simu_pulse).^2);
 
     y_tx_auto=xcorr(y_tx_matched)/nansum(abs(y_tx_matched).^2);
     
@@ -51,8 +48,7 @@ if strcmp(trans_obj.Mode,'FM')
     end
     
     
-    %win=hanning(nfft);
-    win=ones(nfft,1);
+    win=hanning(nfft)/nansum(hanning(nfft));
     
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;
     

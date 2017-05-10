@@ -12,6 +12,7 @@ r_max=nanmax(range(idx_r));
 f_vec=[];
 Sv_f=[];
 
+
 [cal_path,~,~]=fileparts(layer.Filename{1});
 
 
@@ -42,23 +43,14 @@ for uui=1:length(layer.Frequencies)
         
 
         
-        [~,f_vec_temp,~]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_pings(1),range,[],cal,cal_eba);
-        Sv_f_temp=nan(length(f_vec_temp),length(idx_pings));
-        
-        for kk=1:length(idx_pings)
-            [sv_temp,~,~]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_pings(kk),range,[],cal,cal_eba);
-            Sv_f_temp(:,kk)=10*log10(nanmean(10.^(sv_temp/10),1));
-        end
-        
-        
-        Sv_f=[Sv_f 10*log10(nanmean(10.^(Sv_f_temp'/10)))];
+
+        [Sv_f_temp,f_vec_temp,~,~]=layer.Transceivers(uui).sv_f_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
+        Sv_f_temp_mean=10*log10(nanmean(nanmean(10.^(Sv_f_temp/10))));
+        Sv_f_temp_mean=permute(Sv_f_temp_mean,[2 3 1]);
+        Sv_f=[Sv_f Sv_f_temp_mean];
         f_vec=[f_vec f_vec_temp];
         
         
-        [Sv_f_temp_2,f_vec_temp_2,~,~]=layer.Transceivers(uui).sv_f_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
-        
-        Sv_f_2=[Sv_f 10*log10(nanmean(10.^(Sv_f_temp_2'/10)))];
-        f_vec_2=[f_vec_2 f_vec_temp_2];
         
         clear f_vec_temp Sv_f_temp
     else
@@ -83,6 +75,8 @@ for uui=1:length(layer.Frequencies)
     end
 end
 
+[f_vec,idx_sort]=sort(f_vec);
+Sv_f=Sv_f(idx_sort);
 
 hfig=new_echo_figure(main_figure,'Name','SV(f)','Tag','sv_freq','Keep_old',1);
 %subplot(1,3,uui)
