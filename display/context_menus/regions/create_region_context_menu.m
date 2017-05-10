@@ -12,7 +12,7 @@
 %
 % * |reg_plot|: TODO: write description and info on variable
 % * |main_figure|: TODO: write description and info on variable
-% * |reg_curr|: TODO: write description and info on variable
+% * |ID|: TODO: write description and info on variable
 %
 % *OUTPUT VARIABLES*
 %
@@ -65,7 +65,7 @@ if isa(reg_curr,'region_cl')
         region_menu=uimenu(context_menu,'Label','Region');
         uimenu(region_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure,ID});
         uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,ID,main_figure});
-        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,ID,main_figure});       
+        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,ID,main_figure});
         uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,ID,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
@@ -130,7 +130,7 @@ uniquev2 = a(idx,2);
 output_reg=cell(1,n);
 for i=1:n
     trans=layer.get_trans(frequencies(i));
-    reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);    
+    reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);
     output_reg{i}=trans.integrate_region(reg,'keep_bottom',1);
 end
 
@@ -140,7 +140,7 @@ for i=1:numel(uniquev1)
 
     output_reg_1=output_reg{uniquev1(i)};
     output_reg_2=output_reg{uniquev2(i)};
-   
+
     output_diff  = substract_reg_outputs( output_reg_1,output_reg_2);
     if ~isempty(output_diff)
         sv=pow2db_perso(output_diff.Sv_mean_lin(:));
@@ -207,7 +207,7 @@ switch reg_curr.Shape
         mask=reg_curr.create_mask();
         data(~mask)=nan;
     case 'Rectangular'
-        
+
 end
 data(sub_sample_mat>=sub_bot_mat)=nan;
 data(:,sub_idx_bad)=nan;
