@@ -23,7 +23,7 @@ command = ['cvs -d ' cvsroot ' checkout -r ' CalRev ' system'];
 [~ , output] = system(command,'-echo');
 
 if  ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))
-    svCorr = NaN;
+    svCorr = 1;
 else
     cd('system');
     fid = fopen('calibration', 'r+');

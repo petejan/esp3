@@ -33,7 +33,7 @@ classdef gps_data_cl
                 end
                 
                 obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
-                idx_nan=find(isnan(obj.Lat)+isnan(obj.Long))>0;
+                idx_nan=find((isnan(obj.Lat)+isnan(obj.Long))>0|(obj.Lat==0));
                 
                 obj.Long(idx_nan)=nan;
                 obj.Lat(idx_nan)=nan;

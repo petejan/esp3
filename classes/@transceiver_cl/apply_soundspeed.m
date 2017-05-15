@@ -10,7 +10,7 @@ new_range = trans_obj.compute_transceiver_range(new_c);
 
 [TVG_Sp_new,TVG_Sv_new]=computeTVG(new_range,Np);
 
-alpha=trans.Params.Absorption(1);
+alpha=trans_obj.Params.Absorption(1);
 
 alpha_diff=2*alpha*(new_range-old_range);
 

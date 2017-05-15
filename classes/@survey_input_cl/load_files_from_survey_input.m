@@ -73,6 +73,12 @@ for isn=1:length(snapshots)
     snap_num=snapshots{isn}.Number;
     stratum=snapshots{isn}.Stratum;
     
+    if isfield(snapshots{isn},'Cal_rev')
+        svCorr=CVS_CalRevs(p.Results.cvs_root,'CalRev',snapshots{isn}.Cal_rev);
+    else
+        svCorr=1;
+    end
+    
     if isfield(snapshots{isn},'Options')
         options=snapshots{isn}.Options;
     else
@@ -193,7 +199,8 @@ for isn=1:length(snapshots)
                                     new_lay=read_asl(fileN,...
                                         'PathToMemmap',datapath);
                                 case 'dfile'
-                                    new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0);
+                                    
+                                    new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0,'SvCorr',svCorr);
                                 otherwise
                                     fprintf('Unrecognized file type for file %s',fileN);
                                     continue

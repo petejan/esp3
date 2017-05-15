@@ -195,12 +195,13 @@ try
         set(axh,'xlim',x_lim)
         set(allchild(axh), 'visible',get(axh,'visible'))
         
-        
-        map_tab_comp=getappdata(main_figure,'Map_tab');
-        m_proj(map_tab_comp.Proj,'long',map_tab_comp.LongLim,'lat',map_tab_comp.LatLim);
-        delete(map_tab_comp.boat_pos);
-        map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
-        setappdata(main_figure,'Map_tab',map_tab_comp);
+        try
+            map_tab_comp=getappdata(main_figure,'Map_tab');
+            m_proj(map_tab_comp.Proj,'long',map_tab_comp.LongLim,'lat',map_tab_comp.LatLim);
+            delete(map_tab_comp.boat_pos);
+            map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
+            setappdata(main_figure,'Map_tab',map_tab_comp);
+        end
         
         hfigs=getappdata(main_figure,'ExternalFigures');
         if ~isempty(hfigs)

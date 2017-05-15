@@ -68,9 +68,12 @@ for i=1:numel(slice_trans_sum.snapshot)
     rangeStr = sprintf( 'A%d', row_start );
     xlswrite(file,sheet_info,4,rangeStr);
     row_start=row_start+size(sheet_info,1);
-    rangeStr = sprintf( 'A%d', row_start );
-    xlswrite(file,sheet_tot,4,rangeStr);
-    row_start=row_start+size(sheet_tot,1)+1;
+    
+    if~isempty(sheet_tot)
+        rangeStr = sprintf( 'A%d', row_start );
+        xlswrite(file,sheet_tot,4,rangeStr);
+        row_start=row_start+size(sheet_tot,1)+1;
+    end
 end
 
 end
@@ -82,17 +85,20 @@ idx_info=[];
 idx_tot=[];
 i_info=0;
 i_tot=0;
+
 for i=1:numel(fields)
     if iscell(str_obj.(fields{i}))
         curr_f=str_obj.(fields{i}){idx};
     else
         curr_f=str_obj.(fields{i})(idx);
     end
+    
     if numel(curr_f)==1||ischar(curr_f)
         
         i_info=i_info+1;
         idx_info=union(idx_info,i);
         str_obj_cell_info_rfmt{i_info}=curr_f;
+        
         if ~isempty(strfind(fields{i},'time'))
             str_obj_cell_info_rfmt{i_info}=datestr(curr_f,'dd/mm/yyyy HH:MM:SS');
         end
@@ -112,8 +118,13 @@ for i=1:numel(fields)
         end
     end
 end
+
 sheet_info=[fields(idx_info) str_obj_cell_info_rfmt'];
-sheet_tot=[fields(idx_tot) str_obj_cell_tot_rfmt];
+if ~isempty(idx_tot)
+    sheet_tot=[fields(idx_tot) str_obj_cell_tot_rfmt];
+else
+    sheet_tot=[];
+end
 end
 
 function sheet=struct_to_sheet(str_obj)

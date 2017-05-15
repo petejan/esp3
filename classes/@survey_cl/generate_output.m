@@ -151,12 +151,13 @@ for isn=1:length(snaps)
         idx_good_pings_dist=intersect(idx_good_pings_add,find(~isnan(gps_add.Lat(:))));
         
         if ~isempty(idx_good_pings_dist)
-            dist_add=m_lldist([gps_add.Long(idx_good_pings_dist(1)) gps_add.Long(idx_good_pings_dist(end))],[gps_add.Lat(idx_good_pings_dist(1)) gps_add.Lat(idx_good_pings_dist(end))])/1.852;
-            timediff=(gps_add.Time(idx_good_pings_dist(end))-gps_add.Time(idx_good_pings_dist(1)))*24;
+           [dist_km,timediff]=gps_add.get_straight_dist_and_time_diff(idx_good_pings_dist);
+           dist_add=dist_km/1.852;
         else
             dist_add=0;
             timediff=0;
         end
+        
         dist_tot=dist_tot+dist_add;
         timediff_tot=timediff_tot+timediff;
         nb_good_pings=nb_good_pings+length(idx_good_pings_add);

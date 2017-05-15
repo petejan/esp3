@@ -220,6 +220,7 @@ switch region.Reference
         line_ref=zeros(size(x));
 end
 
+[sub_pings_mat,~]=meshgrid(sub_pings,sub_r);
 [t_mat,~]=meshgrid(sub_time,sub_r);
 [bot_mat,~]=meshgrid(bot_int,sub_r);
 [line_mat,~]=meshgrid(line_ref,sub_r);
@@ -287,7 +288,7 @@ output.length=2*repmat(x_res,N_y,1);
 output.height=2*repmat(y_res',1,N_x);
 output.x_node=repmat(x_c,N_y,1);
 output.y_node=repmat(y_c',1,N_x);
-output.Interval=nan(N_y,N_x);
+
 output.Ping_S=nan(N_y,N_x);
 output.Ping_E=nan(N_y,N_x);
 output.Sample_S=nan(N_y,N_x);
@@ -297,11 +298,10 @@ output.Layer_depth_min=nan(N_y,N_x);
 output.Layer_depth_max=nan(N_y,N_x);
 output.Range_ref_min=nan(N_y,N_x);
 output.Range_ref_max=nan(N_y,N_x);
-output.Layer=nan(N_y,N_x);
+
 output.Dist_E=nan(N_y,N_x);
 output.Dist_S=nan(N_y,N_x);
-output.VL_E=nan(N_y,N_x);
-output.VL_S=nan(N_y,N_x);
+
 output.Time_E=nan(N_y,N_x);
 output.Time_S=nan(N_y,N_x);
 output.Lat_S=nan(N_y,N_x);
@@ -319,7 +319,7 @@ output.PRC=nan(N_y,N_x);
 Sv_reg_lin=10.^(Sv_reg/10);
 
 if p.Results.keep_bottom==0
-Sv_reg_lin(y_mat_ori>=bot_mat)=nan;
+    Sv_reg_lin(y_mat_ori>=bot_mat)=nan;
 end
 
 for i=1:N_x
@@ -339,7 +339,7 @@ for i=1:N_x
     idx_bin_x=find(idx_bin_x);
     
     if~isempty((idx_bin_x))
-        output.Interval(:,i)=i;
+        
         output.Dist_E(:,i)=nanmin(sub_dist(idx_bin_x));
         output.Dist_S(:,i)=nanmax(sub_dist(idx_bin_x));
         output.Time_S(:,i)=sub_time(idx_bin_x(1));
@@ -350,14 +350,13 @@ for i=1:N_x
         output.Lon_E(:,i)=sub_lon(idx_bin_x(end));
         output.Ping_S(:,i)=sub_pings(idx_bin_x(1));
         output.Ping_E(:,i)=sub_pings(idx_bin_x(end));
-        output.VL_S(:,i)=sub_dist(idx_bin_x(1));
-        output.VL_E(:,i)=sub_dist(idx_bin_x(end));
+
     else
         continue;
     end
     
     Sv_lin_red=Sv_reg_lin(idx_red);
-    x_mat_red=x_mat(idx_red);
+    sub_pings_mat_red=sub_pings_mat(idx_red);
     y_mat_red=y_mat(idx_red);
     sub_r_mat_red=sub_r_mat(idx_red);
     sub_samples_mat_red=sub_samples_mat(idx_red);
@@ -398,13 +397,13 @@ for i=1:N_x
                             output.Range_ref_max(j,i)=max(y_mat_red(idx_bin_2));
                     end
 
-            ping_cell=setdiff(x_mat_red(idx_bin),IdxBad_reg);
+            ping_cell=setdiff(sub_pings_mat_red,IdxBad_reg);
             output.Nb_good_pings_esp2(j,i)=length(ping_cell);
             
              
             output.nb_samples(j,i)=nb_idx;
             output.Range_mean(j,i)=mean(sub_r_mat_red(idx_bin));
-            output.Layer(j,i)=j;
+
             output.Layer_depth_min(j,i)=min(sub_r_mat_red(idx_bin));
             output.Layer_depth_max(j,i)=max(sub_r_mat_red(idx_bin));
             
@@ -444,10 +443,10 @@ output.Sv_mean_lin_esp2(idx_nan)=nan;
 output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
+
+
+
 fields=fieldnames(output);
-
-
-
 idx_zeros=find(nansum(output.Sv_mean_lin,2)==0);
 idx_rem=[];
 if length(idx_zeros)>2

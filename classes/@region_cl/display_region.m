@@ -54,11 +54,11 @@ parse(p,reg_obj,trans_obj,varargin{:});
 
 
 if isa(trans_obj,'transceiver_cl')
-%     profile on;
+     profile on;
     output_reg=trans_obj.integrate_region(reg_obj);
-%     output_reg_2=trans_obj.integrate_region_v2(reg_obj);
-%     profile off;
-%     profile viewer;
+    %output_reg=trans_obj.integrate_region_v2(reg_obj);
+    profile off;
+    profile viewer;
 else
     output_reg=trans_obj;
 end

@@ -8,7 +8,7 @@ classdef mbs_header_cl
         areas='';
         author='';
         created='';
-        vertical_slice_size=500;
+        vertical_slice_size=10;
         comments='';
         use_exclude_regions='yes';
         default_absorption=8;

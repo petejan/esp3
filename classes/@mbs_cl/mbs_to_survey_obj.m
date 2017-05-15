@@ -80,6 +80,7 @@ for isnap=1:size(snap_numbers,1)
             snap_curr.Folder=mbs_obj.Input.crestDir{idx_snap(1)};
     end
     snap_curr.Cal=mbs_obj.Input.calRaw{idx_snap(1)};
+    snap_curr.Cal_rev=mbs_obj.Input.calRev{idx_snap(1)};
     snap_curr.Cal.FREQ=38000;
     stratum_names=unique(mbs_obj.Input.stratum(idx_snap));
     stratum=cell(1,length(stratum_names));

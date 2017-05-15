@@ -13,14 +13,14 @@ addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'CVSCheck',0);
 addParameter(p,'CVSroot','');
-
+addParameter(p,'SvCorr',1);
 parse(p,Filename_cell,varargin{:});
 
 
 dir_data=p.Results.PathToMemmap;
 
 machineformat = 'ieee-le'; %IEEE floating point with little-endian byte ordering
-precision = 'uint16'; %2-byte
+precision = 'short'; %2-byte
 
 cvs_root=p.Results.CVSroot;
 
@@ -87,6 +87,8 @@ if ~isequal(Filename_cell, 0)
         system_calibration=ifileInfo.system_calibration;
         depth_factor=ifileInfo.depth_factor;
         
+        samples_val_real_cal=samples_val_real./system_calibration;
+        samples_val_imag_cal=samples_val_imag./system_calibration;
         
         start_time=ifileInfo.start_date;
         end_time=ifileInfo.finish_date;
@@ -104,7 +106,7 @@ if ~isequal(Filename_cell, 0)
         attitude_data_pings=attitude_data.resample_attitude_nav_data(Time);
         
         
-        power=sqrt(samples_val_real.^2+samples_val_imag.^2);
+        power=sqrt(samples_val_real_cal.^2+samples_val_imag_cal.^2);
         
         
         if strcmp(ifileInfo.sounder_type,'ES70')||strcmp(ifileInfo.sounder_type,'ES60')
@@ -112,9 +114,8 @@ if ~isequal(Filename_cell, 0)
         else
             corr=zeros(size(power));
         end
-        power=power/system_calibration;
         
-        sv=20*log10(power)+10*log10(depth_factor)+corr;
+        sv=20*log10(power/p.Results.SvCorr)+10*log10(depth_factor)+corr;
             
         [~,curr_filename,~]=fileparts(tempname);
         curr_name=fullfile(dir_data,curr_filename);
