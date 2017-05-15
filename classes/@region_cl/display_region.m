@@ -51,14 +51,12 @@ addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
-
-
 if isa(trans_obj,'transceiver_cl')
-     profile on;
-    output_reg=trans_obj.integrate_region(reg_obj);
-    %output_reg=trans_obj.integrate_region_v2(reg_obj);
-    profile off;
-    profile viewer;
+%      profile on;
+%   output_reg_old=trans_obj.integrate_region(reg_obj);
+    output_reg=trans_obj.integrate_region_v2(reg_obj);
+%     profile off;
+%     profile viewer;
 else
     output_reg=trans_obj;
 end
@@ -122,18 +120,17 @@ switch reg_obj.Cell_w_unit
         x_disp=(nanmean(output_reg.Dist_S,1)+nanmean(output_reg.Dist_E,1))/2;
 end
 
-switch(reg_obj.Reference)
-    case 'Surface'
-        y_disp=nanmean(output_reg.y_node+output_reg.height/2,2);
-    case 'Bottom'
-        y_disp=-nanmean(output_reg.y_node+output_reg.height/2,2);
-end
+
+y_disp=nanmean((output_reg.Range_ref_min+output_reg.Range_ref_max)/2,2);
+
 mat_size=size(sv_disp);
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
     'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked','CloseRequestFcn',@close_reg_fig);
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 title(ax_in,tt);
 
+idx_rem_x=(x_disp==0);
+x_disp(idx_rem_x)=NaN;
 
 if  ~any(mat_size==1)
     reg_plot=pcolor(ax_in,repmat(x_disp,length(y_disp),1),repmat(y_disp,1,length(x_disp)),sv_disp);
@@ -150,9 +147,9 @@ colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
 colormap(ax_in,cmap);
 set(ax_in,'GridColor',col_grid);
 grid(ax_in,'on');
-if strcmp(reg_obj.Reference,'Surface')
-    axis(ax_in,'ij')
-end
+
+axis(ax_in,'ij');
+
 
 
 ax_horz=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.1 0.7 0.15],'nextplot','add','box','on');
@@ -173,9 +170,8 @@ end
 ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
 plot(ax_vert,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2)),y_disp,'r');
 xlabel(ax_vert,'Sv mean (db)')
-
-if strcmp(reg_obj.Reference,'Surface')
-    axis(ax_vert,'ij');
+axis(ax_vert,'ij');
+if strcmp(reg_obj.Reference,'Surface')  
     ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
 else
     ylabel(ax_vert,sprintf('Above bottom(%s)',reg_obj.Cell_h_unit));

@@ -66,10 +66,10 @@ for idx_school=idx_schools
        
         h_figs=new_echo_figure([],'Name',sprintf('School %d',idx_school_38),'Tag','classif');
         ax1=axes(h_fig);
-        pcolor(ax1,output_reg_120.x_node,output_reg_120.Range_mean,delta_120_38_cell);
+        pcolor(ax1,(output_reg_120.Dist_E+output_reg_120.Dist_S)/2,output_reg_120.Range_mean,delta_120_38_cell);
         colormap(jet);
         grid on;
-        xlabel(school_38_reg.Cell_w_unit)
+        xlabel('Distance(m)')
         ylabel('Depth(m)')
         hold on;
         axis ij;
@@ -77,18 +77,7 @@ for idx_school=idx_schools
         colorbar;
         title(sprintf('\\Delta 120-38 dB difference of school %.0f',idx_school_38));
         
-%         ax2=subplot(2,1,2);
-%         pcolor(output_reg_120.x_node,output_reg_120.Range_mean,delta_120_18_cell);
-%         xlabel(school_38_reg.Cell_w_unit)
-%         ylabel('Depth(m)')
-%         colormap(jet)
-%         grid on;
-%         hold on;
-%         axis ij;
-%         title(sprintf('\\Delta 120-18 dB difference of school %.0f',idx_school_38));
-%         caxis([-10 10]);
-%         colorbar;
-%         linkaxes([ax1 ax2],'xy')
+
     else
         h_figs=[];
     end

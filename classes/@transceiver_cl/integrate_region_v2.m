@@ -257,38 +257,38 @@ cell_h=region.Cell_h;
 
 
 Sv_reg_lin=10.^(Sv_reg/10);
+Mask_tot=Mask;
 
 if p.Results.keep_bottom==0
-    Sv_reg_lin(y_mat_ori>=bot_mat)=nan;
+    Mask_tot(y_mat_ori>=bot_mat)=0;
 end
 
 x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
 
 switch region.Reference
     case {'Bottom' 'line'}       
-        y_mat_idx=floor(y_mat/cell_h);
+        y_mat_idx=ceil(y_mat/cell_h);
         y_mat_idx=y_mat_idx-nanmin(y_mat_idx(:))+1;
     otherwise
         y_mat_idx=floor(bsxfun(@minus,y_mat,y_mat(1,:))/cell_h)+1;
 end
-        
 
-Sv_reg_lin_tmp=Sv_reg_lin;
-Sv_reg_lin_tmp(~Mask)=nan;
 
-Sa_lin_sparse = accumarray([y_mat_idx(:) x_mat_idx(:)],Sv_reg_lin_tmp(:),[],@nansum)*dr;
+Sv_reg_lin(~Mask_tot)=nan;
 
-[N_y,N_x]=size(Sa_lin_sparse);
+output.nb_samples=accumarray([y_mat_idx(:) x_mat_idx(:)],Sv_reg_lin(:),[],@(x) nansum(~isnan(x)));
+
+mask_sub=(output.nb_samples==0);
+
+output.nb_samples(mask_sub)=NaN;
+
+Sa_lin_sparse = accumarray([y_mat_idx(:) x_mat_idx(:)],Sv_reg_lin(:),[],@nansum,NaN)*dr;
+
+
+[N_y,~]=size(Sa_lin_sparse);
 
 output.Sa_lin=Sa_lin_sparse;
 
-output.nb_samples=accumarray([y_mat_idx(:) x_mat_idx(:)],Sv_reg_lin_tmp(:),[],@(x) sum(~isnan(x)));
-
-output.x_node=accumarray([y_mat_idx(:) x_mat_idx(:)],x_mat(:),[],@mean,NaN );
-output.y_node=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@mean,NaN );
-
-
-output.Sa_lin=zeros(N_y,N_x);
 
 
 output.Ping_S=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmin),1,N_y)';
@@ -297,39 +297,67 @@ output.Ping_E=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmax),1,N_y)'
 output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,:)',(sub_bad_trans_vec(:))==0,[],@nansum),1,N_y)';
 
 output.Nb_good_pings_esp2=output.Nb_good_pings;
+output.Nb_good_pings_esp2(mask_sub)=NaN;
+
+sub_samples_mat(~Mask_tot)=nan;
 
 output.Sample_S=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),[],@nanmin);
 output.Sample_E=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),[],@nanmax);
 
-output.Layer_depth_min=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:).*Mask(:),[],@nanmin);
-output.Layer_depth_max=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:).*Mask(:),[],@nanmax);
+output.Sample_S(mask_sub)=NaN;
+output.Sample_E(mask_sub)=NaN;
+
+y_mat(~Mask)=NaN;
+height_se=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@(x) abs(nanmax(x)-nanmin(x)));
+
+switch region.Cell_h_unit
+    case 'samples'
+        output.Thickness_esp2=height_se*dr+dr;
+    case 'meters'
+        output.Thickness_esp2=height_se+dr;
+end
+output.Thickness_esp2(mask_sub)=NaN;
+
+sub_r_mat(~Mask_tot)=nan;
+
+output.Layer_depth_min=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),[],@nanmin);
+output.Layer_depth_max=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),[],@nanmax);
 
 
-output.Range_mean=(output.Layer_depth_min+output.Layer_depth_max)/2;
+output.Layer_depth_min(mask_sub)=NaN;
+output.Layer_depth_max(mask_sub)=NaN;
+
+
+output.Range_mean=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),[],@nanmean);
+output.Range_mean(mask_sub)=NaN;
+
 switch region.Cell_h_unit
     case 'samples'
         output.Range_ref_min=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmin)/dr;
         output.Range_ref_max=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmax)/dr;
-        output.height=(output.Layer_depth_max-output.Layer_depth_min)/dr;
     case 'meters'
-        output.height=(output.Layer_depth_max-output.Layer_depth_min);
         output.Range_ref_min=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmin);
         output.Range_ref_max=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmax);     
 end
 
-output.Thickness_esp2=abs(output.Layer_depth_max-output.Layer_depth_min)+dr;
+output.Range_ref_min(mask_sub)=NaN;
+output.Range_ref_max(mask_sub)=NaN;
+
+output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
+output.Thickness_mean(mask_sub)=NaN;
+
 
 output.Dist_E=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmin),1,N_y)';
 output.Dist_S=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmax),1,N_y)';
-output.length=(output.Dist_E-output.Dist_S);
 
-output.Time_E=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmin),1,N_y)';
 output.Time_S=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmin),1,N_y)';
+output.Time_E=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmax),1,N_y)';
 
 output.Lat_S=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmin),1,N_y)';
 output.Lon_S=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmin),1,N_y)';
+
 output.Lat_E=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmax),1,N_y)';
-output.Lon_E=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmin),1,N_y)';
+output.Lon_E=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmax),1,N_y)';
 
 
 output.Sv_mean_lin_esp2=Sa_lin_sparse./(output.Nb_good_pings_esp2.*output.Thickness_esp2);
@@ -340,11 +368,17 @@ output.PRC=output.nb_samples*dr./(output.Nb_good_pings.*output.Thickness_esp2)*1
 idx_nan=(output.Sv_mean_lin_esp2==0);
 output.Sv_mean_lin_esp2(idx_nan)=nan;
 
-output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
 
 output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
+
+fields=fieldnames(output);
+
+% for ifi=1:numel(fields)
+%     output.(fields{ifi})(mask_sub)=NaN;
+%     
+% end
 
 
 fields=fieldnames(output);
@@ -365,6 +399,21 @@ for ifi=1:length(fields)
 end
 
 
+idx_zeros=find(nansum(output.Sv_mean_lin,1)==0);
+idx_rem=[];
+if length(idx_zeros)>=2
+   if idx_zeros(1)==1;
+       idx_rem=idx_zeros(1:find(abs(diff(idx_zeros))>1,1));  
+   end
+   
+   if idx_zeros(end)==size(output.Sv_mean_lin,2);
+       idx_rem=union(idx_rem,idx_zeros(find(abs(diff([1;idx_zeros]))>1,1,'last')):idx_zeros(end));  
+   end
+end
+
+for ifi=1:length(fields)
+    output.(fields{ifi})(:,idx_rem)=[];
+end
 
 
 end
