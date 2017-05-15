@@ -441,18 +441,16 @@ output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
 
 
-
 fields=fieldnames(output);
-idx_zeros=find(nansum(output.Sv_mean_lin,2)==0);
 idx_rem=[];
-if length(idx_zeros)>=2
-   if idx_zeros(1)==1;
-       idx_rem=idx_zeros(1:find(abs(diff(idx_zeros))>1,1));  
-   end
-   
-   if idx_zeros(end)==size(output.Sv_mean_lin,1);
-       idx_rem=union(idx_rem,idx_zeros(find(abs(diff([1;idx_zeros]))>1,1,'last')):idx_zeros(end));  
-   end
+idx_zeros_start=find(nansum(output.Sv_mean_lin,2)>0,1);
+if idx_zeros_start>1
+    idx_rem=union(idx_rem,1:idx_zeros_start-1);
+end
+
+idx_zeros_end=find(flipud(nansum(output.Sv_mean_lin,2)>0),1);
+if idx_zeros_end>1
+    idx_rem=union(idx_rem,N_y-((1:idx_zeros_end-1)-1));
 end
 
 for ifi=1:length(fields)
@@ -460,16 +458,15 @@ for ifi=1:length(fields)
 end
 
 
-idx_zeros=find(nansum(output.Sv_mean_lin,1)==0);
 idx_rem=[];
-if length(idx_zeros)>=2
-   if idx_zeros(1)==1;
-       idx_rem=idx_zeros(1:find(abs(diff(idx_zeros))>1,1));  
-   end
-   
-   if idx_zeros(end)==size(output.Sv_mean_lin,2);
-       idx_rem=union(idx_rem,idx_zeros(find(abs(diff([1;idx_zeros]))>1,1,'last')):idx_zeros(end));  
-   end
+idx_zeros_start=find(nansum(output.Sv_mean_lin,1)>0,1);
+if idx_zeros_start>1
+    idx_rem=union(idx_rem,1:idx_zeros_start-1);
+end
+
+idx_zeros_end=find(fliplr(nansum(output.Sv_mean_lin,2)>0),1);
+if idx_zeros_end>1
+    idx_rem=union(idx_rem,N_x-((1:idx_zeros_end-1)-1));
 end
 
 for ifi=1:length(fields)
