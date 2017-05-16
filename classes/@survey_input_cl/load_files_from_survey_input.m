@@ -138,8 +138,8 @@ for isn=1:length(snapshots)
                 for ifiles=1:length(filenames_cell)
                     fileN=fullfile(snapshots{isn}.Folder,filenames_cell{ifiles});
                     
-                    if isfield(transects{itr},'EsError')
-                        es_offset=transects{itr}.EsError(ifiles);
+                    if isfield(transects{itr},'Es60_correction')
+                        es_offset=transects{itr}.Es60_correction(ifiles);
                     else
                         es_offset=options.Es60_correction;
                     end

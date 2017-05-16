@@ -378,6 +378,7 @@ output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
 fields=fieldnames(output);
 idx_rem=[];
 idx_zeros_start=find(nansum(output.Sv_mean_lin,2)>0,1);
+
 if idx_zeros_start>1
     idx_rem=union(idx_rem,1:idx_zeros_start-1);
 end

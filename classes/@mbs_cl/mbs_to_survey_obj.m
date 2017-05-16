@@ -101,14 +101,14 @@ for isnap=1:size(snap_numbers,1)
             trans_curr.Bottom=bot_curr;
             trans_curr.files={};
             trans_curr.OriginCrest={};
-            trans_curr.EsError=[];
+            trans_curr.Es60_correction=[];
             trans_curr.Cal={};
             regions_curr.ver=1;
             regions_curr.IDs='';
             switch p.Results.type
                 case 'raw'
                     trans_curr.files=mbs_obj.Input.rawFileName(idx_trans);
-                    trans_curr.EsError=mbs_obj.Input.EsError(idx_trans);
+                    trans_curr.Es60_correction=mbs_obj.Input.EsError(idx_trans);
                     trans_curr.Cal=mbs_obj.Input.calRaw(idx_trans);
                    
                     i_ori=0;
@@ -122,7 +122,7 @@ for isnap=1:size(snap_numbers,1)
                     for sub_i_trans=idx_trans
                         i_ori=i_ori+1;
                         trans_curr.Cal=cell(1,length(idx_trans));
-                        trans_curr.EsError=nan(1,length(idx_trans));
+                        trans_curr.Es60_correction=nan(1,length(idx_trans));
                         trans_curr.files{i_ori}=sprintf('d%07d', mbs_obj.Input.dfileNum(sub_i_trans));
                         trans_curr.OriginCrest{i_ori}=fullfile(mbs_obj.Input.crestDir{sub_i_trans},sprintf('d%07d', mbs_obj.Input.dfileNum(sub_i_trans)));
                     end
