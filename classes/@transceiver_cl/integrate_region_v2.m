@@ -1,6 +1,3 @@
-%Just a test function to see if we could work with Sparse matrices in the
-%region integration process... Needs to be investigated but certainly
-%promising and prettier code.
 function output=integrate_region_v2(trans_obj,region,varargin)
 
 p = inputParser;
@@ -261,6 +258,7 @@ Mask_tot=Mask;
 
 if p.Results.keep_bottom==0
     Mask_tot(y_mat_ori>=bot_mat)=0;
+    Mask_tot(isnan(Sv_reg_lin))=0;
 end
 
 x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
@@ -276,13 +274,13 @@ end
 
 Sv_reg_lin(~Mask_tot)=nan;
 
-output.nb_samples=accumarray([y_mat_idx(:) x_mat_idx(:)],Sv_reg_lin(:),[],@(x) nansum(~isnan(x)));
+output.nb_samples=accumarray([y_mat_idx(:) x_mat_idx(:)],Mask_tot(:),[],@sum);
 
 mask_sub=(output.nb_samples==0);
 
 output.nb_samples(mask_sub)=NaN;
 
-Sa_lin_sparse = accumarray([y_mat_idx(:) x_mat_idx(:)],Sv_reg_lin(:),[],@nansum,NaN)*dr;
+Sa_lin_sparse = accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],Sv_reg_lin(Mask_tot),size(mask_sub),@sum,NaN)*dr;
 
 
 [N_y,N_x]=size(Sa_lin_sparse);
@@ -299,16 +297,11 @@ output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,:)',(sub_bad_trans_vec(:))==0
 output.Nb_good_pings_esp2=output.Nb_good_pings;
 output.Nb_good_pings_esp2(mask_sub)=NaN;
 
-sub_samples_mat(~Mask_tot)=nan;
+output.Sample_S=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],sub_samples_mat(Mask),size(mask_sub),@min,NaN);
+output.Sample_E=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],sub_samples_mat(Mask),size(mask_sub),@max,NaN);
 
-output.Sample_S=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),[],@nanmin);
-output.Sample_E=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),[],@nanmax);
 
-output.Sample_S(mask_sub)=NaN;
-output.Sample_E(mask_sub)=NaN;
-
-y_mat(~Mask)=NaN;
-height_se=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@(x) abs(nanmax(x)-nanmin(x)));
+height_se=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@(x) abs(max(x)-min(x)),NaN);
 
 switch region.Cell_h_unit
     case 'samples'
@@ -318,26 +311,20 @@ switch region.Cell_h_unit
 end
 output.Thickness_esp2(mask_sub)=NaN;
 
-sub_r_mat(~Mask_tot)=nan;
-
-output.Layer_depth_min=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),[],@nanmin);
-output.Layer_depth_max=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),[],@nanmax);
+output.Layer_depth_min=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],sub_r_mat(Mask_tot),size(mask_sub),@min,NaN);
+output.Layer_depth_max=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],sub_r_mat(Mask_tot),size(mask_sub),@max,NaN);
 
 
-output.Layer_depth_min(mask_sub)=NaN;
-output.Layer_depth_max(mask_sub)=NaN;
-
-
-output.Range_mean=accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),[],@nanmean);
+output.Range_mean=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],sub_r_mat(Mask_tot),size(mask_sub),@mean,NaN);
 output.Range_mean(mask_sub)=NaN;
 
 switch region.Cell_h_unit
     case 'samples'
-        output.Range_ref_min=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmin)/dr;
-        output.Range_ref_max=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmax)/dr;
+        output.Range_ref_min=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@min,NaN)/dr;
+        output.Range_ref_max=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@max,NaN)/dr;
     case 'meters'
-        output.Range_ref_min=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmin);
-        output.Range_ref_max=accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),[],@nanmax);     
+        output.Range_ref_min=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@min,NaN);
+        output.Range_ref_max=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@max,NaN);     
 end
 
 output.Range_ref_min(mask_sub)=NaN;
