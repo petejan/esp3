@@ -150,7 +150,7 @@ for iuu=1:length(idx_reg)
     
  
     i_reg=i_reg+1;
-    regCellInt{i_reg}=trans_obj.integrate_region(reg_curr,'horiExtend',[st et]);
+    regCellInt{i_reg}=trans_obj.integrate_region_v2(reg_curr,'horiExtend',[st et]);
     if isempty(regCellInt{i_reg})
         i_reg=i_reg-1;
         continue;

@@ -131,7 +131,7 @@ output_reg=cell(1,n);
 for i=1:n
     trans=layer.get_trans(frequencies(i));
     reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);
-    output_reg{i}=trans.integrate_region(reg,'keep_bottom',1);
+    output_reg{i}=trans.integrate_region_v2(reg,'keep_bottom',1);
 end
 
 
@@ -174,7 +174,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj=layer.get_trans(curr_disp.Freq);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-regCellInt=trans_obj.integrate_region(reg_curr);
+regCellInt=trans_obj.integrate_region_v2(reg_curr);
 if isempty(regCellInt)
     return;
 end

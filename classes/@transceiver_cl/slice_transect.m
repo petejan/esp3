@@ -202,7 +202,7 @@ for iuu=1:length(idx_reg)
     
     i_reg=i_reg+1;
     reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
-    regCellInt=trans_obj.integrate_region(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],...
+    regCellInt=trans_obj.integrate_region_v2(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],...
         'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
     
     if isempty(regCellInt)

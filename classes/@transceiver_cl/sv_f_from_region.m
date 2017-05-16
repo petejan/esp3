@@ -9,7 +9,7 @@ addParameter(p,'cal_eba',[],@(x) isempty(x)|isstruct(x));
 addParameter(p,'load_bar_comp',[],@(x) isempty(x)|isstruct(x));
 parse(p,trans_obj,reg_obj,varargin{:});
 
-output_reg=trans_obj.integrate_region(reg_obj);
+output_reg=trans_obj.integrate_region_v2(reg_obj);
 if isempty(output_reg)
     Sv_f=[];
     f_vec=[];
