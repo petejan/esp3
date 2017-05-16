@@ -52,12 +52,12 @@ addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 parse(p,reg_obj,trans_obj,varargin{:});
 
 if isa(trans_obj,'transceiver_cl')
-     profile on;
-    %output_reg_old=trans_obj.integrate_region(reg_obj);
-    output_reg=trans_obj.integrate_region_v2(reg_obj);
-    %compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
-    profile off;
-    profile viewer;
+%       profile on;
+%      output_reg_old=trans_obj.integrate_region(reg_obj);
+     output_reg=trans_obj.integrate_region_v2(reg_obj);
+%     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
+%      profile off;
+%     profile viewer;
 else
     output_reg=trans_obj;
 end
@@ -67,7 +67,11 @@ if isempty(output_reg)
     return;
 end
 
-curr_disp=getappdata(p.Results.main_figure,'Curr_disp');
+if~isempty(p.Results.main_figure)
+    curr_disp=getappdata(p.Results.main_figure,'Curr_disp');
+else
+    curr_disp=[];
+end
 
 if ~isempty(curr_disp)
     if ismember('Cax',p.UsingDefaults)

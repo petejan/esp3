@@ -6,10 +6,12 @@ Bottom_idx=trans_obj.Bottom.get_sample();
 if isempty(Bottom_idx)
     bot_idx=ones(1,nb_pings);
 else
-    bot_idx=nan(size(Bottom_idx));
+    bot_idx=nan(1,nb_pings);
     bot_idx(~isnan(Bottom_idx))=Bottom_idx(~isnan(Bottom_idx));
 end
+
 bot_idx=bot_idx(:)';
+bot_idx(bot_idx==0)=1;
 
 if ~isempty(varargin)
     bot_idx=bot_idx(varargin{1});

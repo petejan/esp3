@@ -18,8 +18,42 @@ parse(p,trans_obj,region,varargin{:});
 % if isempty(Sv)
 %     Sv=trans_obj.Data.get_datamat('sv');
 % end
-idx_pings=region.Idx_pings;
-idx_r=region.Idx_r;
+idx_pings_tot=region.Idx_pings;
+time=double(trans_obj.Time);
+sub_time_temp=time(idx_pings_tot);
+idx_keep_x=(sub_time_temp<=p.Results.horiExtend(2)&sub_time_temp>=p.Results.horiExtend(1));
+idx_pings=idx_pings_tot(idx_keep_x);
+idx_r_tot=region.Idx_r;
+
+range=double(trans_obj.get_transceiver_range());
+nb_samples=length(range);
+samples=(1:nb_samples)';
+dr=mean(diff(range));
+pings=double(trans_obj.get_transceiver_pings());
+bot_sple=trans_obj.get_bottom_idx();
+
+bot_r=nan(size(bot_sple));
+bot_r(~isnan(bot_sple))=range(bot_sple(~isnan(bot_sple)));
+bot_r(isnan(bot_sple))=nan;
+
+bot_r(isnan(bot_r))=inf;
+bot_sple(isnan(bot_sple))=inf;
+
+switch region.Cell_h_unit
+    case 'samples'
+        dn=region.Cell_h;
+    case 'meters'
+        dn=ceil(region.Cell_h/dr);
+end
+
+if p.Results.keep_bottom==0
+    idx_keep_r=samples(idx_r_tot)<=max(bot_sple(idx_pings))+dn;
+    idx_r=idx_r_tot(idx_keep_r);
+else
+    idx_keep_r=1:numel(idx_r_tot);
+    idx_r=idx_r_tot;
+end
+
 
 if p.Results.denoised>0
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
@@ -32,12 +66,12 @@ else
 end
 
 if p.Results.motion_correction>0
-     motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncompensation');
-     if ~isempty(motion_corr)
-        Sv_reg=Sv_reg+motion_corr;  
-     else
-        disp('Cannot find motion corrected Sv, integrating normal Sv.') 
-     end
+    motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncompensation');
+    if ~isempty(motion_corr)
+        Sv_reg=Sv_reg+motion_corr;
+    else
+        disp('Cannot find motion corrected Sv, integrating normal Sv.')
+    end
 end
 %Sv_reg(Sv_reg<-80)=-999;
 
@@ -48,15 +82,10 @@ if isempty(Sv_reg)
     return;
 end
 
-range=double(trans_obj.get_transceiver_range());
-nb_samples=length(range);
-samples=(1:nb_samples)';
-dr=nanmean(diff(range));
-pings=double(trans_obj.get_transceiver_pings());
-%nb_pings=length(pings);
-time=double(trans_obj.Time);
 
-while nanmax(idx_pings)>length(pings)
+%nb_pings=length(pings);
+
+while max(idx_pings)>length(pings)
     idx_pings=idx_pings-1;
 end
 
@@ -108,8 +137,8 @@ if p.Results.intersect_only==1
             otherwise
                 Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
         end
-    
-    Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
+        
+        Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
     end
 end
 
@@ -138,16 +167,9 @@ for i=idx
 end
 
 
-   
-
-
-
 
 IdxBad=find(trans_obj.Bottom.Tag==0);
 bad_trans_vec=double(trans_obj.Bottom.Tag==0);
-%IdxGood=find(trans_obj.Bottom.Tag>0);
-bot_sple=trans_obj.Bottom.Sample_idx;
-bot_sple(bot_sple==0)=1;
 
 
 if region.Remove_ST
@@ -158,25 +180,14 @@ end
 IdxBad_reg=intersect(IdxBad,idx_pings);
 %IdxGood_reg=intersect(IdxGood,idx_pings);
 Sv_reg(:,IdxBad_reg-idx_pings(1)+1)=NaN;
-if isempty(bot_sple)
-    bot_sple=ones(size(pings))*samples(end);
-end
-
-bot_r=nan(size(bot_sple));
-bot_r(~isnan(bot_sple))=range(bot_sple(~isnan(bot_sple)));
-bot_r(isnan(bot_sple))=nan;
-
-bot_r(isnan(bot_r))=inf;
-bot_sple(isnan(bot_sple))=inf;
 
 
 
 switch region.Shape
     case 'Polygon'
-        mask=region.MaskReg;
-        Sv_reg(mask==0)=NaN; 
+        mask=region.MaskReg(idx_keep_r,idx_keep_x);
+        Sv_reg(mask==0)=NaN;
 end
-
 
 Mask=~isnan(Sv_reg);
 
@@ -225,29 +236,33 @@ switch region.Reference
         line_ref=zeros(size(x));
 end
 
-[t_mat,~]=meshgrid(sub_time,sub_r);
 [bot_mat,~]=meshgrid(bot_int,sub_r);
-[line_mat,~]=meshgrid(line_ref,sub_r);
 
+[line_mat,~]=meshgrid(line_ref,sub_r);
 
 y_mat_ori=y_mat;
 y_mat=y_mat-line_mat;
 
 switch region.Reference
     case 'Bottom'
-      idx_rem=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+        idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1));
+        
     case 'Line'
-      idx_rem=(y_mat<=p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+        idx_rem_y=(y_mat<=p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(1));
+        
     otherwise
-      idx_rem=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1))|(t_mat>p.Results.horiExtend(2)|t_mat<p.Results.horiExtend(1));
+        idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1));
 end
 
-Mask(idx_rem)=0;
+Mask(idx_rem_y)=0;
+
+
 
 if~any(Mask(:))
     output=[];
     return;
 end
+
 
 cell_w=region.Cell_w;
 cell_h=region.Cell_h;
@@ -264,9 +279,9 @@ end
 x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
 
 switch region.Reference
-    case {'Bottom' 'line'}       
+    case {'Bottom' 'line'}
         y_mat_idx=ceil(y_mat/cell_h);
-        y_mat_idx=y_mat_idx-nanmin(y_mat_idx(:))+1;
+        y_mat_idx=y_mat_idx-min(y_mat_idx(:))+1;
     otherwise
         y_mat_idx=floor(bsxfun(@minus,y_mat,y_mat(1,:))/cell_h)+1;
 end
@@ -274,7 +289,10 @@ end
 
 Sv_reg_lin(~Mask_tot)=nan;
 
-output.nb_samples=accumarray([y_mat_idx(:) x_mat_idx(:)],Mask_tot(:),[],@sum);
+N_x=(max(x_mat_idx(:))-min(x_mat_idx(:)))+1;
+N_y=(max(y_mat_idx(:))-min(y_mat_idx(:)))+1;
+
+output.nb_samples=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],Mask_tot(Mask_tot),[N_y N_x],@sum,0);
 
 mask_sub=(output.nb_samples==0);
 
@@ -282,12 +300,7 @@ output.nb_samples(mask_sub)=NaN;
 
 Sa_lin_sparse = accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],Sv_reg_lin(Mask_tot),size(mask_sub),@sum,NaN)*dr;
 
-
-[N_y,N_x]=size(Sa_lin_sparse);
-
 output.Sa_lin=Sa_lin_sparse;
-
-
 
 output.Ping_S=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmin),1,N_y)';
 output.Ping_E=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmax),1,N_y)';
@@ -324,7 +337,7 @@ switch region.Cell_h_unit
         output.Range_ref_max=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@max,NaN)/dr;
     case 'meters'
         output.Range_ref_min=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@min,NaN);
-        output.Range_ref_max=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@max,NaN);     
+        output.Range_ref_max=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@max,NaN);
 end
 
 output.Range_ref_min(mask_sub)=NaN;
