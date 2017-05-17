@@ -25,7 +25,7 @@ if exist(filename,'file')>0
         case 'CON0'
             ftype='EK60';
         otherwise
-            fid = fopen(filename, 'r','b');
+            fid = fopen(filename,'r','b');
             dgType=fread(fid,1,'uint16');
             fclose(fid);
             if hex2dec('FD02')==dgType

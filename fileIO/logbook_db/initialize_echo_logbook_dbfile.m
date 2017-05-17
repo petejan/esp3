@@ -1,10 +1,6 @@
 function initialize_echo_logbook_dbfile(datapath,force_create)
 
-dir_raw=dir(fullfile(datapath,'*.raw'));
-
-dir_asl=dir(fullfile(datapath,'*A'));
-
-list_raw=union({dir_raw(:).name},{dir_asl(:).name});
+[list_raw,ftypes]=list_ac_files(datapath);
 
 nb_files_raw=length(list_raw);
 
@@ -49,19 +45,11 @@ dbconn.exec(createlogbookTable);
 dbconn.exec(createsurveyTable);
 
 dbconn.insert('survey',{'SurveyName' 'Voyage' },{'' ''});
-survdata_temp=survey_data_cl();
 
-if force_create==0;
-    for i=1:nb_files_raw
-        fprintf('Getting Start and End Date from file %s (%i/%i)\n',list_raw{i},i,nb_files_raw);
-        [start_date,end_date]=start_end_time_from_file(fullfile(datapath,list_raw{i}));
-        survdata_temp.surv_data_to_logbook_db(dbconn,list_raw{i},'StartTime',start_date,'EndTime',end_date);
-    end
+if force_create==0;  
+    add_files_to_db(datapath,list_raw,ftypes,dbconn,[])
 end
 close(dbconn);
-
-
-
 
 
 

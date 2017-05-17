@@ -68,24 +68,14 @@ for ilay=1:length(layers_obj)
         end
         
         
-        dir_raw=dir(fullfile(path_f,'*.raw'));
-        dir_asl=dir(fullfile(path_f,'*A'));
-        list_raw=union({dir_raw([dir_raw(:).isdir]==0).name},{dir_asl([dir_asl(:).isdir]==0).name});
+        [list_raw,ftypes]=list_ac_files(path_f);
         
         
-        new_files=setdiff(list_raw,files_logbook);
+        [new_files,idx_new]=setdiff(list_raw,files_logbook);
         
         dbconn=sqlite(db_file,'connect');
-        
-        for i=1:length(new_files)
-            fprintf('Adding file %s to logbook\n',new_files{i});
-            [start_time,end_time]=start_end_time_from_file(fullfile(path_f,new_files{i}));
-            
-            survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
-            
-            survdata_temp.surv_data_to_logbook_db(dbconn,new_files{i},'StartTime',start_time,'EndTime',end_time);
-        end
-        
+        survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
+        add_files_to_db(path_f,new_files,ftypes(idx_new),dbconn,survdata_temp)
         
         for i=1:length(curr_files)
             [~,file_curr_temp,end_temp]=fileparts(curr_files{i});
@@ -198,8 +188,6 @@ if exist(p.Results.Filename,'file')==2
     survdata_temp.surv_data_to_logbook_db(dbconn,[file_r end_file],'StartTime',start_time,'EndTime',end_time);
     dbconn.close();
 end
-
-
 
 
 
