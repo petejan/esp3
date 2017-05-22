@@ -83,15 +83,14 @@ if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
     return
 end
 
- wbucb_ori=src.WindowButtonUpFcn;
- wbmcb_ori=src.WindowButtonMotionFcn;
+
 
 switch src.SelectionType
     case {'normal','alt'}
-        src.WindowButtonMotionFcn = @wbmcb;   
+ 
         x_bad=[xinit xinit];
-        src.WindowButtonMotionFcn = @wbmcb;
-        src.WindowButtonUpFcn = @wbucb;
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb);
         hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
     otherwise
         [~,idx_bad]=min(abs(xdata-xinit));
@@ -117,9 +116,9 @@ end
     end
 
     function wbucb(src,~)
-        
+     
         delete(hp);
-        src.Pointer = 'arrow';
+
         [~,idx_start]=min(abs(xdata-min(x_bad)));
         [~,idx_end]=min(abs(xdata-max(x_bad)));
         idx_f=(idx_start:idx_end)+idx_ping_ori-1;
@@ -131,9 +130,9 @@ end
     end
 
     function end_bt_edit()
-        src.WindowButtonMotionFcn = wbmcb_ori;
-        src.WindowButtonUpFcn = wbucb_ori;
-        reset_disp_info(main_figure);
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
+        %reset_disp_info(main_figure);
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Layer',layer);
         set_alpha_map(main_figure);

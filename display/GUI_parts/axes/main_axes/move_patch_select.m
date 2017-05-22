@@ -13,7 +13,7 @@ if isempty(patch_obj.Vertices)||~ismember(curr_disp.CursorMode,{'Normal'})
 end
 
 current_fig=main_figure;
-wbmcb_ori=current_fig.WindowButtonMotionFcn;
+ptr=current_fig.Pointer;
 
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
@@ -28,8 +28,8 @@ if strcmp(current_fig.SelectionType,'normal')
     dx_patch=nanmax(patch_obj.Vertices(:,1))-nanmin(patch_obj.Vertices(:,1));
     dy_patch=nanmax(patch_obj.Vertices(:,2))-nanmin(patch_obj.Vertices(:,2));
     
-    current_fig.WindowButtonMotionFcn = @wbmcb;
-    current_fig.WindowButtonUpFcn = @wbucb;
+    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb,'Pointer','fleur');
+    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 end
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -67,8 +67,8 @@ end
 
     function wbucb(~,~)
         
-        current_fig.WindowButtonMotionFcn = wbmcb_ori;
-        current_fig.WindowButtonUpFcn = '';
+    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'Pointer',ptr);
+    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
       
     end
 end

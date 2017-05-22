@@ -37,14 +37,13 @@
 function listenYLim(~,~,main_figure)
 %disp('listenYLim')
 % profile on;
-wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
+
 layer=getappdata(main_figure,'Layer');
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
-set(main_figure,'WindowButtonMotionFcn','');
-% 
+
 update_axis_panel(main_figure,0);
 set_axes_position(main_figure);
 update_cmap(main_figure);
@@ -76,7 +75,6 @@ set(patch_obj,'Vertices',new_vert);
 
 reset_disp_info(main_figure);
 
-set(main_figure,'WindowButtonMotionFcn',wbmf_ori);
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 % profile off;

@@ -3,7 +3,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 image_obj=src;
 ah=axes_panel_comp.main_axes;
@@ -13,8 +12,7 @@ if isempty(image_obj.XData)||~ismember(curr_disp.CursorMode,{'Normal'})
 end
 
 current_fig=main_figure;
-wbmcb_ori=current_fig.WindowButtonMotionFcn;
-
+ptr=current_fig.Pointer;
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
     x0 = cp(1,1);
@@ -27,8 +25,8 @@ if strcmp(current_fig.SelectionType,'normal')
     dx_image=nanmax(image_obj.XData(:))-nanmin(image_obj.XData(:));
     dy_image=nanmax(image_obj.YData(:))-nanmin(image_obj.YData(:));
     
-    current_fig.WindowButtonMotionFcn = @wbmcb;
-    current_fig.WindowButtonUpFcn = @wbucb;
+    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb,'Pointer','fleur');
+    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 end
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -65,8 +63,8 @@ end
 
     function wbucb(~,~)
         
-        current_fig.WindowButtonMotionFcn = wbmcb_ori;
-        current_fig.WindowButtonUpFcn = '';
+    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'Pointer',ptr);
+    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
       
     end
 end

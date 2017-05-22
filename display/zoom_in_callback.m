@@ -87,10 +87,8 @@ y_box=yinit;
 
 hp=line(x_box,y_box,'color',col_line,'linewidth',1,'parent',ah);
 
-wbmcb_ori=main_figure.WindowButtonMotionFcn;
-wbucb_ori=main_figure.WindowButtonUpFcn;
-main_figure.WindowButtonMotionFcn = @wbmcb;
-main_figure.WindowButtonUpFcn = @wbucb;
+replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -131,9 +129,10 @@ main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbucb(~,~)
         delete(hp);
-        main_figure.WindowButtonMotionFcn = wbmcb_ori;
-        main_figure.WindowButtonUpFcn = wbucb_ori;
-        
+
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2);
+
         y_min=nanmin(y_box);
         y_max=nanmax(y_box);
         

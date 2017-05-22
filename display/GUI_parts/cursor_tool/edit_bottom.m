@@ -36,7 +36,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function edit_bottom(src,cbackdata,main_figure)
+function edit_bottom(src,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -80,8 +80,6 @@ if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end
     return;
 end
 
- wbucb_ori=src.WindowButtonUpFcn;
- wbmcb_ori=src.WindowButtonMotionFcn;
 
 switch src.SelectionType
     case {'normal','alt','extend'}
@@ -89,18 +87,15 @@ switch src.SelectionType
        
         switch src.SelectionType
             case 'normal'
-                src.WindowButtonUpFcn = @wbucb;
-                src.WindowButtonMotionFcn = @wbmcb;
+                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+                replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb);
             case 'alt'
-                src.WindowButtonUpFcn = @wbucb_alt;   
-                src.WindowButtonMotionFcn = @wbmcb;
+                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+                replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb_alt);
             case 'extend'
                 u=u+1;
-%                 enabled_obj=findobj(main_figure,'Enable','on');
-%                 set(enabled_obj,'Enable','off');
-                src.WindowButtonMotionFcn = @wbmcb_ext;
-                src.WindowButtonDownFcn = @wbdcb_ext;
-                %set(main_figure,'WindowScrollWheelFcn','');      
+                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdcb_ext);     
         end
     otherwise
         [~, idx_bot]=nanmin(abs(xinit(1)-xdata));
@@ -113,7 +108,6 @@ end
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        display_info_ButtonMotionFcn([],[],main_figure,1);
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
         else
@@ -125,7 +119,6 @@ end
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        display_info_ButtonMotionFcn([],[],main_figure,1);
         
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
@@ -138,12 +131,10 @@ end
        
         switch src.SelectionType   
              case {'open' 'alt'}
-%                  xinit(u)=[];
-%                  yinit(u)=[];
+
                  wbucb(src,[]);
-                 %set(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
-                 src.WindowButtonDownFcn = @(src,envdata)edit_bottom(src,envdata,main_figure);
-%                  set(enabled_obj,'Enable','on');
+                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
+
                  return;
          end
 
@@ -152,7 +143,7 @@ end
         update_bot(xinit,yinit);
         layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1; 
-        src.WindowButtonMotionFcn = @wbmcb_ext;
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
         set_alpha_map(main_figure);
         set_alpha_map(main_figure,'main_or_mini','mini');
         display_bottom(main_figure);
@@ -178,7 +169,7 @@ end
         y_f=yinit(IA);
     end
 
-    function wbucb(src,~)
+    function wbucb(~,~)
         
         delete(hp);
         
@@ -208,7 +199,7 @@ end
         end
     end
 
-    function wbucb_alt(src,~)
+    function wbucb_alt(~,~)
         
 
         delete(hp);
@@ -226,16 +217,15 @@ end
 
 
     function end_bottom_edit()
-        src.WindowButtonMotionFcn = wbmcb_ori;
-        src.WindowButtonUpFcn = wbucb_ori;
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
         layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
-        reset_disp_info(main_figure);
+
         display_bottom(main_figure);
         set_alpha_map(main_figure);
-        set_alpha_map(main_figure,'main_or_mini','mini');
-        
+        set_alpha_map(main_figure,'main_or_mini','mini');     
     end
 end

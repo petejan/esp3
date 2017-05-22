@@ -85,21 +85,17 @@ end
 hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
 
-% enabled_obj=findobj(main_figure,'Enable','on');
-% set(enabled_obj,'Enable','off');
-wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
-wbuf_ori=get(main_figure,'WindowButtonUpFcn');
 
+replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
+replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdcb_ext);
 
-main_figure.WindowButtonMotionFcn = @wbmcb_ext;
-main_figure.WindowButtonDownFcn = @wbdcb_ext;
 
    function wbmcb_ext(~,~)
        
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        display_info_ButtonMotionFcn([],[],main_figure,1);
+
         
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
@@ -120,8 +116,8 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
             case {'open' 'alt'}
 
                 wbucb(main_figure,[]);
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure});
 
-                set(main_figure,'WindowButtonDownFcn',@create_region);
 %                 set(enabled_obj,'Enable','on');
                 return;
         end
@@ -129,8 +125,6 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         check_xy();
         u=length(xinit)+1;
         
-        main_figure.WindowButtonMotionFcn = @wbmcb_ext;
-
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
         else
@@ -155,8 +149,7 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
 
     function wbucb(main_figure,~)
         
-        main_figure.WindowButtonMotionFcn = wbmf_ori;
-        main_figure.WindowButtonUpFcn = wbuf_ori;
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
         
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
@@ -182,23 +175,11 @@ main_figure.WindowButtonDownFcn = @wbdcb_ext;
         end
         poly_pings=[poly_pings poly_pings(1)];
         poly_r=[poly_r poly_r(1)];
-        reset_disp_info(main_figure);
 
         feval(func,main_figure,poly_r,poly_pings);
 
         
     end
 
-    function check_esc(~,callbackdata)
-        switch callbackdata.Key
-            
-            case {'escape'}
-                xinit=[];
-                yinit=[];
-                wbucb(main_figure,[]);
-                set(main_figure,'WindowButtonDownFcn',@create_region);
-                return;
-                
-        end
-    end
+    
 end

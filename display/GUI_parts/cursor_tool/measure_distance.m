@@ -61,9 +61,6 @@ ydata=double(get(axes_panel_comp.main_echo,'YData'));
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 
-
-wbmcb_ori=src.WindowButtonMotionFcn;
-
 range=layer.Transceivers(idx_freq).get_transceiver_range();
 gps_data=layer.Transceivers(idx_freq).GPSDataPing;
 
@@ -85,8 +82,10 @@ switch src.SelectionType
         ht=text(ah,xinit,yinit,'','Tag','measurement_text','Color',text_col);
         add_point(cp(1,1),cp(1,2));
         click_num=2;
-        src.WindowButtonDownFcn= @wbdf;
-        src.WindowButtonMotionFcn = @wbmcb;  
+ 
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+        replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdf);
+
     otherwise
         return;
 end
@@ -101,9 +100,9 @@ end
             case {'alt'}
                 delete(hp);
                 delete(ht)
-                src.WindowButtonMotionFcn = wbmcb_ori;
-                set(main_figure,'WindowButtonDownFcn',@(src,envdata)measure_distance(src,envdata,main_figure));
-                reset_disp_info(main_figure);
+                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@measure_distance,main_figure});
+                
                 return;
         end
         

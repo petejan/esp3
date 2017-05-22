@@ -41,7 +41,6 @@ if isempty(main_figure)
     return;
 end
 
-remove_interactions(main_figure);
 disable_listeners(main_figure);
 
 layer  = getappdata(main_figure,'Layer');
@@ -97,9 +96,6 @@ curr_disp.CursorMode='Normal';
 
 enabled_obj=findobj(main_figure,'Enable','off');
 set(enabled_obj,'Enable','on');
-
-
-
 
 
 end

@@ -47,7 +47,7 @@ switch main_figure.SelectionType
     case 'normal'
         
     otherwise
-%         curr_disp.CursorMode='Normal';
+        %         curr_disp.CursorMode='Normal';
         return;
 end
 axes_panel_comp.bad_transmits.UIContextMenu=[];
@@ -97,22 +97,17 @@ y_box=yinit;
 
 hp=line(ah,x_box,y_box,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
-uistack(hp,'top');
-wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
-wbuf_ori=get(main_figure,'WindowButtonUpFcn');
 
 
-main_figure.WindowButtonMotionFcn = @wbmcb;
-main_figure.WindowButtonUpFcn = @wbucb;
+
+replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
         
         u=u+1;
-
-        display_info_ButtonMotionFcn([],[],main_figure,1);
-  
         
         switch mode
             case 'rectangular'
@@ -151,7 +146,7 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
         if isvalid(txt)
             set(txt,'position',[cp(1,1) cp(1,2) 0],'string',str_txt);
-        else 
+        else
             txt=text(cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
         end
         
@@ -159,16 +154,16 @@ main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbucb(main_figure,~)
         
-        main_figure.WindowButtonMotionFcn = wbmf_ori;
-        main_figure.WindowButtonUpFcn = wbuf_ori;
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2);
         
         layer=getappdata(main_figure,'Layer');
         
         [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
         
         if isempty(y_box)||isempty(x_box)
-                    delete(txt);
-                     delete(hp);
+            delete(txt);
+            delete(hp);
             return;
         end
         
@@ -193,27 +188,16 @@ main_figure.WindowButtonUpFcn = @wbucb;
                 idx_pings=1:length(layer.Transceivers(idx_freq).get_transceiver_pings());
             case 'vertical'
                 idx_r=1:length(layer.Transceivers(idx_freq).get_transceiver_samples());
-
+                
         end
         delete(txt);
         delete(hp);
         
-        reset_disp_info(main_figure);
         feval(func,main_figure,idx_r,idx_pings);
         
-       
+        
     end
 
- function check_esc(~,callbackdata)
-        switch callbackdata.Key
-            
-            case {'escape'}
-                x_box=[];
-                y_box=[];
-                wbucb(main_figure,[]);
-                return;
-                
-        end
-    end
+
 
 end

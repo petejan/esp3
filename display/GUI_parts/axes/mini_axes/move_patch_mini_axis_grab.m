@@ -46,9 +46,8 @@ if isempty(patch_obj.Vertices)
 end
 
 current_fig=gcf;
-wbmf_ori=get(current_fig,'WindowButtonMotionFcn');
-wbuf_ori=get(current_fig,'WindowButtonUpFcn');
 
+ptr=current_fig.Pointer;
 
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
@@ -61,8 +60,10 @@ if strcmp(current_fig.SelectionType,'normal')
     dx_patch=nanmax(patch_obj.Vertices(:,1))-nanmin(patch_obj.Vertices(:,1));
     dy_patch=nanmax(patch_obj.Vertices(:,2))-nanmin(patch_obj.Vertices(:,2));
     
-    current_fig.WindowButtonMotionFcn = @wbmcb;
-    current_fig.WindowButtonUpFcn = @wbucb;
+    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb,'Pointer','fleur');
+    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
+    
+    
 end
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -100,8 +101,8 @@ end
 
     function wbucb(~,~)
         
-        current_fig.WindowButtonMotionFcn = wbmf_ori;
-        current_fig.WindowButtonUpFcn = wbuf_ori;
+        replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'Pointer',ptr);
+        replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
         
@@ -109,7 +110,7 @@ end
         set(main_axes,'ylim',[nanmin(patch_obj.Vertices(:,2)) nanmax(patch_obj.Vertices(:,2))]);
         
         
-
+        
         
     end
 end

@@ -160,7 +160,8 @@ plot(ax_horz,x_disp,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,1)),'r');
 grid(ax_horz,'on');
 xlabel(ax_horz,sprintf('%s',reg_obj.Cell_w_unit))
 ylabel(ax_horz,'Sv mean(dB)')
-ax_horz.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
+
+%ax_horz.XTick=(x_disp(1):reg_obj.Cell_w*10:x_disp(end));
 ax_horz.XTickLabelRotation=90;
 
 switch reg_obj.Cell_w_unit
@@ -181,7 +182,7 @@ else
 end
 
 grid(ax_vert,'on');
-ax_vert.YTick=(y_disp(1):reg_obj.Cell_h:y_disp(end))+reg_obj.Cell_h/2;
+%ax_vert.YTick=(y_disp(1):reg_obj.Cell_h:y_disp(end))+reg_obj.Cell_h/2;
 
 ax_vert.YAxis.TickLabelFormat='%.0gm';
 linkaxes([ax_in ax_vert],'y');

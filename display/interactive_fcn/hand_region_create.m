@@ -88,12 +88,10 @@ end
 
 hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
 txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
-wbmf_ori=get(main_figure,'WindowButtonMotionFcn');
-wbuf_ori=get(main_figure,'WindowButtonUpFcn');
 
 
-main_figure.WindowButtonMotionFcn = @wbmcb;
-main_figure.WindowButtonUpFcn = @wbucb;
+replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
@@ -117,9 +115,9 @@ main_figure.WindowButtonUpFcn = @wbucb;
 
     function wbucb(main_figure,~)
         
-        main_figure.WindowButtonMotionFcn = wbmf_ori;
-        main_figure.WindowButtonUpFcn = wbuf_ori;
-        
+        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2);
+      
         x_data_disp=linspace(xdata(1),xdata(end),length(xdata));
         xinit(isnan(xinit))=[];
         yinit(isnan(yinit))=[];
@@ -145,7 +143,6 @@ main_figure.WindowButtonUpFcn = @wbucb;
         end
         poly_pings=[poly_pings poly_pings(1)];
         poly_r=[poly_r poly_r(1)];
-        reset_disp_info(main_figure);
         
         feval(func,main_figure,poly_r,poly_pings);
         
@@ -153,17 +150,4 @@ main_figure.WindowButtonUpFcn = @wbucb;
         
     end
 
-
-    function check_esc(~,callbackdata)
-        switch callbackdata.Key
-            
-            case {'escape'}
-                xinit=[];
-                yinit=[];
-                wbucb(main_figure,[]);
-                set(main_figure,'WindowButtonDownFcn',@create_region);
-                return;
-                
-        end
-    end
 end

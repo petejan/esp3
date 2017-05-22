@@ -51,10 +51,10 @@ if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
     Number=trans.get_transceiver_pings();
-    Range=trans.get_transceiver_range();
+    samples=trans.get_transceiver_samples();
     
     xdata=Number;
-    ydata=Range;
+    ydata=samples;
 else
     layer=layer_cl();
     idx_freq=1;
@@ -63,17 +63,18 @@ else
     ydata=[1 1];
 end
 
+replace_interaction(src,'interaction','WindowKeyPressFcn','id',1);
 
 switch callbackdata.Key
     
     
     case {'leftarrow','rightarrow','uparrow','downarrow','a','d'}
-        set(src,'KeyPressFcn','');
+        
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;
         
         if ~isfield(axes_panel_comp,'main_echo')
-            set(src,'KeyPressFcn',{@keyboard_func,main_figure});
+            
             return;
         end
         
@@ -81,43 +82,32 @@ switch callbackdata.Key
         y_lim=double(get(main_axes,'ylim'));
         dx=(x_lim(2)-x_lim(1));
         dy=(y_lim(2)-y_lim(1));
+        
         switch callbackdata.Key
             case {'leftarrow' 'a'}
-                if x_lim(1)<=xdata(1)
-                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-                    return;
-                else
+                if x_lim(1)>xdata(1)
                     x_lim=[nanmax(xdata(1),x_lim(1)-0.2*dx),nanmax(xdata(1),x_lim(1)-0.2*dx)+dx];
+                    
+                    set(main_axes,'xlim',x_lim);
+                    set(main_axes,'ylim',y_lim);
                 end
-                set(main_axes,'xlim',x_lim);
-                set(main_axes,'ylim',y_lim);
             case {'rightarrow' 'd'}
-                if x_lim(2)>=xdata(end)
-                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-                    return;
-                else
-                    x_lim=[nanmin(xdata(end),x_lim(2)+0.2*dx)-dx,nanmin(xdata(end),x_lim(2)+0.2*dx)];
+                if x_lim(2)<xdata(end)
+                    x_lim=[nanmin(xdata(end),x_lim(2)+0.2*dx)-dx,nanmin(xdata(end),x_lim(2)+0.2*dx)];  
+                    set(main_axes,'xlim',x_lim);
+                    set(main_axes,'ylim',y_lim);
                 end
-                set(main_axes,'xlim',x_lim);
-                set(main_axes,'ylim',y_lim);
             case 'downarrow'
-                if y_lim(2)>=ydata(end)
-                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-                    return;
-                else
+                if y_lim(2)<ydata(end)
                     y_lim=[nanmin(ydata(end),y_lim(2)+0.2*dy)-dy,nanmin(ydata(end),y_lim(2)+0.2*dy)];
+                    set(main_axes,'ylim',y_lim);
                 end
-                set(main_axes,'ylim',y_lim);
             case 'uparrow'
-                if y_lim(1)<=ydata(1)
-                    set(src,'KeyPressFcn',{@keyboard_func,main_figure});
-                    return;
-                else
+                if y_lim(1)>ydata(1)
                     y_lim=[nanmax(ydata(1),y_lim(1)-0.2*dy),nanmax(ydata(1),y_lim(1)-0.2*dy)+dy];
+                    set(main_axes,'ylim',y_lim);
                 end
-                set(main_axes,'ylim',y_lim);
         end
-        set(src,'KeyPressFcn',{@keyboard_func,main_figure});
     case {'1' 'numpad1'}
         
         if isempty(callbackdata.Modifier)
@@ -148,11 +138,8 @@ switch callbackdata.Key
                         set(cursor_mode_tool_comp.zoom_out,'state','off');
                         curr_disp.CursorMode='Normal';
                         
-                        
-                        
                 end
         end
-        %toggle_func(cursor_mode_tool_comp.zoom_in,[],main_figure);
     case {'2' 'numpad2'}
         
         switch get(cursor_mode_tool_comp.bad_trans,'state');
@@ -163,7 +150,6 @@ switch callbackdata.Key
                 set(cursor_mode_tool_comp.bad_trans,'state','off');
                 curr_disp.CursorMode='Normal';
         end
-        %toggle_func(cursor_mode_tool_comp.bad_trans,[],main_figure);
     case {'3' 'numpad3'}
         
         switch get(cursor_mode_tool_comp.edit_bottom,'state');
@@ -174,7 +160,6 @@ switch callbackdata.Key
                 set(cursor_mode_tool_comp.edit_bottom,'state','off');
                 curr_disp.CursorMode='Normal';
         end
-        %toggle_func(cursor_mode_tool_comp.edit_bottom,[],main_figure);
     case {'4' 'numpad4'}
         switch curr_disp.CursorMode
             case 'Create Region'
@@ -218,19 +203,15 @@ switch callbackdata.Key
         curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
     case 'f'
         if length(layer.Frequencies)>1
-            set(src,'KeyPressFcn','');
             curr_disp.Freq=layer.Frequencies(nanmin(rem(idx_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
-            set(src,'KeyPressFcn',{@keyboard_func,main_figure});
         end
     case 'e'
         if~isempty(trans.Data)
-            set(src,'KeyPressFcn','');
             if length(trans.Data.Fieldname)>1
                 fields=trans.Data.Fieldname;
                 id_field=find(strcmp(curr_disp.Fieldname,fields));
                 curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
             end
-            set(src,'KeyPressFcn',{@keyboard_func,main_figure});
         end
         
     case 'n'
@@ -247,9 +228,9 @@ switch callbackdata.Key
         if ~isempty(get(gco,'Tag'))
             switch get(gco,'Tag')
                 case {'region','region_text'}
-                    id=get(gco,'Userdata'); 
+                    id=get(gco,'Userdata');
                     idx= trans.find_regions_Unique_ID(id);
-                    trans.rm_region_id(get(gco,'Userdata'));     
+                    trans.rm_region_id(get(gco,'Userdata'));
                     update_reglist_tab(main_figure,-id,0);
                     update_regions_tab(main_figure,nanmax(idx-1,1));
                     display_regions(main_figure,'both');
@@ -265,23 +246,17 @@ switch callbackdata.Key
             keyboard_zoom(1,main_figure)
         elseif strcmpi(callbackdata.Modifier,'control')
             save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
-        else
-            return;
         end
         
-        
-        
     case 'z'
-       go_to_ping(1,main_figure);
+        go_to_ping(1,main_figure);
         
     case 'x'
-        
-       go_to_ping(length(Number),main_figure);
-        
+        go_to_ping(length(Number),main_figure);
 end
-
-% 
+replace_interaction(src,'interaction','WindowKeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
+%
 % profile off;
-% 
+%
 % profile viewer;
 end

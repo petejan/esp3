@@ -1,4 +1,4 @@
-function listenCursorMode(src,listdata,main_figure)
+function listenCursorMode(~,listdata,main_figure)
 if~isdeployed
     disp('ListenCursorMode')
 end
@@ -20,10 +20,7 @@ switch listdata.AffectedObject.CursorMode
     case 'Measure'
         toggle_func(cursor_mode_tool_comp.measure,[],main_figure);
     case 'Create Region'
-        reset_mode(0,0,main_figure);
-        iptPointerManager(main_figure,'disable');
-        set(main_figure,'Pointer','cross');
-        set(main_figure,'WindowButtonDownFcn',@create_region);
+        toggle_func('create_reg',[],main_figure);
     case 'Normal'     
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);

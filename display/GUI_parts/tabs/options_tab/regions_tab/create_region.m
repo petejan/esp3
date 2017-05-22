@@ -1,5 +1,5 @@
 
-function create_region(main_figure,~)
+function create_region(src,~,main_figure)
 
 region_tab_comp=getappdata(main_figure,'Region_tab');
 modes=get(region_tab_comp.mode,'string');

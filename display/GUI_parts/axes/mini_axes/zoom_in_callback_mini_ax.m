@@ -36,7 +36,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function zoom_in_callback_mini_ax(src,evt,main_figure)
+function zoom_in_callback_mini_ax(~,evt,main_figure)
 
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -62,6 +62,7 @@ clear_lines(ah);
 
 xdata=get(mini_ax_comp.mini_echo,'XData');
 ydata=get(mini_ax_comp.mini_echo,'YData');
+
 cp = ah.CurrentPoint;
 
 switch mode
@@ -87,17 +88,12 @@ y_box=yinit;
 
 hp=line(x_box,y_box,'color',col_line,'linewidth',1,'parent',ah);
 
-wbmf_ori=get(current_fig,'WindowButtonMotionFcn');
-wbuf_ori=get(current_fig,'WindowButtonUpFcn');
-
-current_fig.WindowButtonMotionFcn = @wbmcb;
-current_fig.WindowButtonUpFcn = @wbucb;
-
+replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 
     function wbmcb(~,~)
         cp = ah.CurrentPoint;
-        
-        
+              
         switch mode
             case 'rectangular'
                 X = [xinit,cp(1,1)];
@@ -133,9 +129,11 @@ current_fig.WindowButtonUpFcn = @wbucb;
 
     function wbucb(src,~)
         delete(hp);
-        current_fig.WindowButtonMotionFcn = wbmf_ori;
-        current_fig.WindowButtonUpFcn = wbuf_ori;
         
+        replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
+
+       
         if length(x_box)==1&&length(y_box)==1
             move_patch_mini_axis(src,evt,main_figure);        
         else

@@ -28,25 +28,17 @@ if strcmp(src.SelectionType,'normal')&&axes_panel_comp.main_echo==obj
     if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
         return;
     end
-    src.Pointer = 'cross';
     
-    src.WindowButtonUpFcn = @wbucb;
-    
-
+    replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb);
     
 else
     
-    src.WindowButtonUpFcn = '';
-    src.Pointer = 'arrow';
+    replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
     
 end
 
 
-    function wbucb(src,~)
-        src.WindowButtonMotionFcn = '';
-        src.WindowButtonUpFcn = '';
-        src.Pointer = 'arrow';
-        
+    function wbucb(~,~)
         
         cp = ah.CurrentPoint;
         
@@ -66,7 +58,7 @@ end
         curr_gps=layer.Transceivers(idx_freq).GPSDataPing;
         
         [~,idx_pings]=nanmin(abs(double(xdata)-xinit));
-
+        
         (fprintf('%.6f \n%.6f\n',curr_gps.Lat(idx_pings),curr_gps.Long(idx_pings)));
         
     end

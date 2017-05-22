@@ -37,28 +37,26 @@
 %% Function
 function move_mini_axis_grab(src,~,main_figure)
 
-
 current_fig=gcf;
-wbmf_ori=get(current_fig,'WindowButtonMotionFcn');
-wbuf_ori=get(current_fig,'WindowButtonUpFcn');
 
-
+ptr=current_fig.Pointer;
 if strcmp(current_fig.SelectionType,'normal')
     cp = current_fig.CurrentPoint;
-    current_fig.Pointer = 'fleur';
+
     pos = getpixelposition(current_fig);
 
-    current_fig.WindowButtonMotionFcn = @wbmcb;
-    current_fig.WindowButtonUpFcn = @wbucb;
+    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb,'Pointer','fleur');
+    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
+
 end
     function wbmcb(~,~)
         cp = current_fig.CurrentPoint;
     end
 
     function wbucb(~,~)
-        current_fig.Pointer = 'arrow';
-        current_fig.WindowButtonMotionFcn = wbmf_ori;
-        current_fig.WindowButtonUpFcn = wbuf_ori;
+
+        replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'Pointer',ptr);
+        replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
         
        if nansum(cp(:)<0)||nansum(cp>pos(3:4))
            undock_mini_axes_callback(src,[],main_figure,'out_figure')

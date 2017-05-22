@@ -117,10 +117,8 @@ y_box=yinit;
 hp=line(x_box,y_box,'color',col,'linewidth',1,'parent',ah,'LineStyle','--','Tag','SelectLine');
 
 
-wbucb_ori=src.WindowButtonUpFcn;
-wbmcb_ori=src.WindowButtonMotionFcn;
-src.WindowButtonMotionFcn = @wbmcb;
-src.WindowButtonUpFcn = @wbucb;
+replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb);
 
 
     function wbmcb(~,~)
@@ -160,8 +158,9 @@ src.WindowButtonUpFcn = @wbucb;
     end
 
     function wbucb(src,~)
-        src.WindowButtonMotionFcn = wbmcb_ori;
-        src.WindowButtonUpFcn = wbucb_ori;
+    replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+    replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2);
+
         delete(hp);
         
         switch mode
@@ -184,7 +183,7 @@ src.WindowButtonUpFcn = @wbucb;
         iptSetPointerBehavior(hp_a,enterFcn);
         set(hp_a,'ButtonDownFcn',{@move_patch_select,main_figure});
         
-        reset_disp_info(main_figure);
+        %reset_disp_info(main_figure);
         
     end
 
