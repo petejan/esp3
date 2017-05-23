@@ -33,7 +33,6 @@ for i=1:length(Filename)
     layer.add_lines(line);
 end
 
-setappdata(main_figure,'Lines_tab',lines_tab_comp);
 setappdata(main_figure,'Layer',layer);
 
 update_lines_tab(main_figure)

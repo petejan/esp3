@@ -167,6 +167,13 @@ switch callbackdata.Key
             otherwise
                 curr_disp.CursorMode='Create Region';
         end
+    case {'6' 'numpad6'}
+        switch curr_disp.CursorMode
+            case 'Draw Line'
+                curr_disp.CursorMode='Normal';
+            otherwise
+                curr_disp.CursorMode='Draw Line';
+        end
     case {'5' 'numpad5'}
         curr_disp.CursorMode='Normal';
     case {'b','pagedown'}

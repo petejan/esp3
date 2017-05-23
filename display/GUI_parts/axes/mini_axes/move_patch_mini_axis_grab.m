@@ -47,8 +47,6 @@ end
 
 current_fig=gcf;
 
-ptr=current_fig.Pointer;
-
 if strcmp(current_fig.SelectionType,'normal')
     cp = ah.CurrentPoint;
     x0 = cp(1,1);
@@ -101,7 +99,7 @@ end
 
     function wbucb(~,~)
         
-        replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'Pointer',ptr);
+        replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2);
         replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         main_axes=axes_panel_comp.main_axes;

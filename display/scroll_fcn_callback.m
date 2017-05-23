@@ -3,6 +3,7 @@ function scroll_fcn_callback(src,callbackdata,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
+    %disp('Empty')
     return;
 end
 

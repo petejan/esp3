@@ -27,8 +27,11 @@ uicontrol(lines_tab_comp.lines_tab,'Style','Text','String','Vertical offset (m)'
 lines_tab_comp.Range_diff=uicontrol(lines_tab_comp.lines_tab,'Style','edit','unit','normalized','position',[0.2 0.2 0.05 0.1],'string',range_diff_str,'callback',{@change_range_callback,main_figure});
 
 
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Draw','units','normalized','pos',[0.45 0.45 0.1 0.15],'callback',{@draw_line_callback,main_figure});
+
+str_delete='<HTML><center><FONT color="Red"><b>Delete</b></Font> ';
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import','units','normalized','pos',[0.35 0.3 0.10 0.15],'callback',{@import_line_callback,main_figure});
-uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.45 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String',str_delete,'units','normalized','pos',[0.45 0.3 0.1 0.15],'callback',{@delete_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Use as Offset','units','normalized','pos',[0.55 0.3 0.15 0.15],'callback',{@offset_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Disp. Offset','units','normalized','pos',[0.7 0.3 0.15 0.15],'callback',{@display_offset_callback,main_figure});
 
@@ -41,6 +44,12 @@ uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import from XM
 %set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Lines_tab',lines_tab_comp);
 
+end
+
+function draw_line_callback(~,~,main_figure)
+curr_disp=getappdata(main_figure,'Curr_disp');
+curr_disp.CursorMode='Draw Line';
+setappdata(main_figure,'Curr_disp',curr_disp);
 end
 
 

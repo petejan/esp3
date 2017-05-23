@@ -50,7 +50,7 @@ switch class(src)
         src_out=src;
     case 'char'
         src_out.State='on';
-        type='create_reg';
+        type=src;
 end
 
 
@@ -89,6 +89,8 @@ switch src_out.State
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@measure_distance,main_figure},'pointer','datacursor');
             case 'create_reg'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure},'pointer','cross');
+            case 'draw_line'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure},'pointer','hand');
             otherwise 
                 reset_mode(0,0,main_figure);    
         end
