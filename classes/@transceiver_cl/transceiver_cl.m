@@ -115,14 +115,21 @@ classdef transceiver_cl < handle
             
         end
         
-        function pings=get_transceiver_pings(trans_obj,varargin)
+        function time=get_transceiver_time(trans_obj,varargin)
+            time=trans_obj.Time;
+            if nargin>=2
+                idx=varargin{1};
+                time=time(idx);
+            end  
+        end
+        
+                function pings=get_transceiver_pings(trans_obj,varargin)
             pings=(1:trans_obj.Data.Nb_pings);
             if nargin>=2
                 idx=varargin{1};
                 pings=pings(idx);
             end  
         end
-        
         
         
         function list=regions_to_str(trans_obj)

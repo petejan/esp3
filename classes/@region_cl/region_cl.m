@@ -31,7 +31,7 @@ classdef region_cl
             
             check_type=@(type) ~isempty(strcmp(type,{'Data','Bad Data'}));
             check_shape=@(shape) ~isempty(strcmp(shape,{'Rectangular','Polygon'}));
-            check_reference=@(ref) ~isempty(strcmp(ref,{'Surface','Bottom'}));
+            check_reference=@(ref) ~isempty(strcmp(ref,{'Surface','Bottom','Line'}));
             check_w_unit=@(unit) ~isempty(strcmp(unit,{'pings','meters'}));
             check_h_unit=@(unit) ~isempty(strcmp(unit,{'samples','meters'}));
             pause(1e-2);

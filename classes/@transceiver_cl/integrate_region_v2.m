@@ -3,6 +3,7 @@ function output=integrate_region_v2(trans_obj,region,varargin)
 p = inputParser;
 addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
 addRequired(p,'region',@(x) isa(x,'region_cl'));
+addParameter(p,'line_obj',line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time),@(x) isa(x,'line_cl'));
 addParameter(p,'vertExtend',[0 Inf],@isnumeric);
 addParameter(p,'horiExtend',[0 Inf],@isnumeric);
 addParameter(p,'denoised',0,@isnumeric);
@@ -19,16 +20,26 @@ parse(p,trans_obj,region,varargin{:});
 %     Sv=trans_obj.Data.get_datamat('sv');
 % end
 idx_pings_tot=region.Idx_pings;
-time=double(trans_obj.Time);
+time=trans_obj.get_transceiver_time();
 sub_time_temp=time(idx_pings_tot);
 idx_keep_x=(sub_time_temp<=p.Results.horiExtend(2)&sub_time_temp>=p.Results.horiExtend(1));
 idx_pings=idx_pings_tot(idx_keep_x);
 idx_r_tot=region.Idx_r;
 
 range=double(trans_obj.get_transceiver_range());
+dr=mean(diff(range));
+
 nb_samples=length(range);
 samples=(1:nb_samples)';
-dr=mean(diff(range));
+
+line_r_ori=p.Results.line_obj.Range;
+line_t=p.Results.line_obj.Time;
+
+line_r=resample_data_v2(line_r_ori,line_t,time);
+line_samples=round(line_r/dr);
+
+
+
 pings=double(trans_obj.get_transceiver_pings());
 bot_sple=trans_obj.get_bottom_idx();
 
@@ -73,7 +84,6 @@ if p.Results.motion_correction>0
         disp('Cannot find motion corrected Sv, integrating normal Sv.')
     end
 end
-%Sv_reg(Sv_reg<-80)=-999;
 
 
 if isempty(Sv_reg)
@@ -82,8 +92,6 @@ if isempty(Sv_reg)
     return;
 end
 
-
-%nb_pings=length(pings);
 
 while max(idx_pings)>length(pings)
     idx_pings=idx_pings-1;
@@ -195,6 +203,8 @@ Mask=~isnan(Sv_reg);
 sub_samples=samples(idx_r);
 sub_pings=pings(idx_pings);
 sub_r=range(idx_r);
+sub_line_samples=line_samples(idx_pings);
+sub_line_r=line_r(idx_pings);
 sub_dist=dist(idx_pings)';
 sub_time=time(idx_pings);
 sub_lat=lat(idx_pings);
@@ -207,9 +217,11 @@ switch region.Cell_h_unit
     case 'samples'
         y=sub_samples;
         bot_int=sub_bot_sple;
+        line_int=sub_line_samples;
     case 'meters'
         y=sub_r;
         bot_int=sub_bot_r;
+        line_int=sub_line_r;
 end
 
 switch region.Cell_w_unit
@@ -233,7 +245,7 @@ switch region.Reference
         line_ref=bot_int;
         Mask(:,(bot_int==inf))=0;
     case 'Line'
-        line_ref=zeros(size(x));
+        line_ref=line_int;
 end
 
 [bot_mat,~]=meshgrid(bot_int,sub_r);
@@ -248,7 +260,7 @@ switch region.Reference
         idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1));
         
     case 'Line'
-        idx_rem_y=(y_mat<=p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(1));
+        idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(2));
         
     otherwise
         idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1));
@@ -279,7 +291,7 @@ end
 x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
 
 switch region.Reference
-    case {'Bottom' 'line'}
+    case {'Bottom' 'Line'}
         y_mat_idx=ceil(y_mat/cell_h);
         y_mat_idx=y_mat_idx-min(y_mat_idx(:))+1;
     otherwise

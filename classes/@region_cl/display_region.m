@@ -43,6 +43,7 @@ p = inputParser;
 
 addRequired(p,'reg_obj',@(obj) isa(obj,'region_cl'));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
+addParameter(p,'line_obj',line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time),@(x) isa(x,'line_cl'));
 addParameter(p,'Name',reg_obj.print(),@ischar);
 addParameter(p,'Cax',init_cax('sv'),@isnumeric);
 addParameter(p,'Cmap','jet',@ischar);
@@ -54,7 +55,7 @@ parse(p,reg_obj,trans_obj,varargin{:});
 if isa(trans_obj,'transceiver_cl')
 %       profile on;
 %      output_reg_old=trans_obj.integrate_region(reg_obj);
-     output_reg=trans_obj.integrate_region_v2(reg_obj);
+        output_reg=trans_obj.integrate_region_v2(reg_obj,'line_obj',p.Results.line_obj);
 %     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
 %      profile off;
 %     profile viewer;
@@ -175,10 +176,13 @@ ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65
 plot(ax_vert,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2)),y_disp,'r');
 xlabel(ax_vert,'Sv mean (db)')
 axis(ax_vert,'ij');
-if strcmp(reg_obj.Reference,'Surface')  
-    ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
-else
-    ylabel(ax_vert,sprintf('Above bottom(%s)',reg_obj.Cell_h_unit));
+switch reg_obj.Reference
+    case 'Surface'
+         ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
+    case 'Bottom'
+        ylabel(ax_vert,sprintf('Above bottom(%s)',reg_obj.Cell_h_unit));
+    case 'Line'
+        ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));  
 end
 
 grid(ax_vert,'on');

@@ -13,6 +13,7 @@ trans_obj=layer.Transceivers(idx_freq);
 
 
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-reg_curr.display_region(trans_obj,'main_figure',main_figure);
+
+reg_curr.display_region(trans_obj,'main_figure',main_figure,'line_obj',layer.Lines(1));
 
 end

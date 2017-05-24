@@ -5,7 +5,7 @@ app_path_cvs_root=':local:Z:\';
 app_path_data_root=fullfile(whereisEcho,'example_data');
 app_path_data=fullfile(whereisEcho,'example_data');
 app_path_scripts=fullfile(whereisEcho,'echo_scripts');
-app_path_results=fullfile(whereisEcho,'echo_result');
+app_path_results=fullfile(whereisEcho,'echo_results');
 p = inputParser;
 
 addParameter(p,'data_temp',app_path_data_temp,@ischar);
