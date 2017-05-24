@@ -201,6 +201,14 @@ classdef transceiver_cl < handle
             end
         end
         
+        function IDs=get_reg_first_Unique_ID(trans_obj)
+            if isempty(trans_obj.Regions)
+                IDs=[];
+            else
+                IDs=[trans_obj.Regions(1).Unique_ID];
+            end
+        end
+        
         
         
         function idx=find_regions_ID(trans_obj,ID)

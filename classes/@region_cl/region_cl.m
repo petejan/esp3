@@ -8,6 +8,7 @@ classdef region_cl
         Version=-1;
         Unique_ID
         Remove_ST
+        Line_ID=[]
         Type
         Idx_pings
         Idx_r

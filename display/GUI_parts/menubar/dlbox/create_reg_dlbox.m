@@ -160,9 +160,12 @@ trans_obj.add_region(reg_wc);
 close(reg_fig);
 
 set_alpha_map(main_figure);
-update_regions_tab(main_figure,1);
-update_reglist_tab(main_figure,[],0);
+
 display_regions(main_figure,'both');
+curr_disp=getappdata(main_figure,'Curr_disp');
+trans_obj=layer.get_trans(curr_disp.Freq);
+curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+
 order_stacks_fig(main_figure);
 
 end

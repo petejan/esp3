@@ -15,6 +15,7 @@ ls=[ls addlistener(curr_disp_obj,'DispReg','PostSet',@(src,envdata)listenDispReg
 ls=[ls addlistener(curr_disp_obj,'DispTracks','PostSet',@(src,envdata)listenDispTracks(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispLines','PostSet',@(src,envdata)listenDispLines(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'CursorMode','PostSet',@(src,envdata)listenCursorMode(src,envdata,main_figure))];
+ls=[ls addlistener(curr_disp_obj,'Active_reg_ID','PostSet',@(src,envdata)listenActive_reg_ID(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'Freq','PostSet',@(src,envdata)listenFreq(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'Fieldname','PostSet',@(src,envdata)listenField(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'Cmap','PostSet',@(src,envdata)listenCmap(src,envdata,main_figure))];

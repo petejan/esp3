@@ -39,9 +39,9 @@ function import_regs_from_evr_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
-return;
+    return;
 end
-    
+
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -59,9 +59,11 @@ if ~isempty(regions)
     setappdata(main_figure,'Layer',layer);
     display_bottom(main_figure);
     
-    update_regions_tab(main_figure,1);
-    update_reglist_tab(main_figure,[],0);
+    
     display_regions(main_figure,'both');
+    curr_disp=getappdata(main_figure,'Curr_disp');
+    trans_obj=layer.get_trans(curr_disp.Freq);
+    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     
     set_alpha_map(main_figure);
     set_alpha_map(main_figure,'main_or_mini','mini');

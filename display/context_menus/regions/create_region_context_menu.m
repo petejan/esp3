@@ -57,7 +57,8 @@ end
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
     if isnumeric(ID)
-        reg_plot(ii).ButtonDownFcn={@activate_region_callback,ID,main_figure,1};
+        iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,ID,main_figure});
+        iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@move_reg_callback,ID,main_figure});
     end
 end
 
@@ -102,6 +103,11 @@ uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_dete
 
 
 
+end
+
+function set_active_reg(~,~,ID,main_figure)
+    curr_disp=getappdata(main_figure,'Curr_disp');
+    curr_disp.Active_reg_ID=ID;
 end
 
 function freq_diff_callback(~,~,ID,main_figure)

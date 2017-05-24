@@ -161,6 +161,7 @@ if strcmp(src.String,'--')
     return;
 end
 layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
 
 if isempty(layer)
     return;
@@ -183,11 +184,9 @@ id=get(src,'value');
 str=get(src,'string');
 
 layer.load_bot_regs('bot_ver',[],'reg_ver',str2double(str(id)));
-
-
-update_regions_tab(main_figure,1);
-update_reglist_tab(main_figure,[],0);
 display_regions(main_figure,'both');
+trans_obj=layer.get_trans(curr_disp.Freq);
+curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');

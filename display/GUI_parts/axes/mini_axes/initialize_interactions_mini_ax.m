@@ -69,7 +69,7 @@ setptr(mini_axes_fig,'arrow');
 interactions.WindowScrollWheelFcn(1)=iptaddcallback(mini_axes_fig,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});
 
 % Initialize Keyboard interactions in the figure
-interactions.WindowKeyPressFcn(1)=iptaddcallback(mini_axes_fig,'WindowKeyPressFcn',{@keyboard_func,main_figure});
+interactions.KeyPressFcn(1)=iptaddcallback(mini_axes_fig,'KeyPressFcn',{@keyboard_func,main_figure});
 
 setappdata(mini_axes_fig,'interactions_id',interactions);
 

@@ -66,6 +66,7 @@ ref=refs{ref_idx};
 
 w_units=get(region_tab_comp.cell_w_unit,'string');
 w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
+
 if isempty(w_unit_idx)
     w_unit_idx=1;
     set(region_tab_comp.cell_w_unit,'value',1);
@@ -114,14 +115,12 @@ reg_temp=region_cl(...
     'Cell_h_unit',h_unit);
 
 
-layer.Transceivers(idx_freq).add_region(reg_temp);
+IDs_out=layer.Transceivers(idx_freq).add_region(reg_temp);
+display_regions(main_figure,'both');
+curr_disp.Active_reg_ID=IDs_out(end);
 
 setappdata(main_figure,'Layer',layer);
 
-
-update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
-update_reglist_tab(main_figure,[],0);
-display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
 
 

@@ -36,14 +36,17 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function activate_region_callback(obj,~,ID,main_figure,repos)
+function activate_region_callback(ID,main_figure,repos)
 
+if isempty(ID)
+    return;
+end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
-
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
+
 
 if~isdeployed()
     fprintf('Activate region %.0f\n',reg_curr.ID);
@@ -53,10 +56,8 @@ if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'
      return;
 end
 
+
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
-
-
-
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
@@ -127,65 +128,9 @@ for i=1:length(ah)
     end 
 end
 
-
-
 setappdata(main_figure,'Layer',layer);
-update_regions_tab(main_figure,idx_reg_ac);
 
-
-if ~ismember(curr_disp.CursorMode,{'Normal'})
-    return;
-end
-
-if ~(isa(obj,'matlab.graphics.primitive.Patch')||isa(obj,'matlab.graphics.primitive.Image')) 
-    %fprintf('Not moving this is %s\n',class(obj));
-    return;
-end
-
-switch main_figure.SelectionType
-    case 'normal'
-
-        modifier = get(main_figure,'CurrentModifier');
-        control = ismember({'alt'},modifier);
-        
-        if ~any(control)
-            if~isdeployed()
-                fprintf('Not Moving, did not see alt\n');
-            end
-            return;
-        end
-
-        switch obj.Type
-            case 'patch'
-                move_patch_select(obj,[],main_figure);
-            case 'image'
-                move_image_select(obj,[],main_figure);
-        end
-        
-        waitfor(main_figure,'WindowButtonUpFcn','');
-        
-        r_min=nanmin(obj.YData);
-        samples=trans_obj.get_transceiver_samples();
-        [~,idx_r_min]=nanmin(abs(r_min-samples));
-        
-        idx_p_min=ceil(nanmin(obj.XData));
-        
-        if reg_curr.Idx_r(1)==idx_p_min&&reg_curr.Idx_r(1)==idx_r_min
-           return; 
-        end
-        
-        reg_curr.Idx_pings=reg_curr.Idx_pings-reg_curr.Idx_pings(1)+idx_p_min;
-        reg_curr.Idx_r=reg_curr.Idx_r-reg_curr.Idx_r(1)+idx_r_min;
-        
-        layer.Transceivers(idx_freq).add_region(reg_curr);
-        
-        setappdata(main_figure,'Layer',layer);
-        
-        update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
-        clear_regions(main_figure,reg_curr.Unique_ID);
-        display_regions(main_figure,'both');
-        order_stacks_fig(main_figure);
-        
+     
 end
 
 

@@ -51,7 +51,7 @@ end
 
 
 columnname = {'Name','ID','Tag','Type','Reference','Cell Width','Width Unit','Cell Height','Height Unit','Unique ID'};
-columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
+columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom','Line'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
 
 
 reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
@@ -98,27 +98,30 @@ if ~isempty(idx)
         end
         reg_curr=trans_obj.Regions(ireg);
         reg_curr.display_region(trans_obj,'main_figure',main_figure);
-  
+        
     end
 end
 end
 
 function delete_regions_callback(src,~,table,main_figure)
-        layer=getappdata(main_figure,'Layer');
-        curr_disp=getappdata(main_figure,'Curr_disp');
-        idx_freq=find_freq_idx(layer,curr_disp.Freq);
-        trans_obj=layer.Transceivers(idx_freq);
-        idx=getappdata(table,'SelectedRegs');
-        
-        if ~isempty(idx)
-            idx_reg=trans_obj.find_regions_Unique_ID(idx(end));
-            for i=1:numel(idx)
-                trans_obj.rm_region_id(idx(i));
-            end
-            update_reglist_tab(main_figure,[],0);
-            update_regions_tab(main_figure,nanmax(idx_reg-1,1));            
-            display_regions(main_figure,'both');
-        end
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.Transceivers(idx_freq);
+idx=getappdata(table,'SelectedRegs');
+
+if ~isempty(idx)
+    idx_reg=trans_obj.find_regions_Unique_ID(idx(end));
+    for i=1:numel(idx_reg)
+        trans_obj.rm_region_id(idx_reg(i));
+    end
+    
+    display_regions(main_figure,'both');
+    curr_disp=getappdata(main_figure,'Curr_disp');
+    trans_obj=layer.get_trans(curr_disp.Freq);
+    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+    
+end
 end
 
 
@@ -151,7 +154,8 @@ if ~found
     return;
 end
 active_reg=regions(idx_reg);
-activate_region_callback([],[],active_reg.Unique_ID,main_figure,1);
+curr_disp.Active_reg_ID=active_reg.Unique_ID;
+
 end
 
 

@@ -48,9 +48,12 @@ if ~isempty(layer.Transceivers(idx_freq).Regions)
     new_regions=layer.Transceivers(idx_freq).Regions.merge_regions();
     layer.Transceivers(idx_freq).rm_all_region();
     layer.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
-    update_regions_tab(main_figure,[]);
-    update_reglist_tab(main_figure,[],0);
+    
     display_regions(main_figure,'both');
+    curr_disp=getappdata(main_figure,'Curr_disp');
+    trans_obj=layer.get_trans(curr_disp.Freq);
+    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+    
     order_stacks_fig(main_figure);
     
 end

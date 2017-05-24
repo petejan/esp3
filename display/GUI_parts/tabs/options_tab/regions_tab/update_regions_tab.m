@@ -1,4 +1,4 @@
-function update_regions_tab(main_figure,idx_reg)
+function update_regions_tab(main_figure)
 region_tab_comp=getappdata(main_figure,'Region_tab');
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
@@ -10,40 +10,20 @@ else
     dist=0;
 end
 
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
-
-if isempty(idx_reg)
-    idx_reg=get(region_tab_comp.tog_reg,'value');
-end
-
-if ~isempty(list_reg)
-    if length(list_reg)>=idx_reg
-        set(region_tab_comp.tog_reg,'value',idx_reg)
-        set(region_tab_comp.tog_reg,'string',list_reg);
-    else
-        idx_reg=1;
-        set(region_tab_comp.tog_reg,'value',1)
-        set(region_tab_comp.tog_reg,'string',list_reg);
-    end
-else
-    set(region_tab_comp.tog_reg,'value',1)
-    set(region_tab_comp.tog_reg,'string',{'--'});
-end
-
 
 if ~isempty(dist)
     w_units= {'pings','meters'};
 else
     w_units= {'pings'};
 end
+
 set(region_tab_comp.cell_w_unit,'string',w_units);
 
-if ~isempty(layer.Transceivers(idx_freq).Regions)
+idx_reg=layer.Transceivers(idx_freq).find_regions_Unique_ID(curr_disp.Active_reg_ID);
+
+if ~isempty(idx_reg)
     reg_curr=layer.Transceivers(idx_freq).Regions(idx_reg);
-%     shape_types=get(region_tab_comp.shape_type,'string');
-%     shape_type_idx=find(strcmp(reg_curr.Shape,shape_types));
-%     set(region_tab_comp.shape_type,'value',shape_type_idx);
-    
+
     data_types=get(region_tab_comp.data_type,'string');
     data_type_idx=find(strcmp(reg_curr.Type,data_types));
     set(region_tab_comp.data_type,'value',data_type_idx);

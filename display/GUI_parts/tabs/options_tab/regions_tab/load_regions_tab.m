@@ -39,15 +39,12 @@ function load_regions_tab(main_figure,option_tab_panel)
 
 region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 
-list_reg={'--'};
 reg_curr=region_cl();
-
-uicontrol(region_tab_comp.region_tab,'Style','Text','String','Regions','units','normalized','Position',[0.45 0.8 0.1 0.1]);
-region_tab_comp.tog_reg=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',list_reg,'Value',1,'units','normalized','Position', [0.55 0.8 0.2 0.1],'callback',{@tog_reg_callback,main_figure});
 
 modes={'rectangular' 'vertical' 'horizontal'};
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Mode','units','normalized','Position',[0.45 0.6 0.1 0.1]);
 region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',modes,'Value',1,'units','normalized','Position', [0.55 0.55 0.15 0.15]);
+
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Tag','units','normalized','Position',[0.7 0.55 0.1 0.15]);
 region_tab_comp.tag=uicontrol(region_tab_comp.region_tab,'Style','edit','String',reg_curr.Tag,'units','normalized','Position', [0.8 0.55 0.15 0.15],'callback',{@recompute_region_callback,main_figure});
@@ -93,7 +90,7 @@ uicontrol(region_tab_comp.region_tab,'Style','Text','String','Data Type','units'
 region_tab_comp.data_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',data_type,'Value',data_idx,'units','normalized','Position', [0.2 0.65 0.2 0.1]);
 
 
-ref={'Surface','Bottom'};
+ref={'Surface','Bottom','Line'};
 ref_idx=find(strcmp(reg_curr.Reference,ref));
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Reference','units','normalized','Position',[0 0.45 0.2 0.1]);
 region_tab_comp.tog_ref=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',ref,'Value',ref_idx,'units','normalized','Position', [0.2 0.45 0.2 0.1]);
@@ -139,21 +136,19 @@ end
 function rm_over_freq_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-region_tab_comp=getappdata(main_figure,'Region_tab');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-Transceiver=layer.get_trans(curr_disp.Freq);
+
 list_reg = layer.Transceivers(idx_freq).regions_to_str();
 
 
 if ~isempty(list_reg)
-    active_reg=Transceiver.Regions(get(region_tab_comp.tog_reg,'value'));
-    layer.rm_region_across_id(active_reg.Unique_ID);
+    layer.rm_region_across_id(curr_disp.Active_reg_ID);
 end
 
 setappdata(main_figure,'Layer',layer);
-update_regions_tab(main_figure,1);
-update_reglist_tab(main_figure,[],0);
+
 display_regions(main_figure,'both');
+curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
 
 end
 

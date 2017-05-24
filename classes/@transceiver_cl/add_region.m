@@ -1,5 +1,5 @@
 
-function add_region(trans_obj,regions,varargin)
+function IDs_out=add_region(trans_obj,regions,varargin)
 
 p = inputParser;
 
@@ -17,7 +17,7 @@ IDs=p.Results.IDs;
 Tag=p.Results.Tag;
 Origin=p.Results.Origin;
 Split=p.Results.Split;
-
+IDs_out=[];
 for i=1:length(regions)
     trans_obj.rm_region_id(regions(i).Unique_ID);
     regions(i)=trans_obj.validate_region(regions(i));
@@ -57,8 +57,10 @@ for i=1:length(regions)
     if Split>0
         splitted_reg=regions(i).split_region(trans_obj.Data.FileId);
         trans_obj.Regions=[trans_obj.Regions splitted_reg];
+        IDs_out=union(IDs_out,splitted_reg(:).Unique_ID);
     else
         trans_obj.Regions=[trans_obj.Regions regions(i)];
+        IDs_out=union(IDs_out,regions(i).Unique_ID);
     end
 end
 end

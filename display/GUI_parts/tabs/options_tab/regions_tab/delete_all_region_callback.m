@@ -55,10 +55,11 @@ switch choice
         
         if ~isempty(list_reg)
             layer.Transceivers(idx_freq).rm_regions();
-            setappdata(main_figure,'Layer',layer);
-            update_regions_tab(main_figure,[]);
-            update_reglist_tab(main_figure,[],0);
+            setappdata(main_figure,'Layer',layer);       
             display_regions(main_figure,'both');
+            curr_disp=getappdata(main_figure,'Curr_disp');
+            trans_obj=layer.get_trans(curr_disp.Freq);
+            curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
             
         else
             return;

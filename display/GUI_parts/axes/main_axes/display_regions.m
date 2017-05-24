@@ -48,14 +48,15 @@ for iax=1:length(main_axes_tot)
     
     
     
-    x_lim=get(main_axes,'xlim');
-    y_lim=get(main_axes,'ylim');
+%     x_lim=get(main_axes,'xlim');
+%     y_lim=get(main_axes,'ylim');
+%     
+%     rect_lim_x=[x_lim(1) x_lim(2) x_lim(2) x_lim(1) x_lim(1)];
+%     rect_lim_y=[y_lim(1) y_lim(1) y_lim(2) y_lim(2) y_lim(1)];
+%     
+%     
+    active_reg=trans.find_regions_Unique_ID(curr_disp.Active_reg_ID);
     
-    rect_lim_x=[x_lim(1) x_lim(2) x_lim(2) x_lim(1) x_lim(1)];
-    rect_lim_y=[y_lim(1) y_lim(1) y_lim(2) y_lim(2) y_lim(1)];
-    
-    
-    active_reg=get(region_tab_comp.tog_reg,'value');
     reg_h=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'});
     
     if~isempty(reg_h)
@@ -70,7 +71,7 @@ for iax=1:length(main_axes_tot)
     
     nb_reg=numel(trans.Regions);
     for i=1:nb_reg
-        try
+         try
             reg_curr=trans.Regions(i);
             id_reg=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',reg_curr.Unique_ID);
            
@@ -181,11 +182,9 @@ for iax=1:length(main_axes_tot)
                     reg_plot(3)=line(x_max,y_max,'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                     
             end
-            
-            
+                       
             reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
-            
-            
+                       
             if main_axes==axes_panel_comp.main_axes
                 create_region_context_menu(reg_plot,main_figure,reg_curr.Unique_ID);
                 enterFcn =  @(figHandle, currentPoint)...
@@ -196,10 +195,8 @@ for iax=1:length(main_axes_tot)
             warning('Error display region ID %.0f',reg_curr.ID);
         end
     end
-    if nb_reg>0
-        activate_region_callback([],[],trans.Regions(active_reg).Unique_ID,main_figure,0);
-    end
-    %     profile off;
-    %     profile viewer;
+    
+
+
 end
 

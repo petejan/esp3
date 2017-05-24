@@ -89,12 +89,11 @@ reg_temp=region_cl(...
     'Cell_h_unit',h_unit);
 
 
-layer.Transceivers(idx_freq).add_region(reg_temp);
-
-
-update_regions_tab(main_figure,length(layer.Transceivers(idx_freq).Regions));
-update_reglist_tab(main_figure,[],0);
+IDs=layer.Transceivers(idx_freq).add_region(reg_temp);
 display_regions(main_figure,'both');
+curr_disp.Active_reg_ID=IDs(end);
+
+
 order_stacks_fig(main_figure);
 
 end

@@ -39,9 +39,7 @@ function delete_region_callback(~,~,main_figure,ID)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-region_tab_comp=getappdata(main_figure,'Region_tab');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+trans_obj=layer.get_trans(curr_disp.Freq);
 list_reg = trans_obj.regions_to_str();
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
@@ -50,18 +48,18 @@ clear_lines(ah);
 if ~isempty(list_reg)
     
     if isempty(ID)
-        idx_reg=nanmin(get(region_tab_comp.tog_reg,'value'),length(trans_obj.Regions));
-        active_reg=trans_obj.Regions(idx_reg);
-        ID=active_reg.Unique_ID;
+        ID=curr_disp.Active_reg_ID;
     end
-    idx= layer.Transceivers(idx_freq).find_regions_Unique_ID(ID);
-    layer.Transceivers(idx_freq).rm_region_id(ID);
-    
 
+    trans_obj.rm_region_id(ID);
+    
+    
     setappdata(main_figure,'Layer',layer);
-    update_regions_tab(main_figure,nanmax(idx-1,1));
-    update_reglist_tab(main_figure,[],0);
+
     display_regions(main_figure,'both');
+    
+    trans_obj=layer.get_trans(curr_disp.Freq);
+    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     order_stacks_fig(main_figure);
     
 else

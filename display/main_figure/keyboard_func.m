@@ -37,7 +37,6 @@
 
 %% Function
 function keyboard_func(src,callbackdata,main_figure)
-
 cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 %curr_disp=getappdata(main_figure,'Curr_disp');
 
@@ -46,7 +45,8 @@ cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 % end
 % profile on;
 
-layer=getappdata(main_figure,'Layer');curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
 if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
@@ -63,7 +63,7 @@ else
     ydata=[1 1];
 end
 
-replace_interaction(src,'interaction','WindowKeyPressFcn','id',1);
+replace_interaction(src,'interaction','KeyPressFcn','id',1);
 
 switch callbackdata.Key
     
@@ -238,9 +238,14 @@ switch callbackdata.Key
                     id=get(gco,'Userdata');
                     idx= trans.find_regions_Unique_ID(id);
                     trans.rm_region_id(get(gco,'Userdata'));
-                    update_reglist_tab(main_figure,-id,0);
-                    update_regions_tab(main_figure,nanmax(idx-1,1));
                     display_regions(main_figure,'both');
+                    if ~isempty(trans.Regions)
+                        curr_disp.Active_reg_ID=trans.Regions(nanmax(idx-1,1)).Unique_ID;
+                    else
+                        curr_disp.Active_reg_ID=[];
+                    end
+
+                    
                     order_stacks_fig(main_figure);
             end
         end
@@ -261,7 +266,7 @@ switch callbackdata.Key
     case 'x'
         go_to_ping(length(Number),main_figure);
 end
-replace_interaction(src,'interaction','WindowKeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
+replace_interaction(src,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
 %
 % profile off;
 %

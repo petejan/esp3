@@ -6,7 +6,7 @@ return;
 end
     
 curr_disp=getappdata(main_figure,'Curr_disp');
-region_tab_comp=getappdata(main_figure,'Region_tab');
+
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 list_reg = trans_obj.regions_to_str();
@@ -18,7 +18,7 @@ else
 end
 
 if ~isempty(list_reg)
-    active_reg=trans_obj.Regions(get(region_tab_comp.tog_reg,'value'));
+    active_reg=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
     
     [mean_depth,Sa]=trans_obj.get_mean_depth_from_region(active_reg.Unique_ID);
     

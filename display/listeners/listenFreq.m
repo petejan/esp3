@@ -51,7 +51,7 @@ update_single_target_tab(main_figure);
 update_track_target_tab(main_figure);
 update_processing_tab(main_figure);
 update_display_tab(main_figure);
-update_regions_tab(main_figure,[]);
+
 load_calibration_tab(main_figure,opt_panel);
 load_info_panel(main_figure);
 update_reglist_tab(main_figure,[],1);
@@ -65,9 +65,8 @@ if curr_disp.R_disp(2)==Inf
 end
 clear_regions(main_figure,[]);
 set(axes_panel_comp.main_axes,'ylim',[y_lim_min y_lim_max]);
-
-
 update_mini_ax(main_figure,1);
+curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
 
 display_bottom(main_figure);
 display_tracks(main_figure);

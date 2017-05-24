@@ -14,7 +14,7 @@ set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',col_grid);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
 set(mini_axes_comp.mini_ax,'Color',col_ax,'GridColor',col_grid);
 set(mini_axes_comp.bottom_plot,'Color',col_bot);
-%tog_reg_callback([],[],main_figure)
+
 
 display_regions(main_figure,'both');
 txt_obj=[findobj(axes_panel_comp.main_axes,'Type','Text','-not','Tag','lines');findobj(mini_axes_comp.mini_ax,'Type','Text','-not','Tag','lines')];

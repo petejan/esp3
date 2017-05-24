@@ -69,7 +69,7 @@ setptr(main_figure,'arrow');
 interactions.WindowButtonDownFcn(1)=iptaddcallback(main_figure,'WindowButtonDownFcn',{@select_area_cback,main_figure});
 
 % Initialize Keyboard interactions in the figure
-interactions.WindowKeyPressFcn(1)=iptaddcallback(main_figure,'WindowKeyPressFcn',{@keyboard_func,main_figure});
+interactions.KeyPressFcn(1)=iptaddcallback(main_figure,'KeyPressFcn',{@keyboard_func,main_figure});
 
 % Set wheel mouse scroll cback
 interactions.WindowScrollWheelFcn(1)=iptaddcallback(main_figure,'WindowScrollWheelFcn',{@scroll_fcn_callback,main_figure});

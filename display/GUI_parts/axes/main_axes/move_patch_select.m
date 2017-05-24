@@ -69,7 +69,7 @@ end
         
     replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'Pointer',ptr);
     replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
-      
+    curr_disp.UIupdate=1;
     end
 end
 
