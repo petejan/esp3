@@ -3,7 +3,7 @@ function output=integrate_region_v2(trans_obj,region,varargin)
 p = inputParser;
 addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
 addRequired(p,'region',@(x) isa(x,'region_cl'));
-addParameter(p,'line_obj',line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time),@(x) isa(x,'line_cl'));
+addParameter(p,'line_obj',[],@(x) isa(x,'line_cl')||isempty(x));
 addParameter(p,'vertExtend',[0 Inf],@isnumeric);
 addParameter(p,'horiExtend',[0 Inf],@isnumeric);
 addParameter(p,'denoised',0,@isnumeric);
@@ -14,7 +14,11 @@ addParameter(p,'keep_bottom',0,@isnumeric);
 
 parse(p,trans_obj,region,varargin{:});
 
-
+if isempty(p.Results.line_obj)
+    line_obj=line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time);
+else
+   line_obj=p.Results.line_obj;
+end
 % Sv=trans_obj.Data.get_datamat('svdenoised');
 % if isempty(Sv)
 %     Sv=trans_obj.Data.get_datamat('sv');
@@ -32,8 +36,8 @@ dr=mean(diff(range));
 nb_samples=length(range);
 samples=(1:nb_samples)';
 
-line_r_ori=p.Results.line_obj.Range;
-line_t=p.Results.line_obj.Time;
+line_r_ori=line_obj.Range;
+line_t=line_obj.Time;
 
 line_r=resample_data_v2(line_r_ori,line_t,time);
 line_samples=round(line_r/dr);

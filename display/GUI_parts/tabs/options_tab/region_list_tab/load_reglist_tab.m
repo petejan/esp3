@@ -111,9 +111,8 @@ trans_obj=layer.Transceivers(idx_freq);
 idx=getappdata(table,'SelectedRegs');
 
 if ~isempty(idx)
-    idx_reg=trans_obj.find_regions_Unique_ID(idx(end));
-    for i=1:numel(idx_reg)
-        trans_obj.rm_region_id(idx_reg(i));
+    for i=1:numel(idx)
+        trans_obj.rm_region_id(idx(i));
     end
     
     display_regions(main_figure,'both');

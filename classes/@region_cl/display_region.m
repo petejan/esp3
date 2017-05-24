@@ -43,7 +43,7 @@ p = inputParser;
 
 addRequired(p,'reg_obj',@(obj) isa(obj,'region_cl'));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
-addParameter(p,'line_obj',line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time),@(x) isa(x,'line_cl'));
+addParameter(p,'line_obj',[],@(x) isa(x,'line_cl')||isempty(x));
 addParameter(p,'Name',reg_obj.print(),@ischar);
 addParameter(p,'Cax',init_cax('sv'),@isnumeric);
 addParameter(p,'Cmap','jet',@ischar);

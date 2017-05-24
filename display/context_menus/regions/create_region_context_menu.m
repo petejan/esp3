@@ -154,7 +154,7 @@ for i=1:numel(uniquev1)
         cax_max=prctile(sv,95);
         cax=curr_disp.getCaxField('sv');
         reg_curr.display_region(output_diff,'main_figure',main_figure,...
-            'alphadata',double(pow2db(output_reg_1.Sv_mean_lin)>cax(1)),...
+            'alphadata',double(pow2db_perso(output_reg_1.Sv_mean_lin)>cax(1)),...
             'Cax',[cax_min cax_max],...
             'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3));
     else
@@ -169,6 +169,7 @@ end
 function copy_region_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
+idx_freq=layer.find_freq_idx(curr_disp.Freq);
 
 trans_obj=layer.get_trans(curr_disp.Freq);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
