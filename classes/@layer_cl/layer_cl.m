@@ -80,6 +80,14 @@ classdef layer_cl < handle
             end
         end
         
+        function line_obj=get_first_line(layer_obj)
+            if ~isempty(layer_obj.Lines)
+                line_obj=layer_obj.Lines(1);
+            else          
+                line_obj=[];
+            end
+        end
+        
         function trans_obj=get_trans(layer,freq)
             [idx_freq,found]=layer.find_freq_idx(freq);
             

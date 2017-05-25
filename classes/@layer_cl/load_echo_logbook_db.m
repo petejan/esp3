@@ -36,16 +36,17 @@
 %% Function
 function load_echo_logbook_db(layers_obj)
 
-
-pathtofile=cell(1,length(layers_obj));
+pathtofile={};
 incomplete=0;
 for ilay=1:length(layers_obj)
-    [pathtofile{ilay},~,~]=fileparts(layers_obj(ilay).Filename{1});
+    [path_temp,~,~]=cellfun(@fileparts,layers_obj(ilay).Filename,'UniformOutput',0);
+    pathtofile=union(pathtofile,path_temp);
 end
 
 pathtofile=unique(pathtofile);
 
 for ip=1:length(pathtofile)
+    
     fileN=fullfile(pathtofile{ip},'echo_logbook.db');
     
     if exist(fileN,'file')==0

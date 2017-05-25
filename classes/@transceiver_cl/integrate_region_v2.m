@@ -318,8 +318,8 @@ Sa_lin_sparse = accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],Sv_reg_lin(
 
 output.Sa_lin=Sa_lin_sparse;
 
-output.Ping_S=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmin),1,N_y)';
-output.Ping_E=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmax),1,N_y)';
+output.Ping_S=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmin,NaN),1,N_y)';
+output.Ping_E=repmat(accumarray(x_mat_idx(1,:)',sub_pings(:),[],@nanmax,NaN),1,N_y)';
 
 output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,:)',(sub_bad_trans_vec(:))==0,[],@nansum),1,N_y)';
 
@@ -363,17 +363,17 @@ output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
 output.Thickness_mean(mask_sub)=NaN;
 
 
-output.Dist_E=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmin),1,N_y)';
-output.Dist_S=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmax),1,N_y)';
+output.Dist_E=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmin,nan),1,N_y)';
+output.Dist_S=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmax,nan),1,N_y)';
 
-output.Time_S=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmin),1,N_y)';
-output.Time_E=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmax),1,N_y)';
+output.Time_S=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmin,nan),1,N_y)';
+output.Time_E=repmat(accumarray(x_mat_idx(1,:)',sub_time,[],@nanmax,nan),1,N_y)';
 
-output.Lat_S=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmin),1,N_y)';
-output.Lon_S=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmin),1,N_y)';
+output.Lat_S=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmin,nan),1,N_y)';
+output.Lon_S=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmin,nan),1,N_y)';
 
-output.Lat_E=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmax),1,N_y)';
-output.Lon_E=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmax),1,N_y)';
+output.Lat_E=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmax,nan),1,N_y)';
+output.Lon_E=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmax,nan),1,N_y)';
 
 
 output.Sv_mean_lin_esp2=Sa_lin_sparse./(output.Nb_good_pings_esp2.*output.Thickness_esp2);

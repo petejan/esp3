@@ -2,8 +2,6 @@ function initialize_echo_logbook_dbfile(datapath,force_create)
 
 [list_raw,ftypes]=list_ac_files(datapath);
 
-nb_files_raw=length(list_raw);
-
 db_file=fullfile(datapath,'echo_logbook.db');
 if exist(db_file,'file')==2
     return;
@@ -23,26 +21,16 @@ end
 disp('Creating .db logbook file, this might take a couple minutes...');
 dbconn=sqlite(db_file,'create');
 
-createlogbookTable = ['create table logbook ' ...
-    '(Filename CHAR DEFAULT NULL,'...
-    'Snapshot NUMERIC DEFAULT 1,'...
-    'Stratum VARCHAR DEFAULT NULL,'...
-    'Transect NUMERIC DEFAULT 1,'...
-    'StartTime TIME,'...%yyyy-mm-dd HH:MM:SS
-    'EndTime TIME,'...
-    'Comment TEXT DEFAULT NULL,'...
-    'PRIMARY KEY(Filename,StartTime) ON CONFLICT REPLACE,'...
-    'UNIQUE(Filename,EndTime) ON CONFLICT REPLACE,'...
-    'CHECK (EndTime>=StartTime))'];
+createlogbookTable(dbconn);
+createsurveyTable(dbconn);
+creategpsTable(dbconn);
 
-createsurveyTable = ['create table survey ' ...
-    '(SurveyName VARCHAR DEFAULT NULL,'...
-    'Voyage VARCHAR DEFAULT NULL,'...
-    'PRIMARY KEY(Voyage)'...
-    'ON CONFLICT REPLACE)'];
 
-dbconn.exec(createlogbookTable);
-dbconn.exec(createsurveyTable);
+
+
+
+
+
 
 dbconn.insert('survey',{'SurveyName' 'Voyage' },{'' ''});
 

@@ -57,7 +57,7 @@ for i=1:length(regions)
     if Split>0
         splitted_reg=regions(i).split_region(trans_obj.Data.FileId);
         trans_obj.Regions=[trans_obj.Regions splitted_reg];
-        IDs_out=union(IDs_out,splitted_reg(:).Unique_ID);
+        IDs_out=union(IDs_out,[splitted_reg(:).Unique_ID]);
     else
         trans_obj.Regions=[trans_obj.Regions regions(i)];
         IDs_out=union(IDs_out,regions(i).Unique_ID);

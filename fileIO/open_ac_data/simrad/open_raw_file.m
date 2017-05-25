@@ -23,6 +23,7 @@ new_layers=open_raw_file_standalone_v2(Filename,...
 
 
 if ~isempty(new_layers)
+    new_layers.add_gps_data_to_db();
     new_layers.load_echo_logbook_db();
     for i=1:length(new_layers)
         try

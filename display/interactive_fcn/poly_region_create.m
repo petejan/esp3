@@ -82,8 +82,8 @@ if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end
 end
 
 
-hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
-txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1,'Tag','reg_temp');
+txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line,'Tag','reg_temp');
 
 
 replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
@@ -106,7 +106,7 @@ replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'inte
         if isvalid(txt)
             set(txt,'position',[cp(1,1) cp(1,2) 0],'string',sprintf('%.2f m',cp(1,2)));
         else
-            txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+            txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line,'Tag','reg_temp');
         end
    end
 

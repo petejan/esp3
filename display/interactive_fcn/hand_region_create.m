@@ -86,8 +86,8 @@ end
 %set(main_figure,'KeyPressFcn',{@check_esc});
 
 
-hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1);
-txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+hp=line(ah,xinit,yinit,'color',col_line,'linewidth',1,'Tag','reg_temp');
+txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line,'Tag','reg_temp');
 
 
 replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
@@ -102,13 +102,13 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
         else
-            hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1);
+            hp=plot(ah,xinit,yinit,'color',col_line,'linewidth',1,'Tag','reg_temp');
         end
         
         if isvalid(txt)
             set(txt,'position',[cp(1,1) cp(1,2) 0],'string',sprintf('%.2f m',cp(1,2)));
         else
-            txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+            txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line,'Tag','reg_temp');
         end
         drawnow;
     end

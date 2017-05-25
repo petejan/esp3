@@ -95,8 +95,8 @@ x_box=xinit;
 y_box=yinit;
 
 
-hp=line(ah,x_box,y_box,'color',col_line,'linewidth',1);
-txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line);
+hp=line(ah,x_box,y_box,'color',col_line,'linewidth',1,'Tag','reg_temp');
+txt=text(ah,cp(1,1),cp(1,2),sprintf('%.2f m',cp(1,2)),'color',col_line,'Tag','reg_temp');
 
 
 
@@ -139,9 +139,9 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         str_txt=sprintf('%.2f m',cp(1,2));
         
         if isvalid(hp)
-            set(hp,'XData',x_box,'YData',y_box);
+            set(hp,'XData',x_box,'YData',y_box,'Tag','reg_temp');
         else
-            hp=plot(ah,x_box,x_box,'color',col_line,'linewidth',1,'Tag','bottom_temp');
+            hp=plot(ah,x_box,x_box,'color',col_line,'linewidth',1,'Tag','reg_temp');
         end
         
         if isvalid(txt)

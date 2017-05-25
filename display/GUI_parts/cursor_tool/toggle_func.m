@@ -89,6 +89,7 @@ switch src_out.State
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@measure_distance,main_figure},'pointer','datacursor');
             case 'create_reg'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure},'pointer','cross');
+                replace_interaction(main_figure,'interaction','KeyPressFcn','id',2,'interaction_fcn',{@cancel_create_region,main_figure});
             case 'draw_line'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure},'pointer','hand');
             otherwise 
