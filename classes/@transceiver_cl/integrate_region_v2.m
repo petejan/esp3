@@ -27,6 +27,12 @@ idx_pings_tot=region.Idx_pings;
 time=trans_obj.get_transceiver_time();
 sub_time_temp=time(idx_pings_tot);
 idx_keep_x=(sub_time_temp<=p.Results.horiExtend(2)&sub_time_temp>=p.Results.horiExtend(1));
+
+if ~any(idx_keep_x)
+    output=[];
+    return;
+end
+
 idx_pings=idx_pings_tot(idx_keep_x);
 idx_r_tot=region.Idx_r;
 

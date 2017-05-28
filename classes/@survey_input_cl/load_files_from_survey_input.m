@@ -192,14 +192,13 @@ for isn=1:length(snapshots)
                                     new_lay=open_raw_file_standalone_v2(fileN,...
                                         'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),...
                                         'FieldNames',p.Results.FieldNames,'EsOffset',es_offset,'load_bar_comp',load_bar_comp);
-                                    
+                                    new_lay.add_gps_data_to_db();
                                     %                                 profile off;
                                     %                                 profile viewer
                                 case 'asl'
                                     new_lay=read_asl(fileN,...
                                         'PathToMemmap',datapath);
-                                case 'dfile'
-                                    
+                                case 'dfile'                                  
                                     new_lay=read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0,'SvCorr',svCorr);
                                 otherwise
                                     fprintf('Unrecognized file type for file %s',fileN);

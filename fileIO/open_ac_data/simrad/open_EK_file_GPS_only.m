@@ -12,9 +12,7 @@ if isempty(new_layers)
     return;
 end
 
-
 new_layers.load_echo_logbook_db();
-
 
 map_obj=map_input_cl.map_input_cl_from_obj(new_layers);
  

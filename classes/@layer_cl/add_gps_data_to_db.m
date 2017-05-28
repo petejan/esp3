@@ -54,8 +54,10 @@ for ilay=1:length(layers_obj)
         %files_db=dbconn.fetch('select Filename from gps_data');
         %         if ~any(strcmp([fileOri extN],files_db))
         creategpsTable(dbconn);
+        time_str=datestr(gps_data_obj.Time(idx_t),'yyyymmddHHMMSSFFF ')';
+        time_str=time_str(:)';
         dbconn.insert('gps_data',{'Filename' 'Lat' 'Long' 'Time'},...
-            {[fileOri extN] sprintf('%.6f,',gps_data_obj.Lat(idx_t)) sprintf('%.6f,',gps_data_obj.Long(idx_t)) sprintf('%.9f,',gps_data_obj.Time(idx_t))});
+            {[fileOri extN] sprintf('%.6f ',gps_data_obj.Lat(idx_t)) sprintf('%.6f ',gps_data_obj.Long(idx_t)) time_str});
         %         end
         close(dbconn);
         

@@ -388,7 +388,11 @@ for isn=1:length(snaps)
     catch err
         disp(err.message);
         warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
-        continue;
+        if ~isdeployed
+            rethrow(err)
+        else
+            continue;
+        end
     end
 end
 

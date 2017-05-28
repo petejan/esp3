@@ -35,6 +35,7 @@
 
 %% Function
 function update_layer_tab(main_figure)
+disp('update_layer_tab');
 layer_tab_comp=getappdata(main_figure,'Layer_tab');
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
@@ -45,29 +46,43 @@ end
 nb_layer=length(layers);
 data_new=cell(nb_layer,2);
 
+
 % data_old=layer_tab_comp.table.Data;
-
-layers_Str_comp=list_layers(layers);
-data_new(:,1)=layers_Str_comp;
-data_new(:,2)=num2cell([layers(:).ID_num]);
-[idx,~]=find_layer_idx(layers,layer.ID_num);
-% if~isempty(data_old)
-%  [~,b,c]=intersect([data_new{:,2}],[data_old{:,2}]);
-% else
-%    b=[];
-%    c=[];
-% end
-% if all(b==c)&&~isempty(b)&&size(data_new)
-%     idx_mod=find(~strcmp(data_new(:,1),data_old(:,1)));
-%     for i=1:idx_mod
-%         layer_tab_comp.table.Data{i,1}=data_new{i,1};
-%     end
-%     
-% else
+try
+    jScroll = findjobj(layer_tab_comp.table, 'class','UIScrollPane');
+    jView = jScroll.getViewport();
+    pos=jView.getViewPosition;
+    
+    layers_Str_comp=list_layers(layers);
+    data_new(:,1)=layers_Str_comp;
+    data_new(:,2)=num2cell([layers(:).ID_num]);
+    [idx,~]=find_layer_idx(layers,layer.ID_num);
+    
+    % if~isempty(data_old)
+    %  [~,b,c]=intersect([data_new{:,2}],[data_old{:,2}]);
+    % else
+    %    b=[];
+    %    c=[];
+    % end
+    % if all(b==c)&&~isempty(b)&&size(data_new)
+    %     idx_mod=find(~strcmp(data_new(:,1),data_old(:,1)));
+    %     for i=1:idx_mod
+    %         layer_tab_comp.table.Data{i,1}=data_new{i,1};
+    %     end
+    %
+    % else
     layer_tab_comp.table.Data=data_new;
-% end
-layer_tab_comp.table.Data{idx,1}=strcat('<html><b>',data_new{idx,1},'</b></html>');
-
-
+    % end
+    layer_tab_comp.table.Data{idx,1}=strcat('<html><b>',data_new{idx,1},'</b></html>');
+    
+    drawnow;
+    
+    jView.setViewPosition(pos)
+    jScroll.repaint();    % workaround for any visual glitches
+catch
+    if ~isdeployed
+        disp('Error while updating layer_tab');
+    end
+end
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
 end

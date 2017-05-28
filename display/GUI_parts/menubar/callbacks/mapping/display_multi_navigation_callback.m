@@ -36,6 +36,7 @@
 %% Function
 function display_multi_navigation_callback(~,~,main_figure)
 
+
 layers=getappdata(main_figure,'Layers');
 
 map_input=map_input_cl.map_input_cl_from_obj(layers,'SliceSize',0);
