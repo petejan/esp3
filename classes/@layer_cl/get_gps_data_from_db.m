@@ -42,9 +42,7 @@ nb_data=0;
 gps_data=gps_data_cl();
 files={};
 for ip=1:length(pathtofile)
-
     fileN=fullfile(pathtofile{ip},'echo_logbook.db');
-    
     if exist(fileN,'file')==0
         return;
     end

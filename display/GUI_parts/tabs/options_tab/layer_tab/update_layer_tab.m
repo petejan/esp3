@@ -39,6 +39,7 @@ disp('update_layer_tab');
 layer_tab_comp=getappdata(main_figure,'Layer_tab');
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
+
 if isempty(layer)
     return;
 end
@@ -75,12 +76,12 @@ try
     % end
     layer_tab_comp.table.Data{idx,1}=strcat('<html><b>',data_new{idx,1},'</b></html>');
     
-    drawnow;
+    drawnow;  pause(0.02);
     
     jView.setViewPosition(pos)
     jScroll.repaint();    % workaround for any visual glitches
 catch
-    if ~isdeployed
+    if ~isdeployed()
         disp('Error while updating layer_tab');
     end
 end
