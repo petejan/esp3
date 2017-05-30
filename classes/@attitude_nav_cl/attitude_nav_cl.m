@@ -113,6 +113,16 @@ classdef attitude_nav_cl
             
         end
         
+        function att_nav_section=get_AttitudeNav_idx_section(att_nav_obj,idx)
+            att_nav_section=att_nav_obj;          
+            att_nav_section.Time=att_nav_obj.Time(idx);
+            att_nav_section.Heading=att_nav_obj.Heading(idx);
+            att_nav_section.Roll=att_nav_obj.Roll(idx);
+            att_nav_section.Heave=att_nav_obj.Heave(idx);
+            att_nav_section.Pitch=att_nav_obj.Pitch(idx);
+            att_nav_section.Yaw=att_nav_obj.Yaw(idx);
+        end
+        
     end
     
     methods(Static)

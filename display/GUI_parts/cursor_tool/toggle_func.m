@@ -62,8 +62,6 @@ for i=1:length(childs)
 end
 
 initialize_interactions_v2(main_figure);
-region_tab_comp=getappdata(main_figure,'Region_tab');
-set(region_tab_comp.create_button,'value',get(region_tab_comp.create_button,'Min'));
 
 if isa(src_out,'matlab.ui.container.toolbar.PushTool')
     return;

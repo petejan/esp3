@@ -40,15 +40,20 @@ function h_fig = display_region(reg_obj,trans_obj,varargin)
 p = inputParser;
 
 
+field_def='sv';
+TS_def=-52;
 
 addRequired(p,'reg_obj',@(obj) isa(obj,'region_cl'));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
 addParameter(p,'line_obj',[],@(x) isa(x,'line_cl')||isempty(x));
 addParameter(p,'Name',reg_obj.print(),@ischar);
-addParameter(p,'Cax',init_cax('sv'),@isnumeric);
+addParameter(p,'Cax',init_cax(field_def),@isnumeric);
 addParameter(p,'Cmap','jet',@ischar);
 addParameter(p,'alphadata',[],@isnumeric);
+addParameter(p,'field',field_def,@ischar);
+addParameter(p,'TS',TS_def,@isnumeric);
 addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
+
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
@@ -74,9 +79,24 @@ else
     curr_disp=[];
 end
 
+
+field= p.Results.field;
+switch field
+    case 'fishdensity'
+        var_disp=db2pow_perso((pow2db_perso(output_reg.Sv_mean_lin)-p.Results.TS));
+        var_lin=(var_disp);
+        var_scale='lin';
+        ylab='(number/m3)';
+    case 'sv'
+        var_disp=pow2db_perso(output_reg.Sv_mean_lin);
+        var_lin=db2pow_perso(var_disp);
+        var_scale='db';
+         ylab='dB';
+end
+
 if ~isempty(curr_disp)
     if ismember('Cax',p.UsingDefaults)
-        cax=curr_disp.getCaxField('sv');
+        cax=curr_disp.getCaxField(field);
         cax_list=addlistener(curr_disp,'Cax','PostSet',@(src,envdata)listenCaxReg(src,envdata));
         
     else
@@ -102,22 +122,22 @@ end
 
 
 
-sv_disp=pow2db_perso(output_reg.Sv_mean_lin);
 
-if ~ismember('alphadata',p.UsingDefaults)&&all(size(sv_disp)==size(p.Results.alphadata))
+if ~ismember('alphadata',p.UsingDefaults)&&all(size(var_disp)==size(p.Results.alphadata))
     alphadata=p.Results.alphadata;
 else
-   alphadata=double(sv_disp>cax(1)); 
+   alphadata=double(var_disp>cax(1)); 
 end
 
 
-if ~any(~isnan(sv_disp))
+if ~any(~isnan(var_disp))
     h_fig=[];
     return;
 end
 
 
-tt=p.Results.Name;
+
+tt=[field ' ' p.Results.Name];
 
 switch reg_obj.Cell_w_unit
     case 'pings'
@@ -129,7 +149,7 @@ end
 
 y_disp=nanmean((output_reg.Range_ref_min+output_reg.Range_ref_max)/2,2);
 
-mat_size=size(sv_disp);
+mat_size=size(var_disp);
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
     'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked','CloseRequestFcn',@close_reg_fig);
 ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
@@ -137,7 +157,7 @@ title(ax_in,tt);
 
 
 if  ~any(mat_size==1)
-    reg_plot=pcolor(ax_in,repmat(x_disp,length(y_disp),1),repmat(y_disp,1,length(x_disp)),sv_disp);
+    reg_plot=pcolor(ax_in,repmat(x_disp,length(y_disp),1),repmat(y_disp,1,length(x_disp)),var_disp);
     set(reg_plot,'alphadata',alphadata,'facealpha','flat','edgecolor','none');
 end
 %shading(ax_in,'interp')
@@ -157,10 +177,21 @@ axis(ax_in,'ij');
 
 
 ax_horz=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.1 0.7 0.15],'nextplot','add','box','on');
-plot(ax_horz,x_disp,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,1)),'r');
+
+switch var_scale
+    case 'lin'
+        horz_plot=nanmean(var_lin,1);
+        vert_plot=nanmean(var_lin,2);
+        
+    case 'db'
+        horz_plot=pow2db_perso(nanmean(var_lin,1));
+        vert_plot=pow2db_perso(nanmean(var_lin,2));
+
+end
+plot(ax_horz,x_disp,horz_plot,'r');
 grid(ax_horz,'on');
 xlabel(ax_horz,sprintf('%s',reg_obj.Cell_w_unit))
-ylabel(ax_horz,'Sv mean(dB)')
+ylabel(ax_horz,ylab)
 
 %ax_horz.XTick=(x_disp(1):reg_obj.Cell_w*10:x_disp(end));
 ax_horz.XTickLabelRotation=90;
@@ -173,9 +204,10 @@ switch reg_obj.Cell_w_unit
 end
 
 ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
-plot(ax_vert,pow2db_perso(nanmean(output_reg.Sv_mean_lin_esp2,2)),y_disp,'r');
-xlabel(ax_vert,'Sv mean (db)')
+plot(ax_vert,vert_plot,y_disp,'r');
+xlabel(ax_vert,ylab)
 axis(ax_vert,'ij');
+
 switch reg_obj.Reference
     case 'Surface'
          ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
@@ -194,6 +226,8 @@ linkaxes([ax_in ax_horz],'x');
 set(ax_in,'Xlim',[nanmin(x_disp)-reg_obj.Cell_w/2 nanmax(x_disp)+reg_obj.Cell_w/2]);
 set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/2]);
 
+
+
     function close_reg_fig(src,~,~)
         try
             delete(cmap_list) ;
@@ -204,14 +238,18 @@ set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/
 
     function listenCmapReg(src,evt)
         [cmap,~,~,col_grid,~,~]=init_cmap(evt.AffectedObject.Cmap);
-        colormap(ax_in,cmap);
+        if isvalid(ax_in)
+            colormap(ax_in,cmap);
+        end
     end
 
     function listenCaxReg(src,evt)
-        cax=evt.AffectedObject.getCaxField('sv');
-        caxis(ax_in,cax);
-        alphadata=double(sv_disp>cax(1));
-        set(reg_plot,'alphadata',alphadata)
+        cax=evt.AffectedObject.getCaxField(field);
+        if isvalid(ax_in)
+            caxis(ax_in,cax);
+            alphadata=double(var_disp>cax(1));
+            set(reg_plot,'alphadata',alphadata)
+        end
     end
 
 end

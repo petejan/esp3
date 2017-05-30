@@ -6,8 +6,6 @@ for ilay=1:length(layers)
          surv_data_temp=get_file_survey_data_from_db(layers(ilay).Filename{i});
          surv_data=[surv_data surv_data_temp];
     end
-
-
     layers(ilay).set_survey_data(surv_data);
 end
 

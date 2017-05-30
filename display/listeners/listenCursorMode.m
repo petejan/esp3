@@ -20,7 +20,7 @@ switch listdata.AffectedObject.CursorMode
     case 'Measure'
         toggle_func(cursor_mode_tool_comp.measure,[],main_figure);
     case 'Create Region'
-        toggle_func('create_reg',[],main_figure);
+        toggle_func(cursor_mode_tool_comp.create_reg,[],main_figure);
     case 'Draw Line'
         toggle_func('draw_line',[],main_figure);
     case 'Normal'     

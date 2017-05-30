@@ -51,6 +51,7 @@ data_new=cell(nb_layer,2);
 % data_old=layer_tab_comp.table.Data;
 try
     jScroll = findjobj(layer_tab_comp.table, 'class','UIScrollPane');
+    
     jView = jScroll.getViewport();
     pos=jView.getViewPosition;
     
@@ -79,6 +80,7 @@ try
     drawnow;  pause(0.02);
     
     jView.setViewPosition(pos)
+    
     jScroll.repaint();    % workaround for any visual glitches
 catch
     if ~isdeployed()

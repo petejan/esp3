@@ -32,5 +32,5 @@ icon.undock= iconRead(fullfile(icon_dir,'undock.png'));
 
 icon.ruler= iconRead(fullfile(icon_dir,'ruler.png'));
 
-
+icon.create_reg= iconRead(fullfile(icon_dir,'create_reg.png'));
 end

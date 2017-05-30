@@ -64,7 +64,8 @@ end
 
 if isa(reg_curr,'region_cl')
         region_menu=uimenu(context_menu,'Label','Region');
-        uimenu(region_menu,'Label','Display Region','Callback',{@display_region_callback,main_figure,ID});
+        uimenu(region_menu,'Label','Display Region SV','Callback',{@display_region_callback,main_figure,ID});
+         uimenu(region_menu,'Label','Display Region Fish Density','Callback',{@display_region_fishdensity_callback,main_figure,ID});
         uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,ID,main_figure});
         uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,ID,main_figure});
         uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,ID,main_figure});

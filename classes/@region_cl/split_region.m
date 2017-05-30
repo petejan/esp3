@@ -1,12 +1,13 @@
 function regions=split_region(reg_obj,idx_files)
 
 file_ids=unique(idx_files);
-regions=[];
+regions(numel(file_ids))=region_cl();
 
 if length(file_ids)==1
     regions=reg_obj;
     return;
 end
+
 for ifile=file_ids
     
     idx_ping_files=find(idx_files==ifile);
@@ -44,12 +45,18 @@ for ifile=file_ids
             return;
         end
         
-        regions=[regions new_reg];
+        regions(ifile)=new_reg;
         
     end
     
  
 end
 
+idx_rem=zeros(1,numel(regions));
+for i=1:numel(regions)
+    idx_rem(i)=isempty(regions(i).Idx_r)|isempty(regions(i).Idx_pings);
+end
+
+regions(find(idx_rem))=[];
 
 end

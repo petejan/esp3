@@ -116,6 +116,28 @@ classdef params_cl
             end
             param_str = [param_str '</ul></html>'];
         end
+        
+        
+           
+        function params_section=get_params_idx_section(params_obj,idx)
+            params_section=params_obj;
+            
+            props=properties(params_obj);
+            
+            for iprop=1:length(props)
+                try
+                    params_section.(props{iprop})= params_obj.(props{iprop})(idx);
+                catch
+                     params_section.(props{iprop})= params_obj.(props{iprop});
+                end
+                  
+            end
+
+        end
+        
+        
+        
+        
         function delete(obj)
             if ~isdeployed
                 c = class(obj);

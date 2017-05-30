@@ -123,12 +123,12 @@ classdef transceiver_cl < handle
             end  
         end
         
-                function pings=get_transceiver_pings(trans_obj,varargin)
+        function pings=get_transceiver_pings(trans_obj,varargin)
             pings=(1:trans_obj.Data.Nb_pings);
             if nargin>=2
                 idx=varargin{1};
                 pings=pings(idx);
-            end  
+            end
         end
         
         
@@ -209,6 +209,9 @@ classdef transceiver_cl < handle
             end
         end
         
+        function fileID=get_fileID(trans_obj)
+            fileID=trans_obj.Data.FileId;
+        end
         
         
         function idx=find_regions_ID(trans_obj,ID)

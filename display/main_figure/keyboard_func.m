@@ -108,6 +108,8 @@ switch callbackdata.Key
                     set(main_axes,'ylim',y_lim);
                 end
         end
+    case {'0' 'numpad0'}
+        curr_disp.CursorMode='Normal';
     case {'1' 'numpad1'}
         
         if isempty(callbackdata.Modifier)
@@ -161,11 +163,13 @@ switch callbackdata.Key
                 curr_disp.CursorMode='Normal';
         end
     case {'4' 'numpad4'}
-        switch curr_disp.CursorMode
-            case 'Create Region'
-                curr_disp.CursorMode='Normal';
-            otherwise
+        switch get(cursor_mode_tool_comp.create_reg,'state');
+            case 'off'
+                set(cursor_mode_tool_comp.create_reg,'state','on');
                 curr_disp.CursorMode='Create Region';
+            case 'on'
+                set(cursor_mode_tool_comp.create_reg,'state','off');
+                curr_disp.CursorMode='Normal';
         end
     case {'6' 'numpad6'}
         switch curr_disp.CursorMode
@@ -175,7 +179,14 @@ switch callbackdata.Key
                 curr_disp.CursorMode='Draw Line';
         end
     case {'5' 'numpad5'}
-        curr_disp.CursorMode='Normal';
+        switch get(cursor_mode_tool_comp.measure,'state');
+            case 'off'
+                set(cursor_mode_tool_comp.measure,'state','on');
+                curr_disp.CursorMode='Measure';
+            case 'on'
+                set(cursor_mode_tool_comp.measure,'state','off');
+                curr_disp.CursorMode='Normal';
+        end
     case {'b','pagedown'}
         
         switch curr_disp.DispUnderBottom
@@ -184,6 +195,7 @@ switch callbackdata.Key
             case 'on'
                 curr_disp.DispUnderBottom='off';
         end
+        
     case 'r'
         
         switch curr_disp.DispReg

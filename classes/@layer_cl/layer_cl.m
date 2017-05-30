@@ -13,6 +13,7 @@ classdef layer_cl < handle
         EnvData=env_data_cl();
         Curves=[];
         SurveyData=survey_data_cl();
+
     end
     
     
@@ -63,12 +64,14 @@ classdef layer_cl < handle
             obj.Frequencies=zeros(1,length(obj.Transceivers));
             for ifr=1:length(obj.Transceivers)
                 obj.Frequencies(ifr)=obj.Transceivers(ifr).Config.Frequency(1);
-            end
-            
-            
-            
-            
+            end 
         end
+        
+        function regenerate_ID_num(layer_obj)
+            layer_obj.ID_num=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
+        end
+        
+      
         
         function rm_memaps(layer)
             

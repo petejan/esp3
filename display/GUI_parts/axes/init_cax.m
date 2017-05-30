@@ -53,7 +53,7 @@ switch lower(Fieldname)
         Cax=[-10 10];
         Type='Angle Across';
    case 'fishdensity'
-        Cax=[0 30];
+        Cax=[0 10];
         Type='Fish Density';
     case 'motioncompensation'
         Cax=[0 12];

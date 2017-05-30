@@ -51,8 +51,10 @@ end
 
 screensize = getpixelposition(ax);
 
+% idx_pings_surveydata=layer.get_idx_pings_survey_data(freq);
+% xdata=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings_surveydata);
+%    
 xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-
 ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
 
 % ydata_r=layer.Transceivers(idx_freq).get_transceiver_range();
@@ -120,7 +122,6 @@ x_data_disp=xdata(idx_ping);
 y_data_disp=ydata(idx_r);
 
 set(main_echo,'XData',x_data_disp,'YData',y_data_disp,'CData',data_mat);
-
 
 if length(x_data_disp)>1
     set(ax,'xlim',[x_data_disp(1) x_data_disp(end)]);

@@ -72,13 +72,17 @@ set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
 
 rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
 layer_tab_comp.table.UIContextMenu =rc_menu;
-str_delete='<HTML><center><FONT color="Red"><b>Delete selected layers</b></Font> ';
+
 uiproc=uimenu(rc_menu,'Label','Processing');
 uimenu(uiproc,'Label','Plot Pitch and Roll against bad pings','Callback',{@pitch_roll_analysis_callback,layer_tab_comp.table,main_figure});
 uimap=uimenu(rc_menu,'Label','Mapping');
 uimenu(uimap,'Label','Plot tracks from selected layers','Callback',{@plot_tracks_callback,layer_tab_comp.table,main_figure});
-uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
-uimenu(rc_menu,'Label','Merge Selected Layers','Callback',{@merge_selected_callback,layer_tab_comp.table,main_figure});
+
+str_delete='<HTML><center><FONT color="Red"><b>Delete selected layers</b></Font> ';
+lay_menu=uimenu(rc_menu,'Label','Layer Management');
+uimenu(lay_menu,'Label','Merge Selected Layers','Callback',{@merge_selected_callback,layer_tab_comp.table,main_figure});
+uimenu(lay_menu,'Label','Split Selected Layers (per survey data/files)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure});
+uimenu(lay_menu,'Label',str_delete,'Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
 
 selected_layers=[];
 
@@ -178,11 +182,66 @@ setappdata(main_figure,'Layer',layers_out(1));
 loadEcho(main_figure);
 end
 
+function split_selected_callback(src,~,table,main_figure)
+layers=getappdata(main_figure,'Layers');
+layer=getappdata(main_figure,'Layer');
+selected_layers=getappdata(table,'SelectedLayers');
+
+if isempty(layer)
+    return;
+end
+
+if isempty(selected_layers)
+    return;
+end
+
+idx=nan(1,numel(selected_layers));
+for i=1:length(selected_layers)
+    [idx(i),~]=find_layer_idx(layers,selected_layers(i));
+end
+
+idx(isnan(idx))=[];
+
+layers_to_split=layers(idx);
+
+layers(idx)=[];
+
+layers_sp=[]; 
+
+for ilay=1:numel(layers_to_split)
+    new_layers=layers_to_split(ilay).split_layer();
+    new_layers.load_echo_logbook_db();
+    layers_sp=[layers_sp new_layers];
+end
+
+layers_sp_sorted=layers_sp.sort_per_survey_data();
+
+layers_sp_out=[];
+
+for icell=1:length(layers_sp_sorted)
+    layers_sp_out=[layers_sp_out shuffle_layers(layers_sp_sorted{icell},'multi_layer',-1)];
+end
+
+layers_sp_out=reorder_layers_time(layers_sp_out);
+id_lay=layers_sp_out(end).ID_num;
+layers=[layers layers_sp_out];
+
+layers=reorder_layers_time(layers);
+
+[idx,~]=find_layer_idx(layers,id_lay);
+layer=layers(idx);
+
+setappdata(main_figure,'Layers',layers);
+setappdata(main_figure,'Layer',layer);
+loadEcho(main_figure);
+end
+
 
 
 function keypresstable(src,evt,main_figure)
+
 switch evt.Key
-    case 'delete'
+    case 'delete'   
         delete_layers_callback(src,[],src,main_figure)
 end
 
@@ -192,7 +251,7 @@ function goto_layer_cback(src,evt,main_figure)
 
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
-
+up_display=0;
 
 if ~isempty(evt.Indices)
     if size(evt.Indices,1)==1
@@ -201,17 +260,11 @@ if ~isempty(evt.Indices)
         control = ismember({'shift' 'control'},modifier);
         if ~any(control)
             
-            if layer.ID_num==src.Data{evt.Indices(1),2}
-                return;
+            if ~(layer.ID_num==src.Data{evt.Indices(1),2})
+                [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
+                layer=layers(idx);
+                up_display=1;
             end
-            
-            
-            [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
-            layer=layers(idx);
-            setappdata(main_figure,'Layers',layers);
-            setappdata(main_figure,'Layer',layer);
-            check_saved_bot_reg(main_figure);
-            loadEcho(main_figure);
         end
         
     end
@@ -221,6 +274,12 @@ else
 end
 
 setappdata(src,'SelectedLayers',selected_layers);
+if up_display>0
+    setappdata(main_figure,'Layers',layers);
+    setappdata(main_figure,'Layer',layer);
+    check_saved_bot_reg(main_figure);
+    loadEcho(main_figure);
+end
 
 end
 

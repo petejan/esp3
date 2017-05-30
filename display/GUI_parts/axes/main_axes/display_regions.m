@@ -7,14 +7,13 @@ if ~isdeployed
 end
 
 layer=getappdata(main_figure,'Layer');
-region_tab_comp=getappdata(main_figure,'Region_tab');
+
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
-
 
 
 if ~isempty(varargin)

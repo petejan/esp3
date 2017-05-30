@@ -113,6 +113,27 @@ classdef gps_data_cl
             
         end
         
+        function gps_data_section=get_GPSDData_time_section(gps_data_obj,ts,te)
+            gps_data_section=gps_data_obj;
+            idx_rem=gps_data_obj.Time<ts|gps_data_obj.Time>te;
+            gps_data_section.Time(idx_rem)=[];
+            gps_data_section.Lat(idx_rem)=[];
+            gps_data_section.Long(idx_rem)=[];
+            gps_data_section.Dist(idx_rem)=[];
+        end
+        
+        function gps_data_section=get_GPSDData_idx_section(gps_data_obj,idx)
+            gps_data_section=gps_data_obj;
+            
+            gps_data_section.Time=gps_data_obj.Time(idx);
+            gps_data_section.Lat=gps_data_obj.Lat(idx);
+            gps_data_section.Long=gps_data_obj.Long(idx);
+            gps_data_section.Dist=gps_data_obj.Dist(idx);
+        end
+        
+        
+        
+        
     end
     methods(Static)
         
@@ -173,6 +194,8 @@ classdef gps_data_cl
             end
         end
         
+        
+     
         function delete(obj)
             if ~isdeployed
                 c = class(obj);

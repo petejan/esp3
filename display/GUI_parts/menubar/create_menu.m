@@ -42,7 +42,7 @@ m_files = uimenu(main_figure,'Label','File(s)','Tag','menufile');
 uimenu(m_files,'Label','Open file','Callback',{@open_file,0,main_figure});
 uimenu(m_files,'Label','Open next file','Callback',{@open_file,1,main_figure});
 uimenu(m_files,'Label','Open previous file','Callback',{@open_file,2,main_figure});
-uimenu(m_files,'Label','Reload Current file(s)','Callback',{@reload_file,main_figure});
+%uimenu(m_files,'Label','Reload Current file(s)','Callback',{@reload_file,main_figure});
 uimenu(m_files,'Label','Index Files','Callback',{@index_files_callback,main_figure});
 uimenu(m_files,'Label','Clean temp. files','Callback',{@clean_temp_files_callback,main_figure});
 
@@ -103,7 +103,7 @@ mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
 uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
 uimenu(mhhhh,'Label','Re-shuffle Layers','Callback',{@reshuffle_layers_callback,main_figure});
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure})
-uimenu(mhhhh,'Label','Reload Current Layer','Callback',{@reload_current_layer_callback,main_figure});
+%uimenu(mhhhh,'Label','Reload Current Layer','Callback',{@reload_current_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
 %if ~isdeployed()
@@ -116,7 +116,7 @@ uimenu(m_map,'Label','Map from MBS result files','Callback',{@map_mbs_scripts_ca
 uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_callback,main_figure});
 
 
-m_display = uimenu(main_figure,'Label','Display','Tag','menulayers');
+m_display = uimenu(main_figure,'Label','Display','Tag','menutags');
 
 m_font=uimenu(m_display,'Label','Font');
 % fonts=listfonts(main_figure);

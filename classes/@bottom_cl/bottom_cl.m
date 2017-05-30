@@ -49,6 +49,13 @@ classdef bottom_cl
                 'Sample_idx',n_s,'Tag',n_t);
         end
         
+         function bottom_section=get_bottom_idx_section(bottom_obj,idx)
+            bottom_section=bottom_obj;        
+            bottom_section.Sample_idx=bottom_obj.Sample_idx(idx);
+            bottom_section.Tag=bottom_obj.Tag(idx);
+
+        end
+        
         function samples=get_sample(bot_obj)
             samples=bot_obj.Sample_idx(:);
         end

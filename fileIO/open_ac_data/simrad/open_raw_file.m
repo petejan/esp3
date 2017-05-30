@@ -45,7 +45,8 @@ if ~isempty(new_layers)
     end
 else
     return;
-end
+end 
+
 
 new_layers=[layers new_layers];
 new_layers_sorted=new_layers.sort_per_survey_data();
@@ -56,7 +57,7 @@ load_bar_comp.status_bar.setText('Shuffling layers');
 layers_out=[];
 
 for icell=1:length(new_layers_sorted)
-    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',0)];
+    layers_out=[layers_out shuffle_layers(new_layers_sorted{icell},'multi_layer',-1)];
 end
 
 

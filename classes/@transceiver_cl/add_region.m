@@ -9,6 +9,7 @@ addParameter(p,'Tag','',@(x) ischar(x)||iscell(x));
 addParameter(p,'IDs',[],@(x) isnumeric(x)||isempty(x));
 addParameter(p,'Split',1,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Origin','',@ischar);
+addParameter(p,'Ping_offset',0,@isnumeric);
 
 
 parse(p,trans_obj,regions,varargin{:});
@@ -17,15 +18,18 @@ IDs=p.Results.IDs;
 Tag=p.Results.Tag;
 Origin=p.Results.Origin;
 Split=p.Results.Split;
+Ping_offset=p.Results.Ping_offset;
 IDs_out=[];
+
 for i=1:length(regions)
+    regions(i).Idx_pings=regions(i).Idx_pings-Ping_offset;
     trans_obj.rm_region_id(regions(i).Unique_ID);
     regions(i)=trans_obj.validate_region(regions(i));
     
     if numel(regions(i).Idx_pings)<2||numel(regions(i).Idx_r)<2
         continue;
     end
-    
+        
     if ~strcmpi(Tag,'')
         if ~iscell(Tag)
             regions(i).Tag=Tag;

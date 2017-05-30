@@ -57,7 +57,26 @@ classdef ac_data_cl < handle
                 obj.Fieldname={};
                 obj.Type={};
             end
+            
+
+            
         end
+        
+        function ac_data_file=get_data_idx_file(ac_data_obj,file_id)
+            ac_data_file=ac_data_cl();
+            for isub=1:numel(ac_data_obj.SubData)
+                ac_data_file.SubData=[ac_data_file.SubData ac_data_obj.SubData(isub).get_sub_data_file_id(file_id)];
+            end
+            
+            idx=find(ac_data_obj.FileId==file_id);
+            ac_data_file.Fieldname=ac_data_obj.Fieldname;
+            ac_data_file.Type=ac_data_obj.Type;
+            ac_data_file.FileId=ones(size(idx));
+            ac_data_file.Nb_samples=ac_data_obj.Nb_samples;
+            ac_data_file.Nb_pings=numel(idx);
+            ac_data_file.MemapName=ac_data_obj.MemapName(file_id);
+        end
+        
         function delete(obj)     
             if ~isdeployed
                  c = class(obj);
