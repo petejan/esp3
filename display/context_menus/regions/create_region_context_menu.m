@@ -45,11 +45,13 @@ trans_obj=layer.get_trans(curr_disp.Freq);
 
 switch class(ID)
     case 'matlab.graphics.primitive.Patch'
+        isreg=0;
         idx_pings=round(nanmin(reg_plot.XData)):round(nanmax(reg_plot.XData));
         idx_r=round(nanmin(reg_plot.YData)):round(nanmax(reg_plot.YData));
         active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
         reg_curr=active_reg;
     otherwise
+         isreg=1;
         reg_curr=trans_obj.get_region_from_Unique_ID(ID);
         active_reg=reg_curr;
 end
@@ -62,7 +64,7 @@ for ii=1:length(reg_plot)
     end
 end
 
-if isa(reg_curr,'region_cl')
+if isreg>0
         region_menu=uimenu(context_menu,'Label','Region');
         uimenu(region_menu,'Label','Display Region SV','Callback',{@display_region_callback,main_figure,ID});
          uimenu(region_menu,'Label','Display Region Fish Density','Callback',{@display_region_fishdensity_callback,main_figure,ID});
