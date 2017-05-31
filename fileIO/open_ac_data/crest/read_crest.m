@@ -120,7 +120,8 @@ if ~isequal(Filename_cell, 0)
         [~,curr_filename,~]=fileparts(tempname);
         curr_name=fullfile(dir_data,curr_filename);
         
-        sub_ac_data=[sub_ac_data_cl('power',curr_name,power) sub_ac_data_cl('sv',curr_name,sv)];
+        sub_ac_data=[sub_ac_data_cl('field','power','memapname',curr_name,'data',power)...
+            sub_ac_data_cl('field','sv','memapname',curr_name,'data',sv)];
                 
           ac_data_temp=ac_data_cl('SubData',sub_ac_data,...
                 'Nb_samples',length(range),...

@@ -139,6 +139,7 @@ uimenu(m_colormap,'Label','Spring','Callback',{@change_cmap_callback,main_figure
 uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
 uimenu(m_colormap,'Label','EK60','Callback',{@change_cmap_callback,main_figure},'Tag','ek60');
 uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
+uimenu(m_colormap,'Label','ASL','Callback',{@change_cmap_callback,main_figure},'Tag','asl');
 
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
 main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');

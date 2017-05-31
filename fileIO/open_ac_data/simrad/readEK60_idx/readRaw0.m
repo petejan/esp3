@@ -1,7 +1,5 @@
 function data=readRaw0(data,idx_data,i_ping,PingRange,SampleRange,fid)
-% fread(fid,2,'uchar', 'l');
-% mode_low = fread(fid,1,'int8', 'l');
-% mode_high = fread(fid,1,'int8', 'l');
+
 temp=fread(fid,4,'int8', 'l');
 
 data.pings(idx_data).number(i_ping) = i_ping+PingRange(1)-1;
@@ -17,7 +15,7 @@ data.pings(idx_data).sampleinterval(i_ping) = temp(6);
 data.pings(idx_data).soundvelocity(i_ping) = temp(7);
 data.pings(idx_data).absorptioncoefficient(i_ping) = temp(8);
 
-fread(fid,28,'uint8','l');
+fread(fid,7,'int32','l');
 temp=fread(fid,2,'int32', 'l');
 data.pings(idx_data).offset(i_ping) = temp(1);
 data.pings(idx_data).count(i_ping) = temp(2);

@@ -5,6 +5,7 @@ close_figures_callback([],[],main_figure);
 
 layers=getappdata(main_figure,'Layers');
 
+try
 i=length(layers);
 while i>=1
     try
@@ -23,6 +24,8 @@ appdata = get(main_figure,'ApplicationData');
 fns = fieldnames(appdata);
 for ii = 1:numel(fns)
     rmappdata(main_figure,fns{ii});
+end
+catch
 end
  
 % dnd_control=findobj(main_figure,'class','dndcontrol');

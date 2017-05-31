@@ -214,7 +214,7 @@ switch callbackdata.Key
         end
         
     case 'c'
-        cmaps={'ek60' 'esp2' 'ek500' 'jet' 'hsv' };
+        cmaps={'ek60' 'esp2' 'ek500' 'asl' 'jet' 'hsv' };
         id_map=find(strcmp(curr_disp.Cmap,cmaps));
         if isempty(id_map)
             id_map=0;

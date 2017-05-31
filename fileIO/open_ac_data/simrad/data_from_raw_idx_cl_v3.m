@@ -85,13 +85,13 @@ if p.Results.GPSOnly>0
 else
     nb_pings=idx_raw_obj.get_nb_pings_per_channels();
     nb_pings=nb_pings(idx_freq);
-    nb_pings=nanmin(nb_pings,PingRange(2));
+    nb_pings=min(nb_pings,PingRange(2));
     nb_pings=nb_pings-PingRange(1)+1;
     nb_pings(nb_pings<0)=0;
     
     nb_samples=idx_raw_obj.get_nb_samples_per_channels();
     nb_samples=nb_samples(idx_freq);
-    nb_samples=nanmin(nb_samples,SampleRange(2));
+    nb_samples=min(nb_samples,SampleRange(2));
     nb_samples=nb_samples-SampleRange(1)+1;
     nb_samples(nb_samples<0)=0;
 end
@@ -107,7 +107,7 @@ NMEA.string= cell(1,nb_nmea);
 params_cl_init(nb_trans)=params_cl();
 
 for i=1:nb_trans
-    nb_pings(i)=nanmin(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);
+    nb_pings(i)=min(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);
     data.pings(i).number=nan(1,nb_pings(i));
     data.pings(i).time=nan(1,nb_pings(i));
     data.pings(i).samples=(1:nb_samples(i))';
@@ -156,9 +156,7 @@ nb_dg=length(idx_raw_obj.type_dg);
 
 for idg=1:nb_dg
     pos=ftell(fid);
-    %     if feof(fid)==1
-    %         break;
-    %     end
+
     if mod(idg,floor(nb_dg/100))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
@@ -228,8 +226,7 @@ for idg=1:nb_dg
                     props=fieldnames(output);
                     envdata=env_data_cl();
                     
-                    
-                    
+
                     for iii=1:length(props)
                         if  any(strcmpi(prop_env,props{iii}))
                             envdata.(props{iii})=output.(props{iii});
@@ -286,7 +283,6 @@ for idg=1:nb_dg
             end
             
         case 'NME0'
-            %fseek(fid,idx_raw_obj.pos_dg(idg),'bof');
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';

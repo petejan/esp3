@@ -20,7 +20,7 @@ for i=1:length(field)
     nb_samples=repmat(data_obj.Nb_samples,1,length(nb_pings));
     data_mat_cell=divide_mat(data_mat{i},nb_samples,nb_pings);
   
-    new_sub_data=sub_ac_data_cl(fieldname,data_obj.MemapName,data_mat_cell);
+    new_sub_data=sub_ac_data_cl('field',fieldname,'memapname',data_obj.MemapName,'data',data_mat_cell);
     data_obj.SubData=[data_obj.SubData new_sub_data]; 
     data_obj.Fieldname=[data_obj.Fieldname {new_sub_data.Fieldname}];
     data_obj.Type=[data_obj.Type {new_sub_data.Type}];

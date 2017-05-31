@@ -8,12 +8,12 @@ if isempty(fieldnames)
 else
     ff=fieldnames;
 end
-subacdata_vec=[];
 
+subacdata_vec(length(ff))=sub_ac_data_cl();
 
 for uuu=1:length(ff)
     if isfield(data_struct,ff{uuu})
-        subacdata_vec=[subacdata_vec sub_ac_data_cl(ff{uuu},curr_name,data_struct.(ff{uuu}))];
+        subacdata_vec(uuu)=sub_ac_data_cl('field',ff{uuu},'memapname',curr_name,'data',data_struct.(ff{uuu}));
     end
 end
 

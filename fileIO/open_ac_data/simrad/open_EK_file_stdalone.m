@@ -74,15 +74,29 @@ sample_range=p.Results.SampleRange;
 
 vec_freq_tot=[];
 
+load_bar_comp=p.Results.load_bar_comp;
+
+
+
 
 if ~isequal(Filename_cell, 0)
-    
+    nb_files=numel(Filename_cell);
     prev_ping_end=0;
     prev_ping_start=1;
     
     layers(length(Filename_cell))=layer_cl();
     id_rem=[];
-    for uu=1:length(Filename_cell)
+    
+
+    
+    for uu=1:nb_files
+        
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_files,'Value',uu-1);
+            load_bar_comp.status_bar.setText(sprintf('Opening File %d/%d',uu,nb_files));
+            pause(0.1);
+        end
+        
         try
             Filename=Filename_cell{uu};
             [path_f,fileN,~]=fileparts(Filename);
@@ -167,6 +181,7 @@ if ~isequal(Filename_cell, 0)
             
             
             fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
+            
             if exist(fileIdx,'file')==0
                 idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
                 save(fileIdx,'idx_raw_obj');
@@ -174,6 +189,12 @@ if ~isequal(Filename_cell, 0)
                 load(fileIdx);
                 [~,et]=start_end_time_from_file(Filename);
                 dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
+                if isempty(dgs)
+                     fprintf('No accoustic data in file %s\n',Filename);
+                     id_rem=union(id_rem,uu);
+                    continue;
+                end
+                
                 if et-idx_raw_obj.time_dg(dgs(end))>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
                     fprintf('Re-Indexing file: %s\n',Filename);
                     delete(fileIdx);
@@ -197,6 +218,11 @@ if ~isequal(Filename_cell, 0)
                 disp('Could not read file.')
                 continue;
             end
+            
+            if ~isempty(load_bar_comp)
+                load_bar_comp.status_bar.setText(sprintf('Parsing NMEA and computing Sv for File %s',Filename));
+            end
+            
             [~,fname,~]=fileparts(idx_raw_obj.filename);
             gps_file=fullfile(path_f,[fname '_gps.csv']);
             att_file=fullfile(path_f,[fname '_att.csv']);
@@ -225,7 +251,7 @@ if ~isequal(Filename_cell, 0)
                     cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
                     cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
                 [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
-                idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)'))),find(idx_NMEA_gps(idx_GPS,:)));
+                idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA)'))),find(idx_NMEA_gps(idx_GPS,:)));
                 [gps_data_tmp,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA); 
             end
             

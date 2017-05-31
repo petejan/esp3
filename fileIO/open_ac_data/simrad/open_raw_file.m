@@ -23,18 +23,29 @@ new_layers=open_raw_file_standalone_v2(Filename,...
 
 
 if ~isempty(new_layers)
+    load_bar_comp.status_bar.setText('Updating Database with GPS Data');
     new_layers.add_gps_data_to_db();
+    
+    load_bar_comp.status_bar.setText('Loading Survey Metadata');
     new_layers.load_echo_logbook_db();
-    for i=1:length(new_layers)
+    
+    load_bar_comp.status_bar.setText('Loading Bottom and regions');
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
+    for i=1:numel(new_layers)
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
         try
             new_layers(i).load_bot_regs();
         catch err
             disp(err.message);
             fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
         end
-    end 
+    end
+    
+    load_bar_comp.status_bar.setText('Loading Lines');
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
     
     for i=1:length(new_layers)
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
         try
             new_layers(i).add_lines_from_line_xml();
         catch err
@@ -45,7 +56,7 @@ if ~isempty(new_layers)
     end
 else
     return;
-end 
+end
 
 
 new_layers=[layers new_layers];
@@ -62,9 +73,8 @@ end
 
 
 hide_status_bar(main_figure);
-layers=layers_out;
 
-layers=reorder_layers_time(layers);
+layers=reorder_layers_time(layers_out);
 
 [idx,~]=find_layer_idx(layers,id_lay);
 layer=layers(idx);

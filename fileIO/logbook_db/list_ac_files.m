@@ -37,13 +37,14 @@
 function [files,ftype]=list_ac_files(datapath)
 
 dir_raw=dir(fullfile(datapath,'*.raw'));
-dir_asl=dir(fullfile(datapath,'*A'));
+dir_asl=dir(fullfile(datapath,'*.*A'));
 
 files=union({dir_raw([dir_raw(:).isdir]==0).name},...
     {dir_asl([dir_asl(:).isdir]==0).name});
 ftype=cell(1,numel(files));
 
 for ifi=1:numel(files)
+
     ftype{ifi}=get_ftype(fullfile(datapath,files{ifi}));
 end
 

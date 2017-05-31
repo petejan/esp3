@@ -27,11 +27,6 @@ creategpsTable(dbconn);
 
 
 
-
-
-
-
-
 dbconn.insert('survey',{'SurveyName' 'Voyage' },{'' ''});
 
 if force_create==0;  

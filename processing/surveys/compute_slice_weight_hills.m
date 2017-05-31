@@ -1,6 +1,7 @@
 %% compute_slice_weight_hills.m
 %
-% TODO: write short description of function
+% Compute weighting for integrated slices on a hill survey. TODO: add
+% reference to paper
 %
 %% Help
 %
@@ -10,19 +11,19 @@
 %
 % *INPUT VARIABLES*
 %
-% * |lat_s|: TODO: write description and info on variable
-% * |long_s|: TODO: write description and info on variable
-% * |lat_e|: TODO: write description and info on variable
-% * |long_e|: TODO: write description and info on variable
-% * |lat0|: TODO: write description and info on variable
-% * |long0|: TODO: write description and info on variable
-% * |R|: TODO: write description and info on variable
+% * |lat_s|: starting latitude of slice
+% * |long_s|: starting longitude of slice
+% * |lat_e|: ending latitude of slice
+% * |long_e|: ending longitude of slice
+% * |lat0|: hill center latitude
+% * |long0|: hill center longitude
+% * |R|: hill radius in meter
 %
 % *OUTPUT VARIABLES*
 %
-% * |weight|: TODO: write description and info on variable
-% * |r_dist|: TODO: write description and info on variable
-% * |area|: TODO: write description and info on variable
+% * |weight|: resulting weight for each slice
+% * |r_dist|: mean distance from center for each slice
+% * |area|: total hill area
 %
 % *RESEARCH NOTES*
 %
@@ -51,24 +52,20 @@ end_r=nan(1,nb_slices);
 weight=nan(1,nb_slices);
 
 for i=1:length(lat_e)
-    start_r(i)=m_lldist([long0 long_s(i)],[lat0 lat_s(i)])*1e3;
+    start_r(i)=m_lldist([long0 long_s(i)],[lat0 lat_s(i)])*1e3;%distance of start of slice from center in m
     
-    end_r(i)=m_lldist([long0 long_e(i)],[lat0 lat_e(i)])*1e3;
+    end_r(i)=m_lldist([long0 long_e(i)],[lat0 lat_e(i)])*1e3;%distance of end of slice from center in m
     
 end
 
 idx_sign=(sign(end_r)==sign(start_r));
+
 weight(~idx_sign)=(end_r(~idx_sign).^2+start_r(~idx_sign).^2)./(2*R^2);
 weight(idx_sign)=(end_r(idx_sign).^2+start_r(idx_sign).^2)./(2*R^2);
+
 r_dist=start_r.*sign(end_r-start_r)+(start_r-end_r)/2;
 
-% hfig=figure();
-% 
-% ax=axes(hfig);
-% grid(ax,'on');
-% plot(ax,r_dist,weight);
-
 weight(abs(r_dist)>R)=0;
-area=2*pi*R^2;
+area=pi*R^2;
 
 end

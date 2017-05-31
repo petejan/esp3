@@ -11,10 +11,11 @@ rd_zone(rd_zone<0)=nan;
 fit = struct('std', ones(period,1)*1000, 'mean', zeros(period,1));
 % Apply all possible corrections to the first sample in each ping. Calculate the standard
 % deviation and mean of the corrected first sample amplitude
-for j = 1:period
-    fit.std(j) = nanstd( abs(rd_zone - es60_error((1:num_pings) + j)) );
-    fit.mean(j) = nanmean( abs(rd_zone - es60_error((1:num_pings) + j)) );
-end
+
+mat_tri=bsxfun(@minus,rd_zone,es60_error(bsxfun(@plus,(1:num_pings),(1:period)')));
+fit.std=nanstd(mat_tri,0,2);
+fit.mean=nanmean(mat_tri,2);
+
 % Ideally, the minimum standard deviation will give the appropriate zero error ping number
 [val_std, zero_error_ping] = nanmin(fit.std);
 if val_std>0.1
@@ -22,12 +23,12 @@ if val_std>0.1
     data_c=data;
     mean_corrected_value=0;
     
-    figure();   
-    plot(rd_zone)
-    xlabel('Ping number')
-    ylabel('Third sample received power (dB re 1 W, uncalibrated)')
-    legend('Uncorrected')
-    grid on;
+%     figure();   
+%     plot(rd_zone)
+%     xlabel('Ping number')
+%     ylabel('Third sample received power (dB re 1 W, uncalibrated)')
+%     legend('Uncorrected')
+%     grid on;
     
     return;
 end
@@ -49,6 +50,7 @@ if num_pings < period/2
             % This code is not vectorised, but this is not the normal case so the loss in speed
             % should be acceptable.
             min_with_offset = 100000000;
+            
             for j = 1:length(fit.std)
                 if (abs(fit.mean(j) - offset) < min_with_offset) && (fit.std(j) < min(fit.std)+0.01*std_of_std)
                     min_with_offset = abs(fit.mean(j)-offset);

@@ -29,4 +29,11 @@ switch lower(cmap_name)
         col_grid=[0 0 0];
         col_bot='k'; 
         col_txt='k';
+    case 'asl'
+        cmap=asl_colormap();
+        col_ax='w';
+        col_lab='k';
+        col_grid=[0 0 0];
+        col_bot='k'; 
+        col_txt='k';
 end

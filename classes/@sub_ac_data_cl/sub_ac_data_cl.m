@@ -6,18 +6,22 @@ classdef sub_ac_data_cl < handle
         Fieldname
     end
     methods
-        function obj = sub_ac_data_cl(field,memapname,data,varargin)
+        function obj = sub_ac_data_cl(varargin)
             
             p = inputParser;
             
             checkname=@(name) iscell(name)||ischar(name);
             checkdata=@(data) iscell(data)||isnumeric(data)||isa(data,'memmapfile');
             
-            addRequired(p,'field',@ischar);
-            addRequired(p,'memapname',checkname);
-            addRequired(p,'data',checkdata);
+            addParameter(p,'field','',@ischar);
+            addParameter(p,'memapname','',checkname);
+            addParameter(p,'data',[],checkdata);
             
-            parse(p,field,memapname,data,varargin{:});
+            parse(p,varargin{:});
+            
+            field=p.Results.field;
+            memapname=p.Results.memapname;
+            data=p.Results.data;
             
             obj.Fieldname=lower(deblank(field));
             
@@ -52,7 +56,10 @@ classdef sub_ac_data_cl < handle
                             
                             obj.Memap{icell} = memmapfile(curr_name,...
                                 'Format',format,'repeat',1,'writable',true);
+                        else
+                            obj.Memap{icell}=[];
                         end
+                            
                 end
             end
             
@@ -61,7 +68,7 @@ classdef sub_ac_data_cl < handle
         end
         
         function obj_out=get_sub_data_file_id(obj,file_id)
-            obj_out=sub_ac_data_cl(obj.Fieldname,'',obj.Memap(file_id));
+            obj_out=sub_ac_data_cl('field',obj.Fieldname,'data',obj.Memap(file_id));
         end
         
         
