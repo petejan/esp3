@@ -135,6 +135,7 @@ end
 Range=repmat(trans_obj.get_transceiver_range(idx_r),1,nb_pings);
 Samples=repmat(idx_r',1,nb_pings);
 Ping=repmat(trans_obj.get_transceiver_pings(idx_pings),nb_samples,1);
+Time=repmat(trans_obj.get_transceiver_time(idx_pings),nb_samples,1);
 
 
 [T,Np]=trans_obj.get_pulse_length();
@@ -269,7 +270,7 @@ for i=1:nb_targets
     samples_targets_along(1:pulse_length_lin(i),i)=along(idx_pulse);
     samples_targets_athwart(1:pulse_length_lin(i),i)=athwart(idx_pulse);
     target_ping_number(i)=Ping(idx_target_lin(i));
-    target_time(i)=Ping(idx_target_lin(i));
+    target_time(i)=Time(idx_target_lin(i));
 end
 
 [target_peak_power,idx_peak_power]=nanmax(samples_targets_power);
