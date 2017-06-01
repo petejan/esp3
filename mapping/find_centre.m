@@ -97,7 +97,7 @@ x_trans=(b.*c2-a.*c)./(a.^2+b.^2);
 for i=1:nb_trans
     [lat_trans(i),long_trans(i)]=utm2degx(x_trans(i),y_trans(i),zone_init);
 end
-
+disp=1;
 if disp>0
     hfig=new_echo_figure([]);
     ax=axes(hfig,'Nextplot','add');

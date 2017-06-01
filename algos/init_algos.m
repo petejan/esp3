@@ -5,6 +5,10 @@ name_vec={'BottomDetectionV2','BottomDetection','BadPings','Denoise','SchoolDete
 if nargin==0
     name=name_vec;
 end
+
+if~iscell(name)
+    name={name};
+end
 algo_vec(length(name))=algo_cl();
 
 for i=1:length(name)

@@ -79,6 +79,7 @@ uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_
 uimenu(eport_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure,0});
 uimenu(eport_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
 uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
+uimenu(eport_menu,'Label','Export Single Targets to xls file','Callback',{@save_st_to_xls_callback,main_figure});
 
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 
