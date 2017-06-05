@@ -71,6 +71,7 @@ else
     fcn=p.Results.interaction_fcn;
 end
 interactions_id.(p.Results.interaction)(p.Results.id)=iptaddcallback(main_figure,(p.Results.interaction),fcn);
+
 setptr(main_figure,p.Results.pointer);
 
 setappdata(main_figure,'interactions_id',interactions_id);
