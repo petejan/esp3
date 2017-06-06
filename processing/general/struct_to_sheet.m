@@ -6,8 +6,8 @@ str_obj_cell_rfmt=cell(length(str_obj_cell),length(str_obj_cell{1}));
 trans_fields=fieldnames(str_obj);
 for i=1:size(str_obj_cell,1)
     
-    if ~isempty(strfind(trans_fields{i},'time'))
-        str_obj_cell{i}=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),num2cell(str_obj_cell{i}),'UniformOutput',0);
+    if ~isempty(strfind(lower(trans_fields{i}),'time'))
+        str_obj_cell{i}=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS.FFF'),num2cell(str_obj_cell{i}),'UniformOutput',0);
     end
     
     if isnumeric(str_obj_cell{i})
