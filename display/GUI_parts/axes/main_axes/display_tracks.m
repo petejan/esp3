@@ -10,7 +10,7 @@ tracks=trans_obj.Tracks;
 xdata=trans_obj.get_transceiver_pings();
 
 X_st=xdata(ST.Ping_number);
-Z_st=ST.Target_range_disp;
+Z_st=ST.idx_r;
 
 if isfield(axes_panel_comp,'track_plot')
     delete(axes_panel_comp.track_plot);

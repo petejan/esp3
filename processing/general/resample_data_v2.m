@@ -15,6 +15,7 @@ ydata(idx_nan)=[];
 [xdata,IA,~] = unique(xdata);
 ydata=ydata(IA);
 
+
 if length(ydata)==1
     ydata_new=repmat(ydata,size(xdata_n,1),size(xdata_n,2));
      return;
@@ -44,23 +45,24 @@ end
 
 
 idx_nan=find(isnan(ydata_new));
-idx_nonan_ori=find(~isnan(ydata));
-if ~isempty(idx_nan)&&~isempty(idx_nonan_ori)
+
+
+if ~isempty(idx_nan)
     idx_nearest=nan(1,length(idx_nan));
     dx=nanmean(diff(xdata_n));
     dx_old=nanmean(diff(xdata));
-    idx_far=[];
+    idx_far=zeros(1,length(idx_nan));
     
     for ij=1:length(idx_nan)
-        [val,idx_nearest(ij)]=min(abs(xdata(idx_nonan_ori)-xdata_n(idx_nan(ij))));
-        if val>nanmax(10*dx_old,10*dx)
-            idx_far=union(idx_far,ij);
+        [val,idx_nearest(ij)]=min(abs(xdata-xdata_n(idx_nan(ij))));
+        if val>max(10*dx_old,10*dx)
+            idx_far(ij)=1;
         end
     end
     
-    ydata_temp=ydata(idx_nonan_ori);
-    idx_nan(idx_far)=[];
-    idx_nearest(idx_far)=[];
+    ydata_temp=ydata;
+    idx_nan(idx_far>0)=[];
+    idx_nearest(idx_far>0)=[];
     ydata_new(idx_nan)=ydata_temp(idx_nearest);
 end
 

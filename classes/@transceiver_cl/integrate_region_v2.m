@@ -261,6 +261,7 @@ end
 [bot_mat,~]=meshgrid(bot_int,sub_r);
 
 [line_mat,~]=meshgrid(line_ref,sub_r);
+line_mat(isnan(line_mat))=0;
 
 y_mat_ori=y_mat;
 y_mat=y_mat-line_mat;

@@ -21,7 +21,7 @@ delete(u);
 list_line = layer.list_lines();
 
 if isempty(layer.Lines)
-    return; 
+    return;
 end
 
 active_line_idx=get(lines_tab_comp.tog_line,'value');
@@ -35,15 +35,16 @@ end
 for i=1:length(list_line)
     active_line=layer.Lines(i);
     
-    if nansum(curr_dist)>0
-        dist_corr=curr_dist-active_line.Dist_diff; 
+    if nansum(curr_dist)>0&&active_line.Dist_diff~=0
+        dist_corr=curr_dist-active_line.Dist_diff;
         time_corr=resample_data_v2(curr_time,curr_dist,dist_corr);
+        time_corr(isnan(time_corr))=curr_time(isnan(time_corr))+nanmean(time_corr(:)-curr_time(:));       
+        y_line=resample_data_v2(active_line.Range,active_line.Time,time_corr);
     else
-        time_corr=curr_time;
+        y_line=active_line.Range;
     end
     
-    time_corr(isnan(time_corr))=curr_time(isnan(time_corr))+nanmean(time_corr(:)-curr_time(:));
-    y_line=resample_data_v2(active_line.Range,active_line.Time,time_corr);
+    
     y_line=y_line./nanmean(diff(curr_range));
     
     if isempty(y_line)
@@ -52,7 +53,7 @@ for i=1:length(list_line)
     end
     
     x_line=curr_pings;
-      
+    
     if i==active_line_idx
         color=[0 0.5 0];
     else
