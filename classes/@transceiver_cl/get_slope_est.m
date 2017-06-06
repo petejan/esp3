@@ -21,7 +21,7 @@
 % * |slope_est|: TODO
 
 % * |slope_est|: estimated slope
-% * |bot_range|: bottom range corrected from transducer depth
+% * |bot_depth|: bottom range corrected from transducer depth
 %
 % *RESEARCH NOTES*
 %
@@ -41,7 +41,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function [slope_est,bot_range] = get_slope_est( trans_obj,varargin )
+function [slope_est,bot_depth] = get_slope_est( trans_obj,varargin )
 
 %% Checking and parsing inputs
 p = inputParser;
@@ -50,11 +50,8 @@ addParameter(p,'FiltWidth',100,@isnumeric);
 parse(p,trans_obj,varargin{:});
 
 results=p.Results;
-bot_range=trans_obj.get_bottom_range();
+bot_depth=trans_obj.get_bottom_depth();
 
-if ~isempty(trans_obj.OffsetLine)
-    bot_range=bot_range(:)'-trans_obj.OffsetLine.Range(:)';
-end
 
 dist_vessel=trans_obj.get_dist();
 
@@ -62,8 +59,8 @@ dist_vessel=trans_obj.get_dist();
 [~,idx]=nanmax(counts);
 s_width=results.FiltWidth/(hist_diff(idx));
 
-bot_data_filt=smooth(bot_range(:),s_width);
+bot_data_filt=smooth(bot_depth(:),s_width);
 dist_vessel_filt=smooth(dist_vessel(:),s_width);
 dist_vessel_filt(diff(dist_vessel_filt)<hist_diff(idx)/4)=nan;
-slope_est=nan(size(bot_range));
+slope_est=nan(size(bot_depth));
 slope_est(1:end-1)=atand(diff(bot_data_filt(:)')./diff(dist_vessel_filt(:)'));

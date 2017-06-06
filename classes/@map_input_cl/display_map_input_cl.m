@@ -25,13 +25,16 @@ col_snap={'k'};
 LongLim=[nan nan];
 LatLim=[nan nan];
 
+
 if ~strcmp(field,'Tag')
-    snap=unique(obj.Snapshot);
+    [~,~,survey_name_num]=unique(obj.SurveyName);
+    snap=unique([obj.Snapshot(:)';survey_name_num(:)']','rows');    
 else
     [tag,~]=unique(obj.Regions.Tag);
     %tag={'EUP','GYP','MMU','DIA','ELC','LHE'};
-    snap=ones(1,length(tag));
+    snap=ones(length(tag),2);
 end
+
 
 LongLim(1)=nanmin(LongLim(1),obj.LongLim(1));
 LongLim(2)=nanmax(LongLim(2),obj.LongLim(2));
@@ -39,15 +42,16 @@ LatLim(1)=nanmin(LatLim(1),obj.LatLim(1));
 LatLim(2)=nanmax(LatLim(2),obj.LatLim(2));
 
 if p.Results.oneMap>0
-    snap=1;
+    snap=[1 1];
 end
+nb_snap=size(snap,1);
 
-nb_row=ceil(length(snap)/3);
-nb_col=nanmin(length(snap),3);
+nb_row=ceil(nb_snap/3);
+nb_col=nanmin(nb_snap,3);
 
-n_ax=gobjects(length(snap),1);
+n_ax=gobjects(nb_snap,1);
 
-for usnap=1:length(snap)
+for usnap=1:nb_snap
     n_ax(usnap)=subplot(nb_row,nb_col,usnap,'parent',hfig);
     hold on;
     proj=m_getproj;
@@ -102,14 +106,14 @@ end
 
 if ~strcmp(field,'Tag')
 
-    for usnap=1:length(snap)
+    for usnap=1:nb_snap
         if p.Results.oneMap==0
-            idx_snap=find(obj.Snapshot==snap(usnap));
+            idx_snap=find(obj.Snapshot==snap(usnap,1)&survey_name_num(:)'==snap(usnap,2));
             
             if isempty(idx_snap)
                 continue;
             end
-            title(n_ax(usnap),sprintf('%s\n Snapshot %d',obj.Voyage{idx_snap(1)},snap(usnap)));
+            title(n_ax(usnap),sprintf('%s\n Snapshot %d',obj.Voyage{idx_snap(1)},snap(usnap,1)));
         else
             idx_snap=1:length(obj.Snapshot);
             title(n_ax(usnap),sprintf('%s\n',obj.Voyage{idx_snap(1)}));

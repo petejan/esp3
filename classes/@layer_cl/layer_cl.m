@@ -6,7 +6,7 @@ classdef layer_cl < handle
         Filetype='';
         Transceivers=transceiver_cl.empty();
         OriginCrest='';
-        Lines=[];
+        Lines=line_cl.empty();
         Frequencies=[];
         GPSData=gps_data_cl();
         AttitudeNav=attitude_nav_cl();

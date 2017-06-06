@@ -109,6 +109,9 @@ classdef params_cl
                 if iscell(param_obj.(fields{ifi}))
                     str_temp=sprintf(fields_fmt{ifi},param_obj.(fields{ifi}){idx_ping});
                 else
+                    if isnan(param_obj.(fields{ifi})(idx_ping))
+                        continue;
+                    end
                     str_temp=sprintf(fields_fmt{ifi},param_obj.(fields{ifi})(idx_ping));
                 end
                 

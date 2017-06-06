@@ -84,13 +84,37 @@ classdef transceiver_cl < handle
         
         function range=get_transceiver_range(trans_obj,varargin)
             if nargin>=2
+    
                 idx=varargin{1};
-                range=trans_obj.Range(idx);
+                if ~isempty(idx)
+                    range=trans_obj.Range(idx);
+                else
+                    range=trans_obj.Range;
+                end
             else
                 range=trans_obj.Range;
             end
             
         end
+        
+        function depth=get_transceiver_depth(trans_obj,idx_r,idx_pings)
+            depth=bsxfun(@plus,trans_obj.get_transceiver_range(idx_r),-trans_obj.get_transducer_depth(idx_pings));
+        end
+        
+        function depth=get_transducer_depth(trans_obj,varargin)
+            depth=trans_obj.Params.TransducerDepth();            
+            if ~isempty(trans_obj.OffsetLine)
+                depth=depth(:)'-trans_obj.OffsetLine.Range(:)';
+            end
+            
+             if nargin>=2  
+                idx=varargin{1};
+                if ~isempty(idx)
+                    depth=depth(idx);
+                end
+            end
+        end
+        
         
         function set_transceiver_range(trans_obj,range)
             trans_obj.Range=range;

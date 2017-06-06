@@ -19,7 +19,7 @@ h_fig=new_echo_figure(main_figure,...
     'Tag',sprintf('OffsetData %.0f%.0f',layer.ID_num,idx_freq),'Name',['Offset ' layers_Str{1}]);
 ax=axes('Parent',h_fig,'Units','Normalized','position',[0 0 1 1],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 %pax=pcolor(ax,ping_new_mat,range_new_mat,data_new);
-pax=imagesc(ax,ping_new_mat(1,:),range_new_mat(:,1),data_new);
+pax=pcolor(ax,ping_new_mat,range_new_mat,data_new);
 cax=curr_disp.getCaxField(curr_disp.Fieldname);
 caxis(ax,cax);
 [cmap,~,~,~,~,~]=init_cmap(curr_disp.Cmap);
@@ -29,10 +29,10 @@ axis(ax,'ij');
 grid(ax,'on');
 alpha_map=ones(size(range_new_mat));
 alpha_map(data_new<cax(1))=0;
-% shading(ax,'flat');
+set(pax,'LineStyle','none');
 % set(pax,'FaceAlpha','flat')
-set(pax,'AlphaData',alpha_map);
-set(ax,'Xlim',[ping_new_mat(1) ping_new_mat(end)],'Ylim',[range_new_mat(1) range_new_mat(end)]);
+set(pax,'AlphaData',alpha_map,'facealpha','flat');
+set(ax,'Xlim',[ping_new_mat(1) ping_new_mat(end)],'Ylim',[nanmin(range_new_mat(:)) nanmax(range_new_mat(:))]);
 set(h_fig,'WindowButtonMotionFcn',@disp_depth);
 end
 

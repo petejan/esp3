@@ -157,7 +157,7 @@ nb_dg=length(idx_raw_obj.type_dg);
 for idg=1:nb_dg
     pos=ftell(fid);
 
-    if mod(idg,floor(nb_dg/100))==1
+    if mod(idg,floor(nb_dg/10))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
         end

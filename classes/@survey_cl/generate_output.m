@@ -134,7 +134,7 @@ for isn=1:length(snaps)
         layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
         idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
         tag_add=layer_obj_tr.Transceivers(idx_freq).Bottom.Tag;
-        bot_range_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_range();
+        bot_depth_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_depth();
         gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
         
         if i>1
@@ -161,7 +161,7 @@ for isn=1:length(snaps)
         dist_tot=dist_tot+dist_add;
         timediff_tot=timediff_tot+timediff;
         nb_good_pings=nb_good_pings+length(idx_good_pings_add);
-        mean_bot(i)=nanmean(bot_range_add);
+        mean_bot(i)=nanmean(bot_depth_add);
         mean_bot_w=mean_bot_w+mean_bot(i)*length(idx_good_pings_add);
         av_speed(i)=dist_add/timediff;
         idx_good_pings=union(idx_good_pings,idx_good_pings_add+iping0);
@@ -182,9 +182,11 @@ for isn=1:length(snaps)
         %bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
         gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
         trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
-        range=trans_obj_tr.get_transceiver_range();
+       
+        
         if isnan(good_bot_tot)
-            good_bot_tot= range(end);
+            depth=trans_obj_tr.get_transceiver_depth([],[]);
+            good_bot_tot= nanmax(depth(:));
         end
         
         if ~isempty(trans_obj_tr.ST.TS_comp)
@@ -250,8 +252,8 @@ for isn=1:length(snaps)
             switch reg_curr.Reference
                 case 'Surface';
                     refType = 's';
-                    start_d = trans_obj_tr.get_transceiver_range(nanmin(regCellInt.Sample_S(:)));
-                    finish_d = trans_obj_tr.get_transceiver_range(nanmin(regCellInt.Sample_S(:)));
+                    start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmin(regCellInt.Ping_S(:)));
+                    finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmax(regCellInt.Ping_S(:)));
                 case 'Bottom';
                     refType = 'b';
                     start_d = 0;

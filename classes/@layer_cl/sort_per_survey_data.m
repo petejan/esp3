@@ -15,10 +15,11 @@ for i_out=1:length(id_lays_out_cell)
     id_lays_out_cell{i_out}=output.Layer_idx(trans_ids==i_out);
 end
 
-id_lays_out_cell(isempty(id_lays_out_cell))=[];
+id_lays_out_cell(cellfun(@isempty,id_lays_out_cell))=[];
 
 nb_cell_out=0;
 cell_out={};
+
 while ~isempty(id_lays_out_cell)
     nb_cell_out=nb_cell_out+1;
     idx_temp=cellfun(@(x) ~isempty(intersect(id_lays_out_cell{1},x)),id_lays_out_cell);
@@ -26,6 +27,17 @@ while ~isempty(id_lays_out_cell)
     id_lays_out_cell(idx_temp)=[];
 end
 
+
+for icell=1:length(cell_out)
+   tmp=cellfun(@(x) intersect(cell_out{icell},x),cell_out,'UniformOutput',0);
+   idx_inter=find(cellfun(@(x) ~isempty(x),tmp));
+   if length(idx_inter)>=2
+        cell_out{icell}=union(cell_out{idx_inter});
+        cell_out{idx_inter(idx_inter~=icell)}=[];
+   end
+end
+
+cell_out(cellfun(@isempty,cell_out))=[];
 
 layers_out_cell=cell(1,length(cell_out));
 

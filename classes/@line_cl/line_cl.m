@@ -84,7 +84,7 @@ classdef line_cl < handle
         
         function line_section=get_line_time_section(line_obj,ts,te)
             line_section=line_obj;
-            idx_rem=line_obj.Time<ts||line_obj.Time>te;
+            idx_rem=line_obj.Time<ts|line_obj.Time>te;
             line_section.Time(idx_rem)=[];
             line_section.Range(idx_rem)=[];
         end

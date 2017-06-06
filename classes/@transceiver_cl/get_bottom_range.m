@@ -11,6 +11,7 @@ else
     bot_range(~isnan(Bottom_idx))=range(Bottom_idx(~isnan(Bottom_idx)));
 end
 bot_range=bot_range(:)';
+
 if ~isempty(varargin)
     bot_range=bot_range(varargin{1});
 end

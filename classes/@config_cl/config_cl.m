@@ -119,7 +119,9 @@ classdef config_cl
             config_str ='<html><ul>Configuration:';
             
             for ifi=1:length(fields)
-                config_str = [config_str '<li><i>' fields_name{ifi} ': </i>' sprintf(fields_fmt{ifi},config_obj.(fields{ifi})) '</li>'];
+                if ~isnan(config_obj.(fields{ifi}))
+                    config_str = [config_str '<li><i>' fields_name{ifi} ': </i>' sprintf(fields_fmt{ifi},config_obj.(fields{ifi})) '</li>'];
+                end
             end
             config_str = [config_str '</ul></html>'];
         end
