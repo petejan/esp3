@@ -12,7 +12,7 @@ ESP3 is currently under active development (particularly in terms of broadband s
 
 # How do I download it and get it to run on my data?
 
-ESP3 is written in **MATLAB** so the source code can be run from a standard MATLAB environment provided you have the appropriate version and toolboxes.
+ESP3 is written in **MATLAB** so the source code can be run from a standard MATLAB environment provided you have the appropriate version (R2016a or later) and toolboxes.
 
 **For non-MATLAB users** on a Windows 64bits platform, a compiled version of the latest stable release is also available.
 
@@ -20,7 +20,7 @@ ESP3 is written in **MATLAB** so the source code can be run from a standard MATL
 
 # How can I learn to use it?
 
-**[See the wiki for a user manual currently in development.](https://bitbucket.org/echoanalysis/esp3/wiki/Home)**
+**[See the wiki for manuals (user, technical, tutorials) currently in development.](https://bitbucket.org/echoanalysis/esp3/wiki/Home)**
 
 # Can I contribute to the development of ESP3?
 
