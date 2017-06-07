@@ -24,7 +24,7 @@ ESP3 is written in **MATLAB** so the source code can be run from a standard MATL
 
 # Can I contribute to the development of ESP3?
 
-Coding contributions are gladly welcome and to be co-ordinated through the ESP3 BitBucket project page. **[See the wiki for more information.](https://bitbucket.org/echoanalysis/esp3/wiki/Home)**
+Coding contributions are gladly welcome and to be coordinated through the ESP3 BitBucket project page. Please contact the team to notify your interest.
 
 # Copyright
 
