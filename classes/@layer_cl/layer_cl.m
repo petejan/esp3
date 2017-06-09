@@ -162,7 +162,9 @@ classdef layer_cl < handle
         function add_lines(obj,lines)
             for i=1:length(lines)
                 obj.rm_line_id(lines(i).ID);
-                obj.Lines=[obj.Lines lines(i)];
+                if ~isempty(lines(i).Range)
+                    obj.Lines=[obj.Lines lines(i)];
+                end
             end
         end
         

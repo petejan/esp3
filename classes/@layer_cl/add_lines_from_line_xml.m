@@ -47,7 +47,7 @@ for ix=1:length(line_file_str)
         if strcmpi(line.Tag,'offset')
             disp('Using Line as transducer offset');
            for i=1:length(layer_obj.Transceivers)
-               layer_obj.Transceivers(i).add_offset_line(line);
+               layer_obj.Transceivers(i).set_transducer_depth_from_line(line);
            end
         end
     end

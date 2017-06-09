@@ -327,17 +327,16 @@ for idg=1:nb_dg
                     datatype=fread(fid,1,'int16', 'l');
                     fread(fid,1,'int16', 'l');
                     
-                    offset=fread(fid,1,'int32', 'l');
-                    sampleCount=fread(fid,1,'int32', 'l');
+                    temp=fread(fid,2,'int32', 'l');
                     %  store sample number if required/valid
                     number=i_ping(idx);
                     data.pings(idx).channelID=channelID;
                     data.pings(idx).datatype=fliplr(dec2bin(datatype));
-                    data.pings(idx).offset=offset;
-                    data.pings(idx).sampleCount(i_ping(idx)-p.Results.PingRange(1)+1)=sampleCount;
+                    data.pings(idx).offset(i_ping(idx)-p.Results.PingRange(1)+1)=temp(1);
+                    data.pings(idx).sampleCount(i_ping(idx)-p.Results.PingRange(1)+1)=temp(2);
                     data.pings(idx).number(i_ping(idx)-p.Results.PingRange(1)+1)=number;
                     data.pings(idx).time(i_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
-                    
+                    sampleCount=temp(2);
                     
                     switch config(idx).TransceiverType
                         

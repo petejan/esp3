@@ -261,7 +261,13 @@ if ~isequal(Filename_cell, 0)
                 attitude_full=mru0_att;  
             end
             
-            
+             idx_NMEA_dft=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'DFT')));
+             if ~isempty(idx_NMEA_dft)
+                 [trans_depth,depth_time]=nmea_to_depth_trans(NMEA.string,NMEA.time,idx_NMEA_dft);
+             else
+                 trans_depth=[];
+                 depth_time=[];
+             end
             
             if p.Results.GPSOnly==0
                 for i =1:length(trans_obj)
@@ -299,15 +305,24 @@ if ~isequal(Filename_cell, 0)
                         for itrans=1:length(trans_obj)
                             curr_range=trans_obj(itrans).get_transceiver_range();
                             depth_resampled=resample_data_v2(Bottom_sim.depth(itrans,:),Bottom_sim.time,trans_obj(itrans).Time);
-                            depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth(1);
+                            depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth;
                             sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
                             sample_idx(sample_idx==1)=nan;
                             trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Sample_idx',sample_idx));
+                            
+                           
+                            
                         end
                     end
                 end
+                for itrans=1:length(trans_obj)
+                    if~isempty(trans_depth)
+                        trans_depth_resampled=resample_data_v2(trans_depth,depth_time,trans_obj(itrans).Time);
+                        trans_depth_resampled(isnan(trans_depth_resampled))=0;
+                        trans_obj(itrans).Params.TransducerDepth=trans_depth_resampled;
+                    end
+                end
                 
-
                 prev_ping_start=pings_range(1);
                 pings=trans_obj(1).get_transceiver_pings();
                 prev_ping_end=pings(end);
@@ -343,7 +358,7 @@ if ~isequal(Filename_cell, 0)
             end
             
             layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
-
+            layers.add_lines(line_cl('Name','TransducerDepth','Range',trans_depth,'Time',depth_time))
         catch err
             id_rem=union(id_rem,uu);
             disp(err.message);

@@ -1,14 +1,14 @@
 
 classdef line_cl < handle
     properties
-        Name
+        Name=''
         ID
-        Tag
-        Type
-        Range
-        Time
-        UTC_diff
-        Dist_diff
+        Tag=''
+        Type=''
+        Range=[]
+        Time=[]
+        UTC_diff=0
+        Dist_diff=0
         File_origin
         Dr=0;
     end

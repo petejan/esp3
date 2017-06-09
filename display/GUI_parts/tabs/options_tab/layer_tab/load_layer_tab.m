@@ -81,7 +81,8 @@ uimenu(uimap,'Label','Plot tracks from selected layers','Callback',{@plot_tracks
 str_delete='<HTML><center><FONT color="Red"><b>Delete selected layers</b></Font> ';
 lay_menu=uimenu(rc_menu,'Label','Layer Management');
 uimenu(lay_menu,'Label','Merge Selected Layers','Callback',{@merge_selected_callback,layer_tab_comp.table,main_figure});
-uimenu(lay_menu,'Label','Split Selected Layers (per survey data/files)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure});
+uimenu(lay_menu,'Label','Split Selected Layers (per survey data)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure,1});
+uimenu(lay_menu,'Label','Split Selected Layers (per files)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure,0});
 uimenu(lay_menu,'Label',str_delete,'Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
 
 selected_layers=[];
@@ -182,7 +183,7 @@ setappdata(main_figure,'Layer',layers_out(1));
 loadEcho(main_figure);
 end
 
-function split_selected_callback(src,~,table,main_figure)
+function split_selected_callback(src,~,table,main_figure,id)
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
 selected_layers=getappdata(table,'SelectedLayers');
@@ -206,7 +207,7 @@ layers_to_split=layers(idx);
 
 layers(idx)=[];
 
-layers_sp=[]; 
+layers_sp=[];
 
 for ilay=1:numel(layers_to_split)
     new_layers=layers_to_split(ilay).split_layer();
@@ -214,18 +215,23 @@ for ilay=1:numel(layers_to_split)
     layers_sp=[layers_sp new_layers];
 end
 
-layers_sp_sorted=layers_sp.sort_per_survey_data();
+if id>0
+    layers_sp_sorted=layers_sp.sort_per_survey_data();
+    
+    layers_sp_out=[];
+    
+    for icell=1:length(layers_sp_sorted)
+        layers_sp_out=[layers_sp_out shuffle_layers(layers_sp_sorted{icell},'multi_layer',-1)];
+    end  
+else
 
-layers_sp_out=[];
-
-for icell=1:length(layers_sp_sorted)
-    layers_sp_out=[layers_sp_out shuffle_layers(layers_sp_sorted{icell},'multi_layer',-1)];
+    layers_sp_out=layers_sp;
 end
 
 layers_sp_out=reorder_layers_time(layers_sp_out);
 id_lay=layers_sp_out(end).ID_num;
-layers=[layers layers_sp_out];
 
+layers=[layers layers_sp_out];
 layers=reorder_layers_time(layers);
 
 [idx,~]=find_layer_idx(layers,id_lay);

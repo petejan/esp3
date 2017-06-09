@@ -70,8 +70,10 @@ curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
 
 display_bottom(main_figure);
 display_tracks(main_figure);
+display_lines(main_figure);
 set_alpha_map(main_figure);
 order_stacks_fig(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
+
 end
 

@@ -13,7 +13,7 @@ classdef params_cl
         PulseLengthEff=nan;
         SampleInterval=nan;
         Slope=nan;
-        TransducerDepth=nan;
+        TransducerDepth=0;
         TransmitPower=nan;
         Absorption=nan; 
     end

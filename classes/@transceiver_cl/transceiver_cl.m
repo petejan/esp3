@@ -16,7 +16,6 @@ classdef transceiver_cl < handle
         AttitudeNavPing
         Algo
         Mode
-        OffsetLine
         
     end
     
@@ -35,7 +34,7 @@ classdef transceiver_cl < handle
             check_gps_class=@(trans_obj) isa(trans_obj,'gps_data_cl');
             check_att_class=@(trans_obj) isa(trans_obj,'attitude_nav_cl');
             check_algo_class=@(trans_obj) isa(trans_obj,'algo_cl');
-            check_line_class=@(trans_obj) isa(trans_obj,'line_cl');
+
             
             
             addParameter(p,'Data',ac_data_cl.empty(),check_data_class);
@@ -51,7 +50,6 @@ classdef transceiver_cl < handle
             addParameter(p,'GPSDataPing',gps_data_cl.empty(),check_gps_class);
             addParameter(p,'AttitudeNavPing',attitude_nav_cl.empty(),check_att_class);
             addParameter(p,'Algo',init_algos,check_algo_class);
-            addParameter(p,'OffsetLine',line_cl.empty(),check_line_class);
             addParameter(p,'Mode','CW',@ischar);
             parse(p,varargin{:});
             
@@ -98,15 +96,12 @@ classdef transceiver_cl < handle
         end
         
         function depth=get_transceiver_depth(trans_obj,idx_r,idx_pings)
-            depth=bsxfun(@plus,trans_obj.get_transceiver_range(idx_r),-trans_obj.get_transducer_depth(idx_pings));
+            depth=bsxfun(@plus,trans_obj.get_transceiver_range(idx_r),trans_obj.get_transducer_depth(idx_pings));
         end
         
         function depth=get_transducer_depth(trans_obj,varargin)
-            depth=trans_obj.Params.TransducerDepth();            
-            if ~isempty(trans_obj.OffsetLine)
-                depth=depth(:)'-trans_obj.OffsetLine.Range(:)';
-            end
-            
+            depth=trans_obj.Params.TransducerDepth(:)';            
+
              if nargin>=2  
                 idx=varargin{1};
                 if ~isempty(idx)
@@ -114,6 +109,8 @@ classdef transceiver_cl < handle
                 end
             end
         end
+        
+        
         
         
         function set_transceiver_range(trans_obj,range)

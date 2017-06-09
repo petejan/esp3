@@ -169,8 +169,15 @@ switch type(3:end)
                 'dsr_unit', out{4} ...
                 );
         nmea_type='dist';
-        
-        
+    case 'DFT'
+        % $KMDFT,%.2f,M'
+         format = '%f %c';
+         out = textscan(nmeadata, format, 1, 'delimiter', ',');
+         nmea = struct('type', type, ...
+             'depth', out{1}, ...
+             'unit', out{2}...
+             );
+         nmea_type='depth';
     otherwise
         %  unknown datagram type
         nmea = struct('type', type, 'string', nmeadata);

@@ -18,11 +18,8 @@ Time=trans.Time;
 Number=trans.get_transceiver_pings();
 Samples=trans.get_transceiver_samples();
 
-if ~isempty(trans.OffsetLine)
-    Depth_corr=trans.OffsetLine.Range;
-else
-    Depth_corr=zeros(size(Number));
-end
+
+Depth_corr=trans.get_transducer_depth();
 
 Lat=trans.GPSDataPing.Lat;
 Long=trans.GPSDataPing.Long;
