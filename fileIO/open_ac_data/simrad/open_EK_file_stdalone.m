@@ -358,7 +358,7 @@ if ~isequal(Filename_cell, 0)
             end
             
             layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
-            layers.add_lines(line_cl('Name','TransducerDepth','Range',trans_depth,'Time',depth_time))
+            layers(uu).add_lines(line_cl('Name','TransducerDepth','Range',trans_depth,'Time',depth_time))
         catch err
             id_rem=union(id_rem,uu);
             disp(err.message);

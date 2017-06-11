@@ -156,7 +156,7 @@ classdef layer_cl < handle
                     lines_new=[lines_new lines_curr(i)];
                 end
             end
-            obj.Lines=lines_new;
+            	
         end
         
         function add_lines(obj,lines)
