@@ -42,7 +42,6 @@ if isempty(layer)
 return;
 end
     
-curr_disp=getappdata(main_figure,'Curr_disp');
 hfigs=getappdata(main_figure,'ExternalFigures');
 
 [idx_38,found_38]=find_freq_idx(layer,38000);
@@ -102,9 +101,8 @@ for i=1:length(layer.Transceivers)
         continue;
     end
     layer.Transceivers(i).rm_region_name('School');
-    for ii=1:length(idx_school_38)
-        layer.Transceivers(i).rm_region_id(layer.Transceivers(idx_38).Regions(idx_school_38(ii)).Unique_ID)
-    end
+    
+
 end
 
 layer.prepare_classification(idx_to_process,reprocess,own);

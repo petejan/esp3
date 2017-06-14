@@ -94,6 +94,16 @@ switch main_figure.SelectionType
         clear_regions(main_figure,reg_curr.Unique_ID);
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);
+    case 'open'
+        regCellInt=trans_obj.integrate_region_v2(reg_curr);
+        
+        if isempty(regCellInt)
+            return;
+        end
+        
+        hfig=display_region_stat_fig(main_figure,regCellInt);
+        set(hfig,'Name',reg_curr.print());
+        
         
 end
 

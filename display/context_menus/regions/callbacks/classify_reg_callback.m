@@ -43,9 +43,9 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 hfigs=getappdata(main_figure,'ExternalFigures');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
- reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-
-if isempty(reg_curr)
+%reg_curr=layer.Transceivers(idx_freq).get_region_from_Unique_ID(ID);
+idx_reg=layer.Transceivers(idx_freq).find_regions_Unique_ID(ID);
+if isempty(idx_reg)
     return; 
 end
 
