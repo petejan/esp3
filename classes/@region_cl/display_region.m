@@ -57,6 +57,7 @@ addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
+field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
 %       profile on;
 %      output_reg_old=trans_obj.integrate_region(reg_obj);
@@ -64,8 +65,12 @@ if isa(trans_obj,'transceiver_cl')
 %     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
 %      profile off;
 %     profile viewer;
+tt=sprintf('%s %s %.0fkHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
+
 else
     output_reg=trans_obj;
+    tt=sprintf('%f %f' ,field,p.Results.Name );
+
 end
 
 if isempty(output_reg)
@@ -80,7 +85,6 @@ else
 end
 
 
-field= p.Results.field;
 switch field
     case 'fishdensity'
         var_disp=db2pow_perso((pow2db_perso(output_reg.Sv_mean_lin)-p.Results.TS));
@@ -137,7 +141,7 @@ end
 
 
 
-tt=[field ' ' p.Results.Name];
+
 
 switch reg_obj.Cell_w_unit
     case 'pings'

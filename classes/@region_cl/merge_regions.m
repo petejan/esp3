@@ -24,7 +24,7 @@ for ireg_1=1:length(regions)
         if region_1.Cell_w~=region_2.Cell_w||region_1.Cell_h~=region_2.Cell_h||...
                 ~strcmp(region_1.Cell_w_unit,region_2.Cell_w_unit)||~strcmp(region_1.Cell_h_unit,region_2.Cell_h_unit)||...
                 ~strcmp(region_1.Reference,region_2.Reference)
-            continue;
+            warning('Merging regions with diferent cell sizes');
         end
         
         if p.Results.overlap_only>0
@@ -81,13 +81,13 @@ for ireg_1=1:length(regions)
         reg_comp_mat(ireg_1,ireg_2)=1;
         reg_comp_mat(ireg_2,ireg_1)=1;
     end
-
+    
 end
 
 for ireg=1:length(regions)
     if ~strcmp(regions(ireg).Name,'')
         ireg_merge=find(reg_comp_mat(ireg,:));
-        i_merge_tot=ireg_merge; 
+        i_merge_tot=ireg_merge;
         added=1;
         while added==1
             for i_merge=ireg_merge
@@ -100,7 +100,7 @@ for ireg=1:length(regions)
                 added=0;
             end
         end
-               
+        
         for i=i_merge_tot
             region_1=regions(ireg);
             if ~strcmp(regions(i).Name,'')&&i~=ireg
@@ -144,31 +144,31 @@ for ireg=1:length(regions)
                 reg_comp_mat(ireg_1,ireg_2)=1;
                 reg_comp_mat(ireg_2,ireg_1)=1;
                 
-                 MaskReg_1_tot(idx_r_old_1,idx_pings_old_1)=MaskReg_1;
-                 MaskReg_2_tot(idx_r_old_2,idx_pings_old_2)=MaskReg_2;
-
+                MaskReg_1_tot(idx_r_old_1,idx_pings_old_1)=MaskReg_1;
+                MaskReg_2_tot(idx_r_old_2,idx_pings_old_2)=MaskReg_2;
+                
                 switch region_1.Type
                     case 'Data'
                         switch region_2.Type
                             case 'Data'
-                                 MaskReg=MaskReg_1_tot|MaskReg_2_tot;
+                                MaskReg=MaskReg_1_tot|MaskReg_2_tot;
                             otherwise
-                                 MaskReg=MaskReg_1_tot&~MaskReg_2_tot;
+                                MaskReg=MaskReg_1_tot&~MaskReg_2_tot;
                         end
-                       Type=region_1.Type;
+                        Type=region_1.Type;
                     otherwise
-                         switch region_2.Type
+                        switch region_2.Type
                             case 'Data'
-                                 MaskReg=MaskReg_2_tot&~MaskReg_1_tot;
-                                 Type=region_2.Type;
+                                MaskReg=MaskReg_2_tot&~MaskReg_1_tot;
+                                Type=region_2.Type;
                             otherwise
-                                 MaskReg=MaskReg_1_tot|MaskReg_2_tot;
-                                 Type=region_1.Type;
+                                MaskReg=MaskReg_1_tot|MaskReg_2_tot;
+                                Type=region_1.Type;
                         end
-                     
+                        
                 end
                 
-                              
+                
                 regions(ireg)=region_cl(...
                     'ID',region_1.ID,...
                     'Name',region_1.Name,...

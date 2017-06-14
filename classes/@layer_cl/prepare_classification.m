@@ -3,10 +3,11 @@ function prepare_classification(layer,idx_to_process,reprocess,own)
 
 
 [idx_38,found_38]=find_freq_idx(layer,38000);
+[idx_18,found_18]=find_freq_idx(layer,18000);
 [idx_120,found_120]=find_freq_idx(layer,120000);
 
-if ~found_38||~found_120
-    warning('Cannot find 38 kHz!Pass...');
+if ~found_18||~found_120||~found_38
+    warning('Cannot find every frequencies! Cannot apply classification here....');
     return;
 end
 
@@ -60,6 +61,7 @@ for uu=idx_to_process
     end
 
 end
+
 idx_school_120 = layer.Transceivers(idx_120).find_regions_name('School');
 
 if ~isempty(idx_school_120)
@@ -69,4 +71,5 @@ if ~isempty(idx_school_120)
     layer.Transceivers(idx_38).rm_all_region();
     layer.Transceivers(idx_38).add_region(new_regions);
 end
-
+idx_school_38 = layer.Transceivers(idx_38).find_regions_name('School');
+layer.copy_region_across(idx_38,layer.Transceivers(idx_38).Regions(idx_school_38),[idx_18 idx_120]);

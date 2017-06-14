@@ -82,10 +82,11 @@ uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_regi
 
 if isa(reg_curr,'region_cl')
         uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,ID,main_figure});
+        uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,ID,main_figure});
 end
 
 uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,active_reg,main_figure});
-uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,active_reg,main_figure});
+
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
 uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sp'});
