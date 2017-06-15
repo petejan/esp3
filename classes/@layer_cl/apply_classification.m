@@ -1,17 +1,24 @@
 function h_figs=apply_classification(layer,idx_freq,idx_schools,disp_level)
-disp('Applying classification');
-[idx_38,found_38]=find_freq_idx(layer,38000);
-[idx_18,found_18]=find_freq_idx(layer,18000);
-[idx_120,found_120]=find_freq_idx(layer,120000);
 
-if ~found_18||~found_120||~found_38
-    warning('Cannot find every frequencies! Cannot apply classification here....');
-    h_figs=[];
-    return;
+class_tree_obj=decision_tree_cl(fullfile(whereisEcho,'config','classification.xml'));
+disp('Applying classification');
+
+idx_freq_tot=nan(1,numel(class_tree_obj.Frequencies));
+idx_school=nan(1,numel(class_tree_obj.Frequencies));
+
+for i=numel(class_tree_obj.Frequencies)
+    [idx_freq_tot(i),found]=find_freq_idx(layer,class_tree_obj.Frequencies(i));
+    if ~found
+        warning('Cannot %dkHz! Cannot apply classification here....',class_tree_obj.Frequencies(i)/1e33);
+        h_figs=[];
+        return;
+    end
+
 end
 
+
 school_regs=layer.Transceivers(idx_freq).Regions(idx_schools);
-layer.copy_region_across(idx_freq,school_regs,[idx_18,idx_120]);
+layer.copy_region_across(idx_freq,school_regs,idx_freq_tot);
 
 for idx_school=idx_schools
     

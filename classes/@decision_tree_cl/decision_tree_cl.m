@@ -1,5 +1,6 @@
 classdef decision_tree_cl
     properties
+        Frequencies
         Variables
         Nodes
     end
@@ -13,9 +14,10 @@ classdef decision_tree_cl
             parse(p,XMLFileName);
             
             if exist(XMLFileName,'file')>0
-                [obj.Variables,obj.Nodes]=parse_classification_xml(XMLFileName);
+                [obj.Frequencies,obj.Variables,obj.Nodes]=parse_classification_xml(XMLFileName);
             else
                 warning('Could not find Classification XML file') ;
+                obj.Frequencies=[];
                 obj.Variables={};
                 obj.Nodes={};
             end
@@ -63,6 +65,14 @@ classdef decision_tree_cl
                 c = class(obj);
                 disp(['ML object destructor called for class ',c])
             end
+        end
+        
+        function vars=get_variables(obj)
+            vars=obj.Variables;
+        end
+        
+        function vars=get_frequencies(obj)
+            vars=obj.Variables;
         end
         
     end

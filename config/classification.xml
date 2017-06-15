@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <classification_descr>
+    
+<frequencies>18000;38000;20000</frequencies>
 
 <variables>
 	<variable name='nb_cell'/>
@@ -10,7 +12,6 @@
 	<variable name='bottom_depth'/>
 	<variable name='lat_mean'/>
 </variables>
-
 
 <nodes>
 	<node id="0" true_target="1" false_target="10">

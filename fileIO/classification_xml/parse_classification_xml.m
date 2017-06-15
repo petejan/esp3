@@ -1,6 +1,7 @@
-function [Variables,Nodes]=parse_classification_xml(xml_file)
+function [Frequencies,Variables,Nodes]=parse_classification_xml(xml_file)
 
 xml_struct=parseXML(xml_file);
+Frequencies=[];
 Variables={};
 Nodes={};
 if ~strcmpi(xml_struct.Name,'classification_descr')
@@ -17,6 +18,8 @@ for i=1:nb_child
            Variables=get_variables(xml_struct.Children(i));
         case 'nodes'
            Nodes=get_nodes(xml_struct.Children(i));
+        case 'frequencies'
+          Frequencies=str2double(xml_struct.Children(i).Data,';');
         otherwise
             warning('Unidentified Child in XML');
     end
