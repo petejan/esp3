@@ -119,7 +119,7 @@ end
 idx_school_38 = layer.Transceivers(idx_38).find_regions_name('School');
 
 for ii=1:length(idx_school_38)
-    new_fig=layer.apply_classification(idx_38,idx_school_38(ii),1);
+    new_fig=layer.apply_classification(idx_38,idx_school_38(ii));
 end
 
 hfigs=[hfigs new_fig];

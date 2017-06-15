@@ -127,17 +127,11 @@ layer.copy_region_across(idx_freq,reg_curr,[]);
 frequencies=layer.Frequencies;
 n=length(layer.Frequencies);
 
-a=fliplr(fullfact(ones(1,2)*n));
-b=sort(a,2);
-idx=any(~diff(b')',2);
-a(idx,:)=[];
+uniquev=generate_couples(n);
 
-a = sort(a, 2);
-[~, idx] = unique(a, 'rows');
-uniquev1 = a(idx,1);
-uniquev2 = a(idx,2);
 
 output_reg=cell(1,n);
+
 for i=1:n
     trans=layer.get_trans(frequencies(i));
     reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);
@@ -145,13 +139,12 @@ for i=1:n
 end
 
 
-for i=1:numel(uniquev1)
+for i=1:numel(uniquev)
 
-
-    output_reg_1=output_reg{uniquev1(i)};
-    output_reg_2=output_reg{uniquev2(i)};
-
+    output_reg_1=output_reg{uniquev(i,1)};
+    output_reg_2=output_reg{uniquev(i,2)};
     output_diff  = substract_reg_outputs( output_reg_1,output_reg_2);
+    
     if ~isempty(output_diff)
         sv=pow2db_perso(output_diff.Sv_mean_lin(:));
         cax_min=prctile(sv,5);
@@ -160,9 +153,9 @@ for i=1:numel(uniquev1)
         reg_curr.display_region(output_diff,'main_figure',main_figure,...
             'alphadata',double(pow2db_perso(output_reg_1.Sv_mean_lin)>cax(1)),...
             'Cax',[cax_min cax_max],...
-            'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3));
+            'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev(i,1))/1e3,frequencies(uniquev(i,2))/1e3));
     else
-       fprintf('Cannot compute differences %dkHz-%dkHz\n',frequencies(uniquev1(i))/1e3,frequencies(uniquev2(i))/1e3);
+       fprintf('Cannot compute differences %dkHz-%dkHz\n',frequencies(uniquev(i,1))/1e3,frequencies(uniquev(i,2))/1e3);
     end
 end
 

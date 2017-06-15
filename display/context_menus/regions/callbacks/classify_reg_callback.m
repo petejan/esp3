@@ -49,7 +49,7 @@ if isempty(idx_reg)
     return; 
 end
 
-new_fig=layer.apply_classification(idx_freq,idx_reg,1);
+new_fig=layer.apply_classification(idx_freq,idx_reg);
 
 hfigs=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs);
