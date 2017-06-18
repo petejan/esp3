@@ -263,6 +263,7 @@ classdef transceiver_cl < handle
                 reg=trans_obj.Regions(idx);
             else
                 reg=[];
+
             end
         end
         

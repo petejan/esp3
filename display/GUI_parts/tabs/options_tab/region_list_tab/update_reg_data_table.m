@@ -67,4 +67,8 @@ reg_table_data_new=[reg_table_data;reg_table_data_new];
 
 [~,idx_sort]=sort([reg_table_data_new{:,10}]);
 reg_table_data_new=reg_table_data_new(idx_sort,:);
+
+
+
+
 end

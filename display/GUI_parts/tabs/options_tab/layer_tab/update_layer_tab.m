@@ -60,6 +60,10 @@ try
     data_new(:,2)=num2cell([layers(:).ID_num]);
     [idx,~]=find_layer_idx(layers,layer.ID_num);
     
+    if isempty(idx)
+        return;
+    end
+    
     % if~isempty(data_old)
     %  [~,b,c]=intersect([data_new{:,2}],[data_old{:,2}]);
     % else
@@ -75,7 +79,7 @@ try
     % else
     layer_tab_comp.table.Data=data_new;
     % end
-    layer_tab_comp.table.Data{idx,1}=strcat('<html><b>',data_new{idx,1},'</b></html>');
+    layer_tab_comp.table.Data{idx,1}=strcat('<html><FONT color="Red"><b>',data_new{idx,1},'</b></html>');
     
     drawnow;  pause(0.02);
     

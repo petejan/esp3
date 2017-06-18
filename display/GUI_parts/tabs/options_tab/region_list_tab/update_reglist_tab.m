@@ -39,6 +39,7 @@
 function update_reglist_tab(main_figure,reg_uniqueID,new)
 
 layer=getappdata(main_figure,'Layer');
+
 reglist_tab_comp=getappdata(main_figure,'Reglist_tab');
 if isempty(layer)||isempty(reglist_tab_comp)
     return;
@@ -47,10 +48,22 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
+
+try
+    jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPane');
+    
+    jView = jScroll.getViewport();
+    pos=jView.getViewPosition;
+catch
+       if ~isdeployed()
+        disp('Error while updating reg_list_tab');
+    end
+end
+
 regions=trans_obj.Regions;
 if ~isempty(reg_uniqueID)&&new==0
     if reg_uniqueID>=0
-        region_mod=regions(trans_obj.find_regions_Unique_ID(reg_uniqueID));
+        region_mod=trans_obj.get_region_from_Unique_ID(reg_uniqueID);
         reg_table_data=update_reg_data_table(region_mod,reglist_tab_comp.table.Data);
         set(reglist_tab_comp.table,'Data',reg_table_data);
     else
@@ -64,5 +77,27 @@ else
     reg_table_data=update_reg_data_table(region_mod,[]);
     set(reglist_tab_comp.table,'Data',reg_table_data);
 end
+
+idx_reg=find(curr_disp.Active_reg_ID==[reglist_tab_comp.table.Data{:,10}]);
+if isempty(idx_reg)
+    return;
+end
+
+reglist_tab_comp.table.Data{idx_reg,1}=strcat('<html><FONT color="Red"><b>',reglist_tab_comp.table.Data{idx_reg,1},'</b></html>');
+reglist_tab_comp.table.Data{idx_reg,3}=strcat('<html><FONT color="Red"><b>',reglist_tab_comp.table.Data{idx_reg,3},'</b></html>');
+
+
+try
+    drawnow; 
+    
+    jView.setViewPosition(pos)
+    
+    jScroll.repaint();    % workaround for any visual glitches
+catch
+    if ~isdeployed()
+        disp('Error while updating reg_list_tab');
+    end
+end
+
 
 end

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <classification_descr>
     
-<frequencies>18000;38000;20000</frequencies>
+<frequencies>18000;38000;120000</frequencies>
 
 <variables>
 	<variable name='nb_cell'/>

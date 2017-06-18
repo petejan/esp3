@@ -19,7 +19,7 @@ for i=1:nb_child
         case 'nodes'
            Nodes=get_nodes(xml_struct.Children(i));
         case 'frequencies'
-          Frequencies=str2double(xml_struct.Children(i).Data,';');
+          Frequencies=str2double(strsplit(xml_struct.Children(i).Data,';'));
         otherwise
             warning('Unidentified Child in XML');
     end
