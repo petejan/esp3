@@ -4,9 +4,9 @@
 
 ESP3 is an **open-source** software package for visualizing and processing **fisheries acoustics data**, developed by the deepwater fisheries acoustics team at NIWA (Wellington, New Zealand).
 
-ESP3 is designed for single-beam and split-beam sonar data. It was primarily built around SIMRAD EK60 data (.raw) but also supports EK80 data and a small number of other formats (CREST, Furuno FCV30, and ASL data). The software allows standard data processing procedures such as calibration and echo-integration and a number of our in-house algorithms are coded in, including bad pings identification, automated bottom detection, single targets identification and tracking, schools identification, etc. 
+ESP3 is designed for single-beam and split-beam echosounder data. The software is mainly focused on the processing of fisheries acoustic surveys, with attention to reproducibility and consistency. It was primarily built around SIMRAD EK60 and EK80 data (.raw) but also supports a small number of other formats to a certain extend (CREST, Furuno FCV30, and ASL data). The software allows standard data processing procedures such as calibration and echo-integration and a number of our in-house algorithms are coded in, including bad pings identification, automated bottom detection, single targets identification and tracking, schools detection, etc. 
 
-ESP3 is currently under active development (particularly in terms of broadband sonar) so keep an eye on this project page. More features and algorithms regularly show up.
+ESP3 is currently under active development (particularly in terms of broadband processing) so keep an eye on this project page. More features and algorithms regularly show up.
 
 **[See the wiki for more information on what ESP3 does.](https://bitbucket.org/echoanalysis/esp3/wiki/Home)**
 
