@@ -53,9 +53,10 @@ try
     jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPane');
     
     jView = jScroll.getViewport();
-    pos=jView.getViewPosition;
+    curr_rect=jView.getViewRect();
+    rect=jView.getViewSize;
 catch
-       if ~isdeployed()
+    if ~isdeployed()
         disp('Error while updating reg_list_tab');
     end
 end
@@ -84,15 +85,28 @@ if isempty(idx_reg)
 end
 
 reglist_tab_comp.table.Data{idx_reg,1}=strcat('<html><FONT color="Red"><b>',reglist_tab_comp.table.Data{idx_reg,1},'</b></html>');
-reglist_tab_comp.table.Data{idx_reg,3}=strcat('<html><FONT color="Red"><b>',reglist_tab_comp.table.Data{idx_reg,3},'</b></html>');
+% reglist_tab_comp.table.Data{idx_reg,3}=strcat('<html><FONT color="Red"><b>',reglist_tab_comp.table.Data{idx_reg,3},'</b></html>');
 
 
 try
-    drawnow; 
     
-    jView.setViewPosition(pos)
+    nb_reg=length(regions);
+    pos=java.awt.Point(0,rect.height*(idx_reg-1)/nb_reg);
+    old_pos=java.awt.Point(0,curr_rect.y);
+
+    if ~(pos.y>=curr_rect.y&&pos.y<=(curr_rect.y+curr_rect.height))
+        jView.setViewPosition(pos)
+        disp('Move');
+    else
+        jView.setViewPosition(old_pos)
+        disp('Don''t move');
+    end
+    
+    jView.setViewPosition(old_pos);
+    drawnow; pause(0.02);
     
     jScroll.repaint();    % workaround for any visual glitches
+    
 catch
     if ~isdeployed()
         disp('Error while updating reg_list_tab');
