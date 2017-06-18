@@ -124,6 +124,11 @@ for i_cell=1:length(Filename_cell)
         data.ad_chan_6(ip)=fread(fid,1,'uint16',enc);
         data.ad_chan_7(ip)=fread(fid,1,'uint16',enc);
         
+        %The following lines have been modified based on code provided by ASL     
+        % Ver 1.1 October 31, 2016
+        % written by Dave Billenness
+        % ASL Environmental Sciences Inc.
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         for ic=1:data.nb_channel(ip)
             if(data.data_type(ic,ip))
                 if(data.average_ping_flag(ip))
@@ -144,7 +149,7 @@ for i_cell=1:length(Filename_cell)
             power = db2pow_perso(EL);
             data.(sprintf('chan_%.0f',ic))(:,ip)=power;
         end
-        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         
     end
