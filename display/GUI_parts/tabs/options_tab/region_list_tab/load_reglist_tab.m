@@ -140,6 +140,8 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 regions=trans_obj.Regions;
 
+
+
 if isempty(evt.Indices)
     setappdata(src,'SelectedRegs',[]);
     return;
@@ -147,11 +149,28 @@ else
     selected_regs=unique([src.Data{evt.Indices(:,1),end}]);
     setappdata(src,'SelectedRegs',selected_regs);
 end
+
+
+
+
 [idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(end,1),10});
+
+if evt.Indices(end)~=1
+    return;
+end
 
 if ~found
     return;
 end
+
+fig=ancestor(src,'figure');
+modifier = get(fig,'CurrentModifier');
+control = ismember({'shift' 'control'},modifier);
+
+if any(control)
+    return;
+end
+
 active_reg=regions(idx_reg);
 
 if active_reg.Unique_ID~=curr_disp.Active_reg_ID

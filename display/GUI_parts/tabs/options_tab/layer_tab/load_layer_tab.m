@@ -264,8 +264,7 @@ if ~isempty(evt.Indices)
         fig=ancestor(src,'figure');
         modifier = get(fig,'CurrentModifier');
         control = ismember({'shift' 'control'},modifier);
-        if ~any(control)
-            
+        if ~any(control)           
             if ~(layer.ID_num==src.Data{evt.Indices(1),2})
                 [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
                 layer=layers(idx);
