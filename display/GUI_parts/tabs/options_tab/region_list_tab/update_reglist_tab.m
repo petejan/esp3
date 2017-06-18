@@ -54,7 +54,7 @@ try
     
     jView = jScroll.getViewport();
     curr_rect=jView.getViewRect();
-    rect=jView.getViewSize;
+    
 catch
     if ~isdeployed()
         disp('Error while updating reg_list_tab');
@@ -89,21 +89,20 @@ reglist_tab_comp.table.Data{idx_reg,1}=strcat('<html><FONT color="Red"><b>',regl
 
 
 try
-    
+    drawnow; pause(0.02);
     nb_reg=length(regions);
-    pos=java.awt.Point(0,rect.height*(idx_reg-1)/nb_reg);
+    rect=jView.getViewSize;
+    pos=java.awt.Point(0,round(rect.height*(idx_reg-1)/nb_reg));
+    
     old_pos=java.awt.Point(0,curr_rect.y);
-
-    if ~(pos.y>=curr_rect.y&&pos.y<=(curr_rect.y+curr_rect.height))
+    
+    if ~(pos.y>=curr_rect.y&&pos.y<=(curr_rect.y+curr_rect.height))||new
         jView.setViewPosition(pos)
-        disp('Move');
+        fprintf('Moving to %.0f\n',pos.y);
     else
         jView.setViewPosition(old_pos)
-        disp('Don''t move');
+        fprintf('Back to %.0f\n',old_pos.y);
     end
-    
-    jView.setViewPosition(old_pos);
-    drawnow; pause(0.02);
     
     jScroll.repaint();    % workaround for any visual glitches
     
