@@ -21,14 +21,18 @@ if ~isempty(varargin)
     switch varargin{1}
         case 'both'
             main_axes_tot=[mini_ax_comp.mini_ax axes_panel_comp.main_axes];
+            text_size=[6 10];
         case 'mini'
             main_axes_tot=mini_ax_comp.mini_ax;
+            text_size=6;
         case 'main'
             main_axes_tot=axes_panel_comp.main_axes;
+            text_size=10;
             
     end
 else
     main_axes_tot=axes_panel_comp.main_axes;
+    text_size=10;
 end
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
@@ -44,7 +48,6 @@ alpha_in=0.4;
 
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
-    
     
     
 %     x_lim=get(main_axes,'xlim');
@@ -78,7 +81,7 @@ for iax=1:length(main_axes_tot)
             if ~isempty(id_reg)
                 id_text=findobj(main_axes,{'tag','region_text'},'-and','UserData',reg_curr.Unique_ID);
                 if ~isempty(id_text)
-                    set(id_text,'String',reg_curr.Tag);
+                    set(id_text,'String',reg_curr.disp_str());
                 end
                 continue;
             end
@@ -182,7 +185,7 @@ for iax=1:length(main_axes_tot)
                     
             end
                        
-            reg_plot(2)=text(x_text,y_text,reg_curr.Tag,'FontWeight','Bold','Fontsize',10,'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
+            reg_plot(2)=text(x_text,y_text,reg_curr.disp_str(),'FontWeight','Bold','Fontsize',text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
                        
             if main_axes==axes_panel_comp.main_axes
                 create_region_context_menu(reg_plot,main_figure,reg_curr.Unique_ID);

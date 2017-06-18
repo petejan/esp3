@@ -98,10 +98,10 @@ try
     
     if ~(pos.y>=curr_rect.y&&pos.y<=(curr_rect.y+curr_rect.height))||new
         jView.setViewPosition(pos)
-        fprintf('Moving to %.0f\n',pos.y);
+        %fprintf('Moving to %.0f\n',pos.y);
     else
         jView.setViewPosition(old_pos)
-        fprintf('Back to %.0f\n',old_pos.y);
+        %fprintf('Back to %.0f\n',old_pos.y);
     end
     
     jScroll.repaint();    % workaround for any visual glitches

@@ -121,6 +121,10 @@ classdef region_cl
             str=sprintf('Region %d',obj.Unique_ID);
         end
         
+        function str=disp_str(obj)
+            str=sprintf('%s(%.0f)',obj.Tag,obj.ID);
+        end
+        
         function mask=create_mask(obj)
             nb_pings=length(obj.Idx_pings);
             nb_samples=length(obj.Idx_r);
