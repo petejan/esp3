@@ -80,6 +80,7 @@ else
 end
 
 idx_reg=find(curr_disp.Active_reg_ID==[reglist_tab_comp.table.Data{:,10}]);
+
 if isempty(idx_reg)
     return;
 end

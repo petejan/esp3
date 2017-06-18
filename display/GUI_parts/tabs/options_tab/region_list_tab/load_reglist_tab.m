@@ -153,7 +153,10 @@ if ~found
     return;
 end
 active_reg=regions(idx_reg);
-curr_disp.Active_reg_ID=active_reg.Unique_ID;
+
+if active_reg.Unique_ID~=curr_disp.Active_reg_ID
+    curr_disp.Active_reg_ID=active_reg.Unique_ID;
+end
 
 end
 
