@@ -223,8 +223,6 @@ setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 
-% %% Move main figure to screen center
-% movegui(main_figure,'center');
 
 %% Initialize the display and the interactions with the user
 initialize_display(main_figure);

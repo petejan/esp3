@@ -354,7 +354,7 @@ end
 list_font_figure= new_echo_figure(main_fig,'Units','Pixels','Position',[100 100 200 600],'Resize','off',...
     'Name','Choose Font',...
     'Tag','font_choice');
-movegui(list_font_figure,'center');
+centerfig(list_font_figure);
 uicontrol(list_font_figure,'Style','listbox','min',0,'max',0,'value',i_font,'string',fonts,'units','normalized','position',[0.1 0.05 0.8 0.9],'callback',{@list_font_cback,main_fig})
 
 end

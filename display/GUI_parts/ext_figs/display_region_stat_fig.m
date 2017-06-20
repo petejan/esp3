@@ -80,4 +80,4 @@ table_main=uitable('Parent',hfig,...
 pos_t = getpixelposition(table_main);
 
 set(table_main,'ColumnWidth',{pos_t(3)/3, pos_t(3)/3, pos_t(3)/3});
-movegui(hfig,'center');
+centerfig(hfig);

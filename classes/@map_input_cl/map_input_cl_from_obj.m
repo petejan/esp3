@@ -167,7 +167,7 @@ switch class(Ext_obj)
             obj.Transect(i)=survey_obj.SurvOutput.slicedTransectSum.transect(i);
             obj.LatLim(1)=nanmin(obj.LatLim(1),nanmin(obj.SliceLat{i}));
             obj.LongLim(1)=nanmin(obj.LongLim(1),nanmin(obj.SliceLong{i}));
-            obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.SliceLat{i}));
+            obj.LatLim(2)=nanmax(obj.LatLim(2),nanmax(obj.SliceLat{i}));    
             obj.LongLim(2)=nanmax(obj.LongLim(2),nanmax(obj.SliceLong{i}));
             idx_file=find(obj.Snapshot(i)==survey_obj.SurvOutput.regionSum.snapshot...
                 &strcmpi(obj.Stratum(i),survey_obj.SurvOutput.regionSum.stratum)...

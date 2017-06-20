@@ -113,7 +113,7 @@ reg_ver=uicontrol(reg_bot_data_fig,'style','popup','string',reg_str,'units','Nor
     'Callback',{@import_reg_cback,main_figure});
 
 align([text_bot bot_ver text_reg reg_ver],'Distribute','Center');
-movegui(reg_bot_data_fig,'center');
+centerfig(reg_bot_data_fig);
 end
 
 function import_bot_cback(src,~,main_figure)

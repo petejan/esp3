@@ -103,10 +103,8 @@ uicontrol(reg_fig,'Style','pushbutton','units','normalized',...
     'TooltipString', 'Create Region',...
     'HorizontalAlignment','left','BackgroundColor','white','callback',{@create_reg_callback,reg_fig_comp,main_figure,reg_fig});
 
-
-
 set(reg_fig,'visible','on');
-movegui(reg_fig,'center');
+centerfig(reg_fig);
 end
 
 function create_reg_callback(~,~,reg_fig_comp,main_figure,reg_fig)

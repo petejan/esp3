@@ -47,6 +47,8 @@ jLabel = javaObjectEDT('javax.swing.JLabel',labelStr);
 [jcomp,~] = javacomponent(jLabel,[0,25,500,775],dialog_fig);
 jcomp.setBackground(Color.WHITE);
 format_color_gui(dialog_fig,curr_disp.Font);
-movegui(dialog_fig,'center');
-set(dialog_fig,'visible','on');
+
+set(dialog_fig,'Visible','on');
+centerfig(dialog_fig);
+
 end
