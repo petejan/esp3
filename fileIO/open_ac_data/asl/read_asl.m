@@ -1,27 +1,27 @@
 function layers=read_asl(Filename_cell,varargin)
 
 %Hard coded calibration parameters for now
-calParms.X_a=-4.575902369000e+01;
-calParms.X_b=-6.699530000000e-04;
-calParms.X_c=1.930670000000e-07;
-calParms.X_d=-2.984280000000e-12;
+calParms_def.X_a=-4.575902369000e+01;
+calParms_def.X_b=-6.699530000000e-04;
+calParms_def.X_c=1.930670000000e-07;
+calParms_def.X_d=-2.984280000000e-12;
 
-calParms.Y_a=-4.825819620000e+01;
-calParms.Y_b=-2.867530000000e-04;
-calParms.Y_c=1.807400000000e-07;
-calParms.Y_d=-2.887230000000e-12;
+calParms_def.Y_a=-4.825819620000e+01;
+calParms_def.Y_b=-2.867530000000e-04;
+calParms_def.Y_c=1.807400000000e-07;
+calParms_def.Y_d=-2.887230000000e-12;
 
-calParms.ka=525;
-calParms.kb=3000;
-calParms.kc=1.874;
-calParms.A=1.466e-3;
-calParms.B=2.38809e-4;
-calParms.C=1.00335e-7;
-calParms.EL=152.4;
-calParms.TVR=165.5;
-calParms.VTX=97.2;
-calParms.DS=0.022;
-calParms.BP=0.024;
+calParms_def.ka=525;
+calParms_def.kb=3000;
+calParms_def.kc=1.874;
+calParms_def.A=1.466e-3;
+calParms_def.B=2.38809e-4;
+calParms_def.C=1.00335e-7;
+calParms_def.EL=152.4;
+calParms_def.TVR=165.5;
+calParms_def.VTX=97.2;
+calParms_def.DS=0.022;
+calParms_def.BP=0.024;
 
 
 p = inputParser;
@@ -34,18 +34,35 @@ end
 
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
 addParameter(p,'PathToMemmap',def_path_m,@ischar);
-addParameter(p,'calParms',calParms,@isstruct);
+addParameter(p,'calParms',calParms_def,@(x) isstruct(x)||isempty(x));
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,Filename_cell,varargin{:});
 calParms=p.Results.calParms;
 
+if isempty(calParms)
+    calParms=calParms_def;
+end
+
 dir_data=p.Results.PathToMemmap;
 enc='ieee-be';
+nb_files=length(Filename_cell);
+load_bar_comp=p.Results.load_bar_comp;
 for i_cell=1:length(Filename_cell)
+        
+    Filename=Filename_cell{i_cell};
+
+    str_disp=sprintf('Opening File %d/%d : %s\n',i_cell,nb_files,Filename);
+    if ~isempty(load_bar_comp)
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_files,'Value',i_cell-1);
+        load_bar_comp.status_bar.setText(str_disp);
+        pause(0.1);
+    else
+        disp(str_disp)
+    end
     
-    file_f=Filename_cell{i_cell};
-    fprintf('Openning file %s\n',file_f);
-    fid=fopen(file_f,'r','b');
+    
+    fid=fopen(Filename,'r','b');
     
     if fid==-1
         return;
@@ -124,7 +141,7 @@ for i_cell=1:length(Filename_cell)
         data.ad_chan_6(ip)=fread(fid,1,'uint16',enc);
         data.ad_chan_7(ip)=fread(fid,1,'uint16',enc);
         
-        %The following lines have been modified based on code provided by ASL     
+        %The following lines have been modified based on code provided by ASL
         % Ver 1.1 October 31, 2016
         % written by Dave Billenness
         % ASL Environmental Sciences Inc.
@@ -227,9 +244,9 @@ for i_cell=1:length(Filename_cell)
             'Mode','CW');
         transceiver(ic).Config=config_obj;
         transceiver(ic).Params=params_obj;
-           
+        
     end
-    layers(i_cell)=layer_cl('Filename',{file_f},'Filetype','ASL','Transceivers',transceiver,'EnvData',envdata);
+    layers(i_cell)=layer_cl('Filename',{Filename},'Filetype','ASL','Transceivers',transceiver,'EnvData',envdata);
     
     
     

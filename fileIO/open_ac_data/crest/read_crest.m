@@ -146,8 +146,8 @@ if ~isequal(Filename_cell, 0)
                 'Mode','CW',...
                 'AttitudeNavPing',attitude_data_pings);
             
-        
-        [transceiver.Config,transceiver.Params]=config_from_ifile(FileName);
+        nb_pings=numel(Time);
+        [transceiver.Config,transceiver.Params]=config_from_ifile(FileName,nb_pings);
         
 
             

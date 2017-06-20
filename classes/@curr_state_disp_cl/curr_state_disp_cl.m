@@ -87,6 +87,27 @@ classdef curr_state_disp_cl <handle
             end
         end
         
+        function pointer=get_pointer(obj)
+            switch obj.CursorMode
+                case 'Zoom In'
+                    pointer='glassplus';
+                case 'Zoom Out'
+                    pointer='glassminus';
+                case 'Bad Transmits'
+                    pointer='addpole';
+                case 'Edit Bottom'
+                    pointer='crosshair';
+                case 'Measure'
+                    pointer='datacursor';
+                case 'Create Region'
+                    pointer='cross';
+                case 'Draw Line'
+                    pointer='hand';
+                case 'Normal'
+                    pointer='arrow';
+            end
+        end
+        
         function setTypeCax(obj)
             [cax,obj.Type]=init_cax(obj.Fieldname);
             

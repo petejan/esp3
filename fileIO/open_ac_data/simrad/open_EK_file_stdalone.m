@@ -52,6 +52,16 @@ if ~iscell(Filename_cell)
     Filename_cell={Filename_cell};
 end
 
+if ~iscell(Filename_cell)
+    Filename_cell={Filename_cell};
+end
+
+if isempty(Filename_cell)
+    layers=[];
+    return;
+end
+
+
 [def_path_m,~,~]=fileparts(Filename_cell{1});
 
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
@@ -65,6 +75,8 @@ addParameter(p,'EsOffset',[]);
 addParameter(p,'GPSOnly',0);
 addParameter(p,'LoadEKbot',0);
 addParameter(p,'load_bar_comp',[]);
+
+
 parse(p,Filename_cell,varargin{:});
 
 cal=p.Results.Calibration;
@@ -90,17 +102,22 @@ if ~isequal(Filename_cell, 0)
 
     
     for uu=1:nb_files
+        Filename=Filename_cell{uu};
+        [path_f,fileN,~]=fileparts(Filename);
         
+
+        str_disp=sprintf('Opening File %d/%d : %s\n',uu,nb_files,Filename);
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_files,'Value',uu-1);
-            load_bar_comp.status_bar.setText(sprintf('Opening File %d/%d',uu,nb_files));
+            load_bar_comp.status_bar.setText(str_disp);
             pause(0.1);
+        else
+            disp(str_disp)
         end
-        
+
+   
         try
-            Filename=Filename_cell{uu};
-            [path_f,fileN,~]=fileparts(Filename);
-            fprintf('(%.0f/%.0f) Opening file: %s\n',uu,length(Filename_cell),fileN);
+            
             ftype=get_ftype(Filename);
             if isempty(vec_freq_init)
                 

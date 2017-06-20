@@ -1,7 +1,25 @@
-function open_asl_files(hObject,Filename)
+function new_layers=open_asl_files(Filename,varargin)
 
-layers=getappdata(hObject,'Layers');
-app_path=getappdata(hObject,'App_path');
+p = inputParser;
+
+if ~iscell(Filename)
+    Filename={Filename};
+end
+
+if isempty(Filename)
+    new_layers=[];
+    return;
+end
+
+[def_path_m,~,~]=fileparts(Filename{1});
+
+addRequired(p,'Filename',@(x) ischar(x)||iscell(x));
+addParameter(p,'PathToMemmap',def_path_m,@ischar);
+addParameter(p,'Frequencies',[],@isnumeric);
+addParameter(p,'load_bar_comp',[]);
+
+parse(p,Filename,varargin{:});
+
 
 files_out={};
 dates=[];
@@ -55,7 +73,7 @@ for il=1:length(dates_selected)
 end
 
 Filename_out=files_out(idx_to_open);
-dates_out=dates(idx_to_open);
+%dates_out=dates(idx_to_open);
 [pathname,~]=fileparts(Filename_out{end});
 
 try
@@ -66,77 +84,66 @@ catch
     
     [xmlfilename, pathname] = uigetfile({fullfile(pathname,'*.xml')}, 'Select instrument coefficients file');
     if xmlfilename==0
-        return;
+        calParms=[];
+    else
+        calParms = LoadAZFPxml(pathname,xmlfilename,[]);
     end
-    calParms = LoadAZFPxml(pathname,xmlfilename,[]);
 end
 
 
-fprintf('Openning %.0f day(s), that is %d files\n',length(idx_out),length(idx_to_open));
+str_disp=sprintf('Openning %.0f day(s), that is %d files\n',length(idx_out),length(idx_to_open));
+
+if ~isempty(p.Results.load_bar_comp)
+    p.Results.load_bar_comp.status_bar.setText(str_disp);
+else
+    disp(str_disp)
+end
+
 
 new_layers=read_asl(Filename_out,...
-    'PathToMemmap',app_path.data_temp,'calParms',calParms);
+    'PathToMemmap',p.Results.PathToMemmap,'calParms',calParms,'load_bar_comp',p.Results.load_bar_comp);
+% 
+% for i=1:length(new_layers)
+%     new_layers(i).load_bot_regs();
+% end
+% 
+% new_layers.load_echo_logbook_db();
+% 
+% 
+% max_load_days=7;
+% i_cell=1;
+% new_layers_sorted{i_cell}=[];
+% date_ori=dates_out(1);
+% 
+% for i_file=1:length(dates_out)
+%     if i_file>1
+%         if dates_out(i_file)-dates_out(i_file-1)>=1
+%             i_cell=i_cell+1;
+%             new_layers_sorted{i_cell}= new_layers(i_file);
+%             date_ori=dates_out(i_file);
+%             continue;
+%         end
+%     end
+%     
+%     if dates_out(i_file)-date_ori<=max_load_days
+%         new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} new_layers(i_file)];
+%     else
+%         i_cell=i_cell+1;
+%         new_layers_sorted{i_cell}= new_layers(i_file);
+%         date_ori=dates_out(i_file);
+%     end
+%     
+% end
+% 
+% new_layers=[];
+% 
+% for icell=1:length(new_layers_sorted)
+%     new_layers_sorted_tmp=new_layers_sorted{icell}.sort_per_survey_data();
+%     for icell_tmp=1:length(new_layers_sorted_tmp)
+%         new_layers=[layers_out shuffle_layers(new_layers_sorted_tmp{icell_tmp},'multi_layer',0)];
+%     end
+% end
 
-if ~isempty(new_layers)
-    for i=1:length(new_layers)
-        new_layers(i).load_bot_regs();
-    end
-    
-    new_layers.load_echo_logbook_db();
-else
-    return;
-end
-
-max_load_days=7;
-i_cell=1;
-new_layers_sorted{i_cell}=[];
-date_ori=dates_out(1);
-
-for i_file=1:length(dates_out)
-    if i_file>1
-        if dates_out(i_file)-dates_out(i_file-1)>=1
-            i_cell=i_cell+1;
-            new_layers_sorted{i_cell}= new_layers(i_file);
-            date_ori=dates_out(i_file);
-            continue;
-        end
-    end
-    
-    if dates_out(i_file)-date_ori<=max_load_days
-        new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} new_layers(i_file)];
-    else
-        i_cell=i_cell+1;
-        new_layers_sorted{i_cell}= new_layers(i_file);
-        date_ori=dates_out(i_file);
-    end
-    
-end
-
-disp('Shuffling layers');
-layers_out=[];
-
-for icell=1:length(new_layers_sorted)
-    new_layers_sorted_tmp=new_layers_sorted{icell}.sort_per_survey_data();
-    for icell_tmp=1:length(new_layers_sorted_tmp)
-        layers_out=[layers_out shuffle_layers(new_layers_sorted_tmp{icell_tmp},'multi_layer',0)];
-    end
-end
-
-id_lay=layers_out(end).ID_num;
-
-layers=[layers layers_out];
-layers=reorder_layers_time(layers);
-
-[idx,~]=find_layer_idx(layers,id_lay);
-layer=layers(idx);
-
-% profile off
-% profile viewer;
-
-
-
-setappdata(hObject,'Layer',layer);
-setappdata(hObject,'Layers',layers);
 
 
 end

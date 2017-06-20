@@ -42,12 +42,13 @@ function open_file(~,~,file_id,main_figure)
 
 %%% Grab current layer (files data) and paths
 layer = getappdata(main_figure,'Layer');
+layers = getappdata(main_figure,'Layers');
 app_path = getappdata(main_figure,'App_path');
 
 %%% Check if there are unsaved new bottom and regions
 check_saved_bot_reg(main_figure);
 
-%%% Exit if input file was bad 
+%%% Exit if input file was bad
 % (put this at beginning and through input parser)
 if isempty(file_id)
     return;
@@ -185,6 +186,16 @@ else
     Filename_tot = Filename;
 end
 
+if ~isempty(layers)
+    [old_files,~]=layers.list_files_layers();
+    idx_already_open=cellfun(@(x) any(strcmpi(x,old_files)),Filename_tot);
+    if any(idx_already_open)
+        fprintf('File %s already open in existing layer\n',Filename_tot{idx_already_open});
+        Filename_tot(idx_already_open)=[];
+    end
+end
+
+
 %%% Get types of files to open
 ftype_cell = cell(1,length(Filename_tot));
 for ifi = 1:length(Filename_tot)
@@ -193,6 +204,9 @@ end
 
 %%% Find each ftypes in list to batch process the opening
 [ftype_unique,~,ic] = unique(ftype_cell);
+
+show_status_bar(main_figure);
+load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 %%% File opening section, by type of file
 for itype = 1:length(ftype_unique)
@@ -234,27 +248,88 @@ for itype = 1:length(ftype_unique)
             
     end
     
-    % Load all pings by default
-    ping_start = 1;
-    ping_end = Inf;
     
     % Open the files. Different behavior per type of file
     switch ftype
         
         case 'fcv30'
-            
+            new_layers=[];
             for ifi = 1:length(Filename)
-                open_FCV30_file(main_figure,Filename{ifi});
+                lays_tmp=open_FCV30_file(Filename{ifi},...
+                    'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
+                new_layers=[new_layers lays_tmp];
             end
+            if isempty(new_layers)
+                continue;
+            end
+            multi_lay_mode=0;
             
         case {'EK60','EK80'}
             
-            open_raw_file(main_figure,Filename,[],ping_start,ping_end);
+            new_layers=open_EK_file_stdalone(Filename,...
+                'PathToMemmap',app_path.data_temp,'LoadEKbot',1,'load_bar_comp',load_bar_comp);
+            if isempty(new_layers)
+                continue;
+            end
             
+            load_bar_comp.status_bar.setText('Updating Database with GPS Data');
+            new_layers.add_gps_data_to_db();
+            
+            load_bar_comp.status_bar.setText('Loading Survey Metadata');
+            new_layers.load_echo_logbook_db();
+            
+            load_bar_comp.status_bar.setText('Loading Bottom and regions');
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
+            for i=1:numel(new_layers)
+                set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
+                try
+                    new_layers(i).load_bot_regs();
+                catch err
+                    disp(err.message);
+                    fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
+                end
+            end
+            
+            load_bar_comp.status_bar.setText('Loading Lines');
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
+            
+            for i=1:length(new_layers)
+                set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
+                try
+                    new_layers(i).add_lines_from_line_xml();
+                catch err
+                    disp(err.message);
+                    laystr=list_layers(new_layers(i),'nb_char',80);
+                    fprintf('Could not load lines for layer %s',laystr{1});
+                end
+            end
+            
+            multi_lay_mode=-1;
         case 'asl'
             
-            open_asl_files(main_figure,Filename);
+            new_layers=open_asl_files(Filename,...
+                'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
             
+            if isempty(new_layers)
+                continue;
+            end
+            load_bar_comp.status_bar.setText('Loading Survey Metadata');
+            new_layers.load_echo_logbook_db();
+            
+            load_bar_comp.status_bar.setText('Loading Bottom and regions');
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
+             
+            for i=1:length(new_layers)
+                set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
+                try
+                    new_layers(i).load_bot_regs();
+                catch err
+                    disp(err.message);
+                    fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
+                end
+            end
+            
+            multi_lay_mode=0;
         case 'dfile'
             
             % Prompt user on opening raw or original and handle the answer
@@ -290,12 +365,15 @@ for itype = 1:length(ftype_unique)
             % Open the files in chosen format
             switch dfile
                 case 1
-                    open_dfile_crest(main_figure,Filename,CVSCheck);
+                    new_layers=read_crest(Filename,...
+                        'PathToMemmap',app_path.data_temp,'CVSCheck',CVSCheck,'CVSroot',app_path.cvs_root);
                 case 0
-                    open_dfile(main_figure,Filename,CVSCheck);
+                    new_layers=open_dfile(Filename,'CVSCheck',CVSCheck,'CVSroot',app_path.cvs_root,...
+                        'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
             end
+            multi_lay_mode=0;
         case 'invalid'
-             for ifi=1:length(Filename)
+            for ifi=1:length(Filename)
                 fprintf('Could not open %s\n',Filename{ifi});
             end
             continue;
@@ -306,7 +384,29 @@ for itype = 1:length(ftype_unique)
             continue;
             
     end
+    
+    
+    new_layers=reorder_layers_time(new_layers);
+    id_lay=new_layers(end).ID_num;
+    all_layer=[layers new_layers];
+    all_layers_sorted=all_layer.sort_per_survey_data();
+    
+    load_bar_comp.status_bar.setText('Shuffling layers');
+    
+    layers_out=[];
+    
+    for icell=1:length(all_layers_sorted)
+        layers_out=[layers_out shuffle_layers(all_layers_sorted{icell},'multi_layer',multi_lay_mode)];
+    end
+    
+    layers=reorder_layers_time(layers_out);
 end
+
+[idx,~]=find_layer_idx(layers,id_lay);
+layer=layers(idx);
+
+setappdata(main_figure,'Layer',layer);
+setappdata(main_figure,'Layers',layers);
 
 %%% TODO: comment
 hide_status_bar(main_figure);

@@ -35,7 +35,9 @@
 
 %% Function
 function update_layer_tab(main_figure)
-disp('update_layer_tab');
+if ~isdeployed
+    disp('update_layer_tab');
+end
 layer_tab_comp=getappdata(main_figure,'Layer_tab');
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');

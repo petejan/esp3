@@ -48,7 +48,7 @@ if isempty(layer)
     end
 else
     switch layer.Filetype
-        case 'CREST'
+        case {'CREST','FCV30'}
             return;
         otherwise
             [path_lay,~]=get_path_files(layer);

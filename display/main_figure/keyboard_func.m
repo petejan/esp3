@@ -270,8 +270,7 @@ switch callbackdata.Key
             keyboard_zoom(1,main_figure)
         elseif strcmpi(callbackdata.Modifier,'control')
             save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
-        end
-        
+        end        
     case 'z'
         go_to_ping(1,main_figure);
         

@@ -11,7 +11,7 @@
 %
 % *INPUT VARIABLES*
 %
-% * |main_figure|: Handle to main ESP3 window (Required).
+% * |curr_fig|: Handle to main ESP3 window (Required).
 % * |new|: Flag for refreshing or first time load (Required. |0| if
 % refreshing or |1| if first-time loading).
 %
@@ -36,8 +36,8 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-%replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@zoom_in_callback,main_figure},'pointer','glassplus');
-function replace_interaction(main_figure,varargin)
+%replace_interaction(curr_fig,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@zoom_in_callback,curr_fig},'pointer','glassplus');
+function replace_interaction(curr_fig,varargin)
 
 interact_fields={'WindowButtonDownFcn',...
     'WindowButtonMotionFcn',...
@@ -49,31 +49,36 @@ interact_fields={'WindowButtonDownFcn',...
 
 p = inputParser;
 
-addRequired(p,'main_figure',@ishandle);
+addRequired(p,'curr_fig',@ishandle);
 addParameter(p,'interaction','WindowButtonDownFcn',@(x) ismember(x,interact_fields));
 addParameter(p,'id',1,@(x) ismember(x,[1 2]));
 addParameter(p,'interaction_fcn',[],@(x) isempty(x)||isa(x,'function_handle')||iscell(x));
-addParameter(p,'pointer',main_figure.Pointer,@ischar)
+addParameter(p,'pointer',[],@(x) ischar(x)||isempty(x))
 
-parse(p,main_figure,varargin{:});
+parse(p,curr_fig,varargin{:});
 
-interactions_id=getappdata(main_figure,'interactions_id');
+interactions_id=getappdata(curr_fig,'interactions_id');
 
 if isempty(interactions_id)
     return;
 end
 
-iptremovecallback(main_figure,p.Results.interaction,interactions_id.(p.Results.interaction)(p.Results.id));
+iptremovecallback(curr_fig,p.Results.interaction,interactions_id.(p.Results.interaction)(p.Results.id));
 
 if isempty(p.Results.interaction_fcn)
     fcn=' ';
 else
     fcn=p.Results.interaction_fcn;
 end
-interactions_id.(p.Results.interaction)(p.Results.id)=iptaddcallback(main_figure,(p.Results.interaction),fcn);
+interactions_id.(p.Results.interaction)(p.Results.id)=iptaddcallback(curr_fig,(p.Results.interaction),fcn);
 
-setptr(main_figure,p.Results.pointer);
+if isappdata(curr_fig,'Curr_disp')&&isempty(p.Results.pointer)
+    curr_disp=getappdata(curr_fig,'Curr_disp');
+    setptr(curr_fig,curr_disp.get_pointer());
+elseif ~isempty(p.Results.pointer)
+    setptr(curr_fig,p.Results.pointer);
+end
 
-setappdata(main_figure,'interactions_id',interactions_id);
+setappdata(curr_fig,'interactions_id',interactions_id);
 
 end
