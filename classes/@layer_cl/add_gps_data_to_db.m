@@ -56,6 +56,7 @@ for ilay=1:length(layers_obj)
         creategpsTable(dbconn);
         time_str=datestr(gps_data_obj.Time(idx_t),'yyyymmddHHMMSSFFF ')';
         time_str=time_str(:)';
+%         longlat_str=['LINESTRING(' sprintf('%.6f %.6f,',kron(gps_data_obj.Long(idx_t)', [1 0]) + kron(gps_data_obj.Lat(idx_t)', [0 1])) ')'];
         dbconn.insert('gps_data',{'Filename' 'Lat' 'Long' 'Time'},...
             {[fileOri extN] sprintf('%.6f ',gps_data_obj.Lat(idx_t)) sprintf('%.6f ',gps_data_obj.Long(idx_t)) time_str});
         %         end

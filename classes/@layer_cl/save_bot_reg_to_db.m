@@ -1,5 +1,5 @@
 
-function save_bot_reg_to_db(layer_obj,varargin)
+function [bot_ver_new,reg_ver_new]=save_bot_reg_to_db(layer_obj,varargin)
 p = inputParser;
 addRequired(p,'layer_obj',@(obj) isa(obj,'layer_cl'));
 addParameter(p,'bot',1);
@@ -7,7 +7,8 @@ addParameter(p,'reg',1);
 parse(p,layer_obj,varargin{:});
 
 [path_xml,reg_file_str,bot_file_str]=layer_obj.create_files_str();
-
+bot_ver_new=0;
+reg_ver_new=0;
 
 for ifile=1:length(reg_file_str)
     if exist(path_xml{ifile},'dir')==0
@@ -32,7 +33,8 @@ for ifile=1:length(reg_file_str)
         if isempty(bot_ver)
             bot_ver={0};
         end
-        dbconn.insert('bottom',{'Filename'  'Bot_XML' 'Version'},{bot_file_str{ifile} xml_str_bot nanmax(cell2mat(bot_ver))+1});
+        bot_ver_new=nanmax(cell2mat(bot_ver))+1;
+        dbconn.insert('bottom',{'Filename'  'Bot_XML' 'Version'},{bot_file_str{ifile} xml_str_bot bot_ver_new});
     end
     
     
@@ -42,8 +44,8 @@ for ifile=1:length(reg_file_str)
         if isempty(reg_ver)
             reg_ver={0};
         end
-        
-        dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg nanmax(cell2mat(reg_ver))+1});
+        reg_ver_new=nanmax(cell2mat(reg_ver))+1;
+        dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg reg_ver_new});
     end
     
     %     out_bot = dbconn.fetch('select * from bottom')
