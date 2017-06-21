@@ -22,6 +22,8 @@ switch listdata.AffectedObject.CursorMode
         toggle_func(cursor_mode_tool_comp.create_reg,[],main_figure);
     case 'Draw Line'
         toggle_func('draw_line',[],main_figure);
+    case 'Brush Soundings'
+        toggle_func('brush_soundings',[],main_figure);
     case 'Normal'     
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);

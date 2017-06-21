@@ -42,8 +42,15 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
+switch class(select_plot)
+    case 'region_cl'
 
-idx_pings=select_plot.Idx_pings;
+        idx_pings=select_plot.Idx_pings;
+        
+    otherwise
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        
+end
 
 
 

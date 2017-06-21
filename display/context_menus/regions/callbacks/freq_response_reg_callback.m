@@ -1,9 +1,15 @@
 
-function freq_response_reg_callback(src,evt,reg_curr,main_figure,field)
+function freq_response_reg_callback(src,evt,select_plot,main_figure,field)
 
+switch class(select_plot)
+    case 'region_cl'
+        idx_r=select_plot.Idx_r;
+        idx_pings=select_plot.Idx_pings;       
+    otherwise
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+end
 
-idx_r=reg_curr.Idx_r;
-idx_pings=reg_curr.Idx_pings;
 
 
 switch(field)

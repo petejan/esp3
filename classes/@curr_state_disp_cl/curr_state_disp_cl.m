@@ -103,6 +103,8 @@ classdef curr_state_disp_cl <handle
                     pointer='cross';
                 case 'Draw Line'
                     pointer='hand';
+                case 'Brush Soundings'
+                    pointer='datacursor';
                 case 'Normal'
                     pointer='arrow';
             end

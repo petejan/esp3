@@ -90,7 +90,10 @@ switch src_out.State
                 replace_interaction(main_figure,'interaction','KeyPressFcn','id',2,'interaction_fcn',{@cancel_create_region,main_figure});
             case 'draw_line'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure});
+            case 'brush_soundings'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@brush_soundings,main_figure}); 
             otherwise 
+
                 reset_mode(0,0,main_figure);    
         end
     case 'off'

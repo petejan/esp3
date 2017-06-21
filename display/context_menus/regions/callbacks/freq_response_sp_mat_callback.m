@@ -1,5 +1,5 @@
 
-function [TS_f,f_vec]=freq_response_sp_mat_callback(~,~,active_reg,main_figure)
+function [TS_f,f_vec]=freq_response_sp_mat_callback(~,~,select_plot,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -9,6 +9,15 @@ trans_obj=layer.Transceivers(idx_freq);
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
+
+switch class(select_plot)
+    case 'region_cl'
+        active_reg=select_plot;
+    otherwise
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+end
 
 if strcmp(trans_obj.Mode,'FM')
     [cal_path,~,~]=fileparts(layer.Filename{1});

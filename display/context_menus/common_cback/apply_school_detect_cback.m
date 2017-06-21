@@ -41,9 +41,15 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-
-idx_r=select_plot.Idx_r;
-idx_pings=select_plot.Idx_pings;
+switch class(select_plot)
+    case 'region_cl'
+        idx_r=select_plot.Idx_r;
+        idx_pings=select_plot.Idx_pings;
+        
+    otherwise
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+end
 
 
 alg_name='SchoolDetection';

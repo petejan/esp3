@@ -46,14 +46,11 @@ trans_obj=layer.get_trans(curr_disp.Freq);
 switch class(ID)
     case 'matlab.graphics.primitive.Patch'
         isreg=0;
-        idx_pings=round(nanmin(reg_plot.XData)):round(nanmax(reg_plot.XData));
-        idx_r=round(nanmin(reg_plot.YData)):round(nanmax(reg_plot.YData));
-        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
-        reg_curr=active_reg;
+        select_plot=ID;
     otherwise
-         isreg=1;
-        reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-        active_reg=reg_curr;
+        isreg=1;
+        select_plot=trans_obj.get_region_from_Unique_ID(ID);
+
 end
 
 for ii=1:length(reg_plot)
@@ -67,7 +64,7 @@ end
 if isreg>0
         region_menu=uimenu(context_menu,'Label','Region');
         uimenu(region_menu,'Label','Display Region SV','Callback',{@display_region_callback,main_figure,ID});
-         uimenu(region_menu,'Label','Display Region Fish Density','Callback',{@display_region_fishdensity_callback,main_figure,ID});
+        uimenu(region_menu,'Label','Display Region Fish Density','Callback',{@display_region_fishdensity_callback,main_figure,ID});
         uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,ID,main_figure});
         uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,ID,main_figure});
         uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,ID,main_figure});
@@ -78,32 +75,32 @@ end
 
 
 analysis_menu=uimenu(context_menu,'Label','Analysis');
-uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,active_reg,main_figure});
+uimenu(analysis_menu,'Label','Display Pdf of values','Callback',{@disp_hist_region_callback,select_plot,main_figure});
 
-if isa(reg_curr,'region_cl')
-        uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,ID,main_figure});
-        uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,ID,main_figure});
+if isreg>0
+    uimenu(analysis_menu,'Label','Classify','Callback',{@classify_reg_callback,ID,main_figure});
+    uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,ID,main_figure});
 end
 
-uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,active_reg,main_figure});
+uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,select_plot,main_figure});
 
 
 freq_analysis_menu=uimenu(context_menu,'Label','Frequency Analysis');
-uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sp'});
-uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@freq_response_reg_callback,reg_curr,main_figure,'sv'});
+uimenu(freq_analysis_menu,'Label','Display TS Frequency response','Callback',{@freq_response_reg_callback,select_plot,main_figure,'sp'});
+uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@freq_response_reg_callback,select_plot,main_figure,'sv'});
 
 if strcmp(trans_obj.Mode,'FM')
-    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,reg_curr,main_figure});
-    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,reg_curr,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,select_plot,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,select_plot,main_figure});
 end
 
 
 algo_menu=uimenu(context_menu,'Label','Algorithms');
-uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_detect_cback,active_reg,main_figure,'v1'});
-uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,active_reg,main_figure,'v2'});
-uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,active_reg,main_figure});
-uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,active_reg,main_figure});
-uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,active_reg,main_figure});
+uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_detect_cback,select_plot,main_figure,'v1'});
+uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,select_plot,main_figure,'v2'});
+uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,select_plot,main_figure});
+uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,select_plot,main_figure});
+uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,select_plot,main_figure});
 
 
 
@@ -190,17 +187,27 @@ end
 
 
 
-function disp_hist_region_callback(~,~,reg_curr,main_figure)
+function disp_hist_region_callback(~,~,select_plot,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 trans=layer.get_trans(curr_disp.Freq);
-
+switch class(select_plot)
+    case 'region_cl'
+        reg_curr=select_plot;
+    otherwise
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+        reg_curr=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+end
 data=trans.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field',curr_disp.Fieldname);
 
 sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
 idxBad=find(trans.Bottom.Tag==0);
+
+
+
 [sub_bot_mat,sub_sample_mat]=meshgrid(sub_bot,reg_curr.Idx_r);
 
 sub_idx_bad=intersect(reg_curr.Idx_pings,idxBad);

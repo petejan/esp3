@@ -1,5 +1,5 @@
 
-function [Sv_f,f_vec]=freq_response_mat_callback(~,~,reg_curr,main_figure)
+function [Sv_f,f_vec]=freq_response_mat_callback(~,~,select_plot,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -8,7 +8,17 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
 
-active_reg=reg_curr;
+switch class(select_plot)
+    case 'region_cl'
+        active_reg=select_plot;
+    otherwise
+        idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
+        idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+        active_reg=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
+end
+
+
+
 
 show_status_bar(main_figure);
     load_bar_comp=getappdata(main_figure,'Loading_bar');
