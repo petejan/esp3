@@ -6,13 +6,15 @@ return;
 end
     
 curr_disp=getappdata(main_figure,'Curr_disp');
+
 Slice_w=50;
 Slice_w_units='meters';
+Slice_h=1;
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-[output_2D,~]=trans_obj.slice_transect2D('Reference','Surface','Slice_w',Slice_w,'Slice_w_units',Slice_w_units);
+[output_2D,~]=trans_obj.slice_transect2D('Reference','Surface','Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h);
 idx_reg=trans_obj.find_regions_type('Data');
 reg_tot=trans_obj.get_reg_spec(idx_reg);               
 [output_1D,~,~]=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',0,'Slice_w',Slice_w,'Slice_units',Slice_w_units);

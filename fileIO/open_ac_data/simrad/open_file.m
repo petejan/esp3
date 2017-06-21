@@ -102,9 +102,8 @@ else
         end
         
         % add path to filenames
-        for ic = 1:length(Filename)
-            Filename{ic} = fullfile(path_f,Filename{ic});
-        end
+
+        Filename=cellfun(@(x) fullfile(path_f,x),Filename,'UniformOutput',0);
         
     elseif file_id == 1 % if requesting to open next file in folder
         
@@ -174,8 +173,7 @@ end
 if isempty(Filename)
     return;
 end
-if isequal(Filename, 0);
-    
+if isequal(Filename, 0);  
     return;
 end
 

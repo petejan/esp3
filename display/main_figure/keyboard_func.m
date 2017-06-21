@@ -66,8 +66,7 @@ end
 replace_interaction(src,'interaction','KeyPressFcn','id',1);
 
 switch callbackdata.Key
-    
-    
+      
     case {'leftarrow','rightarrow','uparrow','downarrow','a','d'}
         
         axes_panel_comp=getappdata(main_figure,'Axes_panel');

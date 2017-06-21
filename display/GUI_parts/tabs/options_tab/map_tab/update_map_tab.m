@@ -44,8 +44,8 @@ while sucess==0&&i<length(proj)
 end
 curr_disp.Proj=proj_i;
 map_tab_comp.Proj=proj_i;
-map_tab_comp.LongLim=LongLim;
-map_tab_comp.LatLim=LatLim;
+map_tab_comp.LongLim=LongLimExt;
+map_tab_comp.LatLim=LatLimExt;
 map_tab_comp.tracks(1)=m_plot(map_tab_comp.ax,long(1),lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
 map_tab_comp.tracks(2)=m_plot(map_tab_comp.ax,long,lat,'Color','k','tag','Nav');
 try

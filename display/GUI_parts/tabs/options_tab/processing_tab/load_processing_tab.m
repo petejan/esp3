@@ -58,6 +58,7 @@ set([processing_tab_comp.track_target processing_tab_comp.single_target processi
 
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.2 0.15],'callback',{@process,main_figure,0});
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all current layers','units','normalized','pos',[0.6 0.50 0.2 0.15],'callback',{@process,main_figure,1});
+uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Select *.raw files','units','normalized','pos',[0.6 0.30 0.2 0.15],'callback',{@process,main_figure,2});
 
 %set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Processing_tab',processing_tab_comp);
@@ -69,6 +70,8 @@ update_process_list([],[],main_figure);
 layer_curr=getappdata(main_figure,'Layer');
 layers=getappdata(main_figure,'Layers');
 process_list=getappdata(main_figure,'Process');
+app_path = getappdata(main_figure,'App_path');
+load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 if layer_curr.ID_num==0
     return;
@@ -79,12 +82,57 @@ if mode==0
 elseif mode ==1
     layer_to_proc=layers;
 elseif mode==2
-     
+    
+    %%% Get a default path for the file selection dialog box
+    if ~isempty(layer_curr)
+        [path_lay,~] = layer_curr.get_path_files();
+        if ~isempty(path_lay)
+            % if file(s) already loaded, same path as first one in list
+            file_path = path_lay{1};
+        else
+            % config default path if none
+            file_path = app_path.data;
+        end
+    else
+        % config default path if none
+        file_path = app_path.data;
+    end
+    [Filename,path_f] = uigetfile( {fullfile(file_path,'*.raw')}, 'Pick a set of raw file','MultiSelect','on');
+    if isempty(Filename)
+        return;
+    end
+    
+    % single file is char. Turn to cell
+    if ~iscell(Filename)
+        if (Filename==0)
+            return;
+        end
+        Filename = {Filename};
+    end
+    
+    % keep only supported files, exit if none
+    idx_keep =~ cellfun(@isempty,regexp(Filename(:),'(raw$)'));
+    Filename = Filename(idx_keep);
+    if isempty(Filename)
+        return;
+    end
+    layer_to_proc=cellfun(@(x) fullfile(path_f,x),Filename,'UniformOutput',0);
+    
 end
 
 show_status_bar(main_figure);
 for ii=1:length(layer_to_proc)
-    layer=layer_to_proc(ii);
+    
+    switch mode
+        case {0,1}
+            layer=layer_to_proc(ii);
+        case {2}
+            layer=open_EK_file_stdalone(layer_to_proc{ii},...
+                'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
+            load_bar_comp.status_bar.setText('Updating Database with GPS Data');
+            layer.add_gps_data_to_db();
+    end
+    
     
     for kk=1:length(process_list)
         
@@ -105,14 +153,14 @@ for ii=1:length(layer_to_proc)
         [~,idx_single_target,single_target_algo]=find_process_algo(process_list,process_list(kk).Freq,'SingleTarget');
         [~,idx_track_target,single_track_algo]=find_process_algo(process_list,process_list(kk).Freq,'TrackTarget');
         
-
+        
         if noise_rem_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_denoise));
             trans_obj.apply_algo('Denoise');
         end
         
         if bot_algo&&~bad_trans_algo
-           trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot));
+            trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot));
             trans_obj.apply_algo('BottomDetection');
         end
         
@@ -140,20 +188,26 @@ for ii=1:length(layer_to_proc)
         end
         
         if single_target_algo
-             trans_obj.add_algo(process_list(kk).Algo(idx_single_target));
+            trans_obj.add_algo(process_list(kk).Algo(idx_single_target));
             trans_obj.apply_algo('SingleTarget');
             
             if single_track_algo
                 trans_obj.add_algo(process_list(kk).Algo(idx_track_target));
                 trans_obj.apply_algo('TrackTarget');
-
+                
             end
             
             
         end
         
     end
-    
+    if mode==2
+        load_bar_comp.status_bar.setText('Saving Resulting Bottom ad regions');
+        layer.write_reg_to_reg_xml();
+        layer.write_bot_to_bot_xml();
+        layer.rm_memaps();
+        delete(layer);
+    end
 end
 
 hide_status_bar(main_figure);
@@ -163,7 +217,7 @@ set_alpha_map(main_figure);
 
 display_regions(main_figure,'both');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+trans_obj=layer_curr.get_trans(curr_disp.Freq);
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 order_stacks_fig(main_figure);

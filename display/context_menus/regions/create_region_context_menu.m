@@ -56,8 +56,9 @@ end
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
     if isnumeric(ID)
-        iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,ID,main_figure});
         iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@move_reg_callback,ID,main_figure});
+        iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,ID,main_figure});
+        
     end
 end
 

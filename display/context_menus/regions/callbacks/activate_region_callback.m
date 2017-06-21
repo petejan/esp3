@@ -87,14 +87,14 @@ if repos>0
 end
 ah=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
 
-idx_reg_ac=1;
+
 for i=1:length(ah)
     reg_text=findobj(ah(i),'Tag','region_text');
     set(reg_text,'color',txt_col);
     
     for ireg=1:numel(trans_obj.Regions)
         if trans_obj.Regions(ireg).Unique_ID==reg_curr.Unique_ID
-            idx_reg_ac=ireg;
+           
             col=ac_data_col;
             switch trans_obj.Regions(ireg).Type
                 case 'Data'

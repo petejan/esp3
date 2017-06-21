@@ -47,10 +47,7 @@ region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','S
 
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Tag','units','normalized','Position',[0.7 0.55 0.1 0.15]);
-region_tab_comp.tag=uicontrol(region_tab_comp.region_tab,'Style','edit','String',reg_curr.Tag,'units','normalized','Position', [0.8 0.55 0.15 0.15],'callback',{@recompute_region_callback,main_figure});
-
-uicontrol(region_tab_comp.region_tab,'Style','Text','String','ID','units','normalized','Position',[0.75 0.75 0.1 0.15]);
-region_tab_comp.id=uicontrol(region_tab_comp.region_tab,'Style','edit','String',num2str(reg_curr.ID,'%.0f'),'units','normalized','Position', [0.85 0.75 0.1 0.15],'callback',{@recompute_region_callback,main_figure});
+region_tab_comp.tag=uicontrol(region_tab_comp.region_tab,'Style','edit','String',reg_curr.Tag,'units','normalized','Position', [0.8 0.55 0.15 0.15]);
 
 
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Cell Width','units','normalized','Position',[0 0.3 0.2 0.1]);

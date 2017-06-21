@@ -141,7 +141,7 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         x_box=([x_min x_max  x_max x_min x_min]);
         y_box=([y_max y_max y_min y_min y_max]);
 
-        idx_brush=intersect(round(x_min:x_max),find((bottom_idx>=y_min)&bottom_idx<=y_max))
+        idx_brush=intersect(round(x_min:x_max),find((bottom_idx>=y_min)&bottom_idx<=y_max));
 
         set(hp_p,'XData',idx_brush,'YData',bottom_idx(idx_brush));
         

@@ -54,16 +54,20 @@ end
 
 switch main_figure.SelectionType
     case 'normal'
-
-        modifier = get(main_figure,'CurrentModifier');
-        control = ismember({'alt'},modifier);
+        
+        modifier = get(main_figure,'CurrentCharacter');
+        control = ismember({'m'},modifier);
         
         if ~any(control)
             if~isdeployed()
-                fprintf('Not Moving, did not see alt\n');
+                fprintf('Not Moving, did not see m\n');
             end
             return;
         end
+        enterFcn =  @(figHandle, currentPoint)...
+            set(figHandle, 'Pointer', 'fleur');
+        iptSetPointerBehavior(obj,enterFcn);
+        replace_interaction(main_figure,'interaction','KeyPressFcn','id',1);
         curr_disp.UIupdate=0;
         switch obj.Type
             case 'patch'
@@ -71,9 +75,8 @@ switch main_figure.SelectionType
             case 'image'
                 move_image_select(obj,[],main_figure);
         end
-        
         waitfor(curr_disp,'UIupdate',1);
-        
+        replace_interaction(main_figure,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
         r_min=nanmin(obj.YData);
         samples=trans_obj.get_transceiver_samples();
         [~,idx_r_min]=nanmin(abs(r_min-samples));
