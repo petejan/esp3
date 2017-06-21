@@ -91,13 +91,14 @@ for ix=1:length(bot_file_str)
                 sample_idx=resample_data_v2((1:length(trans_obj.get_transceiver_range())),trans_obj.get_transceiver_range(),depth_resampled,'Opt','Nearest');
                 tag_resampled=resample_data_v2(tag(idx_ping_start:idx_ping_end),time(idx_ping_start:idx_ping_end),trans_obj.Time(idx_start_file:idx_end_file),'Opt','Nearest');
                 
-                sample_idx(sample_idx==1)=nan;
+                sample_idx(sample_idx<=1)=nan;
                 
                 new_bottom{idx_freq}.Sample_idx(idx_start_file:idx_end_file)=sample_idx;
                 new_bottom{idx_freq}.Tag(idx_start_file:idx_end_file)=tag_resampled;
             case '0.2'
                 pings=bot_xml.Ping;
                 samples=bot_xml.Sample;
+                samples(samples<=1)=nan;
                 tag=bot_xml.Tag;
                 
                 iping_ori=find(layer_obj.Transceivers(idx_freq).Data.FileId==ix,1);

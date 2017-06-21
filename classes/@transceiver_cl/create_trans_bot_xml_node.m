@@ -19,7 +19,7 @@ switch ver
     case '0.2'
         bot_xml.Bottom.Ping=idx_ping-idx_ping(1)+1;
         bot_xml.Bottom.Sample=trans_obj.get_bottom_idx(idx_ping);
-        idx_rem=(bot_xml.Bottom.Sample==trans_obj.Data.Nb_samples)|isnan(bot_xml.Bottom.Sample);
+        idx_rem=((bot_xml.Bottom.Sample==trans_obj.Data.Nb_samples)|isnan(bot_xml.Bottom.Sample))&bot_xml.Bottom.Tag==1;
         bot_xml.Bottom.Ping(idx_rem)=[];
         bot_xml.Bottom.Tag(idx_rem)=[];
         bot_xml.Bottom.Sample(idx_rem)=[];

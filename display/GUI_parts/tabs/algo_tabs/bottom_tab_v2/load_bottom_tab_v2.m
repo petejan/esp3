@@ -73,7 +73,7 @@ bottom_tab_v2_comp.thr_echo=uicontrol(parameters_2,'Style','Edit','units','norma
 
 
 uicontrol(parameters_2,'Style','text','units','normalized','string','Cumul.Thr(%)','pos',pos{2,1},'HorizontalAlignment','right');
-bottom_tab_v2_comp.thr_cum=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.thr_cum),'BackgroundColor','white','callback',{@ check_fmt_box,0,0.9,varin.thr_cum,'%.g'});
+bottom_tab_v2_comp.thr_cum=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.thr_cum),'BackgroundColor','white','callback',{@ check_fmt_box,0,90,varin.thr_cum,'%.g'});
 
 
 uicontrol(parameters_2,'Style','text','units','normalized','string','Shift Bottom(m)','pos',pos{3,1},'HorizontalAlignment','right');
@@ -119,21 +119,21 @@ switch src.String{src.Value}
         trans_obj.Algo(idx_algo).Varargin.thr_bottom=-30;
         trans_obj.Algo(idx_algo).Varargin.thr_backstep= 1;
         trans_obj.Algo(idx_algo).Varargin.thr_echo= -20;
-        trans_obj.Algo(idx_algo).Varargin.thr_cum= 0.1;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 10;
         trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
         
     case 'Flat Soft'        
         trans_obj.Algo(idx_algo).Varargin.thr_bottom= -40;
         trans_obj.Algo(idx_algo).Varargin.thr_backstep= -3;
         trans_obj.Algo(idx_algo).Varargin.thr_echo= -30;
-        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-6;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-4;
         trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
         
     case 'Hills'
         trans_obj.Algo(idx_algo).Varargin.thr_bottom= -45;
         trans_obj.Algo(idx_algo).Varargin.thr_backstep= -3;
         trans_obj.Algo(idx_algo).Varargin.thr_echo= -20;
-        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-6;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-4;
         trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
         
     otherwise

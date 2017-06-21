@@ -83,7 +83,7 @@ addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_echo',-40,check_thr_bottom);
-addParameter(p,'thr_cum',0.01,check_filt);
+addParameter(p,'thr_cum',1,check_filt);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'vert_filt',10,check_filt);
 addParameter(p,'horz_filt',50,check_filt);

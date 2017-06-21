@@ -25,9 +25,7 @@ for ifile=1:length(reg_file_str)
     end
     dbconn=sqlite(dbfile,'connect');
     
-    
-    
-    
+     
     if exist(xml_bot_file,'file')==2&&p.Results.bot>0
         bot_ver = dbconn.fetch(sprintf('select Version from bottom where Filename is "%s"',bot_file_str{ifile}));
         xml_str_bot=fileread(xml_bot_file);

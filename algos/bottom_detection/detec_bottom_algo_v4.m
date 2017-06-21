@@ -53,7 +53,7 @@ check_thr_backstep=@(x)(x>=-12&&x<=12);
 
 check_shift_bot=@(x) isnumeric(x);
 
-check_thr_cum=@(x)(x>=0&&x<=1);
+check_thr_cum=@(x)(x>=0&&x<=100);
 
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
@@ -65,7 +65,7 @@ addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeri
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'thr_echo',-35,check_thr_bottom);
-addParameter(p,'thr_cum',0.01,check_thr_cum);
+addParameter(p,'thr_cum',1,check_thr_cum);
 addParameter(p,'shift_bot',0,check_shift_bot);
 addParameter(p,'rm_rd',0);
 addParameter(p,'load_bar_comp',[]);
@@ -103,7 +103,7 @@ r_min=nanmax(p.Results.r_min,2);
 r_max=p.Results.r_max;
 
 thr_echo=p.Results.thr_echo;
-thr_cum=p.Results.thr_cum;
+thr_cum=p.Results.thr_cum/100;
 
 [nb_samples,nb_pings]=size(Sp);
 

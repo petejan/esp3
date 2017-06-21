@@ -101,7 +101,7 @@ r_min=nanmax(p.Results.r_min,2);
 r_max=p.Results.r_max;
 
 thr_echo=-35;
-thr_cum=0.01;
+thr_cum=1;
 
 [nb_samples,nb_pings]=size(Sp);
 
@@ -223,8 +223,8 @@ BS_lin_norm=bsxfun(@rdivide,Bottom_region.*BS_lin,nansum(Bottom_region.*BS_lin))
 BS_lin_norm_bis=BS_lin_norm;
 BS_lin_norm_bis(isnan(BS_lin_norm))=0;
 BS_lin_cumsum=(cumsum(BS_lin_norm_bis,1)./repmat(sum(BS_lin_norm_bis),size(Bottom_region,1),1));
-BS_lin_cumsum(BS_lin_cumsum<thr_cum)=Inf;
-[~,Bottom_temp]=min((abs(BS_lin_cumsum-thr_cum)));
+BS_lin_cumsum(BS_lin_cumsum<thr_cum/100)=Inf;
+[~,Bottom_temp]=min((abs(BS_lin_cumsum-thr_cum/100)));
 Bottom_temp_2=nanmin(idx_bottom);
 Bottom=nanmax(Bottom_temp,Bottom_temp_2);
 
