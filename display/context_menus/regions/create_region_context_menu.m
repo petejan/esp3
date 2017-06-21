@@ -148,10 +148,19 @@ for i=1:numel(uniquev)
         cax_min=prctile(sv,5);
         cax_max=prctile(sv,95);
         cax=curr_disp.getCaxField('sv');
+        
+        switch reg_curr.Reference
+            case 'Line'
+                line_obj=layer.get_first_line();
+            otherwise
+                line_obj=[];
+        end
+        
         reg_curr.display_region(output_diff,'main_figure',main_figure,...
             'alphadata',double(pow2db_perso(output_reg_1.Sv_mean_lin)>cax(1)),...
             'Cax',[cax_min cax_max],...
-            'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev(i,1))/1e3,frequencies(uniquev(i,2))/1e3));
+            'Name',sprintf('%s, %dkHz-%dkHz',reg_curr.print,frequencies(uniquev(i,1))/1e3,frequencies(uniquev(i,2))/1e3),...
+            'line_obj',line_obj);
     else
        fprintf('Cannot compute differences %dkHz-%dkHz\n',frequencies(uniquev(i,1))/1e3,frequencies(uniquev(i,2))/1e3);
     end

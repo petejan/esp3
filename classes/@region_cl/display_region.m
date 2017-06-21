@@ -65,7 +65,7 @@ if isa(trans_obj,'transceiver_cl')
 %     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
 %      profile off;
 %     profile viewer;
-tt=sprintf('%s %s %.0fkHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
+    tt=sprintf('%s %s %.0fkHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
 
 else
     output_reg=trans_obj;
