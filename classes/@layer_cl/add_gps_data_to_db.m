@@ -48,17 +48,22 @@ for ilay=1:length(layers_obj)
             initialize_echo_logbook_dbfile(pathtofile,0);
         end
         
-        gps_data_obj=layers_obj(ilay).GPSData;
+        [~,idx_freq]=nanmin(layers_obj(ilay).Frequencies);
+        trans_obj=layers_obj(ilay).Transceivers(idx_freq);    
+        gps_data_obj=trans_obj.GPSDataPing;
+        bot_range=trans_obj.get_bottom_range();
+        
         idx_t=gps_data_obj.Time>=start_time(ip)&gps_data_obj.Time<=end_time(ip);
         dbconn=sqlite(fileN,'connect');
         %files_db=dbconn.fetch('select Filename from gps_data');
         %         if ~any(strcmp([fileOri extN],files_db))
         creategpsTable(dbconn);
+
         time_str=datestr(gps_data_obj.Time(idx_t),'yyyymmddHHMMSSFFF ')';
         time_str=time_str(:)';
 %         longlat_str=['LINESTRING(' sprintf('%.6f %.6f,',kron(gps_data_obj.Long(idx_t)', [1 0]) + kron(gps_data_obj.Lat(idx_t)', [0 1])) ')'];
-        dbconn.insert('gps_data',{'Filename' 'Lat' 'Long' 'Time'},...
-            {[fileOri extN] sprintf('%.6f ',gps_data_obj.Lat(idx_t)) sprintf('%.6f ',gps_data_obj.Long(idx_t)) time_str});
+        dbconn.insert('gps_data',{'Filename' 'Lat' 'Long' 'Time' 'Depth'},...
+            {[fileOri extN] sprintf('%.6f ',gps_data_obj.Lat(idx_t)) sprintf('%.6f ',gps_data_obj.Long(idx_t)) time_str sprintf('%.2f ',bot_range(idx_t))});
         %         end
         close(dbconn);
         
