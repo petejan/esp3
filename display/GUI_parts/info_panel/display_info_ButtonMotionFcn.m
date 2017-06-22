@@ -238,19 +238,13 @@ try
             end
         end
         
-%         wmap=getappdata(main_figure,'Wmap');
-%         if ~isempty(wmap)&&isvalid(wmap.map)
-%             if~isempty(wmap.curr_pos)
-%                 wmremove(wmap.curr_pos);
-%             end
-%            wmap.curr_pos=wmmarker(Lat(idx_ping), Long(idx_ping));
-%            setappdata(main_figure,'Wmap',wmap); 
-%         end
-        
+
     end
     
 catch err
-    disp(err.message);
-    disp('Could not update info panel');
+    if ~isdeployed
+        disp(err.message);
+        disp('Could not update info panel');
+    end
 end
 end

@@ -11,7 +11,7 @@ if ~isempty(reg)
     curr_disp.Reg_changed_flag=2;
     if reg>0
         [~,reg_ver]=layer.save_bot_reg_to_db('bot',0,'reg',1);        
-        sprintf('Saving Regions to database as version %.0f',reg_ver);
+        fprintf('Saving Regions to database as version %.0f\n',reg_ver);
         curr_disp.Reg_changed_flag=3;
     end
 end
@@ -21,7 +21,7 @@ if ~isempty(bot)
     curr_disp.Bot_changed_flag=2;
     if bot>0
         [bot_ver,~]=layer.save_bot_reg_to_db('bot',1,'reg',0);
-        sprintf('Saving Bottom to database as version %.0f',bot_ver);
+        fprintf('Saving Bottom to database as version %.0f\n',bot_ver);
         curr_disp.Bot_changed_flag=3;
     end
 end
