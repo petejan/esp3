@@ -69,7 +69,8 @@ AcrossAngle=transceiver.Data.get_datamat('acrossangle');
 Power=transceiver.Data.get_datamat('power');
 
 [AcrossPhi,AlongPhi]=transceiver.get_phase();
-
+% AlongPhi=AlongAngle;
+% AcrossPhi=AcrossAngle;
 
 Freq=double(transceiver.Config.Frequency);
 pulselength=double(transceiver.Params.PulseLength(1));

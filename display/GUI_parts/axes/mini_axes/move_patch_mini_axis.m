@@ -40,6 +40,7 @@ if evt.Button==1
     end
     
     patch_obj.Vertices=new_vert;
+
     drawnow;
     
     axes_panel_comp=getappdata(main_figure,'Axes_panel');

@@ -21,6 +21,7 @@ parse(p,file_lst,varargin{:});
 load_bar_comp=p.Results.load_bar_comp;
 
 list_files=importdata(file_lst);
+[folder_lst,~,~]=fileparts(file_lst);
 filename_dat_tot=cell(1,length(list_files));
 filename_ini=cell(1,length(list_files));
 
@@ -31,6 +32,8 @@ for i=1:length(list_files)
 end
 
 [ini_config_files,~,id_config_unique]=unique(filename_ini);
+[~,fname_ini_mat,~]=cellfun(@fileparts,ini_config_files,'UniformOutput',0);
+file_mat_ini=cellfun(@(x) fullfile(folder_lst,'echoanalysisfiles',[x '.mat']),fname_ini_mat,'UniformOutput',0);
 
 id_config=(1:length(ini_config_files));
 
@@ -43,111 +46,144 @@ nb_config=length(id_config);
 
 layers(nb_config)=layer_cl();
 ilay=0;
+
 for iconfig=id_config
     ilay=ilay+1;
-    filename_dat=filename_dat_tot(id_config_unique==iconfig);
-    nb_pings=length(filename_dat);
+    str_disp=sprintf('Opening File %d/%d\n',ilay,length(id_config));
+    if ~isempty(load_bar_comp)
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(id_config),'Value',ilay-1);
+        load_bar_comp.status_bar.setText(str_disp);
+        pause(0.1);
+    else
+        disp(str_disp)
+    end
+    
+    file_exist=0;
+    if exist(file_mat_ini{iconfig},'file')        
+        if ~isempty(load_bar_comp)
+            load_bar_comp.status_bar.setText(sprintf('Reloading %s',file_mat_ini{iconfig}));
+        end
+        try
+            load(file_mat_ini{iconfig});
+            file_exist=1;
+        catch
+            delete(file_mat_ini{iconfig});
+             file_exist=0;
+        end
+    end
+    
+    if file_exist==0
+        filename_dat=filename_dat_tot(id_config_unique==iconfig);
+        nb_pings=length(filename_dat);
+        
+        
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
+        end
+        
+        echo.Data=nan(5*1e5,nb_pings);
+        
+        for ip=1:nb_pings
+            
+            if ~isempty(load_bar_comp)
+                set(load_bar_comp.progress_bar, 'Value',ip);
+                load_bar_comp.status_bar.setText(sprintf('Opening File %s',filename_dat{ip}));
+            end
+            
+            fid=fopen(filename_dat{ip},'r','n');
+            
+            header.Model=fread(fid,8,'*char')';
+            header.Fmt_ver=fread(fid,1,'ushort')';
+            header.Date=nan(1,6);
+            header.Date(1)=fread(fid,1,'short')';
+            header.Date(2)=fread(fid,1,'short')';
+            header.Date(3)=fread(fid,1,'short')';
+            header.Date(4)=fread(fid,1,'short')';
+            header.Date(5)=fread(fid,1,'short')';
+            header.Date(6)=fread(fid,1,'short')';
+            header.Remarks=char(fread(fid,287,'short')');
+            
+            params.Time(ip)=datenum(header.Date);
+            params.Mode(ip)=fread(fid,1,'short');
+            params.TotalBeamNumber(ip)=fread(fid,1,'short');
+            params.Beam_Id(ip,:)=fread(fid,5,'short');
+            params.Range(ip)=fread(fid,1,'short');
+            params.Frequency(ip)=fread(fid,1,'short')*10;
+            params.BearingAngle(ip,:)=fread(fid,6,'short')*1e-1;
+            params.TiltAngle(ip,:)=fread(fid,6,'short')*1e-1;
+            params.TXfrequency(ip,:)=fread(fid,6,'short')*10;
+            params.TXpower(ip,:)=fread(fid,6,'short');
+            params.ChirpWidth(ip,:)=fread(fid,6,'short')*10;
+            params.TXcycle(ip)=fread(fid,1,'short')*1e-3;
+            params.TXPulseWidth(ip,:)=fread(fid,6,'short')*1e-6;
+            params.EnvelopeEdgeWidth(ip,:)=fread(fid,6,'short')*1e-6;
+            params.Remarks1{ip}=char(fread(fid,357,'short')');
+            params.TXroll(ip)=fread(fid,1,'short')*1e-1;
+            params.TXpitch(ip)=fread(fid,1,'short')*1e-1;
+            params.RXroll(ip)=fread(fid,1,'short')*1e-1;
+            params.RXpitch(ip)=fread(fid,1,'short')*1e-1;
+            params.Remarks2{ip}=char(fread(fid,313,'short')');
+            
+            
+            NMEA.UTC(ip)=fread(fid,1,'ulong')/(24*60*60)+datenum('1980/01/06 00:00:00','yyyy/mm/dd HH:MM:SS');
+            NMEA.Latitude(ip)=fread(fid,1,'long')*1e-4/60;
+            NMEA.Longitude(ip)=fread(fid,1,'long')*1e-4/60;
+            NMEA.Status(ip)=fread(fid,1,'short');
+            NMEA.speed(ip)=fread(fid,1,'short')*1e-2;%knots
+            NMEA.Heading(ip)=fread(fid,1,'short')*1e-1;
+            NMEA.VesselCourse(ip)=fread(fid,1,'short')*1e-1;
+            NMEA.WaterTemperature(ip)=fread(fid,1,'short')*1e-2;%deg C
+            NMEA.Remarks{ip}=char(fread(fid,117,'short')');
+            
+            fread(fid,768,'int8');
+            
+            att.DataNumber(ip)=fread(fid,1,'ushort')-1;
+            att.Remarks1{ip}=fread(fid,2,'*char')';
+            fread(fid,48*att.DataNumber(ip),'int8');
+            %         if~isfield(att,'Data')
+            %             att.Data(:,ip)=temp;
+            %         else
+            %             if att.DataNumber(ip)>att.DataNumber(ip-1)
+            %               temp_2=att.Data(:,ip);
+            %               att.Data=nan(att.DataNumber(ip),nb_pings);
+            %               att.Data(1:size(temp_2,1),1:ip-1)=temp_2;
+            %             end
+            %             att.Data(:,ip)=temp(1:size(att.Data,1));
+            %         end
+            att.StatuspR(ip)=fread(fid,1,'short');
+            att.Roll(ip)=fread(fid,1,'short')*1e-1;
+            att.Pitch(ip)=fread(fid,1,'short')*1e-1;
+            att.StatusH(ip)=fread(fid,1,'short');
+            att.Heave(ip)=fread(fid,1,'short')*1e-2;
+            att.Remarks2{ip}=char(fread(fid,19,'short')');
+            
+            echo.DataSize(ip)=fread(fid,1,'ulong')/4;
+            data_temp=fread(fid,echo.DataSize(ip),'long');
+            echo.Data(1:length(data_temp),ip)=data_temp;
+            fclose(fid);
+            
+        end
+        
+        echo.Data(nanmax(echo.DataSize)+1:end,:)=[];
+        
+        echo.comp_sig_1=echo.Data(1:8:end,:)+1j*echo.Data(2:8:end,:);
+        echo.comp_sig_2=echo.Data(3:8:end,:)+1j*echo.Data(4:8:end,:);
+        echo.comp_sig_3=echo.Data(5:8:end,:)+1j*echo.Data(6:8:end,:);
+        echo.comp_sig_4=echo.Data(7:8:end,:)+1j*echo.Data(8:8:end,:);
+        
+        
+        save(file_mat_ini{iconfig},'echo','att','NMEA','params','header','-v7.3')
+        
+    end
+    
+    
+    [nb_samples,nb_pings]=size(echo.comp_sig_1);
     config_current=config_cl();
     
     trans_obj=transceiver_cl();
     params_current=params_cl(nb_pings);
     
-    if ~isempty(load_bar_comp)
-        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
-    end
-    
-    echo.Data=nan(5*1e5,nb_pings);
-    for ip=1:nb_pings
-        
-        if ~isempty(load_bar_comp)
-            set(load_bar_comp.progress_bar, 'Value',ip);
-            load_bar_comp.status_bar.setText(sprintf('Opening File %s',filename_dat{ip}));
-        end
-        
-        fid=fopen(filename_dat{ip},'r','n');
-        
-        header.Model=fread(fid,8,'*char')';
-        header.Fmt_ver=fread(fid,1,'ushort')';
-        header.Date=nan(1,6);
-        header.Date(1)=fread(fid,1,'short')';
-        header.Date(2)=fread(fid,1,'short')';
-        header.Date(3)=fread(fid,1,'short')';
-        header.Date(4)=fread(fid,1,'short')';
-        header.Date(5)=fread(fid,1,'short')';
-        header.Date(6)=fread(fid,1,'short')';
-        header.Remarks=char(fread(fid,287,'short')');
-        
-        params.Time(ip)=datenum(header.Date);
-        params.Mode(ip)=fread(fid,1,'short');
-        params.TotalBeamNumber(ip)=fread(fid,1,'short');
-        params.Beam_Id(ip,:)=fread(fid,5,'short');
-        params.Range(ip)=fread(fid,1,'short');
-        params.Frequency(ip)=fread(fid,1,'short')*10;
-        params.BearingAngle(ip,:)=fread(fid,6,'short')*1e-1;
-        params.TiltAngle(ip,:)=fread(fid,6,'short')*1e-1;
-        params.TXfrequency(ip,:)=fread(fid,6,'short')*10;
-        params.TXpower(ip,:)=fread(fid,6,'short');
-        params.ChirpWidth(ip,:)=fread(fid,6,'short')*10;
-        params.TXcycle(ip)=fread(fid,1,'short')*1e-3;
-        params.TXPulseWidth(ip,:)=fread(fid,6,'short')*1e-6;
-        params.EnvelopeEdgeWidth(ip,:)=fread(fid,6,'short')*1e-6;
-        params.Remarks1{ip}=char(fread(fid,357,'short')');
-        params.TXroll(ip)=fread(fid,1,'short')*1e-1;
-        params.TXpitch(ip)=fread(fid,1,'short')*1e-1;
-        params.RXroll(ip)=fread(fid,1,'short')*1e-1;
-        params.RXpitch(ip)=fread(fid,1,'short')*1e-1;
-        params.Remarks2{ip}=char(fread(fid,313,'short')');
-        
-        
-        NMEA.UTC(ip)=fread(fid,1,'ulong')/(24*60*60)+datenum('1980/01/06 00:00:00','yyyy/mm/dd HH:MM:SS');
-        NMEA.Latitude(ip)=fread(fid,1,'long')*1e-4/60;
-        NMEA.Longitude(ip)=fread(fid,1,'long')*1e-4/60;
-        NMEA.Status(ip)=fread(fid,1,'short');
-        NMEA.speed(ip)=fread(fid,1,'short')*1e-2;%knots
-        NMEA.Heading(ip)=fread(fid,1,'short')*1e-1;
-        NMEA.VesselCourse(ip)=fread(fid,1,'short')*1e-1;
-        NMEA.WaterTemperature(ip)=fread(fid,1,'short')*1e-2;%deg C
-        NMEA.Remarks{ip}=char(fread(fid,117,'short')');
-        
-        CIF=fread(fid,768,'int8');
-        
-        att.DataNumber(ip)=fread(fid,1,'ushort')-1;
-        att.Remarks1{ip}=fread(fid,2,'*char')';
-        temp=fread(fid,48*att.DataNumber(ip),'int8');
-%         if~isfield(att,'Data')
-%             att.Data(:,ip)=temp;
-%         else
-%             if att.DataNumber(ip)>att.DataNumber(ip-1)
-%               temp_2=att.Data(:,ip);
-%               att.Data=nan(att.DataNumber(ip),nb_pings);
-%               att.Data(1:size(temp_2,1),1:ip-1)=temp_2;
-%             end
-%             att.Data(:,ip)=temp(1:size(att.Data,1));
-%         end
-        att.StatuspR(ip)=fread(fid,1,'short');
-        att.Roll(ip)=fread(fid,1,'short')*1e-1;
-        att.Pitch(ip)=fread(fid,1,'short')*1e-1;
-        att.StatusH(ip)=fread(fid,1,'short');
-        att.Heave(ip)=fread(fid,1,'short')*1e-2;
-        att.Remarks2{ip}=char(fread(fid,19,'short')');
-       
-        echo.DataSize(ip)=fread(fid,1,'ulong')/4; 
-        data_temp=fread(fid,echo.DataSize(ip),'long');
-        echo.Data(1:length(data_temp),ip)=data_temp;
-        fclose(fid);
-                   
-    end
-
-    echo.Data(nanmax(echo.DataSize)+1:end,:)=[];
-    
-    echo.comp_sig_1=echo.Data(1:8:end,:)+1j*echo.Data(2:8:end,:);
-    echo.comp_sig_2=echo.Data(3:8:end,:)+1j*echo.Data(4:8:end,:);
-    echo.comp_sig_3=echo.Data(5:8:end,:)+1j*echo.Data(6:8:end,:);
-    echo.comp_sig_4=echo.Data(7:8:end,:)+1j*echo.Data(8:8:end,:);
-    
-    [nb_samples,nb_pings]=size(echo.comp_sig_1);
-    
-    G=24;
+    G=20;
     SL=30;
     ME=0;
     c=1500;
@@ -168,15 +204,17 @@ for iconfig=id_config
     config_current.FrequencyMaximum=38000;
     config_current.FrequencyMinimum=38000;
     config_current.EquivalentBeamAngle=10*log10(psi(1));
+    config_current.AngleSensitivityAlongship=1/L0;
+    config_current.AngleSensitivityAthwartship=1/L0;
     
     params_current.Time=NMEA.UTC;
     params_current.BandWidth(:)=params.ChirpWidth(1);
     params_current.ChannelMode=params.Mode;
-    params_current.Frequency=params.Frequency;
-    params_current.FrequencyEnd=params.Frequency+params.ChirpWidth(1)/2;
-    params_current.FrequencyStart=params.Frequency-params.ChirpWidth(1)/2;
+    params_current.Frequency(:)=params.Frequency;
+    params_current.FrequencyEnd(:)=params.Frequency+params.ChirpWidth(1)/2;
+    params_current.FrequencyStart(:)=params.Frequency-params.ChirpWidth(1)/2;
     params_current.PulseLength(:)=params.TXPulseWidth(1);
-    params_current.SampleInterval=nanmean(diff(T,1,1),1);
+    params_current.SampleInterval(:)=nanmean(diff(T,1,1),1);
     params_current.Absorption(:)=alpha;
     params_current.TransmitPower(:)=2000;
     env_data=env_data_cl();
@@ -194,17 +232,6 @@ for iconfig=id_config
     
     echo.power=db2pow_perso(PowerdB);
     
-    %     echo.sv=bsxfun(@plus,PowerdB-2*G+20*log10(R)+2*alpha/1000*R,-10*log10(c*tau/2*psi));
-    %
-    %     echo.sp=bsxfun(@plus,PowerdB-2*G,40*log10(R)+2*alpha/1000*R);
-    %
-    % p1=sqrt(echo.comp_sig_1.*conj(echo.comp_sig_1));
-    % p2=sqrt(echo.comp_sig_2.*conj(echo.comp_sig_2));
-    % p3=sqrt(echo.comp_sig_3.*conj(echo.comp_sig_3));
-    % p4=sqrt(echo.comp_sig_4.*conj(echo.comp_sig_4));
-    %
-    % echo.alongphi=acos((real(echo.comp_sig_1).*imag(echo.comp_sig_2)+real(echo.comp_sig_1).*imag(echo.comp_sig_2))./(p1.*p2));
-    % echo.acrossphi=acos((real(echo.comp_sig_3).*imag(echo.comp_sig_4)+real(echo.comp_sig_3).*imag(echo.comp_sig_4))./(p3.*p4));
     
     echo.alongphi=angle(echo.comp_sig_1.*conj(echo.comp_sig_2));
     echo.acrossphi=angle(echo.comp_sig_3.*conj(echo.comp_sig_4));
@@ -243,7 +270,7 @@ for iconfig=id_config
     trans_obj.AttitudeNavPing=attitude;
     trans_obj.Algo=algo_vec; trans_obj.add_algo(algo_vec_init);
     
-    layers(ilay)=layer_cl('Filename',ini_config_files(iconfig),'Filetype','FCV30','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude,'EnvData',env_data);
+    layers(ilay)=layer_cl('Filename',file_mat_ini(iconfig),'Filetype','FCV30','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude,'EnvData',env_data);
     
     
 end

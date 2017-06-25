@@ -1,21 +1,21 @@
 
 classdef params_cl
     properties
-        Time=nan;
-        BandWidth=nan;
+        Time=0;
+        BandWidth=0;
         ChannelID={''};
-        ChannelMode=nan;
-        Frequency=nan;
-        FrequencyEnd=nan;
-        FrequencyStart=nan;
-        PulseForm=nan;
-        PulseLength=nan;
-        PulseLengthEff=nan;
-        SampleInterval=nan;
-        Slope=nan;
+        ChannelMode=0;
+        Frequency=0;
+        FrequencyEnd=0;
+        FrequencyStart=0;
+        PulseForm=0;
+        PulseLength=0;
+        PulseLengthEff=0;
+        SampleInterval=0;
+        Slope=0;
         TransducerDepth=0;
-        TransmitPower=nan;
-        Absorption=nan; 
+        TransmitPower=0;
+        Absorption=0; 
     end
     methods
         function obj=params_cl(varargin)
@@ -28,7 +28,7 @@ classdef params_cl
                         obj.(props{jj})=cell(1,varargin{1});
                         obj.(props{jj})(:)={''};
                     else
-                        obj.(props{jj})=nan(1,varargin{1});
+                        obj.(props{jj})=zeros(1,varargin{1});
                     end
                 end
             end

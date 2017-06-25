@@ -77,9 +77,12 @@ for uu=1:length(trans_nb)
                         continue;
                     end
                     
-                    if nansum(layers_grp(uu).time_end(:,kki)+ 15*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
-                            layers_grp(uu).time_end(:,kki)-15*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
-                        idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
+                    if nansum(layers_grp(uu).time_end(:,kki)+ 5*layers_grp(uu).dt(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
+                            layers_grp(uu).time_end(:,kki)-5*layers_grp(uu).dt(:,kki)<=layers_grp(uu).time_start(:,kkj))==trans_nb(uu)
+                        if all(ismember([idx(kkj) idx(kki)],idx_to_concatenate{uu}{kk}))
+                            continue;
+                        end
+                       idx_to_concatenate{uu}{kk}=[idx_to_concatenate{uu}{kk}; [idx(kki) idx(kkj)]];
                         
                     end
                 end
@@ -108,7 +111,9 @@ layers_out=[];
 for uui=1:length(idx_to_concatenate)
     for kki=1:length(idx_to_concatenate{uui})
         couples=idx_to_concatenate{uui}{kki};
-        
+        if isempty(couples)
+            continue;
+        end
         if multi_layer>-1
             idx_looked=[];
             new_chains={};

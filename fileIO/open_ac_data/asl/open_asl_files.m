@@ -35,7 +35,8 @@ if ~iscell(Filename)
     
 else
     il=0;
-    [path_tmp,~]=fileparts_cell(Filename);
+
+    [path_tmp,~,~]=cellfun(@fileparts,Filename,'UniformOutput',0);
     path_tmp=unique(path_tmp);
     for i=1:length(path_tmp)
         file_list=ls(fullfile(path_tmp{i},'*.*A'));
