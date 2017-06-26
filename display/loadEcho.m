@@ -42,7 +42,7 @@ if isempty(main_figure)
 end
 
 disable_listeners(main_figure);
-
+uiundo(main_figure,'clear');
 layer  = getappdata(main_figure,'Layer');
 layers = getappdata(main_figure,'Layers');
 

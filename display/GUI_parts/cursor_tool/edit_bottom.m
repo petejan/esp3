@@ -41,6 +41,9 @@ function edit_bottom(src,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
+
+ 
+
 ah=axes_panel_comp.main_axes;
 
 clear_lines(ah);
@@ -63,8 +66,9 @@ y_lim=get(ah,'ylim');
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Time);
-bot=layer.Transceivers(idx_freq).Bottom;
+old_bot=layer.Transceivers(idx_freq).Bottom;
 
+bot=old_bot;
 
 if isempty(bot.Sample_idx)
     bot.Sample_idx=nan(1,nb_pings);
@@ -79,6 +83,7 @@ u=1;
 if xinit(1)<x_lim(1)||xinit(1)>xdata(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
     return;
 end
+
 
 
 switch src.SelectionType
@@ -223,9 +228,22 @@ end
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
+        
+        % Prepare an undo/redo action
+        cmd.Name = sprintf('Bottom Edit');
+        cmd.Function        = @bottom_undo_fcn;       % Redo action
+        cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
+        cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+        cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+
+        uiundo(main_figure,'function',cmd);
 
         display_bottom(main_figure);
         set_alpha_map(main_figure);
         set_alpha_map(main_figure,'main_or_mini','mini');     
     end
+
+
+
+    
 end

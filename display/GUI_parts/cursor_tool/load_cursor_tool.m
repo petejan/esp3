@@ -1,30 +1,13 @@
 function load_cursor_tool(main_figure)
 
-% if ~isdeployed
-%     disp('Loading Toolbar');
-% end
-%curr_disp=getappdata(main_figure,'Curr_disp');
-% layer=getappdata(main_figure,'Layer');
-% layers=getappdata(main_figure,'Layers');
-
-% nb_layers=length(layers);
-% if nb_layers>0
-%     layers_Str=list_layers(layers,'nb_char',80);
-%     layers_Str_comp=list_layers(layers);
-% else
-%     layers_Str={'--'};
-%     layers_Str_comp={'--'};
-%     layer=layer_cl();
-%     layers=layer;
-% end
-% 
-% [path_lay,~]=layer.get_path_files();
-% 
-
+if ~isdeployed
+    disp('Loading Toolbar');
+end
 
 cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure,'Tag','toolbar_esp3');
 app_path_main=whereisEcho();
 icon=get_icons_cdata(fullfile(app_path_main,'icons'));
+
 
 cursor_mode_tool_comp.zoom_in=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zin,'TooltipString','Zoom In (1)','Tag','zin');
 cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom Out (shift+1)','Tag','zout');
@@ -37,27 +20,9 @@ cursor_mode_tool_comp.measure=uitoggletool(cursor_mode_tool_comp.cursor_mode_too
 childs=findall(main_figure,'type','uitoggletool');
 set(childs,...
     'ClickedCallback',{@set_curr_disp_mode,main_figure});
-
-% [idx,~]=find_layer_idx(layers,layer.ID_num);
-% 
-% %jToolbar = get(get(cursor_mode_tool_comp.cursor_mode_tool,'JavaContainer'),'ComponentPeer
-% warning('off', 'YMA:FindJObj:invisibleHandle');
-% jToolbar = findjobj(main_figure,'-nomenu','class','mjtoolbar');
-% 
-% if ~isempty(jToolbar)
-%     jCombo = javax.swing.JComboBox(layers_Str);
-%     cursor_mode_tool_comp.jCombo = handle(jCombo,'callbackproperties');
-%     set(cursor_mode_tool_comp.jCombo,'SelectedIndex', idx-1);
-%     set(cursor_mode_tool_comp.jCombo,'ActionPerformedCallback',{@change_layer,main_figure});
-%     cursor_mode_tool_comp.ID_list=[layers(:).ID_num];
-%     set(cursor_mode_tool_comp.jCombo,'MaximumSize',java.awt.Dimension(500,500));
-%     set(cursor_mode_tool_comp.jCombo,'Background',javax.swing.plaf.ColorUIResource(1,1,1))
-%     set(cursor_mode_tool_comp.jCombo,'ForeGround',javax.swing.plaf.ColorUIResource(0,0,0));
-%     set(cursor_mode_tool_comp.jCombo,'ToolTipText',[path_lay{1} layers_Str_comp{idx}])
-%     jToolbar(1).add(cursor_mode_tool_comp.jCombo,6);
-%     jToolbar(1).repaint;
-%     jToolbar(1).revalidate;
-% end
+gcbf
+cursor_mode_tool_comp.undo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.undo,'TooltipString','Redo','Tag','undo''parent','ClickedCallback','uiundo(gcbf,''execUndo'')');
+cursor_mode_tool_comp.redo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.redo,'TooltipString','Undo','Tag','redo','ClickedCallback','uiundo(gcbf,''execRedo'')');
 
 cursor_mode_tool_comp.previous=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.prev_lay ,'TooltipString','Previous Layer (p)','ClickedCallback',{@change_layer_callback,main_figure,'prev'});
 cursor_mode_tool_comp.next=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.next_lay ,'TooltipString','Next Layer (n)','ClickedCallback',{@change_layer_callback,main_figure,'next'});

@@ -35,4 +35,19 @@ icon.ruler= iconRead(fullfile(icon_dir,'ruler.png'));
 icon.create_reg= iconRead(fullfile(icon_dir,'create_reg.png'));
 
 icon.brush= iconRead(fullfile(icon_dir,'brush.png'));
+
+
+% Load the Redo icon
+tmp = fullfile(matlabroot,'/toolbox/matlab/icons/greenarrowicon.gif');
+[cdata,map] = imread(tmp);
+ 
+% Convert white pixels into a transparent background
+map(map(:,1)+map(:,2)+map(:,3)==3) = NaN;
+ 
+% Convert into 3D RGB-space
+icon.redo = ind2rgb(cdata,map);
+icon.undo = icon.redo(:,(16:-1:1),:);
+ 
+
+ 
 end

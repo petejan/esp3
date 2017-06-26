@@ -386,7 +386,7 @@ for itype = 1:length(ftype_unique)
     
     
     new_layers=reorder_layers_time(new_layers);
-    id_lay=new_layers(end).ID_num;
+    files_lay=new_layers(end).Filename;
     all_layer=[layers new_layers];
     all_layers_sorted=all_layer.sort_per_survey_data();
     
@@ -401,7 +401,7 @@ for itype = 1:length(ftype_unique)
     layers=reorder_layers_time(layers_out);
 end
 
-[idx,~]=find_layer_idx(layers,id_lay);
+[idx,~]=find_layer_idx_files(layers,files_lay);
 layer=layers(idx);
 
 setappdata(main_figure,'Layer',layer);

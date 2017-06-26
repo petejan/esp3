@@ -50,10 +50,10 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
-    Number=trans.get_transceiver_pings();
+    number_lay=trans.get_transceiver_pings();
     samples=trans.get_transceiver_samples();
     
-    xdata=Number;
+    xdata=number_lay;
     ydata=samples;
 else
     layer=layer_cl();
@@ -276,12 +276,20 @@ switch callbackdata.Key
             keyboard_zoom(1,main_figure)
         elseif strcmpi(callbackdata.Modifier,'control')
             save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
-        end        
+        end
+    case 'y'
+        if  strcmpi(callbackdata.Modifier,'control')
+            uiundo(main_figure,'execRedo')
+        end
     case 'z'
-        go_to_ping(1,main_figure);
+        if isempty(callbackdata.Modifier)
+            go_to_ping(1,main_figure);
+        elseif  strcmpi(callbackdata.Modifier,'control')
+            uiundo(main_figure,'execUndo')
+        end
         
     case 'x'
-        go_to_ping(length(Number),main_figure);
+        go_to_ping(length(number_lay),main_figure);
 end
 replace_interaction(src,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
 %

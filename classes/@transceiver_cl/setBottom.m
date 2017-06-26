@@ -82,6 +82,6 @@ tag=ones(size(new_bot_sple));
 tag(IdxBad)=0;
 
 new_bot_sple(isnan(new_bot_sple(:))&tag(:)==1)=length(samples);
-obj.Bottom=bottom_cl('Origin',bottom_obj.Origin,'Sample_idx',new_bot_sple,'Tag',tag,'Version',bottom_obj.Version);
+obj.Bottom=bottom_cl('Origin',bottom_obj.Origin(:)','Sample_idx',new_bot_sple(:)','Tag',tag(:)','Version',bottom_obj.Version);
 
 end
