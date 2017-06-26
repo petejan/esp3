@@ -9,6 +9,9 @@ context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'));
 axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
 analysis_menu=uimenu(context_menu,'Label','Analysis');
 uimenu(analysis_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback,main_figure});
+uimenu(analysis_menu,'Label','Remove Tracks','Callback',{@remove_tracks_cback,main_figure});
+uimenu(analysis_menu,'Label','Remove ST','Callback',{@remove_ST_cback,main_figure});
+
 if strcmpi(layer.Transceivers(idx_freq).Mode,'FM')
     uimenu(analysis_menu,'Label','Plot Ping TS Spectrum','Callback',{@plot_ping_spectrum_callback,main_figure});
     uimenu(analysis_menu,'Label','Plot Ping Sv Spectrum','Callback',{@plot_ping_sv_spectrum_callback,main_figure});

@@ -158,14 +158,23 @@ update_algos(main_figure);
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
-
+old_bot=layer.Transceivers(idx_freq).Bottom;
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo('BottomDetection','load_bar_comp',load_bar_comp);
 
 hide_status_bar(main_figure);
-
 setappdata(main_figure,'Layer',layer);
+bot=layer.Transceivers(idx_freq).Bottom;
+% Prepare an undo/redo action
+cmd.Name = sprintf('Bottom Detect Algo');
+cmd.Function        = @bottom_undo_fcn;       % Redo action
+cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
+cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+
+uiundo(main_figure,'function',cmd);
+
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
 display_bottom(main_figure);

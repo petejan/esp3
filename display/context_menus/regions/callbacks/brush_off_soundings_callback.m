@@ -21,7 +21,8 @@ bottom_idx=trans_obj.get_bottom_idx();
 idx_brush=intersect(idx_pings,find((bottom_idx>=idx_r(1))&bottom_idx<=idx_r(end)));
 bottom_idx(idx_brush)=nan;
 
-bot=trans_obj.Bottom;
+old_bot=trans_obj.Bottom;
+bot=old_bot;
 
 bot.Sample_idx=bottom_idx;
 if set_bad>0
@@ -33,6 +34,15 @@ layer.Transceivers(idx_freq).setBottom(bot);
 curr_disp.Bot_changed_flag=1;
 setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
+
+% Prepare an undo/redo action
+cmd.Name = sprintf('Brush Bottom');
+cmd.Function        = @bottom_undo_fcn;       % Redo action
+cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
+cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+
+uiundo(main_figure,'function',cmd);
 
 display_bottom(main_figure);
 set_alpha_map(main_figure);

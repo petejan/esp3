@@ -34,7 +34,7 @@ classdef transceiver_cl < handle
             check_gps_class=@(trans_obj) isa(trans_obj,'gps_data_cl');
             check_att_class=@(trans_obj) isa(trans_obj,'attitude_nav_cl');
             check_algo_class=@(trans_obj) isa(trans_obj,'algo_cl');
-
+            
             
             
             addParameter(p,'Data',ac_data_cl.empty(),check_data_class);
@@ -73,6 +73,13 @@ classdef transceiver_cl < handle
             trans_obj.setBottom(p.Results.Bottom);
         end
         
+
+        
+        function rm_ST(trans_obj)
+            trans_tmp=transceiver_cl();
+            trans_obj.ST=trans_tmp.ST;
+        end
+        
         function delete(trans_obj)
             if ~isdeployed
                 c = class(trans_obj);
@@ -82,7 +89,7 @@ classdef transceiver_cl < handle
         
         function range=get_transceiver_range(trans_obj,varargin)
             if nargin>=2
-    
+                
                 idx=varargin{1};
                 if ~isempty(idx)
                     range=trans_obj.Range(idx);
@@ -100,9 +107,9 @@ classdef transceiver_cl < handle
         end
         
         function depth=get_transducer_depth(trans_obj,varargin)
-            depth=trans_obj.Params.TransducerDepth(:)';            
-
-             if nargin>=2  
+            depth=trans_obj.Params.TransducerDepth(:)';
+            
+            if nargin>=2
                 idx=varargin{1};
                 if ~isempty(idx)
                     depth=depth(idx);
@@ -127,7 +134,7 @@ classdef transceiver_cl < handle
             end
         end
         
-          function samples=get_transceiver_samples(trans_obj,varargin)
+        function samples=get_transceiver_samples(trans_obj,varargin)
             samples=(1:trans_obj.Data.Nb_samples)';
             if nargin>=2
                 idx=varargin{1};
@@ -141,7 +148,7 @@ classdef transceiver_cl < handle
             if nargin>=2
                 idx=varargin{1};
                 time=time(idx);
-            end  
+            end
         end
         
         function pings=get_transceiver_pings(trans_obj,varargin)
@@ -263,7 +270,7 @@ classdef transceiver_cl < handle
                 reg=trans_obj.Regions(idx);
             else
                 reg=[];
-
+                
             end
         end
         

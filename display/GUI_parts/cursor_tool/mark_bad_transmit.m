@@ -54,6 +54,7 @@ xdata=double(get(axes_panel_comp.main_echo,'XData'));
 ydata=double(get(axes_panel_comp.main_echo,'YData'));
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
+old_bot=layer.Transceivers(idx_freq).Bottom;
 
 
 if strcmp(src.SelectionType,'normal')
@@ -133,8 +134,19 @@ end
         replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
         replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
         %reset_disp_info(main_figure);
+        new_bot=layer.Transceivers(idx_freq).Bottom;
         curr_disp.Bot_changed_flag=1; 
+        setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
+        
+          % Prepare an undo/redo action
+        cmd.Name = sprintf('Bad Transmit Edit');
+        cmd.Function        = @bottom_undo_fcn;       % Redo action
+        cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),new_bot};
+        cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+        cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+
+        uiundo(main_figure,'function',cmd);
         set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);
     end

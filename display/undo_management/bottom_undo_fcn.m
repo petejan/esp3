@@ -34,10 +34,15 @@
 
 %% Function
 function bottom_undo_fcn(main_figure,trans_obj,bot)
+if~isdeployed()
+    disp('Undo Bottom')
+end
+curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj.setBottom(bot);
 display_bottom(main_figure);
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
+curr_disp.Bot_changed_flag=1;
 end
 
 
