@@ -22,9 +22,8 @@ icon.folder = iconRead(fullfile(icon_dir,'folder_small.png'));
 
 icon.del_lay = iconRead(fullfile(icon_dir,'delete.png'));
 
-icon.prev_lay = iconRead(fullfile(icon_dir,'prev.png'));
-
-icon.next_lay = iconRead(fullfile(icon_dir,'next.png'));
+icon.undo = iconRead(fullfile(icon_dir,'undo.png'));
+icon.redo = icon.undo(:,(16:-1:1),:);
 
 icon.add = iconRead(fullfile(icon_dir,'add.png'));
 
@@ -37,16 +36,16 @@ icon.create_reg= iconRead(fullfile(icon_dir,'create_reg.png'));
 icon.brush= iconRead(fullfile(icon_dir,'brush.png'));
 
 
-% Load the Redo icon
+
 tmp = fullfile(matlabroot,'/toolbox/matlab/icons/greenarrowicon.gif');
 [cdata,map] = imread(tmp);
  
-% Convert white pixels into a transparent background
+
 map(map(:,1)+map(:,2)+map(:,3)==3) = NaN;
  
 % Convert into 3D RGB-space
-icon.redo = ind2rgb(cdata,map);
-icon.undo = icon.redo(:,(16:-1:1),:);
+icon.next_lay = ind2rgb(cdata,map);
+icon.prev_lay = icon.next_lay(:,(16:-1:1),:);
  
 
  

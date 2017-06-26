@@ -34,6 +34,7 @@ for ifile=1:length(reg_file_str)
             bot_ver={0};
         end
         bot_ver_new=nanmax(cell2mat(bot_ver))+1;
+        sprintf('Saving Bottom to database as version %.0f\n',bot_ver_new);
         dbconn.insert('bottom',{'Filename'  'Bot_XML' 'Version'},{bot_file_str{ifile} xml_str_bot bot_ver_new});
     end
     
@@ -46,6 +47,7 @@ for ifile=1:length(reg_file_str)
         end
         reg_ver_new=nanmax(cell2mat(reg_ver))+1;
         dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg reg_ver_new});
+        fprintf('Saving Regions to database as version %.0f\n',reg_ver_new);
     end
     
     %     out_bot = dbconn.fetch('select * from bottom')

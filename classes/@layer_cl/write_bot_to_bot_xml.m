@@ -29,9 +29,7 @@ for ifile=1:length(bot_file_str)
             end
         end
     end
-    
-
-    
+   
     for i=1:length(layer_obj.Transceivers) 
         docNode=layer_obj.Transceivers(i).create_trans_bot_xml_node(docNode,ifile,ver);
     end

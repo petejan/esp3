@@ -20,11 +20,11 @@ cursor_mode_tool_comp.measure=uitoggletool(cursor_mode_tool_comp.cursor_mode_too
 childs=findall(main_figure,'type','uitoggletool');
 set(childs,...
     'ClickedCallback',{@set_curr_disp_mode,main_figure});
-gcbf
-cursor_mode_tool_comp.undo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.undo,'TooltipString','Redo','Tag','undo''parent','ClickedCallback','uiundo(gcbf,''execUndo'')');
-cursor_mode_tool_comp.redo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.redo,'TooltipString','Undo','Tag','redo','ClickedCallback','uiundo(gcbf,''execRedo'')');
 
-cursor_mode_tool_comp.previous=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.prev_lay ,'TooltipString','Previous Layer (p)','ClickedCallback',{@change_layer_callback,main_figure,'prev'});
+cursor_mode_tool_comp.undo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.undo,'TooltipString','Undo','Tag','undo''parent','ClickedCallback','uiundo(gcbf,''execUndo'')','Separator','on');
+cursor_mode_tool_comp.redo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.redo,'TooltipString','Redo','Tag','redo','ClickedCallback','uiundo(gcbf,''execRedo'')');
+
+cursor_mode_tool_comp.previous=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.prev_lay ,'TooltipString','Previous Layer (p)','ClickedCallback',{@change_layer_callback,main_figure,'prev'},'Separator','on');
 cursor_mode_tool_comp.next=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.next_lay ,'TooltipString','Next Layer (n)','ClickedCallback',{@change_layer_callback,main_figure,'next'});
 cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.del_lay ,'TooltipString','Delete Layer','ClickedCallback',{@delete_layer_callback,main_figure});
 

@@ -10,8 +10,7 @@ if ~isempty(reg)
     layer.write_reg_to_reg_xml();
     curr_disp.Reg_changed_flag=2;
     if reg>0
-        [~,reg_ver]=layer.save_bot_reg_to_db('bot',0,'reg',1);        
-        fprintf('Saving Regions to database as version %.0f\n',reg_ver);
+        layer.save_bot_reg_to_db('bot',0,'reg',1);        
         curr_disp.Reg_changed_flag=3;
     end
 end
@@ -20,8 +19,7 @@ if ~isempty(bot)
     layer.write_bot_to_bot_xml();
     curr_disp.Bot_changed_flag=2;
     if bot>0
-        [bot_ver,~]=layer.save_bot_reg_to_db('bot',1,'reg',0);
-        fprintf('Saving Bottom to database as version %.0f\n',bot_ver);
+        layer.save_bot_reg_to_db('bot',1,'reg',0);       
         curr_disp.Bot_changed_flag=3;
     end
 end
