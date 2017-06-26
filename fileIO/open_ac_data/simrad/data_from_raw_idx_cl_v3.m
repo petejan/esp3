@@ -428,11 +428,10 @@ fclose(fid);
 
 for idx=1:nb_trans
     
-    idx_nonnan=find(~isnan(trans_obj(idx).Params.TransmitPower));
+    idx_nonnan=find(trans_obj(idx).Params.PulseLength~=0);
     
     time_s=trans_obj(idx).Params.Time;
-    for i=1:length(idx_nonnan)
-        
+    for i=1:length(idx_nonnan)        
         if i==length(idx_nonnan)
             idx_rep=idx_nonnan(i):length(trans_obj(idx).Params.TransmitPower);
         else
@@ -523,9 +522,9 @@ if p.Results.GPSOnly==0
                 curr_data.alongangle=single(data.pings(i).AlongAngle);
         end
         
-        if any(isnan(trans_obj(i).Params.Absorption))
+        if ~any(trans_obj(i).Params.Absorption~=0)
             alpha= sw_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
-            trans_obj(i).Params.Absorption=round(alpha*1e3)/1e3*ones(1,size(curr_data.power,2));
+            trans_obj(i).Params.Absorption(:)=round(alpha*1e3)/1e3*ones(1,size(curr_data.power,2));
         end
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(curr_data,p.Results.PathToMemmap,p.Results.FieldNames);
