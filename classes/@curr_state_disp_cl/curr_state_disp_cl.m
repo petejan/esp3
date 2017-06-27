@@ -10,6 +10,7 @@ classdef curr_state_disp_cl <handle
         Caxes
         DispBottom
         DispUnderBottom
+        UnderBotTransparency=0.1
         DispBotHighVis
         DispTracks
         DispBadTrans
@@ -45,7 +46,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispBadTrans','on',@ischar);
             addParameter(p,'DispReg','on',@ischar);
             addParameter(p,'DispLines','on',@ischar);
-            addParameter(p,'Xaxes','Number',@ischar);
+            addParameter(p,'Xaxes','pings',@ischar);
             addParameter(p,'Grid_x',100,@isnumeric);
             addParameter(p,'Grid_y',100,@isnumeric);
             addParameter(p,'CursorMode','Normal',@ischar);
@@ -56,6 +57,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Cmap','ek60',@ischar);
             addParameter(p,'Font','default',@ischar);
             addParameter(p,'UIupdate',0,@isnumeric);
+            addParameter(p,'UnderBotTransparency',0.1,@isnumeric);
             
             parse(p,varargin{:});
             results=p.Results;

@@ -214,7 +214,7 @@ for i=1:nb_pings
     end
     BS_ping=BS_ori(:,i);
     if Bottom(i)>2*backstep
-        Bottom(i)=Bottom(i)-backstep;
+        
         if Bottom(i)>backstep
             [bs_val,idx_max_tmp]=nanmax(BS_ping((Bottom(i)-backstep):Bottom(i)-1));
         else
@@ -232,6 +232,8 @@ for i=1:nb_pings
             end
         end
     end
+    
+    Bottom(i)=nanmax(Bottom(i)-backstep,1);
 end
 
 

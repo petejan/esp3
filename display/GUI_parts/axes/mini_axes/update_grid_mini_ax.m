@@ -16,15 +16,15 @@ ydata=get(mini_axes_comp.mini_echo,'YData');
 [idx_r,idx_pings]=get_idx_r_n_pings(layer,curr_disp,mini_axes_comp.mini_echo);
 
 switch curr_disp.Xaxes
-    case 'Time'
+    case 'seconds'
         xdata_grid=layer.Transceivers(idx_freq).Time(idx_pings);
-    case 'Number'
+    case 'pings'
         xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
-    case 'Distance'
+    case 'meters'
         xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist(idx_pings);
         if isempty(xdata)
             disp('NO GPS Data');
-            curr_disp.Xaxes='Number';
+            curr_disp.Xaxes='pings';
             xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
         end
     otherwise
@@ -34,7 +34,7 @@ end
 ydata_grid=layer.Transceivers(idx_freq).get_transceiver_range(idx_r);
  
 switch curr_disp.Xaxes
-    case 'Time'
+    case 'seconds'
         dx=curr_disp.Grid_x/(24*60*60);
     otherwise
         dx=curr_disp.Grid_x;

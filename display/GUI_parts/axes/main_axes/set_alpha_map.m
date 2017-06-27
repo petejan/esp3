@@ -40,7 +40,7 @@ min_axis=curr_disp.Cax(1);
 data=double(get(echo_im,'CData'));
 xdata=double(get(echo_im,'XData'));
 ydata=double(get(echo_im,'YData'));
-alpha_map=(double(data>min_axis));
+alpha_map=ones(size(data));
 
 nb_pings=length(xdata);
 
@@ -76,7 +76,7 @@ idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
 
 
 if strcmpi(curr_disp.DispUnderBottom,'off')==1
-    alpha_map(idx_bot_red)=0;
+    alpha_map(idx_bot_red)=curr_disp.UnderBotTransparency;
 end
 
 
@@ -85,6 +85,8 @@ if strcmp(curr_disp.DispBadTrans,'on')
 else
     alpha_map_bt=zeros(size(data_temp));
 end
+
+alpha_map(data<min_axis)=0;
 
 set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
 set(echo_ax,'CLim',curr_disp.Cax);

@@ -12,15 +12,15 @@ ydata=get(axes_panel_comp.main_echo,'YData');
 [idx_r,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
 switch curr_disp.Xaxes
-    case 'Time'
+    case 'seconds'
         xdata_grid=layer.Transceivers(idx_freq).Time(idx_pings);
-    case 'Number'
+    case 'pings'
         xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
-    case 'Distance'
+    case 'meters'
         xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist(idx_pings);
         if isempty(xdata)
             disp('NO GPS Data');
-            curr_disp.Xaxes='Number';
+            curr_disp.Xaxes='pings';
             xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
         end
     otherwise
@@ -31,7 +31,7 @@ ydata_grid=layer.Transceivers(idx_freq).get_transceiver_range(idx_r);
 
  
 switch curr_disp.Xaxes
-    case 'Time'
+    case 'seconds'
         dx=curr_disp.Grid_x/(24*60*60);
     otherwise
         dx=curr_disp.Grid_x;
@@ -54,14 +54,14 @@ set(axes_panel_comp.haxes,'XTickLabelRotation',-90,'box','on');
 str_start='  ';
 
 switch lower(curr_disp.Xaxes)
-    case 'time'
+    case 'seconds'
         h_fmt='  HH:MM:SS';
         x_labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
-    case 'number'
+    case 'pings'
         fmt=[str_start '%.0f'];
         axes_panel_comp.haxes.XTickLabelMode='auto';
         x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
-    case 'distance'
+    case 'meters'
         axes_panel_comp.haxes.XTickLabelMode='auto';
         fmt=[str_start '%.0fm'];
        x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);

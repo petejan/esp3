@@ -3,8 +3,8 @@ function change_grid_callback(src,~,main_figure)
 display_tab_comp=getappdata(main_figure,'Display_tab');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-
 val=str2double(get(src,'string'));
+
 if val>0
     curr_disp.Grid_x=str2double(get(display_tab_comp.grid_x,'string'));
     curr_disp.Grid_y=str2double(get(display_tab_comp.grid_y,'string'));
