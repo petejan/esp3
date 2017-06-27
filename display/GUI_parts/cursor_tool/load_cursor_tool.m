@@ -15,7 +15,7 @@ cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_t
 cursor_mode_tool_comp.edit_bottom=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.edit_bot ,'TooltipString','Edit Bottom (3)','Tag','ed_bot');
 cursor_mode_tool_comp.create_reg=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.create_reg ,'TooltipString','Create Region (4)','Tag','create_reg');
 cursor_mode_tool_comp.measure=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.ruler ,'TooltipString','Measure Distance (5)','Tag','meas');
-cursor_mode_tool_comp.measure=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.brush ,'TooltipString','Brush Soundings (6)','Tag','brush_soundings');
+cursor_mode_tool_comp.brush=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.brush ,'TooltipString','Brush Soundings (6)','Tag','brush_soundings');
 
 childs=findall(main_figure,'type','uitoggletool');
 set(childs,...
