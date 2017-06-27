@@ -60,6 +60,7 @@ if isempty(answer)||isnan(str2double(answer{1}))
     return;
 end
 
+old_bot=layer.Transceivers(idx_freq).Bottom;
 layer.Transceivers(idx_freq).shift_bottom(str2double(answer{1}),idx_pings);
 
 
@@ -67,6 +68,24 @@ curr_disp.Bot_changed_flag=1;
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
+
+
+bot=layer.Transceivers(idx_freq).Bottom;
+curr_disp.Bot_changed_flag=1;
+setappdata(main_figure,'Curr_disp',curr_disp);
+setappdata(main_figure,'Layer',layer);
+
+% Prepare an undo/redo action
+cmd.Name = sprintf('Bottom Edit');
+cmd.Function        = @bottom_undo_fcn;       % Redo action
+cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
+cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+
+uiundo(main_figure,'function',cmd);
+
+
+
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');
 display_bottom(main_figure);

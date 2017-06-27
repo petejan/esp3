@@ -62,9 +62,23 @@ end
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
+old_bot=layer.Transceivers(idx_freq).Bottom;
 layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'idx_r',idx_r,'idx_pings',idx_pings);
 curr_disp.Bot_changed_flag=1; 
 hide_status_bar(main_figure);
+bot=layer.Transceivers(idx_freq).Bottom;
+curr_disp.Bot_changed_flag=1;
+setappdata(main_figure,'Curr_disp',curr_disp);
+setappdata(main_figure,'Layer',layer);
+
+% Prepare an undo/redo action
+cmd.Name = sprintf('Bottom Edit');
+cmd.Function        = @bottom_undo_fcn;       % Redo action
+cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
+cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+
+uiundo(main_figure,'function',cmd);
 
 
 setappdata(main_figure,'Layer',layer);
