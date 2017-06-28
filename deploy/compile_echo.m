@@ -8,6 +8,9 @@ folder_to_copy=folders_list_copy(root_folder);
 
 for ui=1:length(folder_to_copy)
     [~,fold_temp,~]=fileparts(folder_to_copy{ui});
+    if exist(fullfile(pwd,fold_temp),'dir')>0
+        rmdir(fullfile(pwd,fold_temp),'s');
+    end
    copyfile(folder_to_copy{ui},fullfile(pwd,fold_temp),'f'); 
 end
 
@@ -29,7 +32,7 @@ for i= 1:(length(folders))
     str{end+1}=sprintf('-a %s ',folders{i});
 end
 
-str{end+1}=' -r icons/echoanalysis.ico -w enable';
+str{end+1}='-o ESP3 -r icons/echoanalysis.ico -w enable';
 
 str_mcc =[str{:}];
 disp(str_mcc);

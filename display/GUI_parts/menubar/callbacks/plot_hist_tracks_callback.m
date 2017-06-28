@@ -35,13 +35,15 @@ end
 
 
 [pdf_temp,x_temp]=pdf_perso(TS,'bin',25);
-hfig=figure();
-bar(x_temp,pdf_temp);
+
+hfig=new_echo_figure(main_figure,'tag','track_histo');
+ax=axes(hfig);
+bar(ax,x_temp,pdf_temp);
 xlabel('TS(dB)');
 ylabel('Pdf');
 title(tag);
 grid on;
-new_echo_figure(main_figure,'fig_handle',hfig);
+
 
 
 setappdata(main_figure,'Layer',layer);
