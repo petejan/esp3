@@ -10,7 +10,7 @@ classdef curr_state_disp_cl <handle
         Caxes
         DispBottom
         DispUnderBottom
-        UnderBotTransparency=0.1
+        UnderBotTransparency=0.9
         DispBotHighVis
         DispTracks
         DispBadTrans
@@ -57,7 +57,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Cmap','ek60',@ischar);
             addParameter(p,'Font','default',@ischar);
             addParameter(p,'UIupdate',0,@isnumeric);
-            addParameter(p,'UnderBotTransparency',0.1,@isnumeric);
+            addParameter(p,'UnderBotTransparency',0.9,@isnumeric);
             
             parse(p,varargin{:});
             results=p.Results;
@@ -90,23 +90,26 @@ classdef curr_state_disp_cl <handle
         end
         
         function pointer=get_pointer(obj)
+            %Choice of pointer being: ‘hand’, ‘hand1’, ‘hand2’, ‘closedhand’, ‘glass’, ‘glassplus’, ‘glassminus’, 
+            %‘lrdrag’, ‘ldrag’, ‘rdrag’, ‘uddrag’, ‘udrag’, ‘ddrag’, ‘add’, ‘addzero’, ‘addpole’, ‘eraser’, 
+            %‘help’, ‘modifiedfleur’, ‘datacursor’, ‘rotate’
             switch obj.CursorMode
                 case 'Zoom In'
                     pointer='glassplus';
                 case 'Zoom Out'
                     pointer='glassminus';
                 case 'Bad Transmits'
-                    pointer='addpole';
-                case 'Edit Bottom'
+                    pointer='lrdrag';
+                case {'Edit Bottom', 'Edit Bottom (spline)'}
                     pointer='crosshair';
                 case 'Measure'
                     pointer='datacursor';
                 case 'Create Region'
                     pointer='cross';
                 case 'Draw Line'
-                    pointer='hand';
+                    pointer='addpole';
                 case 'Brush Soundings'
-                    pointer='datacursor';
+                    pointer='eraser';
                 case 'Normal'
                     pointer='arrow';
             end

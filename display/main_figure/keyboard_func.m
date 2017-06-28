@@ -170,19 +170,12 @@ switch callbackdata.Key
                 set(cursor_mode_tool_comp.create_reg,'state','off');
                 curr_disp.CursorMode='Normal';
         end
-    case {'7' 'numpad7'}
+    case {'6' 'numpad6'}
         switch curr_disp.CursorMode
             case 'Draw Line'
                 curr_disp.CursorMode='Normal';
             otherwise
                 curr_disp.CursorMode='Draw Line';
-        end
-    case {'6' 'numpad6'}
-        switch curr_disp.CursorMode
-            case 'Brush Soundings'
-                curr_disp.CursorMode='Normal';
-            otherwise
-                curr_disp.CursorMode='Brush Soundings';
         end
     case {'5' 'numpad5'}
         switch get(cursor_mode_tool_comp.measure,'state');
@@ -210,8 +203,7 @@ switch callbackdata.Key
             case 'on'
                 curr_disp.DispReg='off';
         end
-    case 't'
-        
+    case 't'       
         switch curr_disp.DispBadTrans
             case 'off'
                 curr_disp.DispBadTrans='on';

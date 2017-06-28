@@ -17,6 +17,7 @@ icon.ts_cal = iconRead(fullfile(icon_dir,'ts_cal.png'));
 icon.eba_cal = iconRead(fullfile(icon_dir,'eba_cal.png'));
 
 icon.edit_bot = iconRead(fullfile(icon_dir,'edit_bot.png'));
+icon.edit_bot_spline = iconRead(fullfile(icon_dir,'edit_bot_spline.png'));
 
 icon.folder = iconRead(fullfile(icon_dir,'folder_small.png'));
 

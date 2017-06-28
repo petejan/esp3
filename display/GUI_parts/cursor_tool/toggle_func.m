@@ -45,7 +45,7 @@ ah=axes_panel_comp.main_axes;
 axes(ah);
 
 switch class(src)
-    case {'matlab.ui.container.toolbar.ToggleTool','matlab.ui.container.toolbar.PushTool'}
+    case {'matlab.ui.container.toolbar.ToggleTool','matlab.ui.container.toolbar.PushTool','matlab.ui.container.toolbar.ToggleSplitTool'}
         type=src.Tag;
         src_out=src;
     case 'char'
@@ -54,7 +54,7 @@ switch class(src)
 end
 
 
-childs=findall(main_figure,'type','uitoggletool');
+childs=[findall(main_figure,'type','uitoggletool');findall(main_figure,'type','uitogglesplittool')];
 for i=1:length(childs)
     if ~strcmp(get(childs(i),'tag'),type)
         set(childs(i),'state','off');
@@ -81,6 +81,8 @@ switch src_out.State
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@mark_bad_transmit,main_figure});
             case 'ed_bot'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
+            case 'ed_bot_spline'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@push_bottom,main_figure}); 
             case 'loc'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@disp_loc,main_figure});
             case 'meas'
@@ -93,7 +95,6 @@ switch src_out.State
             case 'brush_soundings'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@brush_soundings,main_figure}); 
             otherwise 
-
                 reset_mode(0,0,main_figure);    
         end
     case 'off'

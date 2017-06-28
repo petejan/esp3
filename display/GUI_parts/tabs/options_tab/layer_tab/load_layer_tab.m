@@ -143,7 +143,7 @@ for i=1:length(selected_layers)
     
     [idx,~]=find_layer_idx(layers,selected_layers(i));
     
-    layers=layers.delete_layers(layer.ID_num);
+    layers=layers.delete_layers(selected_layers(i));
     layer=layers(nanmin(idx,length(layers)));
     
 end

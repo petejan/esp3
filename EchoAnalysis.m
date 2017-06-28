@@ -228,6 +228,7 @@ setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 initialize_display(main_figure);
 initialize_interactions_v2(main_figure);
 init_java_fcn(main_figure);
+update_cursor_tool(main_figure)
 init_listeners(main_figure);
 
 %% If files were loaded in input, load them now

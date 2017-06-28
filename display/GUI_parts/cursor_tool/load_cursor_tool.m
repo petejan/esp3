@@ -12,14 +12,17 @@ icon=get_icons_cdata(fullfile(app_path_main,'icons'));
 cursor_mode_tool_comp.zoom_in=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zin,'TooltipString','Zoom In (1)','Tag','zin');
 cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom Out (shift+1)','Tag','zout');
 cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.bad_trans ,'TooltipString','Bad Transmit (2)','Tag','bt');
-cursor_mode_tool_comp.edit_bottom=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.edit_bot ,'TooltipString','Edit Bottom (3)','Tag','ed_bot');
+cursor_mode_tool_comp.edit_bottom=uitogglesplittool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.edit_bot,'TooltipString','Edit Bottom (3)','Tag','ed_bot');
 cursor_mode_tool_comp.create_reg=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.create_reg ,'TooltipString','Create Region (4)','Tag','create_reg');
 cursor_mode_tool_comp.measure=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.ruler ,'TooltipString','Measure Distance (5)','Tag','meas');
-cursor_mode_tool_comp.brush=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.brush ,'TooltipString','Brush Soundings (6)','Tag','brush_soundings');
+%cursor_mode_tool_comp.brush=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.brush ,'TooltipString','Brush Soundings (6)','Tag','brush_soundings');
 
 childs=findall(main_figure,'type','uitoggletool');
-set(childs,...
+
+set([cursor_mode_tool_comp.edit_bottom;childs],...
     'ClickedCallback',{@set_curr_disp_mode,main_figure});
+
+
 
 cursor_mode_tool_comp.undo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.undo,'TooltipString','Undo (ctrl+z)','Tag','undo''parent','ClickedCallback','uiundo(gcbf,''execUndo'')','Separator','on');
 cursor_mode_tool_comp.redo = uipushtool('parent',cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.redo,'TooltipString','Redo (ctrl+y)','Tag','redo','ClickedCallback','uiundo(gcbf,''execRedo'')');
@@ -30,7 +33,10 @@ cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CDa
 
 
 setappdata(main_figure,'Cursor_mode_tool',cursor_mode_tool_comp);
+
+
 end
+
 
 
 function set_curr_disp_mode(src,~,main_figure)
@@ -45,14 +51,13 @@ if strcmp(src.State,'on')
             curr_disp.CursorMode='Zoom Out';
         case 'zin'
             curr_disp.CursorMode='Zoom In';
-        case 'ed_bot'
+        case {'ed_bot','ed_bot_spline','brush_soundings'}
             curr_disp.CursorMode='Edit Bottom';
         case 'meas'
             curr_disp.CursorMode='Measure';
         case 'create_reg'
             curr_disp.CursorMode='Create Region';
-        case 'brush_soundings'
-            curr_disp.CursorMode='Brush Soundings';
+
     end
 else
     curr_disp.CursorMode='Normal';
