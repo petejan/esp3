@@ -132,8 +132,12 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         p0=nanmax(ping_new-radius,1);
         p1=nanmin(ping_new+radius,nb_pings);
         pings_spline=[p0 ping_new p1];
+        if length(unique(pings_spline)) < length(pings_spline)
+            return;
+        end
         samples_spline=[samples_ori(p0) sample_new samples_ori(p1)];
         pings=p0:p1;
+
         samples_new = round(spline(pings_spline,samples_spline,pings));
         samples_new(samples_new>nb_samples)=nb_samples;
         samples_new(samples_new<=0)=1;

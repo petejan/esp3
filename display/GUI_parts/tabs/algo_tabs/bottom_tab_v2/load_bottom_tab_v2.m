@@ -126,14 +126,14 @@ switch src.String{src.Value}
         trans_obj.Algo(idx_algo).Varargin.thr_bottom= -40;
         trans_obj.Algo(idx_algo).Varargin.thr_backstep= -3;
         trans_obj.Algo(idx_algo).Varargin.thr_echo= -30;
-        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-4;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-2;
         trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
         
     case 'Hills'
         trans_obj.Algo(idx_algo).Varargin.thr_bottom= -45;
         trans_obj.Algo(idx_algo).Varargin.thr_backstep= -3;
         trans_obj.Algo(idx_algo).Varargin.thr_echo= -20;
-        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-4;
+        trans_obj.Algo(idx_algo).Varargin.thr_cum= 1e-2;
         trans_obj.Algo(idx_algo).Varargin.shift_bot= 0;
         
     otherwise

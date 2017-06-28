@@ -36,16 +36,7 @@ icon.create_reg= iconRead(fullfile(icon_dir,'create_reg.png'));
 
 icon.brush= iconRead(fullfile(icon_dir,'brush.png'));
 
-
-
-tmp = fullfile(matlabroot,'/toolbox/matlab/icons/greenarrowicon.gif');
-[cdata,map] = imread(tmp);
- 
-
-map(map(:,1)+map(:,2)+map(:,3)==3) = NaN;
- 
-% Convert into 3D RGB-space
-icon.next_lay = ind2rgb(cdata,map);
+icon.next_lay = iconRead(fullfile(icon_dir,'greenarrowicon.gif'));
 icon.prev_lay = icon.next_lay(:,(16:-1:1),:);
  
 

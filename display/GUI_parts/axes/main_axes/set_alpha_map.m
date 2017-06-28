@@ -87,7 +87,7 @@ else
 end
 
 alpha_map(data<min_axis)=0;
-
+alpha_map(isnan(data))=0;
 set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
 set(echo_ax,'CLim',curr_disp.Cax);
 set(echo_im,'AlphaData',alpha_map);

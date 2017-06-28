@@ -85,8 +85,8 @@ switch src_out.State
 
                 context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'));
                 axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
-                uimenu(context_menu,'Label','Small radius (2px)','checked','on','userdata',2,'Callback',@check_only_one);
-                uimenu(context_menu,'Label','Medium radius (5px)','userdata',5,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Small radius (2px)','userdata',2,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Medium radius (5px)','userdata',5,'Callback',@check_only_one,'checked','on');
                 uimenu(context_menu,'Label','Large radius (10px)','userdata',10,'Callback',@check_only_one);
                 uimenu(context_menu,'Label','Extra Large radius (50px)','userdata',50,'Callback',@check_only_one);
                 uimenu(context_menu,'Label','Stupidly Large radius (100px)','userdata',100,'Callback',@check_only_one);

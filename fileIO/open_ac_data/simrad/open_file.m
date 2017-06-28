@@ -386,7 +386,7 @@ for itype = 1:length(ftype_unique)
     
     
     new_layers=reorder_layers_time(new_layers);
-    files_lay=new_layers(end).Filename;
+    files_lay=new_layers(1).Filename;
     all_layer=[layers new_layers];
     all_layers_sorted=all_layer.sort_per_survey_data();
     
