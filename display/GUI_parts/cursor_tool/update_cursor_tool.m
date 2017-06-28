@@ -42,7 +42,7 @@ switch new_tag
         set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.edit_bot);
     case 'ed_bot_spline'
         set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.edit_bot_spline);
-    case 'brush'
+    case 'brush_soundings'
         set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.brush);
 end
 

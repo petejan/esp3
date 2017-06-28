@@ -100,7 +100,7 @@ classdef curr_state_disp_cl <handle
                     pointer='glassminus';
                 case 'Bad Transmits'
                     pointer='lrdrag';
-                case {'Edit Bottom', 'Edit Bottom (spline)'}
+                case 'Edit Bottom'
                     pointer='crosshair';
                 case 'Measure'
                     pointer='datacursor';

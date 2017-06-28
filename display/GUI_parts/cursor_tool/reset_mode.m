@@ -5,7 +5,7 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 %  region_tab_comp=getappdata(main_figure,'Region_tab');
 % set(region_tab_comp.create_button,'value',get(region_tab_comp.create_button,'Min'));
 
-childs=findall(main_figure,'type','uitoggletool');
+childs=[findall(main_figure,'type','uitoggletool');findall(main_figure,'type','uitogglesplittool')];
 set(childs,'state','off');
 initialize_interactions_v2(main_figure);
 iptPointerManager(main_figure,'enable');

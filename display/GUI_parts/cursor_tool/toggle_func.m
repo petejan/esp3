@@ -82,7 +82,16 @@ switch src_out.State
             case 'ed_bot'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
             case 'ed_bot_spline'
-                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@push_bottom,main_figure}); 
+
+                context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'));
+                axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
+                uimenu(context_menu,'Label','Small radius (2px)','checked','on','userdata',2,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Medium radius (5px)','userdata',5,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Large radius (10px)','userdata',10,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Extra Large radius (50px)','userdata',50,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Stupidly Large radius (100px)','userdata',100,'Callback',@check_only_one);
+                
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@push_bottom,main_figure});
             case 'loc'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@disp_loc,main_figure});
             case 'meas'
@@ -93,12 +102,27 @@ switch src_out.State
             case 'draw_line'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure});
             case 'brush_soundings'
-                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@brush_soundings,main_figure}); 
-            otherwise 
-                reset_mode(0,0,main_figure);    
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@brush_soundings,main_figure});
+            otherwise
+                reset_mode(0,0,main_figure);
         end
     case 'off'
         reset_mode(0,0,main_figure);
 end
+
+end
+
+function check_only_one(src,~)
+uimenu_parent=get(src,'Parent');
+childs=findall(uimenu_parent,'Type','uimenu');
+
+for i=1:length(childs)
+    if src~=childs(i)
+        set(childs(i), 'Checked', 'off');
+    end
+end
+
+set(src, 'Checked', 'on');
+
 
 end

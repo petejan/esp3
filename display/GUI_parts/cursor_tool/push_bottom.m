@@ -36,12 +36,24 @@
 
 %% Function
 function push_bottom(src,~,main_figure)
+if~(strcmpi(src.SelectionType,'Normal'))
+   return;
+end
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-radius=50;%[2 5 10 50 100](small medium large extra stupidly-large)
+context_menu=axes_panel_comp.bad_transmits.UIContextMenu;
+childs=findall(context_menu,'Type','uimenu');
+
+for i=1:length(childs)
+    if strcmp(childs(i).Checked,'on')
+        radius=childs(i).UserData;
+        break;
+    end
+    
+end
 
 ah=axes_panel_comp.main_axes;
 
@@ -80,17 +92,13 @@ yinit=nan(1,nb_pings);
 cp = ah.CurrentPoint;
 ping_init =round(cp(1,1));
 sample_init=round(cp(1,2));
-u=0;
+
 
 if ping_init<x_lim(1)||ping_init>x_lim(end)||sample_init<y_lim(1)||sample_init>y_lim(end)
     return;
 end
 
-if sample_init>=samples_ori(ping_init)
-    position='above';
-else
-    position='below';
-end
+
 
 
 switch src.SelectionType
@@ -100,6 +108,14 @@ switch src.SelectionType
     otherwise
         return;
         
+end
+
+if sample_init>=samples_ori(ping_init)
+    position='above';
+    setptr(main_figure,'udrag');
+else
+    position='below';
+    setptr(main_figure,'ddrag');
 end
 hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
 
