@@ -48,14 +48,17 @@ if strcmp(trans_obj.Mode,'FM')
     end
     
     
-    win=hanning(nfft)/nansum(hanning(nfft));
+    
     
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;
     
     if length(y_c_ts)<=nfft
-        s = fft(y_c_ts,nfft)/nfft;
+        win=hanning(length(y_c_ts));
+        s = fft(win.*y_c_ts,nfft)/nfft;
     else
+        win=hanning(nfft);
         s = spectrogram(y_c_ts,win,nfft-1,nfft)/nfft;
+        s=s/size(s,1);
     end
     
     s_norm=bsxfun(@rdivide,s,fft_pulse);

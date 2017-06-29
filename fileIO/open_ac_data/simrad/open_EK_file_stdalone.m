@@ -233,10 +233,10 @@ if ~isequal(Filename_cell, 0)
             for it=1:length(trans_obj)
                 prop_params=properties(trans_obj(it).Params);
                 for iprop=1:length(prop_params)
-                    if~ismember(prop_params{it},{'Time'})
-                    if length(unique(trans_obj(it).Params.(prop_params{iprop})))>1
-                        warning('%s parameters changed during file for channel %s\n Do not use this channel and file with ESP3 yet!',prop_params{iprop},trans_obj(it).Config.ChannelID);
-                    end
+                    if~any(ismember(prop_params{iprop},{'Time'}))
+                        if length(unique(trans_obj(it).Params.(prop_params{iprop})))>1
+                            warning('%s parameters changed during file for channel %s\n Do not use this channel and file with ESP3 yet!',prop_params{iprop},trans_obj(it).Config.ChannelID);
+                        end
                     end
                 end
             end

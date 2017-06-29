@@ -44,7 +44,7 @@ for uui=idx_sort
 
        [cmap,col_ax,col_lab,col_grid,~,~]=init_cmap(curr_disp.Cmap);
        df=nanmean(diff(f_vec))/1e3;
-        fig=figure();
+        fig=new_echo_figure(main_figure,'Tag',sprintf('ts_ping %.0f',df));
         ax=axes();
         echo=imagesc(ax,f_vec/1e3,r_disp,TS_f);
         set(echo,'AlphaData',TS_f>-80);
@@ -57,11 +57,11 @@ for uui=idx_sort
         
         set(ax,'YColor',col_lab);
         set(ax,'XColor',col_lab);
-        set(ax,'Color',col_ax,'Grid','on','GridColor',col_grid);
-
+        set(ax,'Color',col_ax,'GridColor',col_grid);
+        grid(ax,'on');
         clear Sp_f Compensation_f  f_vec
         
-        new_echo_figure(main_figure,'Tag',sprintf('ts_ping %.0f',df),'fig_handle',fig);
+
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         %         f_vec_save=layer.Frequencies;
