@@ -123,6 +123,7 @@ end
 idx_rem=diff(raw_idx_obj.pos_dg)-raw_idx_obj.len_dg(1:end-1)~=(HEADER_LEN-4);
 
 type_dg_unique=unique(raw_idx_obj.type_dg);
+
 for i=1:length(type_dg_unique)
    idx_dg_type=find(strcmp(raw_idx_obj.type_dg,type_dg_unique{i}));
    idx_rem_type=find(diff(raw_idx_obj.time_dg(idx_dg_type))<0)+1;

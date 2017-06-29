@@ -9,6 +9,7 @@ if ~isempty(trans_obj.Filters)
     
 else
     [T,Np]=trans_obj.get_pulse_length();
+    
 end
 
 

@@ -60,9 +60,9 @@ sim_pulse_2=sim_pulse_2/nanmax(sim_pulse_2);
 
 y_tx_matched=flipud(conj(sim_pulse_2));
 
-
-%t_sim_pulse_1=downsample(t_sim_pulse,D_1);
-%t_sim_pulse_2=downsample(t_sim_pulse_1,D_2);
+% 
+% t_sim_pulse_1=downsample(t_sim_pulse,D_1);
+% t_sim_pulse_2=downsample(t_sim_pulse_1,D_2);
 % figure();
 % subplot(3,1,1)
 % plot(t_sim_pulse*1e3,real(sim_pulse)/nanmax(real(sim_pulse)),'b');

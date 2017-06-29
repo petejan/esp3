@@ -194,9 +194,12 @@ try
         
         try
             map_tab_comp=getappdata(main_figure,'Map_tab');
-            delete(map_tab_comp.boat_pos);
-            map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
-            setappdata(main_figure,'Map_tab',map_tab_comp);
+            if ~isempty(map_tab_comp.Proj)
+                
+                delete(map_tab_comp.boat_pos);
+                map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
+                setappdata(main_figure,'Map_tab',map_tab_comp);
+            end
         end
         
         hfigs=getappdata(main_figure,'ExternalFigures');

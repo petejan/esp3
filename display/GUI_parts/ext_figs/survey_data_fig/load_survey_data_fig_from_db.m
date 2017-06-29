@@ -35,14 +35,23 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function load_survey_data_fig_from_db(main_figure,reload)
+function load_survey_data_fig_from_db(main_figure,varargin)
+
+p = inputParser;
+
+addRequired(p,'main_figure',@ishandle);
+addOptional(p,'reload',0,@isnumeric);
+addOptional(p,'new_logbook',0,@isnumeric);
+parse(p,main_figure,varargin{:});
 
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
 
+new_logbook=p.Results.new_logbook;
+reload=p.Results.reload;
 
-if isempty(layer)
-    path_f = uigetdir(app_path.data,'Choose Data Folder');
+if isempty(layer)||new_logbook>0
+    [~,path_f]= uigetfile({fullfile(app_path.data,'echo_logbook.xml')}, 'Pick a logbook file','MultiSelect','off');
     if path_f==0
         return;
     end

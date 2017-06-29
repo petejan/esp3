@@ -295,7 +295,7 @@ for idg=1:nb_dg
             filter_coeff_temp.channelID = (fread(fid,128,'*char', 'l')');
             filter_coeff_temp.NoOfCoefficients=fread(fid,1,'int16','l');
             filter_coeff_temp.DecimationFactor=fread(fid,1,'int16','l');
-            filter_coeff_temp.Coefficients=fread(fid,2*filter_coeff_temp.NoOfCoefficients,'float','l');
+            filter_coeff_temp.Coefficients=fread(fid,2*filter_coeff_temp.NoOfCoefficients,'single','l');
             idx = find(strcmp(deblank(CIDs_freq),deblank(filter_coeff_temp.channelID)));
             
             if ~isempty(idx)
@@ -449,14 +449,13 @@ for idx=1:nb_trans
         end
         
     end
-    
-    
-    if any(isnan(trans_obj(idx).Params.Frequency))
-        trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.Frequency))=trans_obj(idx).Config.Frequency;
+       
+    if any(trans_obj(idx).Params.Frequency==0)
+        trans_obj(idx).Params.Frequency(trans_obj(idx).Params.Frequency==0)=trans_obj(idx).Config.Frequency;
     end
-    if any(isnan(trans_obj(idx).Params.FrequencyStart))
-        trans_obj(idx).Params.FrequencyStart(isnan(trans_obj(idx).Params.FrequencyStart))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyStart));
-        trans_obj(idx).Params.FrequencyEnd(isnan(trans_obj(idx).Params.FrequencyEnd))=trans_obj(idx).Params.Frequency(isnan(trans_obj(idx).Params.FrequencyEnd));
+    if any(trans_obj(idx).Params.FrequencyStart==0)
+        trans_obj(idx).Params.FrequencyStart(trans_obj(idx).Params.FrequencyStart==0)=trans_obj(idx).Params.Frequency(trans_obj(idx).Params.FrequencyStart==0);
+        trans_obj(idx).Params.FrequencyEnd(trans_obj(idx).Params.FrequencyEnd==0)=trans_obj(idx).Params.Frequency(trans_obj(idx).Params.FrequencyEnd==0);
     end
     trans_obj(idx).Params.Time=time_s;
 end

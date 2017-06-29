@@ -63,7 +63,6 @@ if new==1
     update_layer_tab(main_figure);
     update_reglist_tab(main_figure,[],new);
     clear_regions(main_figure,[]);
-
 end
 
 update_axis_panel(main_figure,new);

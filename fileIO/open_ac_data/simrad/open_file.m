@@ -199,6 +199,9 @@ ftype_cell = cell(1,length(Filename_tot));
 for ifi = 1:length(Filename_tot)
     ftype_cell{ifi} = get_ftype(Filename_tot{ifi});
 end
+if isempty(ftype_cell)
+    return;
+end
 
 %%% Find each ftypes in list to batch process the opening
 [ftype_unique,~,ic] = unique(ftype_cell);

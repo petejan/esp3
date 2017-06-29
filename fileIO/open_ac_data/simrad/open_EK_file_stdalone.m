@@ -229,7 +229,19 @@ if ~isequal(Filename_cell, 0)
             
             
             [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp);
-    
+            
+            for it=1:length(trans_obj)
+                prop_params=properties(trans_obj(it).Params);
+                for iprop=1:length(prop_params)
+                    if~ismember(prop_params{it},{'Time'})
+                    if length(unique(trans_obj(it).Params.(prop_params{iprop})))>1
+                        warning('%s parameters changed during file for channel %s\n Do not use this channel and file with ESP3 yet!',prop_params{iprop},trans_obj(it).Config.ChannelID);
+                    end
+                    end
+                end
+            end
+        
+            
             if ~isa(trans_obj,'transceiver_cl')
                 disp('Could not read file.')
                 continue;
