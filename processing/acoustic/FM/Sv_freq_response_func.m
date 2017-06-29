@@ -22,8 +22,8 @@ for uui=1:length(layer.Frequencies)
         
         file_cal_eba=fullfile(cal_path,[ 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         range=layer.Transceivers(idx_freq).get_transceiver_range();
-        range(range<r_min)=[];
-        range(range>r_max)=[];
+
+        idx_r=find(range<=r_max&range>=r_min);
         
         if exist(file_cal_eba,'file')>0
             cal_eba=load(file_cal_eba);
@@ -40,9 +40,7 @@ for uui=1:length(layer.Frequencies)
             cal=[];
         end
         
-        
-
-        
+       
 
         [Sv_f_temp,f_vec_temp,~,~]=layer.Transceivers(uui).sv_f_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
         Sv_f_temp_mean=10*log10(nanmean(nanmean(10.^(Sv_f_temp/10))));
@@ -61,14 +59,10 @@ for uui=1:length(layer.Frequencies)
         Sv=layer.Transceivers(uui).Data.get_datamat('Sv');
         
         range=layer.Transceivers(uui).get_transceiver_range();
-        [nb_samples,~]=size(Sv);
-        
-        [~,idx_r1]=nanmin(abs(range-r_min));
-        [~,idx_r2]=nanmin(abs(range-r_max));
-        
-        idx_r1=nanmax(idx_r1,1);
-        idx_r2=nanmin(idx_r2,nb_samples);
-        Sv_f=[Sv_f 10*log10(nanmean(nanmean(10.^(Sv(idx_r1:idx_r2,idx_pings)/10))))];
+
+        idx_r=find(range<=r_max&range>=r_min);
+       
+        Sv_f=[Sv_f 10*log10(nanmean(nanmean(10.^(Sv(idx_r,idx_pings)/10))))];
         
         f_vec=[f_vec f_vec_temp];
         clear f_vec_temp

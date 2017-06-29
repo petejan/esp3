@@ -20,6 +20,7 @@ if strcmp(trans_obj.Mode,'FM')
     dr=pulse_length*c/(4*dp);
     
     nfft=ceil(pulse_length*f_s_sig/dp);
+    nfft=2^(nextpow2(nfft));
     
     range=trans_obj.get_transceiver_range();
     
@@ -48,17 +49,16 @@ if strcmp(trans_obj.Mode,'FM')
     end
     
     
-    
-    
+      
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;
     
     if length(y_c_ts)<=nfft
-        win=hanning(length(y_c_ts));
+        win=hann(length(y_c_ts));
+        win=win/nanmax(win);
         s = fft(win.*y_c_ts,nfft)/nfft;
     else
-        win=hanning(nfft);
+        win=hann(nfft);win=win/nanmax(win);
         s = spectrogram(y_c_ts,win,nfft-1,nfft)/nfft;
-        s=s/size(s,1);
     end
     
     s_norm=bsxfun(@rdivide,s,fft_pulse);

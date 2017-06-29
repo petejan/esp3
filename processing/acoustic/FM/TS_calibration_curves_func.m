@@ -288,13 +288,15 @@ for uui=select
         choice = questdlg(qstring, ...
             'Calibration', ...
             'Yes','No thank you',options);
+        
         % Handle response
         switch choice
             case 'No thank you'
-                continue;
+                
+            otherwise
+                save(file_cal,'freq_vec','cal_ts','th_ts','Gf');
         end
-        
-        save(file_cal,'freq_vec','cal_ts','th_ts','Gf');
+               
           
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else

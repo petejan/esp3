@@ -6,7 +6,7 @@ addRequired(p,'reg_obj',@(x) isa(x,'region_cl'));
 addParameter(p,'envdata',env_data_cl,@(x) isa(x,'env_data_cl'));
 addParameter(p,'cal',[],@(x) isempty(x)|isstruct(x));
 addParameter(p,'load_bar_comp',[],@(x) isempty(x)|isstruct(x));
-addParameter(p,'dp',2,@isnumeric);
+addParameter(p,'dp',1,@isnumeric);
 parse(p,trans_obj,reg_obj,varargin{:});
 
 
