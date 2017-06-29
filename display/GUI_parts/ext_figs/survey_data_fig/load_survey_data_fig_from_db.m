@@ -51,7 +51,7 @@ new_logbook=p.Results.new_logbook;
 reload=p.Results.reload;
 
 if isempty(layer)||new_logbook>0
-    [~,path_f]= uigetfile({fullfile(app_path.data,'echo_logbook.xml')}, 'Pick a logbook file','MultiSelect','off');
+    [~,path_f]= uigetfile({fullfile(app_path.data,'echo_logbook.db')}, 'Pick a logbook file','MultiSelect','off');
     if path_f==0
         return;
     end

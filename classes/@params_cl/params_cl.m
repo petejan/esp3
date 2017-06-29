@@ -48,7 +48,7 @@ classdef params_cl
             params_out=params_cl(length(param_1.Time)+length(param_2.Time));
             
             for jj=1:length(props)
-                params_out.(props{jj})=[param_start.(props{jj}) param_end.(props{jj})];
+                params_out.(props{jj})=[param_start.(props{jj})(:)' param_end.(props{jj})(:)'];
             end
             
         end
