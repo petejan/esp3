@@ -227,8 +227,12 @@ if ~isequal(Filename_cell, 0)
             end
             
             
-            
             [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp);
+            
+            if isempty(trans_obj)
+                id_rem=union(id_rem,uu);
+                continue;
+            end
             
             for it=1:length(trans_obj)
                 prop_params=properties(trans_obj(it).Params);
@@ -244,6 +248,7 @@ if ~isequal(Filename_cell, 0)
             
             if ~isa(trans_obj,'transceiver_cl')
                 disp('Could not read file.')
+                id_rem=union(id_rem,uu);
                 continue;
             end
             
@@ -356,6 +361,7 @@ if ~isequal(Filename_cell, 0)
                 prev_ping_end=pings(end);
                 
                 if  ~isa(trans_obj,'transceiver_cl')
+                    id_rem=union(id_rem,uu);
                     continue;
                 end
                 

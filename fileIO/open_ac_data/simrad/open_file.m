@@ -102,7 +102,7 @@ else
         end
         
         % add path to filenames
-
+        
         Filename=cellfun(@(x) fullfile(path_f,x),Filename,'UniformOutput',0);
         
     elseif file_id == 1 % if requesting to open next file in folder
@@ -173,7 +173,7 @@ end
 if isempty(Filename)
     return;
 end
-if isequal(Filename, 0);  
+if isequal(Filename, 0);
     return;
 end
 
@@ -273,7 +273,7 @@ for itype = 1:length(ftype_unique)
                 continue;
             end
             
-                        
+            
             load_bar_comp.status_bar.setText('Loading Bottom and regions');
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
             for i=1:numel(new_layers)
@@ -320,7 +320,7 @@ for itype = 1:length(ftype_unique)
             
             load_bar_comp.status_bar.setText('Loading Bottom and regions');
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
-             
+            
             for i=1:length(new_layers)
                 set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
                 try
@@ -404,14 +404,20 @@ for itype = 1:length(ftype_unique)
     layers=reorder_layers_time(layers_out);
 end
 
+%%% TODO: comment
+hide_status_bar(main_figure)
+
+if isempty(layers)||~exist('files_lay','var')
+    return;
+end
+
 [idx,~]=find_layer_idx_files(layers,files_lay);
 layer=layers(idx);
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Layers',layers);
 
-%%% TODO: comment
-hide_status_bar(main_figure);
+
 
 %%% Update display?
 loadEcho(main_figure);

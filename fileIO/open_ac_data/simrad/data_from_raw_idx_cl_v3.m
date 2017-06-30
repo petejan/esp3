@@ -106,12 +106,36 @@ NMEA.string= cell(1,nb_nmea);
 
 params_cl_init(nb_trans)=params_cl();
 
+
 for i=1:nb_trans
     nb_pings(i)=min(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);
     data.pings(i).number=nan(1,nb_pings(i));
     data.pings(i).time=nan(1,nb_pings(i));
     data.pings(i).samples=(1:nb_samples(i))';
     trans_obj(i).Params=params_cl(nb_pings(i));
+    [~,mem]=memory;
+    
+    if nb_samples(i)*nb_pings(i)*8*4>mem.PhysicalMemory.Available*50/100
+        warning(['%s: This file creates matrices too big for memory installed, '...
+            'probably because range and ping rate has been changed during acquisition. '...
+            'This is not readable at this time but things might change in future releases.'],filename);
+        
+        war_str=(sprintf('WARNING: %s: This file creates matrices too big for memory installed, do you still want to try and open it?',filename));
+                
+        choice = questdlg(war_str, ...
+            'Memory warning',...
+            'Yes','No', ...
+            'No');
+        % Handle response
+        switch choice
+            case 'No'                
+                trans_obj=[];
+                envdata=[];
+                NMEA=[];
+                mru0_att=[];
+                return;
+        end
+    end
     
     switch config(i).TransceiverType
         case {'WBT','WBT Tube','WBAT'}
