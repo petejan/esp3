@@ -38,8 +38,8 @@ for ir=1:length(trans_obj.Regions)
         region_node.setAttribute('Cell_h_unit',splitted_reg(irs).Cell_h_unit);
         region_node.setAttribute('ID',num2str(splitted_reg(irs).ID,'%.0f'));
         region_node.setAttribute('Unique_ID',num2str(splitted_reg(irs).Unique_ID,'%.0f'));
-        region_node.setAttribute('Cell_w',num2str(splitted_reg(irs).Cell_w,'%.0f'));
-        region_node.setAttribute('Cell_h',num2str(splitted_reg(irs).Cell_h,'%.0f'));
+        region_node.setAttribute('Cell_w',num2str(splitted_reg(irs).Cell_w,'%.2f'));
+        region_node.setAttribute('Cell_h',num2str(splitted_reg(irs).Cell_h,'%.2f'));
         
         if splitted_reg(irs).Remove_ST==1
             region_node.setAttribute('Remove_ST',num2str(splitted_reg(irs).Remove_ST,'%.0f'));
