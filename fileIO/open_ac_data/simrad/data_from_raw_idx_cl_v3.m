@@ -10,6 +10,7 @@ addParameter(p,'GPSOnly',0,@isnumeric);
 addParameter(p,'PathToMemmap',path_f,@ischar);
 addParameter(p,'FieldNames',{});
 addParameter(p,'load_bar_comp',[]);
+addParameter(p,'force_open',0);
 
 parse(p,path_f,idx_raw_obj,varargin{:});
 results=p.Results;
@@ -113,27 +114,30 @@ for i=1:nb_trans
     data.pings(i).time=nan(1,nb_pings(i));
     data.pings(i).samples=(1:nb_samples(i))';
     trans_obj(i).Params=params_cl(nb_pings(i));
-    [~,mem]=memory;
     
-    if nb_samples(i)*nb_pings(i)*8*4>mem.PhysicalMemory.Available*50/100
-        warning(['%s: This file creates matrices too big for memory installed, '...
-            'probably because range and ping rate has been changed during acquisition. '...
-            'This is not readable at this time but things might change in future releases.'],filename);
-        
-        war_str=(sprintf('WARNING: %s: This file creates matrices too big for memory installed, do you still want to try and open it?',filename));
-                
-        choice = questdlg(war_str, ...
-            'Memory warning',...
-            'Yes','No', ...
-            'No');
-        % Handle response
-        switch choice
-            case 'No'                
-                trans_obj=[];
-                envdata=[];
-                NMEA=[];
-                mru0_att=[];
-                return;
+    if p.Results.force_open==0
+        [~,mem]=memory;
+        if nb_samples(i)*nb_pings(i)*8*4>mem.PhysicalMemory.Available*50/100
+            warning(['%s: This file creates matrices too big for memory installed, '...
+                'probably because range and ping rate has been changed during acquisition. '...
+                'This is not readable at this time but things might change in future releases.'],filename);
+            
+            war_str=(sprintf('WARNING: %s: This file creates matrices too big for memory installed, do you still want to try and open it?',filename));
+            
+            choice = questdlg(war_str, ...
+                'Memory warning',...
+                'Yes','No', ...
+                'No');
+            % Handle response
+            switch choice
+                case 'No'
+                    trans_obj=[];
+                    envdata=[];
+                    NMEA=[];
+                    mru0_att=[];
+                    return;
+            end
+            
         end
     end
     

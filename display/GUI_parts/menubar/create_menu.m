@@ -202,8 +202,10 @@ uimenu(track_tools,'Label','Plot Frequency response from Fish Tracks','Callback'
 uimenu(track_tools,'Label','Plot Histogram from Fish Tracks','Callback',{@plot_hist_tracks_callback,main_figure});
 uimenu(track_tools,'Label','Create Exclude Regions from Tracks','Callback',{@create_regs_from_tracks_callback,'Bad Data',main_figure});
 
-track_tools=uimenu(mhhh,'Label','Single Targets');
 uimenu(track_tools,'Label','Plot Histogram from Single Targets','Callback',{@plot_hist_st_callback,main_figure});
+uimenu(track_tools,'Label','Plot Single Targets positions','Callback',{@plot_st_pos_callback,main_figure});
+
+
 
 mbs = uimenu(main_figure,'Label','Scripting','Tag','menumbs');
 if ~isdeployed

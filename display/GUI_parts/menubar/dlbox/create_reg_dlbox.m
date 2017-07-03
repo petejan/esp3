@@ -36,7 +36,6 @@
 %% Function
 function create_reg_dlbox(~,~,main_figure)
 
-curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
@@ -139,8 +138,8 @@ switch ref{ref_idx}
        y_min=str2double(get(reg_fig_comp.depth_info,'string'));
        y_max=Inf;
     case 'Bottom'
-      y_min=str2double(get(reg_fig_comp.depth_info,'string'));
-      y_max=0;
+      y_max=str2double(get(reg_fig_comp.depth_info,'string'));
+      y_min=0;
 end
 
 

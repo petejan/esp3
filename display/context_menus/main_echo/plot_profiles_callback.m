@@ -26,10 +26,18 @@ y=nanmax(y,y_lim(1));
 y=nanmin(y,y_lim(2));
 
 
-xlab_str='Ping Number';
-xdata=trans.get_transceiver_pings();
 
-ydata=trans.get_transceiver_range();
+switch curr_disp.Xaxes
+    case 'seconds'
+        xlab_str='Time';
+        xdata=trans.get_transceiver_time();
+    otherwise
+        xlab_str='Ping Number';
+        xdata=trans.get_transceiver_pings();
+end
+
+
+ydata=trans.get_transceiver_samples();
 [~,idx_ping]=nanmin(abs(xdata-x));
 [~,idx_r]=nanmin(abs(ydata-y));
 vert_val=trans.Data.get_subdatamat(1:length(ydata),idx_ping,'field',curr_disp.Fieldname);
@@ -71,7 +79,7 @@ grid(axv,'on');
 ylabel(axv,'Range(m)')
 xlabel(axv,ylab_str);
 axis(axv,'ij');
-linkaxes([ax_main axv],'y');
+
 
 h=new_echo_figure(main_figure,'Tag','profile_h');
 axh=axes(h);
@@ -81,12 +89,13 @@ plot(axh,xdata,horz_val,'r');
 grid(axh,'on');
 xlabel(axh,xlab_str);
 ylabel(axh,ylab_str);
-linkaxes([ax_main axh],'x');
+
+
 switch curr_disp.Xaxes
-    case 'Time'
+    case 'seconds'
+        xlab_str='Time';
         datetick(axh,'x','dd-mmm-yyyy HH:MM:SS')
 end
-
 
 
 

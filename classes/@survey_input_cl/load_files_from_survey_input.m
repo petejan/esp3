@@ -191,7 +191,7 @@ for isn=1:length(snapshots)
                                     
                                     new_lay=open_EK_file_stdalone(fileN,...
                                         'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),...
-                                        'FieldNames',p.Results.FieldNames,'EsOffset',es_offset,'load_bar_comp',load_bar_comp);
+                                        'FieldNames',p.Results.FieldNames,'EsOffset',es_offset,'load_bar_comp',load_bar_comp,'force_open',1);
                                     new_lay.add_gps_data_to_db();
                                     %                                 profile off;
                                     %                                 profile viewer

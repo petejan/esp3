@@ -71,9 +71,9 @@ switch p.Results.Ref
         bot_data(idxBad)=nan;
         shape='Polygon';
 
-        mask=bsxfun(@ge,ydata,bot_data-p.Results.y_min)&...
+        mask=bsxfun(@ge,ydata,bot_data-p.Results.y_max)&...
         bsxfun(@le,ydata,bot_data+p.Results.Cell_h)&...
-        bsxfun(@ge,ydata,repmat(p.Results.y_max,size(bot_data)));
+        bsxfun(@ge,ydata,repmat(p.Results.y_min,size(bot_data)));
         idx_r=find(nansum(mask,2)>0,1,'first'):find(nansum(mask,2)>0,1,'last');
         mask=mask(idx_r,:);
 end
