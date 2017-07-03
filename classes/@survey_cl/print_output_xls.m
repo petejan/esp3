@@ -61,7 +61,6 @@ xlswrite(file,transectSumSheet',3);
 
 slice_trans_sum=surv_obj.SurvOutput.slicedTransectSum;
 
-
 row_start=1;
 for i=1:numel(slice_trans_sum.snapshot)
     [sheet_info,sheet_tot]=sliced_struct_to_sheet(slice_trans_sum,i);
@@ -72,9 +71,12 @@ for i=1:numel(slice_trans_sum.snapshot)
     if~isempty(sheet_tot)
         rangeStr = sprintf( 'A%d', row_start );
         xlswrite(file,sheet_tot,4,rangeStr);
-        row_start=row_start+size(sheet_tot,1)+1;
+        row_start=row_start+size(sheet_tot,1);
     end
+    row_start=row_start+1;
 end
+
+
 
 end
 

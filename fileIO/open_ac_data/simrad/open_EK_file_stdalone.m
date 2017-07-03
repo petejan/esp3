@@ -74,6 +74,7 @@ addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'GPSOnly',0);
 addParameter(p,'LoadEKbot',0);
+addParameter(p,'force_open',0);
 addParameter(p,'load_bar_comp',[]);
 
 
@@ -227,7 +228,10 @@ if ~isequal(Filename_cell, 0)
             end
             
             
-            [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp);
+            [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,...
+                'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,...
+                'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,...
+                'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
             
             if isempty(trans_obj)
                 id_rem=union(id_rem,uu);

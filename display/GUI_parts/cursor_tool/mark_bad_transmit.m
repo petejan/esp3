@@ -147,6 +147,7 @@ end
         cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
 
         uiundo(main_figure,'function',cmd);
+        display_bottom(main_figure);
         set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);
     end

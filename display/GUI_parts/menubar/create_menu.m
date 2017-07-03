@@ -203,8 +203,12 @@ uimenu(track_tools,'Label','Plot Histogram from Fish Tracks','Callback',{@plot_h
 uimenu(track_tools,'Label','Create Exclude Regions from Tracks','Callback',{@create_regs_from_tracks_callback,'Bad Data',main_figure});
 
 uimenu(track_tools,'Label','Plot Histogram from Single Targets','Callback',{@plot_hist_st_callback,main_figure});
-uimenu(track_tools,'Label','Plot Single Targets positions','Callback',{@plot_st_pos_callback,main_figure});
+uimenu(track_tools,'Label','Plot Single Targets positions','Callback',{@plot_st_pos_callback,main_figure,'st'});
+uimenu(track_tools,'Label','Plot Tracks positions','Callback',{@plot_st_pos_callback,main_figure,'tracks'});
 
+survey_tools=uimenu(mhhh,'Label','Survey Results');
+uimenu(survey_tools,'Label','Plot survey time series from Survey Output files','Callback',{@plot_survey_results_callback,main_figure});
+uimenu(survey_tools,'Label','Plot survey results from Survey Output files','Callback',{@plot_survey_strat_callback,main_figure});
 
 
 mbs = uimenu(main_figure,'Label','Scripting','Tag','menumbs');
@@ -212,7 +216,7 @@ if ~isdeployed
     uimenu(mbs,'Label','MBS Scripts','Callback',{@load_mbs_scripts_callback,main_figure});
 end
 uimenu(mbs,'Label','XML Scripts','Callback',{@load_xml_scripts_callback,main_figure},'separator','on');
-uimenu(mbs,'Label','Plot survey results from Survey Output files','Callback',{@plot_survey_results_callback,main_figure});
+
 
 
 options = uimenu(main_figure,'Label','Options','Tag','options');

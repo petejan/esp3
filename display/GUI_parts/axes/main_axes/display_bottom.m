@@ -22,6 +22,7 @@ if~isempty(idx_bottom)&&~isempty(xdata)&&~isempty(ydata)
     y=nan(size(x));
     y(~isnan(idx_bottom))=ydata(idx_bottom(~isnan(idx_bottom)));
     y(y==numel(ydata))=nan;
+    y(trans_obj.Bottom.Tag==0)=nan;
     set(axes_panel_comp.bottom_plot,'XData',x,'YData',y,'visible',curr_disp.DispBottom);
     set(mini_axes_comp.bottom_plot,'XData',x,'YData',y,'visible',curr_disp.DispBottom);
 else

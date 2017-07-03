@@ -98,7 +98,7 @@ if ping_init<x_lim(1)||ping_init>x_lim(end)||sample_init<y_lim(1)||sample_init>y
     return;
 end
 
-
+circ=viscircles(ah,[ping_init sample_init], radius,'color','k','linewidth',1,'linestyle','--');
 
 
 switch src.SelectionType
@@ -142,6 +142,17 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         samples_new(samples_new>nb_samples)=nb_samples;
         samples_new(samples_new<=0)=1;
         
+        delete(circ);
+       
+         if isvalid(circ)
+             for ic=1:numel(circ.Children)
+                set(circ.Children(ic),'XData',circ.Children(ic).XData-nanmean(circ.Children(ic).XData)+ping_new,...
+                    'YData',circ.Children(ic).YYData-nanmean(circ.Children(ic).YData)+sample_new);
+             end
+        else
+            circ=viscircles(ah,[ping_new sample_new],radius,'color','k','linewidth',1,'linestyle','--');
+        end
+        
         switch position
             case 'above'
                 if sample_new<samples_ori(ping_new)                    
@@ -184,7 +195,7 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
     end
 
     function wbucb(~,~)
-        
+        delete(circ);
         delete(hp);
         
        [x_f,y_f]=check_xy();
