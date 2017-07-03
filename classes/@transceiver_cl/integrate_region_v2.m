@@ -1,6 +1,51 @@
-function output=integrate_region_v2(trans_obj,region,varargin)
+%% integrate_region_v2.m
+%
+% Integrate echogram
+%
+%% Help
+%
+% *USE*
+%
+% output = integrate_region_v2(trans_obj,region) integrates acoustic data
+% in trans_obj according to region.
+%
+% *INPUT VARIABLES*
+%
+% * |trans_obj|: TODO: write description and info on variable
+% * |region|: TODO: write description and info on variable
+% * |input_variable_1|: TODO: write description and info on variable
+% * |input_variable_1|: TODO: write description and info on variable
+% * |input_variable_1|: TODO: write description and info on variable
+% * |input_variable_1|: TODO: write description and info on variable
 
+%
+% *OUTPUT VARIABLES*
+%
+% * |output|: TODO: write description and info on variable
+%
+% *RESEARCH NOTES*
+%
+% TODO: write research notes
+%
+% *NEW FEATURES*
+%
+% * 2017-07-03: draft header and quick code cleanup (Alex Schimel).
+% * YYYY-MM-DD: first version (Author). TODO: complete date and comment
+%
+% *EXAMPLE*
+%
+% TODO: write examples
+%
+% *AUTHOR, AFFILIATION & COPYRIGHT*
+%
+% Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
+
+%% Function
+function output = integrate_region_v2(trans_obj,region,varargin)
+
+%% input variables management through input parser
 p = inputParser;
+
 addRequired(p,'trans_obj',@(x) isa(x,'transceiver_cl'));
 addRequired(p,'region',@(x) isa(x,'region_cl'));
 addParameter(p,'line_obj',[],@(x) isa(x,'line_cl')||isempty(x));
@@ -11,18 +56,21 @@ addParameter(p,'motion_correction',0,@isnumeric);
 addParameter(p,'intersect_only',0,@isnumeric);
 addParameter(p,'keep_bottom',0,@isnumeric);
 
-
 parse(p,trans_obj,region,varargin{:});
 
+%% creating line_obj
 if isempty(p.Results.line_obj)
     line_obj=line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time);
 else
-   line_obj=p.Results.line_obj;
+    line_obj=p.Results.line_obj;
 end
+
+%% old code?
 % Sv=trans_obj.Data.get_datamat('svdenoised');
 % if isempty(Sv)
 %     Sv=trans_obj.Data.get_datamat('sv');
 % end
+
 idx_pings_tot=region.Idx_pings;
 time=trans_obj.get_transceiver_time();
 sub_time_temp=time(idx_pings_tot);
@@ -47,8 +95,6 @@ line_t=line_obj.Time;
 
 line_r=resample_data_v2(line_r_ori,line_t,time);
 line_samples=round(line_r/dr);
-
-
 
 pings=double(trans_obj.get_transceiver_pings());
 bot_sple=trans_obj.get_bottom_idx();
@@ -75,7 +121,7 @@ else
     idx_r=idx_r_tot;
 end
 
-
+%% getting Sv
 if p.Results.denoised>0
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
     if isempty(Sv_reg)
@@ -86,6 +132,7 @@ else
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
 
+%% motion correction
 if p.Results.motion_correction>0
     motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncompensation');
     if ~isempty(motion_corr)
@@ -95,13 +142,11 @@ if p.Results.motion_correction>0
     end
 end
 
-
 if isempty(Sv_reg)
     warning('No Sv, cannot integrate');
     output=[];
     return;
 end
-
 
 while max(idx_pings)>length(pings)
     idx_pings=idx_pings-1;
@@ -130,8 +175,6 @@ if isempty(dist)
     lat=nan(size(time));
     lon=nan(size(time));
 end
-
-
 
 if p.Results.intersect_only==1
     Sv_reg_save=Sv_reg;
@@ -184,11 +227,8 @@ for i=idx
     
 end
 
-
-
 IdxBad=find(trans_obj.Bottom.Tag==0);
 bad_trans_vec=double(trans_obj.Bottom.Tag==0);
-
 
 if region.Remove_ST
     mask_st=trans_obj.mask_from_st();
@@ -199,8 +239,7 @@ IdxBad_reg=intersect(IdxBad,idx_pings);
 %IdxGood_reg=intersect(IdxGood,idx_pings);
 Sv_reg(:,IdxBad_reg-idx_pings(1)+1)=NaN;
 
-
-
+%% Apply region mask to data
 switch region.Shape
     case 'Polygon'
         mask=region.MaskReg(idx_keep_r,idx_keep_x);
@@ -208,7 +247,6 @@ switch region.Shape
 end
 
 Mask=~isnan(Sv_reg);
-
 
 sub_samples=samples(idx_r);
 sub_pings=pings(idx_pings);
@@ -241,7 +279,6 @@ switch region.Cell_w_unit
         x=sub_dist;
 end
 
-
 [x_mat,y_mat]=meshgrid(x,y);
 [~,sub_r_mat]=meshgrid(sub_bot_r,sub_r);
 % [~,sub_dist_mat]=meshgrid(sub_dist,sub_r);
@@ -269,27 +306,21 @@ y_mat=y_mat-line_mat;
 switch region.Reference
     case 'Bottom'
         idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1));
-        
     case 'Line'
         idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(2));
-        
     otherwise
         idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1));
 end
 
 Mask(idx_rem_y)=0;
 
-
-
 if~any(Mask(:))
     output=[];
     return;
 end
 
-
 cell_w=region.Cell_w;
 cell_h=region.Cell_h;
-
 
 Sv_reg_lin=10.^(Sv_reg/10);
 Mask_tot=Mask;
@@ -308,7 +339,6 @@ switch region.Reference
     otherwise
         y_mat_idx=floor(bsxfun(@minus,y_mat,y_mat(1,:))/cell_h)+1;
 end
-
 
 Sv_reg_lin(~Mask_tot)=nan;
 
@@ -336,7 +366,6 @@ output.Nb_good_pings_esp2(mask_sub)=NaN;
 output.Sample_S=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],sub_samples_mat(Mask),size(mask_sub),@min,NaN);
 output.Sample_E=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],sub_samples_mat(Mask),size(mask_sub),@max,NaN);
 
-
 height_se=accumarray([y_mat_idx(Mask) x_mat_idx(Mask)],y_mat(Mask),size(mask_sub),@(x) abs(max(x)-min(x)),NaN);
 
 switch region.Cell_h_unit
@@ -349,7 +378,6 @@ output.Thickness_esp2(mask_sub)=NaN;
 
 output.Layer_depth_min=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],sub_r_mat(Mask_tot),size(mask_sub),@min,NaN);
 output.Layer_depth_max=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],sub_r_mat(Mask_tot),size(mask_sub),@max,NaN);
-
 
 output.Range_mean=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],sub_r_mat(Mask_tot),size(mask_sub),@mean,NaN);
 output.Range_mean(mask_sub)=NaN;
@@ -369,7 +397,6 @@ output.Range_ref_max(mask_sub)=NaN;
 output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
 output.Thickness_mean(mask_sub)=NaN;
 
-
 output.Dist_E=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmin,nan),1,N_y)';
 output.Dist_S=repmat(accumarray(x_mat_idx(1,:)',sub_dist,[],@nanmax,nan),1,N_y)';
 
@@ -382,7 +409,6 @@ output.Lon_S=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmin,nan),1,N_y)';
 output.Lat_E=repmat(accumarray(x_mat_idx(1,:)',sub_lat,[],@nanmax,nan),1,N_y)';
 output.Lon_E=repmat(accumarray(x_mat_idx(1,:)',sub_lon,[],@nanmax,nan),1,N_y)';
 
-
 output.Sv_mean_lin_esp2=Sa_lin_sparse./(output.Nb_good_pings_esp2.*output.Thickness_esp2);
 output.Sv_mean_lin=Sa_lin_sparse./output.nb_samples/dr;
 
@@ -391,12 +417,9 @@ output.PRC=output.nb_samples*dr./(output.Nb_good_pings.*output.Thickness_esp2)*1
 idx_nan=(output.Sv_mean_lin_esp2==0);
 output.Sv_mean_lin_esp2(idx_nan)=nan;
 
-
 output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC=4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
-
-
 
 fields=fieldnames(output);
 idx_rem=[];
@@ -414,7 +437,6 @@ end
 for ifi=1:length(fields)
     output.(fields{ifi})(idx_rem,:)=[];
 end
-
 
 idx_rem=[];
 idx_zeros_start=find(nansum(output.Sv_mean_lin,1)>0,1);
