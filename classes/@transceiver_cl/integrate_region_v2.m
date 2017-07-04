@@ -192,7 +192,7 @@ if p.Results.intersect_only==1
         [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
         switch curr_reg.Shape
             case 'Polygon'
-                Mask_reg=curr_reg.Mask_Reg;
+                Mask_reg=curr_reg.MaskReg;
                 Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
                 Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)==0)=NaN;
             otherwise
@@ -217,7 +217,7 @@ for i=idx
     
     switch curr_reg.Shape
         case 'Polygon'
-            Mask_reg=curr_reg.Mask_Reg;
+            Mask_reg=curr_reg.MaskReg;
             Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
             Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)>0)=NaN;
         otherwise
@@ -242,7 +242,7 @@ Sv_reg(:,IdxBad_reg-idx_pings(1)+1)=NaN;
 %% Apply region Mask_reg to data
 switch region.Shape
     case 'Polygon'
-        Mask_reg=region.Mask_Reg(idx_keep_r,idx_keep_x);
+        Mask_reg=region.MaskReg(idx_keep_r,idx_keep_x);
         Sv_reg(Mask_reg==0)=NaN;
 end
 
