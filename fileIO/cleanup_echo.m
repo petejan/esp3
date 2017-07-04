@@ -9,8 +9,7 @@ try
     i=length(layers);
     while i>=1
         str_cell=list_layers(layers(i),'nb_char',80);
-        try
-            
+        try        
             fprintf('Deleting temp files from %s\n',str_cell{1});
             layers=layers.delete_layers(layers(i).ID_num);
         catch
