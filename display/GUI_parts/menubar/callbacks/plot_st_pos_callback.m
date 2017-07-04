@@ -46,7 +46,7 @@ hfig=new_echo_figure(main_figure,'tag','st_pos',...
     'Units','Normalized','Position',[0.1 0.2 0.3 0.4],'CloseRequestFcn',@close_pos_fig,'Name',sprintf('Single Targets position from %.0f kHz',curr_disp.Freq/1e3));
 ax=axes(hfig,'outerposition',[0 0 1 1],'visible','off');
 init_st_ax(main_figure,ax);
-display_st_or_pos(main_figure,ax,disp_var);
+display_st_or_track_pos(main_figure,ax,disp_var);
 cax_list=addlistener(curr_disp,'Cax','PostSet',@(src,envdata)listenCaxReg(src,envdata));
 cmap_list=addlistener(curr_disp,'Cmap','PostSet',@(src,envdata)listenCmapReg(src,envdata));
 centerfig(hfig);
