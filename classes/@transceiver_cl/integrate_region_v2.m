@@ -335,15 +335,15 @@ x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
 switch region.Reference
     case {'Bottom' 'Line'}
         y_mat_idx=ceil(y_mat/cell_h);
-        y_mat_idx=y_mat_idx-min(y_mat_idx(:))+1;
+        y_mat_idx=y_mat_idx-min(y_mat_idx(~isinf(y_mat_idx)))+1;
     otherwise
         y_mat_idx=floor(bsxfun(@minus,y_mat,y_mat(1,:))/cell_h)+1;
 end
 
 Sv_reg_lin(~Mask_tot)=nan;
 
-N_x=(max(x_mat_idx(:))-min(x_mat_idx(:)))+1;
-N_y=(max(y_mat_idx(:))-min(y_mat_idx(:)))+1;
+N_x=(max(x_mat_idx(Mask_tot))-min(x_mat_idx(Mask_tot)))+1;
+N_y=(max(y_mat_idx(Mask_tot))-min(y_mat_idx(Mask_tot)))+1;
 
 output.nb_samples=accumarray([y_mat_idx(Mask_tot) x_mat_idx(Mask_tot)],Mask_tot(Mask_tot),[N_y N_x],@sum,0);
 

@@ -15,7 +15,7 @@ classdef survey_options_cl
         Frequency=38000;
         FrequenciesToLoad=[];
         ClassifySchool=0;
-        BadTransThr=0;
+        BadTransThr=100;
         Soundspeed=1500;
         SaveBot=0;
         SaveReg=0;

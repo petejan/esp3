@@ -20,7 +20,7 @@ if ~isempty(gps_obj.Lat)
         end
     else
         warning('Issue with navigation data...')
-        obj=gps_data_cl();
+        obj=gps_data_cl('Time',time);
     end
 else
     obj=gps_data_cl('Time',time);

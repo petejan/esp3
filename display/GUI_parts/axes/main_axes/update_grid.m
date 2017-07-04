@@ -17,11 +17,13 @@ switch curr_disp.Xaxes
     case 'pings'
         xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
     case 'meters'
-        xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist(idx_pings);
-        if isempty(xdata)
+        xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist();
+        if isempty(xdata_grid)
             disp('NO GPS Data');
             curr_disp.Xaxes='pings';
             xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
+        else
+            xdata_grid=xdata_grid(idx_pings);
         end
     otherwise
         xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);      

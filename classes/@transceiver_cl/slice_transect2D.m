@@ -57,11 +57,11 @@ Slice_hori_S = cells_hori(1:end-1);
 Slice_hori_E = cells_hori(2:end);
 
 
-switch p.Results.Reference
-    case 'Surface'
+switch lower(p.Results.Reference)
+    case 'surface'
         cell_vert_ref=trans_obj.get_transceiver_range();
         cells_vert=unique([cell_vert_ref(1):Slice_h:cell_vert_ref(end) cell_vert_ref(end)]);
-    case 'Bottom'
+    case 'bottom'
         cell_vert_ref=-trans_obj.get_transceiver_range();
         cells_vert=unique([cell_vert_ref(1):-Slice_h:cell_vert_ref(end) cell_vert_ref(end)]);
 end
@@ -208,11 +208,11 @@ else
 end
 range=trans_obj.get_transceiver_range();
 
-switch p.Results.Reference
-    case 'Surface'
+switch lower(p.Results.Reference)
+    case 'surface'
         output.cell_range_start=range(idx_cells_S);
         output.cell_range_end=range(idx_cells_E);
-    case 'Bottom'
+    case 'bottom'
         output.cell_range_start=-range(idx_cells_S);
         output.cell_range_end=-range(idx_cells_E);
 end

@@ -169,9 +169,11 @@ reg_tools=uimenu(mhhh,'Label','Regions Tools');
 uimenu(reg_tools,'Label','Create WC Region','Callback',{@create_reg_dlbox,main_figure});
 uimenu(reg_tools,'Label','Display Mean Depth of current region','Callback',{@plot_mean_aggregation_depth_callback,main_figure});
 uimenu(reg_tools,'Label','Classify schools','Callback',{@classify_regions_callback,main_figure});
+
 if ~isdeployed
     uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_callback,main_figure});
 end
+
 uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
 
 towbody_tools=uimenu(mhhh,'Label','Towed body Tools');

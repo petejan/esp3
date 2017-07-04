@@ -9,6 +9,12 @@ display_tab_comp=getappdata(main_figure,'Display_tab');
 Axes_type={'pings','seconds','meters'};
 
 idx_axes=find(strcmp(curr_disp.Xaxes,Axes_type));
+
+if isempty(idx_axes)
+    idx_axes=1;
+    curr_disp.Xaxes=Axes_type{1};
+end
+
 [idx_field,~]=layer.Transceivers(idx_freq).Data.find_field_idx(curr_disp.Fieldname);
 
 

@@ -230,7 +230,8 @@ for isn=1:length(snaps)
             'Motion_correction',surv_in_obj.Options.Motion_correction,...
             'Shadow_zone',surv_in_obj.Options.Shadow_zone,...
             'Shadow_zone_height',surv_in_obj.Options.Shadow_zone_height);
-        %[sliced_output_2D,regCellInt_tot]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay));
+%         [sliced_output_2D_bottom,regCellInt_tot_bot]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Reference','bottom');
+%         [sliced_output_2D_surf,regCellInt_tot_surf]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Reference','surface');
         
         Output_echo=[Output_echo sliced_output];
 

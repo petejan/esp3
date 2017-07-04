@@ -15,6 +15,7 @@ switch curr_disp.Xaxes
         x_vec=layer.Transceivers(idx_freq).get_transceiver_pings();
         curr_disp.Grid_x=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
 end
+
 range=layer.Transceivers(idx_freq).get_transceiver_range();
 curr_disp.Grid_y=10^(floor(log10(range(end)-range(1))))/5;
 
