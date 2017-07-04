@@ -47,7 +47,7 @@ update_bottom_tab_v2(main_figure);
 update_bad_pings_tab(main_figure);
 update_denoise_tab(main_figure);
 update_school_detect_tab(main_figure);
-update_single_target_tab(main_figure);
+update_single_target_tab(main_figure,1);
 update_track_target_tab(main_figure);
 update_processing_tab(main_figure);
 update_display_tab(main_figure);

@@ -38,7 +38,8 @@ single_target_tab_comp.MaxStdMinAxisAngle=uicontrol(parameters_2,'Style','Edit',
 uicontrol(parameters_2,'Style','text','units','normalized','string',[char(hex2dec('0394')) ' Across Angle(' char(hex2dec('00B0')) ')'],'pos',pos{3,1},'HorizontalAlignment','right');
 single_target_tab_comp.MaxStdMajAxisAngle=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.MaxStdMajAxisAngle),'BackgroundColor','white','callback',{@ check_fmt_box,0,45,varin.MaxStdMajAxisAngle,'%.1f'});
 
-single_target_tab_comp.ax_pos=axes()
+single_target_tab_comp.ax_pos=axes('Parent',single_target_tab_comp.single_target_tab,'Units','normalized','box','off',...
+    'OuterPosition',[0.6 0 0.4 1],'visible','off','NextPlot','add','box','on','tag','st_ax');
 
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.55 0.1 0.1 0.12],'callback',{@validate,main_figure});
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.45 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
@@ -67,8 +68,7 @@ hide_status_bar(main_figure);
 curr_disp.setField('singletarget');
 curr_disp.Freq=curr_disp.Freq;
 setappdata(main_figure,'Curr_disp',curr_disp);
-    
-
+update_single_target_tab(main_figure,0);
 end
 
 
