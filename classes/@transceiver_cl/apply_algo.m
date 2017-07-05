@@ -119,12 +119,11 @@ switch algo_name
             'Sample_idx',bottom,...
             'Tag',old_tag));
     case 'BadPings'
-
-        tag=double(idx_noise_sector==0);
-        
-        trans_obj.Bottom=bottom_cl('Origin','Algo_v2_bp',...
+        tag=double(idx_noise_sector==0);       
+        trans_obj.setBottom(bottom_cl('Origin','Algo_v2_bp',...
             'Sample_idx',bottom,...
-            'Tag',tag);
+            'Tag',tag));
+        
     case 'Denoise'
         if ~isempty(power_unoised)
             trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);
