@@ -334,11 +334,11 @@ x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
 
 switch region.Reference
     case {'Bottom' 'Line'}
-        y_mat_idx=ceil(y_mat/cell_h);
-        y_mat_idx=y_mat_idx-min(y_mat_idx(~isinf(y_mat_idx)&Mask_reg_min_bot))+1;
+        y_mat_idx=ceil(y_mat/cell_h);       
     otherwise
-        y_mat_idx=floor(bsxfun(@minus,y_mat,y_mat(1,:))/cell_h)+1;
+        y_mat_idx=floor(y_mat/cell_h);        
 end
+y_mat_idx=y_mat_idx-min(y_mat_idx(~isinf(y_mat_idx)&Mask_reg_min_bot))+1;
 
 Sv_reg_lin(~Mask_reg_min_bot)=nan;
 
