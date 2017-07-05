@@ -11,7 +11,7 @@ if ~isequal(Filename, 0)
     obj_vec=[];
     for i=1:length(Filename)
         load(fullfile(PathToFile,Filename{i}));
-        obj_vec=[surv_obj obj_vec];
+        obj_vec=[obj_vec surv_obj];
     end
     
     

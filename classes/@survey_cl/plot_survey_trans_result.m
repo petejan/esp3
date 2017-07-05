@@ -5,10 +5,10 @@ function hfig=plot_survey_trans_result(surv_obj,hfig)
 trans_sum=surv_obj.SurvOutput.transectSum;
 
 label=cell(1,length(trans_sum));
+
 for j = 1:length(trans_sum.snapshot)
     label{j}=sprintf('S:%d St: %s T: %d ',trans_sum.snapshot(j),trans_sum.stratum{j},trans_sum.transect(j));
 end
-
 
 if isempty(hfig)
     hfig=figure();

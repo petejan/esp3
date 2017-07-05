@@ -78,6 +78,7 @@ cell_vbscf=zeros(numSlices_vert,numSlices_hori);
 nb_tracks=zeros(numSlices_vert,numSlices_hori);
 nb_st=zeros(numSlices_vert,numSlices_hori);
 nb_good_pings=zeros(numSlices_vert,numSlices_hori);
+
 idx_bins_S=nan(1,numSlices_hori);
 idx_bins_E=nan(1,numSlices_hori);
 
