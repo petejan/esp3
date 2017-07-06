@@ -54,10 +54,15 @@ stratumSumSheet=struct_to_sheet(strat_sum);
 xlswrite(file,stratumSumSheet',2);
 
 trans_sum=surv_obj.SurvOutput.transectSum;
+trans_sum_tracks=surv_obj.SurvOutput.transectSumTracks;
+trans_sum.nb_tracks=trans_sum_tracks.nb_tracks;
+trans_sum.nb_st=trans_sum_tracks.nb_st;
 
 transectSumSheet=struct_to_sheet(trans_sum);
 
+
 xlswrite(file,transectSumSheet',3);
+
 
 slice_trans_sum=surv_obj.SurvOutput.slicedTransectSum;
 

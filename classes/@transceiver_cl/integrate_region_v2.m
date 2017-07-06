@@ -330,7 +330,11 @@ if p.Results.keep_bottom==0
     Mask_reg_min_bot(isnan(Sv_reg_lin))=0;
 end
 
-x_mat_idx=floor(bsxfun(@minus,x_mat,x_mat(:,1))/cell_w)+1;
+idx_x=(sum(Mask_reg)>0);
+% idx_y=(sum(Mask_reg,2)>0);
+
+x_mat_idx=floor(x_mat/cell_w);
+x_mat_idx=x_mat_idx-min(x_mat_idx(Mask_reg))+1;
 
 switch region.Reference
     case {'Bottom' 'Line'}
@@ -355,8 +359,6 @@ Sa_lin_sparse = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_b
 
 output.Sa_lin=Sa_lin_sparse;
 
-idx_x=(sum(Mask_reg)>0);
-% idx_y=(sum(Mask_reg,2)>0);
 output.Ping_S=repmat(accumarray(x_mat_idx(1,idx_x)',sub_pings(idx_x),[],@nanmin,NaN),1,N_y)';
 output.Ping_E=repmat(accumarray(x_mat_idx(1,idx_x)',sub_pings(idx_x),[],@nanmax,NaN),1,N_y)';
 

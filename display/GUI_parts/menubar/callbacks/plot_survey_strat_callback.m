@@ -21,8 +21,8 @@ if ~isequal(Filename, 0)
     if ~isempty(surv_obj)
         obj_vec.plot_survey_strat_result(hfig);
         for i=1:length(obj_vec)
-            hfig_tmp=new_echo_figure(main_figure,'Name',sprintf('Survey Results %s: Transect',Filename{i}),'Tag',sprintf('results_trans%s',Filename{i}));
-            obj_vec(i).plot_survey_trans_result(hfig_tmp);
+            hfig_2(i)=new_echo_figure(main_figure,'Name',sprintf('Survey Results %s: Transect',Filename{i}),'Tag',sprintf('results_trans%s',Filename{i}));
+            obj_vec(i).plot_survey_trans_result(hfig_2(i));
         end
     else
         close(hfig);

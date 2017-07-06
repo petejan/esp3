@@ -1,6 +1,6 @@
 function hfig=plot_survey_strat_result(surv_obj,hfig)
 
-plot_color={'k','r','g','m','y'};
+plot_color={'k','r',[0 0.8 0],'m','b',[0.8 0.8 0]};
 if isempty(hfig)
     hfig=figure();
 else
@@ -14,10 +14,12 @@ box(ax,'on')
 
 snaps=[];
 strats=[];
+legend_name=cell(1,length(surv_obj));
 for isur=1:length(surv_obj)
     strat_sum=surv_obj(isur).SurvOutput.stratumSum;
     snaps=unique(strat_sum.snapshot);
     strats=unique(strat_sum.stratum);
+    legend_name{isur}=surv_obj(isur).SurvInput.Infos.Title;
 end
 
 nb_snap=numel(snaps);
@@ -49,5 +51,6 @@ set(ax,'xtick',1:length(strats));
 set(ax,'xticklabel',strats);
 ylabel(ax,'abscf')
 xlabel(ax,'stratum');
+legend(ax,legend_name)
 
 end

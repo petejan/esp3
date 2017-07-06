@@ -117,9 +117,11 @@ if ~isempty(trans_obj.ST.TS_comp)
     if ~isempty(trans_obj.Tracks)
         
         xs_st_track=nan(1,length(trans_obj.Tracks.target_id));
+        ys_st_track=nan(1,length(trans_obj.Tracks.target_id));
         for itracks=1:length(trans_obj.Tracks.target_id)
             idx_tr=trans_obj.Tracks.target_id{itracks};
             xs_st_track(itracks)=nanmean(x_st(idx_tr));
+            ys_st_track(itracks)=nanmean(y_st(idx_tr));
         end
         
         att_tr=zeros(1,length(trans_obj.Tracks.target_id));
