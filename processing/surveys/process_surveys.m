@@ -134,9 +134,9 @@ for i = 1:length(Filenames)
     catch err
         disp(err.message);
         warning('Could not process survey described in file %s\n',Filenames{i});
-        if ~isdeployed
-            rethrow(err)
-        end
+%         if ~isdeployed
+%             rethrow(err)
+%         end
     end
     
     layers_out = [layers_old layers_new];

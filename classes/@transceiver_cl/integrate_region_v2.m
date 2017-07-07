@@ -58,6 +58,12 @@ addParameter(p,'keep_bottom',0,@isnumeric);
 
 parse(p,trans_obj,region,varargin{:});
 
+if any([region.Cell_h region.Cell_w]==0)
+    warning('Region %.0f defined with cell size =0',region.ID);
+    output=[];
+    return;
+end
+
 %% creating line_obj
 if isempty(p.Results.line_obj)
     line_obj=line_cl('Range',zeros(size(trans_obj.get_transceiver_pings())),'Time',trans_obj.get_transceiver_time);
@@ -65,11 +71,8 @@ else
     line_obj=p.Results.line_obj;
 end
 
-%% old code?
-% Sv=trans_obj.Data.get_datamat('svdenoised');
-% if isempty(Sv)
-%     Sv=trans_obj.Data.get_datamat('sv');
-% end
+
+
 
 idx_pings_tot=region.Idx_pings;
 time=trans_obj.get_transceiver_time();
@@ -105,6 +108,8 @@ bot_r(isnan(bot_sple))=nan;
 
 bot_r(isnan(bot_r))=inf;
 bot_sple(isnan(bot_sple))=inf;
+
+
 
 switch region.Cell_h_unit
     case 'samples'
