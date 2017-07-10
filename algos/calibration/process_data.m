@@ -1,7 +1,8 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part 2: Processing of sphere echoes to yield calibration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function transceiver=process_data(transceiver,envData,idx_peak,idx_pings,sphere_ts)
+function transceiver=process_data(transceiver,envData,idx_peak,idx_pings,sphere_ts,log_file)
+
 
 % Optional single target and sphere processing parameters:
 %
@@ -56,6 +57,14 @@ p.SpRange = [-72 -36];
 p.onAxisMethod = {'mean','max','beam fitting'}; % choices of 'max', 'mean', or 'beam fitting'
 
 
+if ~isempty(log_file)
+    [path_out,~]=fileparts(log_file);
+    fid=[1 fopen(log_file,'a+')];
+else
+    path_out=[];
+    fid=1;
+end
+
 % Extract and derive some data from the .raw files
 
 % Pick out the peak amplitudes for use later on, and discard the
@@ -73,6 +82,7 @@ Power=transceiver.Data.get_datamat('power');
 % AcrossPhi=AcrossAngle;
 
 Freq=double(transceiver.Config.Frequency);
+freq_str=num2str(Freq);
 pulselength=double(transceiver.Params.PulseLength(1));
 gains=transceiver.Config.Gain;
 pulselengths=transceiver.Config.PulseLength;
@@ -158,7 +168,7 @@ clear amp_ts range error
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Remove any echoes that are likely to be noisy or wrong
 % idx_rem=repmat(nanmean(power),9,1)<power;
-% 
+%
 % power(idx_rem)=nan;
 % phase_along(idx_rem)=nan;
 % phase_athwart(idx_rem)=nan;
@@ -175,7 +185,7 @@ i = find(nanstd(phase_along(Np-round(Np/4):Np+round(Np/4),:)) <= p.max_std_phase
 
 
 % est_ts = sphere_ts-simradBeamCompensation(faBW, psBW, sphere(:,3), sphere(:,2));
-%     
+%
 
 trimTo = p.trimToFactor * mean([faBW psBW]);
 i = find(abs(sphere(:,2)) < trimTo | abs(sphere(:,3)) < trimTo);
@@ -190,6 +200,10 @@ i = find(abs(diffTS) <= p.maxdBDiff1);
 
 if isempty(i)
     disp('Failed to find sphere echoes. ')
+   
+    if~isempty(path_out)
+        fclose(fid(2));
+    end
     return
 end
 
@@ -200,10 +214,11 @@ end
 
 % If a beam pattern couldn't be fitted, give up with some diagonistics.
 if exitflag ~= 1
-    disp('Failed to fit the simrad beam pattern to the data. ')
-    disp('This probably means that the beampattern is so far from circular ')
-    disp('that there is something wrong with the echosounder.')
-    
+    for ifi=1:length(fid)
+        fprintf(fid(ifi),'Failed to fit the simrad beam pattern to the data.\n');
+        fprintf(fid(ifi),'This probably means that the beampattern is so far from circular\n');
+        fprintf(fid(ifi),'that there is something wrong with the echosounder.\n');
+    end
     % Plot the probably wrong data, using the un-filtered dataset
     new_echo_figure([],'Name', 'Beam pattern contour plot');
     [XI,YI]=meshgrid(-trimTo:.1:trimTo,-trimTo:.1:trimTo);
@@ -212,11 +227,10 @@ if exitflag ~= 1
     warning('on','MATLAB:griddata:DuplicateDataPoints');
     contourf(XI,YI,ZI)
     axis square
-    grid
+    grid on;
     xlabel('Port/starboard angle (\circ)')
     ylabel('Fore/aft angle (\circ)')
     colorbar
-
     hold on
     plot(sphere(:,2), sphere(:,3),'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
     
@@ -227,10 +241,15 @@ if exitflag ~= 1
         plot(x, y, 'k')
     end
     hold off
-    disp(' ')
-    disp('Contour plot is of all data points (no filtering, beyond what you did manually).')
-    disp(' ')
-    disp('No further analysis will be done. The beam is odd.')
+    
+    for ifi=1:length(fid)
+        fprintf(fid(ifi),'\nContour plot is of all data points (no filtering, beyond what you did manually).\n');
+        fprintf(fid(ifi),'No further analysis will be done. The beam is odd\n');
+    end
+    
+    if~isempty(path_out)
+        fclose(fid(2));
+    end
     return
 end
 
@@ -278,6 +297,9 @@ else
     % pattern compensation to avoid gross errors.
     i = find(phi < on_axis);
     if isempty(i)
+        if~isempty(path_out)
+            fclose(fid(2));
+        end
         return;
     end
     ts_values = sphere(i,1) + compensation(i);
@@ -289,27 +311,31 @@ end
 
 
 % plot up the on-axis TS values
-new_echo_figure([],'Name', 'On-axis sphere TS');
+fig=new_echo_figure([],'Name', 'On-axis sphere TS');
 if exist('boxplot', 'file') % this lives in the Statistics toolbox, which not everyone will have
     boxplot(ts_values)
 else
     hist(ts_values)
 end
 ylabel('TS (dB re 1 m^2)')
-title(['On axis TS values for ' num2str(length(sphere(i,1))) ' targets'])
+title(['On axis TS values for ' num2str(length(sphere(i,1))) ' targets']);
+if~isempty(path_out)
+    print(fig,fullfile(path_out,['on_axis_ts' freq_str '.png']),'-dpng','-r300');
+end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Produce plots and output text
 
 % The calibration results
-disp(' ')
 oa = num2str(on_axis);
-disp(['Mean ts within ' oa ' deg of centre = ' num2str(mean_ts_on_axis) ' dB'])
-disp(['Std of ts within ' oa ' deg of centre = ' num2str(std_ts_on_axis) ' dB'])
-disp(['Maximum TS within ' oa ' deg of centre = ' num2str(max_ts_on_axis) ' dB.'])
-disp(['Number of echoes within ' oa ' deg of centre = ' num2str(length(sphere(i,1)))])
-disp(['On axis TS from beam fitting = ' num2str(peak_ts) ' dB.'])
-disp(['The sphere ts is ' num2str(data.cal.sphere_ts) ' dB'])
+for ifi=1:length(fid)
+    fprintf(fid(ifi),['\nMean ts within ' oa ' deg of centre = ' num2str(mean_ts_on_axis) ' dB\n']);
+    fprintf(fid(ifi),['Std of ts within ' oa ' deg of centre = ' num2str(std_ts_on_axis) ' dB\n']);
+    fprintf(fid(ifi),['Maximum TS within ' oa ' deg of centre = ' num2str(max_ts_on_axis) ' dB\n']);
+    fprintf(fid(ifi),['Number of echoes within ' oa ' deg of centre = ' num2str(length(sphere(i,1)))]);
+    fprintf(fid(ifi),['On axis TS from beam fitting = ' num2str(peak_ts) ' dB\n']);
+    fprintf(fid(ifi),['The sphere ts is ' num2str(data.cal.sphere_ts) ' dB\n']);
+end
 
 outby=nan(1,length(p.onAxisMethod));
 for k=1:length(p.onAxisMethod)
@@ -322,19 +348,16 @@ for k=1:length(p.onAxisMethod)
     elseif strcmp(p.onAxisMethod{k}, 'beam fitting')
         outby(k) = data.cal.sphere_ts - peak_ts;
     end
-    
-    if outby(k) > 0
-        disp(['Hence Ex60 is reading ' num2str(outby(k)) ' dB too low (' p.onAxisMethod{k} ' method).'])
-    else
-        disp(['Hence Ex60 is reading ' num2str(abs(outby(k))) ' dB too high (' p.onAxisMethod{k} ' method).'])
+    for ifi=1:length(fid)
+        if outby(k) > 0
+            fprintf(fid(ifi),['Hence Ex60 is reading ' num2str(outby(k)) ' dB too low (' p.onAxisMethod{k} ' method)\n']);
+        else
+            fprintf(fid(ifi),['Hence Ex60 is reading ' num2str(abs(outby(k))) ' dB too high (' p.onAxisMethod{k} ' method)\n']);
+        end
+        fprintf(fid(ifi),['So add ' num2str(-outby(k)/2) ' dB to G_o (' p.onAxisMethod{k} ' method)\n']);
+        fprintf(fid(ifi),['G_o from .raw file is ' num2str(gain) ' dB\n']);
+        fprintf(fid(ifi),['So the calibrated G_o = ' num2str(old_cal.G0-outby(k)/2) ' dB (' p.onAxisMethod{k} ' method)\n']);
     end
-    
-    disp(['So add ' num2str(-outby(k)/2) ' dB to G_o (' p.onAxisMethod{k} ' method)'])
-    
-    disp(['G_o from .raw file is ' num2str(gain) ' dB'])
-    disp(' ')
-    disp(['So the calibrated G_o = ' num2str(old_cal.G0-outby(k)/2) ' dB (' p.onAxisMethod{k} ' method)'])
-    disp(' ')
 end
 
 % Do a contour plot to show the beam pattern
@@ -345,7 +368,7 @@ warning('off','MATLAB:griddata:DuplicateDataPoints');
 ZI=griddata(double(sphere(:,2)), double(sphere(:,3)), double(sphere(:,1)+outby(1)),XI,YI);
 
 if ~isempty(ZI)
-    new_echo_figure([],'Name', 'Beam pattern contour plot');
+    fig=new_echo_figure([],'Name', 'Beam pattern contour plot');
     warning('on','MATLAB:griddata:DuplicateDataPoints');
     contourf(XI,YI,ZI)
     axis equal
@@ -353,8 +376,6 @@ if ~isempty(ZI)
     xlabel('Port/starboard angle (\circ)')
     ylabel('Fore/aft angle (\circ)')
     colorbar
-    
-    
     % And plot the positions of the sphere. Note that there is a bug in matlab
     % where the point (.) marker doesn't have a continuous size range, so we
     % used a marker that does (the available . sizes are not right).
@@ -362,9 +383,12 @@ if ~isempty(ZI)
     plot(sphere(:,2), sphere(:,3),'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
     axis equal
     
+    if~isempty(path_out)
+        print(fig,fullfile(path_out,['bp_contour_plot' freq_str '.png']),'-dpng','-r300');
+    end
+    
     % Do a 3d plot of the uncorrected and corrected beampattern
-    new_echo_figure([],'Name', '3D beam pattern (corrected and uncorrected)');
-    clf
+    fig=new_echo_figure([],'Name', '3D beam pattern (corrected and uncorrected)');
     surf(XI, YI, ZI)
     warning('off','MATLAB:griddata:DuplicateDataPoints');
     ZI=griddata(double(sphere(:,2)), double(sphere(:,3)), double(sphere(:,1)+compensation+outby(1)),XI,YI);
@@ -374,22 +398,34 @@ if ~isempty(ZI)
     zlabel('TS (dB re 1m^2)')
     xlabel('Port/stbd angle (\circ)')
     ylabel('Fore/aft angle (\circ)')
+    
+    if~isempty(path_out)
+        print(fig,fullfile(path_out,['bp_corr' freq_str '.png']),'-dpng','-r300');
+    end
 end
 
 % Do a plot of the sphere range during the calibration
-new_echo_figure([],'Name', 'Sphere range');
-clf
+fig=new_echo_figure([],'Name', 'Sphere range');
 plot(sphere(:,4))
-disp(['Mean sphere range = ' num2str(mean(sphere(:,4))) ...
-    ' m, std = ' num2str(std(sphere(:,4))) ' m.'])
+axis ij;
 title('Sphere range during the calibration.')
 xlabel('Ping number')
 ylabel('Sphere range (m)')
+if~isempty(path_out)
+    print(fig,fullfile(path_out,['sph_range' freq_str '.png']),'-dpng','-r300');
+end
 
+for ifi=1:length(fid)
+    fprintf(fid(ifi),['Mean sphere range = ' num2str(mean(sphere(:,4))) ...
+        ' m, std = ' num2str(std(sphere(:,4))) ' m\n']);
+end
 % Do a plot of the compensated and uncompensated echoes at a selection of
 % angles, similar to what one can get from the Simrad calibration program
-new_echo_figure([],'Name', 'Beam slice plot');
+fig=new_echo_figure([],'Name', 'Beam slice plot');
 plotBeamSlices(sphere, outby(1), trimTo, faBW, psBW, peak_ts, p.onAxisTol)
+if~isempty(path_out)
+    print(fig,fullfile(path_out,['slices' freq_str '.png']),'-dpng','-r300');
+end
 
 % Calculate the sa correction value informed by draft formulae
 % in Tody Jarvis's WGFAST calibration report.
@@ -436,31 +472,13 @@ grid on;
 xlabel('Time (ms)');
 ylabel('Normalized Power');
 
-
 % And convert that to dB, taking account of how this ratio is used as 2Sa
 % everywhere (i.e., it needs to be halved after converting to dB).
 sa_correction = 5 * log10(alpha);
-disp(' ')
-disp(['So sa correction = ' num2str(sa_correction) ' dB.'])
-disp(' ')
-disp(['(the effective pulse length = ' num2str(alpha) ' * nominal pulse length).'])
-disp(' ')
-
-% Print out some more cal results
-disp(['Fore/aft beamwidth = ' num2str(faBW) ' degrees.'])
-disp(['Fore/aft offset = ' num2str(offset_fa) ' degrees (to be subtracted from EK60 angles).'])
-disp(['Port/stbd beamwidth = ' num2str(psBW) ' degrees.'])
-disp(['Port/stbd offset = ' num2str(offset_ps) ' degrees (to be subtracted from EK60 angles).'])
-
-disp(['Results obtained from ' num2str(length(sphere(:,1))) ' sphere echoes.'])
-disp(['Using c = ' num2str(envData.SoundSpeed) ' m/s.'])
-disp(['Using alpha = ' num2str(transceiver.Params.Absorption(1)*1000) ' dB/km.'])
-
 % Calculate the RMS fit to the beam model
 fit_out_to = mean([psBW faBW]) * p.rmsOutTo; % fit out to half the beamangle
 i = find(phi <= fit_out_to);
 beam_model = peak_ts - compensation;
-
 % Note that the halving of the difference is not what was done here
 % previously. From a comparison of the rms value that the Simrad
 % calibration program produces and what this formulae produced when using
@@ -468,11 +486,24 @@ beam_model = peak_ts - compensation;
 % difference, hence this formula now halves the difference and produces rms
 % values that are directly comparable to the Simrad results.
 rms_fit = sqrt( mean( ( (sphere(i,1) - beam_model(i))/2 ).^2 ) );
-disp(['RMS of fit to beam model out to ' num2str(fit_out_to) ' degrees = ' num2str(rms_fit) ' dB.'])
+for ifi=1:length(fid)
+    % Print out some more cal results
+    fprintf(fid(ifi),['So sa correction = ' num2str(sa_correction) ' dB\n']);
+    fprintf(fid(ifi),['(the effective pulse length = ' num2str(alpha) ' * nominal pulse length\n']);
+    
+    fprintf(fid(ifi),['Fore/aft beamwidth = ' num2str(faBW) ' degrees\n']);
+    fprintf(fid(ifi),['Fore/aft offset = ' num2str(offset_fa) ' degrees (to be subtracted from EK60 angles)\n']);
+    fprintf(fid(ifi),['Port/stbd beamwidth = ' num2str(psBW) ' degrees\n']);
+    fprintf(fid(ifi),['Port/stbd offset = ' num2str(offset_ps) ' degrees (to be subtracted from EK60 angles)\n']);
+    fprintf(fid(ifi),['Results obtained from ' num2str(length(sphere(:,1))) ' sphere echoes\n']);
+    fprintf(fid(ifi),['Using c = ' num2str(envData.SoundSpeed) ' m/s\n']);
+    fprintf(fid(ifi),['Using alpha = ' num2str(transceiver.Params.Absorption(1)*1e3) ' dB/km\n']);
+    fprintf(fid(ifi),['RMS of fit to beam model out to ' num2str(fit_out_to) ' degrees = ' num2str(rms_fit) ' dB\n']);
+end
 
-% new_cal.SACORRECT=sa_correction;
-% 
-% transceiver.apply_cw_cal(new_cal);
+if~isempty(path_out)
+    fclose(fid(2));
+end
 
 end
 

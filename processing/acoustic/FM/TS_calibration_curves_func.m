@@ -16,6 +16,11 @@ sphere_list=get(calibration_tab_comp.sphere,'String');
 sph=get_sph_params(sphere_list{get(calibration_tab_comp.sphere,'value')});
 
 
+att_list=get(calibration_tab_comp.att_model,'String');
+att_model=att_list{get(calibration_tab_comp.att_model,'value')};
+
+
+
 f_vec_save=[];
 
 list_freq_str=cell(1,length(layer.Frequencies));
@@ -106,21 +111,32 @@ for uui=select
     
     % mean parameters over range from transducer to the sphere
     c = sw_svel(s, t, d);
-    alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
-
-     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, c_at_sphere, ...
+    
+    switch att_model
+        case 'Doonan et al (2003)'
+            alpha = sw_absorption(Freq/1e3, s, t, d,'doonan');
+        case 'Francois & Garrison (1982)'
+            alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
+        case 'Manual Override'
+            alpha=layer.Transceivers(idx_freq).Params.Absorption(1)*1e3;
+    end
+   
+    sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, c_at_sphere, ...
         sph.lont_c, sph.trans_c, density_at_sphere, sph.rho);
+    [path_out,~]=fileparts(layer.Filename{1});
+    log_file=fullfile(path_out,['cal_log' num2str(layer.Frequencies(uui)) '.txt']);
+    fid=[1 fopen(log_file,'w+')];
     
     % print out the parameters
-    disp(['sound speed at sphere = ' num2str(c_at_sphere) ' m/s'])
-    disp(['density at sphere = ' num2str(density_at_sphere) ' kg/m^3'])
-    
-    disp(['mean Absorption = ' num2str(alpha) ' dB/km'])
-    disp(['mean sound speed = ' num2str(c) ' m/s'])
-    disp(['sphere TS = ' num2str(sphere_ts) ' dB'])
-    for it=1:length(layer.Transceivers)
-        layer.Transceivers(it).apply_soundspeed(c);  
+    for ifi=1:length(fid)
+        fprintf(fid(ifi),['sound speed at sphere = ' num2str(c_at_sphere) ' m/s\n']);
+        fprintf(fid(ifi),['density at sphere = ' num2str(density_at_sphere) ' kg/m^3\n']);
+        fprintf(fid(ifi),['mean Absorption = ' num2str(alpha) ' dB/km\n']);
+        fprintf(fid(ifi),['mean sound speed = ' num2str(c) ' m/s\n']);
+        fprintf(fid(ifi),['sphere TS = ' num2str(sphere_ts) ' dB\n']);
     end
+    fclose(fid(2));
+    
     layer.apply_soundspeed(c);
     layer.Transceivers(uui).apply_absorption(alpha/1e3);
     range=double(layer.Transceivers(uui).get_transceiver_range());
@@ -300,9 +316,9 @@ for uui=select
           
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
-        fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        
-       layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts);
+       fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
+
+       layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts,log_file);
 
     end
 end

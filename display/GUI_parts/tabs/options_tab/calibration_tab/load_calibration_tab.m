@@ -19,8 +19,7 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s):',curr_disp.Freq/1e3),'units','normalized','Position',[0.1 0.85 0.5 0.1],'BackgroundColor','White');
-
-  calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.55 0.85 0.1 0.1],'string',num2str(layer.EnvData.SoundSpeed,'%.0f'),'callback',{@change_soundspeed_cback,main_figure});
+calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.55 0.85 0.1 0.1],'string',num2str(layer.EnvData.SoundSpeed,'%.0f'),'callback',{@change_soundspeed_cback,main_figure});
        
 
 if ~strcmp(layer.Filetype,'CREST')
@@ -55,6 +54,8 @@ if ~strcmp(layer.Filetype,'CREST')
     end
     
     calibration_tab_comp.sphere=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',list_spheres(),'unit','normalized','position',[0.5 0.6 0.2 0.1]);
+  
+   calibration_tab_comp.att_model=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',{'Doonan et al (2003)' 'Francois & Garrison (1982)' 'Manual Override'},'unit','normalized','position',[0.5 0.4 0.2 0.1]);
   
     env_group=uibuttongroup(calibration_tab_comp.calibration_tab,'units','normalized','Position',[0.75 0.4 0.2 0.5]);
     
