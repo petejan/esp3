@@ -19,8 +19,6 @@ sph=get_sph_params(sphere_list{get(calibration_tab_comp.sphere,'value')});
 att_list=get(calibration_tab_comp.att_model,'String');
 att_model=att_list{get(calibration_tab_comp.att_model,'value')};
 
-
-
 f_vec_save=[];
 
 list_freq_str=cell(1,length(layer.Frequencies));

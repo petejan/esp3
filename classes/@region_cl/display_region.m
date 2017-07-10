@@ -229,7 +229,7 @@ switch reg_obj.Reference
     case 'Surface'
         ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
     case 'Bottom'
-        ylabel(ax_vert,sprintf('Above bottom(%s)',reg_obj.Cell_h_unit));
+        ylabel(ax_vert,'Above bottom(m)');
     case 'Line'
         ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));
 end

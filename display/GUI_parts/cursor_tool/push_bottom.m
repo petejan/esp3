@@ -98,7 +98,7 @@ if ping_init<x_lim(1)||ping_init>x_lim(end)||sample_init<y_lim(1)||sample_init>y
     return;
 end
 
-circ=viscircles(ah,[ping_init sample_init], radius,'color','k','linewidth',1,'linestyle','--');
+circ=viscircles(ah,[ping_init sample_init], radius/2,'color','k','linewidth',1,'linestyle','--');
 
 
 switch src.SelectionType
@@ -150,7 +150,7 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
                     'YData',circ.Children(ic).YYData-nanmean(circ.Children(ic).YData)+sample_new);
              end
         else
-            circ=viscircles(ah,[ping_new sample_new],radius,'color','k','linewidth',1,'linestyle','--');
+            circ=viscircles(ah,[ping_new sample_new],radius/2,'color','k','linewidth',1,'linestyle','--');
         end
         
         switch position

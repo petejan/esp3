@@ -49,8 +49,8 @@ end
 
 set(ax,'xtick',1:length(strats));
 set(ax,'xticklabel',strats);
-ylabel(ax,'abscf')
-xlabel(ax,'stratum');
-legend(ax,legend_name)
+ylabel(ax,'s_a(m^2m^{-2})')
+xlabel(ax,'Stratum Name');
+legend(ax,legend_name,'interpreter','none')
 
 end
