@@ -40,7 +40,16 @@ function update_reglist_tab(main_figure,reg_uniqueID,new)
 
 layer=getappdata(main_figure,'Layer');
 
+
 reglist_tab_comp=getappdata(main_figure,'Reglist_tab');
+
+if isempty(reglist_tab_comp)
+    opt_panel=getappdata(main_figure,'option_tab_panel');
+    load_reglist_tab(main_figure,opt_panel);
+    return;
+end
+
+
 if isempty(layer)||isempty(reglist_tab_comp)
     return;
 end
@@ -50,9 +59,8 @@ trans_obj=layer.Transceivers(idx_freq);
 
 
 try
-    jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPane');
-    
-    jView = jScroll.getViewport();
+      
+    jView = reglist_tab_comp.jScroll.getViewport();
     curr_rect=jView.getViewRect();
     
 catch
@@ -109,7 +117,7 @@ try
         %fprintf('Back to %.0f\n',old_pos.y);
     end
     
-    jScroll.repaint();    % workaround for any visual glitches
+    reglist_tab_comp.jScroll.repaint();    % workaround for any visual glitches
     
 catch
     if ~isdeployed()

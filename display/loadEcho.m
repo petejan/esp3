@@ -53,9 +53,9 @@ remove_interactions(main_figure);
 disable_listeners(main_figure);
 uiundo(main_figure,'clear');
 
-
 nb_layers = length(layers);
 curr_disp = getappdata(main_figure,'Curr_disp');
+curr_mode=curr_disp.CursorMode;
 
 [idx_freq,found_freq] = find_freq_idx(layer,curr_disp.Freq);
 [~,found_field] = find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
@@ -99,11 +99,14 @@ waitfor(curr_disp,'UIupdate',0)
 
 enable_listeners(main_figure);
 curr_disp = getappdata(main_figure,'Curr_disp');
-curr_disp.CursorMode='Normal';
+curr_disp.CursorMode=curr_mode;
 
 enabled_obj=findobj(main_figure,'Enable','off');
 set(enabled_obj,'Enable','on');
 
+if ~isdeployed
+    fprintf(1,'Currently %.0f active objects in ESP3\n\n',numel(findall(main_figure)));
+end
 
 end
 

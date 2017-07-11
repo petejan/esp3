@@ -85,7 +85,7 @@ uimenu(lay_menu,'Label','Split Selected Layers (per survey data)','Callback',{@s
 uimenu(lay_menu,'Label','Split Selected Layers (per files)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure,0});
 uimenu(lay_menu,'Label','Write GPS Data and Depth to database','Callback',{@write_gps_and_depth_to_db_callback,layer_tab_comp.table,main_figure});
 uimenu(lay_menu,'Label',str_delete,'Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
-
+layer_tab_comp.jScroll = findjobj(layer_tab_comp.table, 'class','UIScrollPanel');
 selected_layers=[];
 
 setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);

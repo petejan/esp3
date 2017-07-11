@@ -55,6 +55,7 @@ vert_slice_units = surv_in_obj.Options.Vertical_slice_units;
 output=layers.list_layers_survey_data();
 
 [snaps,strat,trans,regs_trans]=surv_in_obj.merge_survey_input_for_integration();
+
 [~,~,strat_vec_num]=unique(strat);
 strat_couple=unique([snaps(:)';strat_vec_num(:)']','rows');
 trans_triple=unique([snaps(:)';strat_vec_num(:)';trans(:)']','rows');

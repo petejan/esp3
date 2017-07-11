@@ -3,7 +3,8 @@ mini_axes_comp=getappdata(main_figure,'Mini_axes');
  
 parent=ancestor(mini_axes_comp.mini_ax,'figure');
 
-context_menu=uicontextmenu(parent);
+delete(findall(parent,'Tag','miniechoCtxtMenu'));
+context_menu=uicontextmenu(parent,'Tag','miniechoCtxtMenu');
 mini_axes_comp.mini_echo_bt.UIContextMenu=context_menu;
 mini_axes_comp.mini_axes.UIContextMenu=context_menu;
 mini_axes_comp.patch_obj.UIContextMenu=context_menu;

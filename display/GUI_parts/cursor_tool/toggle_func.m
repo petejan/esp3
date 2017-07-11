@@ -82,8 +82,10 @@ switch src_out.State
             case 'ed_bot'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
             case 'ed_bot_spline'
-
-                context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'));
+                
+                
+                delete(findall(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu'));
+                context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu');
                 axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
                 uimenu(context_menu,'Label','Small radius (2px)','userdata',2,'Callback',@check_only_one);
                 uimenu(context_menu,'Label','Medium radius (5px)','userdata',5,'Callback',@check_only_one,'checked','on');

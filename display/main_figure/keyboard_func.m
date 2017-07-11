@@ -249,13 +249,13 @@ try
                         idx= trans.find_regions_Unique_ID(id);
                         trans.rm_region_id(get(gco,'Userdata'));
                         display_regions(main_figure,'both');
+                        
                         if ~isempty(trans.Regions)
                             curr_disp.Active_reg_ID=trans.Regions(nanmax(idx-1,1)).Unique_ID;
                         else
                             curr_disp.Active_reg_ID=[];
                         end
-                        
-                        
+                               
                         order_stacks_fig(main_figure);
                 end
             end

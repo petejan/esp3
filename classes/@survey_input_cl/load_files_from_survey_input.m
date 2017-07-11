@@ -81,8 +81,10 @@ regions_wc = surv_input_obj.Regions_WC;
 algos      = surv_input_obj.Algos;
 snapshots  = surv_input_obj.Snapshots;
 cal_opt    = surv_input_obj.Cal;
-
+[~,~,trans_tot,~]=surv_input_obj.merge_survey_input_for_integration();
+nb_trans_tot=numel(trans_tot);
 layers_new = [];
+itr_tot=0;
 for isn = 1:length(snapshots)
     snap_num = snapshots{isn}.Number;
     stratum = snapshots{isn}.Stratum;
@@ -115,11 +117,9 @@ for isn = 1:length(snapshots)
         
         %         strat_type = stratum{ist}.Type;
         %         strat_radius = stratum{ist}.radius;
-        %
+        
         for itr = 1:length(transects)
-            
-            show_status_bar(gui_main_handle);
-            
+           itr_tot=itr_tot+1;      
             try
                 filenames_cell = transects{itr}.files;
                 trans_num = transects{itr}.number;
@@ -128,9 +128,14 @@ for isn = 1:length(snapshots)
                 catch
                     cal = cal_strat;
                 end
-                
-                fprintf('Processing Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
-                
+                show_status_bar(gui_main_handle);
+                disp_str=sprintf('Loading Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
+                if ~isempty(load_bar_comp)
+                    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_trans_tot,'Value',itr_tot);
+                    load_bar_comp.status_bar.setText(disp_str);
+                else
+                disp(disp_str);
+                end
                 if ~iscell(filenames_cell)
                     filenames_cell = {filenames_cell};
                 end
@@ -496,15 +501,16 @@ for isn = 1:length(snapshots)
                     
                 end
                 clear layers_out_temp;
+
             catch error
                 disp(error.message);
                 fprintf('Error openning file for Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             end
-        end
-        
-    end
-    
+        end   
+    end  
+   
 end
+hide_status_bar(gui_main_handle);
 
 end
 

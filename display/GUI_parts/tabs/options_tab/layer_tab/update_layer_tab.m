@@ -37,6 +37,11 @@
 function update_layer_tab(main_figure)
 
 layer_tab_comp=getappdata(main_figure,'Layer_tab');
+if isempty(layer_tab_comp)
+    opt_panel=getappdata(main_figure,'option_tab_panel');
+    load_layer_tab(main_figure,opt_panel);
+    return;
+end
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
 
@@ -50,12 +55,11 @@ end
 nb_layer=length(layers);
 data_new=cell(nb_layer,2);
 
-
-% data_old=layer_tab_comp.table.Data;
 try
-    jScroll = findjobj(layer_tab_comp.table, 'class','UIScrollPane');   
-    jView = jScroll.getViewport();
-    pos=jView.getViewPosition;
+      
+    jView = layer_tab_comp.jScroll.getViewport();
+
+    rect=jView.getViewSize;
     
     layers_Str_comp=list_layers(layers);
     data_new(:,1)=layers_Str_comp;
@@ -84,10 +88,11 @@ try
     layer_tab_comp.table.Data{idx,1}=strcat('<html><FONT color="Red"><b>',data_new{idx,1},'</b></html>');
     
     drawnow;  pause(0.02);
+    pos=java.awt.Point(0,round(rect.height*(idx-1)/nb_layer));
     
     jView.setViewPosition(pos)
     
-    jScroll.repaint();    % workaround for any visual glitches
+    layer_tab_comp.jScroll.repaint();    % workaround for any visual glitches
 catch
     if ~isdeployed()
         disp('Error while updating layer_tab');

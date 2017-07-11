@@ -36,7 +36,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function activate_region_callback(ID,main_figure,repos)
+function activate_region_callback(ID,main_figure)
 
 if isempty(ID)
     return;
@@ -56,35 +56,12 @@ if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'
      return;
 end
 
-
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
 
-if repos>0
-    xdata=trans_obj.get_transceiver_pings();
-    ydata=trans_obj.get_transceiver_samples();
-    
-    x_reg_lim=xdata(reg_curr.Idx_pings);
-    y_reg_lim=ydata(reg_curr.Idx_r);
-    
-    
-    ah=axes_panel_comp.main_axes;
-    x_lim=get(ah,'xlim');
-    y_lim=get(ah,'ylim');
-    
-    if all(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||all(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
-        
-        dx=nanmax(diff(x_lim),(x_reg_lim(end)-x_reg_lim(1)));
-        dy=nanmax(diff(y_lim),(y_reg_lim(end)-y_reg_lim(1)));
-        
-        x_lim_new= [nanmean(x_reg_lim)-dx/2 nanmean(x_reg_lim)+dx/2];
-        y_lim_new= [nanmean(y_reg_lim)-dy/2 nanmean(y_reg_lim)+dy/2];
-        
-        set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
-    end
-end
+
 ah=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
 
 

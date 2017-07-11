@@ -75,11 +75,11 @@ for iax=1:length(main_axes_tot)
     for i=1:nb_reg
          try
             reg_curr=trans.Regions(i);
-            id_reg=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',reg_curr.Unique_ID);
+            id_reg=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-depth',1);
            
             
             if ~isempty(id_reg)
-                id_text=findobj(main_axes,{'tag','region_text'},'-and','UserData',reg_curr.Unique_ID);
+                id_text=findall(id_reg,{'tag','region_text'},'-and','UserData',reg_curr.Unique_ID,'-depth',0);
                 if ~isempty(id_text)
                     set(id_text,'String',reg_curr.disp_str());
                 end

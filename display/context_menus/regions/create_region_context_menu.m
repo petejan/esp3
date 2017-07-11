@@ -38,7 +38,8 @@
 %% Function
 function create_region_context_menu(reg_plot,main_figure,ID)
 
-context_menu=uicontextmenu(main_figure);
+
+
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj=layer.get_trans(curr_disp.Freq);
@@ -47,18 +48,19 @@ switch class(ID)
     case 'matlab.graphics.primitive.Patch'
         isreg=0;
         select_plot=ID;
+        ID=0;
     otherwise
         isreg=1;
         select_plot=trans_obj.get_region_from_Unique_ID(ID);
 
 end
+context_menu=uicontextmenu(main_figure,'Tag','RegionContextMenu','UserData',ID);
 
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
-    if isnumeric(ID)
+    if ID>0
         iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@move_reg_callback,ID,main_figure});
         iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,ID,main_figure});
-        
     end
 end
 

@@ -59,7 +59,6 @@ if new==1
     update_map_tab(main_figure);
     update_lines_tab(main_figure);
     load_calibration_tab(main_figure,opt_panel);
-    load_info_panel(main_figure);
     update_layer_tab(main_figure);
     update_reglist_tab(main_figure,[],new);
     clear_regions(main_figure,[]);
@@ -76,18 +75,18 @@ catch
 end
 
 set_axes_position(main_figure);
-update_cmap(main_figure);
+update_cmap(main_figure);%already in update_cmap
 reverse_y_axis(main_figure);
 
 display_bottom(main_figure);
 display_tracks(main_figure);
 display_file_lines(main_figure);
-display_regions(main_figure,'both');
+%display_regions(main_figure,'both');%already in update_cmap
 display_lines(main_figure);
 display_survdata_lines(main_figure);
 
 set_alpha_map(main_figure);
-hide_status_bar(main_figure);
+%hide_status_bar(main_figure);
 order_axes(main_figure); 
 order_stacks_fig(main_figure);
 reset_disp_info(main_figure);

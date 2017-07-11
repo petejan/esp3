@@ -46,10 +46,10 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 update_axis_panel(main_figure,0);
 set_axes_position(main_figure);
-update_cmap(main_figure);
+%update_cmap(main_figure);
 reverse_y_axis(main_figure);
 
-display_bottom(main_figure);
+%display_bottom(main_figure);
 display_tracks(main_figure);
 display_file_lines(main_figure);
 display_survdata_lines(main_figure);

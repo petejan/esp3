@@ -23,6 +23,9 @@ else
             if isempty(tracks)
                 return;
             end
+            c=[];
+            y=[];
+            x=[];
             for k=1:length(tracks.target_id)
                 idx_targets=tracks.target_id{k};
                 c=[c ST.TS_comp(idx_targets)];

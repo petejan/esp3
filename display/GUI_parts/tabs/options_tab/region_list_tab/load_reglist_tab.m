@@ -61,7 +61,7 @@ reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
     'ColumnEditable', [false true true true true true true true true false],...
     'Units','Normalized','Position',[0 0 1 1],...
     'RowName',[]);
-
+reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 set(reglist_tab_comp.table,'CellEditCallback',{@edit_reg,main_figure});
 set(reglist_tab_comp.table,'CellSelectionCallback',{@act_reg,main_figure});
 set(reglist_tab_comp.reglist_tab,'SizeChangedFcn',@resize_table);
@@ -76,7 +76,7 @@ rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
 reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT color="REd"><b>Delete region(s)</b></Font> ';
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,reglist_tab_comp.table,main_figure});
 uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
-
+reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
 
@@ -148,7 +148,6 @@ trans_obj=layer.Transceivers(idx_freq);
 regions=trans_obj.Regions;
 
 
-
 if isempty(evt.Indices)
     setappdata(src,'SelectedRegs',[]);
     return;
@@ -156,9 +155,6 @@ else
     selected_regs=unique([src.Data{evt.Indices(:,1),end}]);
     setappdata(src,'SelectedRegs',selected_regs);
 end
-
-
-
 
 [idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(end,1),10});
 
@@ -182,6 +178,7 @@ active_reg=regions(idx_reg);
 
 if active_reg.Unique_ID~=curr_disp.Active_reg_ID
     curr_disp.Active_reg_ID=active_reg.Unique_ID;
+    set_view_to_region(curr_disp.Active_reg_ID,main_figure);
 end
 
 end

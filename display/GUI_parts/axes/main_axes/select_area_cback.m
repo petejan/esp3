@@ -176,7 +176,7 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
             return;
         end
         hp_a=patch(ah,'XData',x_box(1:4),'YData',y_box(1:4),'FaceColor',col,'tag','SelectArea','FaceAlpha',0.5,'EdgeColor',col);
-        
+        delete(findall(main_figure,'Tag','RegionContextMenu','-and','UserData',0));
         create_region_context_menu(hp_a,main_figure,hp_a);
         enterFcn =  @(figHandle, currentPoint)...
             set(figHandle, 'Pointer', 'fleur');

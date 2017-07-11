@@ -17,8 +17,8 @@ set(mini_axes_comp.bottom_plot,'Color',col_bot);
 
 
 display_regions(main_figure,'both');
-txt_obj=[findobj(axes_panel_comp.main_axes,'Type','Text','-not','Tag','lines');
-findobj(mini_axes_comp.mini_ax,'Type','Text','-not','Tag','lines')];
+
+txt_obj=[findobj(axes_panel_comp.main_axes,'Type','Text','-not','Tag','lines'); findobj(mini_axes_comp.mini_ax,'Type','Text','-not','Tag','lines')];
 set(txt_obj,'Color',col_txt);
 
 colormap(mini_axes_comp.mini_ax,cmap);

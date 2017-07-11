@@ -37,7 +37,8 @@
 %% Function
 function create_context_menu_bottom(main_figure,bottom_line)
 
-context_menu=uicontextmenu(ancestor(bottom_line,'figure'));
+delete(findall(ancestor(bottom_line,'figure'),'Tag','botCtxtMenu'));
+context_menu=uicontextmenu(ancestor(bottom_line,'figure'),'Tag','btCtxtMenu');
 bottom_line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Display Bottom Region','Callback',@display_bottom_region_callback);
 uimenu(context_menu,'Label','Filter Bottom','Callback',@filter_bottom_callback);
