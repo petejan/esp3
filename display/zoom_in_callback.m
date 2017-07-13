@@ -107,6 +107,8 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
                 
         end
         
+        
+        
         x_min=nanmin(X);
         x_min=nanmax(xdata(1),x_min);
         

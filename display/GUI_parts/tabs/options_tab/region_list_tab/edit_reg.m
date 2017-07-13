@@ -87,6 +87,7 @@ layer.Transceivers(idx_freq).add_region(active_reg);
 setappdata(main_figure,'Layer',layer);
 
 display_regions(main_figure,'both');
+activate_region_callback(active_reg.Unique_ID,main_figure);
 
 order_stacks_fig(main_figure);
 

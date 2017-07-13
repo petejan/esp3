@@ -58,9 +58,9 @@ str_subsampling=sprintf('Disp. SubSampling: [%.0fx%.0f]',dp,dr);
 info_panel_comp=getappdata(main_figure,'Info_panel');
 
 if dr>1||dp>1
-  set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor','r');
+  set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor','r','Fontweight','bold');
 else
-    set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor',[0 0.5 0]);
+    set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor',[0 0.5 0],'Fontweight','normal');
 end
 
 

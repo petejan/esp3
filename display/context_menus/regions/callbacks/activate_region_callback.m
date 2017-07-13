@@ -36,16 +36,16 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function activate_region_callback(ID,main_figure)
+function activate_region_callback(Unique_ID,main_figure)
 
-if isempty(ID)
+if isempty(Unique_ID)
     return;
 end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
-reg_curr=trans_obj.get_region_from_Unique_ID(ID);
+reg_curr=trans_obj.get_region_from_Unique_ID(Unique_ID);
 
 
 if~isdeployed()

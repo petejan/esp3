@@ -98,8 +98,9 @@ update_display(main_figure,flag);
 waitfor(curr_disp,'UIupdate',0)
 
 enable_listeners(main_figure);
-curr_disp = getappdata(main_figure,'Curr_disp');
-curr_disp.CursorMode=curr_mode;
+
+%curr_disp.CursorMode=curr_mode;
+curr_disp.CursorMode='Normal';
 
 enabled_obj=findobj(main_figure,'Enable','off');
 set(enabled_obj,'Enable','on');

@@ -47,6 +47,7 @@ cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
+
 if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
     trans=layer.Transceivers(idx_freq);
@@ -272,7 +273,9 @@ try
             if isempty(callbackdata.Modifier)
                 keyboard_zoom(1,main_figure)
             elseif strcmpi(callbackdata.Modifier,'control')
+            
                 save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
+
             end
         case 'y'
             if  strcmpi(callbackdata.Modifier,'control')

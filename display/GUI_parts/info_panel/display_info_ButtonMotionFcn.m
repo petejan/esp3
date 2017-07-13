@@ -125,10 +125,15 @@ try
         else
             xy_string=sprintf('Range: %.2fm\n  Sample: %.0f Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
         end
-        if ~isempty(Lat)
+
+        if ~isempty(Lat)&&nansum(Lat+Long)>0
             pos_string=sprintf('Lat: %.6f \n Long:%.6f',Lat(idx_ping),Long(idx_ping));
+            pos_weigtht='normal';
+            pos_col='k';
         else
             pos_string=sprintf('No Navigation Data');
+            pos_weigtht='Bold';
+            pos_col='r';
         end
         time_str=datestr(Time(idx_ping));
         
@@ -157,7 +162,7 @@ try
         set(info_panel_comp.i_str,'String',i_str);
         set(info_panel_comp.summary,'string',summary_str);
         set(info_panel_comp.xy_disp,'string',xy_string);
-        set(info_panel_comp.pos_disp,'string',pos_string);
+        set(info_panel_comp.pos_disp,'string',pos_string,'ForegroundColor',pos_col,'Fontweight',pos_weigtht);
         set(info_panel_comp.time_disp,'string',time_str);
         set(info_panel_comp.value,'string',val_str);
         

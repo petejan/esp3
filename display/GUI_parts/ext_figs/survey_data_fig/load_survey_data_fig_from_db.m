@@ -55,6 +55,7 @@ if isempty(layer)||new_logbook>0
     if path_f==0
         return;
     end
+    [path_f,~,~]=fileparts(path_f);
 else
     switch layer.Filetype
         case {'CREST','FCV30'}

@@ -63,6 +63,8 @@ ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
 
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
+% dx=diff(x_lim);
+% dy=diff(y_lim);
 
 
 nb_pings=length(layer.Transceivers(idx_freq).Time);
@@ -101,7 +103,7 @@ switch src.SelectionType
                 replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
                 replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb_alt);
             case 'extend'
-                u=u+1;
+                 u=nansum(~isnan(xinit))+1;
                 replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdcb_ext);
         end
@@ -112,7 +114,7 @@ switch src.SelectionType
         end_bottom_edit();
 end
     function wbmcb(~,~)
-        u=u+1;
+         u=nansum(~isnan(xinit))+1;
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
@@ -121,10 +123,14 @@ end
         else
             hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         end
+%         x_lim_new=[xinit(u)-dx/2 xinit(u)+dx/2];
+%         y_lim_new=[yinit(u)-dy/2 yinit(u)+dy/2];
+%         set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
     end
 
     function wbmcb_ext(~,~)
         cp=ah.CurrentPoint;
+
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
         
@@ -139,19 +145,20 @@ end
         
         switch src.SelectionType
             case {'open' 'alt'}
-                
-                wbucb(src,[]);
-                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
-                
+                delete(hp);
+                [x_f,y_f]=check_xy();
+                update_bot(x_f,y_f);            
+                end_bottom_edit();
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});               
                 return;
         end
         
         [xinit,yinit]=check_xy();
-        u=length(xinit)+1;
+         u=nansum(~isnan(xinit))+1;
         update_bot(xinit,yinit);
         layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1;
-        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
+
         set_alpha_map(main_figure);
         set_alpha_map(main_figure,'main_or_mini','mini');
         display_bottom(main_figure);
@@ -180,11 +187,10 @@ end
     function wbucb(~,~)
         
         delete(hp);
-        
         [x_f,y_f]=check_xy();
         update_bot(x_f,y_f);
-        
         end_bottom_edit();
+        replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
         
     end
 
@@ -208,8 +214,7 @@ end
     end
 
     function wbucb_alt(~,~)
-        
-        
+                
         delete(hp);
         x_min=nanmin(xinit);
         x_max=nanmax(xinit);
@@ -219,12 +224,12 @@ end
         idx_pings=(idx_min:idx_max);
         bot.Sample_idx(idx_pings)=nan;
         end_bottom_edit();
-        
-        
+                
     end
 
 
     function end_bottom_edit()
+
         replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
         replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
         layer.Transceivers(idx_freq).setBottom(bot);
