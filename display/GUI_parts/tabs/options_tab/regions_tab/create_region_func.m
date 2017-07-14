@@ -90,9 +90,11 @@ reg_temp=region_cl(...
 
 
 IDs=layer.Transceivers(idx_freq).add_region(reg_temp);
+
 display_regions(main_figure,'both');
 if ~isempty(IDs)
     curr_disp.Active_reg_ID=IDs(end);   
+    curr_disp.Reg_changed_flag=1;
 end
 order_stacks_fig(main_figure);
 

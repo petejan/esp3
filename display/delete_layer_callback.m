@@ -53,7 +53,7 @@ function delete_layer_callback(~,~,main_figure)
     str_cell=list_layers(layers(idx),'nb_char',80);
     try
         fprintf('Deleting temp files from %s\n',str_cell{1});
-        layers=layers.delete_layers(layers(layer.ID_num));
+        layers=layers.delete_layers(layer.ID_num);
     catch
         fprintf('Could not clean files from %s\n',str_cell{1});
     end
@@ -62,6 +62,6 @@ function delete_layer_callback(~,~,main_figure)
    
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);
-    check_saved_bot_reg(main_figure);
+
     loadEcho(main_figure);
 end

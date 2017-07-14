@@ -61,6 +61,7 @@ if ~isempty(list_reg)
     trans_obj=layer.get_trans(curr_disp.Freq);
     curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     order_stacks_fig(main_figure);
+    curr_disp.Reg_changed_flag=1;
     
 else
     return

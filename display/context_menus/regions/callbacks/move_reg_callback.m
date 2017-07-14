@@ -93,7 +93,7 @@ switch main_figure.SelectionType
         layer.Transceivers(idx_freq).add_region(reg_curr);
         
         setappdata(main_figure,'Layer',layer);
-       
+        curr_disp.Reg_changed_flag=1;
         clear_regions(main_figure,reg_curr.Unique_ID);
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);

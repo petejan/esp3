@@ -23,7 +23,7 @@ classdef curr_state_disp_cl <handle
         NbLayers
         Cmap
         Font
-        Bot_changed_flag
+        Bot_changed_flag%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         UIupdate
         Proj
         Active_reg_ID=[]

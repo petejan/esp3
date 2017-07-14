@@ -115,10 +115,13 @@ reg_temp=region_cl(...
     'Cell_h_unit',h_unit);
 
 
-IDs_out=layer.Transceivers(idx_freq).add_region(reg_temp);
+IDs=layer.Transceivers(idx_freq).add_region(reg_temp);
 display_regions(main_figure,'both');
-curr_disp.Active_reg_ID=IDs_out(end);
 
+if ~isempty(IDs)
+    curr_disp.Active_reg_ID=IDs(end);   
+    curr_disp.Reg_changed_flag=1;
+end
 setappdata(main_figure,'Layer',layer);
 
 order_stacks_fig(main_figure);

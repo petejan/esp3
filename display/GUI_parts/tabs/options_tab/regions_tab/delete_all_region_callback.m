@@ -55,6 +55,7 @@ switch choice
         
         if ~isempty(list_reg)
             layer.Transceivers(idx_freq).rm_regions();
+            curr_disp.Reg_changed_flag=1;
             setappdata(main_figure,'Layer',layer);       
             display_regions(main_figure,'both');
             curr_disp=getappdata(main_figure,'Curr_disp');
