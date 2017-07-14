@@ -42,7 +42,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-
+mouse_state=1;
 
 ah=axes_panel_comp.main_axes;
 
@@ -97,15 +97,12 @@ switch src.SelectionType
         
         switch src.SelectionType
             case 'normal'
-                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
+                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
                 replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb);
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdcb_ext);
             case 'alt'
                 replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
                 replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb_alt);
-            case 'extend'
-                 u=nansum(~isnan(xinit))+1;
-                replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
-                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdcb_ext);
         end
     otherwise
         [~, idx_bot]=nanmin(abs(xinit(1)-xdata));
@@ -114,7 +111,7 @@ switch src.SelectionType
         end_bottom_edit();
 end
     function wbmcb(~,~)
-         u=nansum(~isnan(xinit))+1;
+        u=nansum(~isnan(xinit))+1;
         cp=ah.CurrentPoint;
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
@@ -123,6 +120,7 @@ end
         else
             hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         end
+        disp('plot')
 %         x_lim_new=[xinit(u)-dx/2 xinit(u)+dx/2];
 %         y_lim_new=[yinit(u)-dy/2 yinit(u)+dy/2];
 %         set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
@@ -130,10 +128,13 @@ end
 
     function wbmcb_ext(~,~)
         cp=ah.CurrentPoint;
-
+        
+        switch mouse_state
+            case 1
+                u=nansum(~isnan(xinit))+1; 
+        end
         xinit(u)=cp(1,1);
         yinit(u)=cp(1,2);
-        
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);
         else
@@ -142,7 +143,7 @@ end
     end
 
     function wbdcb_ext(~,~)
-        
+        mouse_state=1;
         switch src.SelectionType
             case {'open' 'alt'}
                 delete(hp);
@@ -152,23 +153,8 @@ end
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});               
                 return;
         end
-        
-        [xinit,yinit]=check_xy();
-         u=nansum(~isnan(xinit))+1;
-        update_bot(xinit,yinit);
-        layer.Transceivers(idx_freq).setBottom(bot);
-        curr_disp.Bot_changed_flag=1;
-
-        set_alpha_map(main_figure);
-        set_alpha_map(main_figure,'main_or_mini','mini');
-        display_bottom(main_figure);
-        if isvalid(hp)
-            set(hp,'XData',xinit,'YData',yinit);
-        else
-            hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
-        end
-        
-        
+        u=nansum(~isnan(xinit))+1; 
+         
     end
 
     function [x_f, y_f]=check_xy()
@@ -185,13 +171,7 @@ end
     end
 
     function wbucb(~,~)
-        
-        delete(hp);
-        [x_f,y_f]=check_xy();
-        update_bot(x_f,y_f);
-        end_bottom_edit();
-        replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
-        
+        mouse_state=0;
     end
 
     function update_bot(x_f,y_f)

@@ -1,0 +1,9 @@
+function clear_lines_temp(ah)
+
+u=findall(ah,'Type','line','-and',...
+    {'-or','Tag','bottom_temp',...
+    '-or','Tag','line_temp',...
+    '-or','Tag','reg_temp'});
+delete(u);
+
+end

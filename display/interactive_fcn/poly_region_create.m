@@ -45,10 +45,10 @@ ah=axes_panel_comp.main_axes;
 
 
 switch main_figure.SelectionType
-    case 'extend'
+    case 'normal'
         
     otherwise
-%         curr_disp.CursorMode='Normal';
+
         return;
 end
 axes_panel_comp.bad_transmits.UIContextMenu=[];

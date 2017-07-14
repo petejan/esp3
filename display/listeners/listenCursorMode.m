@@ -6,6 +6,9 @@ cursor_mode_tool_comp=getappdata(main_figure,'Cursor_mode_tool');
 info_panel_comp=getappdata(main_figure,'Info_panel');
 cur_str=sprintf('Cursor mode: %s',listdata.AffectedObject.CursorMode);
 set(info_panel_comp.cursor_mode,'String',cur_str);
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+ah=axes_panel_comp.main_axes;
+clear_lines_temp(ah);
 
 switch listdata.AffectedObject.CursorMode
     case 'Zoom In'

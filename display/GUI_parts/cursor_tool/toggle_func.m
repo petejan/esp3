@@ -63,6 +63,7 @@ end
 
 initialize_interactions_v2(main_figure);
 
+
 if isa(src_out,'matlab.ui.container.toolbar.PushTool')
     return;
 end
@@ -100,7 +101,7 @@ switch src_out.State
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@measure_distance,main_figure});
             case 'create_reg'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure});
-                replace_interaction(main_figure,'interaction','KeyPressFcn','id',2,'interaction_fcn',{@cancel_create_region,main_figure});
+                %replace_interaction(main_figure,'interaction','KeyPressFcn','id',2,'interaction_fcn',{@cancel_create_region,main_figure});
             case 'draw_line'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure});
             case 'brush_soundings'
