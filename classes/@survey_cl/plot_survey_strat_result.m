@@ -1,6 +1,6 @@
 function hfig=plot_survey_strat_result(surv_obj,hfig)
 
-plot_color={'k','r',[0 0.8 0],'m','b',[0.8 0.8 0]};
+plot_color={'k','r',[0 0.8 0],'b',[0.8 0.8 0],'m'};
 if isempty(hfig)
     hfig=figure();
 else
@@ -36,8 +36,8 @@ for isur=1:length(surv_obj)
         for j=1:length(strats)
             idx=(strat_sum.snapshot==snaps(i)&strcmp(strat_sum.stratum,strats{j}));
             if any(idx)
-            abscf_mean(i,j,isur)=strat_sum.abscf_mean(idx);
-            abscf_std(i,j,isur)=strat_sum.abscf_sd(idx);
+            abscf_mean(i,j,isur)=strat_sum.abscf_wmean(idx);
+            abscf_std(i,j,isur)=sqrt(strat_sum.abscf_var(idx));
             end
         end
         

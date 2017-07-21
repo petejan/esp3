@@ -2,6 +2,7 @@ function [output,regCellInt]=slice_transect2D(trans_obj,varargin)
 
 p = inputParser;
 
+
 addRequired(p,'trans_obj',@(trans_obj) isa(trans_obj,'transceiver_cl'));
 addParameter(p,'regIDs',[],@isnumeric);
 addParameter(p,'Slice_w',50,@(x) x>0);
@@ -19,7 +20,7 @@ Slice_h=p.Results.Slice_h;
 
 
 if ~isempty(p.Results.regIDs)
-    idx_reg=trans_obj.find_regions_ID(p.Results.regIDs);
+    idx_reg=trans_obj.find_regions_Unique_ID(p.Results.regIDs);
 else
     idx_reg=1:numel(trans_obj.Regions);
 end

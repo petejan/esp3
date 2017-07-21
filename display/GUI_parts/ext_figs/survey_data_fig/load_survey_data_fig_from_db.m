@@ -557,14 +557,14 @@ if isempty(text_search)||(~file&&~snap&&~trans&&~strat&&~reg)
 else
     
     if snap>0
-        idx_snap=cell2mat(data_ori(:,3))==snap;
+        idx_snap=cell2mat(data_ori(:,3))==str2double(text_search);
     else
         idx_snap=zeros(size(data_ori,1),1);
     end
     
     
     if trans>0
-        idx_trans=cell2mat(data_ori(:,5))==trans;
+        idx_trans=cell2mat(data_ori(:,5))==str2double(text_search);
     else
         idx_trans=zeros(size(data_ori,1),1);
     end

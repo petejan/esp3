@@ -1,12 +1,9 @@
         function print_output(surv_obj,file) % print the whole SurvOutput on the screen
             % and if defined in surv_obj.SurvOutput into a text file
-            fids{1} = 1;
-            if ~isempty(file)
-                fids{2} = fopen(file, 'w+');
-            end
-            
+
+            fids = fopen(file, 'w+');
             for i = 1:length(fids);
-                fid = fids{i};
+                fid = fids(i);
                 
                 %% Header
                 fprintf(fid,'title: %s\n', surv_obj.SurvInput.Infos.Title);

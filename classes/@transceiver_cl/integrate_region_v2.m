@@ -335,6 +335,12 @@ if p.Results.keep_bottom==0
     Mask_reg_min_bot(isnan(Sv_reg_lin))=0;
 end
 
+if ~any(Mask_reg_min_bot)
+    output=[];
+    return;
+end
+
+
 idx_x=(sum(Mask_reg)>0);
 % idx_y=(sum(Mask_reg,2)>0);
 
@@ -347,7 +353,7 @@ switch region.Reference
     otherwise
         y_mat_idx=floor(y_mat/cell_h);        
 end
-y_mat_idx=y_mat_idx-min(y_mat_idx(~isinf(y_mat_idx)&Mask_reg_min_bot))+1;
+y_mat_idx=y_mat_idx-min(y_mat_idx(~isinf(y_mat_idx)&Mask_reg))+1;
 
 Sv_reg_lin(~Mask_reg_min_bot)=nan;
 
