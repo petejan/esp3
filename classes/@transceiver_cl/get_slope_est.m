@@ -61,6 +61,6 @@ s_width=results.FiltWidth/(hist_diff(idx));
 
 bot_data_filt=smooth(bot_depth(:),s_width);
 dist_vessel_filt=smooth(dist_vessel(:),s_width);
-dist_vessel_filt(diff(dist_vessel_filt)<hist_diff(idx)/4)=nan;
+%dist_vessel_filt(diff(dist_vessel_filt)<hist_diff(idx)/4)=nan;
 slope_est=nan(size(bot_depth));
 slope_est(1:end-1)=atand(diff(bot_data_filt(:)')./diff(dist_vessel_filt(:)'));

@@ -324,7 +324,7 @@ for isn=1:length(snaps)
             surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt.Sv_mean_lin_esp2; %
             
             %% Region echo integral for Transect Summary
-            eint =eint + nansum(nansum(regCellInt.Sa_lin(:)));
+            eint =eint + nansum(regCellInt.Sa_lin(:));
 
         end%end of regions iteration for this file
     end%end of layer iteration for this transect

@@ -73,7 +73,7 @@ classdef transceiver_cl < handle
             trans_obj.setBottom(p.Results.Bottom);
         end
         
-
+        
         
         function rm_ST(trans_obj)
             trans_tmp=transceiver_cl();
@@ -264,13 +264,22 @@ classdef transceiver_cl < handle
             end
         end
         
+        
+        
         function reg=get_region_from_Unique_ID(trans_obj,ID)
             idx=find_regions_Unique_ID(trans_obj,ID);
             if ~isempty(idx)
                 reg=trans_obj.Regions(idx);
             else
                 reg=[];
-                
+            end
+        end
+        
+        function idx=find_regions_ref(trans_obj,Reference)
+            if isempty(trans_obj.Regions)
+                idx=[];
+            else
+                idx=find(strcmpi({trans_obj.Regions(:).Reference},Reference));
             end
         end
         

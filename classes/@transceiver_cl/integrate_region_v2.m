@@ -54,6 +54,7 @@ addParameter(p,'horiExtend',[0 Inf],@isnumeric);
 addParameter(p,'denoised',0,@isnumeric);
 addParameter(p,'motion_correction',0,@isnumeric);
 addParameter(p,'intersect_only',0,@isnumeric);
+addParameter(p,'idx_regs',[],@isnumeric);
 addParameter(p,'keep_bottom',0,@isnumeric);
 
 parse(p,trans_obj,region,varargin{:});
@@ -184,9 +185,16 @@ end
 if p.Results.intersect_only==1
     Sv_reg_save=Sv_reg;
     Sv_reg=nan(size(Sv_reg));
-    idx=trans_obj.find_regions_type('Data');
+    
+    if isempty(p.Results.idx_regs)   
+        idx=trans_obj.find_regions_type('Data');
+    else
+        idx=p.Results.idx_regs;
+    end
+        
     for i=idx
         curr_reg=trans_obj.Regions(i);
+        
         if curr_reg.Unique_ID==region.Unique_ID
             continue;
         end
@@ -209,6 +217,7 @@ if p.Results.intersect_only==1
 end
 
 idx=trans_obj.find_regions_type('Bad Data');
+
 for i=idx
     curr_reg=trans_obj.Regions(i);
     if curr_reg.Unique_ID==region.Unique_ID
@@ -412,8 +421,8 @@ output.Range_ref_max(Mask_reg_sub)=NaN;
 output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
 output.Thickness_mean(Mask_reg_sub)=NaN;
 
-output.Dist_E=repmat(accumarray(x_mat_idx(1,idx_x)',sub_dist(idx_x),[],@nanmin,nan),1,N_y)';
-output.Dist_S=repmat(accumarray(x_mat_idx(1,idx_x)',sub_dist(idx_x),[],@nanmax,nan),1,N_y)';
+output.Dist_S=repmat(accumarray(x_mat_idx(1,idx_x)',sub_dist(idx_x),[],@nanmin,nan),1,N_y)';
+output.Dist_E=repmat(accumarray(x_mat_idx(1,idx_x)',sub_dist(idx_x),[],@nanmax,nan),1,N_y)';
 
 output.Time_S=repmat(accumarray(x_mat_idx(1,idx_x)',sub_time(idx_x),[],@nanmin,nan),1,N_y)';
 output.Time_E=repmat(accumarray(x_mat_idx(1,idx_x)',sub_time(idx_x),[],@nanmax,nan),1,N_y)';

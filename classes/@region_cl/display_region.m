@@ -146,7 +146,7 @@ switch reg_obj.Cell_w_unit
         x_disp=(nanmean(output_reg.Dist_S,1)+nanmean(output_reg.Dist_E,1))/2;
 end
 
-y_disp=nanmean((output_reg.Range_ref_min+output_reg.Range_ref_max)/2,2);
+y_disp=(output_reg.Range_ref_min+output_reg.Range_ref_max)/2;
 
 %% create new figure here
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
@@ -163,7 +163,7 @@ title(ax_in,tt);
 % data
 mat_size=size(var_disp);
 if  ~any(mat_size==1)
-    reg_plot=pcolor(ax_in,repmat(x_disp,length(y_disp),1),repmat(y_disp,1,length(x_disp)),var_disp);
+    reg_plot=pcolor(ax_in,repmat(x_disp,size(y_disp,1),1),y_disp,var_disp);
     set(reg_plot,'alphadata',alphadata,'facealpha','flat','edgecolor','none','AlphaDataMapping','none');
 end
 
@@ -244,7 +244,7 @@ linkaxes([ax_in ax_horz],'x');
 
 %% final adjust axes
 set(ax_in,'Xlim',[nanmin(x_disp)-reg_obj.Cell_w/2 nanmax(x_disp)+reg_obj.Cell_w/2]);
-set(ax_in,'Ylim',[nanmin(y_disp)-reg_obj.Cell_h/2 nanmax(y_disp)+reg_obj.Cell_h/2]);
+set(ax_in,'Ylim',[nanmin(y_disp(:))-reg_obj.Cell_h/2 nanmax(y_disp(:))+reg_obj.Cell_h/2]);
 
 %% nest functions
 

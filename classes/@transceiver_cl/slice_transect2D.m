@@ -25,6 +25,7 @@ else
     idx_reg=1:numel(trans_obj.Regions);
 end
 
+
 % if isempty(idx_reg)
 %     output=[];
 %     regCellInt={};
@@ -163,7 +164,7 @@ for iuu=1:length(idx_reg)
     
     regCellIntCurr=regCellInt{i_reg};
     Sv_mean_lin=regCellIntCurr.Sv_mean_lin_esp2;
-    Sa_lin = regCellIntCurr.Sa_lin;%sum up all abcsf per vertical slice
+    Sa_lin = regCellIntCurr.Sa_lin;
     att=zeros(size(Sa_lin));
     switch Slice_w_units
         case 'pings'

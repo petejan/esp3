@@ -180,7 +180,7 @@ if p.Results.Shadow_zone
             if~any(ix)
                 continue;
             end
-            shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(nanmin(output_shadow_reg.Ping_S(ix)))));
+            shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(output_shadow_reg.Ping_E(ix))));
             shadow_zone_slice_abscf(k) = (shadow_zone_slice_abscf(k)+nansum(Sa_lin_sh(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
         end
     end
@@ -215,8 +215,9 @@ for iuu=1:length(idx_reg)
         continue;
     end
     regs{i_reg}=reg_curr;
-    
+
     Sa_lin = nansum(regCellInt.Sa_lin,1)./nanmax(regCellInt.Nb_good_pings_esp2,[],1);%sum up all abcsf per vertical slice
+    
     att=zeros(1,length(Sa_lin));
     switch Slice_units
         case 'pings'
