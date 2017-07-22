@@ -36,7 +36,7 @@ for i=1:length(obj_vec)
             for i_d=1:(length(strat_lim)-1)
                 idx_depth=depth>=strat_lim(i_d)&depth<strat_lim(i_d+1);
                 if ~isempty(idx_depth)
-                    abscf_strat(i_d,i)=nansum([abscf_strat(i_d,i) nansum(out.Sa_lin(idx_depth))]);
+                    abscf_strat(i_d,i)=nansum([abscf_strat(i_d,i) nansum(out.eint(idx_depth))]);
                 end
             end
         end

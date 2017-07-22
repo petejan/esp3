@@ -72,7 +72,7 @@ if isa(trans_obj,'transceiver_cl')
     
 else
     output_reg=trans_obj;
-    tt=sprintf('%f %f' ,field,p.Results.Name );
+    tt=sprintf('%s %s' ,field,p.Results.Name );
     
 end
 
@@ -141,9 +141,9 @@ end
 %% X and Y disp
 switch reg_obj.Cell_w_unit
     case 'pings'
-        x_disp=nanmean(output_reg.Ping_S,1);
+        x_disp=output_reg.Ping_S;
     case 'meters'
-        x_disp=(nanmean(output_reg.Dist_S,1)+nanmean(output_reg.Dist_E,1))/2;
+        x_disp=(output_reg.Dist_S+output_reg.Dist_E)/2;
 end
 
 y_disp=(output_reg.Range_ref_min+output_reg.Range_ref_max)/2;

@@ -106,8 +106,6 @@ binEnd = bins(2:end);
 
         
 
-
-
 numSlices = length(binStart); % num_slices
 slice_abscf=zeros(1,length(binStart));
 nb_tracks=zeros(1,length(binStart));
@@ -162,15 +160,17 @@ if p.Results.Shadow_zone
         'Slice_w',Slice_w,'Slice_units',Slice_units,...
         'Denoised',p.Results.Denoised,...
         'Motion_correction',p.Results.Motion_correction);
+    
     if ~isempty(output_shadow_reg)
         
-        Sa_lin_sh = nansum(output_shadow_reg.Sa_lin,1)./nanmax(output_shadow_reg.Nb_good_pings_esp2,1);%sum up all abcsf per vertical slice
-        att=zeros(1,length(Sa_lin_sh));
+        eint_sh = nansum(output_shadow_reg.eint,1);%sum up all abcsf per vertical slice
+        nb_pings_sh=nanmax(output_shadow_reg.Nb_good_pings_esp2,1);
+        att=zeros(1,length(eint_sh));
         switch Slice_units
             case 'pings'
-                t_start=nanmax(output_shadow_reg.Ping_S,[],1);
+                t_start=output_shadow_reg.Ping_S;
             case 'meters'
-                t_start=nanmax(output_shadow_reg.Dist_S,[],1);
+                t_start=output_shadow_reg.Dist_S;
         end
         
         for k = 1:length(binStart); % sum up abscf data according to bins
@@ -181,7 +181,7 @@ if p.Results.Shadow_zone
                 continue;
             end
             shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(output_shadow_reg.Ping_E(ix))));
-            shadow_zone_slice_abscf(k) = (shadow_zone_slice_abscf(k)+nansum(Sa_lin_sh(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k));
+            shadow_zone_slice_abscf(k) = (shadow_zone_slice_abscf(k)+nansum(eint_sh(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k)/nansum(nb_pings_sh(ix)));
         end
     end
 end
@@ -202,6 +202,7 @@ for iuu=1:length(idx_reg)
     
     i_reg=i_reg+1;
     reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
+    
     regCellInt=trans_obj.integrate_region_v2(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],...
         'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
     
@@ -216,14 +217,14 @@ for iuu=1:length(idx_reg)
     end
     regs{i_reg}=reg_curr;
 
-    Sa_lin = nansum(regCellInt.Sa_lin,1)./nanmax(regCellInt.Nb_good_pings_esp2,[],1);%sum up all abcsf per vertical slice
-    
-    att=zeros(1,length(Sa_lin));
+    eint = nansum(regCellInt.eint,1);%sum up all abcsf per vertical slice
+    nb_good_pings=nanmax(regCellInt.Nb_good_pings_esp2);
+    att=zeros(1,length(eint));
     switch Slice_units
         case 'pings'
-            t_start=nanmax(regCellInt.Ping_S,[],1);
+            t_start=regCellInt.Ping_S;
         case 'meters'
-            t_start=nanmax(regCellInt.Dist_S,[],1);
+            t_start=regCellInt.Dist_S;
     end
     
     for k = 1:length(binStart); % sum up abscf data according to bins
@@ -232,8 +233,7 @@ for iuu=1:length(idx_reg)
         if~any(ix)
             continue;
         end
-        nb_good_pings(k)=nanmax(nansum(regCellInt.Nb_good_pings_esp2(ix)),nb_good_pings(k));
-        slice_abscf(k) = (slice_abscf(k)+nansum(Sa_lin(ix)));
+        slice_abscf(k) = (slice_abscf(k)+nansum(eint(ix))./nansum(nb_good_pings(ix)));
     end
     regCellIntOut{i_reg}=regCellInt;
 end
@@ -241,9 +241,9 @@ end
 output.slice_abscf=slice_abscf;
 output.slice_size=Slice_w;
 output.num_slices=numSlices;
-output.nb_good_pings=nb_good_pings;
 output.shadow_zone_slice_abscf=shadow_zone_slice_abscf;
 output.shadow_zone_mean_height=shadow_zone_mean_height;
+
 if ~isempty(trans_obj.GPSDataPing.Lat)
     output.slice_lat=trans_obj.GPSDataPing.Lat(idx_M)';
     output.slice_lon=trans_obj.GPSDataPing.Long(idx_M)';

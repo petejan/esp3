@@ -1,4 +1,4 @@
-function [output,regCellInt]=slice_transect2D_new_int(trans_obj,varargin)
+function [output_surf,output_bot,regs,regCellInt]=slice_transect2D_new_int(trans_obj,varargin)
 
 p = inputParser;
 
@@ -10,10 +10,11 @@ addParameter(p,'Slice_w_units','meters',@(unit) ~isempty(strcmp(unit,{'pings','m
 addParameter(p,'Slice_h',10,@(x) x>0);
 addParameter(p,'StartTime',0,@(x) x>0);
 addParameter(p,'EndTime',1,@(x) x>0);
-addParameter(p,'Reference','Surface',@(ref) ~isempty(strcmpi(ref,{'Surface','Bottom'})));
 addParameter(p,'Denoised',0,@isnumeric);
 addParameter(p,'Motion_correction',0,@isnumeric);
 addParameter(p,'RegInt',0,@isnumeric);
+addParameter(p,'Shadow_zone',0,@isnumeric);
+addParameter(p,'Shadow_zone_height',10,@isnumeric);
 
 parse(p,trans_obj,varargin{:});
 
@@ -28,15 +29,28 @@ else
     idx_reg=1:numel(trans_obj.Regions);
 end
 
-idx_reg_2=find_regions_ref(trans_obj,p.Results.Reference);
-if isempty(idx_reg_2)
-    output=[];
+idx_reg_bot=find_regions_ref(trans_obj,'Bottom');
+idx_reg_surf=find_regions_ref(trans_obj,'Surface');
+
+
+if isempty(idx_reg_bot)
+    output_bot=[];
+end
+
+if isempty(idx_reg_surf)
+    output_surf=[];
+end
+
+if isempty(idx_reg_bot)&&isempty(idx_reg_surf)
+    regs=[];
     regCellInt={};
     return;
 end
 
-idx_reg=intersect(idx_reg_2,idx_reg);
-
+if ~isempty(idx_reg)
+    idx_reg_bot=intersect(idx_reg_bot,idx_reg);
+    idx_reg_surf=intersect(idx_reg_surf,idx_reg);
+end
 
 if p.Results.StartTime==0
     st=trans_obj.Time(1);
@@ -50,23 +64,45 @@ else
     et=p.Results.EndTime;
 end
 
-reg_wc=trans_obj.create_WC_region(...
+reg_wc_surf=trans_obj.create_WC_region(...
     'y_min',0,...
     'y_max',Inf,...
     'Type','Data',...
-    'Ref',p.Results.Reference,...
+    'Ref','Surface',...
     'Cell_w',Slice_w,...
     'Cell_h',Slice_h,...
     'Cell_w_unit',Slice_w_units,...
     'Cell_h_unit','meters');
 
-output=trans_obj.integrate_region_v2(reg_wc,'horiExtend',[st et],'idx_regs',idx_reg,'intersect_only',1,'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
+reg_wc_bot=trans_obj.create_WC_region(...
+    'y_min',0,...
+    'y_max',Inf,...
+    'Type','Data',...
+    'Ref','Bottom',...
+    'Cell_w',Slice_w,...
+    'Cell_h',Slice_h,...
+    'Cell_w_unit',Slice_w_units,...
+    'Cell_h_unit','meters');
+
+if ~isempty(idx_reg_surf)
+    output_surf=trans_obj.integrate_region_v2(reg_wc_surf,'horiExtend',[st et],'idx_regs',idx_reg_surf,'intersect_only',1,'denoised'...
+        ,p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
+end
+if ~isempty(idx_reg_bot)
+    output_bot=trans_obj.integrate_region_v2(reg_wc_bot,'horiExtend',[st et],'idx_regs',idx_reg_bot,'intersect_only',1,'denoised',...
+        p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
+end
 regCellInt=cell(1,length(idx_reg));
+
 
 if p.Results.RegInt
     for i=1:length(idx_reg)
+        regs(i)=trans_obj.Regions(idx_reg(i));
         regCellInt{i}=trans_obj.integrate_region_v2(trans_obj.Regions(idx_reg(i)));
     end
+else
+    regs=[];
+    regCellInt={};
 end
 
 end

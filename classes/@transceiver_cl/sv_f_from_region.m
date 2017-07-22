@@ -18,7 +18,7 @@ if isempty(output_reg)
     return;
 end
 
-[N_y,N_x]=size(output_reg.Ping_S);
+[N_y,N_x]=size(output_reg.nb_samples);
 
 
 range=trans_obj.get_transceiver_range(reg_obj.Idx_r);

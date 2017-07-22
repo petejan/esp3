@@ -49,7 +49,7 @@ regSummary{1,2}=pow2db_perso(nanmean(regIntStruct.Sv_mean_lin(:)));
 regSummary{1,3}='dB';
 
 regSummary{2,1}='NASC Esp3';
-regSummary{2,2}=4*pi*1852^2*nansum(nansum(regIntStruct.Sa_lin))./nansum(nanmax(regIntStruct.Nb_good_pings));
+regSummary{2,2}=4*pi*1852^2*nansum(nansum(regIntStruct.eint))./nansum(nanmax(regIntStruct.Nb_good_pings));
 regSummary{2,3}='m2/nmi2';
 
 regSummary{3,1}='NASC Echoview';

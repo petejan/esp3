@@ -1,4 +1,4 @@
-%% generate_output.m
+%% generate_output_v2.m
 %
 % Key function for integration of surveys. Everything happens here. It
 % needs cleaning, commenting and the output needs to be optimized.
@@ -37,7 +37,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function generate_output(surv_obj,layers,varargin)
+function generate_output_v2(surv_obj,layers,varargin)
 
 p = inputParser;
 
@@ -225,15 +225,27 @@ for isn=1:length(snaps)
         
         reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_t);
         
-        [sliced_output,regs,regCellInt_tot]=trans_obj_tr.slice_transect('reg',reg_tot,'Slice_w',vert_slice,'Slice_units',vert_slice_units,...
+        
+        if isempty(reg_tot)
+            reg_tot=init_reg;
+        end
+        
+        if ~isempty(~isnan([reg_tot(:).id]))
+            idx_reg=trans_obj.find_regions_ID([reg_tot(:).id]);
+        else
+            idx_reg=[];
+        end
+
+       
+  
+       [output_2D_surf,output_2D_bot,regs,regCellInt_tot]=trans_obj.slice_transect2D_new_int('Slice_w',vert_slice,'Slice_units',vert_slice_units,...
             'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),...
             'Denoised',surv_in_obj.Options.Denoised,...
             'Motion_correction',surv_in_obj.Options.Motion_correction,...
             'Shadow_zone',surv_in_obj.Options.Shadow_zone,...
-            'Shadow_zone_height',surv_in_obj.Options.Shadow_zone_height);
-%         [sliced_output_2D_bottom,regCellInt_tot_bot]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Reference','bottom');
-%         [sliced_output_2D_surf,regCellInt_tot_surf]=trans_obj.slice_transect2D,'Slice_w',vert_slice,'Slice_units','pings','StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),'Reference','surface');
-        
+            'Shadow_zone_height',surv_in_obj.Options.Shadow_zone_height,...
+            'RegInt',1,'idx_reg',idx_reg);
+  
         Output_echo=[Output_echo sliced_output];
 
         
@@ -305,17 +317,17 @@ for isn=1:length(snaps)
             surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
             
             %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
-            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E;
-            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S;
+            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end,:);
+            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S(1,:);
             surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.Lat_S,2);
-            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = regCellInt.Ping_S; % transmit Start vertical slice
-            surv_out_obj.regionSumAbscf.latitude{i_reg} = regCellInt.Lat_S; % lat vertical slice
-            surv_out_obj.regionSumAbscf.longitude{i_reg} = regCellInt.Lon_S; % lon vertical slice
+            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = nanmax(regCellInt.Ping_S); % transmit Start vertical slice
+            surv_out_obj.regionSumAbscf.latitude{i_reg} = nanmax(regCellInt.Lat_S); % lat vertical slice
+            surv_out_obj.regionSumAbscf.longitude{i_reg} = nanmax(regCellInt.Lon_S); % lon vertical slice
             surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.eint)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
             
             %% Region vbscf (6th Mbs Output Block)
-            surv_out_obj.regionSumVbscf.time_end{i_reg}=repmat(regCellInt.Time_E,size(regCellInt.Sv_mean_lin_esp2,1),1);
-            surv_out_obj.regionSumVbscf.time_start{i_reg}=repmat(regCellInt.Time_S,size(regCellInt.Sv_mean_lin_esp2,1),1);
+            surv_out_obj.regionSumVbscf.time_end{i_reg}=regCellInt.Time_E;
+            surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellInt.Time_S;
             surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,1);% num_h_slices
             surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,2); % num_v_slices
             tmp=surv_out_obj.regionSum.vbscf(i_reg);

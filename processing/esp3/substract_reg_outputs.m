@@ -11,7 +11,7 @@ else
     
     output_diff.Sv_mean_lin_esp2=db2pow(pow2db_perso(output_reg_1.Sv_mean_lin_esp2)-pow2db_perso(output_reg_2.Sv_mean_lin_esp2));
     output_diff.Sv_mean_lin=db2pow(pow2db_perso(output_reg_1.Sv_mean_lin)-pow2db_perso(output_reg_2.Sv_mean_lin));
-    output_diff.Sa_lin=db2pow(pow2db_perso(output_reg_1.Sa_lin)-pow2db_perso(output_reg_2.Sa_lin));
+    output_diff.eint=db2pow(pow2db_perso(output_reg_1.eint)-pow2db_perso(output_reg_2.eint));
     
     
     output_diff.ABC=zeros(N_y,N_x);
