@@ -349,32 +349,30 @@ if ~any(Mask_reg_min_bot)
     return;
 end
 
-idx_x=(sum(Mask_reg)>0);
-
+% idx_x=(sum(Mask_reg)>0);
 
 x_mat_idx=ceil(x_mat/cell_w);
 slice_idx=ceil(x/cell_w);
+slice_idx=slice_idx-slice_idx(1)+1;
 
 switch region.Reference
     case {'Bottom' 'Line'}
         y_mat_idx=ceil(y_mat/cell_h);       
     otherwise
-        y_mat_idx=floor(y_mat/cell_h);        
+        y_mat_idx=ceil(y_mat/cell_h);        
 end
 
-% Nx_tot=numel(unique(x_mat_idx));
-% Ny_tot=numel(unique(x_mat_idx));
 
-y0=min(y_mat_idx(~isinf(y_mat_idx)&Mask_reg))-1;
-x0=min(x_mat_idx(Mask_reg))-1;
+y0=min(y_mat_idx(~isinf(y_mat_idx)))-1;
+x0=min(x_mat_idx(:))-1;
 
 y_mat_idx=y_mat_idx-y0;
 x_mat_idx=x_mat_idx-x0;
 
 Sv_reg_lin(~Mask_reg_min_bot)=nan;
 
-N_x=(max(x_mat_idx(Mask_reg))-min(x_mat_idx(Mask_reg)))+1;
-N_y=(max(y_mat_idx(Mask_reg))-min(y_mat_idx(Mask_reg)))+1;
+N_x=(max(x_mat_idx(:))-min(x_mat_idx(:)))+1;
+N_y=(max(y_mat_idx(:))-min(y_mat_idx(:)))+1;
 
 output.nb_samples=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Mask_reg_min_bot(Mask_reg_min_bot),[N_y N_x],@sum,0);
 
@@ -382,15 +380,15 @@ Mask_reg_sub=(output.nb_samples==0);
 
 output.nb_samples(Mask_reg_sub)=NaN;
 
-eint_sparse = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Sv_reg_lin(Mask_reg_min_bot),size(Mask_reg_sub),@sum,NaN)*dr;
+eint_sparse = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Sv_reg_lin(Mask_reg_min_bot),size(Mask_reg_sub),@sum,0)*dr;
 
 output.eint=eint_sparse;
 
-output.Slice_Idx=accumarray(x_mat_idx(1,idx_x)',slice_idx(idx_x),[],@nanmin,NaN)';
-output.Ping_S=accumarray(x_mat_idx(1,idx_x)',sub_pings(idx_x),[],@nanmin,NaN)';
-output.Ping_E=accumarray(x_mat_idx(1,idx_x)',sub_pings(idx_x),[],@nanmax,NaN)';
+output.Slice_Idx=accumarray(x_mat_idx(1,:)',slice_idx(:),[N_x 1],@nanmin,NaN)';
+output.Ping_S=accumarray(x_mat_idx(1,:)',sub_pings(:),[N_x 1],@nanmin,NaN)';
+output.Ping_E=accumarray(x_mat_idx(1,:)',sub_pings(:),[N_x 1],@nanmax,NaN)';
 
-output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,idx_x)',(sub_bad_trans_vec(idx_x))==0,[],@nansum),1,N_y)';
+output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,:)',(sub_bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
 
 output.Nb_good_pings_esp2=output.Nb_good_pings;
 output.Nb_good_pings_esp2(Mask_reg_sub)=NaN;
@@ -429,17 +427,17 @@ output.Range_ref_max(Mask_reg_sub)=NaN;
 output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
 output.Thickness_mean(Mask_reg_sub)=NaN;
 
-output.Dist_S=accumarray(x_mat_idx(1,idx_x)',sub_dist(idx_x),[],@nanmin,nan)';
-output.Dist_E=accumarray(x_mat_idx(1,idx_x)',sub_dist(idx_x),[],@nanmax,nan)';
+output.Dist_S=accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
+output.Dist_E=accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';
 
-output.Time_S=accumarray(x_mat_idx(1,idx_x)',sub_time(idx_x),[],@nanmin,nan)';
-output.Time_E=accumarray(x_mat_idx(1,idx_x)',sub_time(idx_x),[],@nanmax,nan');
+output.Time_S=accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,nan)';
+output.Time_E=accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,nan');
 
-output.Lat_S=accumarray(x_mat_idx(1,idx_x)',sub_lat(idx_x),[],@nanmin,nan)';
-output.Lon_S=accumarray(x_mat_idx(1,idx_x)',sub_lon(idx_x),[],@nanmin,nan)';
+output.Lat_S=accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmin,nan)';
+output.Lon_S=accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
 
-output.Lat_E=accumarray(x_mat_idx(1,idx_x)',sub_lat(idx_x),[],@nanmax,nan)';
-output.Lon_E=accumarray(x_mat_idx(1,idx_x)',sub_lon(idx_x),[],@nanmax,nan)';
+output.Lat_E=accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmax,nan)';
+output.Lon_E=accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmax,nan)';
 
 output.Sv_mean_lin_esp2=eint_sparse./(output.Nb_good_pings_esp2.*output.Thickness_esp2);
 output.Sv_mean_lin=eint_sparse./output.nb_samples/dr;

@@ -33,6 +33,10 @@ end
 if ~isempty(output_2D_bot)
     plot(ax,output_2D_bot.Time_S,10*log10(nansum(output_2D_bot.eint./output_2D_bot.Nb_good_pings_esp2)),'r');
 end
+
+if ~isempty(output_2D_bot)&&~isempty(output_2D_surf)
+     plot(ax,output_2D_bot.Time_S,10*log10(nansum(output_2D_bot.eint./output_2D_bot.Nb_good_pings_esp2)+nansum(output_2D_surf.eint./output_2D_surf.Nb_good_pings_esp2)),'color',[0 0.8 0]);
+end
 % profile off;
 % profile viewer;
 %plot(ax,(output_2D_surf_old.cell_time_start),10*log10(nansum(output_2D_surf_old.cell_abscf)),'g');
