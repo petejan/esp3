@@ -354,12 +354,12 @@ end
     % idx_x=(sum(Mask_reg)>0);
     
     x_mat_idx=floor(x_mat/cell_w);
-    slice_idx=ceil(x/cell_w);
-    slice_idx=slice_idx-slice_idx(1)+1;
+    slice_idx=floor(x/cell_w);
+    slice_idx=slice_idx-slice_idx(1);
     
     switch region.Reference
         case {'Bottom' 'Line'}
-            y_mat_idx=floor(y_mat/cell_h);
+            y_mat_idx=floor(y_mat/cell_h)+1;
         otherwise
             y_mat_idx=ceil(y_mat/cell_h);
     end

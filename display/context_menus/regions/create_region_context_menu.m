@@ -139,7 +139,7 @@ for i=1:n
 end
 
 
-for i=1:numel(uniquev)
+for i=1:size(uniquev,1)
 
     output_reg_1=output_reg{uniquev(i,1)};
     output_reg_2=output_reg{uniquev(i,2)};
@@ -180,6 +180,7 @@ idx_freq=layer.find_freq_idx(curr_disp.Freq);
 trans_obj=layer.get_trans(curr_disp.Freq);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 layer.copy_region_across(idx_freq,reg_curr,[]);
+
 end
 
 function reg_integrated_callback(~,~,ID,main_figure)

@@ -68,6 +68,7 @@ set(axes_panel_comp.main_axes,'ylim',[y_lim_min y_lim_max]);
 update_mini_ax(main_figure,1);
 curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
 
+display_regions(main_figure,'both');
 display_bottom(main_figure);
 display_tracks(main_figure);
 display_lines(main_figure);
