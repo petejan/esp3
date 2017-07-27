@@ -70,7 +70,7 @@ if isempty(reg)
 end
 
 if ~isempty(~isnan([reg(:).id]))
-    idx_reg=trans_obj.find_regions_ID([reg(:).id]);
+    idx_reg=trans_obj.find_regions_Unique_ID([reg(:).id]);
 else
     idx_reg=[];
 end
@@ -164,7 +164,7 @@ if p.Results.Shadow_zone
     if ~isempty(output_shadow_reg)
         
         eint_sh = nansum(output_shadow_reg.eint,1);%sum up all abcsf per vertical slice
-        nb_pings_sh=nanmax(output_shadow_reg.Nb_good_pings_esp2,1);
+        nb_pings_sh=nanmax(output_shadow_reg.Nb_good_pings_esp2,[],1);
         att=zeros(1,length(eint_sh));
         switch Slice_units
             case 'pings'
@@ -180,8 +180,8 @@ if p.Results.Shadow_zone
             if~any(ix)
                 continue;
             end
-            shadow_zone_mean_height(k)=nanmean(shadow_height_est(nanmin(output_shadow_reg.Ping_S(ix)):nanmax(output_shadow_reg.Ping_E(ix))));
-            shadow_zone_slice_abscf(k) = (shadow_zone_slice_abscf(k)+nansum(eint_sh(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k)/nansum(nb_pings_sh(ix)));
+            shadow_zone_mean_height(k)=nanmean(shadow_height_est(output_shadow_reg.Ping_S(ix):output_shadow_reg.Ping_E(ix)));
+            shadow_zone_slice_abscf(k) = shadow_zone_slice_abscf(k)+nansum(eint_sh(ix))/nansum(nb_pings_sh(ix))/p.Results.Shadow_zone_height*shadow_zone_mean_height(k);
         end
     end
 end
@@ -201,7 +201,7 @@ for iuu=1:length(idx_reg)
     end
     
     i_reg=i_reg+1;
-    reg_param=reg(find([reg(:).id]==reg_curr.ID,1));
+    reg_param=reg(find([reg(:).id]==reg_curr.Unique_ID,1));
     
     regCellInt=trans_obj.integrate_region_v2(reg_curr,'vertExtend',[reg_param.startDepth reg_param.finishDepth],'horiExtend',[p.Results.StartTime p.Results.EndTime],...
         'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
@@ -216,10 +216,11 @@ for iuu=1:length(idx_reg)
         continue;
     end
     regs{i_reg}=reg_curr;
-
-    eint = nansum(regCellInt.eint,1);%sum up all abcsf per vertical slice
-    nb_good_pings=nanmax(regCellInt.Nb_good_pings_esp2);
+    nb_good_pings=nanmax(regCellInt.Nb_good_pings_esp2,[],1);
+    eint = nansum(regCellInt.eint);%sum up all abcsf per vertical slice
+    
     att=zeros(1,length(eint));
+    
     switch Slice_units
         case 'pings'
             t_start=regCellInt.Ping_S;
@@ -242,7 +243,7 @@ output.slice_abscf=slice_abscf;
 output.slice_size=Slice_w;
 output.num_slices=numSlices;
 output.shadow_zone_slice_abscf=shadow_zone_slice_abscf;
-output.shadow_zone_mean_height=shadow_zone_mean_height;
+
 
 if ~isempty(trans_obj.GPSDataPing.Lat)
     output.slice_lat=trans_obj.GPSDataPing.Lat(idx_M)';
@@ -255,8 +256,7 @@ else
     output.slice_lat=nan(size(nb_good_pings));
     output.slice_lon=nan(size(nb_good_pings));
     output.slice_lat_s=nan(size(nb_good_pings));
-    output.slice_lon_s=nan(size(nb_good_pings));
-    
+    output.slice_lon_s=nan(size(nb_good_pings));   
     output.slice_lat_e=nan(size(nb_good_pings));
     output.slice_lon_e=nan(size(nb_good_pings));
 end
@@ -265,4 +265,5 @@ output.slice_time_start=trans_obj.Time(idx_S);
 output.slice_time_end=trans_obj.Time(idx_E);
 output.slice_nb_tracks=nb_tracks;
 output.slice_nb_st=nb_st;
+
 end

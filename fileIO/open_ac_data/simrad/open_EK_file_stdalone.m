@@ -266,7 +266,7 @@ if ~isequal(Filename_cell, 0)
             
             if exist(gps_file,'file')==2&&~exist(att_file,'file')
                 fprintf('Using _gps.csv file as GPS input for file %s\n',Filename);
-                idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA|VTG)')));
+                idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|VTG)')));
                 [~,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
                 gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
             elseif ~exist(gps_file,'file')&&exist(att_file,'file')==2
@@ -288,7 +288,7 @@ if ~isequal(Filename_cell, 0)
                     cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
                     cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
                 [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
-                idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|ZDA)'))),find(idx_NMEA_gps(idx_GPS,:)));
+                idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW)'))),find(idx_NMEA_gps(idx_GPS,:)));
                 [gps_data_tmp,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA); 
             end
             

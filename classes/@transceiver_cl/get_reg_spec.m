@@ -4,7 +4,7 @@ reg=struct('name','','id',[],'startDepth',0,'finishDepth',inf,'startSlice',0,'fi
 
 for iuu=1:length(idx_reg)
     reg(iuu).name = ['Region ' num2str(trans_obj.Regions(idx_reg(iuu)).ID)];
-    reg(iuu).id=trans_obj.Regions(idx_reg(iuu)).ID;
+    reg(iuu).id=trans_obj.Regions(idx_reg(iuu)).Unique_ID;
     reg(iuu).startDepth=0;
     reg(iuu).finishDepth=inf;
     reg(iuu).startSlice=0;

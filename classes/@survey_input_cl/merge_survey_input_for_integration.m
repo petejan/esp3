@@ -21,7 +21,11 @@ for i=1:length(trans)
     reg_temp_struct=[reg_temp{idx_ID}];
     
     if ~isempty(reg_temp_struct)
-        [~,idx_tmp]=unique({reg_temp_struct.IDs});
+        if ischar(reg_temp_struct(1).IDs)
+            [~,idx_tmp]=unique({reg_temp_struct.IDs});
+        else
+            [~,idx_tmp]=unique(reg_temp_struct.IDs);
+        end
         idx_keep=union(idx_keep,idx_ID(idx_tmp));
     end
     
@@ -35,8 +39,12 @@ for i=1:length(trans)
     idx_tag=find(cellfun(@(x) isfield(x,'tag'),reg_temp));
     reg_temp_struct=[reg_temp{idx_tag}];
     
-    if ~isempty(reg_temp_struct)
-        [~,idx_tmp]=unique({reg_temp_struct.tag});
+    if ~isempty(reg_temp_struct)        
+        if ischar(reg_temp_struct(1).tag)
+            [~,idx_tmp]=unique({reg_temp_struct.tag});
+        else
+            [~,idx_tmp]=unique(reg_temp_struct.tag);
+        end
         idx_keep=union(idx_keep,idx_tag(idx_tmp));
     end
     

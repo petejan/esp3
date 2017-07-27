@@ -33,8 +33,8 @@ if ~isempty(time_att)
     
     
     for i=1:nb_pings
-        pitch_r(:,i)=resample_data_v2(pitch,60*60*24*time_att,time_mat(:,i),'Type','Angle');
-        roll_r(:,i)=resample_data_v2(roll,60*60*24*time_att,time_mat(:,i),'Type','Angle');
+        pitch_r(:,i)=resample_data_v2(pitch,86400*time_att,time_mat(:,i),'Type','Angle');
+        roll_r(:,i)=resample_data_v2(roll,86400*time_att,time_mat(:,i),'Type','Angle');
     end
     compensation = attCompensation(faBW, psBW, roll_t, pitch_t,roll_r,pitch_r);   
 else

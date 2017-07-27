@@ -72,7 +72,7 @@ for i=1:numel(slice_trans_sum.snapshot)
     rangeStr = sprintf( 'A%d', row_start );
     xlswrite(file,sheet_info,4,rangeStr);
     row_start=row_start+size(sheet_info,1);
-    
+
     if~isempty(sheet_tot)
         rangeStr = sprintf( 'A%d', row_start );
         xlswrite(file,sheet_tot,4,rangeStr);
@@ -113,6 +113,7 @@ for i=1:numel(fields)
     else
         i_tot=i_tot+1;
         idx_tot=union(idx_tot,i);
+        
         
         if ~isempty(strfind(fields{i},'time'))
             curr_f=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),num2cell(curr_f),'UniformOutput',0);

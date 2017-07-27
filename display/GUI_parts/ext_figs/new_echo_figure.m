@@ -20,12 +20,13 @@ addParameter(p,'Visible','on',@ischar);
 addParameter(p,'Tag','',@ischar);
 addParameter(p,'Cmap','',@ischar);
 addParameter(p,'Keep_old',0,@isnumeric);
+
 parse(p,main_figure,varargin{:});
 
 if p.Results.Keep_old==0
     hfigs=clean_echo_figures(main_figure,'Tag',p.Results.Tag);
 else
-     hfigs=getappdata(main_figure,'ExternalFigures');
+    hfigs=getappdata(main_figure,'ExternalFigures');
 end
      
     

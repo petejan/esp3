@@ -130,11 +130,10 @@ for isn = 1:length(snapshots)
                 end
                 show_status_bar(gui_main_handle);
                 disp_str=sprintf('Loading Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
+                disp(disp_str);
                 if ~isempty(load_bar_comp)
                     set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_trans_tot,'Value',itr_tot);
                     load_bar_comp.status_bar.setText(disp_str);
-                else
-                disp(disp_str);
                 end
                 if ~iscell(filenames_cell)
                     filenames_cell = {filenames_cell};
@@ -449,6 +448,7 @@ for isn = 1:length(snapshots)
                                             'Cell_w_unit',regions_wc{irewc}.Cell_w_unit,...
                                             'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                         reg_wc.Remove_ST = options.Remove_ST;
+                                        
                                         layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
                                     end
                             end

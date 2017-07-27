@@ -129,19 +129,21 @@ for i = 1:length(Filenames)
         continue;
     end
     
-    try
-        surv_obj.generate_output(layers_new);
-    catch err
-        disp(err.message);
-        warning('Could not process survey described in file %s\n',Filenames{i});
-%         if ~isdeployed
-%             rethrow(err)
-%         end
-    end
+
     
     layers_out = [layers_old layers_new];
     layers_out = reorder_layers_time(layers_out);
     
+
+    
+     try
+        surv_obj.generate_output_v2(layers_new);
+    catch err
+        disp(err.message);
+        warning('Could not process survey described in file %s \n',Filenames{i});
+    end
+    
+   
     try
         if isempty(gui_main_handle)
             [PathToFile,~,~] = fileparts(layers_new(end).Filename{1});
@@ -167,6 +169,7 @@ for i = 1:length(Filenames)
             rethrow(err)
         end
     end
+    
     
 end
 set(enabled_obj(isvalid(enabled_obj)),'Enable','on');

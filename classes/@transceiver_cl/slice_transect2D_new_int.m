@@ -1,4 +1,4 @@
-function [output_surf,output_bot,regs,regCellInt]=slice_transect2D_new_int(trans_obj,varargin)
+function [output_surf,output_bot,regs,regCellInt,output_shadow_reg,shadow_height_est]=slice_transect2D_new_int(trans_obj,varargin)
 
 p = inputParser;
 
@@ -22,35 +22,14 @@ Slice_w=p.Results.Slice_w;
 Slice_w_units=p.Results.Slice_w_units;
 Slice_h=p.Results.Slice_h;
 
-
-if ~isempty(p.Results.idx_regs)
-    idx_reg=trans_obj.find_regions_Unique_ID(p.Results.idx_regs);
-else
-    idx_reg=1:numel(trans_obj.Regions);
-end
+idx_reg=p.Results.idx_regs;
 
 idx_reg_bot=find_regions_ref(trans_obj,'Bottom');
 idx_reg_surf=find_regions_ref(trans_obj,'Surface');
 
+idx_reg_bot=intersect(idx_reg_bot,idx_reg);
+idx_reg_surf=intersect(idx_reg_surf,idx_reg);
 
-if isempty(idx_reg_bot)
-    output_bot=[];
-end
-
-if isempty(idx_reg_surf)
-    output_surf=[];
-end
-
-if isempty(idx_reg_bot)&&isempty(idx_reg_surf)
-    regs=[];
-    regCellInt={};
-    return;
-end
-
-if ~isempty(idx_reg)
-    idx_reg_bot=intersect(idx_reg_bot,idx_reg);
-    idx_reg_surf=intersect(idx_reg_surf,idx_reg);
-end
 
 if p.Results.StartTime==0
     st=trans_obj.Time(1);
@@ -84,25 +63,55 @@ reg_wc_bot=trans_obj.create_WC_region(...
     'Cell_w_unit',Slice_w_units,...
     'Cell_h_unit','meters');
 
-if ~isempty(idx_reg_surf)
-    output_surf=trans_obj.integrate_region_v2(reg_wc_surf,'horiExtend',[st et],'idx_regs',idx_reg_surf,'intersect_only',1,'denoised'...
-        ,p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
-end
+
+output_surf=trans_obj.integrate_region_v2(reg_wc_surf,'horiExtend',[st et],'idx_regs',idx_reg_surf,'select_reg','selected','intersect_only',1,'denoised'...
+    ,p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1);
+
 if ~isempty(idx_reg_bot)
-    output_bot=trans_obj.integrate_region_v2(reg_wc_bot,'horiExtend',[st et],'idx_regs',idx_reg_bot,'intersect_only',1,'denoised',...
-        p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
+    output_bot=trans_obj.integrate_region_v2(reg_wc_bot,'horiExtend',[st et],'idx_regs',idx_reg_bot,'select_reg','selected','intersect_only',1,'denoised',...
+        p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1);
+else
+    output_bot=[];
 end
-regCellInt=cell(1,length(idx_reg));
+
+idx_reg_out=union(idx_reg_surf,idx_reg_bot);
+
+regCellInt=cell(1,length(idx_reg_out));
+regs=cell(1,length(idx_reg_out));
 
 
 if p.Results.RegInt
-    for i=1:length(idx_reg)
-        regs(i)=trans_obj.Regions(idx_reg(i));
-        regCellInt{i}=trans_obj.integrate_region_v2(trans_obj.Regions(idx_reg(i)));
+    for i=1:length(idx_reg_out)
+        regs{i}=trans_obj.Regions(idx_reg_out(i));
+        regCellInt{i}=trans_obj.integrate_region_v2(trans_obj.Regions(idx_reg_out(i)),...
+        'horiExtend',[st et],...
+        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
     end
 else
-    regs=[];
+    regs={};
     regCellInt={};
 end
+
+if~isempty(idx_reg_out)&&p.Results.Shadow_zone>0
+    [output_shadow_reg,~,shadow_height_est_temp]=trans_obj.estimate_shadow_zone('Shadow_zone_height',p.Results.Shadow_zone_height,...
+        'StartTime',st,'EndTime',et,...
+        'Slice_w',Slice_w,'Slice_units',Slice_w_units,...
+        'Denoised',p.Results.Denoised,...
+        'Motion_correction',p.Results.Motion_correction,...
+        'idx_regs',idx_reg_out);
+    shadow_height_est=zeros(1,size(output_shadow_reg.eint,2));
+    
+    for k=1:length(shadow_height_est)
+        if ~isnan(output_shadow_reg.Ping_S(k))
+            shadow_height_est(k)=nanmean(shadow_height_est_temp(output_shadow_reg.Ping_S(k):output_shadow_reg.Ping_E(k)));
+        end
+    end
+    
+else
+    output_shadow_reg=[];
+    shadow_height_est=[];
+end
+
+
 
 end

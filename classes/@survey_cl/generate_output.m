@@ -254,8 +254,16 @@ for isn=1:length(snaps)
             switch reg_curr.Reference
                 case 'Surface';
                     refType = 's';
+                    if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmin(regCellInt.Ping_S(:)))
                     start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmin(regCellInt.Ping_S(:)));
-                    finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmax(regCellInt.Ping_S(:)));
+                    else
+                        start_d=0;
+                    end
+                    if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmax(regCellInt.Ping_E(:)))
+                        finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmax(regCellInt.Ping_S(:)));
+                    else
+                        finish_d=0;
+                    end
                 case 'Bottom';
                     refType = 'b';
                     start_d = 0;
@@ -307,7 +315,7 @@ for isn=1:length(snaps)
             %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
             surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E;
             surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S;
-            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.Lat_S,2);
+            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.eint,2);
             surv_out_obj.regionSumAbscf.transmit_start{i_reg} = regCellInt.Ping_S; % transmit Start vertical slice
             surv_out_obj.regionSumAbscf.latitude{i_reg} = regCellInt.Lat_S; % lat vertical slice
             surv_out_obj.regionSumAbscf.longitude{i_reg} = regCellInt.Lon_S; % lon vertical slice

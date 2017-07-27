@@ -55,8 +55,9 @@ addParameter(p,'denoised',0,@isnumeric);
 addParameter(p,'motion_correction',0,@isnumeric);
 addParameter(p,'intersect_only',0,@isnumeric);
 addParameter(p,'idx_regs',[],@isnumeric);
+addParameter(p,'select_reg','all',@ischar);
 addParameter(p,'keep_bottom',0,@isnumeric);
-
+addParameter(p,'keep_all',0,@isnumeric);
 
 parse(p,trans_obj,region,varargin{:});
 
@@ -72,8 +73,6 @@ if isempty(p.Results.line_obj)
 else
     line_obj=p.Results.line_obj;
 end
-
-
 
 
 idx_pings_tot=region.Idx_pings;
@@ -170,6 +169,7 @@ region.Idx_r=idx_r;
 if isempty(idx_r)||isempty(idx_pings)
     warning('Cannot integrate this region, no data...');
     trans_obj.rm_region_id(region.Unique_ID);
+    output=[];
     return;
 end
 
@@ -188,15 +188,42 @@ if p.Results.intersect_only==1
     Sv_reg_save=Sv_reg;
     Sv_reg=nan(size(Sv_reg));
     
-    if isempty(p.Results.idx_regs)   
-        idx=trans_obj.find_regions_type('Data');
-    else
-        idx=p.Results.idx_regs;
+    switch p.Results.select_reg
+        case 'all'
+            idx=trans_obj.find_regions_type('Data');
+        otherwise
+            idx=p.Results.idx_regs;
     end
-        
+    if~isempty(idx)
+        for i=idx
+            curr_reg=trans_obj.Regions(i);
+            
+            if curr_reg.Unique_ID==region.Unique_ID
+                continue;
+            end
+            
+            idx_r_curr=curr_reg.Idx_r;
+            idx_pings_curr=curr_reg.Idx_pings;
+            [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
+            [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
+            switch curr_reg.Shape
+                case 'Polygon'
+                    Mask_reg=curr_reg.MaskReg;
+                    Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
+                    Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)==0)=NaN;
+                otherwise
+                    Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
+            end
+            
+            Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
+        end
+    end
+end
+
+    idx=trans_obj.find_regions_type('Bad Data');
+    
     for i=idx
         curr_reg=trans_obj.Regions(i);
-        
         if curr_reg.Unique_ID==region.Unique_ID
             continue;
         end
@@ -205,284 +232,262 @@ if p.Results.intersect_only==1
         idx_pings_curr=curr_reg.Idx_pings;
         [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
         [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
+        
         switch curr_reg.Shape
             case 'Polygon'
                 Mask_reg=curr_reg.MaskReg;
-                Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
-                Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)==0)=NaN;
+                Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
+                Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)>0)=NaN;
             otherwise
-                Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
+                Sv_temp=nan(length(idx_r_from_reg),length(idx_pings_from_reg));
+        end
+        Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
+        
+    end
+    
+    IdxBad=find(trans_obj.Bottom.Tag==0);
+    bad_trans_vec=double(trans_obj.Bottom.Tag==0);
+    
+    if region.Remove_ST
+        Mask_reg_st=trans_obj.Mask_from_st();
+        Sv_reg(Mask_reg_st(idx_r,idx_pings))=NaN;
+    end
+    
+    IdxBad_reg=intersect(IdxBad,idx_pings);
+    %IdxGood_reg=intersect(IdxGood,idx_pings);
+    Sv_reg(:,IdxBad_reg-idx_pings(1)+1)=NaN;
+    
+    %% Apply region Mask_reg to data
+    switch region.Shape
+        case 'Polygon'
+            Mask_reg=region.MaskReg(idx_keep_r,idx_keep_x);
+            Sv_reg(Mask_reg==0)=NaN;
+    end
+    
+    Mask_reg=~isnan(Sv_reg);
+    
+    sub_samples=samples(idx_r);
+    sub_pings=pings(idx_pings);
+    sub_r=range(idx_r);
+    sub_line_samples=line_samples(idx_pings);
+    sub_line_r=line_r(idx_pings);
+    sub_dist=dist(idx_pings)';
+    sub_time=time(idx_pings);
+    sub_lat=lat(idx_pings);
+    sub_lon=lon(idx_pings);
+    sub_bot_r=bot_r(idx_pings);
+    sub_bot_sple=bot_sple(idx_pings);
+    sub_bad_trans_vec=bad_trans_vec(idx_pings);
+    
+    switch region.Cell_h_unit
+        case 'samples'
+            y=sub_samples;
+            bot_int=sub_bot_sple;
+            line_int=sub_line_samples;
+        case 'meters'
+            y=sub_r;
+            bot_int=sub_bot_r;
+            line_int=sub_line_r;
+    end
+    
+    switch region.Cell_w_unit
+        case 'pings'
+            x=sub_pings;
+        case 'meters'
+            x=sub_dist;
+    end
+    
+    [x_mat,y_mat]=meshgrid(x,y);
+    [~,sub_r_mat]=meshgrid(sub_bot_r,sub_r);
+    [~,sub_samples_mat]=meshgrid(sub_bot_r,sub_samples);
+    
+    switch region.Reference
+        case 'Surface'
+            line_ref=zeros(size(x));
+        case 'Bottom'
+            line_ref=bot_int;
+            Mask_reg(:,(bot_int==inf))=0;
+        case 'Line'
+            line_ref=line_int;
+    end
+    
+    [bot_mat,~]=meshgrid(bot_int,sub_r);
+    
+    [line_mat,~]=meshgrid(line_ref,sub_r);
+    line_mat(isnan(line_mat))=0;
+    
+    y_mat_ori=y_mat;
+    y_mat=y_mat-line_mat;
+    
+    switch region.Reference
+        case 'Bottom'
+            idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1)|isinf(y_mat));
+        case 'Line'
+            idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(2));
+        otherwise
+            idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1));
+    end
+    
+    Mask_reg(idx_rem_y)=0;
+    
+    % if~any(Mask_reg(:))
+    %     output=[];
+    %     return;
+    % end
+    
+    cell_w=region.Cell_w;
+    cell_h=region.Cell_h;
+    
+    Sv_reg_lin=10.^(Sv_reg/10);
+    Mask_reg_min_bot=Mask_reg;
+    
+    if p.Results.keep_bottom==0
+        Mask_reg_min_bot(y_mat_ori>=bot_mat)=0;
+        Mask_reg_min_bot(isnan(Sv_reg_lin))=0;
+    end
+    
+    % if ~any(Mask_reg_min_bot)
+    %     output=[];
+    %     return;
+    % end
+    
+    % idx_x=(sum(Mask_reg)>0);
+    
+    x_mat_idx=floor(x_mat/cell_w);
+    slice_idx=ceil(x/cell_w);
+    slice_idx=slice_idx-slice_idx(1)+1;
+    
+    switch region.Reference
+        case {'Bottom' 'Line'}
+            y_mat_idx=floor(y_mat/cell_h);
+        otherwise
+            y_mat_idx=ceil(y_mat/cell_h);
+    end
+    
+    
+    y0=min(y_mat_idx(~isinf(y_mat_idx)));
+    x0=min(x_mat_idx(:));
+    
+    y_mat_idx=y_mat_idx-y0+1;
+    x_mat_idx=x_mat_idx-x0+1;
+    
+    Sv_reg_lin(~Mask_reg_min_bot)=nan;
+    
+    N_x=max(x_mat_idx(:));
+    N_y=max(y_mat_idx(:));
+    
+    output.nb_samples=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Mask_reg_min_bot(Mask_reg_min_bot),[N_y N_x],@sum,0);
+    
+    Mask_reg_sub=(output.nb_samples==0);
+    
+    output.nb_samples(Mask_reg_sub)=NaN;
+    
+    eint_sparse = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Sv_reg_lin(Mask_reg_min_bot),size(Mask_reg_sub),@sum,0)*dr;
+    
+    output.eint=eint_sparse;
+    
+    output.Slice_Idx=accumarray(x_mat_idx(1,:)',slice_idx(:),[N_x 1],@nanmin,NaN)';
+    output.Ping_S=accumarray(x_mat_idx(1,:)',sub_pings(:),[N_x 1],@nanmin,NaN)';
+    output.Ping_E=accumarray(x_mat_idx(1,:)',sub_pings(:),[N_x 1],@nanmax,NaN)';
+    
+    output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,:)',(sub_bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
+    
+    output.Nb_good_pings_esp2=output.Nb_good_pings;
+    output.Nb_good_pings_esp2(Mask_reg_sub)=NaN;
+    
+    output.Sample_S=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
+    output.Sample_E=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
+    
+    height_se=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@(x) abs(max(x)-min(x)),NaN);
+    
+    switch region.Cell_h_unit
+        case 'samples'
+            output.Thickness_esp2=height_se*dr+dr;
+        case 'meters'
+            output.Thickness_esp2=height_se+dr;
+    end
+    output.Thickness_esp2(Mask_reg_sub)=NaN;
+    
+    output.Layer_depth_min=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@min,NaN);
+    output.Layer_depth_max=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@max,NaN);
+    
+    output.Range_mean=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@mean,NaN);
+    output.Range_mean(Mask_reg_sub)=NaN;
+    
+    switch region.Cell_h_unit
+        case 'samples'
+            output.Range_ref_min=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN)*dr;
+            output.Range_ref_max=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN)*dr;
+        case 'meters'
+            output.Range_ref_min=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
+            output.Range_ref_max=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
+    end
+    
+    output.Range_ref_min(Mask_reg_sub)=NaN;
+    output.Range_ref_max(Mask_reg_sub)=NaN;
+    
+    output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
+    output.Thickness_mean(Mask_reg_sub)=NaN;
+    
+    output.Dist_S=accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
+    output.Dist_E=accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';
+    
+    output.Time_S=accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,0)';
+    output.Time_E=accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,0)';
+    
+    output.Lat_S=accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmin,nan)';
+    output.Lon_S=accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
+    
+    output.Lat_E=accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmax,nan)';
+    output.Lon_E=accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmax,nan)';
+    
+    output.Sv_mean_lin_esp2=eint_sparse./(output.Nb_good_pings_esp2.*output.Thickness_esp2);
+    output.Sv_mean_lin=eint_sparse./output.nb_samples/dr;
+    
+    output.PRC=output.nb_samples*dr./(output.Nb_good_pings.*output.Thickness_esp2)*100;
+    
+    idx_nan=(output.Sv_mean_lin_esp2==0);
+    output.Sv_mean_lin_esp2(idx_nan)=nan;
+    
+    output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
+    output.NASC=4*pi*1852^2*output.ABC;
+    output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
+    
+    if p.Results.keep_all==0
+        fields=fieldnames(output);
+        idx_rem=[];
+        
+        idx_zeros_start=find(nansum(output.Sv_mean_lin,2)>0,1);
+        
+        if idx_zeros_start>1
+            idx_rem=union(idx_rem,1:idx_zeros_start-1);
         end
         
-        Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
-    end
-end
-
-idx=trans_obj.find_regions_type('Bad Data');
-
-for i=idx
-    curr_reg=trans_obj.Regions(i);
-    if curr_reg.Unique_ID==region.Unique_ID
-        continue;
+        idx_zeros_end=find(flipud(nansum(output.Sv_mean_lin,2)>0),1);
+        if idx_zeros_end>1
+            idx_rem=union(idx_rem,N_y-((1:idx_zeros_end-1)-1));
+        end
+        
+        for ifi=1:length(fields)
+            if size(output.(fields{ifi}),1)==N_y
+                output.(fields{ifi})(idx_rem,:)=[];
+            end
+        end
+        
+        idx_rem=[];
+        idx_zeros_start=find(nansum(output.Sv_mean_lin,1)>0,1);
+        if idx_zeros_start>1
+            idx_rem=union(idx_rem,1:idx_zeros_start-1);
+        end
+        
+        idx_zeros_end=find(fliplr(nansum(output.Sv_mean_lin,2)>0),1);
+        if idx_zeros_end>1
+            idx_rem=union(idx_rem,N_x-((1:idx_zeros_end-1)-1));
+        end
+        
+        for ifi=1:length(fields)
+            output.(fields{ifi})(:,idx_rem)=[];
+        end
     end
     
-    idx_r_curr=curr_reg.Idx_r;
-    idx_pings_curr=curr_reg.Idx_pings;
-    [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
-    [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
-    
-    switch curr_reg.Shape
-        case 'Polygon'
-            Mask_reg=curr_reg.MaskReg;
-            Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
-            Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)>0)=NaN;
-        otherwise
-            Sv_temp=nan(length(idx_r_from_reg),length(idx_pings_from_reg));
-    end
-    Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
-    
-end
-
-IdxBad=find(trans_obj.Bottom.Tag==0);
-bad_trans_vec=double(trans_obj.Bottom.Tag==0);
-
-if region.Remove_ST
-    Mask_reg_st=trans_obj.Mask_from_st();
-    Sv_reg(Mask_reg_st(idx_r,idx_pings))=NaN;
-end
-
-IdxBad_reg=intersect(IdxBad,idx_pings);
-%IdxGood_reg=intersect(IdxGood,idx_pings);
-Sv_reg(:,IdxBad_reg-idx_pings(1)+1)=NaN;
-
-%% Apply region Mask_reg to data
-switch region.Shape
-    case 'Polygon'
-        Mask_reg=region.MaskReg(idx_keep_r,idx_keep_x);
-        Sv_reg(Mask_reg==0)=NaN;
-end
-
-Mask_reg=~isnan(Sv_reg);
-
-sub_samples=samples(idx_r);
-sub_pings=pings(idx_pings);
-sub_r=range(idx_r);
-sub_line_samples=line_samples(idx_pings);
-sub_line_r=line_r(idx_pings);
-sub_dist=dist(idx_pings)';
-sub_time=time(idx_pings);
-sub_lat=lat(idx_pings);
-sub_lon=lon(idx_pings);
-sub_bot_r=bot_r(idx_pings);
-sub_bot_sple=bot_sple(idx_pings);
-sub_bad_trans_vec=bad_trans_vec(idx_pings);
-
-switch region.Cell_h_unit
-    case 'samples'
-        y=sub_samples;
-        bot_int=sub_bot_sple;
-        line_int=sub_line_samples;
-    case 'meters'
-        y=sub_r;
-        bot_int=sub_bot_r;
-        line_int=sub_line_r;
-end
-
-switch region.Cell_w_unit
-    case 'pings'
-        x=sub_pings;
-    case 'meters'
-        x=sub_dist;
-end
-
-[x_mat,y_mat]=meshgrid(x,y);
-[~,sub_r_mat]=meshgrid(sub_bot_r,sub_r);
-[~,sub_samples_mat]=meshgrid(sub_bot_r,sub_samples);
-
-switch region.Reference
-    case 'Surface'
-        line_ref=zeros(size(x));
-    case 'Bottom'
-        line_ref=bot_int;
-        Mask_reg(:,(bot_int==inf))=0;
-    case 'Line'
-        line_ref=line_int;
-end
-
-[bot_mat,~]=meshgrid(bot_int,sub_r);
-
-[line_mat,~]=meshgrid(line_ref,sub_r);
-line_mat(isnan(line_mat))=0;
-
-y_mat_ori=y_mat;
-y_mat=y_mat-line_mat;
-
-switch region.Reference
-    case 'Bottom'
-        idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1)|isinf(y_mat));
-    case 'Line'
-        idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(2));
-    otherwise
-        idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1));
-end
-
-Mask_reg(idx_rem_y)=0;
-
-if~any(Mask_reg(:))
-    output=[];
-    return;
-end
-
-cell_w=region.Cell_w;
-cell_h=region.Cell_h;
-
-Sv_reg_lin=10.^(Sv_reg/10);
-Mask_reg_min_bot=Mask_reg;
-
-if p.Results.keep_bottom==0
-    Mask_reg_min_bot(y_mat_ori>=bot_mat)=0;
-    Mask_reg_min_bot(isnan(Sv_reg_lin))=0;
-end
-
-if ~any(Mask_reg_min_bot)
-    output=[];
-    return;
-end
-
-% idx_x=(sum(Mask_reg)>0);
-
-x_mat_idx=ceil(x_mat/cell_w);
-slice_idx=ceil(x/cell_w);
-slice_idx=slice_idx-slice_idx(1)+1;
-
-switch region.Reference
-    case {'Bottom' 'Line'}
-        y_mat_idx=ceil(y_mat/cell_h);       
-    otherwise
-        y_mat_idx=ceil(y_mat/cell_h);        
-end
-
-
-y0=min(y_mat_idx(~isinf(y_mat_idx)))-1;
-x0=min(x_mat_idx(:))-1;
-
-y_mat_idx=y_mat_idx-y0;
-x_mat_idx=x_mat_idx-x0;
-
-Sv_reg_lin(~Mask_reg_min_bot)=nan;
-
-N_x=(max(x_mat_idx(:))-min(x_mat_idx(:)))+1;
-N_y=(max(y_mat_idx(:))-min(y_mat_idx(:)))+1;
-
-output.nb_samples=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Mask_reg_min_bot(Mask_reg_min_bot),[N_y N_x],@sum,0);
-
-Mask_reg_sub=(output.nb_samples==0);
-
-output.nb_samples(Mask_reg_sub)=NaN;
-
-eint_sparse = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],Sv_reg_lin(Mask_reg_min_bot),size(Mask_reg_sub),@sum,0)*dr;
-
-output.eint=eint_sparse;
-
-output.Slice_Idx=accumarray(x_mat_idx(1,:)',slice_idx(:),[N_x 1],@nanmin,NaN)';
-output.Ping_S=accumarray(x_mat_idx(1,:)',sub_pings(:),[N_x 1],@nanmin,NaN)';
-output.Ping_E=accumarray(x_mat_idx(1,:)',sub_pings(:),[N_x 1],@nanmax,NaN)';
-
-output.Nb_good_pings=repmat(accumarray(x_mat_idx(1,:)',(sub_bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
-
-output.Nb_good_pings_esp2=output.Nb_good_pings;
-output.Nb_good_pings_esp2(Mask_reg_sub)=NaN;
-
-output.Sample_S=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
-output.Sample_E=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
-
-height_se=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@(x) abs(max(x)-min(x)),NaN);
-
-switch region.Cell_h_unit
-    case 'samples'
-        output.Thickness_esp2=height_se*dr+dr;
-    case 'meters'
-        output.Thickness_esp2=height_se+dr;
-end
-output.Thickness_esp2(Mask_reg_sub)=NaN;
-
-output.Layer_depth_min=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@min,NaN);
-output.Layer_depth_max=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@max,NaN);
-
-output.Range_mean=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@mean,NaN);
-output.Range_mean(Mask_reg_sub)=NaN;
-
-switch region.Cell_h_unit
-    case 'samples'
-        output.Range_ref_min=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN)*dr;
-        output.Range_ref_max=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN)*dr;
-    case 'meters'
-        output.Range_ref_min=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
-        output.Range_ref_max=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
-end
-
-output.Range_ref_min(Mask_reg_sub)=NaN;
-output.Range_ref_max(Mask_reg_sub)=NaN;
-
-output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
-output.Thickness_mean(Mask_reg_sub)=NaN;
-
-output.Dist_S=accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
-output.Dist_E=accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';
-
-output.Time_S=accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,nan)';
-output.Time_E=accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,nan');
-
-output.Lat_S=accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmin,nan)';
-output.Lon_S=accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
-
-output.Lat_E=accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmax,nan)';
-output.Lon_E=accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmax,nan)';
-
-output.Sv_mean_lin_esp2=eint_sparse./(output.Nb_good_pings_esp2.*output.Thickness_esp2);
-output.Sv_mean_lin=eint_sparse./output.nb_samples/dr;
-
-output.PRC=output.nb_samples*dr./(output.Nb_good_pings.*output.Thickness_esp2)*100;
-
-idx_nan=(output.Sv_mean_lin_esp2==0);
-output.Sv_mean_lin_esp2(idx_nan)=nan;
-
-output.ABC=output.Thickness_mean.*output.Sv_mean_lin;
-output.NASC=4*pi*1852^2*output.ABC;
-output.Lon_S(output.Lon_S>180)=output.Lon_S(output.Lon_S>180)-360;
-
-% fields=fieldnames(output);
-% idx_rem=[];
-% 
-% idx_zeros_start=find(nansum(output.Sv_mean_lin,2)>0,1);
-% 
-% if idx_zeros_start>1
-%     idx_rem=union(idx_rem,1:idx_zeros_start-1);
-% end
-% 
-% idx_zeros_end=find(flipud(nansum(output.Sv_mean_lin,2)>0),1);
-% if idx_zeros_end>1
-%     idx_rem=union(idx_rem,N_y-((1:idx_zeros_end-1)-1));
-% end
-% 
-% for ifi=1:length(fields)
-%     output.(fields{ifi})(idx_rem,:)=[];
-% end
-% 
-% idx_rem=[];
-% idx_zeros_start=find(nansum(output.Sv_mean_lin,1)>0,1);
-% if idx_zeros_start>1
-%     idx_rem=union(idx_rem,1:idx_zeros_start-1);
-% end
-% 
-% idx_zeros_end=find(fliplr(nansum(output.Sv_mean_lin,2)>0),1);
-% if idx_zeros_end>1
-%     idx_rem=union(idx_rem,N_x-((1:idx_zeros_end-1)-1));
-% end
-% 
-% for ifi=1:length(fields)
-%     output.(fields{ifi})(:,idx_rem)=[];
-% end
-% 
-
 end

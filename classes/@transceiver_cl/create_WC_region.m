@@ -47,8 +47,8 @@ time_t=trans_obj.Params.Time();
 
 idx_pings=find(time_t>=p.Results.t_min&time_t<=p.Results.t_max);
 
-switch p.Results.Ref
-    case 'Surface'
+switch lower(p.Results.Ref)
+    case 'surface'
         name='WC';
         [~,idx_r_min]=nanmin(abs(ydata-p.Results.y_min));
         idxBad=trans_obj.Bottom.Tag==0;
@@ -65,7 +65,7 @@ switch p.Results.Ref
             idx_r_max=nanmin(idx_r_max,idx_r_y_max);
         end
         mask=[]; idx_r=idx_r_min:idx_r_max;
-    case 'Bottom' 
+    case 'bottom' 
         name='WC';
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
@@ -77,10 +77,6 @@ switch p.Results.Ref
         idx_r=find(nansum(mask,2)>0,1,'first'):find(nansum(mask,2)>0,1,'last');
         mask=mask(idx_r,:);
 end
-
-
-
-trans_obj.rm_region_name(name);
 
 
  

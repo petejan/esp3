@@ -59,6 +59,7 @@ addParameter(p,'Motion_correction',0,@isnumeric);
 addParameter(p,'Denoised',0,@isnumeric);
 addParameter(p,'Shadow_zone_height',10,@isnumeric);
 addParameter(p,'DispReg',0);
+addParameter(p,'idx_regs',[]);
 addParameter(p,'intersect_only',1);
 parse(p,trans_obj,varargin{:});
 
@@ -78,7 +79,11 @@ reg_sh = trans_obj.create_WC_region(...
 % end
 
 output_reg = trans_obj.integrate_region_v2(reg_sh,'horiExtend',[p.Results.StartTime p.Results.EndTime],...
-        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'intersect_only',p.Results.intersect_only);
+        'denoised',p.Results.Denoised,...
+        'motion_correction',p.Results.Motion_correction,...
+        'intersect_only',p.Results.intersect_only,...
+        'idx_reg',p.Results.idx_regs,...
+        'select_reg','selected','keep_all',1);
 
 [shadow_height_est,slope_est] = trans_obj.get_shadow_zone_height_est();
 

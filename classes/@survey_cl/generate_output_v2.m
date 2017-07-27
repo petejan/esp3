@@ -51,6 +51,7 @@ surv_in_obj=surv_obj.SurvInput;
 
 vert_slice = surv_in_obj.Options.Vertical_slice_size;
 vert_slice_units = surv_in_obj.Options.Vertical_slice_units;
+horz_slice = surv_in_obj.Options.Horizontal_slice_size;
 
 output=layers.list_layers_survey_data();
 
@@ -227,28 +228,73 @@ for isn=1:length(snaps)
         
         
         if isempty(reg_tot)
-            reg_tot=init_reg;
+            reg_tot=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth',nan,'startSlice',nan,'finishSlice',nan);
         end
         
         if ~isempty(~isnan([reg_tot(:).id]))
-            idx_reg=trans_obj.find_regions_ID([reg_tot(:).id]);
+            idx_reg=trans_obj_tr.find_regions_Unique_ID([reg_tot(:).id]);
         else
             idx_reg=[];
         end
-
        
-  
-       [output_2D_surf,output_2D_bot,regs,regCellInt_tot]=trans_obj.slice_transect2D_new_int('Slice_w',vert_slice,'Slice_units',vert_slice_units,...
+        
+        [output_2D_surf,output_2D_bot,regs,regCellInt_tot,output_2D_sh,shadow_height_est]=trans_obj_tr.slice_transect2D_new_int(...
+            'Slice_w',vert_slice,'Slice_w_units',vert_slice_units,...
+            'Slice_h',horz_slice,...
             'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),...
             'Denoised',surv_in_obj.Options.Denoised,...
             'Motion_correction',surv_in_obj.Options.Motion_correction,...
             'Shadow_zone',surv_in_obj.Options.Shadow_zone,...
             'Shadow_zone_height',surv_in_obj.Options.Shadow_zone_height,...
-            'RegInt',1,'idx_reg',idx_reg);
+            'RegInt',1,...
+            'idx_regs',idx_reg);
+        num_slice=size(output_2D_surf.eint,2);
   
+        surf_slice_int=nansum(output_2D_surf.eint);
+        good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
+        
+        if ~isempty(output_2D_bot)
+            bot_slice_int=nansum(output_2D_bot.eint);
+            good_pings_bot=nanmax(output_2D_bot.Nb_good_pings_esp2,[],1);
+        else
+            bot_slice_int=zeros(1,num_slice);
+            good_pings_bot=[];
+        end
+        
+        if ~isempty(output_2D_sh)
+            sh_slice_int=nansum(output_2D_sh.eint).*shadow_height_est/surv_in_obj.Options.Shadow_zone_height;
+            good_pings_sh=nanmax(output_2D_sh.Nb_good_pings_esp2,[],1);
+        else
+            sh_slice_int=zeros(1,num_slice);
+            good_pings_sh=[];
+        end
+        
+        good_pings=nanmax([good_pings_sh;good_pings_bot;good_pings_surf],[],1);     
+        
+
+        sliced_output.slice_abscf=(surf_slice_int+bot_slice_int)./good_pings;
+        sliced_output.slice_abscf(isnan(sliced_output.slice_abscf))=0;
+        sliced_output.slice_size=vert_slice;
+        sliced_output.num_slices=num_slice;
+        sliced_output.shadow_zone_slice_abscf=sh_slice_int./good_pings;
+        sliced_output.shadow_zone_slice_abscf(isnan(sliced_output.shadow_zone_slice_abscf))=0;
+        
+        sliced_output.slice_lat=output_2D_surf.Lat_S;
+        sliced_output.slice_lon=output_2D_surf.Lon_S;
+        sliced_output.slice_lat_s=output_2D_surf.Lat_S;
+        sliced_output.slice_lon_s=output_2D_surf.Lon_S;
+        sliced_output.slice_lat_e=output_2D_surf.Lat_E;
+        sliced_output.slice_lon_e=output_2D_surf.Lon_E;
+        
+        sliced_output.slice_time_start=output_2D_surf.Time_S;
+        sliced_output.slice_time_end=output_2D_surf.Time_E;
+        sliced_output.slice_nb_tracks=zeros(size(good_pings));
+        sliced_output.slice_nb_st=zeros(size(good_pings));
+
+            
         Output_echo=[Output_echo sliced_output];
 
-        
+        clear sliced_output;
         for j=1:length(regs)
             
             reg_curr =regs{j};
@@ -256,6 +302,11 @@ for isn=1:length(snaps)
             if isempty(regCellInt)
                continue; 
             end
+            
+            if nansum(nansum(nansum(regCellInt.eint)))==0
+                continue; 
+            end
+            
             i_reg=i_reg+1;
             startPing = regCellInt.Ping_S(1);
             stopPing = regCellInt.Ping_E(end);
@@ -265,9 +316,17 @@ for isn=1:length(snaps)
             
             switch reg_curr.Reference
                 case 'Surface';
-                    refType = 's';
-                    start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmin(regCellInt.Ping_S(:)));
-                    finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmax(regCellInt.Ping_S(:)));
+                      refType = 's';
+                    if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmin(regCellInt.Ping_S(:)))
+                        start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmin(regCellInt.Ping_S(:)));
+                    else
+                        start_d=0;
+                    end
+                    if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmax(regCellInt.Ping_E(:)))
+                        finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmax(regCellInt.Ping_S(:)));
+                    else
+                        finish_d=0;
+                    end
                 case 'Bottom';
                     refType = 'b';
                     start_d = 0;
@@ -317,12 +376,12 @@ for isn=1:length(snaps)
             surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
             
             %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
-            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end,:);
-            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S(1,:);
-            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.Lat_S,2);
-            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = nanmax(regCellInt.Ping_S); % transmit Start vertical slice
-            surv_out_obj.regionSumAbscf.latitude{i_reg} = nanmax(regCellInt.Lat_S); % lat vertical slice
-            surv_out_obj.regionSumAbscf.longitude{i_reg} = nanmax(regCellInt.Lon_S); % lon vertical slice
+            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end);
+            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S(1);
+            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.eint,2);
+            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = regCellInt.Ping_S; % transmit Start vertical slice
+            surv_out_obj.regionSumAbscf.latitude{i_reg} = regCellInt.Lat_S; % lat vertical slice
+            surv_out_obj.regionSumAbscf.longitude{i_reg} = regCellInt.Lon_S; % lon vertical slice
             surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.eint)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
             
             %% Region vbscf (6th Mbs Output Block)
@@ -404,11 +463,7 @@ for isn=1:length(snaps)
     catch err
         disp(err.message);
         warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
-        if ~isdeployed
-            rethrow(err)
-        else
-            continue;
-        end
+        continue;
     end
 end
 

@@ -12,6 +12,10 @@ trans_obj=layer.Transceivers(idx_freq);
 
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 
+if isempty(reg_curr)
+    return;
+end
+
 switch reg_curr.Reference
     case 'Line'
         line_obj=layer.get_first_line();

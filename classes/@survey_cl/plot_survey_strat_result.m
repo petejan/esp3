@@ -21,6 +21,11 @@ for isur=1:length(surv_obj)
     strats=unique(strat_sum.stratum);
     legend_name{isur}=surv_obj(isur).SurvInput.Infos.Title;
 end
+% 
+% [~,idx_strats_reorder]=sort((str2double(strats)));
+% strats=strats(idx_strats_reorder);
+% 
+% strats(strcmpi(strats,'E'))=[];
 
 nb_snap=numel(snaps);
 nb_strat=length(snaps);
