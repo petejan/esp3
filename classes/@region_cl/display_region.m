@@ -169,7 +169,7 @@ end
 
 % ticks and grid
 ax_in.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
-ax_in.YTick=sort((y_disp(1):reg_obj.Cell_h:y_disp(end)));
+ax_in.YTick=sort((nanmin(y_disp(:)):reg_obj.Cell_h:nanmax(y_disp(:))));
 grid(ax_in,'on');
 axis(ax_in,'ij');
 
@@ -229,7 +229,7 @@ switch reg_obj.Reference
     case 'Surface'
         ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
     case 'Bottom'
-        ylabel(ax_vert,'Above bottom(m)');
+        ylabel(ax_vert,'Diatnce Above bottom(m)');
     case 'Line'
         ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));
 end

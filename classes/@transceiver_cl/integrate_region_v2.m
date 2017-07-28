@@ -90,6 +90,7 @@ idx_pings=idx_pings_tot(idx_keep_x);
 idx_r_tot=region.Idx_r;
 
 range=double(trans_obj.get_transceiver_range());
+
 dr=mean(diff(range));
 
 nb_samples=length(range);
