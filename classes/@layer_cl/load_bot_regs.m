@@ -2,8 +2,8 @@ function [ver_bot_loaded,ver_reg_loaded,comment]=load_bot_regs(layer,varargin)
 p = inputParser;
 
 addRequired(p,'layer',@(obj) isa(obj,'layer_cl'));
-addParameter(p,'bot_ver',-1);
-addParameter(p,'reg_ver',-1);
+addParameter(p,'bot_ver',-1);%-1:load current xml file; 0: load latest db version; n: load closest version to version n from db
+addParameter(p,'reg_ver',-1);%-1:load current xml file; 0: load latest db version; n: load closest version to version n from db
 addParameter(p,'IDs',[]);
 addParameter(p,'Frequencies',[]);
 parse(p,layer,varargin{:});
