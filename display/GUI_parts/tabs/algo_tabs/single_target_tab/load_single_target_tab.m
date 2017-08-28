@@ -64,9 +64,8 @@ load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo('SingleTarget','load_bar_comp',load_bar_comp);
 
 hide_status_bar(main_figure);
-
 curr_disp.setField('singletarget');
-curr_disp.Freq=curr_disp.Freq;
+
 setappdata(main_figure,'Curr_disp',curr_disp);
 update_single_target_tab(main_figure,0);
 end

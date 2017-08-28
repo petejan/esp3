@@ -95,10 +95,6 @@ for jj=1:length(idx_bad_data)
         +mask_reg(idx_r_inter-curr_reg.Idx_r(1)+1,idx_p_inter-curr_reg.Idx_pings(1)+1);
 end
 
-
-TS(mask>=1)=-999;
-
-
 [nb_samples,nb_pings]=size(TS);
 
 Idx_samples_lin=reshape(1:nb_samples_tot*nb_pings_tot,nb_samples_tot,nb_pings_tot);
@@ -108,15 +104,18 @@ Bottom=trans_obj.get_bottom_range(idx_pings);
 
 Range=repmat(trans_obj.get_transceiver_range(idx_r),1,nb_pings);
 
-under_bottom=Range>repmat(Bottom,nb_samples,1);
-TS(under_bottom)=-999;
+under_bottom=Range>=repmat(Bottom,nb_samples,1);
+
+mask(under_bottom)=1;
+
+TS(mask>=1)=-999;
 
 if ~any(TS(:)>-999)
     single_targets=[];
     return;
 end
 
-idx_r_max=find(trans_obj.get_transceiver_range(idx_r)==nanmax(Range(TS>-999)));%%TODO but
+idx_r_max=find(trans_obj.get_transceiver_range(idx_r)==nanmax(Range(TS>-999)));
 
 %%%%%%%Remove all unnecessary data%%%%%%%%
 idx_r(idx_r_max:end)=[];
@@ -188,6 +187,7 @@ idx_peaks=zeros(nb_samples,nb_pings);
 switch p.Results.DataType
     case 'CW'
         peak_mat=10*log10(filter(ones(floor(Np/2),1)/floor(Np/2),1,10.^(peak_mat/10)));
+        peak_mat(TS==-999)=-999;
         idx_peaks=idx_comp;
         
         for i=1:floor(Np/4)+2
@@ -196,6 +196,7 @@ switch p.Results.DataType
         
         diff_idx_peaks=[zeros(1,nb_pings);diff(idx_peaks)];
         idx_peaks=(diff_idx_peaks==1);
+        idx_peaks(TS==-999)=0;
         
     case 'FM'
         corr=correlogramm_v2(10.^(TSun/10),abs(simu_pulse));
@@ -435,22 +436,23 @@ single_targets.Pitch=pitch_mat(idx_target_lin);
 single_targets.Heave=heave_mat(idx_target_lin);
 single_targets.Heading=heading_mat(idx_target_lin);
 
-old_single_targets=trans_obj.ST;
-if~isempty(old_single_targets)
-    if ~isempty(old_single_targets.TS_comp)
-        
-        idx_rem=(old_single_targets.idx_r>=idx_r(1)&old_single_targets.idx_r<=idx_r(end))&(old_single_targets.Ping_number>=idx_pings(1)&old_single_targets.Ping_number<=idx_pings(end));
-        
-        props=fields(old_single_targets);
-        
-        for i=1:length(props)
-            if length(old_single_targets.(props{i}))==length(idx_rem)
-            old_single_targets.(props{i})(idx_rem)=[];
-            single_targets.(props{i})=[old_single_targets.(props{i})(:)' single_targets.(props{i})(:)'];
-            end
-        end
-    end
-    
-    single_targets.nb_valid_targets=length(single_targets.TS_comp);
-end
+%old_single_targets=trans_obj.ST;
+
+% if~isempty(old_single_targets)
+%     if ~isempty(old_single_targets.TS_comp)
+%         
+%         idx_rem=(old_single_targets.idx_r>=idx_r(1)&old_single_targets.idx_r<=idx_r(end))&(old_single_targets.Ping_number>=idx_pings(1)&old_single_targets.Ping_number<=idx_pings(end));
+%         
+%         props=fields(old_single_targets);
+%         
+%         for i=1:length(props)
+%             if length(old_single_targets.(props{i}))==length(idx_rem)
+%             old_single_targets.(props{i})(idx_rem)=[];
+%             single_targets.(props{i})=[old_single_targets.(props{i})(:)' single_targets.(props{i})(:)'];
+%             end
+%         end
+%     end
+%     
+%     single_targets.nb_valid_targets=length(single_targets.TS_comp);
+% end
 

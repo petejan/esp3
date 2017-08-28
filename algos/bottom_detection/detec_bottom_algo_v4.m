@@ -131,7 +131,6 @@ Sp(idx_r_max:end,:)=nan;
 
 %First let's find the bottom...
 
-
 if p.Results.rm_rd
     idx_ringdown=analyse_ringdown(RingDown);
 else
@@ -150,25 +149,11 @@ Max_BS_reg=(bsxfun(@gt,BS,max_bs+thr_echo));
 Max_BS_reg(:,max_bs<thr_bottom)=0;
 
 Bottom_region_temp=Max_BS_reg;
-%Bottom_region_temp=Max_BS_reg;
+
 Bottom_region_temp=ceil(filter2(ones(Np,5),Bottom_region_temp)/(5*Np))==1;
 idx_empty=nansum(Bottom_region_temp)==0;
 Bottom_region_temp(:,idx_empty)=[];
-% CC = bwconncomp(Bottom_region_temp==1);
-% size_groups=(cellfun(@length,CC.PixelIdxList));
-% [~,idx_big]=sort(size_groups,'descend');
-%
-% Bottom_region_temp_2=zeros(size(Bottom_region_temp));
-%
-% ig=1;
-% % figure();
-% % a=axes();
-% while ig<=length(size_groups)&&~all((nansum(Bottom_region_temp_2)>0)==(nansum(Bottom_region_temp)>0))
-%     Bottom_region_temp_2(CC.PixelIdxList{idx_big(ig)})=1;
-%     ig=ig+1;
-% %     imagesc(a,Bottom_region);
-% %     drawnow;
-% end
+
 
 Bottom_region=zeros(size(BS));
 Bottom_region(:,~idx_empty)=Bottom_region_temp;

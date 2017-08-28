@@ -32,7 +32,7 @@ for k = 1:length(regionSumAbscf.snapshot)
         end
     end
     
-    for ik=1:length(regionSumAbscf.latitude{k})
+    for ik=1:length(regionSumAbscf.column_abscf{k})
         str=[str sprintf('%.0f,', regionSumAbscf.transmit_start{k}(ik))];
         str=[str sprintf('%.4f,', regionSumAbscf.latitude{k}(ik))];
         str=[str sprintf('%.4f,', regionSumAbscf.longitude{k}(ik))];
