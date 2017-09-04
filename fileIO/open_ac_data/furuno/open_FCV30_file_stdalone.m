@@ -71,6 +71,10 @@ for iconfig=id_config
              file_exist=0;
         end
     end
+    curr_fold=fileparts(file_mat_ini{iconfig});
+    if exist(curr_fold,'dir')==0
+        mkdir(curr_fold);
+    end
     
     if file_exist==0
         filename_dat=filename_dat_tot(id_config_unique==iconfig);
