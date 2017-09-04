@@ -18,7 +18,7 @@ if ~isempty(p.Results.load_bar_comp)
     set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(pings), 'Value',0);
     p.Results.load_bar_comp.status_bar.setText('Sv Matrix Estimation');
 end
-[~,~,f_vec,r_tot]=trans_obj.processTS_f_v2(p.Results.envdata,1,range,p.Results.dp,p.Results.cal);
+[~,~,f_vec,r_tot]=trans_obj.processTS_f_v2(p.Results.envdata,1,range,p.Results.dp,p.Results.cal,[]);
 
 TS_f=nan(length(pings),length(r_tot),length(f_vec));
 
@@ -28,7 +28,7 @@ for i=1:length(pings)
     if ~isempty(p.Results.load_bar_comp)
         set(p.Results.load_bar_comp.progress_bar ,'Value',i);
     end
-    [Sp_f,compensation_f,f_vec,r_tot]=trans_obj.processTS_f_v2(p.Results.envdata,pings(i),range,p.Results.dp,p.Results.cal);
+    [Sp_f,compensation_f,f_vec,r_tot]=trans_obj.processTS_f_v2(p.Results.envdata,pings(i),range,p.Results.dp,p.Results.cal,[]);
     TS_f(i,:,:)=Sp_f+compensation_f; 
 end
 

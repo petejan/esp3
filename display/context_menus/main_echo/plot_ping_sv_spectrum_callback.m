@@ -49,7 +49,7 @@ for uui=idx_sort
         range=layer.Transceivers(uui).get_transceiver_range();
 
         [~,Np]=layer.Transceivers(uui).get_pulse_length();
-        [Sv_f,f_vec,r_disp]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_ping,range,Np,cal,cal_eba);
+        [Sv_f,f_vec,r_disp]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_ping,range,Np,cal,cal_eba,[]);
 
 
        [cmap,col_ax,col_lab,col_grid,~,~]=init_cmap(curr_disp.Cmap);

@@ -21,7 +21,7 @@ for uui=1:length(layer.Frequencies)
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
         file_cal_eba=fullfile(cal_path,[ 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
-        range=layer.Transceivers(idx_freq).get_transceiver_range();
+        range=layer.Transceivers(uui).get_transceiver_range();
 
         idx_r=find(range<=r_max&range>=r_min);
         

@@ -66,10 +66,10 @@ for uui=idx_sort
         
         for kk=1:length(idx_pings)      
             %[Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),cal);
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal,[]);
             set(load_bar_comp.progress_bar,'Value',kk);
         end
-
+        
         TS_f=[TS_f; Sp_f+Compensation_f];
         
         f_vec_save=[f_vec_save; f_vec(:,1)];
@@ -87,6 +87,7 @@ for uui=idx_sort
         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
         
         comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship , AcrossAngle((idx_pings-1)*length(range)+idx_peak), AlongAngle((idx_pings-1)*length(range)+idx_peak));
+        comp(comp>12|comp<0)=nan;
         TS_f=[TS_f; Sp_max+comp;];
     end
 end

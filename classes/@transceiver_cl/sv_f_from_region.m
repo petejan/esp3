@@ -31,7 +31,7 @@ if ~isempty(p.Results.load_bar_comp)
   p.Results.load_bar_comp.status_bar.setText('Sv Matrix Estimation');
 end
 
-[~,f_vec,r_tot]=trans_obj.processSv_f_r_2(p.Results.envdata,1,range,Np,p.Results.cal,p.Results.cal_eba);
+[~,f_vec,r_tot]=trans_obj.processSv_f_r_2(p.Results.envdata,1,range,Np,p.Results.cal,p.Results.cal_eba,[]);
 Sv_f=nan(length(pings),length(r_tot),length(f_vec));
 
 
@@ -40,7 +40,7 @@ for i=1:length(pings)
     if ~isempty(p.Results.load_bar_comp)
         set(p.Results.load_bar_comp.progress_bar ,'Value',i);
     end
-     [Sv_f(i,:,:),~,~]=trans_obj.processSv_f_r_2(p.Results.envdata,pings(i),range,Np,p.Results.cal,p.Results.cal_eba);
+     [Sv_f(i,:,:),~,~]=trans_obj.processSv_f_r_2(p.Results.envdata,pings(i),range,Np,p.Results.cal,p.Results.cal_eba,[]);
 
 end
 

@@ -124,8 +124,6 @@ end
         else
             hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         end
-        disp('plot')
-        
     end
 
     function wbmcb_ext(~,~)

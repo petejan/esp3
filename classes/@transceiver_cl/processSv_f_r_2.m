@@ -1,5 +1,7 @@
-function [Sv_f,f_vec,r]=processSv_f_r_2(trans_obj,EnvData,iPing,r,nfft,cal,cal_eba)
-
+function [Sv_f,f_vec,r]=processSv_f_r_2(trans_obj,EnvData,iPing,r,nfft,cal,cal_eba,att_model)
+if isempty(att_model)
+    att_model='doonan';
+end
 
 if strcmp(trans_obj.Mode,'FM')
     Rwt_rx=trans_obj.Config.Impedance;
@@ -91,7 +93,7 @@ if strcmp(trans_obj.Mode,'FM')
 
     
     for jj=1:length(f_vec)
-        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r,'fandg')/1e3;
+        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r,att_model)/1e3;
     end
     
     

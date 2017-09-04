@@ -103,7 +103,8 @@ uimenu(algo_menu,'Label','Apply Bottom Detection V1 ','Callback',{@apply_bottom_
 uimenu(algo_menu,'Label','Apply Bottom Detection V2 ','Callback',{@apply_bottom_detect_cback,select_plot,main_figure,'v2'});
 uimenu(algo_menu,'Label','Shift Bottom ','Callback',{@shift_bottom_callback,select_plot,main_figure});
 uimenu(algo_menu,'Label','Apply Single Target Detection ','Callback',{@apply_st_detect_cback,select_plot,main_figure});
-uimenu(algo_menu,'Label','ApplySchool Detection ','Callback',{@apply_school_detect_cback,select_plot,main_figure});
+uimenu(algo_menu,'Label','Apply Target tracking ','Callback',{@apply_track_target_cback,select_plot,main_figure});
+uimenu(algo_menu,'Label','Apply School Detection ','Callback',{@apply_school_detect_cback,select_plot,main_figure});
 
 
 

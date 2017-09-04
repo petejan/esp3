@@ -110,13 +110,20 @@ for uui=select
     % mean parameters over range from transducer to the sphere
     c = sw_svel(s, t, d);
     
+    if Freq>120000&&strcmp(att_model,'Doonan et al (2003)')
+        att_model='Francois & Garrison (1982)';
+    end
+    
     switch att_model
         case 'Doonan et al (2003)'
             alpha = sw_absorption(Freq/1e3, s, t, d,'doonan');
+            att_m='doonan';
         case 'Francois & Garrison (1982)'
             alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
+            att_m='fandg';
         case 'Manual Override'
             alpha=layer.Transceivers(idx_freq).Params.Absorption(1)*1e3;
+            att_m=[];
     end
    
     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, c_at_sphere, ...
@@ -160,7 +167,8 @@ for uui=select
     est_ts = sphere_ts-compensation;
     
 
-    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>5;
+    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>5|...
+        AlongAngle_sph>layer.Transceivers(uui).Config.BeamWidthAlongship|AcrossAngle_sph>layer.Transceivers(uui).Config.BeamWidthAthwartship;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];
@@ -177,7 +185,7 @@ for uui=select
     end
     
     if idx_freq==uui
-        plot(ah,layer.Transceivers(uui).get_transceiver_pings(idx_pings),range_sph,'.r','linewidth',2);
+        plot(ah,layer.Transceivers(uui).get_transceiver_pings(idx_pings),idx_peak,'.k','linewidth',2);
     end
     
     
@@ -244,12 +252,12 @@ for uui=select
         
         
         for kk=1:length(idx_pings)
-            %[Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),[]);
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,[]);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,[],att_m);
             set(load_bar_comp.progress_bar, 'Value',kk);
         end
         
-
+        Compensation_f(Compensation_f>6)=nan;
+        
         TS_f=Sp_f+Compensation_f;
         
         TS_f_mean=10*log10(nanmean(10.^(TS_f'/10)));

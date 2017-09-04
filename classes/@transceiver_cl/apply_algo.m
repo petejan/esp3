@@ -66,29 +66,7 @@ if isfield(algo_obj.Varargin,'idx_pings')
     algo_obj.Varargin.idx_pings=p.Results.idx_pings;
 end
 
-str_eval=[];
-fields_algo_in=fields(algo_obj.Varargin);
-
-for i=1:length(fields_algo_in)
-    str_eval=[str_eval sprintf('''%s'',',fields_algo_in{i})];
-    if ischar(algo_obj.Varargin.(fields_algo_in{i}))
-        str_eval=[str_eval sprintf('''%s'',',algo_obj.Varargin.(fields_algo_in{i}))];
-    else
-        str_eval=[str_eval '['];
-        str_eval=[str_eval sprintf('%f ',algo_obj.Varargin.(fields_algo_in{i}))];
-        str_eval=[str_eval '],'];
-    end
-end
-
-str_eval(end)=[];
-
-str_output=[];
-fields_algo_out=algo_obj.Varargout;
-
-for i=1:length(fields_algo_out)
-    str_output=[str_output sprintf('%s ',fields_algo_out{i})];
-end
-str_output(end)=[];
+[str_eval,str_output]=algo_obj.get_str_for_eval();
 
 if ~isempty(p.Results.load_bar_comp)
     p.Results.load_bar_comp.status_bar.setText(sprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3));
@@ -103,8 +81,8 @@ if ~isempty(p.Results.load_bar_comp)
     set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',100, 'Value',0);
 end
 
-for i=1:length(fields_algo_out)
-    output_struct.(fields_algo_out{i})=eval(fields_algo_out{i});
+for i=1:length(algo_obj.Varargout)
+    output_struct.(algo_obj.Varargout{i})=eval(algo_obj.Varargout{i});
 end
 
 switch algo_name
@@ -158,7 +136,6 @@ switch algo_name
         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit','meters',...
             'cell_w',cell_w,'cell_h',nanmax(dr*2,algo_obj.Varargin.h_min_can/10));
     case 'SingleTarget'
-
         trans_obj.set_ST(single_targets);
     case 'TrackTarget'
         trans_obj.Tracks=tracks_out;

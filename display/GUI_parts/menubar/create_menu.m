@@ -80,6 +80,8 @@ uimenu(eport_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_g
 uimenu(eport_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
 uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
 uimenu(eport_menu,'Label','Export Single Targets to xls file','Callback',{@save_st_to_xls_callback,main_figure});
+uimenu(eport_menu,'Label','Export Tracked Targets to xls file','Callback',{@save_tt_to_xls_callback,main_figure});
+
 
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 
@@ -200,9 +202,9 @@ uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callba
 uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});
 
 track_tools=uimenu(mhhh,'Label','Track');
-uimenu(track_tools,'Label','Plot Frequency response from Fish Tracks','Callback',{@plot_freq_resp_tracks_callback,main_figure});
-uimenu(track_tools,'Label','Plot Histogram from Fish Tracks','Callback',{@plot_hist_tracks_callback,main_figure});
-uimenu(track_tools,'Label','Create Exclude Regions from Tracks','Callback',{@create_regs_from_tracks_callback,'Bad Data',main_figure});
+uimenu(track_tools,'Label','Plot Frequency response from Tracked targets','Callback',{@plot_freq_resp_tracks_callback,main_figure});
+uimenu(track_tools,'Label','Plot Histogram from Tracked Targets','Callback',{@plot_hist_tracks_callback,main_figure});
+uimenu(track_tools,'Label','Create Exclude Regions from Tracked targets','Callback',{@create_regs_from_tracks_callback,'Bad Data',main_figure});
 
 uimenu(track_tools,'Label','Plot Histogram from Single Targets','Callback',{@plot_hist_st_callback,main_figure});
 uimenu(track_tools,'Label','Plot Single Targets positions','Callback',{@plot_st_pos_callback,main_figure,'st'});

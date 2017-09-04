@@ -122,7 +122,6 @@ uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','
 uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.8 0.25 0.1 0.1],'callback',{@save_algos,main_figure});
 
 
-
 %set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
 end
@@ -141,8 +140,6 @@ load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo('TrackTarget','load_bar_comp',load_bar_comp);
 
 hide_status_bar(main_figure);
-
-
 
 setappdata(main_figure,'Layer',layer);
 display_tracks(main_figure);

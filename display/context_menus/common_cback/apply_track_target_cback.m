@@ -1,6 +1,6 @@
-%% apply_st_detect_cback.m
+%% apply_track_target_cback.m
 %
-% Apply single target detection on selected area or region_cl
+% Apply target tracking on selected area or region_cl
 %
 %% Help
 %
@@ -23,8 +23,7 @@
 %
 % *NEW FEATURES*
 %
-% * 2017-03-22: header and comments updated according to new format (Alex Schimel)
-% * 2017-03-02: first version (Yoann Ladroit)
+% * 2017-09-04: first version (Yoann Ladroit)
 %
 % *EXAMPLE*
 %
@@ -35,7 +34,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function apply_st_detect_cback(~,~,select_plot,main_figure)
+function apply_track_target_cback(~,~,select_plot,main_figure)
 
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
@@ -46,22 +45,21 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 switch class(select_plot)
     case 'region_cl'
         idx_r=select_plot.Idx_r;
-        idx_pings=select_plot.Idx_pings;
-        
+        idx_pings=select_plot.Idx_pings;        
     otherwise
         idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
         idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
 end
 
-alg_name='SingleTarget';
+alg_name='TrackTarget';
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'idx_r',idx_r,'idx_pings',idx_pings);
 
 hide_status_bar(main_figure);
-curr_disp.setField('singletarget');
 display_tracks(main_figure);
+
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

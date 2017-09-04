@@ -8,7 +8,7 @@ function transceiver=process_data(transceiver,envData,idx_peak,idx_pings,sphere_
 %
 % The std of the arrival angle of each sample in each echo has to be
 % less than or equal to this value for an echo to be kept.
-p.max_std_phase = 3; %[degrees]
+p.max_std_phase = 1.5; %[degrees]
 
 % Only consider echoes that have an angular position that is within
 % trimToFactor times the beam angle
@@ -285,6 +285,7 @@ if numel(find(phi < on_axis)) <  p.minOnAxisEchoes
     use_corrected = 1;
 end
 
+
 if use_corrected == 0
     i = find(phi < on_axis);
     ts_values = sphere(i,1);
@@ -309,7 +310,6 @@ else
 end
 
 
-
 % plot up the on-axis TS values
 fig=new_echo_figure([],'Name', 'On-axis sphere TS');
 if exist('boxplot', 'file') % this lives in the Statistics toolbox, which not everyone will have
@@ -332,7 +332,7 @@ for ifi=1:length(fid)
     fprintf(fid(ifi),['\nMean ts within ' oa ' deg of centre = ' num2str(mean_ts_on_axis) ' dB\n']);
     fprintf(fid(ifi),['Std of ts within ' oa ' deg of centre = ' num2str(std_ts_on_axis) ' dB\n']);
     fprintf(fid(ifi),['Maximum TS within ' oa ' deg of centre = ' num2str(max_ts_on_axis) ' dB\n']);
-    fprintf(fid(ifi),['Number of echoes within ' oa ' deg of centre = ' num2str(length(sphere(i,1)))]);
+    fprintf(fid(ifi),['Number of echoes within ' oa ' deg of centre = ' num2str(length(sphere(i,1))) '\n']);
     fprintf(fid(ifi),['On axis TS from beam fitting = ' num2str(peak_ts) ' dB\n']);
     fprintf(fid(ifi),['The sphere ts is ' num2str(data.cal.sphere_ts) ' dB\n']);
 end

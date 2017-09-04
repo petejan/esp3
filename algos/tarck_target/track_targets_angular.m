@@ -52,7 +52,6 @@ addParameter(p,'Min_ST_Track',default_min_ST_Track,check_min_ST_track);
 addParameter(p,'Min_Pings_Track',default_Min_Pings_Track,check_accept);
 addParameter(p,'Max_Gap_Track',default_Max_Gap_Track,check_accept);
 addParameter(p,'load_bar_comp',[]);
-
 addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
 addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
 
@@ -70,18 +69,19 @@ else
     idx_pings=p.Results.idx_pings;
 end
 
-idx_r=idx_r(:);
-idx_pings=idx_pings(:)';
+
 
 ST=trans_obj.ST;
 
-% idx_rem=(old_single_targets.idx_r>=idx_r(1)&old_single_targets.idx_r<=idx_r(end))&(old_single_targets.Ping_number>=idx_pings(1)&old_single_targets.Ping_number<=idx_pings(end));
-% 
-% props=fields(old_single_targets);
-% 
-% for i=1:length(props)
-%     ST.(props{i})(idx_rem)=[];
-% end
+idx_rem=~((ST.idx_r>=idx_r(1)&ST.idx_r<=idx_r(end))&(ST.Ping_number>=idx_pings(1)&ST.Ping_number<=idx_pings(end)));
+
+props=fields(ST);
+
+for i=1:length(props)
+    if numel(ST.(props{i}))==ST.nb_valid_targets        
+        ST.(props{i})(idx_rem)=nan;
+    end   
+end
 
 nb_targets=length(ST.TS_comp);
 if nb_targets==0
@@ -144,7 +144,7 @@ for i=1:nb_targets_pings(1)
     idx_allocation(idx_target{1}(i))=1;
     tracks_allocation(i)=idx_target{1}(i);
 end
-active_tracks{1}=idx_target{1};
+active_tracks{1}=1:length(tracks);
 
 
 X_init=X_st(idx_target{1});

@@ -1,4 +1,8 @@
-function [Sp_f,compensation_f,f_vec,r_tot]=processTS_f_v2(trans_obj,EnvData,iPing,r,dp,cal)
+function [Sp_f,compensation_f,f_vec,r_tot]=processTS_f_v2(trans_obj,EnvData,iPing,r,dp,cal,att_model)
+if isempty(att_model)
+    att_model='doonan';
+end
+
 
 if strcmp(trans_obj.Mode,'FM')
     Rwt_rx=trans_obj.Config.Impedance;
@@ -10,6 +14,12 @@ if strcmp(trans_obj.Mode,'FM')
     FreqStart=(trans_obj.Params.FrequencyStart(1));
     FreqEnd=(trans_obj.Params.FrequencyEnd(1));
     Freq=(trans_obj.Config.Frequency);
+    
+    if FreqEnd>120000
+        att_model='fandg';
+    end
+        
+    
     ptx=(trans_obj.Params.TransmitPower(1));
     pulse_length=(trans_obj.Params.PulseLength(1));
     
@@ -94,20 +104,18 @@ if strcmp(trans_obj.Mode,'FM')
     
     for jj=1:length(f_vec)
         compensation_f(:,jj) = simradBeamCompensation(BeamWidthAlongship_f(jj),BeamWidthAthwartship_f(jj) , AlongAngle_val, AcrossAngle_val);
-        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_tot,'fandg')/1e3;
+        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_tot,att_model)/1e3;
     end
     
     compensation_f(compensation_f<0)=nan;
     compensation_f(compensation_f>12)=nan;
-    
-    
+        
     if ~isempty(cal)
         Gf=interp1(cal.freq_vec,cal.Gf,f_vec);
     else
         Gf=gain +10*log10(f_vec./Freq);
     end
-    
-    
+       
     lambda=c./(f_vec);
     
     Prx_fft=4*(abs(s_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;

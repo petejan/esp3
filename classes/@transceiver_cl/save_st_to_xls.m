@@ -12,9 +12,9 @@ end
 
 algo_obj=get_algo_per_name(trans_obj,'SingleTarget');
 
+algo_sheet=[fieldnames(algo_obj.Varargin) struct2cell(algo_obj.Varargin)];
 
-algo_sheet=[fieldnames(algo_obj.Varargin) struct2cell( algo_obj.Varargin)];
-
+st = rmfield(st,'nb_valid_targets');
 st_sheet=struct_to_sheet(st);
 
 xlswrite(file,algo_sheet,1);
