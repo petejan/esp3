@@ -33,7 +33,7 @@ axes_panel_comp.track_plot=[];
         [X_t,idx_sort]=sort(X_st(idx_targets));
         Z_t=Z_st(idx_targets);
         Z_t=Z_t(idx_sort);
-        plot_handle=plot(axes_panel_comp.main_axes,X_t,Z_t,'r','linewidth',2,'tag','track','visible',curr_disp.DispTracks);
+        plot_handle=plot(axes_panel_comp.main_axes,X_t,Z_t,'linewidth',2,'tag','track','visible',curr_disp.DispTracks,'userdata',k);
         axes_panel_comp.track_plot=[axes_panel_comp.track_plot plot_handle];
     end
 else

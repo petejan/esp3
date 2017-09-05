@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function create_context_menu_bottom(main_figure,bottom_line)
+function create_context_menu_bottom(~,bottom_line)
 
 delete(findall(ancestor(bottom_line,'figure'),'Tag','botCtxtMenu'));
 context_menu=uicontextmenu(ancestor(bottom_line,'figure'),'Tag','btCtxtMenu');

@@ -4,7 +4,7 @@ for idx_freq=1:length(trans_obj)
 Rwt_rx=trans_obj(idx_freq).Config.Impedance;
 Ztrd=trans_obj(idx_freq).Config.Ztrd;
     switch trans_obj(idx_freq).Config.TransceiverType
-        case {'WBT','WBT Tube','WBAT'}
+        case {'WBT','WBT Tube','WBAT','WBT Mini'}
             
             s1=data.pings(idx_freq).comp_sig_1;
             s2=data.pings(idx_freq).comp_sig_2;

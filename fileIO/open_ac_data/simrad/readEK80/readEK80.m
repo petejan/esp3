@@ -240,7 +240,7 @@ for ii=1:length(filenames)
                         data.pings(idx).time(curr_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                         
                         switch config(idx).TransceiverType
-                            case {'WBT','WBT Tube','WBAT'}
+                            case {'WBT','WBT Tube','WBAT','WBT Mini'}
                                 if (sampleCount > 0)
                                     temp = fread(fid,8*sampleCount,'float32', 'l');
                                 end

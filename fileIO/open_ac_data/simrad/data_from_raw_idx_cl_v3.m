@@ -142,7 +142,7 @@ for i=1:nb_trans
     end
     
     switch config(i).TransceiverType
-        case {'WBT','WBT Tube','WBAT'}
+        case {'WBT','WBT Tube','WBAT','WBT Mini'}
             data.pings(i).comp_sig_1=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
@@ -181,7 +181,7 @@ if ~isempty(load_bar_comp)
 end
 
 nb_dg=length(idx_raw_obj.type_dg);
-
+idx_unknown=[];
 for idg=1:nb_dg
     pos=ftell(fid);
 
@@ -368,7 +368,7 @@ for idg=1:nb_dg
                     
                     switch config(idx).TransceiverType
                         
-                        case {'WBT','WBT Tube','WBAT'}
+                        case {'WBT','WBT Tube','WBAT','WBT Mini'}
                             nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
                             if data.pings(idx).datatype(4)==dec2bin(1)
                                 fmt='float32';
@@ -407,6 +407,9 @@ for idg=1:nb_dg
                                     end
                                 end
                             end
+                        otherwise 
+                            fprintf('Unknown Transceiver Type: %s\n Cannot read file\n',config(idx).TransceiverType);
+                            idx_unknown=union(idx_unknown,idx);
                     end
                     i_ping(idx) = i_ping(idx) + 1;
                 else
@@ -453,6 +456,7 @@ fclose(fid);
 
 
 %Complete Params if necessary
+
 
 for idx=1:nb_trans
     
@@ -529,7 +533,7 @@ if p.Results.GPSOnly==0
         curr_data=[];
         trans_obj(i).Mode=mode{i};
         switch trans_obj(i).Config.TransceiverType
-            case {'WBT','WBT Tube','WBAT'}
+            case {'WBT','WBT Tube','WBAT','WBT Mini'}
                 if strcmpi(mode{i},'FM')
                     curr_data.powerunmatched=single(data_ori.pings(i).power);
                     curr_data.power=single(data.pings(i).power);
