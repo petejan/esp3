@@ -1,4 +1,4 @@
-function alpha = sw_absorption(f, S, T, D, method)
+function alpha = seawater_absorption(f, S, T, D, method)
 
 % function alpha = sw_absorption(f, S, T, D, method)
 %

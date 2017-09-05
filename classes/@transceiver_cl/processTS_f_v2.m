@@ -104,7 +104,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     for jj=1:length(f_vec)
         compensation_f(:,jj) = simradBeamCompensation(BeamWidthAlongship_f(jj),BeamWidthAthwartship_f(jj) , AlongAngle_val, AcrossAngle_val);
-        alpha_f(:,jj)=  sw_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_tot,att_model)/1e3;
+        alpha_f(:,jj)=  seawater_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_tot,att_model)/1e3;
     end
     
     compensation_f(compensation_f<0)=nan;

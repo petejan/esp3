@@ -18,9 +18,8 @@ end
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz SoundSpeed(m/s):',curr_disp.Freq/1e3),'units','normalized','Position',[0.1 0.85 0.5 0.1],'BackgroundColor','White');
-calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.calibration_tab,'style','edit','unit','normalized','position',[0.55 0.85 0.1 0.1],'string',num2str(layer.EnvData.SoundSpeed,'%.0f'),'callback',{@change_soundspeed_cback,main_figure});
-       
+calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz',curr_disp.Freq/1e3),'units','normalized','Position',[0.05 0.85 0.4 0.1],'BackgroundColor','White');
+    
 
 if ~strcmp(layer.Filetype,'CREST')
     if strcmp(trans_obj.Mode,'CW')
@@ -40,35 +39,42 @@ if ~strcmp(layer.Filetype,'CREST')
 %         end
        
         
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Save','callback',{@save_CW_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Reprocess','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.55 0.1 0.15 0.2]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Save','callback',{@save_CW_calibration,main_figure},'unit','normalized','position',[0 0 0.15 0.15]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Reprocess','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0 0.15 0.15 0.15]);
     
     
        
     else
        
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Disp. Cal. Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0.5 0.1 0.15 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process TS Cal','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0.65 0.1 0.15 0.2]);
-        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process EBA Cal','callback',{@reprocess_EBA_calibration,main_figure},'unit','normalized','position',[0.8 0.1 0.15 0.2]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Disp. Cal. Curves','callback',{@display_cal,main_figure},'unit','normalized','position',[0 0 0.15 0.15]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process TS Cal','callback',{@reprocess_TS_calibration,main_figure},'unit','normalized','position',[0 0.15 0.15 0.15]);
+        uicontrol(calibration_tab_comp.calibration_tab,'style','PushButton','String','Process EBA Cal','callback',{@reprocess_EBA_calibration,main_figure},'unit','normalized','position',[0 0.3 0.15 0.15]);
         
     end
     
-    calibration_tab_comp.sphere=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',list_spheres(),'unit','normalized','position',[0.5 0.6 0.2 0.1]);
+    calibration_tab_comp.sphere=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',list_spheres(),'unit','normalized','position',[0.2 0.4 0.2 0.1]);
+     
+    env_group=uibuttongroup(calibration_tab_comp.calibration_tab,'units','normalized','Position',[0.5 0.0 0.5 1],'title','Evironnement');
+    
+    calibration_tab_comp.att_model=uicontrol(env_group,'Style','popup','string',{'Doonan et al (2003)' 'Francois & Garrison (1982)' 'Manual Override'},'unit','normalized','position',[0.05 0.2 0.4 0.1]);
   
-   calibration_tab_comp.att_model=uicontrol(calibration_tab_comp.calibration_tab,'Style','popup','string',{'Doonan et al (2003)' 'Francois & Garrison (1982)' 'Manual Override'},'unit','normalized','position',[0.5 0.4 0.2 0.1]);
+    uicontrol(env_group,'Style','Text','String','Soundspeed(m/s)','units','normalized','Position',[0.3 0.8 0.3 0.1]);
+    calibration_tab_comp.soundspeed=uicontrol(env_group,'style','edit','unit','normalized','position',[0.7 0.8 0.2 0.1],'string',num2str(layer.EnvData.SoundSpeed,'%.0f'),'callback',{@change_soundspeed_cback,main_figure});
+    calibration_tab_comp.soundspeed_over=uicontrol(env_group,'style','checkbox','unit','normalized','position',[0.9 0.8 0.1 0.1]);
   
-    env_group=uibuttongroup(calibration_tab_comp.calibration_tab,'units','normalized','Position',[0.75 0.4 0.2 0.5]);
     
-    uicontrol(env_group,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0 0.01 0.4 0.3]);
-    calibration_tab_comp.att=uicontrol(env_group,'style','edit','unit','normalized','position',[0.4 0.01 0.5 0.3],'string',num2str(trans_obj.Params.Absorption(1)*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
+    uicontrol(env_group,'Style','Text','String','Att (dB/km)','units','normalized','Position',[0.3 0.35 0.3 0.1]);
+    calibration_tab_comp.att=uicontrol(env_group,'style','edit','unit','normalized','position',[0.7 0.35 0.2 0.1],'string',num2str(trans_obj.Params.Absorption(1)*1e3,'%.1f'),'callback',{@apply_absorption,main_figure});
+    calibration_tab_comp.att_over=uicontrol(env_group,'style','checkbox','unit','normalized','position',[0.9 0.35 0.1 0.1]);
     
-    uicontrol(env_group,'Style','Text','String','Temp. (degC)','units','normalized','Position',[0 0.32 0.4 0.3]);
-    calibration_tab_comp.temp=uicontrol(env_group,'style','edit','unit','normalized','position',[0.4 0.32 0.5 0.3],'string',num2str(layer.EnvData.Temperature,'%.1f'),'callback',{@save_envdata_callback,main_figure});
+    uicontrol(env_group,'Style','Text','String','Temp. (degC)','units','normalized','Position',[0.3 0.5 0.3 0.1]);
+    calibration_tab_comp.temp=uicontrol(env_group,'style','edit','unit','normalized','position',[0.7 0.5 0.2 0.1],'string',num2str(layer.EnvData.Temperature,'%.1f'),'callback',{@save_envdata_callback,main_figure});
+    calibration_tab_comp.temp_over=uicontrol(env_group,'style','checkbox','unit','normalized','position',[0.9 0.5 0.1 0.1]);
     
-     uicontrol(env_group,'Style','Text','String','Salinity. (PSU)','units','normalized','Position',[0 0.63 0.4 0.3]);
-    calibration_tab_comp.sal=uicontrol(env_group,'style','edit','unit','normalized','position',[0.4 0.63 0.5 0.3],'string',num2str(layer.EnvData.Salinity,'%.1f'),'callback',{@save_envdata_callback,main_figure});
-   
-    
+    uicontrol(env_group,'Style','Text','String','Salinity. (PSU)','units','normalized','Position',[0.3 0.65 0.3 0.1]);
+    calibration_tab_comp.sal=uicontrol(env_group,'style','edit','unit','normalized','position',[0.7 0.65 0.2 0.1],'string',num2str(layer.EnvData.Salinity,'%.1f'),'callback',{@save_envdata_callback,main_figure});
+    calibration_tab_comp.sal_over=uicontrol(env_group,'style','checkbox','unit','normalized','position',[0.9 0.65 0.1 0.1]);  
+
     
 end
 
@@ -154,7 +160,7 @@ else
 end
 set(calibration_tab_comp.temp,'string',num2str(new_temp,'%.1f'));
     
-c = sw_svel(layer.EnvData.Salinity,layer.EnvData.Temperature,5);
+c = seawater_svel_un95(layer.EnvData.Salinity,layer.EnvData.Temperature,5);
 
 layer.apply_soundspeed(c);
 update_axis_panel(main_figure,0);

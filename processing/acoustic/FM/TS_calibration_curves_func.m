@@ -104,11 +104,11 @@ for uui=select
     s=layer.EnvData.Salinity;
     d=nanmean(range(range<nanmean(range_sph_old)));
     
-    density_at_sphere = sw_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph_old));
-    c_at_sphere = sw_svel(s_sphere, t_sphere, nanmean(range_sph_old));
+    density_at_sphere = seawater_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph_old));
+    c_at_sphere = seawater_svel_un95(s_sphere, t_sphere, nanmean(range_sph_old));
     
     % mean parameters over range from transducer to the sphere
-    c = sw_svel(s, t, d);
+    c = seawater_svel_un95(s, t, d);
     
     if Freq>120000&&strcmp(att_model,'Doonan et al (2003)')
         att_model='Francois & Garrison (1982)';
@@ -116,10 +116,10 @@ for uui=select
     
     switch att_model
         case 'Doonan et al (2003)'
-            alpha = sw_absorption(Freq/1e3, s, t, d,'doonan');
+            alpha = seawater_absorption(Freq/1e3, s, t, d,'doonan');
             att_m='doonan';
         case 'Francois & Garrison (1982)'
-            alpha = sw_absorption(Freq/1e3, s, t, d,'fandg');
+            alpha = seawater_absorption(Freq/1e3, s, t, d,'fandg');
             att_m='fandg';
         case 'Manual Override'
             alpha=layer.Transceivers(idx_freq).Params.Absorption(1)*1e3;
