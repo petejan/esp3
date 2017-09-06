@@ -1,7 +1,7 @@
 function [Cax,Type]=init_cax(Fieldname)
 
 switch lower(Fieldname)
-    case  'sv'
+    case 'sv'
         Cax=[-70 -35];
         Type='Sv';
     case 'svdenoised'
@@ -13,10 +13,10 @@ switch lower(Fieldname)
     case 'sp_comp'
         Cax=[-60 -30];
         Type='TS';
-    case    'spdenoised'
+    case 'spdenoised'
         Cax=[-60 -30];
         Type='Denoised Sp';
-    case  'spunmatched'
+    case 'spunmatched'
         Cax=[-60 -30];
         Type='Sp before match filtering';
     case 'power'

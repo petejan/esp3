@@ -93,7 +93,9 @@ axes_panel_comp.haxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fo
     'GridColor',[0 0 0],...
     'visible','on');
 
-axes_panel_comp.h_axes_plot=plot(axes_panel_comp.haxes,nan,'k');
+axes_panel_comp.h_axes_plot_low=plot(axes_panel_comp.haxes,nan,'color',[0 0.8 0]);
+axes_panel_comp.h_axes_plot_high=plot(axes_panel_comp.haxes,nan,'color','r','linestyle','-','marker','o');
+
 axes_panel_comp.h_axes_text=text(nan,nan,'','Color','r','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.haxes);
 
 axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes,'PickableParts','none','visible','off');

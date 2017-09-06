@@ -26,8 +26,7 @@ Long=trans.GPSDataPing.Long;
 
 try
     ax_main=axes_panel_comp.main_axes;
-    
-    
+        
     x_lim=double(get(ax_main,'xlim'));
     y_lim=double(get(ax_main,'ylim'));
     
@@ -39,21 +38,15 @@ try
     nb_pings=length(Time);
     nb_samples=length(Range);
     
-    if nb_pings_red<nb_pings
-        xdata_red=linspace(x_lim(1),x_lim(2),nb_pings_red);
-    else
-        xdata_red=xdata;
-    end
+
+     xdata_red=linspace(x_lim(1),x_lim(2),nb_pings_red);
+     ydata_red=linspace(y_lim(1),y_lim(2),nb_samples_red);
+
     
-    if nb_samples_red<nb_samples
-        ydata_red=linspace(y_lim(1),y_lim(2),nb_samples_red);
-    else
-        ydata_red=ydata;
-    end
-    
-    [idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
-    
-    
+    %[idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
+    [idx_rs,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
+    idx_r_ori=idx_rs(1);
+    idx_ping_ori=idx_pings(1);
     
     cp = ax_main.CurrentPoint;
     x=cp(1,1);
@@ -96,15 +89,38 @@ try
         else
             bot_val=nan;
         end
+        switch curr_disp.CursorMode
+            case 'Edit Bottom'
+                switch curr_disp.Fieldname
+                    case {'sv','sp','sp_comp','spdenoised','spunmatched','powerunmatched','powerdenoised'}
+                        bot_sample_red=decimate(round(Bottom.Sample_idx(idx_pings)*nb_samples_red/length(idx_rs)),round(length(idx_pings)/nb_pings_red));
+                        
+                        idx_keep=bsxfun(@(x,y) x<=y&x>=y-3  ,(1:nb_samples_red)',bot_sample_red-idx_r_ori);
+                        idx_keep(:,bot_sample_red==nb_samples)=0;
+                        cdata_bot=cdata;
+                        cdata_bot(~idx_keep)=nan;
+                        horz_val=nanmax(cdata_bot);
+                        %horz_val=10*log10(nanmean(10.^(cdata_bot/10)));
+                        idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)));          
+                    otherwise
+                        horz_val=cdata(idx_r_red,:);
+                        horz_val(horz_val<=-999)=nan;
+                        idx_low=ones(size(horz_val));
+                        %idx_high=zeros(size(horz_val));
+                end
+            otherwise
+                horz_val=cdata(idx_r_red,:);
+                horz_val(horz_val<=-999)=nan;
+                idx_low=ones(size(horz_val));
+                %idx_high=zeros(size(horz_val));
+    
+        end
+        
         
         vert_val=cdata(:,idx_ping_red);
         vert_val(vert_val<=-999)=nan;
         
         bot_x_val=[nanmin(vert_val(~(vert_val==-Inf))) nanmax(vert_val)];
-        
-        horz_val=cdata(idx_r_red,:);
-        horz_val(horz_val<=-999)=nan;
-        
         t_n=Time(idx_ping);
         
         i_str='';
@@ -167,8 +183,9 @@ try
         set(info_panel_comp.value,'string',val_str);
         
         axh=axes_panel_comp.haxes;
-        axh_plot=axes_panel_comp.h_axes_plot;
-        axh_text=axes_panel_comp.h_axes_text;
+        axh_plot_high=axes_panel_comp.h_axes_plot_high;
+        axh_plot_low=axes_panel_comp.h_axes_plot_low;
+        %axh_text=axes_panel_comp.h_axes_text;
         
         axv=axes_panel_comp.vaxes;
         axv_plot=axes_panel_comp.v_axes_plot;
@@ -182,17 +199,20 @@ try
         
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
         plot(axv,bot_x_val,([bot_val bot_val]),'k','Tag','curr_val');
-        
-        
+                
         axv_text.Position=[nanmean(bot_x_val) bot_val 0];
         axv_text.String=sprintf('%.2fm',trans.get_bottom_range(idx_ping));
         
         set(axv,'ylim',y_lim)
         set(allchild(axv),'visible',get(axv,'visible'))
         y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];
-        
-        set(axh_plot,'XData',xdata_red,'YData',horz_val);
-        
+ 
+        horz_val_high=horz_val;
+        horz_val_high(idx_low>0)=nan;
+
+        set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
+        set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
+               
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
         set(axh,'xlim',x_lim)
         set(allchild(axh), 'visible',get(axh,'visible'))
