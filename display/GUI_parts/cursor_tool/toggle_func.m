@@ -68,7 +68,13 @@ if isa(src_out,'matlab.ui.container.toolbar.PushTool')
     return;
 end
 
-switch src_out.State
+if isa(src_out,'matlab.ui.container.toolbar.ToggleSplitTool')||isa(src_out,'matlab.ui.container.toolbar.ToggleTool')
+    state=src_out.State;
+else
+    state='off';
+end
+
+switch state
     case'on'
         iptPointerManager(main_figure,'disable');
         axes_panel_comp.bad_transmits.UIContextMenu=[];
@@ -108,9 +114,11 @@ switch src_out.State
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@brush_soundings,main_figure});
             otherwise
                 reset_mode(0,0,main_figure);
+                set_alpha_map(main_figure);
         end
     case 'off'
         reset_mode(0,0,main_figure);
+        set_alpha_map(main_figure);
 end
 
 end

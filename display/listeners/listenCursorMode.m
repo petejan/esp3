@@ -26,8 +26,7 @@ switch listdata.AffectedObject.CursorMode
     case 'Draw Line'
         toggle_func('draw_line',[],main_figure);
     case 'Normal'     
-        reset_mode(0,0,main_figure);
-        set_alpha_map(main_figure);
+         toggle_func('normal',[],main_figure);
 end
 order_axes(main_figure);
 end

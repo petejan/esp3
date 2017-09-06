@@ -90,13 +90,17 @@ try
             bot_val=nan;
         end
         switch curr_disp.CursorMode
-            case 'Edit Bottom'
+            case {'Edit Bottom' 'Bad Transmits'}
                 switch curr_disp.Fieldname
                     case {'sv','sp','sp_comp','spdenoised','spunmatched','powerunmatched','powerdenoised'}
-                        bot_sample_red=decimate(round(Bottom.Sample_idx(idx_pings)*nb_samples_red/length(idx_rs)),round(length(idx_pings)/nb_pings_red));
+                        sub_bot=Bottom.Sample_idx(idx_pings)-idx_r_ori;
+                        sub_tag=Bottom.Tag(idx_pings);
+                        sub_bot(sub_tag==0)=inf;
+                        bot_sample_red=decimate(round(sub_bot*nb_samples_red/length(idx_rs)),round(length(idx_pings)/nb_pings_red));
                         
-                        idx_keep=bsxfun(@(x,y) x<=y&x>=y-3  ,(1:nb_samples_red)',bot_sample_red-idx_r_ori);
-                        idx_keep(:,bot_sample_red==nb_samples)=0;
+                        
+                        idx_keep=bsxfun(@(x,y) x<=y&x>=y-3  ,(1:nb_samples_red)',bot_sample_red);
+                        idx_keep(:,bot_sample_red>=nb_samples)=0;
                         cdata_bot=cdata;
                         cdata_bot(~idx_keep)=nan;
                         horz_val=nanmax(cdata_bot);
@@ -196,25 +200,26 @@ try
         
         
         set(axv_plot,'XData',vert_val,'YData',ydata_red);
-        
+        set(axv,'ylim',y_lim,'xlim',bot_x_val)
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
         plot(axv,bot_x_val,([bot_val bot_val]),'k','Tag','curr_val');
                 
         axv_text.Position=[nanmean(bot_x_val) bot_val 0];
         axv_text.String=sprintf('%.2fm',trans.get_bottom_range(idx_ping));
         
-        set(axv,'ylim',y_lim)
+        
         set(allchild(axv),'visible',get(axv,'visible'))
-        y_val=[nanmin(horz_val(~(horz_val==-Inf))) nanmax(horz_val)];
+        y_val=[nanmin(horz_val(~isinf(horz_val))) nanmax(horz_val(~isinf(horz_val)))*10/15];
  
         horz_val_high=horz_val;
         horz_val_high(idx_low>0)=nan;
 
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
-               
+        
+        set(axh,'xlim',x_lim,'ylim',y_val)       
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
-        set(axh,'xlim',x_lim)
+        
         set(allchild(axh), 'visible',get(axh,'visible'))
         
         try

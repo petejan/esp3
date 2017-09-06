@@ -146,7 +146,7 @@ switch reg_obj.Cell_w_unit
         x_disp=(output_reg.Dist_S+output_reg.Dist_E)/2;
 end
 
-y_disp=(output_reg.Range_ref_min+output_reg.Range_ref_max)/2;
+y_disp=abs(output_reg.Range_ref_max);
 
 %% create new figure here
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
@@ -166,12 +166,16 @@ if  ~any(mat_size==1)
     reg_plot=pcolor(ax_in,repmat(x_disp,size(y_disp,1),1),y_disp,var_disp);
     set(reg_plot,'alphadata',alphadata,'facealpha','flat','edgecolor','none','AlphaDataMapping','none');
 end
+ymin=nanmin(y_disp(:));
+ymax=nanmax(y_disp(:));
+
+xmin=nanmin(x_disp);
+xmax=nanmax(x_disp);
 
 % ticks and grid
-ax_in.XTick=(x_disp(1):reg_obj.Cell_w:x_disp(end));
-ax_in.YTick=sort((nanmin(y_disp(:)):reg_obj.Cell_h:nanmax(y_disp(:))));
+ax_in.XTick=(xmin:reg_obj.Cell_w:xmax)-reg_obj.Cell_w/2;
+ax_in.YTick=sort((ymin:reg_obj.Cell_h:ymax));
 grid(ax_in,'on');
-axis(ax_in,'ij');
 
 % colour
 caxis(ax_in,cax);
@@ -203,7 +207,7 @@ plot(ax_horz,x_disp,horz_plot,'r');
 grid(ax_horz,'on');
 xlabel(ax_horz,sprintf('%s',reg_obj.Cell_w_unit))
 ylabel(ax_horz,ylab)
-%ax_horz.XTick=(x_disp(1):reg_obj.Cell_w*10:x_disp(end));
+ax_horz.XTick=get(ax_in,'XTick');
 ax_horz.XTickLabelRotation=90;
 
 switch reg_obj.Cell_w_unit
@@ -223,28 +227,33 @@ plot(ax_vert,vert_plot,y_disp,'r');
 
 % grid, labels, ticks, etc
 xlabel(ax_vert,ylab)
-axis(ax_vert,'ij');
+
 
 switch reg_obj.Reference
     case 'Surface'
         ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
+        axis(ax_in,'ij');
+        axis(ax_vert,'ij');
     case 'Bottom'
-        ylabel(ax_vert,'Diatnce Above bottom(m)');
+        ylabel(ax_vert,'Distance Above bottom(m)');
+
     case 'Line'
         ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));
 end
 
+
 grid(ax_vert,'on');
-%ax_vert.YTick=(y_disp(1):reg_obj.Cell_h:y_disp(end))+reg_obj.Cell_h/2;
+ax_vert.YTick=get(ax_in,'YTick');
 ax_vert.YAxis.TickLabelFormat='%.0gm';
 
 %% link axes of main display and bottom/side plots
 linkaxes([ax_in ax_vert],'y');
 linkaxes([ax_in ax_horz],'x');
 
+
 %% final adjust axes
-set(ax_in,'Xlim',[nanmin(x_disp)-reg_obj.Cell_w/2 nanmax(x_disp)+reg_obj.Cell_w/2]);
-set(ax_in,'Ylim',[nanmin(y_disp(:))-reg_obj.Cell_h/2 nanmax(y_disp(:))+reg_obj.Cell_h/2]);
+set(ax_in,'Xlim',[xmin-reg_obj.Cell_w/2 xmax+reg_obj.Cell_w/2]);
+set(ax_in,'Ylim',[y_min-reg_obj.Cell_h/2 y_max+reg_obj.Cell_h/2]);
 
 %% nest functions
 

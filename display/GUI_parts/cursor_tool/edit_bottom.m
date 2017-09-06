@@ -112,7 +112,7 @@ switch src.SelectionType
         [~, idx_bot]=nanmin(abs(xinit(1)-xdata));
         [~,idx_r]=nanmin(abs(yinit(1)-ydata));
         bot.Sample_idx(idx_bot)=idx_r;
-        end_bottom_edit();
+        end_bottom_edit(1);
 end
     function wbmcb(~,~)
         u=nansum(~isnan(xinit))+1;
@@ -146,17 +146,18 @@ end
 
     function wbdcb_ext(~,~)
         mouse_state=1;
+        [x_f,y_f]=check_xy();
+        update_bot(x_f,y_f);
         switch src.SelectionType
             case {'open' 'alt'}
                 delete(hp);
-                [x_f,y_f]=check_xy();
-                update_bot(x_f,y_f);
-                end_bottom_edit();
+                end_bottom_edit(1);
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
                 return;
+            otherwise
+                end_bottom_edit(0);
         end
-        
-       
+              
         u=nansum(~isnan(xinit))+1;
     end
 
@@ -211,28 +212,30 @@ end
         [~, idx_max]=nanmin(abs(x_max-xdata));
         idx_pings=(idx_min:idx_max);
         bot.Sample_idx(idx_pings)=nan;
-        end_bottom_edit();
+        end_bottom_edit(1);
         
     end
 
 
-    function end_bottom_edit()
+    function end_bottom_edit(val)
         
-        replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
-        replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
         layer.Transceivers(idx_freq).setBottom(bot);
         curr_disp.Bot_changed_flag=1;
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
         
-        % Prepare an undo/redo action
-        cmd.Name = sprintf('Bottom Edit');
-        cmd.Function        = @bottom_undo_fcn;       % Redo action
-        cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
-        cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
-        cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
-        
-        uiundo(main_figure,'function',cmd);
+        if val>0
+            replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
+            replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
+            
+            % Prepare an undo/redo action
+            cmd.Name = sprintf('Bottom Edit');
+            cmd.Function        = @bottom_undo_fcn;       % Redo action
+            cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
+            cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
+            cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
+            uiundo(main_figure,'function',cmd);
+        end
         
         display_bottom(main_figure);
         set_alpha_map(main_figure);
