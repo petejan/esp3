@@ -139,7 +139,9 @@ idx_bad_data=trans_obj.find_regions_type('Bad Data');
 
 for jj=1:length(idx_bad_data)
    curr_reg=trans_obj.Regions(idx_bad_data(jj));
-   mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)=mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)+curr_reg.create_mask();
+   if ~isempty(intersect(idx_r,curr_reg.Idx_r))&&~isempty(intersect(curr_reg.Idx_pings,idx_pings))
+        mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)=mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)+curr_reg.create_mask();
+   end
 end
 mask(:,idx_bad)=1;
 

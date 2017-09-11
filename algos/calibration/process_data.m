@@ -45,11 +45,11 @@ p.onAxisFactorExpanded = 5 * p.onAxisFactor; % [factor]
 
 % When calculating the RMS fit of the data to the Simrad beam pattern, only
 % consider echoes out to (rmsOutTo * beamwidth) degrees.
-p.rmsOutTo = 0.5;
+p.rmsOutTo = 1;
 
 % What colour map to use for the echogram
 p.colourmap = ''; % '' or 'EK500'
-p.SpRange = [-72 -36];
+p.SpRange = [sphere_ts-p.maxdBDiff1 p.maxdBDiff1+3];
 
 % What method to use when calculating the 'best' estimate of the on-axis
 % sphere TS. Max of on-axis echoes, mean of on-axis echoes, or the peak of
@@ -312,11 +312,11 @@ end
 
 % plot up the on-axis TS values
 fig=new_echo_figure([],'Name', 'On-axis sphere TS');
-if exist('boxplot', 'file') % this lives in the Statistics toolbox, which not everyone will have
-    boxplot(ts_values)
-else
-    hist(ts_values)
-end
+ax1=axes(fig,'units','normalized','outerposition',[0 0 1 0.5]);
+boxplot(ax1,ts_values);
+ax2=axes(fig,'units','normalized','outerposition',[0 0.5 1 0.5]);
+hist(ax2,ts_values);
+
 ylabel('TS (dB re 1 m^2)')
 title(['On axis TS values for ' num2str(length(sphere(i,1))) ' targets']);
 if~isempty(path_out)

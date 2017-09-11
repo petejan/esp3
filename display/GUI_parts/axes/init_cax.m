@@ -36,7 +36,7 @@ switch lower(Fieldname)
         Type='Y_imag';
     case 'singletarget'
         Cax=[-60 -30];
-        Type='Single Targets compensated TS';
+        Type='ST TS';
     case 'snr'
         Cax=[0 30];
         Type='SNR';

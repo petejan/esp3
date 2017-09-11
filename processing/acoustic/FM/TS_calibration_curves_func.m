@@ -105,6 +105,7 @@ for uui=select
     d=nanmean(range(range<nanmean(range_sph_old)));
     
     density_at_sphere = seawater_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph_old));
+
     c_at_sphere = seawater_svel_un95(s_sphere, t_sphere, nanmean(range_sph_old));
     
     % mean parameters over range from transducer to the sphere

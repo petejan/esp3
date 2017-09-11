@@ -26,7 +26,7 @@ Long=trans.GPSDataPing.Long;
 
 try
     ax_main=axes_panel_comp.main_axes;
-        
+    
     x_lim=double(get(ax_main,'xlim'));
     y_lim=double(get(ax_main,'ylim'));
     
@@ -38,10 +38,10 @@ try
     nb_pings=length(Time);
     nb_samples=length(Range);
     
-
-     xdata_red=linspace(x_lim(1),x_lim(2),nb_pings_red);
-     ydata_red=linspace(y_lim(1),y_lim(2),nb_samples_red);
-
+    
+    xdata_red=linspace(x_lim(1),x_lim(2),nb_pings_red);
+    ydata_red=linspace(y_lim(1),y_lim(2),nb_samples_red);
+    
     
     %[idx_r_ori,idx_ping_ori]=get_ori(layer,curr_disp,axes_panel_comp.main_echo);
     [idx_rs,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
@@ -105,7 +105,7 @@ try
                         cdata_bot(~idx_keep)=nan;
                         horz_val=nanmax(cdata_bot);
                         %horz_val=10*log10(nanmean(10.^(cdata_bot/10)));
-                        idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)));          
+                        idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)));
                     otherwise
                         horz_val=cdata(idx_r_red,:);
                         horz_val(horz_val<=-999)=nan;
@@ -117,7 +117,7 @@ try
                 horz_val(horz_val<=-999)=nan;
                 idx_low=ones(size(horz_val));
                 %idx_high=zeros(size(horz_val));
-    
+                
         end
         
         
@@ -145,7 +145,7 @@ try
         else
             xy_string=sprintf('Range: %.2fm\n  Sample: %.0f Ping #:%.0f of  %.0f',Range(idx_r),Samples(idx_r),Number(idx_ping),Number(end));
         end
-
+        
         if ~isempty(Lat)&&nansum(Lat+Long)>0
             pos_string=sprintf('Lat: %.6f \n Long:%.6f',Lat(idx_ping),Long(idx_ping));
             pos_weigtht='normal';
@@ -200,24 +200,28 @@ try
         
         
         set(axv_plot,'XData',vert_val,'YData',ydata_red);
-        set(axv,'ylim',y_lim,'xlim',bot_x_val)
+        if bot_x_val(2)>bot_x_val(1)
+            set(axv,'ylim',y_lim,'xlim',bot_x_val)
+        end
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
         plot(axv,bot_x_val,([bot_val bot_val]),'k','Tag','curr_val');
-                
+        
         axv_text.Position=[nanmean(bot_x_val) bot_val 0];
         axv_text.String=sprintf('%.2fm',trans.get_bottom_range(idx_ping));
         
         
         set(allchild(axv),'visible',get(axv,'visible'))
         y_val=[nanmin(horz_val(~isinf(horz_val))) nanmax(horz_val(~isinf(horz_val)))*10/15];
- 
+        
         horz_val_high=horz_val;
         horz_val_high(idx_low>0)=nan;
-
+        
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
         
-        set(axh,'xlim',x_lim,'ylim',y_val)       
+        if all(~isnan(y_val))&&x_lim(2)>x_lim(1)
+            set(axh,'xlim',x_lim,'ylim',y_val);
+        end
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
         
         set(allchild(axh), 'visible',get(axh,'visible'))
@@ -271,7 +275,7 @@ try
             end
         end
         
-
+        
     end
     
 catch err

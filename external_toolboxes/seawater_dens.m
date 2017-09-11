@@ -4,11 +4,11 @@
 % CALCULATE THE DENSITY OF SEAWATER AT A GIVEN S, T and P.
 % Equation of State is from Millero & Poisson (1981) DSR V28: 625-629.
 %
-% INPUT:       	Salinity (S) in g/kg or pss.
+% INPUT:       	Salinity (S) in g/kg or psu.
 %		Temperature (T) in degrees C.
 %		Pressure (P) in decibar.
 %
-% OUTPUT:	Density [rhp] in g/cc:
+% OUTPUT:	Density [rhp] in KG/M3:
 %
 %			rhp = seawater_dens(S,T,P).
 
@@ -99,8 +99,7 @@ function [rhp]=seawater_dens(S,T,P)
 
 % CORRECT FOR PRESSURE
 
-    RHP=RHO.*(1./(1-Pc./K));
+    rhp=RHO.*(1./(1-Pc./K));
 
-% CONVERT KG/M3 TO g/cc
 
-    rhp = RHP ./ 1000;
+   
