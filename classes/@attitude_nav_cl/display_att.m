@@ -37,8 +37,10 @@
 %% Function
 function h_fig = display_att(obj,parenth)
 
+
 if isempty(obj.Time)
     h_fig=[];
+    warning('No Attitude in current layer');
     return;
 end
 

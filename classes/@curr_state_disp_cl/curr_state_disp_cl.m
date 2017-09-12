@@ -67,8 +67,8 @@ classdef curr_state_disp_cl <handle
                 obj.(props{i})=results.(props{i});
             end
             
-            obj.Fieldnames={'sv','sp','power','angle','target','snr','phi','y','fishdensity'};
-            obj.Caxes={[-70 -35],[-60 -30],[-200 0],[-10 10],[-60 -30],[0 30],[-180 180],[-200 0],[0 10]};
+            obj.Fieldnames={'sv','sp','power','angle','sp_comp','snr','phi','y','fishdensity'};
+            obj.Caxes={[-70 -35],[-60 -30],[-200 0],[-180 180],[-60 -30],[-10 10],[0 30],[-200 0],[0 10]};
             
             obj.setTypeCax();
             

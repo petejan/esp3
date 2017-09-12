@@ -96,9 +96,8 @@ try
                         sub_bot=Bottom.Sample_idx(idx_pings)-idx_r_ori;
                         sub_tag=Bottom.Tag(idx_pings);
                         sub_bot(sub_tag==0)=inf;
-                        bot_sample_red=decimate(round(sub_bot*nb_samples_red/length(idx_rs)),round(length(idx_pings)/nb_pings_red));
-                        
-                        
+                        bot_sample_red=downsample(round(sub_bot*nb_samples_red/length(idx_rs)),round(length(idx_pings)/nb_pings_red));
+                                               
                         idx_keep=bsxfun(@(x,y) x<=y&x>=y-3  ,(1:nb_samples_red)',bot_sample_red);
                         idx_keep(:,bot_sample_red>=nb_samples)=0;
                         cdata_bot=cdata;
@@ -275,6 +274,12 @@ try
             end
         end
         
+%         switch lower(deblank(curr_disp.Fieldname))
+%             case 'sp_comp'
+%                 single_target_tab_comp=getappdata(main_figure,'Single_target_tab');
+% 
+%             
+%         end
         
     end
     
