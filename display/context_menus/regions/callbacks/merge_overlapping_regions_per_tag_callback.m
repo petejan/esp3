@@ -43,25 +43,37 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-if ~isempty(layer.Transceivers(idx_freq).Regions)
+trans_obj=layer.get_trans(curr_disp.Freq);
+if ~isempty(trans_obj.Regions)
     new_regions=[];
-    tag=layer.Transceivers(idx_freq).get_reg_tags();
+    old_regs=trans_obj.Regions;
+    tag=trans_obj.get_reg_tags();
     for t=1:1:length(tag)
-        idx=layer.Transceivers(idx_freq).find_regions_tag(tag{t});
-        regions_tmps=layer.Transceivers(idx_freq).Regions(idx).merge_regions();
+        idx=trans_obj.find_regions_tag(tag{t});
+        regions_tmps=trans_obj.Regions(idx).merge_regions();
         for i=1:length(regions_tmps)
             regions_tmps(i).Tag=tag{t};
         end
         new_regions=[new_regions regions_tmps];
     end
-    layer.Transceivers(idx_freq).rm_all_region();
-    IDS_out=layer.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
+    trans_obj.rm_all_region();
+    IDs=trans_obj.add_region(new_regions,'IDs',1:length(new_regions));
    
     display_regions(main_figure,'both');
-    curr_disp=getappdata(main_figure,'Curr_disp');
+   
+    % Prepare an undo/redo action
+    cmd.Name = sprintf('Region Edit');
+    cmd.Function        = @region_undo_fcn;       % Redo action
+    cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
+    cmd.InverseFunction = @region_undo_fcn;       % Undo action
+    cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
+    uiundo(main_figure,'function',cmd);
 
-    curr_disp.Active_reg_ID=IDS_out(end);
+    if ~isempty(IDs)
+    curr_disp.Active_reg_ID=IDs(end);   
+    curr_disp.Reg_changed_flag=1;
+    end
+    
     order_stacks_fig(main_figure);
 
 end

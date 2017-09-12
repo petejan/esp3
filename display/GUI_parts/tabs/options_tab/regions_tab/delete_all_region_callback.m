@@ -46,21 +46,30 @@ switch choice
         
         layer=getappdata(main_figure,'Layer');
         curr_disp=getappdata(main_figure,'Curr_disp');
-        idx_freq=find_freq_idx(layer,curr_disp.Freq);
-        trans_obj=layer.Transceivers(idx_freq);
+trans_obj=layer.get_trans(curr_disp.Freq);
         list_reg = trans_obj.regions_to_str();
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         ah=axes_panel_comp.main_axes;
         clear_lines(ah);
         
         if ~isempty(list_reg)
-            layer.Transceivers(idx_freq).rm_regions();
+            old_regs=trans_obj.Regions;
+            trans_obj.rm_regions();
             curr_disp.Reg_changed_flag=1;
             setappdata(main_figure,'Layer',layer);       
-            display_regions(main_figure,'both');
-            curr_disp=getappdata(main_figure,'Curr_disp');
-            trans_obj=layer.get_trans(curr_disp.Freq);
+            display_regions(main_figure,'both');            
+            
+            % Prepare an undo/redo action
+            cmd.Name = sprintf('Region Edit');
+            cmd.Function        = @region_undo_fcn;       % Redo action
+            cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
+            cmd.InverseFunction = @region_undo_fcn;       % Undo action
+            cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
+            uiundo(main_figure,'function',cmd);
+               
             curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+            order_stacks_fig(main_figure);
+            curr_disp.Reg_changed_flag=1;
             
         else
             return;

@@ -88,14 +88,26 @@ reg_temp=region_cl(...
     'Cell_h',cell_h,...
     'Cell_h_unit',h_unit);
 
-
+old_regs=layer.Transceivers(idx_freq).Regions;
 IDs=layer.Transceivers(idx_freq).add_region(reg_temp);
+regs=layer.Transceivers(idx_freq).Regions;
+
+% Prepare an undo/redo action
+cmd.Name = sprintf('Region Edit');
+cmd.Function        = @region_undo_fcn;       % Redo action
+cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),regs};
+cmd.InverseFunction = @region_undo_fcn;       % Undo action
+cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_regs};
+uiundo(main_figure,'function',cmd);
 
 display_regions(main_figure,'both');
 if ~isempty(IDs)
     curr_disp.Active_reg_ID=IDs(end);   
     curr_disp.Reg_changed_flag=1;
 end
+
 order_stacks_fig(main_figure);
+
+
 
 end

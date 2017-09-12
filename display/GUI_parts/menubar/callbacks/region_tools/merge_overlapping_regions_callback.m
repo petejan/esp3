@@ -37,22 +37,36 @@
 function merge_overlapping_regions_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
-
 if isempty(layer)
     return;
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-if ~isempty(layer.Transceivers(idx_freq).Regions)
-    new_regions=layer.Transceivers(idx_freq).Regions.merge_regions();
-    layer.Transceivers(idx_freq).rm_all_region();
-    layer.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
+
+trans_obj=layer.get_trans(curr_disp.Freq);
+if ~isempty(trans_obj.Regions)
+    old_regs=trans_obj.Regions;
+    new_regions=trans_obj.Regions.merge_regions();
+    trans_obj.rm_all_region();
+    IDs=trans_obj.add_region(new_regions,'IDs',1:length(new_regions));
     
     display_regions(main_figure,'both');
-    curr_disp=getappdata(main_figure,'Curr_disp');
-    trans_obj=layer.get_trans(curr_disp.Freq);
-    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+    
+    % Prepare an undo/redo action
+    cmd.Name = sprintf('Region Edit');
+    cmd.Function        = @region_undo_fcn;       % Redo action
+    cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
+    cmd.InverseFunction = @region_undo_fcn;       % Undo action
+    cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
+    uiundo(main_figure,'function',cmd);
+    
+    if ~isempty(IDs)
+        curr_disp.Active_reg_ID=IDs(end);
+        curr_disp.Reg_changed_flag=1;
+    end
+    
+    
+
     
     order_stacks_fig(main_figure);
     

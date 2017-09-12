@@ -253,7 +253,7 @@ linkaxes([ax_in ax_horz],'x');
 
 %% final adjust axes
 set(ax_in,'Xlim',[xmin-reg_obj.Cell_w/2 xmax+reg_obj.Cell_w/2]);
-set(ax_in,'Ylim',[y_min-reg_obj.Cell_h/2 y_max+reg_obj.Cell_h/2]);
+set(ax_in,'Ylim',[ymin-reg_obj.Cell_h/2 ymax+reg_obj.Cell_h/2]);
 
 %% nest functions
 

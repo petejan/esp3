@@ -113,18 +113,28 @@ end
 function delete_regions_callback(src,~,table,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+
+ trans_obj=layer.get_trans(curr_disp.Freq);
 idx=getappdata(table,'SelectedRegs');
 
 if ~isempty(idx)
+     old_regs=trans_obj.Regions;
+     
     for i=1:numel(idx)
         trans_obj.rm_region_id(idx(i));
     end
     
     display_regions(main_figure,'both');
-    curr_disp=getappdata(main_figure,'Curr_disp');
-    trans_obj=layer.get_trans(curr_disp.Freq);
+
+    % Prepare an undo/redo action
+    cmd.Name = sprintf('Region Edit');
+    cmd.Function        = @region_undo_fcn;       % Redo action
+    cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
+    cmd.InverseFunction = @region_undo_fcn;       % Undo action
+    cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
+    uiundo(main_figure,'function',cmd);
+    
+    order_stacks_fig(main_figure);
     curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     
 end

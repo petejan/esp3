@@ -70,7 +70,7 @@ default_idx_r_max    = Inf;
 default_spikes       = 4;
 
 % functions for valid values
-check_BS_std       = @(x)(x>=3)&&(x<=20);
+check_BS_std       = @(x)(x>=0)&&(x<=20);
 check_thr_bottom   = @(x)(x>=-120&&x<=-3);
 check_thr_backstep = @(x)(x>=-12&&x<=12);
 check_spikes       = @(x)(x>=0&&x<=20);

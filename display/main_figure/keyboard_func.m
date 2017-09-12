@@ -50,16 +50,16 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 if ~isempty(layer)
     [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-    trans=layer.Transceivers(idx_freq);
-    number_lay=trans.get_transceiver_pings();
-    samples=trans.get_transceiver_samples();
+    trans_obj=layer.Transceivers(idx_freq);
+    number_lay=trans_obj.get_transceiver_pings();
+    samples=trans_obj.get_transceiver_samples();
     
     xdata=number_lay;
     ydata=samples;
 else
     layer=layer_cl();
     idx_freq=1;
-    trans=transceiver_cl();
+    trans_obj=transceiver_cl();
     xdata=[1 1];
     ydata=[1 1];
 end
@@ -224,9 +224,9 @@ try
                 curr_disp.Freq=layer.Frequencies(nanmin(rem(idx_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
             end
         case 'e'
-            if~isempty(trans.Data)
-                if length(trans.Data.Fieldname)>1
-                    fields=trans.Data.Fieldname;
+            if~isempty(trans_obj.Data)
+                if length(trans_obj.Data.Fieldname)>1
+                    fields=trans_obj.Data.Fieldname;
                     id_field=find(strcmp(curr_disp.Fieldname,fields));
                     curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
                 end
@@ -247,12 +247,19 @@ try
                 switch get(gco,'Tag')
                     case {'region','region_text'}
                         id=get(gco,'Userdata');
-                        idx= trans.find_regions_Unique_ID(id);
-                        trans.rm_region_id(get(gco,'Userdata'));
+                        idx= trans_obj.find_regions_Unique_ID(id);
+                        old_regs=trans_obj.Regions;
+                        trans_obj.rm_region_id(get(gco,'Userdata'));
                         display_regions(main_figure,'both');
-                        
-                        if ~isempty(trans.Regions)
-                            curr_disp.Active_reg_ID=trans.Regions(nanmax(idx-1,1)).Unique_ID;
+                            % Prepare an undo/redo action
+                            cmd.Name = sprintf('Region Edit');
+                            cmd.Function        = @region_undo_fcn;       % Redo action
+                            cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
+                            cmd.InverseFunction = @region_undo_fcn;       % Undo action
+                            cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
+                            uiundo(main_figure,'function',cmd);
+                        if ~isempty(trans_obj.Regions)
+                            curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;
                         else
                             curr_disp.Active_reg_ID=[];
                         end
@@ -286,9 +293,10 @@ try
                 go_to_ping(1,main_figure);
             elseif  strcmpi(callbackdata.Modifier,'control')
                 uiundo(main_figure,'execUndo')
-            end
-            
-        case 'x'
+            end          
+        case 'home'
+            go_to_ping(1,main_figure);
+        case {'x' 'end'}
             go_to_ping(length(number_lay),main_figure);
     end
 catch

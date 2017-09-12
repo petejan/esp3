@@ -50,15 +50,22 @@ if ~isempty(list_reg)
     if isempty(ID)
         ID=curr_disp.Active_reg_ID;
     end
-
+    
+    old_regs=trans_obj.Regions;
     trans_obj.rm_region_id(ID);
     
-    
     setappdata(main_figure,'Layer',layer);
-
     display_regions(main_figure,'both');
     
-    trans_obj=layer.get_trans(curr_disp.Freq);
+    % Prepare an undo/redo action
+    cmd.Name = sprintf('Region Edit');
+    cmd.Function        = @region_undo_fcn;       % Redo action
+    cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
+    cmd.InverseFunction = @region_undo_fcn;       % Undo action
+    cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
+    uiundo(main_figure,'function',cmd);
+    
+    
     curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     order_stacks_fig(main_figure);
     curr_disp.Reg_changed_flag=1;
