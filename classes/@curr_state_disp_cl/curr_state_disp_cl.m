@@ -10,7 +10,7 @@ classdef curr_state_disp_cl <handle
         Caxes
         DispBottom
         DispUnderBottom
-        UnderBotTransparency=0.9
+        UnderBotTransparency=90
         DispBotHighVis
         DispTracks
         DispBadTrans
@@ -57,7 +57,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Cmap','ek60',@ischar);
             addParameter(p,'Font','default',@ischar);
             addParameter(p,'UIupdate',0,@isnumeric);
-            addParameter(p,'UnderBotTransparency',0.9,@isnumeric);
+            addParameter(p,'UnderBotTransparency',90,@isnumeric);
             
             parse(p,varargin{:});
             results=p.Results;

@@ -46,8 +46,8 @@
 % *EXAMPLE*
 %
 %   EchoAnalysis; % launches ESP3
-%   EchoAnalysis('Filenames','my_file.raw'); % launches ESP3 and opens 'my_file.raw'.
-%   EchoAnalysis('Filenames','my_file.raw','SaveEcho',1); % launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.
+%   EchoAnalysis('my_file.raw'); % launches ESP3 and opens 'my_file.raw'.
+%   EchoAnalysis('my_file.raw',1); % launches ESP3, opens 'my_file.raw', print file data to .png, and close ESP3.
 %
 % *AUTHOR, AFFILIATION & COPYRIGHT*
 %
@@ -97,8 +97,8 @@ desktop.addGroup('Logbook');
 
 %% Checking and parsing input variables
 p = inputParser;
-addParameter(p,'Filenames',{},@(x) ischar(x)|iscell(x));
-addParameter(p,'SaveEcho',0,@isnumeric);
+addOptional(p,'Filenames',{},@(x) ischar(x)|iscell(x));
+addOptional(p,'SaveEcho',0,@isnumeric);
 parse(p,varargin{:});
 
 %% Do not Relaunch ESP3 if already open (in Matlab)...

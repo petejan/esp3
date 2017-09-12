@@ -43,6 +43,7 @@ p = inputParser;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'algo_name',@(x) nansum(strcmpi(x,names))>0);
+addParameter(p,'replace_bot',1,@isnumeric);
 addParameter(p,'idx_r',[],@isnumeric);
 addParameter(p,'idx_pings',[],@isnumeric);
 addParameter(p,'load_bar_comp',[]);
@@ -97,10 +98,29 @@ switch algo_name
             'Sample_idx',bottom,...
             'Tag',old_tag));
     case 'BadPings'
-        tag=double(idx_noise_sector==0);       
-        trans_obj.setBottom(bottom_cl('Origin','Algo_v2_bp',...
-            'Sample_idx',bottom,...
-            'Tag',tag));
+        tag=double(idx_noise_sector==0);
+        if p.results.replace_bot==1
+            war_str=('Update bottom');
+            choice = questdlg('New bottom has been detected? Do you want to use it?',...
+                war_str,...
+                'Yes','No', ...
+                'Yes');
+            % Handle response
+            switch choice
+                case 'Yes'
+                    new_bot=bottom_cl('Origin','Algo_v2_bp',...
+                        'Sample_idx',bottom,...
+                        'Tag',tag);
+                case 'No'
+                    new_bot=trans_obj.Bottom;
+                    new_bot.Tag=tag;
+            end
+        else
+            new_bot=bottom_cl('Origin','Algo_v2_bp',...
+                'Sample_idx',bottom,...
+                'Tag',tag);
+        end
+        trans_obj.setBottom(new_bot);
         
     case 'Denoise'
         if ~isempty(power_unoised)

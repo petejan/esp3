@@ -66,7 +66,7 @@ display_tab_comp.TS=uicontrol(display_tab_comp.display_tab,'Style','edit','unit'
 
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Transp.%','units','normalized','Position',[0.6 0.7 0.1 0.1]);
 display_tab_comp.trans_bot=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.7 0.7 0.05 0.1],...
-    'string',num2str(curr_disp.UnderBotTransparency*100,'%.0f'),'callback',{@set_bot_trans_cback,main_figure},'TooltipString','Under Bottom Data Transparency');
+    'string',num2str(curr_disp.UnderBotTransparency,'%.0f'),'callback',{@set_bot_trans_cback,main_figure},'TooltipString','Under Bottom Data Transparency');
 
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Max','units','normalized','Position',[0.8 0.85 0.1 0.1]);
 uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Min','units','normalized','Position',[0.8 0.7 0.1 0.1]);

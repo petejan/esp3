@@ -89,7 +89,7 @@ show_status_bar(main_figure);
 
 old_bot=layer.Transceivers(idx_freq).Bottom;
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo('BadPings','load_bar_comp',load_bar_comp);
+layer.Transceivers(idx_freq).apply_algo('BadPings','load_bar_comp',load_bar_comp,'replace_bot',0);
 hide_status_bar(main_figure);
 setappdata(main_figure,'Layer',layer);
 bot=layer.Transceivers(idx_freq).Bottom;

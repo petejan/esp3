@@ -1,7 +1,5 @@
 function TS_calibration_curves_func(main_figure)
 
-
-
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 
@@ -102,6 +100,7 @@ for uui=select
     t_sphere=layer.EnvData.Temperature;
     s_sphere=layer.EnvData.Salinity;
     s=layer.EnvData.Salinity;
+    
     d=nanmean(range(range<nanmean(range_sph_old)));
     
     density_at_sphere = seawater_dens(s_sphere, layer.EnvData.Temperature, nanmean(range_sph_old));
@@ -114,17 +113,17 @@ for uui=select
     if Freq>120000&&strcmp(att_model,'Doonan et al (2003)')
         att_model='Francois & Garrison (1982)';
     end
+    alpha=layer.Transceivers(idx_freq).Params.Absorption(1)*1e3;
     
-    switch att_model
-        case 'Doonan et al (2003)'
-            alpha = seawater_absorption(Freq/1e3, s, t, d,'doonan');
-            att_m='doonan';
-        case 'Francois & Garrison (1982)'
-            alpha = seawater_absorption(Freq/1e3, s, t, d,'fandg');
-            att_m='fandg';
-        case 'Manual Override'
-            alpha=layer.Transceivers(idx_freq).Params.Absorption(1)*1e3;
-            att_m=[];
+    if get(calibration_tab_comp.att_over,'value')==0
+        switch att_model
+            case 'Doonan et al (2003)'
+                att_m='doonan';
+            case 'Francois & Garrison (1982)'
+                att_m='fandg';
+        end
+    else
+        att_m=[];
     end
    
     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, c_at_sphere, ...

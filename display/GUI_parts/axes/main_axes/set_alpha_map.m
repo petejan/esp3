@@ -76,7 +76,7 @@ idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
 
 
 if strcmpi(curr_disp.DispUnderBottom,'off')==1
-    alpha_map(idx_bot_red)=1-curr_disp.UnderBotTransparency;
+    alpha_map(idx_bot_red)=1-curr_disp.UnderBotTransparency/100;
 end
 
 

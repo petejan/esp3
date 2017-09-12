@@ -32,7 +32,7 @@ end
 disp_node = docNode.createElement('Display');
 fields=properties(curr_disp);
 for ifi=1:length(fields)
-    if ~ismember(fields{ifi},{'Type','Fieldname','CursorMode','NbLayers','Cax','CurrLayerID','Fieldnames','Caxes','R_disp'})
+    if ~ismember(fields{ifi},{'Type','Fieldname','CursorMode','NbLayers','Cax','CurrLayerID','Fieldnames','Caxes','R_disp','UIupdate','Reg_changed_flag','Bot_changed_flag','Active_line_ID','Active_reg_ID'})
         val=curr_disp.(fields{ifi});
         if ~isnan(num2str(val,'%.0f'))
             disp_node.setAttribute(fields{ifi},num2str(val,'%.0f'));
@@ -48,8 +48,10 @@ for ial=1:length(algos)
     algocurr_node = docNode.createElement(algos(ial).Name);
     f_algo=fieldnames(algos(ial).Varargin);
     %algocurr_node.setAttribute(char('Function'),char(algos(ial).Function));
-    for ivar=1:length(f_algo)     
-        algocurr_node.setAttribute(f_algo{ivar},num2str(algos(ial).Varargin.(f_algo{ivar}),'%f'));
+    for ivar=1:length(f_algo)
+        if ~ismember(fields{ifi},{'idx_r','idx_ping'})
+            algocurr_node.setAttribute(f_algo{ivar},num2str(algos(ial).Varargin.(f_algo{ivar}),'%f'));
+        end
     end
     algo_node.appendChild(algocurr_node);
 end

@@ -24,12 +24,9 @@ if ~strcmp(layer.Filetype,'CREST')
 
      end
 
-    set(calibration_tab_comp.att,'string',num2str(layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,'%.1f'));
-    
-    set(calibration_tab_comp.temp,'string',num2str(layer.EnvData.Temperature,'%.1f'));
-    
-    set(calibration_tab_comp.sal,'string',num2str(layer.EnvData.Salinity,'%.1f'));
-   
+    set(calibration_tab_comp.string_cal,'string',...
+        sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
+        layer.EnvData.SoundSpeed,layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,layer.EnvData.Salinity,layer.EnvData.Temperature));
 
 end
 

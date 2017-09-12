@@ -180,8 +180,7 @@ for ii=1:length(layer_to_proc)
                 warning('SchoolDetection: No GPS data')
                 return;
             end
-            
-            
+                       
             trans_obj.add_algo(process_list(kk).Algo(idx_school_detect));
             trans_obj.apply_algo('SchoolDetection');
             
