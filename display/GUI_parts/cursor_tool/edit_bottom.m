@@ -86,8 +86,8 @@ yinit=nan(1,nb_pings);
 cp = ah.CurrentPoint;
 xinit(1) =cp(1,1);
 yinit(1)=cp(1,2);
-x0=xinit(1);
-y0=yinit(1);
+% x0=xinit(1);
+% y0=yinit(1);
 u=1;
 if xinit(1)<x_lim(1)||xinit(1)>x_lim(end)||yinit(1)<y_lim(1)||yinit(1)>y_lim(end)
     return;
@@ -228,13 +228,8 @@ end
             replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
             replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
             
-            % Prepare an undo/redo action
-            cmd.Name = sprintf('Bottom Edit');
-            cmd.Function        = @bottom_undo_fcn;       % Redo action
-            cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
-            cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
-            cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
-            uiundo(main_figure,'function',cmd);
+            add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot)
+
         end
         
         display_bottom(main_figure);

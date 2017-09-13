@@ -36,7 +36,7 @@
 
 %% Function
 function mark_bad_transmit(src,~,main_figure)
-
+%profile on;
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -53,8 +53,9 @@ clear_lines(ah);
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
 ydata=double(get(axes_panel_comp.main_echo,'YData'));
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-old_bot=layer.Transceivers(idx_freq).Bottom;
+trans_obj=layer.get_trans(curr_disp.Freq);
+
+old_bot=trans_obj.Bottom;
 
 
 if strcmp(src.SelectionType,'normal')
@@ -93,9 +94,12 @@ switch src.SelectionType
         replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb);
         replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb);
         hp=plot(ah,x_bad,[yinit yinit],'color',line_col,'linewidth',1,'marker','x');
+        
     otherwise
         [~,idx_bad]=min(abs(xdata-xinit));
-        layer.Transceivers(idx_freq).Bottom.Tag(idx_bad+idx_ping_ori-1)=0;
+
+        trans_obj.addBadSector(idx_bad+idx_ping_ori-1,set_val);
+
         end_bt_edit();
 end
     function wbmcb(~,~)
@@ -124,8 +128,10 @@ end
         [~,idx_end]=min(abs(xdata-max(x_bad)));
         idx_f=(idx_start:idx_end)+idx_ping_ori-1;
         
-        layer.Transceivers(idx_freq).Bottom.Tag(idx_f)=set_val;
-        
+    
+        trans_obj.addBadSector(idx_f,set_val);
+
+            
         end_bt_edit()
         
     end
@@ -134,22 +140,21 @@ end
         replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
         replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
         %reset_disp_info(main_figure);
-        new_bot=layer.Transceivers(idx_freq).Bottom;
+        
+        
+        new_bot=trans_obj.Bottom;
         curr_disp.Bot_changed_flag=1; 
+        
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
         
-          % Prepare an undo/redo action
-        cmd.Name = sprintf('Bad Transmit Edit');
-        cmd.Function        = @bottom_undo_fcn;       % Redo action
-        cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),new_bot};
-        cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
-        cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
-
-        uiundo(main_figure,'function',cmd);
+        add_undo_bottom_action(main_figure,trans_obj,old_bot,new_bot);
+        
         display_bottom(main_figure);
         set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);
+%         profile off;
+%         profile viewer;
     end
 
 end

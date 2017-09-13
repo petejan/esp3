@@ -75,7 +75,7 @@ u=findobj(ah,'Tag','SelectLine','-or','Tag','SelectArea');
 delete(u);
 
 
-switch curr_disp.Cmap
+switch lower(curr_disp.Cmap)
     case 'esp2'
         col='w';
     otherwise

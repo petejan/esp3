@@ -49,7 +49,7 @@ switch main_figure.SelectionType
     otherwise
         return;
 end
-switch curr_disp.Cmap
+switch lower(curr_disp.Cmap)
     case 'esp2'
         col_line='w';
     otherwise

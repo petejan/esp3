@@ -47,10 +47,6 @@ uimenu(m_files,'Label','Index Files','Callback',{@index_files_callback,main_figu
 uimenu(m_files,'Label','Clean temp. files','Callback',{@clean_temp_files_callback,main_figure});
 
 m_bot_reg = uimenu(main_figure,'Label','Bottom/Regions','Tag','menufile');
-% m_bot_reg_old = uimenu(m_bot_reg,'Label','Old b-r_files','Tag','menuold');
-% uimenu(m_bot_reg_old,'Label','Load Bottom and Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,1});
-% uimenu(m_bot_reg_old,'Label','Load Bottom','Callback',{@load_bottom_reg_old_files_callback,main_figure,1,0});
-% uimenu(m_bot_reg_old,'Label','Load Regions','Callback',{@load_bottom_reg_old_files_callback,main_figure,0,1});
 if ~isdeployed
     mcvs = uimenu(m_bot_reg,'Label','CVS','Tag','menucvs');
     uimenu(mcvs,'Label','Load Bottom and Regions (if linked to dfile...)','Callback',{@load_bot_reg_callback,main_figure});
@@ -74,44 +70,46 @@ uimenu(m_bot_reg_db,'Label','Save Bottom to db','Callback',{@save_bot_reg_xml_to
 uimenu(m_bot_reg_db,'Label','Save Regions to db','Callback',{@save_bot_reg_xml_to_db_callback,main_figure,[],1});
 uimenu(m_bot_reg_db,'Label','Load Bottom and/or Regions from db','Callback',{@manage_version_calllback,main_figure},'separator','on');
 
-eport_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
-uimenu(eport_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
-uimenu(eport_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure,0});
-uimenu(eport_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
-uimenu(eport_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
-uimenu(eport_menu,'Label','Export Single Targets to xls file','Callback',{@save_st_to_xls_callback,main_figure});
-uimenu(eport_menu,'Label','Export Tracked Targets to xls file','Callback',{@save_tt_to_xls_callback,main_figure});
+export_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
+
+uimenu(export_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
+ext_exp_menu= uimenu(export_menu,'Label','Attitude and position','Tag','menuexportatt');
+uimenu(ext_exp_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure,0});
+uimenu(ext_exp_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
+uimenu(ext_exp_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
+
+st_exp_menu= uimenu(export_menu,'Label','Single Targets/Tacks','Tag','menuexportst');
+uimenu(st_exp_menu,'Label','Export Single Targets to xls file','Callback',{@save_st_to_xls_callback,main_figure});
+uimenu(st_exp_menu,'Label','Export Tracked Targets to xls file','Callback',{@save_tt_to_xls_callback,main_figure});
+
+int_exp_menu= uimenu(export_menu,'Label','Integration Results','Tag','menuexportint');
 
 
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 
-uimenu(m_import,'Label','Import GPS from .mat or .csv','Callback',{@import_gps_from_csv_callback,main_figure});
-uimenu(m_import,'Label','Import Attitude from .csv or 3DM*.log file','Callback',{@import_att_from_csv_callback,main_figure});
-uimenu(m_import,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
-uimenu(m_import,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
+ext_imp_menu= uimenu(m_import,'Label','Attitude and position','Tag','menuimportatt');
+uimenu(ext_imp_menu,'Label','Import GPS from .mat or .csv','Callback',{@import_gps_from_csv_callback,main_figure});
+uimenu(ext_imp_menu,'Label','Import Attitude from .csv or 3DM*.log file','Callback',{@import_att_from_csv_callback,main_figure});
 
-uimenu(m_import,'Label','Import Regions from LSSS .snap','Callback',{@import_from_lsss_snap_callback,main_figure});
+bot_reg_imp_menu= uimenu(m_import,'Label','Bottom/Region','Tag','menuimportbotreg');
+uimenu(bot_reg_imp_menu,'Label','Import Bottom from .evl','Callback',{@import_bot_from_evl_callback,main_figure});
+uimenu(bot_reg_imp_menu,'Label','Import Regions from .evr','Callback',{@import_regs_from_evr_callback,main_figure});
+uimenu(bot_reg_imp_menu,'Label','Import Regions from LSSS .snap','Callback',{@import_from_lsss_snap_callback,main_figure});
 
 
 m_survey = uimenu(main_figure,'Label','Survey Data','Tag','menu_survey');
 uimenu(m_survey,'Label','Reload Survey Data','Callback',{@import_survey_data_callback,main_figure});
 uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
-%uimenu(m_survey,'Label','Display logbook (In Browser)','Callback',{@logbook_display_callback,main_figure});
 uimenu(m_survey,'Label','Edit/Display logbook','Callback',{@logbook_dispedit_callback,main_figure});
-%uimenu(m_survey,'Label','Convert Csv Logbook to Xml (current layer)','Callback',{@convert_csv_logbook_to_xml_callback,main_figure});
 uimenu(m_survey,'Label','Look for new files in current folder','Callback',{@look_for_new_files_callback,main_figure})
 
 
 mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
-uimenu(mhhhh,'Label','Display I-file','Callback',{@ifile_display_callback,main_figure});
 uimenu(mhhhh,'Label','Re-shuffle Layers','Callback',{@reshuffle_layers_callback,main_figure});
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure})
-%uimenu(mhhhh,'Label','Reload Current Layer','Callback',{@reload_current_layer_callback,main_figure});
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
-%if ~isdeployed()
-    uimenu(m_map,'Label','Open/Reload WebMap','Callback',{@display_webmap_from_db_callback,main_figure});
-% end
+uimenu(m_map,'Label','Open/Reload WebMap','Callback',{@display_webmap_from_db_callback,main_figure});
 uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});
 uimenu(m_map,'Label','Plot Tracks from Raw files','Callback',{@plot_gps_track_from_files_callback,main_figure});
 uimenu(m_map,'Label','Map from current layers (integrated)','Callback',{@load_map_fig_callback,main_figure},'separator','on');
@@ -122,27 +120,15 @@ uimenu(m_map,'Label','Map from Survey Output files','Callback',{@map_survey_mat_
 m_display = uimenu(main_figure,'Label','Display','Tag','menutags');
 
 m_font=uimenu(m_display,'Label','Font');
-% fonts=listfonts(main_figure);
-%
-% for i=1:length(fonts)
-% uimenu(m_font,'Label',fonts{i},'Callback',{@change_font_callback,main_figure},'Tag',fonts{i});
-% end
 uimenu(m_font,'Label','Change Font','Callback',{@change_font_callback,main_figure});
 
 
 m_colormap=uimenu(m_display,'Label','Colormap');
-uimenu(m_colormap,'Label','Jet','Callback',{@change_cmap_callback,main_figure},'Tag','jet');
-uimenu(m_colormap,'Label','HSV','Callback',{@change_cmap_callback,main_figure},'Tag','hsv');
-uimenu(m_colormap,'Label','Hot','Callback',{@change_cmap_callback,main_figure},'Tag','hot');
-uimenu(m_colormap,'Label','Cool','Callback',{@change_cmap_callback,main_figure},'Tag','cool');
-uimenu(m_colormap,'Label','Parula','Callback',{@change_cmap_callback,main_figure},'Tag','parula');
-uimenu(m_colormap,'Label','Autumn','Callback',{@change_cmap_callback,main_figure},'Tag','autumn');
-uimenu(m_colormap,'Label','Winter','Callback',{@change_cmap_callback,main_figure},'Tag','winter');
-uimenu(m_colormap,'Label','Spring','Callback',{@change_cmap_callback,main_figure},'Tag','spring');
-uimenu(m_colormap,'Label','Esp2','Callback',{@change_cmap_callback,main_figure},'Tag','esp2');
-uimenu(m_colormap,'Label','EK60','Callback',{@change_cmap_callback,main_figure},'Tag','ek60');
-uimenu(m_colormap,'Label','EK500','Callback',{@change_cmap_callback,main_figure},'Tag','ek500');
-uimenu(m_colormap,'Label','ASL','Callback',{@change_cmap_callback,main_figure},'Tag','asl');
+
+cmap_list=list_cmaps(0);
+for imap=1:numel(cmap_list)
+    uimenu(m_colormap,'Label',cmap_list{imap},'Callback',{@change_cmap_callback,main_figure},'Tag',lower(cmap_list{imap}));
+end
 
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
 main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
@@ -222,10 +208,8 @@ end
 uimenu(mbs,'Label','XML Scripts','Callback',{@load_xml_scripts_callback,main_figure},'separator','on');
 
 
-
 options = uimenu(main_figure,'Label','Options','Tag','options');
 uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
-uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_display_config_callback,main_figure});
 
 help_shortcuts=uimenu(main_figure,'Label','Shortcuts/Help');
 uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@help_menu,main_figure});
@@ -378,17 +362,6 @@ setappdata(main_fig,'Curr_disp',curr_disp);
 end
 
 
-function save_display_config_callback(~,~,main_fig)
-curr_disp=getappdata(main_fig,'Curr_disp');
-app_path=getappdata(main_fig,'App_path');
-layer=getappdata(main_fig,'Layer');
-if isempty(layer)
-    return;
-end
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-
-write_config_to_xml(app_path,curr_disp,layer.Transceivers(idx_freq).Algo);
-end
 
 function load_map_fig_callback(~,~,main_fig)
 load_map_fig(main_fig,[]);

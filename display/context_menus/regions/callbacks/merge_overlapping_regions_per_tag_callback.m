@@ -61,13 +61,8 @@ if ~isempty(trans_obj.Regions)
    
     display_regions(main_figure,'both');
    
-    % Prepare an undo/redo action
-    cmd.Name = sprintf('Region Edit');
-    cmd.Function        = @region_undo_fcn;       % Redo action
-    cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
-    cmd.InverseFunction = @region_undo_fcn;       % Undo action
-    cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
-    uiundo(main_figure,'function',cmd);
+    add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+
 
     if ~isempty(IDs)
     curr_disp.Active_reg_ID=IDs(end);   

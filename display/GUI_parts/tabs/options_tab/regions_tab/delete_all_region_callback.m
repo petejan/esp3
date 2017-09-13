@@ -46,7 +46,7 @@ switch choice
         
         layer=getappdata(main_figure,'Layer');
         curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+        trans_obj=layer.get_trans(curr_disp.Freq);
         list_reg = trans_obj.regions_to_str();
         axes_panel_comp=getappdata(main_figure,'Axes_panel');
         ah=axes_panel_comp.main_axes;
@@ -59,13 +59,8 @@ trans_obj=layer.get_trans(curr_disp.Freq);
             setappdata(main_figure,'Layer',layer);       
             display_regions(main_figure,'both');            
             
-            % Prepare an undo/redo action
-            cmd.Name = sprintf('Region Edit');
-            cmd.Function        = @region_undo_fcn;       % Redo action
-            cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
-            cmd.InverseFunction = @region_undo_fcn;       % Undo action
-            cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
-            uiundo(main_figure,'function',cmd);
+            add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+
                
             curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
             order_stacks_fig(main_figure);

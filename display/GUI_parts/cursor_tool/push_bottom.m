@@ -217,14 +217,7 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
         
-        % Prepare an undo/redo action
-        cmd.Name = sprintf('Bottom Push');
-        cmd.Function        = @bottom_undo_fcn;       % Redo action
-        cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
-        cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
-        cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
-
-        uiundo(main_figure,'function',cmd);
+        add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
 
         display_bottom(main_figure);
         set_alpha_map(main_figure);

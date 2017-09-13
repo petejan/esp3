@@ -340,7 +340,7 @@ if Above||Below
     
     if Below
         [pdf_below,x_below,y_below,~] = sliding_pdf(x_data,Norm_Val.*idx_noise_analysis_below,win,bins,spc,0);
-        if min(size(y_above))>1
+        if min(size(y_below))>1
             [~,grad_y_below] = gradient(y_below);
         else
             grad_y_below = gradient(y_below);

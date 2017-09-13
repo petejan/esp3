@@ -142,13 +142,13 @@ for i=1:nb_trans
     end
     
     switch config(i).TransceiverType
-        case {'WBT','WBT Tube','WBAT','WBT Mini'}
+        case list_WBTs()
             data.pings(i).comp_sig_1=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).comp_sig_4=(nan(nb_samples(i),nb_pings(i)));
             
-        case 'GPT'
+        case list_GPTs()
             data.pings(i).power=(nan(nb_samples(i),nb_pings(i)));
             data.pings(i).AlongPhi=(zeros(nb_samples(i),nb_pings(i)));
             data.pings(i).AcrossPhi=(zeros(nb_samples(i),nb_pings(i)));
@@ -368,7 +368,7 @@ for idg=1:nb_dg
                     
                     switch config(idx).TransceiverType
                         
-                        case {'WBT','WBT Tube','WBAT','WBT Mini'}
+                        case list_WBTs()
                             nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
                             if data.pings(idx).datatype(4)==dec2bin(1)
                                 fmt='float32';
@@ -391,7 +391,7 @@ for idg=1:nb_dg
                                 end
                             end
                             
-                        case 'GPT'
+                        case list_GPTs()
                             if data.pings(idx).datatype(1)==dec2bin(1)
                                 data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
                             end
@@ -533,7 +533,7 @@ if p.Results.GPSOnly==0
         curr_data=[];
         trans_obj(i).Mode=mode{i};
         switch trans_obj(i).Config.TransceiverType
-            case {'WBT','WBT Tube','WBAT','WBT Mini'}
+            case list_WBTs()
                 if strcmpi(mode{i},'FM')
                     curr_data.powerunmatched=single(data_ori.pings(i).power);
                     curr_data.power=single(data.pings(i).power);
@@ -547,7 +547,7 @@ if p.Results.GPSOnly==0
                     curr_data.alongangle=single(data_ori.pings(i).AlongAngle);
                 end
                 
-            case 'GPT'
+            case list_GPTs()
                 curr_data.power=db2pow_perso(single(data.pings(i).power));
                 curr_data.acrossangle=single(data.pings(i).AcrossAngle);
                 curr_data.alongangle=single(data.pings(i).AlongAngle);

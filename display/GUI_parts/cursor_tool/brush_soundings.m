@@ -63,7 +63,7 @@ u=findobj(ah,'Tag','BrushedLine','-or','Tag','BrushedArea');
 delete(u);
 
 
-switch curr_disp.Cmap
+switch lower(curr_disp.Cmap)
     case 'esp2'
         col=[0 0 1];
     otherwise

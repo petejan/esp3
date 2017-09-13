@@ -5,7 +5,7 @@ for idx_freq=1:length(trans_obj)
     angleSensitivityAlongship=trans_obj(idx_freq).Config.AngleSensitivityAlongship;
     angleSensitivityAthwartship=trans_obj(idx_freq).Config.AngleSensitivityAthwartship;
     switch trans_obj(idx_freq).Config.TransceiverType
-        case {'WBT','WBT Tube','WBAT','WBT Mini'}
+        case list_WBTs()
             k_angle=1;
             switch trans_obj(idx_freq).Config.TransducerName
                 case {'ES38-7' 'ES333' }
@@ -68,7 +68,7 @@ for idx_freq=1:length(trans_obj)
                     
             end
             
-        case {'GPT' 'ER60' 'ES60' 'ES70'}
+        case list_GPTs()
             k_angle=180/127;
         otherwise
             k_angle=180/127;
@@ -80,7 +80,7 @@ for idx_freq=1:length(trans_obj)
 end
 
 switch trans_obj(idx_freq).Config.TransceiverType
-    case {'WBT','WBT Tube','WBAT','WBT Mini'}
+    case list_WBTs()
         data.pings=rmfield(data.pings,{'comp_sig_1','comp_sig_2','comp_sig_3','comp_sig_4','AlongPhi','AcrossPhi'});
     otherwise
         data.pings=rmfield(data.pings,{'AlongPhi','AcrossPhi'});

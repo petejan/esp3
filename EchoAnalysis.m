@@ -236,7 +236,7 @@ if ~isempty(p.Results.Filenames)
     open_file([],[],p.Results.Filenames,main_figure);
     % If request was made to print display: print and close ESP3
     if p.Results.SaveEcho>0
-        save_echo(main_figure);
+        save_echo(main_figure,[],[]);
         cleanup_echo(main_figure);
         delete(main_figure);
     end

@@ -6,6 +6,7 @@ folders{2}=fullfile(path, 'processing');
 folders{3}=fullfile(path, 'classes');
 folders{4}=fullfile(path, 'algos');
 folders{5}=fullfile(path, 'display');
+folders{6}=fullfile(path, 'ressources');
 folders{7}=fullfile(path, 'fileIO');
 folders{8}=fullfile(path, 'mapping');
 

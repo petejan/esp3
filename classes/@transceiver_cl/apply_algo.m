@@ -99,7 +99,7 @@ switch algo_name
             'Tag',old_tag));
     case 'BadPings'
         tag=double(idx_noise_sector==0);
-        if p.Results.replace_bot==1
+        if p.Results.replace_bot==0
             war_str=('Update bottom');
             choice = questdlg('New bottom has been detected? Do you want to use it?',...
                 war_str,...

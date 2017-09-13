@@ -213,8 +213,9 @@ try
             end
             
         case 'c'
-            cmaps={'ek60' 'esp2' 'ek500' 'asl' 'jet' 'hsv' };
-            id_map=find(strcmp(curr_disp.Cmap,cmaps));
+
+            cmaps=list_cmaps(1);
+            id_map=find(strcmpi(curr_disp.Cmap,cmaps));
             if isempty(id_map)
                 id_map=0;
             end
@@ -250,14 +251,11 @@ try
                         idx= trans_obj.find_regions_Unique_ID(id);
                         old_regs=trans_obj.Regions;
                         trans_obj.rm_region_id(get(gco,'Userdata'));
+                        
+                        add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+                        
                         display_regions(main_figure,'both');
-                            % Prepare an undo/redo action
-                            cmd.Name = sprintf('Region Edit');
-                            cmd.Function        = @region_undo_fcn;       % Redo action
-                            cmd.Varargin        = {main_figure,trans_obj,trans_obj.Regions};
-                            cmd.InverseFunction = @region_undo_fcn;       % Undo action
-                            cmd.InverseVarargin = {main_figure,trans_obj,old_regs};
-                            uiundo(main_figure,'function',cmd);
+                        
                         if ~isempty(trans_obj.Regions)
                             curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;
                         else

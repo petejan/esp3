@@ -52,7 +52,7 @@ switch main_figure.SelectionType
 end
 axes_panel_comp.bad_transmits.UIContextMenu=[];
 axes_panel_comp.bottom_plot.UIContextMenu=[];
-switch curr_disp.Cmap
+switch lower(curr_disp.Cmap)
     case 'esp2'
         col_line='w';
     otherwise

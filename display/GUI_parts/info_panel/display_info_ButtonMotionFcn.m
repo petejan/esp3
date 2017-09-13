@@ -218,7 +218,7 @@ try
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
         
-        if all(~isnan(y_val))&&x_lim(2)>x_lim(1)
+        if all(~isnan(y_val))&&x_lim(2)>x_lim(1)&&y_val(2)>y_val(1)
             set(axh,'xlim',x_lim,'ylim',y_val);
         end
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');

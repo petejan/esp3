@@ -86,7 +86,7 @@ bottom_tab_comp.default_params=uicontrol(bottom_tab_comp.bottom_tab,'Style','pop
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'BottomDetection'});
-uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
+uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure});
 
 
 setappdata(main_figure,'Bottom_tab',bottom_tab_comp);
@@ -166,14 +166,8 @@ layer.Transceivers(idx_freq).apply_algo('BottomDetection','load_bar_comp',load_b
 hide_status_bar(main_figure);
 setappdata(main_figure,'Layer',layer);
 bot=layer.Transceivers(idx_freq).Bottom;
-% Prepare an undo/redo action
-cmd.Name = sprintf('Bottom Detect Algo');
-cmd.Function        = @bottom_undo_fcn;       % Redo action
-cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),bot};
-cmd.InverseFunction = @bottom_undo_fcn;       % Undo action
-cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_bot};
 
-uiundo(main_figure,'function',cmd);
+add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
 
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');

@@ -1,4 +1,4 @@
-function save_echo(main_figure,path_echo)
+function save_echo(main_figure,path_echo,fileN)
 
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
@@ -28,11 +28,15 @@ layers_Str=list_layers(layer,'nb_char',80);
 title(new_axes,sprintf('%s',layers_Str{1}));
 colorbar();
 
-if nargin<2
+if isempty(path_echo)
     [path_echo,~,~]=fileparts(layer.Filename{1});
 end
 
-print(new_fig,fullfile(path_echo,[layers_Str{1} '.png']),'-dpng','-r300');
+if isempty(fileN)
+    fileN=[layers_Str{1} '.png'];
+end
+
+print(new_fig,fullfile(path_echo,fileN),'-dpng','-r300');
 close(new_fig);
 
 

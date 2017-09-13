@@ -89,7 +89,7 @@ school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_de
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure});
 
 %set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);

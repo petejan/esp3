@@ -1,6 +1,7 @@
 
 function update_path(path)
 addpath(path);
+addpath(genpath(fullfile(path, 'ressources')));
 addpath(genpath(fullfile(path, 'processing')));
 addpath(genpath(fullfile(path, 'classes')));
 addpath(genpath(fullfile(path, 'algos')));

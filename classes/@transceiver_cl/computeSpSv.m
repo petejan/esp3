@@ -40,7 +40,7 @@ switch trans_obj.Mode
     case 'CW'
         
         switch trans_obj.Config.TransceiverType
-            case {'WBT' 'WBT Tube'}
+            case list_WBTs()
                 [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
             otherwise
                 [Sp,Sv]=convert_power(power,range,c,alpha,t_nom,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);

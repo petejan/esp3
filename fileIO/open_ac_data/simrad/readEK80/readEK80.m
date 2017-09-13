@@ -240,7 +240,7 @@ for ii=1:length(filenames)
                         data.pings(idx).time(curr_ping(idx)-p.Results.PingRange(1)+1)=dgTime;
                         
                         switch config(idx).TransceiverType
-                            case {'WBT','WBT Tube','WBAT','WBT Mini'}
+                            case list_WBTs()
                                 if (sampleCount > 0)
                                     temp = fread(fid,8*sampleCount,'float32', 'l');
                                 end
@@ -252,7 +252,7 @@ for ii=1:length(filenames)
                                     data.pings(idx).comp_sig_4(1:data.pings(idx).sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=temp(7:8:end)+1i*temp(8:8:end);
                                 end
                                 
-                            case 'GPT'
+                            case list_GPTs()
                                 data.pings(idx).power(1:sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
                                 angle=fread(fid,[2 sampleCount],'int8', 'l');
                                 data.pings(idx).AcrossPhi(1:sampleCount,curr_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);

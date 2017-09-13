@@ -48,7 +48,7 @@ end
 
 switch trans_obj.Config.TransceiverType
     
-    case {'WBT','WBT Tube','WBAT','WBT Mini'}
+    case list_WBTs()
        t_nom=0; 
     otherwise  
         [t_nom,~]=trans_obj.get_pulse_length();        

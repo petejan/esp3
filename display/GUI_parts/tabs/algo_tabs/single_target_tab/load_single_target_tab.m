@@ -43,7 +43,7 @@ single_target_tab_comp.ax_pos=axes('Parent',single_target_tab_comp.single_target
 
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.55 0.1 0.1 0.12],'callback',{@validate,main_figure});
 uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.45 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'SingleTarget'});
-uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.35 0.1 0.1 0.12],'callback',{@save_algos,main_figure});
+uicontrol(single_target_tab_comp.single_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.35 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure});
 
 %set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Single_target_tab',single_target_tab_comp);

@@ -6,12 +6,16 @@ if isempty(layer)
 end
 
 [path_tmp,~,~]=fileparts(layer.Filename{1});
-path_tmp = uigetdir(path_tmp,'Choose directory to save');
+layers_Str=list_layers(layer,'nb_char',80);
 
-if isequal(path,0)
+[fileN, path_tmp] = uiputfile('*.png',...
+    'Save echogramm',...
+    fullfile(path_tmp,[layers_Str{1} '.png']));
+
+if isequal(path_tmp,0)
     return;
 else
-save_echo(main_figure,path_tmp);
+save_echo(main_figure,path_tmp,fileN);
 
 
 

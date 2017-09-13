@@ -46,7 +46,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.get_trans(curr_disp.Freq);
 
 tag=get(region_tab_comp.tag,'string');
 
@@ -75,7 +75,7 @@ cell_h=str2double(get(region_tab_comp.cell_h,'string'));
 cell_w=str2double(get(region_tab_comp.cell_w,'string'));
 
 reg_temp=region_cl(...
-    'ID',layer.Transceivers(idx_freq).new_id(),...
+    'ID',trans_obj.new_id(),...
     'Tag',tag,...
     'Name','User defined',...
     'Type',data_type,...
@@ -88,17 +88,11 @@ reg_temp=region_cl(...
     'Cell_h',cell_h,...
     'Cell_h_unit',h_unit);
 
-old_regs=layer.Transceivers(idx_freq).Regions;
-IDs=layer.Transceivers(idx_freq).add_region(reg_temp);
-regs=layer.Transceivers(idx_freq).Regions;
+old_regs=trans_obj.Regions;
+IDs=trans_obj.add_region(reg_temp);
 
-% Prepare an undo/redo action
-cmd.Name = sprintf('Region Edit');
-cmd.Function        = @region_undo_fcn;       % Redo action
-cmd.Varargin        = {main_figure,layer.Transceivers(idx_freq),regs};
-cmd.InverseFunction = @region_undo_fcn;       % Undo action
-cmd.InverseVarargin = {main_figure,layer.Transceivers(idx_freq),old_regs};
-uiundo(main_figure,'function',cmd);
+add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+
 
 display_regions(main_figure,'both');
 if ~isempty(IDs)
