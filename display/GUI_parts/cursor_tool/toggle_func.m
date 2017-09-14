@@ -71,7 +71,7 @@ end
 if isa(src_out,'matlab.ui.container.toolbar.ToggleSplitTool')||isa(src_out,'matlab.ui.container.toolbar.ToggleTool')
     state=src_out.State;
 else
-    state='off';
+    state='on';
 end
 
 switch state

@@ -63,10 +63,16 @@ xlabel(ax,'Slice Number');
 ylabel(ax,'Asbcf (dB)');
 legend(ax,'1D','1D Shadow Zone','2D','2D Shadow Zone');
 
-reg_temp=region_cl();
+reg_temp=trans_obj.create_WC_region(...
+    'Cell_w',Slice_w,...
+    'Cell_h',Slice_h,...
+    'Cell_w_unit',Slice_w_units,...
+    'Cell_h_unit','meters');
 if ~isempty(output_2D_surf)
     reg_temp.display_region(output_2D_surf,'main_figure',main_figure,'Name','Sliced Transect 2D (Surface Ref)');
 end
+
+reg_temp.Reference='Bottom';
 
 if ~isempty(output_2D_bot)
     reg_temp.display_region(output_2D_bot,'main_figure',main_figure,'Name','Sliced Transect 2D (Bottom Ref)');

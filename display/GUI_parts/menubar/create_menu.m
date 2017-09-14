@@ -83,7 +83,7 @@ uimenu(st_exp_menu,'Label','Export Single Targets to xls file','Callback',{@save
 uimenu(st_exp_menu,'Label','Export Tracked Targets to xls file','Callback',{@save_tt_to_xls_callback,main_figure});
 
 int_exp_menu= uimenu(export_menu,'Label','Integration Results','Tag','menuexportint');
-
+uimenu(int_exp_menu,'Label','Export Sliced transect','Callback',{@save_sliced_transect_to_xls_callback,main_figure});
 
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 

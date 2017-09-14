@@ -173,7 +173,9 @@ xmin=nanmin(x_disp);
 xmax=nanmax(x_disp);
 
 % ticks and grid
-ax_in.XTick=(xmin:reg_obj.Cell_w:xmax)-reg_obj.Cell_w/2;
+
+
+ax_in.XTick=x_disp;
 ax_in.YTick=sort((ymin:reg_obj.Cell_h:ymax));
 grid(ax_in,'on');
 
@@ -236,7 +238,7 @@ switch reg_obj.Reference
         axis(ax_vert,'ij');
     case 'Bottom'
         ylabel(ax_vert,'Distance Above bottom(m)');
-
+        
     case 'Line'
         ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));
 end
