@@ -103,7 +103,7 @@ try
                         cdata_bot=cdata;
                         cdata_bot(~idx_keep)=nan;
                         horz_val=nanmax(cdata_bot);
-                        %horz_val=10*log10(nanmean(10.^(cdata_bot/10)));
+
                         idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)));
                     otherwise
                         horz_val=cdata(idx_r_red,:);

@@ -42,9 +42,9 @@ bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
 
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'BadPings');
+[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'BadPingsV2');
 if found==0
-     return
+     return;
 end
 
 algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
@@ -59,6 +59,8 @@ set(bad_ping_tab_comp.thr_spikes_Below,'string',num2str(algo.thr_spikes_Below,'%
 
 set(bad_ping_tab_comp.BS_std_bool,'value',algo.BS_std_bool);
 set(bad_ping_tab_comp.BS_std,'string',num2str(algo.BS_std,'%.0f'));
+
+set(bad_ping_tab_comp.percent_BP,'string',layer.Transceivers(idx_freq).bp_percent2str());
 
 %set(findall(bad_ping_tab_comp.bad_ping_tab, '-property', 'Enable'), 'Enable', 'on');
 

@@ -109,7 +109,7 @@ uimenu(mhhhh,'Label','Re-shuffle Layers','Callback',{@reshuffle_layers_callback,
 uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure})
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
-uimenu(m_map,'Label','Open/Reload WebMap','Callback',{@display_webmap_from_db_callback,main_figure});
+%uimenu(m_map,'Label','Open/Reload WebMap','Callback',{@display_webmap_from_db_callback,main_figure});
 uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});
 uimenu(m_map,'Label','Plot Tracks from Raw files','Callback',{@plot_gps_track_from_files_callback,main_figure});
 uimenu(m_map,'Label','Map from current layers (integrated)','Callback',{@load_map_fig_callback,main_figure},'separator','on');

@@ -5,6 +5,8 @@ switch name
         varout={'bottom','double_bottom_region','bs_bottom','idx_bottom','idx_ringdown'};
     case 'BadPings'
         varout={'bottom','double_bottom_region','idx_noise_sector'};
+    case 'BadPingsV2'
+        varout={'idx_noise_sector'};
     case 'Denoise'
         varout={'power_unoised','Sv_unoised','Sp_unoised','SNR'};
     case 'SchoolDetection'

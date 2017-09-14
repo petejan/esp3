@@ -72,8 +72,7 @@ if nansum(Bottom_reg_ext(:))>=0
     
     temp_bs=BS_filtered_bot;
     temp_bs(~Bottom_region)=nan;
-    [~,idx_ping]=nanmax(10*log10(nanmean(10.^(temp_bs/10))));
-    
+    [~,idx_ping]=nanmax(lin_space_mean(temp_bs));
     loop_idx=[idx_ping+1:nb_pings idx_ping:-1:1];
     for i=2:nb_pings
         if nansum(Bottom_region(:,loop_idx(i-1)).*Bottom_region(:,loop_idx(i)))==0 && loop_idx(i)~=idx_ping && nansum(Bottom_reg_ext(:,loop_idx(i)))>heigh_b_filter

@@ -9,6 +9,9 @@ idx_bottom=trans_obj.Bottom.Sample_idx;
 xdata=trans_obj.get_transceiver_pings();
 ydata=trans_obj.get_transceiver_samples();
 
+bad_ping_tab_comp=getappdata(main_figure,'Bad_ping_tab');
+set(bad_ping_tab_comp.percent_BP,'string',trans_obj.bp_percent2str());
+
 if ~isvalid(axes_panel_comp.bottom_plot)
     axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,'tag','bottom');
 end

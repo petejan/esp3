@@ -40,7 +40,7 @@ function load_bad_pings_tab(main_figure,algo_tab_panel)
 
 bad_ping_tab_comp.bad_ping_tab=uitab(algo_tab_panel,'Title','Bad Transmit');
 
-algo=algo_cl('Name','BadPings');
+algo=algo_cl('Name','BadPingsV2');
 varin=algo.Varargin;
 
 x_ini=0.0;
@@ -48,24 +48,22 @@ y_ini=1;
 x_sep=0.02;
 y_sep=0.02;
 
-pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
+pos=create_pos_2(5,2,x_ini,y_ini,x_sep,y_sep);
 
-parameters_1=uipanel(bad_ping_tab_comp.bad_ping_tab,'title','','Position',[0.01 0.2 0.4 0.7],'fontsize',11);
+parameters_1=uipanel(bad_ping_tab_comp.bad_ping_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
 
 bad_ping_tab_comp.BS_std_bool=uicontrol(parameters_1,'Style','checkbox','Value',1,'String','BS fluct. limit (dB)','units','normalized','Position',pos{1,1});
 bad_ping_tab_comp.BS_std=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.BS_std),'BackgroundColor','white','callback',{@check_fmt_box,0,20,varin.BS_std,'%.0f'});
 
-
-bad_ping_tab_comp.Above=uicontrol(parameters_1,'Style','checkbox','Value',1,'String','Above bot. PDF thr.(%)','units','normalized','Position',pos{2,1});
+bad_ping_tab_comp.Above=uicontrol(parameters_1,'Style','checkbox','Value',1,'String','Above Bot. thr (dB)','units','normalized','Position',pos{2,1});
 bad_ping_tab_comp.thr_spikes_Above=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.thr_spikes_Above),'BackgroundColor','white','callback',{@check_fmt_box,0,100,varin.thr_spikes_Above,'%.0f'});
 
-bad_ping_tab_comp.Below=uicontrol(parameters_1,'Style','checkbox','Value',0,'String','Below bot. PDF thr.(%)','units','normalized','Position',pos{3,1});
+bad_ping_tab_comp.Below=uicontrol(parameters_1,'Style','checkbox','Value',0,'String','Below Bot. thr (dB)','units','normalized','Position',pos{3,1});
 bad_ping_tab_comp.thr_spikes_Below=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.thr_spikes_Below),'BackgroundColor','white','callback',{@ check_fmt_box,0,100,varin.thr_spikes_Below,'%.0f'});
 
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Text','String','Bottom Algo Version','units','normalized','Position',[0.7 0.8 0.2 0.1]);
-bad_ping_tab_comp.version=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','popupmenu','Value',1,'String',{'V1','V2'},'units','normalized','Position',[0.7 0.7 0.2 0.1]);
+bad_ping_tab_comp.percent_BP=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','text','String','','units','normalized','pos',[0.6 0.5 0.4 0.2],'fontweight','bold','fontsize',14);
 
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'BadPings'});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'BadPingsV2'});
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
 uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure});
 
@@ -87,7 +85,7 @@ show_status_bar(main_figure);
 
 old_bot=layer.Transceivers(idx_freq).Bottom;
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo('BadPings','load_bar_comp',load_bar_comp,'replace_bot',0);
+layer.Transceivers(idx_freq).apply_algo('BadPingsV2','load_bar_comp',load_bar_comp,'replace_bot',0);
 hide_status_bar(main_figure);
 setappdata(main_figure,'Layer',layer);
 bot=layer.Transceivers(idx_freq).Bottom;

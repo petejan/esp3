@@ -148,7 +148,7 @@ for ii=1:length(layer_to_proc)
         [~,idx_algo_denoise,noise_rem_algo]=find_process_algo(process_list,process_list(kk).Freq,'Denoise');
         [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetection');
         [~,idx_algo_bot_v2,bot_algo_v2]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetectionV2');
-        [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,process_list(kk).Freq,'BadPings');
+        [~,idx_algo_bp,bad_trans_algo]=find_process_algo(process_list,process_list(kk).Freq,'BadPingsV2');
         [~,idx_school_detect,school_detect_algo]=find_process_algo(process_list,process_list(kk).Freq,'SchoolDetection');
         [~,idx_single_target,single_target_algo]=find_process_algo(process_list,process_list(kk).Freq,'SingleTarget');
         [~,idx_track_target,single_track_algo]=find_process_algo(process_list,process_list(kk).Freq,'TrackTarget');
@@ -159,19 +159,19 @@ for ii=1:length(layer_to_proc)
             trans_obj.apply_algo('Denoise');
         end
         
-        if bot_algo&&~bad_trans_algo
+        if bot_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot));
             trans_obj.apply_algo('BottomDetection');
         end
         
-        if bot_algo_v2&&~bad_trans_algo
+        if bot_algo_v2
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot_v2));
             trans_obj.apply_algo('BottomDetectionV2');
         end
         
         if bad_trans_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bp));
-            trans_obj.apply_algo('BadPings');
+            trans_obj.apply_algo('BadPingsV2');
         end
         
         if school_detect_algo
@@ -247,7 +247,7 @@ idx_algo=find_algo_idx(trans_obj,'BottomDetectionV2');
 process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.bad_transmit,'value')==get(processing_tab_comp.bad_transmit,'max');
-idx_algo=find_algo_idx(trans_obj,'BadPings');
+idx_algo=find_algo_idx(trans_obj,'BadPingsV2');
 process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 add=get(processing_tab_comp.school_detec,'value')==get(processing_tab_comp.school_detec,'max');
@@ -289,7 +289,7 @@ if ~isempty(process_list)
     bot_algo_v2=found;
     [~,~,found]=find_process_algo(process_list,freq,'BottomDetection');
     bot_algo=found;
-    [~,~,found]=find_process_algo(process_list,freq,'BadPings');
+    [~,~,found]=find_process_algo(process_list,freq,'BadPingsV2');
     bad_trans_algo=found;
     [~,~,found]=find_process_algo(process_list,freq,'SchoolDetection');
     school_detect_algo=found;

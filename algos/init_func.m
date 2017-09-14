@@ -7,6 +7,8 @@ switch name
         function_out=@detec_bottom_algo_v4;
     case 'BadPings'
         function_out=@bad_pings_removal_2;
+    case 'BadPingsV2'   
+        function_out=@bad_pings_removal_3;
     case 'Denoise'
         function_out=@bg_noise_removal_v2;
     case 'SchoolDetection'

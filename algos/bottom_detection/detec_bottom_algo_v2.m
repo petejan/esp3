@@ -166,7 +166,7 @@ Bottom_mask=((BS_filtered_bot>thr_bottom&BS_filtered_bot>Max_BS+thr_echo)&~Botto
 if nansum(Bottom_mask(:))>=0
     temp_bs=BS_filtered_bot;
     temp_bs(~Bottom_region)=nan;
-    [~,idx_ping]=nanmax(10*log10(nanmean(10.^(temp_bs/10))));
+    [~,idx_ping]=nanmax(lin_space_mean(temp_bs));
     
     loop_idx=[idx_ping+1:nb_pings idx_ping:-1:1];
     for i=2:nb_pings

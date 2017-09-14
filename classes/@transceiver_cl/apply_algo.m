@@ -37,7 +37,7 @@
 %% Function
 function output_struct= apply_algo(trans_obj,algo_name,varargin)
 
-names={'BottomDetectionV2','BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
+names={'BottomDetectionV2','BottomDetection','BadPings','BadPingsV2','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
 
 p = inputParser;
 
@@ -87,13 +87,13 @@ for i=1:length(algo_obj.Varargout)
 end
 
 switch algo_name
-     case'BottomDetection'      
-        old_tag=trans_obj.Bottom.Tag;  
+    case'BottomDetection'
+        old_tag=trans_obj.Bottom.Tag;
         trans_obj.setBottom(bottom_cl('Origin','Algo_v3',...
             'Sample_idx',bottom,...
             'Tag',old_tag));
     case'BottomDetectionV2'
-        old_tag=trans_obj.Bottom.Tag; 
+        old_tag=trans_obj.Bottom.Tag;
         trans_obj.setBottom(bottom_cl('Origin','Algo_v4',...
             'Sample_idx',bottom,...
             'Tag',old_tag));
@@ -121,7 +121,17 @@ switch algo_name
                 'Tag',tag);
         end
         trans_obj.setBottom(new_bot);
+    case 'BadPingsV2'        
+         tag=trans_obj.Bottom.Tag;
+         if isempty(p.Results.idx_pings)
+             tag=ones(size(tag));
+         end
+        tag(idx_noise_sector)=0;
         
+        new_bot=bottom_cl('Origin','Algo_v3_bp',...
+            'Sample_idx',trans_obj.get_bottom_idx(),...
+            'Tag',tag);
+        trans_obj.setBottom(new_bot);
     case 'Denoise'
         if ~isempty(power_unoised)
             trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);
@@ -142,16 +152,16 @@ switch algo_name
         else
             dr=nanmean(diff(trans_obj.get_transceiver_range()));
         end
-
+        
         if dd>0
             w_unit='meters';
             cell_w=nanmax(algo_obj.Varargin.l_min_can/2,2*dd);
         else
-           w_unit='pings';
-           cell_w=round(nanmax(algo_obj.Varargin.l_min_can/2,2*dd));
+            w_unit='pings';
+            cell_w=round(nanmax(algo_obj.Varargin.l_min_can/2,2*dd));
         end
-
-
+        
+        
         trans_obj.rm_region_name_idx_r_idx_p('School',p.Results.idx_r,p.Results.idx_pings);
         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit','meters',...
             'cell_w',cell_w,'cell_h',nanmax(dr*2,algo_obj.Varargin.h_min_can/10));

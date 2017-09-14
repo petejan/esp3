@@ -1,6 +1,6 @@
 function algo_vec=init_algos(name)
 
-name_vec={'BottomDetectionV2','BottomDetection','BadPings','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
+name_vec={'BottomDetectionV2','BottomDetection','BadPings','BadPingsV2','Denoise','SchoolDetection','SingleTarget','TrackTarget'};
 
 if nargin==0
     name=name_vec;

@@ -13,7 +13,7 @@ if ~isempty(process_list)
     noise_rem_algo=found;
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BottomDetectionV2');
     bot_algo=found;
-    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BadPings');
+    [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'BadPingsV2');
     bad_trans_algo=found;
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'SchoolDetection');
     school_detect_algo=found;

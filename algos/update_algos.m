@@ -62,6 +62,7 @@ track_target_tab_comp=getappdata(main_figure,'Track_target_tab');
 [idx_algo_bot,found_bot]=find_algo_idx(trans_obj,'BottomDetection');
 [idx_algo_bot_v2,found_bot_v2]=find_algo_idx(trans_obj,'BottomDetectionV2');
 [idx_algo_bp,found_bp]=find_algo_idx(trans_obj,'BadPings');
+[idx_algo_bp2,found_bp2]=find_algo_idx(trans_obj,'BadPingsV2');
 [idx_school_detect,found_school]=find_algo_idx(trans_obj,'SchoolDetection');
 [idx_single_target,found_single]=find_algo_idx(trans_obj,'SingleTarget');
 [idx_track_target,found_track]=find_algo_idx(trans_obj,'TrackTarget');
@@ -101,16 +102,8 @@ if found_bot_v2>0
 end
 
 if found_bp>0
-    bot_vers=get(bad_ping_tab_comp.version,'String');
-    bot_ver=bot_vers{get(bad_ping_tab_comp.version,'Value')};
-    switch bot_ver
-        case'V1'
-            bad_ping_tab_bot=bottom_tab_comp;
-              
-        otherwise
-            bad_ping_tab_bot=bottom_tab_v2_comp;
-
-    end
+    bot_ver='V2';
+    bad_ping_tab_bot=bottom_tab_v2_comp;
     trans_obj.Algo(idx_algo_bp).Varargin=struct(...
         'thr_bottom',str2double(get(bad_ping_tab_bot.thr_bottom,'string')),...
         'denoised',get(bad_ping_tab_bot.denoised,'value'),...
@@ -129,7 +122,20 @@ if found_bp>0
         'thr_spikes_Below',str2double(get(bad_ping_tab_comp.thr_spikes_Below,'string')),...
         'Above',get(bad_ping_tab_comp.Above,'Value')==1,...
         'Below',get(bad_ping_tab_comp.Below,'Value')==1); 
- end
+end
+ 
+if found_bp2>0
+    trans_obj.Algo(idx_algo_bp2).Varargin=struct(...
+        'denoised',get(bad_ping_tab_bot.denoised,'value'),...
+        'BS_std',str2double(get(bad_ping_tab_comp.BS_std,'string')),...
+        'BS_std_bool',get(bad_ping_tab_comp.BS_std_bool,'Value')==1,...
+        'thr_spikes_Above',str2double(get(bad_ping_tab_comp.thr_spikes_Above,'string')),...
+        'thr_spikes_Below',str2double(get(bad_ping_tab_comp.thr_spikes_Below,'string')),...
+        'Above',get(bad_ping_tab_comp.Above,'Value')==1,...
+        'Below',get(bad_ping_tab_comp.Below,'Value')==1,...
+        'idx_r',[],...
+        'idx_pings',[]); 
+end
 
 
 if found_school>0

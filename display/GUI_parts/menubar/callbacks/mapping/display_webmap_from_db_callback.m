@@ -34,5 +34,5 @@
 
 %% Function
 function display_webmap_from_db_callback(~,~,main_figure)
-update_webmap_from_db(main_figure,1);
+%update_webmap_from_db(main_figure,1);
 end

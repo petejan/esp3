@@ -87,7 +87,7 @@ y_sep=0.02;
 
 pos=create_pos_2(5,2,x_ini,y_ini,x_sep,y_sep);
 
-weights_panel=uipanel(track_target_tab_comp.track_target_tab,'title','Weights','Position',[0.52 0.03 0.21 0.94],'fontsize',11,'Tag','exclu_dist');
+weights_panel=uipanel(track_target_tab_comp.track_target_tab,'title','Weights','Position',[0.42 0.03 0.21 0.94],'fontsize',11,'Tag','exclu_dist');
 
 uicontrol(weights_panel,'Style','text','units','normalized','string','Along','pos',pos{1,1},'HorizontalAlignment','right');
 track_target_tab_comp.WeightMinAxis=uicontrol(weights_panel,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(20),'BackgroundColor','white','callback',{@check_box,[0 100]});

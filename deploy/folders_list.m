@@ -11,7 +11,6 @@ folders{7}=fullfile(path, 'fileIO');
 folders{8}=fullfile(path, 'mapping');
 
 
-
 folders(cellfun(@isempty, folders))=[];
 
 end
