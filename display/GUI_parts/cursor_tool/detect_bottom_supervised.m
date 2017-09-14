@@ -58,8 +58,8 @@ end
 Range= trans_obj.get_transceiver_range();
 id=nanmean(diff(Range));
 t=trans_obj.get_transceiver_time();
-dt=nanmean(diff(t));
-ratio=10*ceil(dt*10/id);
+dt=(t(2)-t(1))*(24*60*60);
+ratio=ceil(dt/id);
 
 ah=axes_panel_comp.main_axes;
 

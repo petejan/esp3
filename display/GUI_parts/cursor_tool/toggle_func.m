@@ -92,9 +92,9 @@ switch state
                 delete(findall(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu'));
                 context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu');
                 axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
-                uimenu(context_menu,'Label','Small','userdata',2,'Callback',@check_only_one);
-                uimenu(context_menu,'Label','Medium','userdata',5,'Callback',@check_only_one,'checked','on');
-                uimenu(context_menu,'Label','Large','userdata',10,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Small','userdata',5,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Medium','userdata',10,'Callback',@check_only_one,'checked','on');
+                uimenu(context_menu,'Label','Large','userdata',20,'Callback',@check_only_one);
                 uimenu(context_menu,'Label','Extra','userdata',50,'Callback',@check_only_one);
                 
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@detect_bottom_supervised,main_figure});
