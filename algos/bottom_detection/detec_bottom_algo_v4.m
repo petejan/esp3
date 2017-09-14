@@ -38,7 +38,7 @@ function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_b
 
 %profile on;
 %Parse Arguments
-t0=tic;
+
 p = inputParser;
 
 default_idx_r_min=0;
@@ -234,10 +234,6 @@ BS_bottom(isnan(Bottom))=nan;
 
 Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
 Bottom(Bottom<=0)=1;
-
-
-t1=toc(t0);
-fprintf('Bottom detected in %0.2fs\n',t1);
 
 bottom_ori=trans_obj.get_bottom_idx();
 bottom_ori(idx_pings)=Bottom+idx_r(1)-1;

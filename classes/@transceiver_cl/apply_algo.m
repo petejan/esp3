@@ -71,8 +71,6 @@ end
 
 if ~isempty(p.Results.load_bar_comp)
     p.Results.load_bar_comp.status_bar.setText(sprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3));
-else
-    fprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3);
 end
 
 eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',str_eval ');']);

@@ -40,7 +40,7 @@ if isempty(survdata_temp)
     survdata_temp=survey_data_cl();
 end
 
-for i=1:nb_files_raw
+parfor i=1:nb_files_raw
     try
         fprintf('Getting Start and End Date from file %s (%i/%i)\n',list_raw{i},i,nb_files_raw);
         [start_date,end_date]=start_end_time_from_file(fullfile(datapath,list_raw{i}),ftypes{i});

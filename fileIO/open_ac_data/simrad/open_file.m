@@ -191,6 +191,8 @@ if ~isempty(layers)
         fprintf('File %s already open in existing layer\n',Filename_tot{idx_already_open});
         Filename_tot(idx_already_open)=[];
     end
+else
+   old_files={}; 
 end
 
 
@@ -222,6 +224,8 @@ for itype = 1:length(ftype_unique)
     switch ftype
         case {'EK60','EK80'}
             missing_files = find_survey_data_db(Filename);
+            idx_miss=cellfun(@(x)~any(strcmpi(x,old_files)),missing_files);
+            missing_files=missing_files(idx_miss);
             if ~isempty(missing_files)
                 % If there are, prompt user if they want them added to the
                 % list of files to open

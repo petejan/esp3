@@ -123,6 +123,7 @@ wbmcb([],[])
         end
         
         output_struct= trans_obj.apply_algo('BottomDetectionV2','idx_r',idx_r,'idx_pings',idx_pings);
+        
         yinit(idx_pings)=output_struct.bottom(idx_pings);
         if isvalid(hp)
             set(hp,'XData',xdata(idx_pings),'YData',yinit(idx_pings));
