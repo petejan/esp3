@@ -44,6 +44,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
+trans_obj=layer.get_trans(curr_disp.Freq);
 context_menu=axes_panel_comp.bad_transmits.UIContextMenu;
 childs=findall(context_menu,'Type','uimenu');
 
@@ -54,8 +55,11 @@ for i=1:length(childs)
     end
     
 end
-
-ratio=25;
+Range= trans_obj.get_transceiver_range();
+id=nanmean(diff(Range));
+t=trans_obj.get_transceiver_time();
+dt=nanmean(diff(t));
+ratio=10*ceil(dt*10/id);
 
 ah=axes_panel_comp.main_axes;
 
@@ -69,7 +73,6 @@ switch lower(curr_disp.Cmap)
         
 end
 
-trans_obj=layer.get_trans(curr_disp.Freq);
 
 xdata=trans_obj.get_transceiver_pings();
 ydata=trans_obj.get_transceiver_samples();
@@ -117,7 +120,7 @@ wbmcb([],[])
         rect.Position=[ping_new-dr sample_new-ratio*dr 2*dr dr*2*ratio];
         
         [idx_pings,idx_r]=get_pr(ping_new,sample_new);
-        
+
         if ping_new<xdata(1)||ping_new>xdata(end)||sample_new<ydata(1)||sample_new>ydata(end)
             return;
         end
