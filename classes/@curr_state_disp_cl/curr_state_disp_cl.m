@@ -108,7 +108,7 @@ classdef curr_state_disp_cl <handle
                     pointer='cross';
                 case 'Draw Line'
                     pointer='addpole';
-                case 'Brush Soundings'
+                case 'Erase Soundings'
                     pointer='eraser';
                 case 'Normal'
                     pointer='arrow';

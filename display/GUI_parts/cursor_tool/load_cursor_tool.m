@@ -48,7 +48,7 @@ if strcmp(src.State,'on')
             curr_disp.CursorMode='Zoom Out';
         case 'zin'
             curr_disp.CursorMode='Zoom In';
-        case {'ed_bot','ed_bot_spline','brush_soundings'}
+        case {'ed_bot','ed_bot_spline','erase_soundings','ed_bot_sup'}
             curr_disp.CursorMode='Edit Bottom';
         case 'meas'
             curr_disp.CursorMode='Measure';

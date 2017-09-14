@@ -88,9 +88,18 @@ switch state
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@mark_bad_transmit,main_figure});
             case 'ed_bot'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@edit_bottom,main_figure});
+            case 'ed_bot_sup'
+                delete(findall(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu'));
+                context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu');
+                axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
+                uimenu(context_menu,'Label','Small','userdata',2,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Medium','userdata',5,'Callback',@check_only_one,'checked','on');
+                uimenu(context_menu,'Label','Large','userdata',10,'Callback',@check_only_one);
+                uimenu(context_menu,'Label','Extra','userdata',50,'Callback',@check_only_one);
+                
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@detect_bottom_supervised,main_figure});
             case 'ed_bot_spline'
-                
-                
+                 
                 delete(findall(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu'));
                 context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu');
                 axes_panel_comp.bad_transmits.UIContextMenu=context_menu;
@@ -110,7 +119,7 @@ switch state
                 %replace_interaction(main_figure,'interaction','KeyPressFcn','id',2,'interaction_fcn',{@cancel_create_region,main_figure});
             case 'draw_line'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure});
-            case 'brush_soundings'
+            case 'erase_soundings'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@brush_soundings,main_figure});
             otherwise
                 reset_mode(0,0,main_figure);

@@ -18,9 +18,13 @@ jActionItem2 = jMenu.add('Spline Tool');
 jActionItem2.setIcon(javax.swing.ImageIcon(fullfile(app_path_main,'icons','edit_bot_spline.png')));
 set(jActionItem2, 'ActionPerformedCallback',{@update_tag, main_figure,'ed_bot_spline','Edit Bottom (spline) (3)'});
 
+jActionItem3 = jMenu.add('Erase Tool');
+jActionItem3.setIcon(javax.swing.ImageIcon(fullfile(app_path_main,'icons','eraser.png')));
+set(jActionItem3, 'ActionPerformedCallback',{@update_tag, main_figure,'erase_soundings','Erase Soundings (3)'});
+
 jActionItem3 = jMenu.add('Brush Tool');
 jActionItem3.setIcon(javax.swing.ImageIcon(fullfile(app_path_main,'icons','brush.png')));
-set(jActionItem3, 'ActionPerformedCallback',{@update_tag, main_figure,'brush_soundings','Brush Soundings (3)'});
+set(jActionItem3, 'ActionPerformedCallback',{@update_tag, main_figure,'ed_bot_sup','Brush Bottom (3)'});
 
 
 jToolbar.revalidate;
@@ -42,12 +46,15 @@ switch new_tag
         set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.edit_bot);
     case 'ed_bot_spline'
         set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.edit_bot_spline);
-    case 'brush_soundings'
+    case 'erase_soundings'
+        set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.eraser);
+    case 'ed_bot_sup'
         set(cursor_mode_tool_comp.edit_bottom,'Cdata',icon.brush);
 end
 
-set(cursor_mode_tool_comp.edit_bottom,'tag',new_tag,'TooltipString',new_string);
-curr_disp.CursorMode=curr_disp.CursorMode;
+set(cursor_mode_tool_comp.edit_bottom,'tag',new_tag,'TooltipString',new_string,'State','on');
+
+curr_disp.CursorMode='Edit Bottom';
 
 end
  
