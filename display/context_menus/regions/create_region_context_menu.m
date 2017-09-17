@@ -85,6 +85,11 @@ if isreg>0
     uimenu(analysis_menu,'Label','Display Region Statistics','Callback',{@reg_integrated_callback,ID,main_figure});
 end
 
+if isreg>0
+    export_menu=uimenu(context_menu,'Label','Export');
+    uimenu(export_menu,'Label','Export integrated region to .xlsx','Callback',{@export_region_callback,ID,main_figure});
+end
+
 uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,select_plot,main_figure});
 
 
@@ -171,6 +176,36 @@ for i=1:size(uniquev,1)
 end
 
 
+
+end
+
+function export_region_callback(~,~,ID,main_figure)
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+
+trans_obj=layer.get_trans(curr_disp.Freq);
+reg_curr=trans_obj.get_region_from_Unique_ID(ID);
+[path_tmp,~,~]=fileparts(layer.Filename{1});
+layers_Str=list_layers(layer,'nb_char',80);
+
+
+[fileN, path_tmp] = uiputfile('*.xlsx',...
+    'Save Sliced transect (integration results)',...
+    fullfile(path_tmp,[layers_Str{1} 'reg_' reg_curr.disp_str() '.xlsx']));
+
+if isequal(path_tmp,0)
+    return;
+end
+
+if exist(fullfile(path_tmp,fileN),'file')>1
+    delete(fullfile(path_tmp,fileN));
+end
+
+output_reg=trans_obj.integrate_region_v2(reg_curr);
+
+reg_output_sheet=reg_output_to_sheet(output_reg);
+xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,1);
 
 end
 

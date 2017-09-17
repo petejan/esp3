@@ -234,22 +234,22 @@ else
 end
 
 
-% 
-% sv_mean_vert_bad_below=nan(1,nb_pings);
-% sv_mean_vert_bad_above=nan(1,nb_pings);
-% sv_mean_vert_bad_below(idx_bad_below)=sv_mean_vert_below(idx_bad_below);
-% sv_mean_vert_bad_above(idx_bad_above)=sv_mean_vert_above(idx_bad_above);
-
-
-% h_fig=new_echo_figure([],'Name','Bad Transmits test','Tag','temp_badt');
-% ax=axes(h_fig,'nextplot','add');
-% grid(ax,'on');
-% plot(ax,sv_mean_vert_below,'-+');
-% plot(ax,sv_mean_vert_bad_below,'or');
-% 
-% plot(ax,sv_mean_vert_above,'-x');
-% plot(ax,sv_mean_vert_bad_above,'ok');
-
+if DEBUG==1
+    sv_mean_vert_bad_below=nan(1,nb_pings);
+    sv_mean_vert_bad_above=nan(1,nb_pings);
+    sv_mean_vert_bad_below(idx_bad_below)=sv_mean_vert_below(idx_bad_below);
+    sv_mean_vert_bad_above(idx_bad_above)=sv_mean_vert_above(idx_bad_above);
+    
+    
+    h_fig=new_echo_figure([],'Name','Bad Transmits test','Tag','temp_badt');
+    ax=axes(h_fig,'nextplot','add');
+    grid(ax,'on');
+    plot(ax,sv_mean_vert_below,'-+');
+    plot(ax,sv_mean_vert_bad_below,'or');
+    
+    plot(ax,sv_mean_vert_above,'-x');
+    plot(ax,sv_mean_vert_bad_above,'ok');
+end
 
 %%%%%%And compile the final vector designing the bad pings%%%%%%%%%%%%%%%%
 idx_bs=find(~idx_bottom_bs_eval);

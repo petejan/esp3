@@ -161,6 +161,9 @@ switch algo_name
         
         
         trans_obj.rm_region_name_idx_r_idx_p('School',p.Results.idx_r,p.Results.idx_pings);
+        if ~isempty(p.Results.load_bar_comp)
+             p.Results.load_bar_comp.status_bar.setText('Creating regions');
+        end
         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit','meters',...
             'cell_w',cell_w,'cell_h',nanmax(dr*2,algo_obj.Varargin.h_min_can/10));
     case 'SingleTarget'
