@@ -128,8 +128,8 @@ switch class(Ext_obj)
                 reg=layers(i).Transceivers(idx_freq).get_reg_spec(idx_reg);
                 output=layers(i).Transceivers(idx_freq).slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
                 %output2D=layers(i).Transceivers(idx_freq).slice_transect2D('regIDs',IDs,'cell_w',p.Results.SliceSize);
-                obj.SliceLat{i}=output.slice_lat_esp2;
-                obj.SliceLong{i}=output.slice_lon_esp2;
+                obj.SliceLat{i}=1/2*(output.slice_lat_s+output.slice_lat_e);
+                obj.SliceLong{i}=1/2*(output.slice_lon_s+output.slice_lon_e);
                 obj.SliceAbscf{i}=output.slice_abscf;
                 obj.SliceTime_S{i}=output.slice_time_start;
                 obj.SliceTime_E{i}=output.slice_time_end;

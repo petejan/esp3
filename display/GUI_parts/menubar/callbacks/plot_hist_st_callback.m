@@ -42,38 +42,7 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+display_st_or_track_hist(main_figure,ax,'st');
 
-curr_disp=getappdata(main_figure,'Curr_disp');
-
-[idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
-if found==0
-    return;
-end
-
-Transceiver=layer.Transceivers(idx_freq);
-
-ST = Transceiver.ST;
-
-if isempty(ST)
-    return;
-end
-
-tag=sprintf('Single Targets from %.0f kHz',curr_disp.Freq/1e3);
-
-nb_bins=50;
-
-[pdf_temp,x_temp]=pdf_perso(ST.TS_comp,'bin',nb_bins);
-
-hfig=new_echo_figure(main_figure,'tag','st_histo');
-ax=axes(hfig);
-bar(ax,x_temp,pdf_temp);
-xlabel('TS(dB)');
-ylabel('Pdf');
-title(tag);
-grid on;
-
-
-
-setappdata(main_figure,'Layer',layer);
 
 end

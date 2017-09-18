@@ -49,7 +49,7 @@ y_sep=0.02;
 
 pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
-parameters_1=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
+parameters_1=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0. 0.2 0.3 0.7],'fontsize',11);
 
 uicontrol(parameters_1,'Style','text','units','normalized','string','Can. Min. Len(m)','pos',pos{1,1},'HorizontalAlignment','right');
 school_detect_tab_comp.l_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.l_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.l_min_can,'%.2f'});
@@ -66,7 +66,7 @@ school_detect_tab_comp.l_min_tot=uicontrol(parameters_1,'Style','Edit','units','
 uicontrol(parameters_1,'Style','text','units','normalized','string','Tot. Min. Hgth(m)','pos',pos{4,1},'HorizontalAlignment','right');
 school_detect_tab_comp.h_min_tot=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.h_min_tot),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.h_min_tot,'%.2f'});
 
-parameters_2=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.32 0.2 0.32 0.7],'fontsize',11);
+parameters_2=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.3 0.2 0.3 0.7],'fontsize',11);
 
 uicontrol(parameters_2,'Style','text','units','normalized','string','Max. horz. link(m)','pos',pos{1,1},'HorizontalAlignment','right');
 school_detect_tab_comp.horz_link_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.horz_link_max),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.horz_link_max,'%.2f'});

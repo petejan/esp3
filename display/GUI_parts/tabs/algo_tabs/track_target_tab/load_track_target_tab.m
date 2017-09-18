@@ -49,11 +49,11 @@ y_sep=0.02;
 pos=create_pos_2(6,4,x_ini,y_ini,x_sep,y_sep);
 
 
-alpha_beta=uipanel(track_target_tab_comp.track_target_tab,'title','Alpha/Beta tracking','Position',[0.01 0.03 0.4 0.94],'fontsize',11,'Tag','alpha_beta');
+alpha_beta=uipanel(track_target_tab_comp.track_target_tab,'title','Alpha/Beta tracking','Position',[0.0 0.0 0.35 1],'fontsize',11,'Tag','alpha_beta');
 
-uicontrol(alpha_beta,'Style','text','units','normalized','string','Along','pos',pos{1,2},'HorizontalAlignment','left');
-uicontrol(alpha_beta,'Style','text','units','normalized','string','Across','pos',pos{1,3},'HorizontalAlignment','left');
-uicontrol(alpha_beta,'Style','text','units','normalized','string','Range','pos',pos{1,4},'HorizontalAlignment','left');
+uicontrol(alpha_beta,'Style','text','units','normalized','string','Al.','pos',pos{1,2},'HorizontalAlignment','left','tooltipstring','AlongShip');
+uicontrol(alpha_beta,'Style','text','units','normalized','string','Ac.','pos',pos{1,3},'HorizontalAlignment','left','tooltipstring','AcrossShip');
+uicontrol(alpha_beta,'Style','text','units','normalized','string','R.','pos',pos{1,4},'HorizontalAlignment','left','tooltipstring','Range');
 
 uicontrol(alpha_beta,'Style','text','units','normalized','string','Alpha','pos',pos{2,1},'HorizontalAlignment','right');
 track_target_tab_comp.AlphaMinAxis=uicontrol(alpha_beta,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(0.3),'BackgroundColor','white','callback',{@check_box,[0 1]});
@@ -87,7 +87,7 @@ y_sep=0.02;
 
 pos=create_pos_2(5,2,x_ini,y_ini,x_sep,y_sep);
 
-weights_panel=uipanel(track_target_tab_comp.track_target_tab,'title','Weights','Position',[0.42 0.03 0.21 0.94],'fontsize',11,'Tag','exclu_dist');
+weights_panel=uipanel(track_target_tab_comp.track_target_tab,'title','Weights','Position',[0.35 0 0.2 1],'fontsize',11,'Tag','exclu_dist');
 
 uicontrol(weights_panel,'Style','text','units','normalized','string','Along','pos',pos{1,1},'HorizontalAlignment','right');
 track_target_tab_comp.WeightMinAxis=uicontrol(weights_panel,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(20),'BackgroundColor','white','callback',{@check_box,[0 100]});
@@ -105,7 +105,7 @@ uicontrol(weights_panel,'Style','text','units','normalized','string','Ping Gap',
 track_target_tab_comp.WeightPingGap=uicontrol(weights_panel,'Style','Edit','units','normalized','pos',pos{5,2},'string',num2str(20),'BackgroundColor','white','callback',{@check_box,[0 100]});
 
 
-accept=uipanel(track_target_tab_comp.track_target_tab,'title','Track acceptance','Position',[0.74 0.03 0.25 0.94],'fontsize',11,'Tag','accept');
+accept=uipanel(track_target_tab_comp.track_target_tab,'title','Track acceptance','Position',[0.55 0 0.2 1],'fontsize',11,'Tag','accept');
 
 uicontrol(accept,'Style','text','units','normalized','string','MinST #','pos',pos{1,1},'HorizontalAlignment','right');
 track_target_tab_comp.Min_ST_Track=uicontrol(accept,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(5),'BackgroundColor','white','callback',{@check_box,[0 200]});
@@ -117,10 +117,15 @@ uicontrol(accept,'Style','text','units','normalized','string','MaxPingGap #','po
 track_target_tab_comp.Max_Gap_Track=uicontrol(accept,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(2),'BackgroundColor','white','callback',{@check_box,[0 100]});
 
 
-uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.8 0.15 0.1 0.1],'callback',{@validate,main_figure});
-uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.8 0.05 0.1 0.1],'callback',{@copy_across_algo,main_figure,'TrackTarget'});
-uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.8 0.25 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure});
+uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.6 0.15 0.1 0.1],'callback',{@validate,main_figure});
+uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across_algo,main_figure,'TrackTarget'});
+uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.25 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure});
 
+
+track_target_tab_comp.ax_pos=axes('Parent',track_target_tab_comp.track_target_tab,'Units','normalized',...
+    'OuterPosition',[0.75 0 0.25 1],'visible','on','NextPlot','add','box','on','tag','tt_ax');
+xlabel(track_target_tab_comp.ax_pos,'TS(dB)');
+grid(track_target_tab_comp.ax_pos,'on');
 
 %set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
@@ -143,7 +148,7 @@ hide_status_bar(main_figure);
 
 setappdata(main_figure,'Layer',layer);
 display_tracks(main_figure);
-
+update_track_target_tab(main_figure);
 end
 
 

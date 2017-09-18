@@ -47,9 +47,9 @@ y_ini=1;
 x_sep=0.02;
 y_sep=0.02;
 
-pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
+pos=create_pos_2(5,2,x_ini,y_ini,x_sep,y_sep);
 
-parameters_1=uipanel(bottom_tab_v2_comp.bottom_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
+parameters_1=uipanel(bottom_tab_v2_comp.bottom_tab,'title','','Position',[0 0.2 0.3 0.7],'fontsize',11);
 
 uicontrol(parameters_1,'Style','text','units','normalized','string','BS thr(dB)','pos',pos{1,1},'HorizontalAlignment','right');
 bottom_tab_v2_comp.thr_bottom=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.thr_bottom),'BackgroundColor','white','callback',{@ check_fmt_box,-80,-15,varin.thr_bottom,'%.0f'});
@@ -66,7 +66,7 @@ bottom_tab_v2_comp.r_max=uicontrol(parameters_1,'Style','Edit','units','normaliz
 uicontrol(parameters_1,'Style','text','units','normalized','string','Back Thr(dB)','pos',pos{4,1},'HorizontalAlignment','right');
 bottom_tab_v2_comp.thr_backstep=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.thr_backstep),'BackgroundColor','white','callback',{@ check_fmt_box,-12,6,varin.thr_backstep,'%.0f'});
 
-parameters_2=uipanel(bottom_tab_v2_comp.bottom_tab,'title','','Position',[0.32 0.2 0.32 0.7],'fontsize',11);
+parameters_2=uipanel(bottom_tab_v2_comp.bottom_tab,'title','','Position',[0.3 0.2 0.3 0.7],'fontsize',11);
 
 uicontrol(parameters_2,'Style','text','units','normalized','string','Around Echo Thr(dB)','pos',pos{1,1},'HorizontalAlignment','right');
 bottom_tab_v2_comp.thr_echo=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.thr_echo),'BackgroundColor','white','callback',{@ check_fmt_box,-60,-3,varin.thr_echo,'%.0f'});

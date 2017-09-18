@@ -25,7 +25,7 @@ set(text_obj,'Fontsize',16);
 line_obj=findobj(new_fig,'Type','Line');
 set(line_obj,'Linewidth',2);
 layers_Str=list_layers(layer,'nb_char',80);
-title(new_axes,sprintf('%s',layers_Str{1}));
+title(new_axes,sprintf('%s',layers_Str{1}),'interpreter','none');
 colorbar();
 
 if isempty(path_echo)

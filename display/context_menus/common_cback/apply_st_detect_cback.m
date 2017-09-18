@@ -63,6 +63,7 @@ hide_status_bar(main_figure);
 curr_disp.setField('singletarget');
 display_tracks(main_figure);
 update_single_target_tab(main_figure,0);
+update_track_target_tab(main_figure)
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 end

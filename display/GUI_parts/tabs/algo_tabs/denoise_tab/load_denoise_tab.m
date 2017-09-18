@@ -50,7 +50,7 @@ y_sep=0.02;
 
 pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
 
-parameters_1=uipanel(denoise_tab_comp.denoise_tab,'title','','Position',[0.01 0.2 0.3 0.7],'fontsize',11);
+parameters_1=uipanel(denoise_tab_comp.denoise_tab,'title','','Position',[0. 0.2 0.3 0.7],'fontsize',11);
 
 uicontrol(parameters_1,'Style','text','units','normalized','string','Horz. Filt.(nb pings)','pos',pos{1,1},'HorizontalAlignment','right');
 denoise_tab_comp.HorzFilt=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.HorzFilt),'BackgroundColor','white','callback',{@ check_fmt_box,1,inf,varin.HorzFilt,'%.0f'});

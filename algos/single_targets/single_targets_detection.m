@@ -84,7 +84,11 @@ end
 
 mask=zeros(size(TS));
 
+idx_bad=find(trans_obj.Bottom.Tag==0);
+idx_p_inter=intersect(idx_bad,idx_pings);
+
 idx_bad_data=trans_obj.find_regions_type('Bad Data');
+mask(:,idx_p_inter-idx_pings(1)+1)=1;
 
 for jj=1:length(idx_bad_data)
     curr_reg=trans_obj.Regions(idx_bad_data(jj));
@@ -161,10 +165,9 @@ c=p.Results.SoundSpeed;
 alpha=trans_obj.Params.Absorption(1);
 
 %Calculate simradBeamCompensation
-simradBeamCompensation = 6.0206 * ((2*along/BW_along).^2 + (2*athwart/BW_athwart).^2 - 0.18*(2*along/BW_along).^2.*(2*athwart/BW_athwart).^2);
+simradBeamComp = simradBeamCompensation(BW_along, BW_athwart, along, athwart);
 
-
-idx_comp=simradBeamCompensation<=p.Results.MaxBeamComp;
+idx_comp=simradBeamComp<=p.Results.MaxBeamComp;
 TVG_mat=double(real(40*log10(Range-c*T/4))+2*alpha*(Range-c*T/4));
 TVG_mat(TVG_mat<=0)=nan;
 Power=TS-TVG_mat;
@@ -265,7 +268,7 @@ for i=1:nb_targets
     end
     idx_pulse=idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i);
     samples_targets_power(1:pulse_length_lin(i),i)=Power(idx_pulse);
-    samples_targets_comp(1:pulse_length_lin(i),i)=simradBeamCompensation(idx_pulse);
+    samples_targets_comp(1:pulse_length_lin(i),i)=simradBeamComp(idx_pulse);
     samples_targets_range(1:pulse_length_lin(i),i)=Range(idx_pulse);
     samples_targets_sample(1:pulse_length_lin(i),i)=Samples(idx_pulse);
     samples_targets_along(1:pulse_length_lin(i),i)=along(idx_pulse);
