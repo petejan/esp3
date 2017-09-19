@@ -27,18 +27,17 @@ if strcmp(trans_obj.Mode,'FM')
     
     eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
     
-    dr=pulse_length*c/(4*dp);
+    dr=pulse_length*c/(2*dp);
     
     nfft=ceil(pulse_length*f_s_sig/dp);
-    nfft=2^(nextpow2(nfft));
+    
+    nfft=2^(nextpow2(nfft)+1);
     
     range=trans_obj.get_transceiver_range();
     
     idx_ts=find(range>=nanmin(r)-dr&range<=nanmax(r)+dr);
-    
+       
     idx_ts=idx_ts(1:nanmin(length(r)*nfft,length(idx_ts)));
-    
-    
     
     y_c_ts=trans_obj.Data.get_subdatamat(idx_ts,iPing,'field','y_real')+1i*trans_obj.Data.get_subdatamat(idx_ts,iPing,'field','y_imag');
     AlongAngle_val=trans_obj.Data.get_subdatamat(idx_ts,iPing,'field','AlongAngle');
@@ -59,7 +58,6 @@ if strcmp(trans_obj.Mode,'FM')
     end
     
     
-      
     fft_pulse=(fft(y_tx_auto_red,nfft))/nfft;
     
     if length(y_c_ts)<=nfft
@@ -67,7 +65,8 @@ if strcmp(trans_obj.Mode,'FM')
         win=win/nanmax(win);
         s = fft(win.*y_c_ts,nfft)/nfft;
     else
-        win=hann(nfft);win=win/nanmax(win);
+        win=hann(nfft);
+        win=win/nanmax(win);
         s = spectrogram(y_c_ts,win,nfft-1,nfft)/nfft;
     end
     
@@ -107,9 +106,9 @@ if strcmp(trans_obj.Mode,'FM')
         alpha_f(:,jj)=  seawater_absorption(f_vec(jj)/1e3, (EnvData.Salinity), (EnvData.Temperature), r_tot,att_model)/1e3;
     end
     
-    compensation_f(compensation_f<0)=nan;
-    compensation_f(compensation_f>12)=nan;
-        
+%     compensation_f(compensation_f<0)=nan;
+%     compensation_f(compensation_f>12)=nan;
+%         
     if ~isempty(cal)
         Gf=interp1(cal.freq_vec,cal.Gf,f_vec);
     else
@@ -118,9 +117,8 @@ if strcmp(trans_obj.Mode,'FM')
        
     lambda=c./(f_vec);
     
-    Prx_fft=4*(abs(s_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
-    
-    
+    Prx_fft=(abs(s_norm)/2).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
+        
     Sp_f=bsxfun(@minus,bsxfun(@plus,10*log10(Prx_fft)+bsxfun(@times,2*alpha_f,r_tot),40*log10(r_tot)),10*log10(ptx*lambda.^2/(16*pi^2))+2*(Gf));
     
     %     figure();

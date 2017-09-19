@@ -215,10 +215,11 @@ for idg=1:nb_dg
                     
                     continue;
                 end
+            elseif strcmpi(t_line,'')
+                continue;
             end
             
-            %[~,output,type]=read_xml0_OLD2(t_line);
-            
+
             [~,output,type]=read_xml0(t_line);%50% faster than the old version!
             
             switch type
@@ -427,11 +428,13 @@ for idg=1:nb_dg
         case 'MRU0'
             id_mru0=id_mru0+1;
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
-            mru0_att.Heave(id_mru0) = fread(fid,1,'float32', 'l');
-            mru0_att.Roll(id_mru0) = fread(fid,1,'float32', 'l');
-            mru0_att.Pitch(id_mru0) = fread(fid,1,'float32', 'l');
-            mru0_att.Heading(id_mru0) = fread(fid,1,'float32', 'l');
-            
+            tmp=fread(fid,1,'float32', 'l');
+            if~isempty(tmp)
+                mru0_att.Heave(id_mru0) = tmp;
+                mru0_att.Roll(id_mru0) = fread(fid,1,'float32', 'l');
+                mru0_att.Pitch(id_mru0) = fread(fid,1,'float32', 'l');
+                mru0_att.Heading(id_mru0) = fread(fid,1,'float32', 'l');
+            end
             
         case 'RAW0'
             if p.Results.GPSOnly>0

@@ -70,6 +70,7 @@ for uui=idx_sort
             set(load_bar_comp.progress_bar,'Value',kk);
         end
         
+        Compensation_f(Compensation_f>6)=nan;
         TS_f=[TS_f; Sp_f+Compensation_f];
         
         f_vec_save=[f_vec_save; f_vec(:,1)];

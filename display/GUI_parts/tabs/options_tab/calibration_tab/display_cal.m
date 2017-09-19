@@ -83,7 +83,8 @@ for uui=idx_sort
     end
     
     if~isempty(cal_ori)
-        plot(ax_1,cal_ori.freq_vec/1e3,cal_ori.Gf,'k','linewidth',2);
+        [~,idx_cal]=sort(cal_ori.freq_vec);
+        plot(ax_1,cal_ori.freq_vec(idx_cal)/1e3,cal_ori.Gf(idx_cal),'k','linewidth',2);
     end
 
     if ~isempty(cal_eba)

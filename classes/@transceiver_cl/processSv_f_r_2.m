@@ -108,10 +108,7 @@ if strcmp(trans_obj.Mode,'FM')
         Gf=gain+10*log10(f_vec./Freq);
     end
 
-
-    
-    
-    Prx_fft_vol=4*(abs(fft_vol_norm)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
+    Prx_fft_vol=(abs(fft_vol_norm)/2).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd;
     tw=nfft/f_s_sig;
 %    Sv_f=10*log10(Prx_fft_vol(:))+2*alpha_f(:).*r-10*log10(c*tw/2)-10*log10(ptx*lambda(:).^2/(16*pi^2))-2*(Gf(:))-eq_beam_angle_f(:);
     Sv_f=bsxfun(@minus,10*log10(Prx_fft_vol)+bsxfun(@times,2*alpha_f,r),10*log10(c*tw/2)+10*log10(ptx*lambda.^2/(16*pi^2))+2*(Gf)+eq_beam_angle_f);

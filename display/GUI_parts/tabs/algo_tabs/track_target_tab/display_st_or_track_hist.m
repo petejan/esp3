@@ -18,7 +18,7 @@ for i=1:length(disp_var)
     delete(obj);
 end
 
-TS=[];
+
 set(ax,'YTickLabel','');
 if isempty(trans_obj)
     return;
@@ -31,6 +31,7 @@ if isempty(ST)
     return;
 else
     for i=1:length(disp_var)
+        TS=[];
         switch disp_var{i}
             case 'st'
                 TS = ST.TS_comp;
@@ -47,7 +48,6 @@ else
                     continue;
                 end
                 
-                TS=[];
                 col='b';
                 legend_str{i}='Tracked Targets';
                 for k=1:length(tracks.target_id)
@@ -58,10 +58,14 @@ else
         if ~isempty(TS)
             [pdf_temp,x_temp]=pdf_perso(TS,'bin',25);
             bar(ax,x_temp,pdf_temp,'Tag',disp_var{i},'FaceColor',col,'FaceAlpha',alpha(i));
+        else
+            legend_str{i}=[];
         end
     end
-    legend_str(cellfun(@isempty,legend_str))=[];
-    legend(ax,legend_str);
+    if ~all(cellfun(@isempty,legend_str))
+        legend_str(cellfun(@isempty,legend_str))=[];
+        legend(ax,legend_str);
+    end
 end
 
 

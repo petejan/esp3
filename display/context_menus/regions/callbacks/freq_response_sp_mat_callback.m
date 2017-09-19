@@ -34,8 +34,7 @@ if strcmp(trans_obj.Mode,'FM')
     [cmap,~,~,col_grid,~,~]=init_cmap(curr_disp.Cmap);
     
     
-    [TS_f,f_vec,pings,range]=trans_obj.TS_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'dp',1,'load_bar_comp',load_bar_comp);
-    
+    [TS_f,f_vec,pings,range]=trans_obj.TS_f_from_region(active_reg,'envdata',layer.EnvData,'cal',cal,'dp',2,'load_bar_comp',load_bar_comp);
     
     
     TS_f_per=permute(TS_f,[1 3 2]);
@@ -47,7 +46,7 @@ if strcmp(trans_obj.Mode,'FM')
     
     [X,Y,Z] = meshgrid(f_vec/1e3,pings,range);
     
-    fig=new_echo_figure(main_figure,'Name','Sp(f)','Tag',sprintf('SpRegion2 %.0f',active_reg.Unique_ID));
+    fig=new_echo_figure(main_figure,'Name','TS(f)','Tag',sprintf('SpRegion2 %.0f',active_reg.Unique_ID));
     
     ax=axes(fig,'units','normalized','Position',[0.15 0.2 0.85 0.7]);
     set(ax,'zdir','reverse','ydir','reverse','box','on');

@@ -99,7 +99,7 @@ uimenu(freq_analysis_menu,'Label','Display Sv Frequency response','Callback',{@f
 
 if strcmp(trans_obj.Mode,'FM')
     uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sv','Callback',{@freq_response_mat_callback,select_plot,main_figure});
-    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix Sp','Callback',{@freq_response_sp_mat_callback,select_plot,main_figure});
+    uimenu(freq_analysis_menu,'Label','Create Frequency Matrix TS','Callback',{@freq_response_sp_mat_callback,select_plot,main_figure});
 end
 
 

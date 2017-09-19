@@ -16,7 +16,7 @@ pings=trans_obj.get_transceiver_pings(reg_obj.Idx_pings);
 
 if ~isempty(p.Results.load_bar_comp)
     set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(pings), 'Value',0);
-    p.Results.load_bar_comp.status_bar.setText('Sv Matrix Estimation');
+    p.Results.load_bar_comp.status_bar.setText('TS Matrix Estimation');
 end
 [~,~,f_vec,r_tot]=trans_obj.processTS_f_v2(p.Results.envdata,1,range,p.Results.dp,p.Results.cal,[]);
 
