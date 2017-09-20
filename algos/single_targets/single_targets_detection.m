@@ -29,26 +29,25 @@ addParameter(p,'TS_threshold',defaultTsThr,checkTsThr);
 addParameter(p,'PLDL',defaultPLDL,checkPLDL);
 addParameter(p,'MinNormPL',defaultMinNormPL,checkNormPL);
 addParameter(p,'MaxNormPL',defaultMaxNormPL,checkNormPL);
-addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
-addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
+addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'MaxBeamComp',defaultMaxBeamComp,checkBeamComp);
 addParameter(p,'MaxStdMinAxisAngle',defaultMaxStdMinAxisAngle,checkMaxStdMinAxisAngle);
 addParameter(p,'MaxStdMajAxisAngle',defaultMaxStdMajAxisAngle,checkMaxStdMajAxisAngle);
 addParameter(p,'DataType','CW',check_data_type);
 addParameter(p,'load_bar_comp',[]);
 
-
 parse(p,trans_obj,varargin{:});
-if isempty(p.Results.idx_r)
-    idx_r=1:length(trans_obj.get_transceiver_range());
-else
-    idx_r=p.Results.idx_r;
-end
 
-if isempty(p.Results.idx_pings)
+if isempty(p.Results.reg_obj)
+    idx_r=1:length(trans_obj.get_transceiver_range());
     idx_pings=1:length(trans_obj.get_transceiver_pings());
+    mask=zeros(numel(idx_r),numel(idx_pings));
+    reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
-    idx_pings=p.Results.idx_pings;
+    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_r=p.Results.reg_obj.Idx_r;
+    mask=~(p.Results.reg_obj.create_mask());
+    reg_obj=p.Results.reg_obj; 
 end
 
 idx_r=idx_r(:);
@@ -82,22 +81,16 @@ switch p.Results.DataType
 end
 
 
-mask=zeros(size(TS));
 
 idx_bad=find(trans_obj.Bottom.Tag==0);
 idx_p_inter=intersect(idx_bad,idx_pings);
-
-idx_bad_data=trans_obj.find_regions_type('Bad Data');
 mask(:,idx_p_inter-idx_pings(1)+1)=1;
 
-for jj=1:length(idx_bad_data)
-    curr_reg=trans_obj.Regions(idx_bad_data(jj));
-    idx_r_inter=intersect(curr_reg.Idx_r,idx_r);
-    idx_p_inter=intersect(curr_reg.Idx_pings,idx_pings);
-    mask_reg=curr_reg.create_mask();
-    mask(idx_r_inter-idx_r(1)+1,idx_p_inter-idx_pings(1)+1)=mask(idx_r_inter-idx_r(1)+1,idx_p_inter-idx_pings(1)+1)...
-        +mask_reg(idx_r_inter-curr_reg.Idx_r(1)+1,idx_p_inter-curr_reg.Idx_pings(1)+1);
-end
+idx_bad_data=trans_obj.find_regions_type('Bad Data');
+
+mask_inter=reg_obj.get_mask_from_intersection(trans_obj.Regions(idx_bad_data));
+
+mask(mask_inter>=1)=1;
 
 [nb_samples,nb_pings]=size(TS);
 

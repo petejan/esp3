@@ -52,7 +52,6 @@ switch class(ID)
     otherwise
         isreg=1;
         select_plot=trans_obj.get_region_from_Unique_ID(ID);
-
 end
 context_menu=uicontextmenu(main_figure,'Tag','RegionContextMenu','UserData',ID);
 

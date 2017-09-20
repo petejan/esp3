@@ -68,8 +68,7 @@ addParameter(p,'thr_spikes_Above',default_spikes,check_spikes);
 addParameter(p,'thr_spikes_Below',default_spikes,check_spikes);
 addParameter(p,'Above',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Below',true,@(x) isnumeric(x)||islogical(x));
-addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
-addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
+addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'load_bar_comp',[]);
 
 % parse
@@ -86,16 +85,16 @@ Above            = p.Results.Above;
 Below            = p.Results.Below;
 
 
-if isempty(p.Results.idx_r)
+if ~isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
-else
-    idx_r=p.Results.idx_r;
-end
-
-if isempty(p.Results.idx_pings)
     idx_pings=1:length(trans_obj.get_transceiver_pings());
+    mask=zeros(numel(idx_r),numel(idx_pings));
+    %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
-    idx_pings=p.Results.idx_pings;
+    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_r=p.Results.reg_obj.Idx_r;
+    mask=~(p.Results.reg_obj.create_mask());
+    %reg_obj=p.Results.reg_obj; 
 end
 
 %% more pre-processing
@@ -109,6 +108,8 @@ if p.Results.denoised>0
 else
     Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
+Sv(mask)=-999;
+
 [nb_samples,nb_pings] = size(Sv);
 
 if idx_r(1)<=20

@@ -19,7 +19,7 @@ idx_reg=trans_obj.find_regions_type('Data');
 %profile on;
 sh_height=10;
 [output_2D_surf,output_2D_bot,~,~,output_2D_sh,shadow_height_est]=trans_obj.slice_transect2D_new_int('Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
-    'RegInt',0,'Shadow_zone',0,'Shadow_zone_height',sh_height,'Idx_reg',idx_reg);
+    'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'Idx_reg',idx_reg);
 
 surf_slice_int=nansum(output_2D_surf.eint);
 good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
@@ -46,29 +46,28 @@ end
    
 good_pings=nanmax([good_pings_sh;good_pings_bot;good_pings_surf],[],1);
 
-reg_tot=trans_obj.get_reg_spec(idx_reg);
-[output_1D,~,~]=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',1,'Slice_w',Slice_w,'Slice_units',Slice_w_units);
+% reg_tot=trans_obj.get_reg_spec(idx_reg);
+% [output_1D,~,~]=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',1,'Slice_w',Slice_w,'Slice_units',Slice_w_units);
 
 fig_disp=new_echo_figure(main_figure,'Tag','Sliced Transect 1D','Keep_old',1);
-ax=axes(fig_disp);
-plot(ax,output_1D.slice_time_start,10*log10(output_1D.slice_abscf),'+-k');
-hold(ax,'on');
-plot(ax,output_1D.slice_time_start,10*log10(output_1D.slice_abscf+output_1D.shadow_zone_slice_abscf),'+-b');
+ax=axes(fig_disp);hold(ax,'on');grid(ax,'on');
+% plot(ax,output_1D.slice_time_start,10*log10(output_1D.slice_abscf),'+-k');
+% plot(ax,output_1D.slice_time_start,10*log10(output_1D.slice_abscf+output_1D.shadow_zone_slice_abscf),'+-b');
 
 plot(ax,x_slice,10*log10((surf_slice_int+bot_slice_int)./good_pings),'color',[0.8 0 0],'marker','o');
 plot(ax,x_slice,10*log10((sh_slice_int+surf_slice_int+bot_slice_int)./good_pings),'color',[0 0.8 0],'marker','o');
 
-grid(ax,'on');
 xlabel(ax,'Slice Number');
 ylabel(ax,'Asbcf (dB)');
-legend(ax,'1D','1D Shadow Zone','2D','2D Shadow Zone');
+legend(ax,'2D','2D Shadow Zone');
 
 reg_temp=trans_obj.create_WC_region(...
-    'Reference','Surface',...
+    'Ref','Surface',...
     'Cell_w',Slice_w,...
     'Cell_h',Slice_h,...
     'Cell_w_unit',Slice_w_units,...
     'Cell_h_unit','meters');
+
 if ~isempty(output_2D_surf)
     reg_temp.display_region(output_2D_surf,'main_figure',main_figure,'Name','Sliced Transect 2D (Surface Ref)');
 end

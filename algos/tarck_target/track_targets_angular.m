@@ -52,23 +52,21 @@ addParameter(p,'Min_ST_Track',default_min_ST_Track,check_min_ST_track);
 addParameter(p,'Min_Pings_Track',default_Min_Pings_Track,check_accept);
 addParameter(p,'Max_Gap_Track',default_Max_Gap_Track,check_accept);
 addParameter(p,'load_bar_comp',[]);
-addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
-addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
+addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 
 parse(p,trans_obj,varargin{:});
 
-if isempty(p.Results.idx_r)
+if isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
-else
-    idx_r=p.Results.idx_r;
-end
-
-if isempty(p.Results.idx_pings)
     idx_pings=1:length(trans_obj.get_transceiver_pings());
+    %mask=zeros(numel(idx_r),numel(idx_pings));
+    %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
-    idx_pings=p.Results.idx_pings;
+    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_r=p.Results.reg_obj.Idx_r;
+    %mask=~(p.Results.reg_obj.create_mask());
+    %reg_obj=p.Results.reg_obj; 
 end
-
 
 
 ST=trans_obj.ST;

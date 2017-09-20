@@ -16,7 +16,7 @@ algo=algo_obj.Varargin;
 algo_fields=fields(algo);
 
 for i=1:length(algo_fields)
-    if ~any(strcmp(algo_fields{i},{'ST','idx_r','idx_pings'}))
+    if ~any(strcmp(algo_fields{i},{'ST','idx_r','idx_pings','reg_obj'}))
         set(track_target_tab_comp.(algo_fields{i}),'string',num2str(algo.(algo_fields{i})));
     end
 end

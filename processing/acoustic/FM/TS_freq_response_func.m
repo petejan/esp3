@@ -1,12 +1,10 @@
 function TS_freq_response_func(main_figure,idx_r,idx_pings)
 
-
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-
 
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
@@ -15,7 +13,6 @@ range=layer.Transceivers(idx_freq).get_transceiver_range();
 
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
-
 
 f_vec_save=[];
 
@@ -64,8 +61,7 @@ for uui=idx_sort
         load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
 
         
-        for kk=1:length(idx_pings)      
-            %[Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),cal);
+        for kk=1:length(idx_pings)
             [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal,[]);
             set(load_bar_comp.progress_bar,'Value',kk);
         end

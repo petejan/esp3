@@ -42,14 +42,16 @@ str_eval=[];
 fields_algo_in=fields(algo_obj.Varargin);
 
 for i=1:length(fields_algo_in)
-    str_eval=[str_eval sprintf('''%s'',',fields_algo_in{i})];
+
     if ischar(algo_obj.Varargin.(fields_algo_in{i}))
+        str_eval=[str_eval sprintf('''%s'',',fields_algo_in{i})];
         str_eval=[str_eval sprintf('''%s'',',algo_obj.Varargin.(fields_algo_in{i}))];
-    else
+    elseif isnumeric(algo_obj.Varargin.(fields_algo_in{i}))
+        str_eval=[str_eval sprintf('''%s'',',fields_algo_in{i})];
         str_eval=[str_eval '['];
         str_eval=[str_eval sprintf('%f ',algo_obj.Varargin.(fields_algo_in{i}))];
         str_eval=[str_eval '],'];
-    end
+    end 
 end
 
 str_eval(end)=[];

@@ -49,7 +49,7 @@ for ial=1:length(algos)
     f_algo=fieldnames(algos(ial).Varargin);
     %algocurr_node.setAttribute(char('Function'),char(algos(ial).Function));
     for ivar=1:length(f_algo)
-        if ~ismember(fields{ifi},{'idx_r','idx_ping'})
+        if ~ismember(fields{ifi},{'idx_r','idx_ping','reg_obj'})
             algocurr_node.setAttribute(f_algo{ivar},num2str(algos(ial).Varargin.(f_algo{ivar}),'%f'));
         end
     end

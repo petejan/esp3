@@ -186,8 +186,6 @@ if isempty(dist)
 end
 
 if p.Results.intersect_only==1
-    Sv_reg_save=Sv_reg;
-    Sv_reg=nan(size(Sv_reg));
     
     switch p.Results.select_reg
         case 'all'
@@ -195,56 +193,15 @@ if p.Results.intersect_only==1
         otherwise
             idx=p.Results.idx_regs;
     end
-    if~isempty(idx)
-        for i=idx
-            curr_reg=trans_obj.Regions(i);
-            
-            if curr_reg.Unique_ID==region.Unique_ID
-                continue;
-            end
-            
-            idx_r_curr=curr_reg.Idx_r;
-            idx_pings_curr=curr_reg.Idx_pings;
-            [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
-            [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
-            switch curr_reg.Shape
-                case 'Polygon'
-                    Mask_reg=curr_reg.MaskReg;
-                    Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
-                    Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)==0)=NaN;
-                otherwise
-                    Sv_temp=Sv_reg_save(idx_r_from_reg,idx_pings_from_reg);
-            end
-            
-            Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
-        end
-    end
+    mask_inter=region.get_mask_from_intersection(trans_obj.Regions(idx));
+    
+    Sv_reg(~mask_inter)=NaN;
 end
 
     idx=trans_obj.find_regions_type('Bad Data');
+    mask_bad=region.get_mask_from_intersection(trans_obj.Regions(idx));
+    Sv_reg(mask_bad)=NaN;
     
-    for i=idx
-        curr_reg=trans_obj.Regions(i);
-        if curr_reg.Unique_ID==region.Unique_ID
-            continue;
-        end
-        
-        idx_r_curr=curr_reg.Idx_r;
-        idx_pings_curr=curr_reg.Idx_pings;
-        [~,idx_r_from_reg,idx_r_from_curr]=intersect(idx_r,idx_r_curr);
-        [~,idx_pings_from_reg,idx_pings_from_curr]=intersect(idx_pings,idx_pings_curr);
-        
-        switch curr_reg.Shape
-            case 'Polygon'
-                Mask_reg=curr_reg.MaskReg;
-                Sv_temp=Sv_reg(idx_r_from_reg,idx_pings_from_reg);
-                Sv_temp(Mask_reg(idx_r_from_curr,idx_pings_from_curr)>0)=NaN;
-            otherwise
-                Sv_temp=nan(length(idx_r_from_reg),length(idx_pings_from_reg));
-        end
-        Sv_reg(idx_r_from_reg,idx_pings_from_reg)= Sv_temp;
-        
-    end
     
     IdxBad=find(trans_obj.Bottom.Tag==0);
     bad_trans_vec=double(trans_obj.Bottom.Tag==0);

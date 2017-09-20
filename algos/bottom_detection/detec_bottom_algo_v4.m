@@ -60,8 +60,7 @@ addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'denoised',0,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'r_min',default_idx_r_min,@isnumeric);
 addParameter(p,'r_max',default_idx_r_max,@isnumeric);
-addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
-addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
+addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'thr_bottom',default_thr_bottom,check_thr_bottom);
 addParameter(p,'thr_backstep',default_thr_backstep,check_thr_backstep);
 addParameter(p,'thr_echo',-35,check_thr_bottom);
@@ -72,16 +71,16 @@ addParameter(p,'load_bar_comp',[]);
 parse(p,trans_obj,varargin{:});
 
 
-if isempty(p.Results.idx_r)
+if isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
-else
-    idx_r=p.Results.idx_r;
-end
-
-if isempty(p.Results.idx_pings)
     idx_pings=1:length(trans_obj.get_transceiver_pings());
+    mask=zeros(numel(idx_r),numel(idx_pings));
+    %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
-    idx_pings=p.Results.idx_pings;
+    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_r=p.Results.reg_obj.Idx_r;
+    mask=~(p.Results.reg_obj.create_mask());
+    %reg_obj=p.Results.reg_obj; 
 end
 
 if p.Results.denoised>0
@@ -92,6 +91,8 @@ if p.Results.denoised>0
 else
     Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
+
+Sp(mask)=-999;
 
 Range= trans_obj.get_transceiver_range(idx_r);
 Fs=1/trans_obj.Params.SampleInterval(1);

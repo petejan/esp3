@@ -27,8 +27,7 @@ for ireg_1=1:length(regions)
             warning('Merging regions with diferent cell sizes');
         end
         
-        if p.Results.overlap_only>0
-            
+        if p.Results.overlap_only>0            
             x_reg_rect_1=([region_1.Idx_pings(1) region_1.Idx_pings(end) region_1.Idx_pings(end) region_1.Idx_pings(1) region_1.Idx_pings(1)]);
             y_reg_rect_1=([region_1.Idx_r(1) region_1.Idx_r(1) region_1.Idx_r(end) region_1.Idx_r(end) region_1.Idx_r(1)]);
             
@@ -37,8 +36,7 @@ for ireg_1=1:length(regions)
             
             if nansum(inpolygon(x_reg_rect_2,y_reg_rect_2,x_reg_rect_1,y_reg_rect_1))==0&&nansum(inpolygon(x_reg_rect_1,y_reg_rect_1,x_reg_rect_2,y_reg_rect_2))==0
                 continue;
-            end
-            
+            end            
         end
         
         idx_pings=nanmin([region_1.Idx_pings(1) region_2.Idx_pings(1)]):nanmax([region_1.Idx_pings(end) region_2.Idx_pings(end)]);

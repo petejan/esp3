@@ -243,7 +243,6 @@ switch reg_obj.Reference
         ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));
 end
 
-
 grid(ax_vert,'on');
 ax_vert.YTick=get(ax_in,'YTick');
 ax_vert.YAxis.TickLabelFormat='%.0gm';

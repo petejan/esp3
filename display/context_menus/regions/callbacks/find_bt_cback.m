@@ -44,12 +44,11 @@ trans_obj=layer.get_trans(curr_disp.Freq);
 
 switch class(select_plot)
     case 'region_cl'
-        idx_r=select_plot.Idx_r;
-        idx_pings=select_plot.Idx_pings;
-        
+        reg_obj=select_plot;
     otherwise
         idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
         idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+        reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 end
 
 
@@ -57,7 +56,7 @@ end
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 old_bot=trans_obj.Bottom;
-trans_obj.apply_algo('BadPingsV2','load_bar_comp',load_bar_comp,'idx_r',idx_r,'idx_pings',idx_pings,'replace_bot',0);
+trans_obj.apply_algo('BadPingsV2','load_bar_comp',load_bar_comp,'reg_obj',reg_obj,'replace_bot',0);
 curr_disp.Bot_changed_flag=1; 
 hide_status_bar(main_figure);
 bot=trans_obj.Bottom;

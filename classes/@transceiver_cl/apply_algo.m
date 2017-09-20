@@ -44,8 +44,7 @@ p = inputParser;
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'algo_name',@(x) nansum(strcmpi(x,names))>0);
 addParameter(p,'replace_bot',1,@isnumeric);
-addParameter(p,'idx_r',[],@isnumeric);
-addParameter(p,'idx_pings',[],@isnumeric);
+addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,algo_name,varargin{:});
@@ -59,21 +58,19 @@ else
     algo_obj=trans_obj.Algo(idx_alg);
 end
 
-if isfield(algo_obj.Varargin,'idx_r')
-    algo_obj.Varargin.idx_r=p.Results.idx_r;
-end
-
-if isfield(algo_obj.Varargin,'idx_pings')
-    algo_obj.Varargin.idx_pings=p.Results.idx_pings;
-end
 
 [str_eval,str_output]=algo_obj.get_str_for_eval();
+
+if isfield(algo_obj.Varargin,'reg_obj')
+    str_eval=[str_eval ',''reg_obj'',p.Results.reg_obj'];
+end
 
 if ~isempty(p.Results.load_bar_comp)
     p.Results.load_bar_comp.status_bar.setText(sprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3));
 end
 
-eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',str_eval ');']);
+eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',...
+    str_eval ');']);
 
 if ~isempty(p.Results.load_bar_comp)
     p.Results.load_bar_comp.status_bar.setText('');
@@ -139,17 +136,19 @@ switch algo_name
         end
     case 'SchoolDetection'
         
-        if ~isempty(p.Results.idx_pings)
-            dd=nanmean(diff(trans_obj.GPSDataPing.Dist(p.Results.idx_pings)));
+        if isempty(p.Results.reg_obj)
+            idx_r=1:length(trans_obj.get_transceiver_range());
+            idx_pings=1:length(trans_obj.get_transceiver_pings());
+            
         else
-            dd=nanmean(diff(trans_obj.GPSDataPing.Dist()));
+            idx_pings=p.Results.reg_obj.Idx_pings;
+            idx_r=p.Results.reg_obj.Idx_r;
+            
         end
         
-        if ~isempty(p.Results.idx_r)
-            dr=nanmean(diff(trans_obj.get_transceiver_range(p.Results.idx_r)));
-        else
-            dr=nanmean(diff(trans_obj.get_transceiver_range()));
-        end
+        dd=nanmean(diff(trans_obj.GPSDataPing.Dist(idx_pings)));
+     
+        dr=nanmean(diff(trans_obj.get_transceiver_range(idx_r)));
         
         if dd>0
             w_unit='meters';
@@ -160,7 +159,7 @@ switch algo_name
         end
         
         
-        trans_obj.rm_region_name_idx_r_idx_p('School',p.Results.idx_r,p.Results.idx_pings);
+        trans_obj.rm_region_name_idx_r_idx_p('School',idx_r,idx_pings);
         if ~isempty(p.Results.load_bar_comp)
              p.Results.load_bar_comp.status_bar.setText('Creating regions');
         end

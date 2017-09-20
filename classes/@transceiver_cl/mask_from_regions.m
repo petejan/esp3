@@ -16,6 +16,7 @@ for i=idx
 end
 
 idx=trans_obj.find_regions_type('Bad Data');
+
 for i=idx
     curr_reg=trans_obj.Regions(i);
     mask_temp=curr_reg.create_mask();

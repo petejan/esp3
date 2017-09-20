@@ -45,13 +45,13 @@ idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
 switch class(select_plot)
     case 'region_cl'
-        idx_r=select_plot.Idx_r;
-        idx_pings=select_plot.Idx_pings;
-        
+        reg_obj=select_plot;
     otherwise
         idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
         idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
+        reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 end
+
 
 switch ver
     case 'v2'
@@ -63,7 +63,7 @@ end
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 old_bot=layer.Transceivers(idx_freq).Bottom;
-layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'idx_r',idx_r,'idx_pings',idx_pings);
+layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
 curr_disp.Bot_changed_flag=1; 
 hide_status_bar(main_figure);
 bot=layer.Transceivers(idx_freq).Bottom;

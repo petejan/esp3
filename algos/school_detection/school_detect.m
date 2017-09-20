@@ -79,30 +79,31 @@ addParameter(p,'h_min_tot',default_h_min_tot,check_h_min_tot);
 addParameter(p,'horz_link_max',default_horz_link_max,check_horz_link_max);
 addParameter(p,'vert_link_max',default_vert_link_max,check_vert_link_max);
 addParameter(p,'nb_min_sples',default_nb_min_sples,check_nb_min_sples);
-addParameter(p,'idx_r',1:length(trans_obj.get_transceiver_range()),@isnumeric);
-addParameter(p,'idx_pings',1:length(trans_obj.get_transceiver_pings()),@isnumeric);
+addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'depth_max',15000,@isnumeric);
 addParameter(p,'depth_min',0,@isnumeric);
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
 
-if isempty(p.Results.idx_r)
-    idx_r=1:numel(trans_obj.get_transceiver_range());
+if isempty(p.Results.reg_obj)
+    idx_r=1:length(trans_obj.get_transceiver_range());
+    idx_pings=1:length(trans_obj.get_transceiver_pings());
+    mask=zeros(numel(idx_r),numel(idx_pings));
+    reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
-    idx_r=p.Results.idx_r;
-end
-
-if isempty(p.Results.idx_pings)
-    idx_pings=1:numel(trans_obj.get_transceiver_pings());
-else
-    idx_pings=p.Results.idx_pings;
+    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_r=p.Results.reg_obj.Idx_r;
+    mask=~(p.Results.reg_obj.create_mask());
+    reg_obj=p.Results.reg_obj; 
 end
 
 Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
 if isempty(Sv_mat)
    Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
+
+Sv_mat(mask>0)=-999;
 
 range=trans_obj.get_transceiver_range(idx_r);
 dist=trans_obj.GPSDataPing.Dist;
@@ -132,17 +133,14 @@ nb_min_sples=p.Results.nb_min_sples;
 % alpha_map=double(Sv_mat>=Sv_thr);
 
 [nb_samples,~]=size(Sv_mat);
-mask=zeros(size(Sv_mat));
+
 idx_bad=(trans_obj.Bottom.Tag(idx_pings)==0);
 
 idx_bad_data=trans_obj.find_regions_type('Bad Data');
+regs_bad=trans_obj.Regions(idx_bad_data);
 
-for jj=1:length(idx_bad_data)
-   curr_reg=trans_obj.Regions(idx_bad_data(jj));
-   if ~isempty(intersect(idx_r,curr_reg.Idx_r))&&~isempty(intersect(curr_reg.Idx_pings,idx_pings))
-        mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)=mask(curr_reg.Idx_r-idx_r(1)+1,curr_reg.Idx_pings-idx_pings(1)+1)+curr_reg.create_mask();
-   end
-end
+mask=reg_obj.get_mask_from_intersection(regs_bad);
+
 mask(:,idx_bad)=1;
 
 if nansum(~isnan(Bottom))==0
