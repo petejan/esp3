@@ -85,7 +85,7 @@ Above            = p.Results.Above;
 Below            = p.Results.Below;
 
 
-if ~isempty(p.Results.reg_obj)
+if  isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
     idx_pings=1:length(trans_obj.get_transceiver_pings());
     mask=zeros(numel(idx_r),numel(idx_pings));
@@ -135,7 +135,7 @@ b_filter = 3:2:7;
 Range= trans_obj.get_transceiver_range(idx_r);
 BS=bsxfun(@plus,Sv,10*log10(Range));
 idx_bottom=trans_obj.get_bottom_idx(idx_pings);
-idx_bs=bsxfun(@(x,y) x>=y<=(y*11/10),trans_obj.get_transceiver_samples(),idx_bottom);
+idx_bs=bsxfun(@(x,y) x>=y<=(y*11/10),trans_obj.get_transceiver_samples(idx_r),idx_bottom);
 BS(~idx_bs)=nan;
 BS_bottom=lin_space_mean(BS);
 
@@ -194,7 +194,7 @@ else
     idx_bottom_bs_eval = ones(1,nb_pings);
 end
 
-if isempty(p.Results.idx_r)
+if isempty(p.Results.reg_obj)
     idx_below=bsxfun(@(x,y) x>y*12/10&x<y*14/10,idx_r(:),idx_bottom);
     idx_above=bsxfun(@(x,y) x<y*9.5/10&x>y/2,idx_r(:),idx_bottom);
 else

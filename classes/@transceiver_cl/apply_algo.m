@@ -118,7 +118,7 @@ switch algo_name
         trans_obj.setBottom(new_bot);
     case 'BadPingsV2'        
          tag=trans_obj.Bottom.Tag;
-         if isempty(p.Results.idx_pings)
+         if isempty(p.Results.reg_obj)
              tag=ones(size(tag));
          end
         tag(idx_noise_sector)=0;
