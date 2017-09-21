@@ -185,15 +185,12 @@ layer.Transceivers(idx_freq).apply_algo('SchoolDetection','load_bar_comp',load_b
 
 hide_status_bar(main_figure);
 
-setappdata(main_figure,'Layer',layer);
+
 
 set_alpha_map(main_figure);
-
 display_regions(main_figure,'both');
-curr_disp=getappdata(main_figure,'Curr_disp');
 trans_obj=layer.get_trans(curr_disp.Freq);
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
-
 order_stacks_fig(main_figure);
 end
 

@@ -39,8 +39,8 @@ function apply_school_detect_cback(~,~,select_plot,main_figure)
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
+trans_obj=layer.get_trans(curr_disp.Freq);
 switch class(select_plot)
     case 'region_cl'
         reg_obj=select_plot;
@@ -55,11 +55,13 @@ alg_name='SchoolDetection';
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
+trans_obj.apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
 
 hide_status_bar(main_figure);
-
-curr_disp.Freq=curr_disp.Freq;
-setappdata(main_figure,'Curr_disp',curr_disp);
+    
+set_alpha_map(main_figure);
+display_regions(main_figure,'both');
+curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+order_stacks_fig(main_figure);
 
 end

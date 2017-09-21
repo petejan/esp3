@@ -92,7 +92,7 @@ else
     Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
 
-Sp(mask)=-999;
+Sp(mask>0)=-999;
 
 Range= trans_obj.get_transceiver_range(idx_r);
 Fs=1/trans_obj.Params.SampleInterval(1);

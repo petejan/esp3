@@ -108,7 +108,7 @@ if p.Results.denoised>0
 else
     Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
-Sv(mask)=-999;
+Sv(mask>0)=-999;
 
 [nb_samples,nb_pings] = size(Sv);
 

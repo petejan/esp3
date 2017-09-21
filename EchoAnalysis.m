@@ -145,7 +145,7 @@ fprintf('Version %s\n',echo_ver);
 
 %% Default font size for Controls and Panels
 set(0,'DefaultUicontrolFontSize',10);
-set(0,'DefaultUipanelFontSize',10);
+set(0,'DefaultUipanelFontSize',12);
 
 %% Software main path
 main_path = whereisEcho();
