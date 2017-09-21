@@ -74,12 +74,12 @@ parse(p,trans_obj,varargin{:});
 if isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
     idx_pings=1:length(trans_obj.get_transceiver_pings());
-    mask=zeros(numel(idx_r),numel(idx_pings));
+    %mask=zeros(numel(idx_r),numel(idx_pings));
     %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
     idx_pings=p.Results.reg_obj.Idx_pings;
     idx_r=p.Results.reg_obj.Idx_r;
-    mask=~(p.Results.reg_obj.create_mask());
+    %mask=~(p.Results.reg_obj.create_mask());
     %reg_obj=p.Results.reg_obj; 
 end
 
@@ -92,7 +92,7 @@ else
     Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
 
-Sp(mask>0)=-999;
+%Sp(mask>0)=-999;
 
 Range= trans_obj.get_transceiver_range(idx_r);
 Fs=1/trans_obj.Params.SampleInterval(1);

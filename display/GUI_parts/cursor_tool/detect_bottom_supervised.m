@@ -125,7 +125,7 @@ wbmcb([],[])
             return;
         end
         
-        output_struct= trans_obj.apply_algo('BottomDetectionV2','idx_r',idx_r,'idx_pings',idx_pings);
+        output_struct= trans_obj.apply_algo('BottomDetectionV2','reg_obj',region_cl('Idx_r',idx_r,'Idx_pings',idx_pings));
         
         yinit(idx_pings)=output_struct.bottom(idx_pings);
         if isvalid(hp)
