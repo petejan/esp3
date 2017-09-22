@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
    <algos>
+      <SchoolDetection Sv_thr="-65.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="10.000000" h_min_tot="20.000000" horz_link_max="5.000000" l_min_can="10.000000" l_min_tot="500.000000" nb_min_sples="100.000000" savename="Long Schools" vert_link_max="5.000000"/>
       <SchoolDetection Sv_thr="-65.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="10.000000" h_min_tot="20.000000" horz_link_max="5.000000" l_min_can="10.000000" l_min_tot="50.000000" nb_min_sples="100.000000" savename="--" vert_link_max="5.000000"/>
    </algos>
 </config_file>

@@ -82,20 +82,20 @@ school_detect_tab_comp.nb_min_sples=uicontrol(parameters_2,'Style','Edit','units
 uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Thr.(dB)','pos',pos{4,1},'HorizontalAlignment','right');
 school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,-10,varin.Sv_thr,'%.0f'});
 
-uicontrol(school_detect_tab_comp.bottom_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
 
 [~,~,algo_files]=get_config_files('SchoolDetection');
 [~,~,names]=read_config_algo_xml(algo_files{1});
 
 list_params=names;
 
-school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.bottom_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
+school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
 
-uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
-uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.2 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Save as','units','normalized','pos',[0.75 0.2 0.1 0.1],'callback',{@save_new_display_algos_config_callback,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.85 0.2 0.1 0.1],'callback',{@delete_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.2 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save as','units','normalized','pos',[0.75 0.2 0.1 0.1],'callback',{@save_new_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.85 0.2 0.1 0.1],'callback',{@delete_display_algos_config_callback,main_figure,'SchoolDetection'});
 
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
 end
