@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config_file version="0.2">
+   <algos>
+      <Denoise HorzFilt="50.000000" NoiseThr="-125.000000" SNRThr="10.000000" VertFilt="10.000000" savename="--"/>
+   </algos>
+</config_file>

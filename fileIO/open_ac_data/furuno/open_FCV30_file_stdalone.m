@@ -264,8 +264,8 @@ for iconfig=id_config
     gps_data_ping=gps_data;
     attitude=att_data;
     
-    [~,~,algo_vec]=load_config_from_xml(fullfile(whereisEcho,'config','config_echo.xml'));
-    
+    [~,~,algo_vec,~]=load_config_from_xml_v2(0,0,1);
+       
     algo_vec_init=init_algos();
     
     algo_vec_init=reset_range(algo_vec_init,trans_obj.get_transceiver_range());

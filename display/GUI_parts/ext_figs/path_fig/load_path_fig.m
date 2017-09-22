@@ -160,13 +160,11 @@ check_path_callback(edit_box,[],path_fig);
 end
 
 function validate_path(~,~,path_fig,main_fig)
-curr_disp=getappdata(main_fig,'Curr_disp');
+
 app_path=getappdata(path_fig,'AppPath_temp');
 setappdata(main_fig,'App_path',app_path);
-main_path=whereisEcho();
 
-[~,~,algos]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
+write_config_path_to_xml(app_path);
 
-write_config_to_xml(app_path,curr_disp,algos);
 close(path_fig);
 end

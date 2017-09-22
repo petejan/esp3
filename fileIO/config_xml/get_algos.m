@@ -70,6 +70,10 @@ for i = 1:nb_algos
         algo_cell{i}.Varargin.Frequencies = [];
     end
     
+    if ~isfield(algo_cell{i}.Varargin,'savename')
+        algo_cell{i}.Varargin.savename = '--';
+    end
+    
 end
 
 % remove empty algorithms (comments)

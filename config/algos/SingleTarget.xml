@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config_file version="0.2">
+   <algos>
+      <SingleTarget MaxBeamComp="12.000000" MaxNormPL="1.500000" MaxStdMajAxisAngle="1.000000" MaxStdMinAxisAngle="1.000000" MinNormPL="0.600000" PLDL="6.000000" TS_threshold="-65.000000" Type="sp" savename="--"/>
+   </algos>
+</config_file>

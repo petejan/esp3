@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config_file version="0.2">
+   <algos>
+      <BottomDetectionV2 denoised="0.000000" r_max="249.540000" r_min="0.190000" savename="Test settings" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" thr_cum="0.010000" thr_echo="-40.000000"/>
+      <BottomDetectionV2 denoised="0.000000" r_max="Inf" r_min="0.000000" savename="--" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-45.000000" thr_cum="0.010000" thr_echo="-40.000000"/>
+   </algos>
+</config_file>

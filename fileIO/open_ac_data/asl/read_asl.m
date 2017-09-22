@@ -228,9 +228,8 @@ for i_cell=1:length(Filename_cell)
         
         clear curr_data;
         
-        main_path=whereisEcho();
-        
-        [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
+        [~,~,algo_vec,~]=load_config_from_xml_v2(0,0,1);
+       
         if isempty(algo_vec)
             algo_vec=init_algos();
         else

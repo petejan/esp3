@@ -82,16 +82,21 @@ school_detect_tab_comp.nb_min_sples=uicontrol(parameters_2,'Style','Edit','units
 uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Thr.(dB)','pos',pos{4,1},'HorizontalAlignment','right');
 school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,-10,varin.Sv_thr,'%.0f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
-list_params={'--','Long Layers','Round Large','Small Long','Small Round','Tiny Round'};
-school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','popupmenu','String',list_params,'Value',1,'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
+uicontrol(school_detect_tab_comp.bottom_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
 
+[~,~,algo_files]=get_config_files('SchoolDetection');
+[~,~,names]=read_config_algo_xml(algo_files{1});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure});
+list_params=names;
 
-%set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'off');
+school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.bottom_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
+
+uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
+uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.2 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Save as','units','normalized','pos',[0.75 0.2 0.1 0.1],'callback',{@save_new_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.bottom_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.85 0.2 0.1 0.1],'callback',{@delete_display_algos_config_callback,main_figure,'SchoolDetection'});
+
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
 end
 
@@ -113,53 +118,20 @@ if found==0
     return
 end
 
-switch src.String{src.Value}
+[~,~,algo_files]=get_config_files('SchoolDetection');
+[~,algo_alt,names]=read_config_algo_xml(algo_files{1});
+
+idx_algo_xml=strcmpi(names,src.String{src.Value});
+
+if ~isempty(idx_algo_xml)
     
-    case 'Long Layers'
-        trans_obj.Algo(idx_algo).Varargin.l_min_can=100;
-        trans_obj.Algo(idx_algo).Varargin.l_min_tot=200;
-        trans_obj.Algo(idx_algo).Varargin.h_min_can=10;
-        trans_obj.Algo(idx_algo).Varargin.h_min_tot=20;
-        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=1000;
-        trans_obj.Algo(idx_algo).Varargin.horz_link_max=50;
-        trans_obj.Algo(idx_algo).Varargin.vert_link_max=5;
-    case 'Round Large'
-        trans_obj.Algo(idx_algo).Varargin.l_min_can=20;
-        trans_obj.Algo(idx_algo).Varargin.h_min_can=20;
-        trans_obj.Algo(idx_algo).Varargin.h_min_tot=50;
-        trans_obj.Algo(idx_algo).Varargin.l_min_tot=50;
-        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=1000;
-        trans_obj.Algo(idx_algo).Varargin.horz_link_max=10;
-        trans_obj.Algo(idx_algo).Varargin.vert_link_max=10;
-    case 'Small Long'
-        trans_obj.Algo(idx_algo).Varargin.l_min_can=5;
-        trans_obj.Algo(idx_algo).Varargin.h_min_can=0.5;
-        trans_obj.Algo(idx_algo).Varargin.l_min_tot=10;
-        trans_obj.Algo(idx_algo).Varargin.h_min_tot=1;
-        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=100;
-        trans_obj.Algo(idx_algo).Varargin.horz_link_max=2;
-        trans_obj.Algo(idx_algo).Varargin.vert_link_max=0.5;
-        
-    case 'Small Round'
-        trans_obj.Algo(idx_algo).Varargin.l_min_can=0.5;
-        trans_obj.Algo(idx_algo).Varargin.l_min_tot=1;
-        trans_obj.Algo(idx_algo).Varargin.h_min_can=0.5;
-        trans_obj.Algo(idx_algo).Varargin.h_min_tot=1;
-        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=50;
-        trans_obj.Algo(idx_algo).Varargin.horz_link_max=0.5;
-        trans_obj.Algo(idx_algo).Varargin.vert_link_max=0.5;
-        
-     case 'Tiny Round'
-        trans_obj.Algo(idx_algo).Varargin.l_min_can=0.5;
-        trans_obj.Algo(idx_algo).Varargin.l_min_tot=0.5;
-        trans_obj.Algo(idx_algo).Varargin.h_min_can=0.5;
-        trans_obj.Algo(idx_algo).Varargin.h_min_tot=0.5;
-        trans_obj.Algo(idx_algo).Varargin.nb_min_sples=50;
-        trans_obj.Algo(idx_algo).Varargin.horz_link_max=0.5;
-        trans_obj.Algo(idx_algo).Varargin.vert_link_max=0.5;
-        
-    otherwise
-        return;
+    trans_obj.Algo(idx_algo).Varargin.l_min_can=algo_alt(idx_algo_xml).Varargin.l_min_can;
+    trans_obj.Algo(idx_algo).Varargin.l_min_tot=algo_alt(idx_algo_xml).Varargin.l_min_tot;
+    trans_obj.Algo(idx_algo).Varargin.h_min_can=algo_alt(idx_algo_xml).Varargin.h_min_can;
+    trans_obj.Algo(idx_algo).Varargin.h_min_tot=algo_alt(idx_algo_xml).Varargin.h_min_tot;
+    trans_obj.Algo(idx_algo).Varargin.nb_min_sples=algo_alt(idx_algo_xml).Varargin.nb_min_sples;
+    trans_obj.Algo(idx_algo).Varargin.horz_link_max=algo_alt(idx_algo_xml).Varargin.horz_link_max;
+    trans_obj.Algo(idx_algo).Varargin.vert_link_max=algo_alt(idx_algo_xml).Varargin.vert_link_max;
 end
 setappdata(main_figure,'Layer',layer);
 update_school_detect_tab(main_figure);

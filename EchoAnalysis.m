@@ -155,7 +155,7 @@ end
 update_java_path(main_path);
 
 %% Read ESP3 config file
-[app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
+[app_path,curr_disp_obj,~,~] = load_config_from_xml_v2(1,1,1);
 
 %% Create temporary data folder
 try
@@ -167,9 +167,10 @@ try
     
 catch 
     disp('Error: Unable to create temporary data Folder')
-    disp('Creating new config_echo.xml file with stadard path and options')
-    delete(fullfile(main_path,'config','config_echo.xml'));
-    [app_path,curr_disp_obj,~] = load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
+    disp('Creating new config_path.xml file with standard path and options')
+    [~,path_config_file,~]=get_config_files();
+    delete(path_config_file);
+    [app_path,~,~,~] = load_config_from_xml_v2(1,0,0);
 end
 
 %% Managing existing files in temporary data folder

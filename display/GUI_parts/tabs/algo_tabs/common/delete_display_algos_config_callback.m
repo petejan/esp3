@@ -1,5 +1,5 @@
 
-function save_display_algos_config_callback(~,~,main_figure,name)
+function delete_display_algos_config_callback(~,~,main_figure,name)
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 layer=getappdata(main_figure,'Layer');
@@ -28,9 +28,12 @@ switch name
         end
         names=get(tab_comp.default_params,'String');
         name_set=names(get(tab_comp.default_params,'value'));
-        write_config_algo_to_xml(algos(idx_algo),{name_set},0);
-    otherwise
-        write_config_algo_to_xml(algos(idx_algo),{'--'},0);
+        if strcmpi(name_set,'--')
+            return;
+        end
+        write_config_algo_to_xml(algos(idx_algo),{name_set},1);
+        names(get(tab_comp.default_params,'value'))=[];
+        set(tab_comp.default_params,'String',names,'value',1);
 end
 
 end

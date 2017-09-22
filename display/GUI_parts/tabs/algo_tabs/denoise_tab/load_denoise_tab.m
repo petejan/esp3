@@ -68,9 +68,9 @@ uicontrol(parameters_1,'Style','text','units','normalized','string','SNR Thr(dB)
 denoise_tab_comp.SNRThr=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.SNRThr),'BackgroundColor','white','callback',{@ check_fmt_box,0,30,varin.SNRThr,'%.0f'});
 
 
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'Denoise'});
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure});
+uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
+uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'Denoise'});
+uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'Denoise'});
 
 
 %set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'off');

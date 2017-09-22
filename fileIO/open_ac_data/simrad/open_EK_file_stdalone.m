@@ -375,10 +375,9 @@ if ~isequal(Filename_cell, 0)
                     gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Time);
                     attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);
                     
-                    main_path=whereisEcho();
-                    
-                    [~,~,algo_vec]=load_config_from_xml(fullfile(main_path,'config','config_echo.xml'));
-                    
+
+                    [~,~,algo_vec,~]=load_config_from_xml_v2(0,0,1);
+       
                     algo_vec_init=init_algos();
                     
                     algo_vec_init=reset_range(algo_vec_init,trans_obj(i).get_transceiver_range());
