@@ -502,11 +502,27 @@ if p.Results.GPSOnly==0
     switch ftype
         case 'EK80'
             data_ori=data;
+           
+
+            if gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox')%Use of GPU speeds thing up by about 40 to 50 percent here
+                data=data_to_gpu(data);
+                data_ori=data_to_gpu(data_ori);
+            end
             [data,mode]=match_filter_data_v2(trans_obj,data);
+            %[data,mode]=match_filter_data_v3(trans_obj,data);%Does not
+            %seem faster... To be tested on very large files
             data=compute_PwEK80_v2(trans_obj,data);
             data=computesPhasesAngles_v2(trans_obj,data);
             data_ori=compute_PwEK80_v2(trans_obj,data_ori);
             data_ori=computesPhasesAngles_v2(trans_obj,data_ori);
+                
+             
+             if gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox')
+                 data_ori=data_from_gpu(data_ori);
+                 data=data_from_gpu(data);
+             end
+            
+
         case 'EK60'
             mode=cell(1,length(trans_obj));
             mode(:)={'CW'};

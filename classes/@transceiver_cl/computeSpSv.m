@@ -26,6 +26,16 @@ range=trans_obj.get_transceiver_range();
 [power,~]=get_datamat(trans_obj.Data,'power');
 [powerunmatched,~]=get_datamat(trans_obj.Data,'powerunmatched');
 
+gpu_comp=gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox');
+
+
+if gpu_comp%use of gpuArray results in about 20% speed increase here
+    power=gpuArray(power);
+    range=gpuArray(range);
+    powerunmatched=gpuArray(powerunmatched);
+    ptx=gpuArray(ptx);
+end
+
 switch trans_obj.Mode
     case 'FM'
         
@@ -45,13 +55,22 @@ switch trans_obj.Mode
             otherwise
                 [Sp,Sv]=convert_power(power,range,c,alpha,t_nom,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
         end
-
+        
 end
 
+
+
 if any(strcmpi(p.Results.FieldNames,'sv'))||isempty(p.Results.FieldNames)
+    if gpu_comp
+        Sv=gather(Sv);
+    end
+    
     trans_obj.Data.replace_sub_data('sv',Sv);
 end
 if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
+    if gpu_comp
+        Sp=gather(Sp);
+    end
     trans_obj.Data.replace_sub_data('sp',Sp);
 end
 

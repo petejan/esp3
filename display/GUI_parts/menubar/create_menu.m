@@ -208,13 +208,20 @@ end
 uimenu(mbs,'Label','XML Scripts','Callback',{@load_xml_scripts_callback,main_figure},'separator','on');
 
 
-options = uimenu(main_figure,'Label','Options','Tag','options');
+options = uimenu(main_figure,'Label','Config','Tag','options');
 uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
+uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_disp_config_cback,main_figure});
 
 help_shortcuts=uimenu(main_figure,'Label','Shortcuts/Help');
 uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@help_menu,main_figure});
 
 setappdata(main_figure,'main_menu',main_menu);
+
+end
+
+function save_disp_config_cback(~,~,main_figure)
+curr_disp=getappdata(main_figure,'Curr_disp');
+write_config_display_to_xml(curr_disp)
 
 end
 

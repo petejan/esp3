@@ -7,10 +7,10 @@ for idx_freq=1:length(trans_obj)
         
         [sim_pulse,y_tx_matched]=generate_sim_pulse(trans_obj(idx_freq).Params,trans_obj(idx_freq).Filters(1),trans_obj(idx_freq).Filters(2));
         
-        s1=data.pings(idx_freq).comp_sig_1;
-        s2=data.pings(idx_freq).comp_sig_2;
-        s3=data.pings(idx_freq).comp_sig_3;
-        s4=data.pings(idx_freq).comp_sig_4;
+        s1=(data.pings(idx_freq).comp_sig_1);
+        s2=(data.pings(idx_freq).comp_sig_2);
+        s3=(data.pings(idx_freq).comp_sig_3);
+        s4=(data.pings(idx_freq).comp_sig_4);
         
         [~,nb_pings]=size(s1);
         
@@ -19,17 +19,22 @@ for idx_freq=1:length(trans_obj)
         data.pings(idx_freq).match_filter=y_tx_matched;
         data.pings(idx_freq).simu_pulse=sim_pulse;
         
-         
-        yc_1_temp=filter2((flipud(y_tx_matched)),s1,'full')/sum(abs(y_tx_matched).^2); 
-        yc_2_temp=filter2((flipud(y_tx_matched)),s2,'full')/sum(abs(y_tx_matched).^2); 
-        yc_3_temp=filter2((flipud(y_tx_matched)),s3,'full')/sum(abs(y_tx_matched).^2); 
-        yc_4_temp=filter2((flipud(y_tx_matched)),s4,'full')/sum(abs(y_tx_matched).^2); 
+        if isa(s1,'gpuArray')
+            y_tx_matched=gpuArray(y_tx_matched);
+        end
         
+        val_sq=sum(abs(y_tx_matched).^2);
+        flip_tx=flipud(y_tx_matched);
+        yc_1_temp=filter2(flip_tx,s1,'full')/val_sq; 
+        yc_2_temp=filter2(flip_tx,s2,'full')/val_sq; 
+        yc_3_temp=filter2(flip_tx,s3,'full')/val_sq; 
+        yc_4_temp=filter2(flip_tx,s4,'full')/val_sq; 
         
-        yc_1=yc_1_temp(length(y_tx_matched):end,:);
-        yc_2=yc_2_temp(length(y_tx_matched):end,:);
-        yc_3=yc_3_temp(length(y_tx_matched):end,:);
-        yc_4=yc_4_temp(length(y_tx_matched):end,:);
+        nb_samples=numel(y_tx_matched);
+        yc_1=yc_1_temp(nb_samples:end,:);
+        yc_2=yc_2_temp(nb_samples:end,:);
+        yc_3=yc_3_temp(nb_samples:end,:);
+        yc_4=yc_4_temp(nb_samples:end,:);
         
         data.pings(idx_freq).comp_sig_1=yc_1;
         data.pings(idx_freq).comp_sig_2=yc_2;
