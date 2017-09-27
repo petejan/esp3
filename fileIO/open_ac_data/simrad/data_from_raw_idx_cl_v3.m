@@ -25,7 +25,9 @@ ftype=get_ftype(filename);
 
 load_bar_comp=results.load_bar_comp;
 
+gpu_comp=gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox');%Use of GPU speeds thing up by about 40 to 50 percent here;
 
+array_type='double';
 
 switch ftype
     case 'EK80'
@@ -110,9 +112,9 @@ params_cl_init(nb_trans)=params_cl();
 
 for i=1:nb_trans
     nb_pings(i)=min(nb_pings(i),p.Results.PingRange(2)-p.Results.PingRange(1)+1);
-    data.pings(i).number=nan(1,nb_pings(i));
-    data.pings(i).time=nan(1,nb_pings(i));
-    data.pings(i).samples=(1:nb_samples(i))';
+    data.pings(i).number=nan(1,nb_pings(i),array_type);
+    data.pings(i).time=nan(1,nb_pings(i),array_type);
+    %data.pings(i).samples=(1:nb_samples(i))';
     trans_obj(i).Params=params_cl(nb_pings(i));
     
     if p.Results.force_open==0
@@ -143,15 +145,15 @@ for i=1:nb_trans
     
     switch config(i).TransceiverType
         case list_WBTs()
-            data.pings(i).comp_sig_1=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).comp_sig_2=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).comp_sig_3=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).comp_sig_4=(nan(nb_samples(i),nb_pings(i)));
+            data.pings(i).comp_sig_1=nan(nb_samples(i),nb_pings(i),array_type);
+            data.pings(i).comp_sig_2=nan(nb_samples(i),nb_pings(i),array_type);
+            data.pings(i).comp_sig_3=nan(nb_samples(i),nb_pings(i),array_type);
+            data.pings(i).comp_sig_4=nan(nb_samples(i),nb_pings(i),array_type);
             
         case list_GPTs()
-            data.pings(i).power=(nan(nb_samples(i),nb_pings(i)));
-            data.pings(i).AlongPhi=(zeros(nb_samples(i),nb_pings(i)));
-            data.pings(i).AcrossPhi=(zeros(nb_samples(i),nb_pings(i)));
+            data.pings(i).power=nan(nb_samples(i),nb_pings(i),array_type);
+            data.pings(i).AlongPhi=zeros(nb_samples(i),nb_pings(i),array_type);
+            data.pings(i).AcrossPhi=zeros(nb_samples(i),nb_pings(i),array_type);
     end
 end
 
@@ -504,7 +506,7 @@ if p.Results.GPSOnly==0
             data_ori=data;
            
 
-            if gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox')%Use of GPU speeds thing up by about 40 to 50 percent here
+            if gpu_comp
                 data=data_to_gpu(data);
                 data_ori=data_to_gpu(data_ori);
             end
@@ -516,12 +518,11 @@ if p.Results.GPSOnly==0
             data_ori=compute_PwEK80_v2(trans_obj,data_ori);
             data_ori=computesPhasesAngles_v2(trans_obj,data_ori);
                 
-             
-             if gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox')
-                 data_ori=data_from_gpu(data_ori);
-                 data=data_from_gpu(data);
-             end
-            
+           
+            if gpu_comp
+                data_ori=data_from_gpu(data_ori);
+                data=data_from_gpu(data);
+            end
 
         case 'EK60'
             mode=cell(1,length(trans_obj));
@@ -532,7 +533,13 @@ if p.Results.GPSOnly==0
             data=computesPhasesAngles_v2(trans_obj,data);
             envdata=env_data_cl();
             envdata.SoundSpeed=data.pings(1).soundvelocity(1);
+            
+            if gpu_comp
+                data=data_from_gpu(data);
+            end
     end
+    
+
     
     sample_start=nan(nb_trans,1);
     sample_end=nan(nb_trans,1);
@@ -595,3 +602,4 @@ else
     trans_obj=transceiver_cl.empty();
     envdata=env_data_cl.empty();
 end
+

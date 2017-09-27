@@ -42,7 +42,7 @@ interactions=getappdata(main_figure,'interactions_id');
 
 if isempty(interactions)
     interactions.WindowButtonDownFcn=nan(1,2);
-    interactions.WindowButtonMotionFcn=nan(1,2);
+    interactions.WindowButtonMotionFcn=nan(1,3);
     interactions.WindowButtonUpFcn=nan(1,2);
     interactions.WindowKeyPressFcn=nan(1,2);
     interactions.KeyPressFcn=nan(1,2);

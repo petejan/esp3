@@ -43,6 +43,9 @@ switch trans_obj.Mode
         
         if any(strcmpi(p.Results.FieldNames,'sp'))||isempty(p.Results.FieldNames)
             [Sp_un,~]=convert_power(powerunmatched,range,c,alpha,t_eff,t_nom,ptx,c/f,G,eq_beam_angle,sacorr,trans_obj.Config.TransceiverName);
+            if gpu_comp
+                Sp_un=gather(Sp_un);
+            end
             trans_obj.Data.replace_sub_data('spunmatched',Sp_un);
         end
         

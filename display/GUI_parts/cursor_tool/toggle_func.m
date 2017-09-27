@@ -98,6 +98,7 @@ switch state
                 uimenu(context_menu,'Label','Extra','userdata',50,'Callback',@check_only_one);
                 
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@detect_bottom_supervised,main_figure});
+                %replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',3,'interaction_fcn',{@display_rectangle_bot_brush,main_figure});
             case 'ed_bot_spline'
                  
                 delete(findall(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu'));

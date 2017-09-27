@@ -113,6 +113,7 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
 rect=rectangle(ah,'Position',[ping_init-dr sample_init-ratio*dr 2*dr dr*2*ratio]);
 wbmcb([],[])
     function wbmcb(~,~)
+
         cp=ah.CurrentPoint;
         ping_new =round(cp(1,1));
         sample_new=round(cp(1,2));
@@ -159,6 +160,7 @@ wbmcb([],[])
     end
 
     function end_bottom_edit(val)
+        
         if val>0
             replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
             replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
@@ -169,16 +171,16 @@ wbmcb([],[])
         display_bottom(main_figure);
         
 
-        
-        set_alpha_map(main_figure);
+        set_alpha_map(main_figure,'update_bt',0);
         if val>0
-        setappdata(main_figure,'Curr_disp',curr_disp);
-        setappdata(main_figure,'Layer',layer);
-        
-        add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
-        
-        set_alpha_map(main_figure,'main_or_mini','mini');
+            setappdata(main_figure,'Curr_disp',curr_disp);
+            setappdata(main_figure,'Layer',layer);
+            
+            add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
+            
+            set_alpha_map(main_figure,'main_or_mini','mini','update_bt',0);
         end
+
     end
 
 

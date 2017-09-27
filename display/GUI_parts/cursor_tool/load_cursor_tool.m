@@ -8,7 +8,7 @@ cursor_mode_tool_comp.cursor_mode_tool=uitoolbar(main_figure,'Tag','toolbar_esp3
 app_path_main=whereisEcho();
 icon=get_icons_cdata(fullfile(app_path_main,'icons'));
 
-
+cursor_mode_tool_comp.pointer=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.pointer,'TooltipString','Normal (0)','Tag','nor');
 cursor_mode_tool_comp.zoom_in=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zin,'TooltipString','Zoom In (1)','Tag','zin');
 cursor_mode_tool_comp.zoom_out=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.zout,'TooltipString','Zoom Out (shift+1)','Tag','zout');
 cursor_mode_tool_comp.bad_trans=uitoggletool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.bad_trans ,'TooltipString','Bad Transmit (2)','Tag','bt');
@@ -42,6 +42,8 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 if strcmp(src.State,'on')
     switch src.Tag
+        case 'nor'
+            curr_disp.CursorMode='Normal';
         case 'bt'
             curr_disp.CursorMode='Bad Transmits';
         case 'zout'

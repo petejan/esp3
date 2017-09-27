@@ -3,8 +3,10 @@ function set_alpha_map(main_figure,varargin)
 
 p = inputParser;
 
+%profile on;
 addRequired(p,'main_figure',@ishandle);
 addParameter(p,'main_or_mini','main');
+addParameter(p,'update_bt',1);
 
 parse(p,main_figure,varargin{:});
 
@@ -55,8 +57,7 @@ idx_bad_red(idx_bad_red==0)=[];
 if strcmp(curr_disp.DispBadTrans,'on')
     alpha_map(:,idx_bad_red)=1;
 end
-data_temp=nan(size(alpha_map));
-data_temp(:,idx_bad_red)=Inf;
+
 
 %bot_vec=layer.Transceivers(idx_freq).get_bottom_range(idx_pings);
 
@@ -79,16 +80,21 @@ if strcmpi(curr_disp.DispUnderBottom,'off')==1
     alpha_map(idx_bot_red)=1-curr_disp.UnderBotTransparency/100;
 end
 
-
-if strcmp(curr_disp.DispBadTrans,'on')
-    alpha_map_bt=(~isnan(data_temp))-0.6;
-else
-    alpha_map_bt=zeros(size(data_temp));
+if p.Results.update_bt>0
+    data_temp=nan(size(alpha_map));
+    data_temp(:,idx_bad_red)=Inf;
+    
+    if strcmp(curr_disp.DispBadTrans,'on')
+        alpha_map_bt=(~isnan(data_temp))-0.6;
+    else
+        alpha_map_bt=zeros(size(data_temp));
+    end
+    
+    set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
 end
 
-alpha_map(data<min_axis)=0;
-alpha_map(isnan(data))=0;
-set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
+alpha_map(data<min_axis|isnan(data))=0;
+
 set(echo_ax,'CLim',curr_disp.Cax);
 set(echo_im,'AlphaData',alpha_map);
 
@@ -96,5 +102,7 @@ set(echo_im,'AlphaData',alpha_map);
 %     create_context_menu_main_echo(main_figure);
 % end
 %display_info_ButtonMotionFcn([],[],main_figure,1);
-order_axes(main_figure);
+%order_axes(main_figure);
+% profile off;
+% profile viewer;
 end

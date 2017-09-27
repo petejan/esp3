@@ -51,7 +51,7 @@ p = inputParser;
 
 addRequired(p,'curr_fig',@ishandle);
 addParameter(p,'interaction','WindowButtonDownFcn',@(x) ismember(x,interact_fields));
-addParameter(p,'id',1,@(x) ismember(x,[1 2]));
+addParameter(p,'id',1,@(x) ismember(x,[1 2 3]));
 addParameter(p,'interaction_fcn',[],@(x) isempty(x)||isa(x,'function_handle')||iscell(x));
 addParameter(p,'pointer',[],@(x) ischar(x)||isempty(x))
 

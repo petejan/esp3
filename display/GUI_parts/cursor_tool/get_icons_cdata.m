@@ -1,6 +1,6 @@
 function icon=get_icons_cdata(icon_dir)
 
-
+icon.pointer=  iconRead(fullfile(icon_dir,'tool_pointer.png'));
 
 icon.zin  = iconRead(fullfile(icon_dir,'tool_zoom_in.png'));
 
