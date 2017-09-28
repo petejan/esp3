@@ -15,10 +15,9 @@ data.pings(idx_data).sampleinterval(i_ping) = temp(6);
 data.pings(idx_data).soundvelocity(i_ping) = temp(7);
 data.pings(idx_data).absorptioncoefficient(i_ping) = temp(8);
 
-fread(fid,7,'int32','l');
-temp=fread(fid,2,'int32', 'l');
-data.pings(idx_data).offset(i_ping) = temp(1);
-data.pings(idx_data).count(i_ping) = temp(2);
+temp=fread(fid,9,'int32', 'l');
+data.pings(idx_data).offset(i_ping) = temp(8);
+data.pings(idx_data).count(i_ping) = temp(9);
 
 if data.pings(idx_data).count(i_ping) > 0
     len_load=min(SampleRange(2),data.pings(idx_data).count(i_ping))-SampleRange(1)+1;

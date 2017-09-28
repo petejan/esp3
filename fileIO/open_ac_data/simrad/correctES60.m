@@ -8,11 +8,25 @@ end
 num_pings = size(data,2);
 rd_zone=data(1,:);
 rd_zone(rd_zone<0)=nan;
-fit = struct('std', ones(period,1)*1000, 'mean', zeros(period,1));
+
 % Apply all possible corrections to the first sample in each ping. Calculate the standard
 % deviation and mean of the corrected first sample amplitude
 
-mat_tri=bsxfun(@minus,rd_zone,es60_error(bsxfun(@plus,(1:num_pings),(1:period)')));
+gpu_comp=gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox');%Use of GPU speeds thing up by a factor of about 4 times here;
+
+if gpu_comp
+    pings=gpuArray(single(1:num_pings));
+    periods=gpuArray(single((1:period)'));
+    rd_zone=gpuArray(single(rd_zone));
+    data=gpuArray(data);
+    fit = struct('std',ones(period,1,'single','gpuArray')*1000,'mean', zeros(period,1,'single','gpuArray'));
+else
+    pings=single(1:num_pings);
+    periods=single((1:period)');
+    fit = struct('std',ones(period,1,'single')*1000,'mean', zeros(period,1,'single'));
+end
+
+mat_tri=bsxfun(@minus,rd_zone,es60_error(bsxfun(@plus,pings,periods)));
 fit.std=nanstd(mat_tri,0,2);
 fit.mean=nanmean(mat_tri,2);
 
@@ -20,7 +34,11 @@ fit.mean=nanmean(mat_tri,2);
 [val_std, zero_error_ping] = nanmin(fit.std);
 if val_std>0.1
     disp('It does not look like there is a triangle wave error here...');
-    data_c=data;
+    if isa(data,'gpuArray')
+        data_c=gather(data);
+    else
+        data_c=data;
+    end
     mean_corrected_value=0;
     
 %     figure();   
@@ -59,7 +77,7 @@ if num_pings < period/2
             end
         end
         mean_corrected_value= nanmean(rd_zone - es60_error((1:num_pings)+zero_error_ping));
-         disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+        disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
     else % Is this code good enough? Does there need to be more checking of the result here?
         % We get here if there are less than 40 zero error ping numbers with a low std. If this is the
         % case, we simply take the zero error ping number with the lowest std.
@@ -82,6 +100,10 @@ end
 % legend('Uncorrected', 'Corrected')
 % grid on;
 
-data_c=data-repmat(es60_error((1:num_pings)+zero_error_ping),size(data,1),1);
+data_c=data-repmat(es60_error(pings+zero_error_ping),size(data,1),1);
+if isa(data_c,'gpuArray')
+    data_c=gather(data_c);
+end
+    
 end
 

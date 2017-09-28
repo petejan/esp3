@@ -8,6 +8,7 @@ addParameter(p,'EsOffset',[]);
 parse(p,trans_obj,varargin{:});
 
 [power,~]=get_datamat(trans_obj.Data,'power');
+
 [power_corr_db,mean_err]=correctES60(10*log10(power),p.Results.EsOffset);
 
 if mean_err~=0
