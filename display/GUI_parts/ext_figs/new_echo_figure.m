@@ -13,7 +13,7 @@ addParameter(p,'Resize','on',@ischar);
 addParameter(p,'CloseRequestFcn',@close_win_echo,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowScrollWheelFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'ButtonDownFcn',@do_nothing,@(x) isa(x,'function_handle'));
-addParameter(p,'KeyPressFcn',@do_nothing,@(x) isa(x,'function_handle'));
+addParameter(p,'WindowKeyPressFcn',@do_nothing,@(x) isa(x,'function_handle'));
 addParameter(p,'WindowStyle','normal',@ischar);
 addParameter(p,'Group','ESP3',@ischar);
 addParameter(p,'Visible','on',@ischar);
@@ -46,7 +46,7 @@ if isempty(p.Results.fig_handle)
         'ButtonDownFcn',{p.Results.ButtonDownFcn,main_figure},...
         'WindowScrollWheelFcn',{p.Results.WindowScrollWheelFcn,main_figure},...
         'Visible',p.Results.Visible,...
-        'KeyPressFcn',{p.Results.KeyPressFcn,main_figure});
+        'WindowKeyPressFcn',{p.Results.WindowKeyPressFcn,main_figure});
     
 else
     fig_handle=p.Results.fig_handle;

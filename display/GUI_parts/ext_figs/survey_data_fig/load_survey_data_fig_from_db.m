@@ -44,11 +44,13 @@ addOptional(p,'reload',0,@isnumeric);
 addOptional(p,'new_logbook',0,@isnumeric);
 parse(p,main_figure,varargin{:});
 
-layer=getappdata(main_figure,'Layer');
-app_path=getappdata(main_figure,'App_path');
-
 new_logbook=p.Results.new_logbook;
 reload=p.Results.reload;
+
+layer=getappdata(main_figure,'Layer');
+app_path=getappdata(main_figure,'App_path');
+file_add=layer.Filename;
+
 
 if isempty(layer)||new_logbook>0
     [~,path_f]= uigetfile({fullfile(app_path.data,'echo_logbook.db')}, 'Pick a logbook file','MultiSelect','off');
@@ -64,7 +66,6 @@ else
             [path_lay,~]=get_path_files(layer);
             path_f=path_lay{1};
     end
-    
 end
 
 
@@ -88,7 +89,7 @@ idx_tag=find(strcmpi({hfigs(:).Tag},tag));
 
 if ~isempty(idx_tag)
     if reload==0
-            figure(hfigs(idx_tag(1)));
+        figure(hfigs(idx_tag(1)));
         return;
     else
         surv_data_fig=hfigs(idx_tag(1));
@@ -106,7 +107,8 @@ else
             'Name',sprintf('%s',data_survey{2}),...
             'Tag',tag,...
             'WindowStyle','Docked',...
-            'Group','Logbook');
+            'Group','Logbook',...
+            'WindowKeyPressFcn',@logbook_keypress_fcn);
         
         surv_data_table.file=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.55 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_fig});
         surv_data_table.snap=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.6250 0.96 0.075 0.03],'String','Snap','Value',1,'Callback',{@search_callback,surv_data_fig});
@@ -183,76 +185,13 @@ if reload==0
     uimenu(survey_menu,'Label','Export to Html and display','Callback',{@export_metadata_to_html_callback,main_figure});
     
     
-    
     setappdata(surv_data_fig,'path_data',path_f);
     setappdata(surv_data_fig,'surv_data_table',surv_data_table);
     setappdata(surv_data_fig,'data_ori',survDataSummary);
     
-    
-    
 else
-    path_f=getappdata(surv_data_fig,'path_data');
-    data_ori=getappdata(surv_data_fig,'data_ori');
-    dbconn=sqlite(db_file,'connect');
-    data_ori_new=update_data_table(dbconn,data_ori,layer.Filename,path_f);
-    setappdata(surv_data_fig,'data_ori',data_ori_new);
-    set(surv_data_table.table_main,'Data',data_ori_new);
-    dbconn.close();
-    search_callback([],[],surv_data_fig);
+    reload_logbook_fig(surv_data_fig,file_add);
 end
-end
-
-function data_ori_new=update_data_table(dbconn,data_ori,filename_cell,path_f)
-data_ori_new=data_ori;
-for i=1:length(filename_cell)
-    [~,file_c,ext_c]=fileparts(filename_cell{i});
-    data_logbook_to_up=dbconn.fetch(sprintf('select Filename,Snapshot,Stratum,Transect,Comment,StartTime,EndTime from logbook where Filename = ''%s''',[file_c ext_c]));
-    
-    if~isempty(data_ori_new)
-        idx_mod=find(strcmpi(data_ori_new(:,2),[file_c ext_c]));
-    else
-        idx_mod=[];
-    end
-    if~isempty(idx_mod)
-        data_ori_new(idx_mod,:)=[];
-    end
-    
-    nb_lines_new=size(data_logbook_to_up,1);
-    new_entry=cell(nb_lines_new,11);
-    new_entry(:,1)=cell(nb_lines_new,1);
-    new_entry(:,2)=data_logbook_to_up(:,1);
-    new_entry(:,3)=data_logbook_to_up(:,2);
-    new_entry(:,4)=data_logbook_to_up(:,3);
-    new_entry(:,5)=data_logbook_to_up(:,4);
-    new_entry(:,8)=data_logbook_to_up(:,5);
-    new_entry(:,9)=data_logbook_to_up(:,6);
-    new_entry(:,10)=data_logbook_to_up(:,7);
-    new_entry(:,11)=num2cell(1:nb_lines_new);
-    
-    for il=1:nb_lines_new
-        [path_xml,bot_file_str,reg_file_str]=create_bot_reg_xml_fname(fullfile(path_f,data_logbook_to_up{il,1}));
-        new_entry{il,6}=exist(fullfile(path_xml,bot_file_str),'file')==2;
-        if exist(fullfile(path_xml,reg_file_str),'file')==2
-            tags = list_tags_only_regions_xml(fullfile(path_xml,reg_file_str));
-            if ~isempty(tags)
-                str_reg=cell2mat(cellfun(@(x) [ x ' ' ], unique(tags), 'UniformOutput', false));
-                new_entry{il,7}=str_reg;
-            else
-                new_entry{il,7}='';
-            end
-        else
-            new_entry{il,7}='';
-        end
-        new_entry{il,1}=false;
-    end
-    
-    data_ori_new=[data_ori_new;new_entry];
-    
-end
-[~,idx_sort]=sort(data_ori_new(:,9));
-data_ori_new=data_ori_new(idx_sort,:);
-data_ori_new(:,11)=num2cell(1:size(data_ori_new,1));
-
 end
 
 function resize_table(src,~)
@@ -447,8 +386,21 @@ else
     idx_already_open=[];
 end
 
+idx_deleted= find(~cellfun(@(x) exist(x,'file')==2,files));
+if ~isempty(idx_deleted)
+    
+    dbconn=sqlite(fullfile(path_f,'echo_logbook.db'),'connect');
+    for i=idx_deleted
+        fprintf('Removing %s from logbook... cannot find it anymore.\n',files{i});
+        dbconn.exec(sprintf('delete from logbook where Filename like "%s"',selected_files{i}));
+    end
+    dbconn.close();  
+files(idx_deleted)=[];
+reload_logbook_fig(surv_data_fig,{});
+end
+
 if isempty(files)
-    if~isempty(idx_already_open)
+    if any(idx_already_open)
         idx_open=find(strcmpi(files_open{end},old_files));
         [idx_lay,~]=find_layer_idx(layers,lay_IDs(idx_open(end)));
         setappdata(main_figure,'Layer',layers(idx_lay));
@@ -541,61 +493,4 @@ survey_input_obj.survey_input_to_survey_xml('xml_filename',fullfile(pathname,fil
 
 end
 
-function search_callback(~,~,surv_fig)
-surv_data_table=getappdata(surv_fig,'surv_data_table');
-data_ori=getappdata(surv_fig,'data_ori');
-text_search=regexprep(get(surv_data_table.search_box,'string'),'[^\w'']','');
-
-file=get(surv_data_table.file,'value');
-snap=get(surv_data_table.snap,'value');
-strat=get(surv_data_table.strat,'value');
-trans=get(surv_data_table.trans,'value');
-reg=get(surv_data_table.reg,'value');
-
-if isempty(text_search)||(~file&&~snap&&~trans&&~strat&&~reg)
-    data=data_ori;
-else
-    
-    if snap>0
-        idx_snap=cell2mat(data_ori(:,3))==str2double(text_search);
-    else
-        idx_snap=zeros(size(data_ori,1),1);
-    end
-    
-    
-    if trans>0
-        idx_trans=cell2mat(data_ori(:,5))==str2double(text_search);
-    else
-        idx_trans=zeros(size(data_ori,1),1);
-    end
-    
-    if strat>0
-        idx_strat=strcmpi(data_ori(:,4),text_search);
-    else
-        idx_strat=zeros(size(data_ori,1),1);
-    end
-    
-    if file>0
-        files=regexprep(data_ori(:,2),'[^\w'']','');
-        out_files=regexpi(files,text_search);
-        idx_files=cellfun(@(x) ~isempty(x),out_files);
-    else
-        idx_files=zeros(size(data_ori,1),1);
-    end
-    
-    if reg>0
-        regs=regexprep(data_ori(:,7),'[^\w'']','');
-        out_regs=regexpi(regs,text_search);
-        idx_regs=cellfun(@(x) ~isempty(x),out_regs);
-    else
-        idx_regs=zeros(size(data_ori,1),1);
-    end
-    
-    data=data_ori(idx_snap|idx_strat|idx_files|idx_trans|idx_regs,:);
-    
-end
-
-set(surv_data_table.table_main,'Data',data);
-
-end
 

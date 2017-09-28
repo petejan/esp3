@@ -1,4 +1,4 @@
-function update_echo_logbook_dbfile(layers_obj,varargin)
+function new_files=update_echo_logbook_dbfile(layers_obj,varargin)
 
 p = inputParser;
 
@@ -8,6 +8,7 @@ addRequired(p,'layers_obj',@(obj) isa(obj,'layer_cl'));
 addParameter(p,'SurveyName','',ver_fmt);
 addParameter(p,'Voyage','',ver_fmt);
 addParameter(p,'Filename','',@ischar);
+addParameter(p,'DbFile','',@ischar);
 addParameter(p,'SurveyData',survey_data_cl.empty(),@(obj) isa(obj,'survey_data_cl'));
 parse(p,layers_obj,varargin{:});
 
@@ -24,16 +25,24 @@ results=p.Results;
 %     [new_path,~,~]=fileparts(p.Results.Filename);
 %     pathtofile=union(pathtofile,new_path);
 % end
-
+new_files={};
 for ilay=1:length(layers_obj)
     
-    [path_lay,~]=layers_obj(ilay).get_path_files();
-    path_lay=unique(path_lay);
-    files_lay=layers_obj(ilay).Filename;
+    if ~any(strcmp(p.UsingDefaults,'DbFile'))
+        [path_lay,~]=fileparts(p.Results.DbFile);
+        path_lay={path_lay};
+        files_lay={};
+    else
+        [path_lay,~]=layers_obj(ilay).get_path_files();
+        path_lay=unique(path_lay);
+        files_lay=layers_obj(ilay).Filename;
+    end
+    
     for ip=1:length(path_lay)
         
         path_f=path_lay{ip};
         curr_files=files_lay(cellfun(@(x) ~isempty(strfind(x,path_f)),files_lay));
+        
         db_file=fullfile(path_f,'echo_logbook.db');
         if ~(exist(db_file,'file')==2)
             initialize_echo_logbook_dbfile(path_f,0)
@@ -42,8 +51,7 @@ for ilay=1:length(layers_obj)
         dbconn=sqlite(db_file,'connect');
         
         files_logbook=dbconn.fetch('select Filename from logbook order by StartTime');
-        survey_data=dbconn.fetch('select * from survey');
-        
+        survey_data=dbconn.fetch('select * from survey');        
         dbconn.close();
         
         
@@ -75,7 +83,13 @@ for ilay=1:length(layers_obj)
         
         dbconn=sqlite(db_file,'connect');
         survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
-        add_files_to_db(path_f,new_files,ftypes(idx_new),dbconn,survdata_temp)
+        
+        if numel(new_files)==0
+            disp('The logbook seems to be up to date...');
+        else
+            add_files_to_db(path_f,new_files,ftypes(idx_new),dbconn,survdata_temp)
+        end
+        
         
         for i=1:length(curr_files)
             [~,file_curr_temp,end_temp]=fileparts(curr_files{i});
@@ -153,7 +167,6 @@ if exist(p.Results.Filename,'file')==2
     [path_f,file_r,end_file]=fileparts(p.Results.Filename);
     
     db_file=fullfile(path_f,'echo_logbook.db');
-    
     
     
     if ~(exist(db_file,'file')==2)
