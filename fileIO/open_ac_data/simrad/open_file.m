@@ -425,7 +425,7 @@ setappdata(main_figure,'Layers',layers);
 %%% Update display
 loadEcho(main_figure);
 
-% profile off;
-% profile viewer;
+%profile off;
+%profile viewer;
 
 end

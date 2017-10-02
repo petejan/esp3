@@ -1,17 +1,16 @@
 
-function [gps_data,attitude_full]=nmea_to_attitude_gps(NMEA_string_cell,NMEA_time,idx_NMEA)
+function [gps_data,attitude_full]=nmea_to_attitude_gps_v2(NMEA_string_cell,NMEA_time,idx_NMEA)
 curr_gps=0;
 curr_dist=0;
 curr_att=0;
 curr_heading=0;
+[nmea,nmea_type]=cellfun(@parseNMEA,NMEA_string_cell(idx_NMEA),'UniformOutput',0);
+NMEA_time=NMEA_time(idx_NMEA);
 
-for iiii=idx_NMEA(:)'
-    %for iiii=1:length(NMEA_string_cell)
-    curr_message=NMEA_string_cell{iiii};
+for iiii=1:length(idx_NMEA)
 
-    [nmea,nmea_type]=parseNMEA(curr_message);
     try
-        switch nmea_type
+        switch nmea_type{iiii}
             case 'gps'
                 
                 %Because gps messages can sometimes be corrupted
@@ -20,54 +19,54 @@ for iiii=idx_NMEA(:)'
                 %lat/long values. The tests below are to ignore
                 %such values
                 
-                if ~isempty(nmea.lat) && isreal(nmea.lat)       ...
-                        && ~isempty(nmea.lon) && isreal(nmea.lon)       ...
-                        && (nmea.lat_hem == 'S' || nmea.lat_hem == 'N') ...
-                        && (nmea.lon_hem == 'E' || nmea.lon_hem == 'W')
+                if ~isempty(nmea{iiii}.lat) && isreal(nmea{iiii}.lat)       ...
+                        && ~isempty(nmea{iiii}.lon) && isreal(nmea{iiii}.lon)       ...
+                        && (nmea{iiii}.lat_hem == 'S' || nmea{iiii}.lat_hem == 'N') ...
+                        && (nmea{iiii}.lon_hem == 'E' || nmea{iiii}.lon_hem == 'W')
                     
                     curr_gps=curr_gps+1;
-                    gps.type{curr_gps}=nmea.type;
+                    gps.type{curr_gps}=nmea{iiii}.type;
                     gps.time(curr_gps) = NMEA_time(iiii);
                     %  set lat/lon signs and store values
-                    if (nmea.lat_hem == 'S');
-                        gps.lat(curr_gps) = -nmea.lat;
+                    if (nmea{iiii}.lat_hem == 'S');
+                        gps.lat(curr_gps) = -nmea{iiii}.lat;
                     else
-                        gps.lat(curr_gps) = nmea.lat;
+                        gps.lat(curr_gps) = nmea{iiii}.lat;
                     end
-                    if (nmea.lon_hem == 'W');
-                        gps.lon(curr_gps) = -nmea.lon;
+                    if (nmea{iiii}.lon_hem == 'W');
+                        gps.lon(curr_gps) = -nmea{iiii}.lon;
                     else
-                        gps.lon(curr_gps) = nmea.lon;
+                        gps.lon(curr_gps) = nmea{iiii}.lon;
                     end
                     
                     
                 end
                 %             case 'speed'
                 %                 vspeed.time(curr_speed) = dgTime;
-                %                 vspeed.speed(curr_speed) = nmea.sog_knts;
+                %                 vspeed.speed(curr_speed) = nmea{iiii}.sog_knts;
                 %                 curr_speed = curr_speed + 1;
             case 'dist'
-                if ~isempty(nmea.total_cum_dist)
+                if ~isempty(nmea{iiii}.total_cum_dist)
                     curr_dist=curr_dist+1;
                     dist.time(curr_dist) = NMEA_time(iiii);
-                    dist.vlog(curr_dist) = nmea.total_cum_dist;
+                    dist.vlog(curr_dist) = nmea{iiii}.total_cum_dist;
                     
                 end
             case 'attitude'
-                if  ~isempty(nmea.heading) && ~isempty(nmea.pitch) && ~isempty(nmea.roll) && ~isempty(nmea.heave)
+                if  ~isempty(nmea{iiii}.heading) && ~isempty(nmea{iiii}.pitch) && ~isempty(nmea{iiii}.roll) && ~isempty(nmea{iiii}.heave)
                     curr_att=curr_att+1;
                     attitude.time(curr_att) = NMEA_time(iiii);
-                    attitude.heading(curr_att) = nmea.heading;
-                    attitude.pitch(curr_att) = nmea.pitch;
-                    attitude.roll(curr_att) = nmea.roll;
-                    attitude.heave(curr_att) = nmea.heave;
+                    attitude.heading(curr_att) = nmea{iiii}.heading;
+                    attitude.pitch(curr_att) = nmea{iiii}.pitch;
+                    attitude.roll(curr_att) = nmea{iiii}.roll;
+                    attitude.heave(curr_att) = nmea{iiii}.heave;
                     
                 end
             case 'heading'
-                if ~isempty(nmea.heading)
+                if ~isempty(nmea{iiii}.heading)
                     curr_heading=curr_heading+1;
                     heading.time(curr_heading) = NMEA_time(iiii);
-                    heading.heading(curr_heading) = nmea.heading;
+                    heading.heading(curr_heading) = nmea{iiii}.heading;
                     
                 end
         end

@@ -506,11 +506,14 @@ if p.Results.GPSOnly==0
         case 'EK80'
             data_ori=data;
            
-
-            if gpu_comp
+            
+            %if gpu_comp%here gpu computation does not seem to improve
+            %performances, especially with the new fft based match filtering process
+            if 0
                 data=data_to_gpu(data);
                 data_ori=data_to_gpu(data_ori);
             end
+            
             [data,mode]=match_filter_data_v2(trans_obj,data);
 
             data=compute_PwEK80_v2(trans_obj,data);
@@ -519,7 +522,8 @@ if p.Results.GPSOnly==0
             data_ori=computesPhasesAngles_v2(trans_obj,data_ori);
                 
            
-            if gpu_comp
+            %if gpu_comp%
+            if 0
                 data_ori=data_from_gpu(data_ori);
                 data=data_from_gpu(data);
             end

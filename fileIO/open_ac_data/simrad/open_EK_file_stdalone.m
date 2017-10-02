@@ -303,7 +303,7 @@ if ~isequal(Filename_cell, 0)
 
                 idx_NMEA=find(ismember(NMEA.type,{'SHR' 'HDT' 'VLW'})|idx_NMEA_gps(idx_GPS,:));
 
-                [gps_data_tmp,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
+                [gps_data_tmp,attitude_full]=nmea_to_attitude_gps_v2(NMEA.string,NMEA.time,idx_NMEA);
 
             end
             

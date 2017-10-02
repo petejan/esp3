@@ -1,5 +1,5 @@
 function [nmea,nmea_type]=parseNMEA(nmea_string)
-
+nmea_string(isspace(nmea_string))=' ';
 idx = strfind(nmea_string, ',');
 
 if isempty(idx)
