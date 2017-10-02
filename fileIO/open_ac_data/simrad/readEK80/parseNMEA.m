@@ -29,7 +29,7 @@ switch type(3:end)
     case 'SHR'
        
         if ~isempty(strfind(nmeadata,'ATT'))
-            '$PASHR,ATT,348466.00,147.26310,-0.66647,0.28198,0.0011,0.0037,0 ,';
+            %'$PASHR,ATT,348466.00,147.26310,-0.66647,0.28198,0.0011,0.0037,0 ,';
             format = '%s %2.0f %2d %f %f %f %f %f %f %f %f %d %d';
             out = textscan(nmeadata, format, 1, 'delimiter', ',');
             nmea = struct('type', type, ...
@@ -41,7 +41,7 @@ switch type(3:end)
                 'heave', out{8});
             nmea_type='attitude';
         else
-            '$PASHR,065803.372,83.17,T,0.97,0.14,-0.36,0.021,0.021,0.015,2,1 ';
+            %'$PASHR,065803.372,83.17,T,0.97,0.14,-0.36,0.021,0.021,0.015,2,1 ';
             format = '%2.0f %2d %f %f %c %f %f %f %f %f %f %d %d';
             out = textscan(nmeadata, format, 1, 'delimiter', ',');
             nmea = struct('type', type, ...

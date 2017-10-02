@@ -7,6 +7,9 @@ if nb_trans>1
         -2*abscf_wmean*nansum(dist.^2.*trans_abscf)+...
         abscf_wmean^2*nansum(dist.^2))*...
         nb_trans/((nb_trans-1)*nansum(dist)^2); 
+%     
+%     abscf_var=nansum((trans_abscf-abscf_wmean).^2.*dist.^2)*...
+%         nb_trans/((nb_trans-1)*nansum(dist)^2);
 else
     abscf_var=0;
 end

@@ -8,7 +8,6 @@ if fid==-1
     return;
 end
 
-
 str_read=char(zeros(1,BLCK_SIZE+4));
 found_start=0;
 n=0;

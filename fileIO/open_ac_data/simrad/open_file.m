@@ -40,6 +40,7 @@
 %% Function
 function open_file(~,~,file_id,main_figure)
 
+% profile on;
 %%% Grab current layer (files data) and paths
 layer = getappdata(main_figure,'Layer');
 layers = getappdata(main_figure,'Layers');
@@ -421,11 +422,10 @@ layer=layers(idx);
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Layers',layers);
 
-
-
-%%% Update display?
+%%% Update display
 loadEcho(main_figure);
 
-
+% profile off;
+% profile viewer;
 
 end

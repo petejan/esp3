@@ -10,7 +10,7 @@
 %
 % *INPUT VARIABLES*
 %
-% * |Filename_cell|: TODO write description (Required. Char or cell). 
+% * |Filename_cell|: TODO write description (Required. Char or cell).
 % * |PathToMemmap|: TODO write description (Optional. Char, Default: TODO).
 % * |Calibration|: TODO write description (Optional. Default: empty num).
 % * |Frequencies|: TODO write description (Optional. Default: empty num).
@@ -89,7 +89,10 @@ vec_freq_tot=[];
 
 load_bar_comp=p.Results.load_bar_comp;
 
-
+%profile on;
+%For further profiling, it looks like the bottle neck is in
+% the parsing of NMEA messages comming from the POS/MV, as they are
+% recorded at 10Hz....
 
 
 if ~isequal(Filename_cell, 0)
@@ -100,13 +103,13 @@ if ~isequal(Filename_cell, 0)
     layers(length(Filename_cell))=layer_cl();
     id_rem=[];
     
-
+    
     
     for uu=1:nb_files
         Filename=Filename_cell{uu};
         [path_f,fileN,~]=fileparts(Filename);
         
-
+        
         str_disp=sprintf('Opening File %d/%d : %s\n',uu,nb_files,Filename);
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_files,'Value',uu-1);
@@ -115,14 +118,14 @@ if ~isequal(Filename_cell, 0)
         else
             disp(str_disp)
         end
-
-   
+        
+        
         try
             
             ftype=get_ftype(Filename);
             if isempty(vec_freq_init)
                 
-                             
+                
                 switch ftype
                     case 'EK80'
                         [~,config]=read_EK80_config(Filename);
@@ -200,15 +203,19 @@ if ~isequal(Filename_cell, 0)
             fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
             
             if exist(fileIdx,'file')==0
-                idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
+
+                %idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
+
+                idx_raw_obj=idx_from_raw_v2(Filename,p.Results.load_bar_comp);
+                
                 save(fileIdx,'idx_raw_obj');
             else
                 load(fileIdx);
                 [~,et]=start_end_time_from_file(Filename);
                 dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
                 if isempty(dgs)
-                     fprintf('No accoustic data in file %s\n',Filename);
-                     id_rem=union(id_rem,uu);
+                    fprintf('No accoustic data in file %s\n',Filename);
+                    id_rem=union(id_rem,uu);
                     continue;
                 end
                 
@@ -224,6 +231,7 @@ if ~isequal(Filename_cell, 0)
             
             if any(nb_pings<=1)
                 id_rem=union(id_rem,uu);
+                fprintf('Only one ping in file %s. Ignoring it.\n',Filename);
                 continue;
             end
             
@@ -248,7 +256,7 @@ if ~isequal(Filename_cell, 0)
                     end
                 end
             end
-        
+            
             
             if ~isa(trans_obj,'transceiver_cl')
                 disp('Could not read file.')
@@ -266,16 +274,18 @@ if ~isequal(Filename_cell, 0)
             
             if exist(gps_file,'file')==2&&~exist(att_file,'file')
                 fprintf('Using _gps.csv file as GPS input for file %s\n',Filename);
-                idx_NMEA=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW|VTG)')));
+                idx_NMEA=find(ismember(NMEA.type,{'SHR' 'HDT' 'VLW'}));
                 [~,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
                 gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
             elseif ~exist(gps_file,'file')&&exist(att_file,'file')==2
                 fprintf('Using _att.csv file as Attitude input for file %s\n',Filename);
-                idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
-                    cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
-                    cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
-                [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
+                 idx_NMEA_gps=[strcmpi(NMEA.type,'GGA');...
+                    strcmpi(NMEA.type,'GLL');...
+                    strcmpi(NMEA.type,'RMC')];
+                
+                [~,idx_GPS]=max(sum(idx_NMEA_gps,2));
                 idx_NMEA=find(idx_NMEA_gps(idx_GPS,:));
+                
                 [gps_data_tmp,~]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
                 attitude_full= attitude_nav_cl.load_att_from_file(att_file);
             elseif exist(gps_file,'file')==2&&exist(att_file,'file')==2
@@ -284,27 +294,32 @@ if ~isequal(Filename_cell, 0)
                 fprintf('Using _gps.csv file as GPS input for file %s\n',Filename);
                 gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
             else
-                idx_NMEA_gps=[cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GGA'));...
-                    cellfun(@(x) ~isempty(x),regexp(NMEA.string,'GLL'));...
-                    cellfun(@(x) ~isempty(x),regexp(NMEA.string,'RMC'))];
-                [~,idx_GPS]=nanmax(nansum(idx_NMEA_gps,2));
-                idx_NMEA=union(find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'(SHR|HDT|VLW)'))),find(idx_NMEA_gps(idx_GPS,:)));
-                [gps_data_tmp,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA); 
+
+                
+                idx_NMEA_gps=[strcmpi(NMEA.type,'GGA');...%20 times faster than the old way...
+                    strcmpi(NMEA.type,'GLL');...
+                    strcmpi(NMEA.type,'RMC')];
+                [~,idx_GPS]=max(sum(idx_NMEA_gps,2));
+
+                idx_NMEA=find(ismember(NMEA.type,{'SHR' 'HDT' 'VLW'})|idx_NMEA_gps(idx_GPS,:));
+
+                [gps_data_tmp,attitude_full]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
+
             end
             
             gps_data=gps_data_tmp.clean_gps_track();
             %gps_data=gps_data_tmp;
             if isempty(attitude_full)||~any(attitude_full.Roll)
-                attitude_full=mru0_att;  
+                attitude_full=mru0_att;
             end
             
-             idx_NMEA_dft=find(cellfun(@(x) ~isempty(x),regexp(NMEA.string,'DFT')));
-             if ~isempty(idx_NMEA_dft)
-                 [trans_depth,depth_time]=nmea_to_depth_trans(NMEA.string,NMEA.time,idx_NMEA_dft);
-             else
-                 trans_depth=[];
-                 depth_time=[];
-             end
+            idx_NMEA_dft=find(strcmpi(NMEA.type,'DFT'));
+            if ~isempty(idx_NMEA_dft)
+                [trans_depth,depth_time]=nmea_to_depth_trans(NMEA.string,NMEA.time,idx_NMEA_dft);
+            else
+                trans_depth=[];
+                depth_time=[];
+            end
             
             if p.Results.GPSOnly==0
                 for i =1:length(trans_obj)
@@ -347,7 +362,7 @@ if ~isequal(Filename_cell, 0)
                             sample_idx(sample_idx==1)=nan;
                             trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Sample_idx',sample_idx));
                             
-                           
+                            
                             
                         end
                     end
@@ -375,9 +390,9 @@ if ~isequal(Filename_cell, 0)
                     gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Time);
                     attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);
                     
-
+                    
                     [~,~,algo_vec,~]=load_config_from_xml_v2(0,0,1);
-       
+                    
                     algo_vec_init=init_algos();
                     
                     algo_vec_init=reset_range(algo_vec_init,trans_obj(i).get_transceiver_range());
@@ -385,7 +400,8 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).GPSDataPing=gps_data_ping;
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
-                    trans_obj(i).add_algo(algo_vec);                 
+                    trans_obj(i).add_algo(algo_vec);
+                    
                     trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
                     
                 end
@@ -416,5 +432,7 @@ if ~isequal(Filename_cell, 0)
     
     clear('data','transceiver');
     
+%      profile off;
+%      profile viewer;
     
 end

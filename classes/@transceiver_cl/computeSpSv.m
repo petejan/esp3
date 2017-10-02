@@ -28,8 +28,8 @@ range=trans_obj.get_transceiver_range();
 
 gpu_comp=gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox');
 
-
 if gpu_comp%use of gpuArray results in about 20% speed increase here
+    %disp('GPU computation available')
     power=gpuArray(power);
     range=gpuArray(range);
     powerunmatched=gpuArray(powerunmatched);

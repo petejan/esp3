@@ -35,7 +35,7 @@ for ifile=1:length(reg_file_str)
         end
         bot_ver_new=nanmax(cell2mat(bot_ver))+1;
         sprintf('Saving Bottom to database as version %.0f\n',bot_ver_new);
-        dbconn.insert('bottom',{'Filename'  'Bot_XML' 'Version'},{bot_file_str{ifile} xml_str_bot bot_ver_new});
+        dbconn.insert('bottom',{'Filename' 'Bot_XML' 'Version'},{bot_file_str{ifile} xml_str_bot bot_ver_new});
     end
     
     

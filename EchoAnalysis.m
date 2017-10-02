@@ -176,12 +176,14 @@ end
 %% Managing existing files in temporary data folder
 files_in_temp=dir(fullfile(app_path.data_temp,'*.bin'));
 
-idx_old=[];
-for uu=1:numel(files_in_temp)
-    if (now-files_in_temp(uu).datenum)>1
-        idx_old = union(idx_old,uu);
-    end
-end
+% idx_old=[];
+% for uu=1:numel(files_in_temp)
+%     if (now-files_in_temp(uu).datenum)>1
+%         idx_old = union(idx_old,uu);
+%     end
+% end
+
+idx_old=1:numel(files_in_temp);%check all temp files...
 
 if ~isempty(idx_old)
     

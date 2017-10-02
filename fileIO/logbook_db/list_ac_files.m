@@ -34,7 +34,7 @@
 
 %% Function
 
-function [files,ftype]=list_ac_files(datapath)
+function [files,ftype]=list_ac_files(datapath,listonly)
 
 dir_raw=dir(fullfile(datapath,'*.raw'));
 dir_asl=dir(fullfile(datapath,'*.*A'));
@@ -43,14 +43,15 @@ files=union({dir_raw([dir_raw(:).isdir]==0).name},...
     {dir_asl([dir_asl(:).isdir]==0).name});
 ftype=cell(1,numel(files));
 
-for ifi=1:numel(files)
-
-    ftype{ifi}=get_ftype(fullfile(datapath,files{ifi}));
+if listonly==0
+    for ifi=1:numel(files)
+        ftype{ifi}=get_ftype(fullfile(datapath,files{ifi}));
+    end
+    
+    idx_rem=strcmpi('unknown',ftype);
+    files(idx_rem)=[];
+    ftype(idx_rem)=[];
 end
-
-idx_rem=strcmpi('unknown',ftype);
-files(idx_rem)=[];
-ftype(idx_rem)=[];
 
 end
 

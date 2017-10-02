@@ -1,6 +1,6 @@
 function initialize_echo_logbook_dbfile(datapath,force_create)
 
-[list_raw,ftypes]=list_ac_files(datapath);
+[list_raw,ftypes]=list_ac_files(datapath,0);
 
 db_file=fullfile(datapath,'echo_logbook.db');
 if exist(db_file,'file')==2

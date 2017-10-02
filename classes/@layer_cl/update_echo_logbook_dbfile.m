@@ -76,11 +76,15 @@ for ilay=1:length(layers_obj)
         end
         
         
-        [list_raw,ftypes]=list_ac_files(path_f);
-        
+        [list_raw,~]=list_ac_files(path_f,1);
         
         [new_files,idx_new]=setdiff(list_raw,files_logbook);
-        
+        if~isempty(new_files)
+            ftypes=get_ftype_cell(cellfun(@(x) fullfile(path_f,x),new_files,'UniformOutput',0));
+            idx_rem=strcmpi('unknown',ftypes);
+            new_files(idx_rem)=[];
+            new_files(idx_rem)=[];
+        end
         dbconn=sqlite(db_file,'connect');
         survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
         

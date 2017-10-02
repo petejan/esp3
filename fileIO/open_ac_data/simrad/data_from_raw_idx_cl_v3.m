@@ -106,6 +106,7 @@ nb_nmea=idx_raw_obj.get_nb_nmea_dg();
 time_nmea=idx_raw_obj.get_time_dg('NME0');
 NMEA.time= time_nmea;
 NMEA.string= cell(1,nb_nmea);
+NMEA.type= cell(1,nb_nmea);
 
 params_cl_init(nb_trans)=params_cl();
 
@@ -317,7 +318,7 @@ for idg=1:nb_dg
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
-            
+            NMEA.type{i_nmea}=NMEA.string{i_nmea}(4:6);
         case 'FIL1'
             
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
@@ -511,8 +512,7 @@ if p.Results.GPSOnly==0
                 data_ori=data_to_gpu(data_ori);
             end
             [data,mode]=match_filter_data_v2(trans_obj,data);
-            %[data,mode]=match_filter_data_v3(trans_obj,data);%Does not
-            %seem faster... To be tested on very large files
+
             data=compute_PwEK80_v2(trans_obj,data);
             data=computesPhasesAngles_v2(trans_obj,data);
             data_ori=compute_PwEK80_v2(trans_obj,data_ori);
