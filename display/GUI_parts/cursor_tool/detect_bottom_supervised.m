@@ -39,7 +39,7 @@ function detect_bottom_supervised(src,~,main_figure)
 if~(strcmpi(src.SelectionType,'Normal'))
     return;
 end
-
+update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');

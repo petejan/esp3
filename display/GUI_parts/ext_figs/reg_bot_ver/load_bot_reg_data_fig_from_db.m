@@ -123,7 +123,6 @@ reg_bot_data_fig=new_echo_figure(main_figure,...
 columnname = {'Version' 'Comment' 'Date'};
 columnformat = {'numeric' 'char','char'};
 
-
 % Create the uitable
 uicontrol(reg_bot_data_fig,'Style','Text','String','BOTTOM','Units','Normalized','Position',[0.1 0.95 0.3 0.05],'Fontweight','bold','Background','w');
 bot_data_table.table_main = uitable('Parent',reg_bot_data_fig,...
@@ -131,7 +130,7 @@ bot_data_table.table_main = uitable('Parent',reg_bot_data_fig,...
     'ColumnName', columnname,...
     'ColumnFormat', columnformat,...
     'CellSelectionCallback',@selec_ver_cback,...
-    'CellEditCallback',{},...
+    'CellEditCallback',{@insert_comment,main_figure},...
     'ColumnEditable', [false true false],...
     'Units','Normalized','Position',[0 0 0.5 0.95],...
     'RowName',[],'tag','bot');
@@ -140,6 +139,7 @@ set(bot_data_table.table_main,'ColumnWidth',...
     num2cell(pos_t(3)*[0.1 0.5 0.4]));
 rc_menu = uicontextmenu(ancestor(bot_data_table.table_main,'figure'),'tag','bot');
 uimenu(rc_menu,'Label','Load Selected bottom version','Callback',{@import_bot_reg_cback,main_figure});
+uimenu(rc_menu,'Label','Remove Selected bottom version','Callback',{@remove_selected_version,main_figure});
 bot_data_table.table_main.UIContextMenu =rc_menu;
 %set_single_select_mode_table(bot_data_table.table_main) ;
 
@@ -150,7 +150,7 @@ reg_data_table.table_main = uitable('Parent',reg_bot_data_fig,...
     'ColumnName', columnname,...
     'ColumnFormat', columnformat,...
     'CellSelectionCallback',@selec_ver_cback,...   
-    'CellEditCallback',{},...
+    'CellEditCallback',{@insert_comment,main_figure},...
     'ColumnEditable', [false true false],...
     'Units','Normalized','Position',[0.5 0 0.5 0.95],...
     'RowName',[],'tag','reg');
@@ -162,6 +162,7 @@ set(reg_data_table.table_main,'ColumnWidth',...
 
 rc_menu = uicontextmenu(ancestor(reg_data_table.table_main,'figure'),'tag','reg');
 uimenu(rc_menu,'Label','Load Selected region version','Callback',{@import_bot_reg_cback,main_figure});
+uimenu(rc_menu,'Label','Remove Selected region version','Callback',{@remove_selected_version,main_figure});
 reg_data_table.table_main.UIContextMenu =rc_menu;
 
 setappdata(reg_bot_data_fig,'bot_data_table',bot_data_table);
@@ -189,6 +190,87 @@ switch src.Tag
 end
 
 
+end
+
+function insert_comment(src,evt,main_figure)
+layer=getappdata(main_figure,'Layer');
+reg_bot_data_fig=ancestor(src,'figure');
+
+[path_xml,reg_file_str,bot_file_str]=layer.create_files_str();
+
+switch src.Tag
+    case 'bot'
+       tb=getappdata(reg_bot_data_fig,'bot_data_table');
+        str_w='bottom';
+        files=bot_file_str;
+        str_file='Bot_XML';
+    case 'reg'
+    
+       tb=getappdata(reg_bot_data_fig,'reg_data_table');
+        str_w='region';
+        files=reg_file_str;
+        str_file='Reg_XML';
+end
+ver=tb.table_main.Data{evt.Indices(1),1};
+Comment=tb.table_main.Data{evt.Indices(1),2};
+for ip=1:length(path_xml)
+    db_file=fullfile(path_xml{ip},'bot_reg.db');
+    
+    dbconn=sqlite(db_file,'connect');
+     
+    data_db=dbconn.fetch(sprintf('select Filename,%s,Save_time,Comment,Version from %s WHERE Filename like "%s" AND Version = %f',...
+        str_file,str_w,files{ip},ver));
+    dbconn.exec(sprintf('delete from %s WHERE Filename is "%s" AND Version = %f',str_w,files{ip},ver));
+    dbconn.insert(str_w,{'Filename' str_file 'Save_time' 'Comment' 'Version'},...
+    {data_db{1} data_db{2} data_db{3} Comment ver});
+
+    dbconn.close();
+end
+end
+
+function remove_selected_version(src,~,main_figure)
+
+layer=getappdata(main_figure,'Layer');
+reg_bot_data_fig=ancestor(src,'figure');
+
+if isempty(layer)
+    return;
+end
+
+[path_xml,reg_file_str,bot_file_str]=layer.create_files_str();
+switch src.Parent.Tag
+    case 'bot'
+        ver=getappdata(reg_bot_data_fig,'bot_ver_select');
+        str_w='bottom';
+        files=bot_file_str;
+    case 'reg'
+        ver=getappdata(reg_bot_data_fig,'reg_ver_select');
+        str_w='region';
+        files=reg_file_str;
+end
+war_str=sprintf('WARNING: This will delete this %s version',str_w);
+
+choice = questdlg(war_str, ...
+    'Load XML',...
+    'Yes','No', ...
+    'No');
+% Handle response
+switch choice
+    case 'No'
+        return;
+end
+
+
+for ip=1:length(path_xml)
+    db_file=fullfile(path_xml{ip},'bot_reg.db');
+    
+    dbconn=sqlite(db_file,'connect');
+    %test=dbconn.fetch(sprintf('select * from %s WHERE Filename like "%s" AND Version = %f',str_w,file_str{ip},ver));
+    dbconn.exec(sprintf('delete from %s WHERE Filename is "%s" AND Version = %f',str_w,files{ip},ver));
+    dbconn.close();
+end
+
+load_bot_reg_data_fig_from_db(main_figure);
 end
 
 function import_bot_reg_cback(src,~,main_figure)

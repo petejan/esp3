@@ -110,6 +110,7 @@ if ~isdeployed()
     end
 end
 
+
 %% Get monitor's dimensions
 size_max = get(0, 'MonitorPositions');
 
@@ -153,6 +154,12 @@ if ~isdeployed
     update_path(main_path);
 end
 update_java_path(main_path);
+
+%% Check if GPU computation is available %%
+gpu_comp=get_gpu_comp_stat();
+if gpu_comp
+    disp('GPU computation Availaible');
+end
 
 %% Read ESP3 config file
 [app_path,curr_disp_obj,~,~] = load_config_from_xml_v2(1,1,1);
@@ -200,7 +207,7 @@ if ~isempty(idx_old)
     end
     
     if isempty(choice)
-        return;
+        delete_files = 0;
     end
     
     if delete_files == 1

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config_file version="0.2">
+   <algos>
+      <BadPingsV2 Above="1.000000" BS_std="9.000000" BS_std_bool="1.000000" Below="0.000000" denoised="0.000000" savename="--" thr_spikes_Above="3.000000" thr_spikes_Below="3.000000"/>
+   </algos>
+</config_file>

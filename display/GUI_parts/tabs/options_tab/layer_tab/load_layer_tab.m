@@ -311,6 +311,7 @@ else
 end
 
 setappdata(src,'SelectedLayers',selected_layers);
+
 if up_display>0
     setappdata(main_figure,'Layers',layers);
     setappdata(main_figure,'Layer',layer);

@@ -12,7 +12,7 @@ rd_zone(rd_zone<0)=nan;
 % Apply all possible corrections to the first sample in each ping. Calculate the standard
 % deviation and mean of the corrected first sample amplitude
 
-gpu_comp=gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox');%Use of GPU speeds thing up by a factor of about 4 times here;
+gpu_comp=get_gpu_comp_stat();
 
 if gpu_comp
     pings=gpuArray(single(1:num_pings));

@@ -25,7 +25,7 @@ ftype=get_ftype(filename);
 
 load_bar_comp=results.load_bar_comp;
 
-gpu_comp=gpuDeviceCount>0&& license('test','Distrib_Computing_Toolbox');%Use of GPU speeds thing up by about 40 to 50 percent here;
+gpu_comp=get_gpu_comp_stat();%Use of GPU speeds thing up by about 40 to 50 percent here;
 
 array_type='double';
 

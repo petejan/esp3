@@ -210,7 +210,7 @@ try
         
         
         set(allchild(axv),'visible',get(axv,'visible'))
-        y_val=[nanmin(horz_val(~isinf(horz_val))) nanmax(horz_val(~isinf(horz_val)))*10/15];
+        y_val=[nanmin(horz_val(~isinf(horz_val))) nanmax(horz_val(~isinf(horz_val)))*10/15^(-1*sign( nanmax(horz_val(~isinf(horz_val)))))];
         
         horz_val_high=horz_val;
         horz_val_high(idx_low>0)=nan;

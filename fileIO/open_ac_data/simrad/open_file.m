@@ -40,7 +40,7 @@
 %% Function
 function open_file(~,~,file_id,main_figure)
 
-% profile on;
+%profile on;
 %%% Grab current layer (files data) and paths
 layer = getappdata(main_figure,'Layer');
 layers = getappdata(main_figure,'Layers');
