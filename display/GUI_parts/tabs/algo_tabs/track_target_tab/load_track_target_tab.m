@@ -122,11 +122,6 @@ uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','
 uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.6 0.25 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'TrackTarget'});
 
 
-track_target_tab_comp.ax_pos=axes('Parent',track_target_tab_comp.track_target_tab,'Units','normalized',...
-    'OuterPosition',[0.75 0 0.25 1],'visible','on','NextPlot','add','box','on','tag','tt_ax');
-xlabel(track_target_tab_comp.ax_pos,'TS(dB)');
-grid(track_target_tab_comp.ax_pos,'on');
-
 %set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
 end

@@ -9,8 +9,8 @@ if isempty(ax)
     ax=axes(hfig);
     title(ax,tt);
     grid(ax,'on');
-    xlabel(track_target_tab_comp.ax_pos,'TS(dB)');
-    grid(track_target_tab_comp.ax_pos,'on');
+    xlabel(ax,'TS(dB)');
+    grid(ax,'on');
 end
 
 for i=1:length(disp_var)

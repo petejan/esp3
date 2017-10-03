@@ -31,12 +31,5 @@ set(single_target_tab_comp.MaxStdMajAxisAngle,'string',num2str(varin.MaxStdMajAx
 %set(findall(single_target_tab_comp.single_target_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'Single_target_tab',single_target_tab_comp);
-
-if new>=1
-    delete(single_target_tab_comp.ax_pos.Children);
-    init_st_ax(main_figure,single_target_tab_comp.ax_pos)
-end
-    
-display_st_or_track_pos(main_figure,single_target_tab_comp.ax_pos,'st');
-
+update_map_tab(main_figure,'map',0,'histo',1,'st',1);
 end

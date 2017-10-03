@@ -21,9 +21,8 @@ for i=1:length(algo_fields)
     end
 end
 
-
-display_st_or_track_hist(main_figure,track_target_tab_comp.ax_pos,{'tracks','st'});
-
 %set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'on');
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
+
+update_map_tab(main_figure,'map',0,'histo',1);
 end

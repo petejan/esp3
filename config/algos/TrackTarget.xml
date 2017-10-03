@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
    <algos>
-      <BottomDetectionV2 denoised="0.000000" r_max="249.540000" r_min="0.190000" savename="--" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-45.000000" thr_cum="0.010000" thr_echo="-40.000000"/>
+      <TrackTarget AlphaMajAxis="0.700000" AlphaMinAxis="0.700000" AlphaRange="0.700000" BetaMajAxis="0.500000" BetaMinAxis="0.500000" BetaRange="0.500000" ExcluDistMajAxis="1.000000" ExcluDistMinAxis="1.000000" ExcluDistRange="1.000000" MaxStdMajorAxisAngle="0.500000" MaxStdMinorAxisAngle="0.500000" Max_Gap_Track="8.000000" Min_Pings_Track="10.000000" Min_ST_Track="8.000000" MissedPingExpMajAxis="5.000000" MissedPingExpMinAxis="5.000000" MissedPingExpRange="5.000000" WeightMajAxis="20.000000" WeightMinAxis="20.000000" WeightPingGap="10.000000" WeightRange="50.000000" WeightTS="10.000000" savename="--"/>
    </algos>
 </config_file>
