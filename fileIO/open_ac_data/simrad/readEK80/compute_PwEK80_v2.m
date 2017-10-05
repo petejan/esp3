@@ -18,7 +18,7 @@ Ztrd=trans_obj(idx_freq).Config.Ztrd;
                 data.pings(idx_freq).y=data.pings(idx_freq).y+data.pings(idx_freq).(sprintf('comp_sig_%1d',i));
             end
             
-            data.pings(idx_freq).y=gather(data.pings(idx_freq).y/nb_chan);
+            data.pings(idx_freq).y=(data.pings(idx_freq).y/nb_chan);
 
             data.pings(idx_freq).power=(nb_chan*(abs(data.pings(idx_freq).y)/(2*sqrt(2))).^2*((Rwt_rx+Ztrd)/Rwt_rx)^2/Ztrd);
 

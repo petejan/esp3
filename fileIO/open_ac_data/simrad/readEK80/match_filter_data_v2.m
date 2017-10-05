@@ -16,21 +16,15 @@ for idx_freq=1:length(trans_obj)
         
         data.pings(idx_freq).ping_num=(1:nb_pings);
                
-        data.pings(idx_freq).match_filter=y_tx_matched;
-        data.pings(idx_freq).simu_pulse=sim_pulse;
+        data.pings(idx_freq).match_filter=(y_tx_matched);
+        data.pings(idx_freq).simu_pulse=(sim_pulse);
         
         if isa(s1,'gpuArray')
             y_tx_matched=gpuArray(y_tx_matched);
         end
         
         val_sq=sum(abs(y_tx_matched).^2); 
-        
-%         flip_tx=flipud(y_tx_matched);
-%         yc_1_temp_old=filter2(flip_tx,s1,'full')/val_sq;        
-%         yc_2_temp_old=filter2(flip_tx,s2,'full')/val_sq; 
-%         yc_3_temp_old=filter2(flip_tx,s3,'full')/val_sq; 
-%         yc_4_temp_old=filter2(flip_tx,s4,'full')/val_sq; 
-%         
+             
   
         n = size(y_tx_matched,1) + size(s1,1) - 1; 
         yc_1_temp = ifft(bsxfun(@times,fft(y_tx_matched,n),fft(s1,n,1)),n,1)/val_sq; 
@@ -41,10 +35,10 @@ for idx_freq=1:length(trans_obj)
         
         nb_samples=numel(y_tx_matched);
 
-        data.pings(idx_freq).comp_sig_1=yc_1_temp(nb_samples:end,:);
-        data.pings(idx_freq).comp_sig_2=yc_2_temp(nb_samples:end,:);
-        data.pings(idx_freq).comp_sig_3=yc_3_temp(nb_samples:end,:);
-        data.pings(idx_freq).comp_sig_4=yc_4_temp(nb_samples:end,:);
+        data.pings(idx_freq).comp_sig_1=(yc_1_temp(nb_samples:end,:));
+        data.pings(idx_freq).comp_sig_2=(yc_2_temp(nb_samples:end,:));
+        data.pings(idx_freq).comp_sig_3=(yc_3_temp(nb_samples:end,:));
+        data.pings(idx_freq).comp_sig_4=(yc_4_temp(nb_samples:end,:));
     else
        mode{idx_freq}='CW'; 
     end

@@ -187,7 +187,7 @@ nb_dg=length(idx_raw_obj.type_dg);
 idx_unknown=[];
 for idg=1:nb_dg
     pos=ftell(fid);
-
+    
     if mod(idg,floor(nb_dg/10))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
@@ -222,7 +222,7 @@ for idg=1:nb_dg
                 continue;
             end
             
-
+            
             [~,output,type]=read_xml0(t_line);%50% faster than the old version!
             
             switch type
@@ -258,7 +258,7 @@ for idg=1:nb_dg
                     props=fieldnames(output);
                     envdata=env_data_cl();
                     
-
+                    
                     for iii=1:length(props)
                         if  any(strcmpi(prop_env,props{iii}))
                             envdata.(props{iii})=output.(props{iii});
@@ -411,7 +411,7 @@ for idg=1:nb_dg
                                     end
                                 end
                             end
-                        otherwise 
+                        otherwise
                             fprintf('Unknown Transceiver Type: %s\n Cannot read file\n',config(idx).TransceiverType);
                             idx_unknown=union(idx_unknown,idx);
                     end
@@ -469,7 +469,7 @@ for idx=1:nb_trans
     idx_nonnan=find(trans_obj(idx).Params.PulseLength~=0);
     
     time_s=trans_obj(idx).Params.Time;
-    for i=1:length(idx_nonnan)        
+    for i=1:length(idx_nonnan)
         if i==length(idx_nonnan)
             idx_rep=idx_nonnan(i):length(trans_obj(idx).Params.TransmitPower);
         else
@@ -487,7 +487,7 @@ for idx=1:nb_trans
         end
         
     end
-       
+    
     if any(trans_obj(idx).Params.Frequency==0)
         trans_obj(idx).Params.Frequency(trans_obj(idx).Params.Frequency==0)=trans_obj(idx).Config.Frequency;
     end
@@ -505,45 +505,42 @@ if p.Results.GPSOnly==0
     switch ftype
         case 'EK80'
             data_ori=data;
-           
             
-            %if gpu_comp%here gpu computation does not seem to improve
-            %performances, especially with the new fft based match filtering process
-            if 0
+            [data,mode]=match_filter_data_v2(trans_obj,data);
+            
+            
+            if gpu_comp
                 data=data_to_gpu(data);
                 data_ori=data_to_gpu(data_ori);
             end
             
-            [data,mode]=match_filter_data_v2(trans_obj,data);
-
             data=compute_PwEK80_v2(trans_obj,data);
             data=computesPhasesAngles_v2(trans_obj,data);
             data_ori=compute_PwEK80_v2(trans_obj,data_ori);
             data_ori=computesPhasesAngles_v2(trans_obj,data_ori);
-                
-           
-            %if gpu_comp%
-            if 0
+            
+            
+            if gpu_comp
                 data_ori=data_from_gpu(data_ori);
                 data=data_from_gpu(data);
             end
-
+            
         case 'EK60'
+  
             mode=cell(1,length(trans_obj));
             mode(:)={'CW'};
             for i=1:length(idx_freq)
                 [trans_obj(i).Config,trans_obj(i).Params]=config_from_ek60(data.pings(i),config_EK60(idx_freq(i)));
             end
             data=computesPhasesAngles_v2(trans_obj,data);
+
             envdata=env_data_cl();
             envdata.SoundSpeed=data.pings(1).soundvelocity(1);
             
-            if gpu_comp
-                data=data_from_gpu(data);
-            end
+            
     end
     
-
+    
     
     sample_start=nan(nb_trans,1);
     sample_end=nan(nb_trans,1);
@@ -593,12 +590,12 @@ if p.Results.GPSOnly==0
             'Nb_samples',size(curr_data.power,1),...
             'Nb_pings',size(curr_data.power,2),...
             'MemapName',curr_name);
- 
+        
         range=trans_obj(i).compute_transceiver_range(c);
         trans_obj(i).set_transceiver_range(range);
         trans_obj(i).set_transceiver_time(data.pings(i).time);
         
- 
+        
         trans_obj(i).setBottom([]);
     end
     
