@@ -28,28 +28,29 @@ if ~isempty(list_reg)
     bot_r(bot_r==0)=range(end);
     bot_r(isnan(bot_r))=range(end);
     
-   idx_pings=active_reg.Idx_pings;
-   idx_r=active_reg.Idx_r;
+    idx_pings=active_reg.Idx_pings;
+    idx_r=active_reg.Idx_r;
     time=datetime(datestr(trans_obj.Time(idx_pings)));
     range=trans_obj.get_transceiver_range(idx_r);
-    new_echo_figure(main_figure);
-    ax1=subplot(2,1,1);
+    fig=new_echo_figure(main_figure);
+    ax1=axes(fig,'units','normalized','outerposition',[0 0.5 1 0.5]);
     u=imagesc(trans_obj.Time(idx_pings),range,Sv(idx_r,idx_pings));
-    hold on;
-    plot(time,mean_depth,'r','linewidth',2);
-    plot(time,bot_r(idx_pings))
-    ylabel('Depth (m)')
-    xlabel('Time')
-
-    caxis(cax)
-    colormap(jet);
+    hold(ax1,'on');
+    grid(ax1,'on')
+    plot(ax1,time,mean_depth,'r','linewidth',2);
+    plot(ax1,time,bot_r(idx_pings))
+    ylabel(ax1,'Depth (m)')
+    xlabel(ax1,'Time')
+    caxis(ax1,cax)
+    colormap(ax1,jet);
     set(u,'alphadata',Sv(idx_r,idx_pings)>=cax(1));  
-    ax2=subplot(2,1,2);
-    plot(time,Sa,'k','linewidth',2);
+       
+    ax2=axes(fig,'units','normalized','outerposition',[0 0 1 0.5]);
+    plot(ax2,time,Sa,'k','linewidth',2);
 
-    ylabel('S_a (dB re 1(m2 m-2))')
-    xlabel('Time')
-    grid on;
+    ylabel(ax2,'S_a (dB re 1(m2 m-2))')
+    xlabel(ax2,'Time')
+    grid(ax2,'on');
     linkaxes([ax1 ax2],'x')
     
 else

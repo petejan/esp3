@@ -2,10 +2,14 @@ function initialize_reg_bot_db(dbfile)
 
 if exist(dbfile,'file')==2
     warning('Region and Bottom db file %s already exists, if you want to reinitialize it, delete it manually',dbfile);
-    return;
-    
-    
+    return;   
 end
+
+[dbdir,~]=fileparts(dbfile);
+if exist(dbdir,'dir')==0
+    mkdir(dbdir);
+end
+
 dbconn=sqlite(dbfile,'create');
 
 createbotTable = ['create table bottom ' ...

@@ -23,13 +23,13 @@ sh_height=10;
 
 surf_slice_int=nansum(output_2D_surf.eint);
 good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
-x_slice=output_2D_surf.Time_S;
+x_slice=output_2D_surf.Ping_S;
 num_slice=size(output_2D_surf.eint,2);
 
 if ~isempty(output_2D_bot)
     bot_slice_int=nansum(output_2D_bot.eint);
     good_pings_bot=nanmax(output_2D_bot.Nb_good_pings_esp2,[],1);
-    x_slice=output_2D_bot.Time_S;
+    x_slice=output_2D_bot.Ping_S;
 else
     bot_slice_int=zeros(1,num_slice);
     good_pings_bot=[];
@@ -38,7 +38,7 @@ end
 if ~isempty(output_2D_sh)
     sh_slice_int=nansum(output_2D_sh.eint).*shadow_height_est/sh_height;
     good_pings_sh=nanmax(output_2D_sh.Nb_good_pings_esp2,[],1);
-    x_slice=output_2D_sh.Time_S;
+    x_slice=output_2D_sh.Ping_S;
 else
     sh_slice_int=zeros(1,num_slice);
     good_pings_sh=[];
@@ -46,18 +46,13 @@ end
    
 good_pings=nanmax([good_pings_sh;good_pings_bot;good_pings_surf],[],1);
 
-% reg_tot=trans_obj.get_reg_spec(idx_reg);
-% [output_1D,~,~]=trans_obj.slice_transect('reg',reg_tot,'Shadow_zone',1,'Slice_w',Slice_w,'Slice_units',Slice_w_units);
-
 fig_disp=new_echo_figure(main_figure,'Tag','Sliced Transect 1D','Keep_old',1);
 ax=axes(fig_disp);hold(ax,'on');grid(ax,'on');
-% plot(ax,output_1D.slice_time_start,10*log10(output_1D.slice_abscf),'+-k');
-% plot(ax,output_1D.slice_time_start,10*log10(output_1D.slice_abscf+output_1D.shadow_zone_slice_abscf),'+-b');
 
 plot(ax,x_slice,10*log10((surf_slice_int+bot_slice_int)./good_pings),'color',[0.8 0 0],'marker','o');
 plot(ax,x_slice,10*log10((sh_slice_int+surf_slice_int+bot_slice_int)./good_pings),'color',[0 0.8 0],'marker','o');
 
-xlabel(ax,'Slice Number');
+xlabel(ax,'Ping Start');
 ylabel(ax,'Asbcf (dB)');
 legend(ax,'2D','2D Shadow Zone');
 

@@ -42,6 +42,7 @@ if isempty(layer_tab_comp)
     load_layer_tab(main_figure,opt_panel);
     return;
 end
+
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
 

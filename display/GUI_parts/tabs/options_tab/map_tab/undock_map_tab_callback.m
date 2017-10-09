@@ -6,6 +6,10 @@ if isempty(layer);
 end
 map_tab_comp=getappdata(main_figure,'Map_tab');
 
+if~isvalid(map_tab_comp.map_tab)
+    return;
+end
+
 switch dest
     case 'main_figure'
         delete(map_tab_comp.map_tab);

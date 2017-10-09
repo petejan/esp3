@@ -42,7 +42,7 @@ switch tab_panel.Type
         layer_tab_comp.layer_tab=uitab(tab_panel,'Title','Layers');
         tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
         layer_tab_comp.layer_tab.UIContextMenu=tab_menu;
-        uimenu(tab_menu,'Label','Undock Layer List','Callback',{@undock_layer_tab_callback,main_figure,'out_figure'});
+        uimenu(tab_menu,'Label','Undock Layer List','Callback',{@undock_layer_tab_callback,main_figure});
     case 'figure'
         layer_tab_comp.layer_tab=tab_panel;
 end
@@ -91,6 +91,7 @@ selected_layers=[];
 setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
 update_layer_tab(main_figure);
+
 end
 
 function plot_tracks_callback(src,~,table,main_figure)

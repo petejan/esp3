@@ -40,7 +40,6 @@ function update_reglist_tab(main_figure,reg_uniqueID,new)
 
 layer=getappdata(main_figure,'Layer');
 
-
 reglist_tab_comp=getappdata(main_figure,'Reglist_tab');
 
 if isempty(reglist_tab_comp)
@@ -49,7 +48,6 @@ if isempty(reglist_tab_comp)
     return;
 end
 
-
 if isempty(layer)||isempty(reglist_tab_comp)
     return;
 end
@@ -57,12 +55,9 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find_freq_idx(layer,curr_disp.Freq);
 trans_obj=layer.Transceivers(idx_freq);
 
-
-try
-      
+try     
     jView = reglist_tab_comp.jScroll.getViewport();
-    curr_rect=jView.getViewRect();
-    
+    curr_rect=jView.getViewRect();    
 catch
     if ~isdeployed()
         disp('Error while updating reg_list_tab');

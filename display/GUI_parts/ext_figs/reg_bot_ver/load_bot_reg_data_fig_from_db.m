@@ -57,7 +57,6 @@ for ip=1:length(path_xml)
     
     if exist(db_file,'file')==0
         initialize_reg_bot_db(db_file);
-        continue;
     end
     
     dbconn=sqlite(db_file,'connect');

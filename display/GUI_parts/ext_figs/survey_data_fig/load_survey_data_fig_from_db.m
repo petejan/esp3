@@ -49,7 +49,6 @@ reload=p.Results.reload;
 
 layer=getappdata(main_figure,'Layer');
 app_path=getappdata(main_figure,'App_path');
-file_add=layer.Filename;
 
 
 if isempty(layer)||new_logbook>0
@@ -58,6 +57,7 @@ if isempty(layer)||new_logbook>0
         return;
     end
     [path_f,~,~]=fileparts(path_f);
+    file_add={};
 else
     switch layer.Filetype
         case {'CREST','FCV30'}
@@ -66,6 +66,7 @@ else
             [path_lay,~]=get_path_files(layer);
             path_f=path_lay{1};
     end
+     file_add=layer.Filename;
 end
 
 

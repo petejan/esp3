@@ -168,13 +168,13 @@ end
 try
     if ~isdir(app_path.data_temp)
         mkdir(app_path.data_temp);
-        disp('Data Tep Folder Created')
+        disp('Data Temp Folder Created')
         disp(app_path.data_temp)
     end
     
 catch 
-    disp('Error: Unable to create temporary data Folder')
-    disp('Creating new config_path.xml file with standard path and options')
+    disp('Error: Unable to create temporary data Folder: ')
+    disp('creating new config_path.xml file with standard path and options')
     [~,path_config_file,~]=get_config_files();
     delete(path_config_file);
     [app_path,~,~,~] = load_config_from_xml_v2(1,0,0);

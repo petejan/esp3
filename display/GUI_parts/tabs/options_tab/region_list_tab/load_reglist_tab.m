@@ -37,18 +37,16 @@
 %% Function
 function load_reglist_tab(main_figure,tab_panel)
 
+
 switch tab_panel.Type
     case 'uitabgroup'
         reglist_tab_comp.reglist_tab=uitab(tab_panel,'Title','Region List');
         tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
         reglist_tab_comp.reglist_tab.UIContextMenu=tab_menu;
-        uimenu(tab_menu,'Label','Undock Region List','Callback',{@undock_reglist_tab_callback,main_figure,'out_figure'});
+        uimenu(tab_menu,'Label','Undock Region List','Callback',{@undock_reglist_tab_callback,main_figure});
     case 'figure'
         reglist_tab_comp.reglist_tab=tab_panel;
 end
-
-
-
 
 columnname = {'Name','ID','Tag','Type','Reference','Cell Width','Width Unit','Cell Height','Height Unit','Unique ID'};
 columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom','Line'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
@@ -61,6 +59,7 @@ reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
     'ColumnEditable', [false true true true true true true true true false],...
     'Units','Normalized','Position',[0 0 1 1],...
     'RowName',[]);
+
 reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 set(reglist_tab_comp.table,'CellEditCallback',{@edit_reg,main_figure});
 set(reglist_tab_comp.table,'CellSelectionCallback',{@act_reg,main_figure});
@@ -77,10 +76,12 @@ reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT co
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,reglist_tab_comp.table,main_figure});
 uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
 reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
-setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
+
 setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
+setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 
 update_reglist_tab(main_figure,[],1);
+
 end
 
 

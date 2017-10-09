@@ -110,7 +110,7 @@ switch src.SelectionType
 end
 
 hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
-rect=rectangle(ah,'Position',[ping_init-dr sample_init-ratio*dr 2*dr dr*2*ratio]);
+rect=rectangle(ah,'Position',[ping_init-dr sample_init-ratio*dr 2*dr dr*2*ratio],'EdgeColor',line_col);
 wbmcb([],[])
     function wbmcb(~,~)
 
