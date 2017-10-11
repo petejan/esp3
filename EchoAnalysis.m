@@ -159,6 +159,8 @@ update_java_path(main_path);
 gpu_comp=get_gpu_comp_stat();
 if gpu_comp
     disp('GPU computation Availaible');
+else
+    disp('GPU computation Unavailaible');
 end
 
 %% Read ESP3 config file

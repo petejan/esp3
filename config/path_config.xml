@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
-   <AppPath cvs_root=":local:Z:\" data="D:\Docs\MATLAB\ESP3\example_data" data_root="D:\Docs\MATLAB\ESP3\example_data" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" results="D:\Docs\MATLAB\ESP3\echo_results" scripts="D:\Docs\MATLAB\ESP3\echo_scripts"/>
+   <AppPath cvs_root=":local:Z:\" data="D:\Docs\MATLAB\ESP3\example_data" data_root="D:\Docs\MATLAB\ESP3\example_data" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" results="D:\Docs\MATLAB\ESP3\echo_results" scripts="X:\echo_scripts"/>
 </config_file>

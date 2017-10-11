@@ -41,9 +41,8 @@ function load_reglist_tab(main_figure,tab_panel)
 switch tab_panel.Type
     case 'uitabgroup'
         reglist_tab_comp.reglist_tab=uitab(tab_panel,'Title','Region List');
-        tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+        tab_menu=create_context_menu_tabs(main_figure,tab_panel,'reglist');  
         reglist_tab_comp.reglist_tab.UIContextMenu=tab_menu;
-        uimenu(tab_menu,'Label','Undock Region List','Callback',{@undock_reglist_tab_callback,main_figure});
     case 'figure'
         reglist_tab_comp.reglist_tab=tab_panel;
 end

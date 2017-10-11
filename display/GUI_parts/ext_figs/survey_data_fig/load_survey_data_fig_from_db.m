@@ -83,45 +83,41 @@ dbconn=sqlite(db_file,'connect');
 data_survey=dbconn.fetch('select * from survey');
 dbconn.close();
 
-hfigs=getappdata(main_figure,'ExternalFigures');
-hfigs(~isvalid(hfigs))=[];
-tag=sprintf('logbook_%s',path_f);
-idx_tag=find(strcmpi({hfigs(:).Tag},tag));
+dest_fig=getappdata(main_figure,'echo_tab_panel');
 
-if ~isempty(idx_tag)
+tag=sprintf('logbook_%s',path_f);
+tab_obj=findobj(dest_fig,'Tag',tag);
+
+if ~isempty(tab_obj)
     if reload==0
-        figure(hfigs(idx_tag(1)));
         return;
     else
-        surv_data_fig=hfigs(idx_tag(1));
-        surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+        surv_data_tab=tab_obj(1);
+        surv_data_table=getappdata(surv_data_tab,'surv_data_table');
         set(surv_data_table.voy,'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}))
+        set(surv_data_tab,'Title',sprintf('Logbook %s',data_survey{2}));    
     end
 else
     if reload==0
-        size_max = get(0, 'MonitorPositions');
-        surv_data_fig=new_echo_figure(main_figure,...
-            'Units','pixels',...
-            'Position',[size_max(1,1)+size_max(1,3)/4 size_max(1,2)+1/5*size_max(1,4) size_max(1,3)/2 3*size_max(1,4)/5],...
-            'Resize','on',...
-            'MenuBar','none',...
-            'Name',sprintf('%s',data_survey{2}),...
-            'Tag',tag,...
-            'WindowStyle','Docked',...
-            'Group','Logbook',...
-            'WindowKeyPressFcn',@logbook_keypress_fcn);
+
+        surv_data_tab=uitab(dest_fig,'Title',sprintf('Logbook %s',data_survey{2}),'Tag',tag,'BackgroundColor','White');
         
-        surv_data_table.file=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.55 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.snap=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.6250 0.96 0.075 0.03],'String','Snap','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.strat=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.7 0.96 0.075 0.03],'String','Strat','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.trans=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.775 0.96 0.075 0.03],'String','Trans','Value',1,'Callback',{@search_callback,surv_data_fig});
-        surv_data_table.reg=uicontrol(surv_data_fig,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.850 0.96 0.075 0.03],'String','Tag','Value',1,'Callback',{@search_callback,surv_data_fig});
+        surv_data_table.file=uicontrol(surv_data_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.55 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_tab});
+        surv_data_table.snap=uicontrol(surv_data_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.6250 0.96 0.075 0.03],'String','Snap','Value',1,'Callback',{@search_callback,surv_data_tab});
+        surv_data_table.strat=uicontrol(surv_data_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.7 0.96 0.075 0.03],'String','Strat','Value',1,'Callback',{@search_callback,surv_data_tab});
+        surv_data_table.trans=uicontrol(surv_data_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.775 0.96 0.075 0.03],'String','Trans','Value',1,'Callback',{@search_callback,surv_data_tab});
+        surv_data_table.reg=uicontrol(surv_data_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.850 0.96 0.075 0.03],'String','Tag','Value',1,'Callback',{@search_callback,surv_data_tab});
         
         
-        surv_data_table.voy=uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
-        uicontrol(surv_data_fig,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
+        surv_data_table.voy=uicontrol(surv_data_tab,'style','text','BackgroundColor','White','units','normalized','position',[0.05 0.96 0.3 0.03],'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}));
+        uicontrol(surv_data_tab,'style','text','BackgroundColor','White','units','normalized','position',[0.35 0.96 0.1 0.03],'String','Search :');
         
-        surv_data_table.search_box=uicontrol(surv_data_fig,'style','edit','units','normalized','position',[0.45 0.96 0.1 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_fig});
+        surv_data_table.search_box=uicontrol(surv_data_tab,'style','edit','units','normalized','position',[0.45 0.96 0.1 0.03],'HorizontalAlignment','left','Callback',{@search_callback,surv_data_tab});
+        
+        tab_menu = uicontextmenu(ancestor(surv_data_tab,'figure'));
+        surv_data_tab.UIContextMenu=tab_menu;
+        uimenu(tab_menu,'Label','Close Logbook','Callback',{@close_logbook_tab,surv_data_tab});
+    
     else
         return;
     end
@@ -134,7 +130,7 @@ if reload==0
     nb_lines=size(data_logbook,1);
     
     if nb_lines==0
-        close(surv_data_fig);
+        close(surv_data_tab);
         return;
     end
     
@@ -150,22 +146,23 @@ if reload==0
     
     
     % Create the uitable
-    surv_data_table.table_main = uitable('Parent',surv_data_fig,...
+    surv_data_table.table_main = uitable('Parent',surv_data_tab,...
         'Data', survDataSummary,...
         'ColumnName', columnname,...
         'ColumnFormat', columnformat,...
         'CellSelectionCallback',{@cell_select_cback,main_figure},...
         'ColumnEditable', [true false true true true false false true false false false],...
         'Units','Normalized','Position',[0 0 1 0.95],...
+        'KeyPressFcn',{@logbook_keypress_fcn,main_figure},...
         'RowName',[]);
     
-    set(surv_data_fig,'SizeChangedFcn',@resize_table);
+    set(surv_data_tab,'SizeChangedFcn',@resize_table);
     
     pos_t = getpixelposition(surv_data_table.table_main);
     set(surv_data_table.table_main,'ColumnWidth',...
         num2cell(pos_t(3)*[1/36,4*1/18, 1/18, 1/18, 1/18,1/36,3*1/36, 4*1/18, 2*1/18,2*1/18, 1/36]));
-    set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_fig,main_figure});
-    %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_fig});
+    set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_tab,main_figure});
+    %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_tab});
     
     
     rc_menu = uicontextmenu(ancestor(surv_data_table.table_main,'figure'));
@@ -173,12 +170,12 @@ if reload==0
     select_menu=uimenu(rc_menu,'Label','Select');
     process_menu=uimenu(rc_menu,'Label','Process');
     survey_menu=uimenu(rc_menu,'Label','SurveyData');
-    uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_fig,app_path.scripts});
-    uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_fig,main_figure});
-    uimenu(select_menu,'Label','Select all','Callback',{@selection_callback,surv_data_fig},'Tag','se');
-    uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_fig},'Tag','de');
-    uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_fig},'Tag','inv');
-    uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_fig,main_figure});
+    uimenu(rc_menu,'Label','XML Survey Script from selected file(s)','Callback',{@generate_xml_callback,surv_data_tab,app_path.scripts});
+    uimenu(rc_menu,'Label','Open selected file(s)','Callback',{@open_files_callback,surv_data_tab,main_figure});
+    uimenu(select_menu,'Label','Select all','Callback',{@selection_callback,surv_data_tab},'Tag','se');
+    uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_tab},'Tag','de');
+    uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_tab},'Tag','inv');
+    uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_tab,main_figure});
     uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
     uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
     uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
@@ -186,14 +183,21 @@ if reload==0
     uimenu(survey_menu,'Label','Export to Html and display','Callback',{@export_metadata_to_html_callback,main_figure});
     
     
-    setappdata(surv_data_fig,'path_data',path_f);
-    setappdata(surv_data_fig,'surv_data_table',surv_data_table);
-    setappdata(surv_data_fig,'data_ori',survDataSummary);
+    setappdata(surv_data_tab,'path_data',path_f);
+    setappdata(surv_data_tab,'surv_data_table',surv_data_table);
+    setappdata(surv_data_tab,'data_ori',survDataSummary);
     
 else
-    reload_logbook_fig(surv_data_fig,file_add);
+    reload_logbook_fig(surv_data_tab,file_add);
 end
 end
+
+function close_logbook_tab(~,~,tab)
+
+delete(tab);
+
+end
+
 
 function resize_table(src,~)
 table=findobj(src,'Type','uitable');
@@ -209,12 +213,12 @@ end
 
 end
 
-function plot_bad_pings_callback(src,~,surv_data_fig,main_figure)
+function plot_bad_pings_callback(src,~,surv_data_tab,main_figure)
 
-surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+surv_data_table=getappdata(surv_data_tab,'surv_data_table');
 data_ori=get(surv_data_table.table_main,'Data');
 selected_files=unique(data_ori([data_ori{:,1}],2));
-path_f=getappdata(surv_data_fig,'path_data');
+path_f=getappdata(surv_data_tab,'path_data');
 files=fullfile(path_f,selected_files);
 
 [nb_bad_pings,nb_pings,files_out,freq_vec]=get_bad_ping_number_from_bottom_xml(files);
@@ -289,12 +293,12 @@ end
 end
 
 
-function edit_surv_data_db(src,evt,surv_data_fig,main_figure)%TODO change that so that data are entered into db straight away
+function edit_surv_data_db(src,evt,surv_data_tab,main_figure)%TODO change that so that data are entered into db straight away
 if isempty(evt.Indices)
     return;
 end
 
-data_ori=getappdata(surv_data_fig,'data_ori');
+data_ori=getappdata(surv_data_tab,'data_ori');
 
 if isnan(src.Data{evt.Indices(1,1),evt.Indices(1,2)})
     src.Data{evt.Indices(1),evt.Indices(2)}=0;
@@ -305,7 +309,7 @@ idx_struct=src.Data{evt.Indices(1,1),11};
 switch evt.Indices(1,2)
     case {1}
         data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1),evt.Indices(1,2)};
-        setappdata(surv_data_fig,'data_ori',data_ori);
+        setappdata(surv_data_tab,'data_ori',data_ori);
         return;
     case{3,4,5,8}
         filename=src.Data{evt.Indices(1,1),2};
@@ -320,7 +324,7 @@ switch evt.Indices(1,2)
         return;
 end
 
-path_f=getappdata(surv_data_fig,'path_data');
+path_f=getappdata(surv_data_tab,'path_data');
 
 db_file=fullfile(path_f,'echo_logbook.db');
 if ~(exist(db_file,'file')==2)
@@ -342,15 +346,15 @@ dbconn.insert('logbook',{'Filename' 'Snapshot' 'Stratum' 'Transect'  'StartTime'
 
 dbconn.close();
 
-setappdata(surv_data_fig,'data_ori',data_ori);
+setappdata(surv_data_tab,'data_ori',data_ori);
 import_survey_data_callback([],[],main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1)
 end
 
 
-function selection_callback(src,~,surv_data_fig)
-surv_data_table=getappdata(surv_data_fig,'surv_data_table');
-data_ori=getappdata(surv_data_fig,'data_ori');
+function selection_callback(src,~,surv_data_tab)
+surv_data_table=getappdata(surv_data_tab,'surv_data_table');
+data_ori=getappdata(surv_data_tab,'data_ori');
 data=get(surv_data_table.table_main,'Data');
 for i=1:size(data,1)
     switch src.Tag
@@ -364,15 +368,15 @@ for i=1:size(data,1)
     data_ori{data{i,11},1}=data{i,1};
 end
 set(surv_data_table.table_main,'Data',data);
-setappdata(surv_data_fig,'data_ori',data_ori);
+setappdata(surv_data_tab,'data_ori',data_ori);
 end
 
 
-function open_files_callback(src,evt,surv_data_fig,main_figure)
-surv_data_table=getappdata(surv_data_fig,'surv_data_table');
+function open_files_callback(src,evt,surv_data_tab,main_figure)
+surv_data_table=getappdata(surv_data_tab,'surv_data_table');
 data_ori=get(surv_data_table.table_main,'Data');
 selected_files=unique(data_ori([data_ori{:,1}],2));
-path_f=getappdata(surv_data_fig,'path_data');
+path_f=getappdata(surv_data_tab,'path_data');
 files=fullfile(path_f,selected_files);
 layers=getappdata(main_figure,'Layers');
 if ~isempty(layers)
@@ -397,7 +401,7 @@ if ~isempty(idx_deleted)
     end
     dbconn.close();  
 files(idx_deleted)=[];
-reload_logbook_fig(surv_data_fig,{});
+reload_logbook_fig(surv_data_tab,{});
 end
 
 if isempty(files)
@@ -412,13 +416,13 @@ end
 open_file([],[],files,main_figure);
 end
 
-function generate_xml_callback(~,~,surv_data_fig,path_scripts)
-surv_data_table=getappdata(surv_data_fig,'surv_data_table');
-path_f=getappdata(surv_data_fig,'path_data');
+function generate_xml_callback(~,~,surv_data_tab,path_scripts)
+surv_data_table=getappdata(surv_data_tab,'surv_data_table');
+path_f=getappdata(surv_data_tab,'path_data');
 
 surv_data_struct=get_struct_from_db(path_f);
 data_ori=get(surv_data_table.table_main,'Data');
-path_f=getappdata(surv_data_fig,'path_data');
+path_f=getappdata(surv_data_tab,'path_data');
 idx_struct=unique([data_ori{[data_ori{:,1}],11}]);
 
 survey_input_obj=survey_input_cl();

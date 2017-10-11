@@ -1,5 +1,11 @@
 function scroll_fcn_callback(src,callbackdata,main_figure)
 
+echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
+
+if~strcmpi(echo_tab_panel.SelectedTab.Tag,'axes_panel')
+    return;
+end
+
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)

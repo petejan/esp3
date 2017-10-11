@@ -25,11 +25,9 @@ createlogbookTable(dbconn);
 createsurveyTable(dbconn);
 creategpsTable(dbconn);
 
-
-
 dbconn.insert('survey',{'SurveyName' 'Voyage' },{'' ''});
 
-if force_create==0;  
+if force_create==0
     add_files_to_db(datapath,list_raw,ftypes,dbconn,[])
 end
 close(dbconn);

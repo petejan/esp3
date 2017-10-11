@@ -40,9 +40,9 @@ function load_layer_tab(main_figure,tab_panel)
 switch tab_panel.Type
     case 'uitabgroup'
         layer_tab_comp.layer_tab=uitab(tab_panel,'Title','Layers');
-        tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+        tab_menu=create_context_menu_tabs(main_figure,tab_panel,'laylist');       
         layer_tab_comp.layer_tab.UIContextMenu=tab_menu;
-        uimenu(tab_menu,'Label','Undock Layer List','Callback',{@undock_layer_tab_callback,main_figure});
+       
     case 'figure'
         layer_tab_comp.layer_tab=tab_panel;
 end

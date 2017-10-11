@@ -1,7 +1,7 @@
 
-function search_callback(~,~,surv_fig)
-surv_data_table=getappdata(surv_fig,'surv_data_table');
-data_ori=getappdata(surv_fig,'data_ori');
+function search_callback(~,~,surv_tab)
+surv_data_table=getappdata(surv_tab,'surv_data_table');
+data_ori=getappdata(surv_tab,'data_ori');
 text_search=regexprep(get(surv_data_table.search_box,'string'),'[^\w'']','');
 
 file=get(surv_data_table.file,'value');

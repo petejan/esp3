@@ -211,8 +211,8 @@ for i_cell=1:length(Filename_cell)
         params_obj.SampleInterval(:)=1./nanmean(data.f_s(ic,:));
         params_obj.TransducerDepth(:)=0;
         params_obj.TransmitPower(:)=1;
-        params_obj.Absorption(:)= sw_absorption(params_obj.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
-        
+        params_obj.Absorption(:)= seawater_absorption(params_obj.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
+
         SvOffset = CalcSvOffset(data.freq(1,ic),params_obj.PulseLength(1));
         data_struct.power=db2pow_perso(pow2db_perso(data.(sprintf('chan_%.0f',ic)))-calParms.TVR(ic)-20*log10(calParms.VTX(ic)));
         data_struct.sv = pow2db_perso(data.(sprintf('chan_%.0f',ic)))-calParms.TVR(ic)-20*log10(calParms.VTX(ic)) + repmat(20*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings) - 10*log10(c*params_obj.PulseLength(1)/2)-config_obj.EquivalentBeamAngle+SvOffset;

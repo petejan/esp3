@@ -3,9 +3,8 @@ function load_map_tab(main_figure,tab_panel)
 switch tab_panel.Type
     case 'uitabgroup'
         map_tab_comp.map_tab=uitab(tab_panel,'Title','Map&Co','backgroundcolor','w');
-        tab_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+        tab_menu=create_context_menu_tabs(main_figure,tab_panel,'map');       
         map_tab_comp.map_tab.UIContextMenu=tab_menu;
-        uimenu(tab_menu,'Label','Undock map','Callback',{@undock_map_tab_callback,main_figure,'out_figure'});
     case 'figure'
         map_tab_comp.map_tab=tab_panel;
 end

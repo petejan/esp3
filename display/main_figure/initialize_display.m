@@ -40,10 +40,11 @@ opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.5 .3]);
 algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3]);
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-display_panel=uitabgroup(main_figure,'Units','Normalized','Position',[0 0.05 1 0.65]);
+echo_tab_panel=uitabgroup(main_figure,'Units','Normalized','Position',[0 0.05 1 0.65]);
 
-axes_panel=uitab(display_panel,'BackgroundColor',[1 1 1],'tag','axes_panel','Title','Echogramm');
+axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel','Title','Echogramm');
 
+setappdata(main_figure,'echo_tab_panel',echo_tab_panel);
 setappdata(main_figure,'option_tab_panel',opt_panel);
 setappdata(main_figure,'algo_tab_panel',algo_panel);
 
