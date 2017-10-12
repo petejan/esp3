@@ -18,8 +18,8 @@ cal=trans_obj.get_cal();
 G=cal.G0;
 eq_beam_angle = trans_obj.Config.EquivalentBeamAngle;
 ptx = trans_obj.Params.TransmitPower;
-[t_eff,~]=get_pulse_Teff(trans_obj);
-[t_nom,~]=get_pulse_length(trans_obj);
+[t_eff,~]=trans_obj.get_pulse_Teff();
+[t_nom,~]=trans_obj.get_pulse_length(1);
 sacorr = cal.SACORRECT;
 
 range=trans_obj.get_transceiver_range();

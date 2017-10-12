@@ -7,7 +7,8 @@ if alpha_ori==alpha
 end
 
 Sv=trans.Data.get_datamat('sv');
-[~,Np]=trans.get_pulse_length();
+[~,Np]=trans.get_pulse_length(1);
+
 if ~isempty(Sv)
     Sv_new=apply_new_absorption(Sv,trans.get_transceiver_range(),alpha_ori,alpha,Np);
     trans.Params.Absorption=alpha*ones(1,length(trans.Params.Absorption));

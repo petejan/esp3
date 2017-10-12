@@ -119,10 +119,6 @@ else
     start_sample=1;
 end
 % grab extra parameters
-%Fs          = 1/trans_obj.Params.SampleInterval(1); % sampling frequency
-%PulseLength = trans_obj.Params.PulseLength(1); % pulse duration
-%Np          = round(PulseLength*Fs); % number of samples in pulse
-
 
 RingDown = trans_obj.Data.get_subdatamat(3,idx_pings,'field','sv');
 

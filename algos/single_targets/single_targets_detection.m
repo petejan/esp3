@@ -134,7 +134,7 @@ Ping=repmat(trans_obj.get_transceiver_pings(idx_pings),nb_samples,1);
 Time=repmat(trans_obj.get_transceiver_time(idx_pings),nb_samples,1);
 
 
-[T,Np]=trans_obj.get_pulse_length();
+[T,Np]=trans_obj.get_pulse_length(1);
 
 
 switch p.Results.DataType

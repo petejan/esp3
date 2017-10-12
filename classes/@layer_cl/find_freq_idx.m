@@ -1,10 +1,17 @@
 function [idx,found]=find_freq_idx(layer,freq)
+found=ones(1,numel(freq));
+idx=ones(1,numel(freq));
 
-idx=find(layer.Frequencies==freq);
-found=1;
-if isempty(idx)
-    idx=1;
-    found=0;
+for ifr=1:numel(freq)
+    idx_tmp=find(layer.Frequencies==freq(ifr));
+    
+    if isempty(idx_tmp)
+        found(ifr)=0;
+        idx(ifr)=1;
+    else
+        found(ifr)=1;
+        idx(ifr)=idx_tmp;
+    end
 end
 
 end

@@ -41,8 +41,7 @@ algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3]);
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 echo_tab_panel=uitabgroup(main_figure,'Units','Normalized','Position',[0 0.05 1 0.65]);
-
-axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel','Title','Echogramm');
+axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel','Title','Echogram');
 
 setappdata(main_figure,'echo_tab_panel',echo_tab_panel);
 setappdata(main_figure,'option_tab_panel',opt_panel);
@@ -69,6 +68,7 @@ load_school_detect_tab(main_figure,algo_panel);
 load_single_target_tab(main_figure,algo_panel);
 load_track_target_tab(main_figure,algo_panel);
 load_axis_panel(main_figure,axes_panel);
+load_multi_freq_tab(main_figure,algo_panel)
 
 format_color_gui(main_figure,curr_disp.Font);
 obj_enable=findobj(main_figure,'Enable','on','-not','Type','uimenu');

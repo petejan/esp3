@@ -72,7 +72,7 @@ uimenu(m_bot_reg_db,'Label','Load Bottom and/or Regions from db','Callback',{@ma
 
 export_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 
-uimenu(export_menu,'Label','Save Echogramm','Callback',{@save_echo_callback,main_figure});
+uimenu(export_menu,'Label','Save Echogram','Callback',{@save_echo_callback,main_figure});
 ext_exp_menu= uimenu(export_menu,'Label','Attitude and position','Tag','menuexportatt');
 uimenu(ext_exp_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure,0});
 uimenu(ext_exp_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});

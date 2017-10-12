@@ -1,10 +1,9 @@
 
-function cal=get_cal(Transceiver)
+function cal=get_cal(trans_obj)
 
-    Np=Transceiver.Params.PulseLength(1);
-    [~,idx_params]=nanmin(abs(Np-Transceiver.Config.PulseLength));
-    G0=Transceiver.Config.Gain(idx_params);
-    SACORRECT=Transceiver.Config.SaCorrection(idx_params);
+    G0=trans_obj.get_current_gain();
+    SACORRECT=trans_obj.get_current_sacorr();
+
     cal=struct('G0',G0,'SACORRECT',SACORRECT);   
 
 end

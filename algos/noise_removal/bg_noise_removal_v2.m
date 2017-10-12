@@ -28,12 +28,10 @@ FreqStart=(trans_obj.Params.FrequencyStart(1));
 FreqEnd=(trans_obj.Params.FrequencyEnd(1));
 Freq=(trans_obj.Config.Frequency);
 ptx=(trans_obj.Params.TransmitPower);
-pulse_length=double(trans_obj.Params.PulseLength(1));
-gains=trans_obj.Config.Gain;
-pulse_lengths=trans_obj.Config.PulseLength;
+pulse_length=trans_obj.get_pulse_length(1);
 eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
-[~,idx_pulse]=nanmin(abs(pulse_lengths-pulse_length));
-gain=gains(idx_pulse);
+gain=trans_obj.get_current_gain();
+
 FreqCenter=(FreqStart+FreqEnd)/2;
 lambda=c/FreqCenter;
 eq_beam_angle=eq_beam_angle+20*log10(Freq/(FreqCenter));
@@ -49,9 +47,9 @@ end
 switch trans_obj.Config.TransceiverType
     
     case list_WBTs()
-       t_nom=0; 
+        t_nom=0; 
     otherwise  
-        [t_nom,~]=trans_obj.get_pulse_length();        
+        [t_nom,~]=trans_obj.get_pulse_length(1);        
 end
 
 power=trans_obj.Data.get_datamat('Power');

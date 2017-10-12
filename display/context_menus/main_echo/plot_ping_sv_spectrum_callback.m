@@ -48,7 +48,7 @@ for uui=idx_sort
         end
         range=layer.Transceivers(uui).get_transceiver_range();
 
-        [~,Np]=layer.Transceivers(uui).get_pulse_length();
+        [~,Np]=layer.Transceivers(uui).get_pulse_length(idx_ping);
         [Sv_f,f_vec,r_disp]=layer.Transceivers(uui).processSv_f_r_2(layer.EnvData,idx_ping,range,Np,cal,cal_eba,[]);
 
 

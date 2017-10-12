@@ -49,6 +49,7 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+
 if ~isdeployed
     disp('update_layer_tab');
 end

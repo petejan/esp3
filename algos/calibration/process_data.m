@@ -83,13 +83,12 @@ Power=transceiver.Data.get_datamat('power');
 
 Freq=double(transceiver.Config.Frequency);
 freq_str=num2str(Freq);
-pulselength=double(transceiver.Params.PulseLength(1));
-gains=transceiver.Config.Gain;
-pulselengths=transceiver.Config.PulseLength;
-[~,idx_pulse]=nanmin(abs(pulselengths-pulselength));
 
-gain=gains(idx_pulse);
+[pulselength,~]=trans_obj.get_pulse_length(1);
+
+gain=transceiver.get_current_gain();
 [sim_pulse,~]=transceiver.get_pulse();
+
 Np=length(sim_pulse);
 pp = idx_peak;
 tts = zeros(size(pp));

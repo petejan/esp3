@@ -68,9 +68,7 @@ for uui=select
     AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
     
     Freq=(layer.Transceivers(uui).Config.Frequency);
-    pulselength=(layer.Transceivers(uui).Params.PulseLength(1));
-    Np=double(round(pulselength/layer.Transceivers(uui).Params.SampleInterval(1)));
-    
+
     [nb_samples,~]=size(AcrossAngle);
     
     sphere_ts = spherets(2*pi*Freq/layer.EnvData.SoundSpeed,sph.radius, layer.EnvData.SoundSpeed, ...

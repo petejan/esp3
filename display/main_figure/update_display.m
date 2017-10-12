@@ -65,7 +65,7 @@ if new==1
 end
 
 update_axis_panel(main_figure,new);
-
+update_multi_freq_tab(main_figure);
 try
     update_mini_ax(main_figure,new);
 catch

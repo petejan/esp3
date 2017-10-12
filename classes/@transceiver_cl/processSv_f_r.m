@@ -6,20 +6,17 @@ if strcmp(trans_obj.Mode,'FM')
     Ztrd=trans_obj.Config.Ztrd;
     
     
-    f_s_sig=(1/(trans_obj.Params.SampleInterval(1)));
+    f_s_sig=(1/(trans_obj.Params.SampleInterval(iPing)));
     c=(EnvData.SoundSpeed);
-    FreqStart=(trans_obj.Params.FrequencyStart(1));
-    FreqEnd=(trans_obj.Params.FrequencyEnd(1));
+    FreqStart=(trans_obj.Params.FrequencyStart(iPing));
+    FreqEnd=(trans_obj.Params.FrequencyEnd(iPing));
     Freq=(trans_obj.Config.Frequency);
-    ptx=(trans_obj.Params.TransmitPower(1));
-    pulse_length=(trans_obj.Params.PulseLength(1));
-    
+    ptx=(trans_obj.Params.TransmitPower(iPing));
+    [pulse_length,~]=trans_obj.get_pulse_length(iPing);
     eq_beam_angle=trans_obj.Config.EquivalentBeamAngle;
-    
-    
+       
     gain=trans_obj.get_current_gain();
     
-
     range=trans_obj.get_transceiver_range();
     
     nb_samples=length(range);

@@ -8,7 +8,7 @@ addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'Type','Data',check_type);
 parse(p,trans_obj,varargin{:});
 
-[~,Np]=trans_obj.get_pulse_length();
+[~,Np]=trans_obj.get_pulse_length(1);
 nb_samples=length(trans_obj.get_transceiver_range());
 nb_pings=length(trans_obj.Time);
 ST=trans_obj.ST;

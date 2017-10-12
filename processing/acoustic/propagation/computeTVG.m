@@ -1,6 +1,6 @@
 function [TVG_Sp,TVG_Sv]=computeTVG(range,Np)
 
-dr=diff(range(1: 2));
+dr=diff(range(1:2));
 
 r_corr = Np/2*dr;
 

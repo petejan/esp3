@@ -9,6 +9,7 @@ for ireg=1:length(active_reg)
         layer.Transceivers(idx_freq_end(idx)).add_region(regs(idx),'Split',0);
     end
 end
+
 disp('Done');
 
 end

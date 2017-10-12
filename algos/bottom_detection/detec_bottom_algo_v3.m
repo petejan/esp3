@@ -93,8 +93,8 @@ Sp(mask>0)=-999;
 
 Range= trans_obj.get_transceiver_range(idx_r);
 dr=nanmean(diff(Range));
-Fs=1/trans_obj.Params.SampleInterval(1);
-PulseLength=trans_obj.Params.PulseLength(1);
+
+[~,Np]=trans_obj.get_pulse_length(1);
 
 thr_bottom=p.Results.thr_bottom;
 thr_backstep=p.Results.thr_backstep;
@@ -112,7 +112,6 @@ if ~isempty(p.Results.load_bar_comp)
 end
 
 
-Np=round(PulseLength*Fs);
 if r_max==Inf
     idx_r_max=nb_samples;
 else

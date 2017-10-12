@@ -83,7 +83,7 @@ sv = trans.Data.get_datamat('sv');
 sp = trans.Data.get_datamat('sp');
 [nb_samples,nb_pings] = size(sv);
 time_r = (0:nb_samples-1) * trans.Params.SampleInterval(1);
-eq_beam_angle = trans.Config.EquivalentBeamAngle;
+%eq_beam_angle = trans.Config.EquivalentBeamAngle;
 
 acrossangle = trans.Data.get_datamat('acrossangle');
 alongangle  = trans.Data.get_datamat('alongangle');
@@ -95,7 +95,7 @@ idx_algo_bot = find_algo_idx(layer.Transceivers(idx_freq), 'BottomDetectionV2');
 
 algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
 
-[PulseLength,~] = trans.get_pulse_length();
+[PulseLength,~] = trans.get_pulse_length(1);
 [amp_est, across_est, along_est] = detec_bottom_bathymetric(sp, alongphi, acrossphi, ...
     layer.Transceivers(idx_freq).get_transceiver_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
 z_max = nanmax(amp_est.range) * cos(t_angle);

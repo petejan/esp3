@@ -11,7 +11,7 @@
 % *INPUT VARIABLES*
 %
 % * |main_figure|: Handle to main ESP3 window
-% * |tab_panel|: TODO: write description and info on variable
+% * |parent_tab_group|: TODO: write description and info on variable
 %
 % *OUTPUT VARIABLES*
 %
@@ -35,16 +35,16 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function load_layer_tab(main_figure,tab_panel)
+function load_layer_tab(main_figure,parent_tab_group)
 
-switch tab_panel.Type
+switch parent_tab_group.Type
     case 'uitabgroup'
-        layer_tab_comp.layer_tab=uitab(tab_panel,'Title','Layers');
-        tab_menu=create_context_menu_tabs(main_figure,tab_panel,'laylist');       
+        layer_tab_comp.layer_tab=uitab(parent_tab_group,'Title','Layers');
+        tab_menu=create_context_menu_tabs(main_figure,parent_tab_group,'laylist');       
         layer_tab_comp.layer_tab.UIContextMenu=tab_menu;
        
     case 'figure'
-        layer_tab_comp.layer_tab=tab_panel;
+        layer_tab_comp.layer_tab=parent_tab_group;
 end
 
 layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
@@ -70,7 +70,7 @@ pos_t = getpixelposition(layer_tab_comp.table);
 
 set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
 
-rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
+rc_menu = uicontextmenu(ancestor(parent_tab_group,'figure'));
 layer_tab_comp.table.UIContextMenu =rc_menu;
 
 uiproc=uimenu(rc_menu,'Label','Processing');

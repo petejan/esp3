@@ -24,7 +24,7 @@ end
 range=trans_obj.get_transceiver_range(reg_obj.Idx_r);
 pings=trans_obj.get_transceiver_pings(reg_obj.Idx_pings);
 
-[~,Np]=trans_obj.get_pulse_length();
+[~,Np]=trans_obj.get_pulse_length(1);
 
 if ~isempty(p.Results.load_bar_comp)
   set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',N_y*N_x, 'Value',0);

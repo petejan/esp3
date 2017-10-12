@@ -174,7 +174,7 @@ end
 if isempty(Filename)
     return;
 end
-if isequal(Filename, 0);
+if isequal(Filename, 0)
     return;
 end
 

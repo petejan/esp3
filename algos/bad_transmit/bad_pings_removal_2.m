@@ -130,10 +130,7 @@ start_sample = nanmin([50 nb_samples]);
 Sv(1:start_sample,:) = nan; % we nan the first 50 samples
 
 % grab extra parameters
-Fs          = 1/trans_obj.Params.SampleInterval(1); % sampling frequency
-PulseLength = trans_obj.Params.PulseLength(1); % pulse duration
-Np          = round(PulseLength*Fs); % number of samples in pulse
-
+[~,Np]=trans_obj.get_pulse_length(1);
 % define b_filter:
 b_filter = 3:2:7;
 

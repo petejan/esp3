@@ -8,7 +8,7 @@ if ~isempty(trans_obj.Filters)
     Np=round(T/trans_obj.Params.SampleInterval(1));
     
 else
-    [T,Np]=trans_obj.get_pulse_length();
+    [T,Np]=trans_obj.get_pulse_length(1);
     
 end
 

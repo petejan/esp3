@@ -41,8 +41,7 @@ classdef sub_ac_data_cl < handle
                 switch class(data{icell})
                     case 'memmapfile'
                         obj.Memap{icell}=data{icell};
-                    otherwise
-                        
+                    otherwise                       
                         if ~isempty(data{icell})
                             curr_name=[memapname{icell} field '.bin'];
                             
