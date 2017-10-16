@@ -361,20 +361,15 @@ end
     output.Sample_S=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
     output.Sample_E=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
     
-    height_se=accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@(x) abs(max(x)-min(x)),NaN);
-    
-    switch region.Cell_h_unit
-        case 'samples'
-            output.Thickness_esp2=height_se*dr+dr;
-        case 'meters'
-            output.Thickness_esp2=height_se+dr;
-    end
+    output.Thickness_esp2=(output.Sample_E-output.Sample_S)*dr-dr;
+
     output.Thickness_esp2(Mask_reg_sub)=NaN;
     
     output.Layer_depth_min=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@min,NaN);
     output.Layer_depth_max=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@max,NaN);
     
-    output.Range_mean=accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@mean,NaN);
+    output.Range_mean=(output.Layer_depth_min+output.Layer_depth_max)/2;
+    
     output.Range_mean(Mask_reg_sub)=NaN;
     
     switch region.Cell_h_unit
@@ -388,7 +383,8 @@ end
     
     output.Range_ref_min(Mask_reg_sub)=NaN;
     output.Range_ref_max(Mask_reg_sub)=NaN;
-    
+
+
     output.Thickness_mean=1./output.Nb_good_pings.*output.nb_samples*dr;
     output.Thickness_mean(Mask_reg_sub)=NaN;
     
