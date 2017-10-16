@@ -166,6 +166,12 @@ idx_r(idx_r>length(range))=[];
 
 region.Idx_pings=idx_pings;
 region.Idx_r=idx_r;
+switch region.Shape
+    case 'Polygon'
+        region.MaskReg=region.MaskReg(idx_keep_r,idx_keep_x);
+        
+end
+
 
 if isempty(idx_r)||isempty(idx_pings)
     warning('Cannot integrate this region, no data...');
@@ -218,8 +224,7 @@ end
     %% Apply region Mask_reg to data
     switch region.Shape
         case 'Polygon'
-            Mask_reg=region.MaskReg(idx_keep_r,idx_keep_x);
-            Sv_reg(Mask_reg==0)=NaN;
+            Sv_reg(region.MaskReg==0)=NaN;
     end
     
     Mask_reg=~isnan(Sv_reg);
@@ -311,9 +316,9 @@ end
     
     % idx_x=(sum(Mask_reg)>0);
     
-    x_mat_idx=floor(x_mat/cell_w);
-    slice_idx=floor(x/cell_w);
-    slice_idx=slice_idx-slice_idx(1);
+    x_mat_idx=ceil(x_mat/cell_w);
+    slice_idx=ceil(x/cell_w);
+    slice_idx=slice_idx-slice_idx(1)+1;
     
     switch region.Reference
         case {'Bottom' 'Line'}

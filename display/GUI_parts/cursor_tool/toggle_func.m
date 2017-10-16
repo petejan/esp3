@@ -41,8 +41,6 @@ function toggle_func(src, ~,main_figure)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 %curr_disp=getappdata(main_figure,'Curr_disp');
 %reset_disp_info(main_figure);
-ah=axes_panel_comp.main_axes;
-axes(ah);
 
 switch class(src)
     case {'matlab.ui.container.toolbar.ToggleTool','matlab.ui.container.toolbar.PushTool','matlab.ui.container.toolbar.ToggleSplitTool'}

@@ -63,7 +63,11 @@ for iax=1:length(main_axes_tot)
     
     if~isempty(reg_h)
         id_disp=(get(reg_h,'UserData'));
-        id_disp=unique([id_disp{:}]);
+        if iscell(id_disp)
+            id_disp=unique([id_disp{:}]);
+        else
+            id_disp=unique(id_disp(:));
+        end
         id_reg=trans.get_reg_Unique_IDs();
         id_rem = setdiff(id_disp,id_reg);
         if~isempty(id_rem)

@@ -88,8 +88,8 @@ try
     layer_tab_comp.table.Data=data_new;
     % end
     layer_tab_comp.table.Data{idx,1}=strcat('<html><FONT color="Red"><b>',data_new{idx,1},'</b></html>');
-    
-    drawnow;  pause(0.02);
+   
+    drawnow;
     pos=java.awt.Point(0,round(rect.height*(idx-1)/nb_layer));
     
     jView.setViewPosition(pos)
@@ -101,4 +101,5 @@ catch
     end
 end
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
+
 end

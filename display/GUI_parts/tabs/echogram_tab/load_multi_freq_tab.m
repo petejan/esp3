@@ -116,6 +116,8 @@ for i=1:numel(idx_freqs_secondary)
         cax_min=prctile(sv,5);
         cax_max=prctile(sv,95);
         cax=curr_disp.getCaxField('sv');
+
+
     
     reg_primary.display_region(output_diff{i},'main_figure',main_figure,...
         'alphadata',double(pow2db_perso(output_reg_primary.Sv_mean_lin)>cax(1)),...

@@ -10,6 +10,7 @@ if isempty(cont)
 end
 
 [x,y,~]=C2xyz(cont);
+
 idx_rem=[];
 for i=1:length(x)
    x{i}=x{i}-1; 

@@ -97,7 +97,7 @@ reglist_tab_comp.table.Data{idx_reg,1}=strcat('<html><FONT color="Red"><b>',regl
 
 
 try
-    drawnow; pause(0.02);
+    drawnow; 
     nb_reg=length(regions);
     rect=jView.getViewSize;
     pos=java.awt.Point(0,round(rect.height*(idx_reg-1)/nb_reg));

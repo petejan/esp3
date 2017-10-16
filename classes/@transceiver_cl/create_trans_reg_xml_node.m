@@ -20,7 +20,7 @@ region_file.appendChild(regions_node);
 
 for ir=1:length(trans_obj.Regions)
     
-    splitted_reg=trans_obj.Regions(ir).split_region(trans_obj.Data.FileId);
+    splitted_reg=trans_obj.Regions(ir).split_region(trans_obj.Data.FileId,1);
     
     for irs=1:length(splitted_reg)
         

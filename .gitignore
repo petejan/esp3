@@ -229,4 +229,6 @@ deploy/icons/
 deploy/private/ETOPO1_Bed_g_gmt4.grd
 deploy/example_data
 config/config_echo.xml
-example_data
+echo_results/
+example_data/ek60/bot_reg/
+example_data/ek60/echo_logbook.db

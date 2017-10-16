@@ -69,11 +69,11 @@ classdef region_cl
                 obj.(props{i})=results.(props{i});
             end
             
-            switch obj.Shape
-                case 'Rectangular'
+            switch lower(obj.Shape)
+                case 'rectangular'
                     obj.X_cont=[];
                     obj.Y_cont=[];
-                case 'Polygon'
+                case 'polygon'
                     if isempty(results.X_cont)&&~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
                         if ~isempty(y)

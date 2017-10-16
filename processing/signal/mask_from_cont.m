@@ -11,5 +11,6 @@ for i=idx_order
    %in=inpolygon(S,P,y{i},x{i});
    in=poly2mask(x{i},y{i},nb_x,nb_y);
    Mask_out(in)=contour_type(i);
+   Mask_out(y{i}+(x{i}-1)*nb_x)=contour_type(i);
 end
 
