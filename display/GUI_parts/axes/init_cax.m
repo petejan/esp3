@@ -1,6 +1,12 @@
 function [Cax,Type]=init_cax(Fieldname)
 
-switch lower(Fieldname)
+if isempty(Fieldname)
+    Cax=[];
+    Type='';
+    return;
+end
+
+switch lower(deblank(Fieldname))
     case 'sv'
         Cax=[-70 -35];
         Type='Sv';
@@ -59,8 +65,13 @@ switch lower(Fieldname)
         Cax=[0 12];
         Type='Motion Compensation';
     otherwise
-        Cax=[-Inf Inf];
-        Type=Fieldname;
+        if ~isempty(strfind(lower(Fieldname),'khz'))
+            Type=['Sv-' Fieldname];
+            Cax=[-10 10];
+        else
+            Cax=[-200 200];
+            Type=Fieldname;
+        end
 end
 
 end

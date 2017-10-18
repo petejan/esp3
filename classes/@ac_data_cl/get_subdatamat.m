@@ -20,7 +20,7 @@ if isempty(idx_ping)
     idx_ping=1:data.Nb_pings;
 end
 
-[idx,found]=find_field_idx(data,(deblank(field)));
+[idx,found]=find_field_idx(data,lower(deblank(field)));
 
 if found
     datamat=nan(length(idx_r),length(idx_ping));

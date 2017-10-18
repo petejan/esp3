@@ -34,11 +34,13 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function listenFreq(~,~,main_figure)
+function listenFreq(src,evt,main_figure)
+
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-[idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
+
+trans_obj=layer.get_trans(curr_disp.Freq);
 
 opt_panel=getappdata(main_figure,'option_tab_panel');
 
@@ -56,19 +58,23 @@ load_calibration_tab(main_figure,opt_panel);
 load_info_panel(main_figure);
 update_reglist_tab(main_figure,[],1);
 
-range=layer.Transceivers(idx_freq).get_transceiver_range();
+range=trans_obj.get_transceiver_range();
 [~,y_lim_min]=nanmin(abs(range-curr_disp.R_disp(1)));
 [~,y_lim_max]=nanmin(abs(range-curr_disp.R_disp(2)));
 
 if curr_disp.R_disp(2)==Inf
     y_lim_max=numel(range);
 end
+
 clear_regions(main_figure,[]);
+
 delete(findobj(axes_panel_comp.main_axes,'Tag','SelectLine','-or','Tag','SelectArea'));
+
 set(axes_panel_comp.main_axes,'ylim',[y_lim_min y_lim_max]);
 
 update_mini_ax(main_figure,1);
-curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
+
+curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 display_regions(main_figure,'both');
 display_bottom(main_figure);

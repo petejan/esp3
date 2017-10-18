@@ -14,7 +14,7 @@ sv=trans_obj.Data.get_datamat('sv');
 TS=str2double(get(display_tab_comp.TS,'string'));
 
 data_mat=10.^(sv-TS)/10;
-trans_obj.Data.add_sub_data('fishdensity',data_mat);
+trans_obj.Data.replace_sub_data('fishdensity',data_mat);
 
 curr_disp.setField('fishdensity');
 setappdata(main_figure,'Curr_disp',curr_disp);

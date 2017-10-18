@@ -146,7 +146,7 @@ switch reg_obj.Cell_w_unit
         x_disp=(output_reg.Dist_S+output_reg.Dist_E)/2;
 end
 
-y_disp=abs(output_reg.Range_ref_max);
+
 
 %% create new figure here
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
@@ -160,7 +160,16 @@ ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'x
 % title
 title(ax_in,tt);
 
+switch reg_obj.Reference
+    case 'Surface'
+        y_disp=(output_reg.Range_ref_max);
+    case {'Bottom','Line'}
+     
+        y_disp=-(output_reg.Range_ref_max);
+end
+
 % data
+
 mat_size=size(var_disp);
 if  ~any(mat_size==1)
     reg_plot=pcolor(ax_in,repmat(x_disp,size(y_disp,1),1),y_disp,var_disp);
@@ -175,7 +184,7 @@ xmax=nanmax(x_disp);
 % ticks and grid
 
 
-ax_in.XTick=x_disp;
+ax_in.XTick=x_disp(~isnan(x_disp));
 ax_in.YTick=sort((ymin:reg_obj.Cell_h:ymax));
 grid(ax_in,'on');
 
@@ -233,14 +242,14 @@ xlabel(ax_vert,ylab)
 
 switch reg_obj.Reference
     case 'Surface'
-        ylabel(ax_vert,sprintf('Depth (%s)',reg_obj.Cell_h_unit));
+        ylabel(ax_vert,'Depth (m)');
         axis(ax_in,'ij');
         axis(ax_vert,'ij');
     case 'Bottom'
-        ylabel(ax_vert,'Distance Above bottom(m)');
-        
+        ylabel(ax_vert,'Distance Above bottom(m)');       
     case 'Line'
-        ylabel(ax_vert,sprintf('From line (%s)',reg_obj.Cell_h_unit));
+        ylabel(ax_vert,'Distance From line (m)');
+
 end
 
 grid(ax_vert,'on');

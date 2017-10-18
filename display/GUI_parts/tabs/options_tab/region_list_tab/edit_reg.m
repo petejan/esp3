@@ -82,6 +82,7 @@ else
 end
 active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
 active_reg.Cell_h_unit=src.Data{evt.Indices(1,1),9};
+layer.Transceivers(idx_freq).rm_region_id(active_reg.Unique_ID);
 layer.Transceivers(idx_freq).add_region(active_reg);
 
 setappdata(main_figure,'Layer',layer);

@@ -91,40 +91,17 @@ if isempty(secondary_freqs)
     return;
 end
 
-[idx_freq_primary,~]=layer.find_freq_idx(primary_freq);
-[idx_freqs_secondary,~]=layer.find_freq_idx(secondary_freqs);
+[secondary_freqs,cax,~]=layer.generate_freq_differences('primary_freq',primary_freq,'secondary_freqs',secondary_freqs,...
+    'Cell_h',str2double(multi_freq_tab.grid_samples.String),'Cell_w',str2double(multi_freq_tab.grid_pings.String));
 
-trans_obj_primary=layer.Transceivers(idx_freq_primary);
-reg_primary=trans_obj_primary.create_WC_region(...
-    'Ref','Surface',...
-    'Cell_w',str2double(multi_freq_tab.grid_pings.String),...
-    'Cell_h',str2double(multi_freq_tab.grid_samples.String),...
-    'Cell_w_unit','pings',...
-    'Cell_h_unit','samples');
-output_reg_primary=trans_obj_primary.integrate_region_v2(reg_primary,'keep_bottom',1,'keep_all',1);
-
-[regs_secondary,idx_freqs_secondary]=layer.generate_regions_for_other_freqs(idx_freq_primary,reg_primary,idx_freqs_secondary);
-
-
-output_regs_secondary=cell(1,numel(idx_freqs_secondary));
-output_diff=cell(1,numel(idx_freqs_secondary));
-for i=1:numel(idx_freqs_secondary)
-    trans_obj_secondary=layer.Transceivers(idx_freqs_secondary(i));
-    output_regs_secondary{i}=trans_obj_secondary.integrate_region_v2(regs_secondary(i),'keep_bottom',1,'keep_all',1);
-    output_diff{i}  = substract_reg_outputs( output_reg_primary,output_regs_secondary{i});
-    
-    sv=pow2db_perso(output_diff{i}.Sv_mean_lin(:));
-        cax_min=prctile(sv,5);
-        cax_max=prctile(sv,95);
-        cax=curr_disp.getCaxField('sv');
-
-
-    
-    reg_primary.display_region(output_diff{i},'main_figure',main_figure,...
-        'alphadata',double(pow2db_perso(output_reg_primary.Sv_mean_lin)>cax(1)),...
-        'Cax',[cax_min cax_max],...
-        'Name',sprintf('%s, %dkHz-%dkHz',reg_primary.print(),primary_freq/1e3,secondary_freqs(i)/1e3));
+if isempty(secondary_freqs)
+    return;
 end
+curr_disp.Freq=primary_freq;
+curr_disp.setField(sprintf('Sv%.0fkHz',secondary_freqs(end)/1e3));
+curr_disp.setCax(cax(end,:));
+setappdata(main_figure,'Curr_disp',curr_disp);
+update_display_tab(main_figure);
 
-
+   
 end

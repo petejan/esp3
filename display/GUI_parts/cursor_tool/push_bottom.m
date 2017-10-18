@@ -36,9 +36,15 @@
 
 %% Function
 function push_bottom(src,~,main_figure)
-if~(strcmpi(src.SelectionType,'Normal'))
-   return;
+
+if check_axes_tab(main_figure)==0
+    return;
 end
+
+if ~(strcmpi(src.SelectionType,'Normal'))
+    return;
+end
+
 
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

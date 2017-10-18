@@ -21,7 +21,7 @@ if  found==1
 end
 
 if multi_layer<=0
- layers_out=rearrange_layers(layers_in,multi_layer); 
+    layers_out=rearrange_layers(layers_in,multi_layer); 
 else
     layers_out=layers_in;
 end

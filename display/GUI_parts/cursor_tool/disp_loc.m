@@ -1,5 +1,10 @@
 function disp_loc(src,~,main_figure)
 
+if check_axes_tab(main_figure)==0
+    return;
+end
+
+
 obj=gco;
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

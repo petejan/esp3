@@ -36,9 +36,14 @@
 
 %% Function
 function detect_bottom_supervised(src,~,main_figure)
+if check_axes_tab(main_figure)==0
+    return;
+end
 if~(strcmpi(src.SelectionType,'Normal'))
     return;
 end
+
+
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

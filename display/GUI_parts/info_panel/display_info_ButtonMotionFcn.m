@@ -277,8 +277,7 @@ try
 %         switch lower(deblank(curr_disp.Fieldname))
 %             case 'sp_comp'
 %                 single_target_tab_comp=getappdata(main_figure,'Single_target_tab');
-% 
-%             
+%       
 %         end
         
     end

@@ -37,6 +37,10 @@
 %% Function
 function zoom_in_callback(src,~,main_figure)
 
+if check_axes_tab(main_figure)==0
+    return;
+end
+layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 ah=axes_panel_comp.main_axes;
@@ -46,6 +50,8 @@ switch main_figure.SelectionType
         mode='rectangular';
     case 'alt'
         mode='horizontal';
+    case 'open'
+        mode='reset';
     otherwise
         return;
 end
@@ -64,6 +70,12 @@ xdata=get(axes_panel_comp.main_echo,'XData');
 ydata=get(axes_panel_comp.main_echo,'YData');
 cp = ah.CurrentPoint;
 
+trans=layer.get_trans(curr_disp.Freq);
+
+xdata_tot=trans.get_transceiver_pings();       
+ydata_tot=trans.get_transceiver_samples();
+
+
 switch mode
     case 'rectangular'
         xinit = cp(1,1);
@@ -74,8 +86,10 @@ switch mode
     case 'vertical'
         xinit = cp(1,1);
         yinit = ydata(1);
+    case 'reset'      
+        set(ah,'XLim',[xdata_tot(1) xdata_tot(end)],'YLim',[ydata_tot(1) ydata_tot(end)]);
+        return;
 end
-
 
 if xinit<xdata(1)||xinit>xdata(end)||yinit<ydata(1)||yinit>ydata(end)
     return;

@@ -1,6 +1,10 @@
 
 function create_region(src,~,main_figure)
 
+if check_axes_tab(main_figure)==0
+    return;
+end
+
 region_tab_comp=getappdata(main_figure,'Region_tab');
 modes=get(region_tab_comp.mode,'string');
 mode_idx=get(region_tab_comp.mode,'value');

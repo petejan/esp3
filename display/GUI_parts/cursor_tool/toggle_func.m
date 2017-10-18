@@ -128,7 +128,7 @@ switch state
         reset_mode(0,0,main_figure);
         set_alpha_map(main_figure);
 end
-
+order_stacks_fig(main_figure);
 end
 
 function check_only_one(src,~)

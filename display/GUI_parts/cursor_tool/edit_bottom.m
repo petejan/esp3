@@ -38,6 +38,11 @@
 %% Function
 function edit_bottom(src,~,main_figure)
 
+
+if check_axes_tab(main_figure)==0
+    return;
+end
+
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');

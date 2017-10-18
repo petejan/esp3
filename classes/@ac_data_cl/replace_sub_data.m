@@ -1,4 +1,5 @@
 function replace_sub_data(data_obj,field,data_mat)
+
 if isempty(data_mat)
     return;
 end
@@ -13,7 +14,7 @@ if found==0
     return;
 else
     for ii=1:length(data_mat_cell)
-        data_obj.SubData(idx).Memap{ii}.Data.(field)=single(data_mat_cell{ii});
+        data_obj.SubData(idx).Memap{ii}.Data.(lower(deblank(field)))=single(data_mat_cell{ii});
     end
 end
 end

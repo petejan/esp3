@@ -53,6 +53,7 @@ switch lower(p.Results.Ref)
         [~,idx_r_min]=nanmin(abs(ydata-p.Results.y_min));
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
+        
         if nansum(isnan(bot_data))<nb_pings
             [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
         else
@@ -70,10 +71,11 @@ switch lower(p.Results.Ref)
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
         shape='Polygon';
-
+        
         mask=bsxfun(@ge,ydata,bot_data-p.Results.y_max)&...
         bsxfun(@le,ydata,bot_data+p.Results.Cell_h)&...
         bsxfun(@ge,ydata,repmat(p.Results.y_min,size(bot_data)));
+    
         idx_r=find(nansum(mask,2)>0,1,'first'):find(nansum(mask,2)>0,1,'last');
         mask=mask(idx_r,:);
 end

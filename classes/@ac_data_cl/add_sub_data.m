@@ -1,8 +1,8 @@
 function add_sub_data(data_obj,field,data_mat)
+
 if isempty(data_mat)
     return;
 end
-
 
 if ~iscell(field)
     field={field};

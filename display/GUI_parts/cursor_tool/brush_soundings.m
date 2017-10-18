@@ -36,6 +36,10 @@
 %% Function
 function brush_soundings(src,~,main_figure)
 
+if check_axes_tab(main_figure)==0
+    return;
+end
+
 % main_figure=ancestor(src,'figure');
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)

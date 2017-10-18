@@ -311,7 +311,7 @@ for itype = 1:length(ftype_unique)
                 end
             end
             
-            multi_lay_mode=-1;
+            multi_lay_mode=0;
         case 'asl'
             
             new_layers=open_asl_files(Filename,...

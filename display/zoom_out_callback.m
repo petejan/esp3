@@ -37,11 +37,15 @@
 %% Function
 function zoom_out_callback(src,~,main_figure)
 
+if check_axes_tab(main_figure)==0
+    return;
+end
+
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-trans=layer.Transceivers(idx_freq);
+
+trans=layer.get_trans(curr_disp.Freq);
 
 
 xdata_tot=trans.get_transceiver_pings();       

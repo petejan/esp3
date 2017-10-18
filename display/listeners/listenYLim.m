@@ -34,15 +34,22 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function listenYLim(~,~,main_figure)
+function listenYLim(src,evt,main_figure)
 %disp('listenYLim')
 % profile on;
 
 layer=getappdata(main_figure,'Layer');
-
 curr_disp=getappdata(main_figure,'Curr_disp');
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
+trans_obj=layer.get_trans(curr_disp.Freq);
+ax=evt.AffectedObject;
+x_lim=get(ax,'XLim');
+y_lim=get(ax,'YLim');
+
+range=trans_obj.get_transceiver_range();
+y_lim=ceil(y_lim);
+y_lim(y_lim>numel(range))=numel(range);
+curr_disp.R_disp=range(y_lim);
 
 update_axis_panel(main_figure,0);
 set_axes_position(main_figure);
@@ -56,14 +63,6 @@ display_survdata_lines(main_figure);
 set_alpha_map(main_figure);
 order_stacks_fig(main_figure);
 
-
-axes_panel_comp=getappdata(main_figure,'Axes_panel');
-x_lim=get(axes_panel_comp.main_axes,'XLim');
-y_lim=get(axes_panel_comp.main_axes,'YLim');
-range=layer.Transceivers(idx_freq).get_transceiver_range();
-y_lim=ceil(y_lim);
-y_lim(y_lim>numel(range))=numel(range);
-curr_disp.R_disp=range(y_lim);
 %curr_disp.R_disp
 
 mini_ax_comp=getappdata(main_figure,'Mini_axes');

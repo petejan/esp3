@@ -14,6 +14,7 @@ classdef sub_ac_data_cl < handle
             checkdata=@(data) iscell(data)||isnumeric(data)||isa(data,'memmapfile');
             
             addParameter(p,'field','',@ischar);
+            addParameter(p,'type','',@ischar);
             addParameter(p,'memapname','',checkname);
             addParameter(p,'data',[],checkdata);
             
@@ -33,8 +34,12 @@ classdef sub_ac_data_cl < handle
                 data={data};
             end
             
+            if ~strcmpi(p.Results.type,'')
+                obj.Type=p.Results.type;
+            else
+                [~,obj.Type]=init_cax(field);
+            end
             
-            [~,obj.Type]=init_cax(obj.Fieldname);
             obj.Memap={};
             
             for icell=1:length(data)
@@ -43,13 +48,13 @@ classdef sub_ac_data_cl < handle
                         obj.Memap{icell}=data{icell};
                     otherwise                       
                         if ~isempty(data{icell})
-                            curr_name=[memapname{icell} field '.bin'];
+                            curr_name=[memapname{icell} obj.Fieldname '.bin'];
                             
                             fileID = fopen(curr_name,'w+');
                             while fileID==-1
                                 continue;
                             end
-                            format={'single',size(data{icell}),field};
+                            format={'single',size(data{icell}),obj.Fieldname};
                             fwrite(fileID,double(data{icell}),'single');
                             fclose(fileID);
                             

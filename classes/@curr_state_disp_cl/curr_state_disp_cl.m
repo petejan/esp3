@@ -3,10 +3,10 @@ classdef curr_state_disp_cl <handle
     properties (SetObservable = true)
         Freq
         Fieldname
+        Fieldnames
         Type
         Xaxes
-        Cax
-        Fieldnames
+        Cax     
         Caxes
         DispBottom
         DispUnderBottom
@@ -67,9 +67,8 @@ classdef curr_state_disp_cl <handle
                 obj.(props{i})=results.(props{i});
             end
             
-            obj.Fieldnames={'sv','sp','power','angle','sp_comp','snr','phi','y','fishdensity'};
-            obj.Caxes={[-70 -35],[-60 -30],[-200 0],[-180 180],[-60 -30],[-10 10],[0 30],[-200 0],[0 10]};
-            
+            obj.Fieldnames={};
+            obj.Caxes={};            
             obj.setTypeCax();
             
         end
@@ -80,6 +79,7 @@ classdef curr_state_disp_cl <handle
         function setCax(obj,cax)
             if cax(2)>cax(1)
                 idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
+                
                 if ~isempty(idx_field)
                     obj.Caxes{idx_field}=cax;
                     obj.Cax=cax;
@@ -89,6 +89,7 @@ classdef curr_state_disp_cl <handle
             end
         end
         
+                
         function pointer=get_pointer(obj)
             %Choice of pointer being: ‘hand’, ‘hand1’, ‘hand2’, ‘closedhand’, ‘glass’, ‘glassplus’, ‘glassminus’, 
             %‘lrdrag’, ‘ldrag’, ‘rdrag’, ‘uddrag’, ‘udrag’, ‘ddrag’, ‘add’, ‘addzero’, ‘addpole’, ‘eraser’, 
@@ -116,9 +117,11 @@ classdef curr_state_disp_cl <handle
         end
         
         function setTypeCax(obj)
-            [cax,obj.Type]=init_cax(obj.Fieldname);
             
+            [cax,obj.Type]=init_cax(obj.Fieldname);
+          
             idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
+            
             if ~isempty(idx_field)
                 obj.Cax=obj.Caxes{idx_field};
             else
