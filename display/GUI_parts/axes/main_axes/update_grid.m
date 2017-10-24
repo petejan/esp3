@@ -42,7 +42,7 @@ end
 idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
 idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
 
-set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on','YDir','reverse');
+set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on');
 
 set(axes_panel_comp.vaxes,'YTick',ydata(idx_yticks));
 set(axes_panel_comp.haxes,'XTick',xdata(idx_xticks));

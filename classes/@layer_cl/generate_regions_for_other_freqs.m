@@ -36,7 +36,7 @@ for i=1:length(layer.Transceivers)
     [~,sample_end]=nanmin(abs(new_range-range_ori(active_reg.Idx_r(end))));
     
     idx_pings=idx_ping_start:idx_ping_end;
-    idx_r=sample_start:sample_end;
+    idx_r=(sample_start:sample_end)';
     
     switch active_reg.Cell_w_unit
         case 'pings'

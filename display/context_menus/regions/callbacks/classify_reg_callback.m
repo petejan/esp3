@@ -41,17 +41,17 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 hfigs=getappdata(main_figure,'ExternalFigures');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
 
-%reg_curr=layer.Transceivers(idx_freq).get_region_from_Unique_ID(ID);
-idx_reg=layer.Transceivers(idx_freq).find_regions_Unique_ID(ID);
+trans_obj=layer.get_trans(curr_disp.Freq);
+
+idx_reg=trans_obj.find_regions_Unique_ID(ID);
+
 if isempty(idx_reg)
     return; 
 end
 
-new_fig=layer.apply_classification(idx_freq,idx_reg);
+layer.apply_classification('primary_freq',curr_disp.Freq,'idx_schools',idx_reg);
 
-hfigs=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);
 

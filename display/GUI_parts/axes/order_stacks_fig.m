@@ -2,8 +2,9 @@ function order_stacks_fig(main_figure)
 mini_axes_comp=getappdata(main_figure,'Mini_axes');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
+
 switch curr_disp.CursorMode
-    case 'Normal'
+    case {'Normal' 'Create Region'}
         bt_on_top=0;
     otherwise
         bt_on_top=1;

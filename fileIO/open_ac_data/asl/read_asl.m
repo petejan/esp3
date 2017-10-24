@@ -1,6 +1,6 @@
 function layers=read_asl(Filename_cell,varargin)
 
-%Hard coded calibration parameters for now
+%Default calibration parameters (from instrument 55081)
 calParms_def.X_a=-4.575902369000e+01;
 calParms_def.X_b=-6.699530000000e-04;
 calParms_def.X_c=1.930670000000e-07;
@@ -121,7 +121,7 @@ for i_cell=1:length(Filename_cell)
         tmp_x=double(fread(fid,1,'uint16',enc));%Tilt_x (degrees) = X_a + X_b (NX) + X_c (NX)2 + X_d (NX)3
         data.tilt_x(ip) = computeTilt(tmp_x,calParms.X_a,calParms.X_b,calParms.X_c,calParms.X_d);
         tmp_y=double(fread(fid,1,'uint16',enc));%Tilt_y (degrees) = Y_a + Y_b (NY) + Y_c (NY)2 + Y_d (NY)3
-        data.tilt_x(ip) = computeTilt(tmp_y,calParms.Y_a,calParms.Y_b,calParms.Y_c,calParms.Y_d);
+        data.tilt_y(ip) = computeTilt(tmp_y,calParms.Y_a,calParms.Y_b,calParms.Y_c,calParms.Y_d);
         
         
         data.battery(ip)=fread(fid,1,'uint16',enc);
@@ -174,7 +174,7 @@ for i_cell=1:length(Filename_cell)
     fclose(fid);
     
     transceiver(data.nb_channel)=transceiver_cl();
-    
+    att=attitude_nav_cl('Heading',zeros(size(data.time)),'Pitch',data.tilt_y,'Roll',data.tilt_x,'Heave',zeros(size(data.time)),'Time',data.time);
     for ic=1:max(data.nb_channel)
         
         [nb_samples,nb_pings]=size(data.(sprintf('chan_%.0f',ic)));
@@ -237,6 +237,7 @@ for i_cell=1:length(Filename_cell)
         end
         
         transceiver(ic)=transceiver_cl('Data',ac_data_temp,...
+            'AttitudeNavPing',att,...
             'Range',range,...
             'Time',data.time,...
             'Algo',algo_vec,...
@@ -245,7 +246,7 @@ for i_cell=1:length(Filename_cell)
         transceiver(ic).Params=params_obj;
         
     end
-    layers(i_cell)=layer_cl('Filename',{Filename},'Filetype','ASL','Transceivers',transceiver,'EnvData',envdata);
+    layers(i_cell)=layer_cl('Filename',{Filename},'Filetype','ASL','Transceivers',transceiver,'EnvData',envdata,'AttitudeNav',att);
     
     
     

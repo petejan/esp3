@@ -72,7 +72,7 @@ classdef decision_tree_cl
         end
         
         function vars=get_frequencies(obj)
-            vars=obj.Variables;
+            vars=obj.Frequencies;
         end
         
     end

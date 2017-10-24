@@ -341,7 +341,7 @@ for isn = 1:length(snapshots)
                 i_cal = 0;
                 for i_lay = 1:length(layers_out_temp)
                     layer_new = layers_out_temp(i_lay);
-                    [idx_freq,~] = layer_new.find_freq_idx(options.Frequency);
+                    trans_obj_primary= layer_new.get_trans(options.Frequency);
                     i_cal = i_cal+length(layer_new.Filename);
                     if iscell(cal)
                         cal_curr = cal{i_cal};
@@ -394,8 +394,8 @@ for isn = 1:length(snapshots)
                     
                     for ial = 1:length(algos)
                         if isempty(algos{ial}.Varargin.Frequencies)
-                            layer_new.Transceivers(idx_freq).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
-                            layer_new.Transceivers(idx_freq).apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
+                            trans_obj_primary.add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
+                            trans_obj_primary.apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
                         else
                             for i_freq_al = 1:length(algos{ial}.Varargin.Frequencies)
                                 [idx_freq_al,found_freq_al] = layer_new.find_freq_idx(algos{ial}.Varargin.Frequencies(i_freq_al));
@@ -417,7 +417,7 @@ for isn = 1:length(snapshots)
                         if isfield(regs{ire},'name')
                             switch regs{ire}.name
                                 case 'WC'
-                                    layer_new.Transceivers(idx_freq).rm_region_name('WC');
+                                    trans_obj_primary.rm_region_name('WC');
                                     for irewc = 1:length(regions_wc)
                                         if isfield(regions_wc{irewc},'y_max')
                                             y_max = regions_wc{irewc}.y_max;
@@ -436,7 +436,7 @@ for isn = 1:length(snapshots)
                                             t_max = Inf;
                                         end
                                         
-                                        reg_wc = layer_new.Transceivers(idx_freq).create_WC_region(...
+                                        reg_wc = trans_obj_primary.create_WC_region(...
                                             'y_max',y_max,...
                                             'y_min',regions_wc{irewc}.y_min,...
                                             't_min',t_min,...
@@ -449,35 +449,18 @@ for isn = 1:length(snapshots)
                                             'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
                                         reg_wc.Remove_ST = options.Remove_ST;
                                         
-                                        layer_new.Transceivers(idx_freq).add_region(reg_wc,'Split',0);
+                                        trans_obj_primary.add_region(reg_wc,'Split',0);
                                     end
                             end
                         end
                     end
                     
                     if options.ClassifySchool>0
-                        [idx_120,found_120] = find_freq_idx(layer_new,120000);
-                        if found_120>0
-                            idx_school_120 = layer_new.Transceivers(idx_120).find_regions_name('School');
-                            if ~isempty(idx_school_120)
-                                if idx_freq ~= idx_120
-                                    layer_new.copy_region_across(idx_120,layer_new.Transceivers(idx_120).Regions,idx_freq);
-                                    layer_new.Transceivers(idx_120).rm_region_name('School')
-                                    new_regions = layer_new.Transceivers(idx_freq).Regions.merge_regions();
-                                    layer_new.Transceivers(idx_freq).rm_all_region();
-                                    layer_new.Transceivers(idx_freq).add_region(new_regions,'IDs',1:length(new_regions));
-                                end
-                            end
-                        end
-                        
-                        idx_schools = layer_new.Transceivers(idx_freq).find_regions_name('School');
-                        if ~isempty(idx_schools)
-                            layer_new.apply_classification(idx_freq,idx_schools,0);
-                        end
+                        layer_new.apply_classification('primary_freq',options.Frequency);
                     end
                     
                     if options.Remove_tracks
-                        layer_new.Transceivers(idx_freq).create_track_regs('Type','Bad Data');
+                        trans_obj_primary.create_track_regs('Type','Bad Data');
                     end
                     if options.SaveReg>0
                         layer_new.write_reg_to_reg_xml();

@@ -54,7 +54,8 @@ processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,'
 processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Track Targets','units','normalized','Position',[0.3 0.15 0.3 0.1]);
 
 
-set([processing_tab_comp.track_target processing_tab_comp.single_target processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bad_transmit processing_tab_comp.school_detec],'Callback',{@update_process_list,main_figure})
+set([processing_tab_comp.track_target processing_tab_comp.single_target processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bot_detec_v2 processing_tab_comp.bad_transmit processing_tab_comp.school_detec]...
+    ,'Callback',{@update_process_list,main_figure})
 
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.2 0.15],'callback',{@process,main_figure,0});
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all current layers','units','normalized','pos',[0.6 0.50 0.2 0.15],'callback',{@process,main_figure,1});
@@ -258,13 +259,9 @@ add_st=get(processing_tab_comp.single_target,'value')==get(processing_tab_comp.s
 idx_algo=find_algo_idx(trans_obj,'SingleTarget');
 process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add_st);
 
-if add_st==0
-    set(processing_tab_comp.track_target,'value',get(processing_tab_comp.track_target,'min'));
-end
 
 add=get(processing_tab_comp.track_target,'value')==get(processing_tab_comp.track_target,'max');
 idx_algo=find_algo_idx(trans_obj,'TrackTarget');
-
 process_list=process_list.set_process_list(layer.Frequencies(idx_freq),trans_obj.Algo(idx_algo),add);
 
 setappdata(main_figure,'Process',process_list);

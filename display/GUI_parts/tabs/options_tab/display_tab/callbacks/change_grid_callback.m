@@ -16,4 +16,5 @@ end
 
 update_grid(main_figure);
 update_grid_mini_ax(main_figure);
+
 end

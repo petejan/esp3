@@ -58,6 +58,7 @@ addParameter(p,'idx_regs',[],@isnumeric);
 addParameter(p,'select_reg','all',@ischar);
 addParameter(p,'keep_bottom',0,@isnumeric);
 addParameter(p,'keep_all',0,@isnumeric);
+addParameter(p,'sv_thr',-999,@isnumeric);
 
 parse(p,trans_obj,region,varargin{:});
 
@@ -113,21 +114,22 @@ bot_r(isnan(bot_r))=inf;
 bot_sple(isnan(bot_sple))=inf;
 
 
+% switch region.Cell_h_unit
+%     case 'samples'
+%         dn=region.Cell_h;
+%     case 'meters'
+%         dn=ceil(region.Cell_h/dr);
+% end
 
-switch region.Cell_h_unit
-    case 'samples'
-        dn=region.Cell_h;
-    case 'meters'
-        dn=ceil(region.Cell_h/dr);
-end
-
-if p.Results.keep_bottom==0
-    idx_keep_r=samples(idx_r_tot)<=max(bot_sple(idx_pings))+dn;
-    idx_r=idx_r_tot(idx_keep_r);
-else
-    idx_keep_r=1:numel(idx_r_tot);
-    idx_r=idx_r_tot;
-end
+% if p.Results.keep_bottom==0
+%     idx_keep_r=samples(idx_r_tot)<=max(bot_sple(idx_pings))+dn;
+%     idx_r=idx_r_tot(idx_keep_r);
+% else
+%     idx_keep_r=1:numel(idx_r_tot);
+%     idx_r=idx_r_tot;   
+% end
+idx_keep_r=1:numel(idx_r_tot);
+idx_r=idx_r_tot;
 
 %% getting Sv
 if p.Results.denoised>0
@@ -139,6 +141,8 @@ if p.Results.denoised>0
 else
     Sv_reg=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
 end
+
+Sv_reg(Sv_reg<p.Results.sv_thr)=NaN;
 
 %% motion correction
 if p.Results.motion_correction>0
@@ -168,8 +172,7 @@ region.Idx_pings=idx_pings;
 region.Idx_r=idx_r;
 switch region.Shape
     case 'Polygon'
-        region.MaskReg=region.MaskReg(idx_keep_r,idx_keep_x);
-        
+        region.MaskReg=region.MaskReg(idx_keep_r,idx_keep_x);       
 end
 
 

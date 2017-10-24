@@ -36,7 +36,8 @@ FreqCenter=(FreqStart+FreqEnd)/2;
 lambda=c/FreqCenter;
 eq_beam_angle=eq_beam_angle+20*log10(Freq/(FreqCenter));
 alpha=double(trans_obj.Params.Absorption(1));
-sacorr=2*trans_obj.Config.SaCorrection(idx_pulse);
+cal=trans_obj.get_cal();
+sacorr=2*cal.SACORRECT;
 
 if strcmp(trans_obj.Mode,'FM')
     [t_eff,~]=trans_obj.get_pulse_Teff();
