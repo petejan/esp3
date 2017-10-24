@@ -55,7 +55,7 @@ uiundo(main_figure,'clear');
 
 nb_layers = length(layers);
 curr_disp = getappdata(main_figure,'Curr_disp');
-curr_mode=curr_disp.CursorMode;
+
 
 [idx_freq,found_freq] = find_freq_idx(layer,curr_disp.Freq);
 [~,found_field] = find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);

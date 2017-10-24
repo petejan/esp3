@@ -64,11 +64,13 @@ switch main_figure.SelectionType
             end
             return;
         end
+        
         enterFcn =  @(figHandle, currentPoint)...
             set(figHandle, 'Pointer', 'fleur');
         iptSetPointerBehavior(obj,enterFcn);
         replace_interaction(main_figure,'interaction','KeyPressFcn','id',1);
         curr_disp.UIupdate=0;
+        
         switch obj.Type
             case 'patch'
                 move_patch_select(obj,[],main_figure);
@@ -89,9 +91,10 @@ switch main_figure.SelectionType
         
         reg_curr.Idx_pings=reg_curr.Idx_pings-reg_curr.Idx_pings(1)+idx_p_min;
         reg_curr.Idx_r=reg_curr.Idx_r-reg_curr.Idx_r(1)+idx_r_min;
-        
-        layer.Transceivers(idx_freq).add_region(reg_curr);
-        
+        old_regs=trans_obj.Regions;
+        layer.Transceivers(idx_freq).add_region(reg_curr,'Merge',0);
+        add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+
         setappdata(main_figure,'Layer',layer);
         curr_disp.Reg_changed_flag=1;
         clear_regions(main_figure,reg_curr.Unique_ID);

@@ -2,9 +2,7 @@ function load_map_tab(main_figure,tab_panel)
 
 switch tab_panel.Type
     case 'uitabgroup'
-        map_tab_comp.map_tab=uitab(tab_panel,'Title','Map&Co','backgroundcolor','w');
-        tab_menu=create_context_menu_tabs(main_figure,tab_panel,'map');       
-        map_tab_comp.map_tab.UIContextMenu=tab_menu;
+        map_tab_comp.map_tab=new_echo_tab(main_figure,tab_panel,'Title','Map&Co','UiContextMenuName','map');
     case 'figure'
         map_tab_comp.map_tab=tab_panel;
 end

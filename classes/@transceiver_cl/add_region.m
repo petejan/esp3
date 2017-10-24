@@ -8,6 +8,7 @@ addRequired(p,'regions',@(obj) isa(obj,'region_cl')||isempty(obj));
 addParameter(p,'Tag','',@(x) ischar(x)||iscell(x));
 addParameter(p,'IDs',[],@(x) isnumeric(x)||isempty(x));
 addParameter(p,'Split',0,@(x) isnumeric(x)||islogical(x));
+addParameter(p,'Merge',1,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Origin','',@ischar);
 addParameter(p,'Ping_offset',0,@isnumeric);
 
@@ -34,7 +35,7 @@ for i=1:length(regions)
 
     regs_id=trans_obj.get_region_from_Unique_ID(regions(i).Unique_ID);
     
-    if isempty(regs_id)
+    if isempty(regs_id)||p.Results.Merge==0
         reg_curr=regions(i);
     else
         reg_tmp=[regions(i) regs_id];

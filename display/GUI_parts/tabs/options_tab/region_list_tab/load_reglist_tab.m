@@ -40,9 +40,7 @@ function load_reglist_tab(main_figure,tab_panel)
 
 switch tab_panel.Type
     case 'uitabgroup'
-        reglist_tab_comp.reglist_tab=uitab(tab_panel,'Title','Region List');
-        tab_menu=create_context_menu_tabs(main_figure,tab_panel,'reglist');  
-        reglist_tab_comp.reglist_tab.UIContextMenu=tab_menu;
+        reglist_tab_comp.reglist_tab=new_echo_tab(main_figure,tab_panel,'Title','Region List','UiContextMenuName','reglist');
     case 'figure'
         reglist_tab_comp.reglist_tab=tab_panel;
 end

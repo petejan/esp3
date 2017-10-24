@@ -175,6 +175,7 @@ for i_cell=1:length(Filename_cell)
     
     transceiver(data.nb_channel)=transceiver_cl();
     att=attitude_nav_cl('Heading',zeros(size(data.time)),'Pitch',data.tilt_y,'Roll',data.tilt_x,'Heave',zeros(size(data.time)),'Time',data.time);
+    
     for ic=1:max(data.nb_channel)
         
         [nb_samples,nb_pings]=size(data.(sprintf('chan_%.0f',ic)));

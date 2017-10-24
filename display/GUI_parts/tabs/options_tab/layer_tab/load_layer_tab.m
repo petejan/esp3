@@ -38,11 +38,8 @@
 function load_layer_tab(main_figure,parent_tab_group)
 
 switch parent_tab_group.Type
-    case 'uitabgroup'
-        layer_tab_comp.layer_tab=uitab(parent_tab_group,'Title','Layers');
-        tab_menu=create_context_menu_tabs(main_figure,parent_tab_group,'laylist');       
-        layer_tab_comp.layer_tab.UIContextMenu=tab_menu;
-       
+    case 'uitabgroup'        
+        layer_tab_comp.layer_tab=new_echo_tab(main_figure,parent_tab_group,'Title','Layers','UiContextMenuName','laylist');      
     case 'figure'
         layer_tab_comp.layer_tab=parent_tab_group;
 end

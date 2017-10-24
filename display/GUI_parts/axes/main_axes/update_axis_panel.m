@@ -47,7 +47,6 @@ if found==0
     return;
 end
 
-
 delete(axes_panel_comp.listeners);
 clear_lines(axes_panel_comp.main_axes);
 
