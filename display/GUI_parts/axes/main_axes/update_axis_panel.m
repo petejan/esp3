@@ -25,23 +25,24 @@ else
     delete(u);
 end
 
-[idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
+trans_obj=layer.get_trans(curr_disp.Freq);
 
-if found==0
+if isempty(trans_obj)
     idx_freq=1;
     curr_disp.Freq=layer.Frequencies(idx_freq);
     return;
 end
 
-[~,found]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+[~,found]=find_field_idx(trans_obj.Data,curr_disp.Fieldname);
 
 if found==0
-    [~,found]=find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
+    [~,found]=find_field_idx(trans_obj.Data,'sv');
     if found==0
-        field=layer.Transceivers(idx_freq).Data.Fieldname{1};
+        field=trans_obj.Data.Fieldname{1};
     else
         field='sv';
     end
+    
     curr_disp.setField(field);
     setappdata(main_figure,'Curr_disp',curr_disp);
     return;
