@@ -211,16 +211,25 @@ try
         
         set(allchild(axv),'visible',get(axv,'visible'))
         y_val=[nanmin(horz_val(~isinf(horz_val))) nanmax(horz_val(~isinf(horz_val)))*10/15^(-1*sign( nanmax(horz_val(~isinf(horz_val)))))];
-        
+  
         horz_val_high=horz_val;
         horz_val_high(idx_low>0)=nan;
         
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
         
-        if all(~isnan(y_val))&&x_lim(2)>x_lim(1)&&y_val(2)>y_val(1)
-            set(axh,'xlim',x_lim,'ylim',y_val);
+        if x_lim(2)>x_lim(1)
+            set(axh,'xlim',x_lim);
+        else
+           disp('Haha!!!') 
         end
+        
+        if all(~isnan(y_val))&&y_val(2)>y_val(1)
+            set(axh,'ylim',y_val);
+        end
+            
+            
+        
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
         
         set(allchild(axh), 'visible',get(axh,'visible'))
