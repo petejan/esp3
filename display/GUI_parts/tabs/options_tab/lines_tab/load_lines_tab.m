@@ -39,8 +39,8 @@ uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Use as Offset'
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Disp. Offset','units','normalized','pos',[0.65 0.45 0.15 0.15],'callback',{@display_offset_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Remove Offset','units','normalized','pos',[0.8 0.3 0.15 0.15],'callback',{@remove_offset_callback,main_figure});
 
-uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Export to XML','units','normalized','pos',[0.35 0.1 0.15 0.15],'callback',{@export_line_callback,main_figure});
-uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Import from XML','units','normalized','pos',[0.5 0.1 0.15 0.15],'callback',{@import_line_xml_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Save to XML','units','normalized','pos',[0.35 0.1 0.15 0.15],'callback',{@export_line_callback,main_figure});
+uicontrol(lines_tab_comp.lines_tab,'Style','pushbutton','String','Load from XML','units','normalized','pos',[0.5 0.1 0.15 0.15],'callback',{@import_line_xml_callback,main_figure});
 
 
 

@@ -55,16 +55,20 @@ end
 
 
 dist=obj.Dist;
-time=(obj.Time(1:end)-obj.Time(1))*24*60*60;
+time=obj.Time(1:end);
 if ~isempty(dist)
-    speed=diff(dist/1852)./diff(time/3600);
-    h_fig=new_echo_figure(parenth,'Name','Speed','Tag','speed');
+    speed=diff(dist/1852)./diff(time*24*60*60/3600);
+    h_fig=new_echo_figure(parenth,'Name','Speed','Tag','attitude');
     ax= axes(h_fig,'nextplot','add','OuterPosition',[0 0 1 1]);
     plot(ax,time(2:end),speed,'k');
     xlabel(ax,'Time(s)');
     ylabel(ax,'Speed (knot)');
     grid(ax,'on');
     box(ax,'on');
+    xlim(ax,[time(2) time(end)]);
+    xt=get(ax,'XTick');
+    xt_n=datestr(xt,'HH:MM:SS');
+    set(ax,'XtickLabels',xt_n,'XtickLabelRotation',90)
     
 else
     h_fig=[];

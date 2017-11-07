@@ -89,6 +89,9 @@ tag=sprintf('logbook_%s',path_f);
 tab_obj=findobj(dest_fig,'Tag',tag);
 
 if ~isempty(tab_obj)
+    if strcmp(tab_obj(1).Type,'uitab')
+        tab_obj(1).Parent.SelectedTab=tab_obj(1);
+    end
     if reload==0
         return;
     else
@@ -117,7 +120,11 @@ else
         tab_menu = uicontextmenu(ancestor(surv_data_tab,'figure'));
         surv_data_tab.UIContextMenu=tab_menu;
         uimenu(tab_menu,'Label','Close Logbook','Callback',{@close_logbook_tab,surv_data_tab});
-    
+        
+        if strcmp(surv_data_tab.Type,'uitab')
+            surv_data_tab.Parent.SelectedTab=surv_data_tab;
+        end
+        
     else
         return;
     end

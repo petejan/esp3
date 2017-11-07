@@ -289,9 +289,9 @@ end
         case 'Bottom'
             idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=-p.Results.vertExtend(1)|isinf(y_mat));
         case 'Line'
-            idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(2));
+            idx_rem_y=(y_mat<=-p.Results.vertExtend(2)|y_mat>=p.Results.vertExtend(2))|isinf(y_mat);
         otherwise
-            idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=-p.Results.vertExtend(1));
+            idx_rem_y=(y_mat>=p.Results.vertExtend(2)|y_mat<=p.Results.vertExtend(1));
     end
     
     Mask_reg(idx_rem_y)=0;

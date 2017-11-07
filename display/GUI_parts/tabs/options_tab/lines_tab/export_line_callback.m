@@ -7,5 +7,6 @@ if isempty(layer)
 end
 
 write_line_to_line_xml(layer);
+disp('Lines Exported');
 
 end

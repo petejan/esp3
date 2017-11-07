@@ -9,15 +9,19 @@ end
 
 i=0;
 line=fgetl(fid);
+date=[];
+temp=[];
+pressure=[];
+depth=[];
 while line~=-1
-    
-    data = sscanf(line, '%i/%i/%i %i:%i:%i %f %f %f ');
+
+    data = textscan(line, '%4d/%2d/%2d %2d:%2d:%2d %f %f %f ');
     if length(data)==9
         i=i+1;
-        date(i)=datenum(data(1),data(2),data(3),data(4),data(5),data(6));
-        temp(i)=data(7);
-        pressure(i)=data(8);
-        depth(i)=data(9);
+        date(i)=datenum(double(data{1}),double(data{2}),double(data{3}),double(data{4}),double(data{5}),double(data{6}));
+        temp(i)=data{7};
+        pressure(i)=data{8};
+        depth(i)=data{9};
     end
    line=fgetl(fid);
 end

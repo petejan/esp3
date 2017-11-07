@@ -53,6 +53,10 @@ clear_lines(axes_panel_comp.main_axes);
 
 [dr,dp]=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
 
+if new
+   curr_disp.R_disp=get(axes_panel_comp.main_axes,'YLim');
+end
+
 str_subsampling=sprintf('Disp. SubSampling: [%.0fx%.0f]',dp,dr);
 info_panel_comp=getappdata(main_figure,'Info_panel');
 

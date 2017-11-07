@@ -52,6 +52,7 @@ for ifi=1:length(ftype)
                     end
                     layer.add_lines(line);
                 end
+               update_display(main_figure,1);
             case 'data'
                 if isempty(layer)
                     continue;
@@ -79,12 +80,12 @@ for ifi=1:length(ftype)
                     for iline=1:length(idx_line)
                         line=import_line(files{ifi}{idx_line(iline)});
                         layer.add_lines(line);
-                    end
-                    
+                    end                    
                 end
                 
-                
+                update_display(main_figure,1);
         end
+        
     catch
         loadEcho(main_figure);
         warning('Could not load file(s)');

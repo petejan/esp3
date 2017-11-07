@@ -19,6 +19,8 @@ if (exist(fileN,'file')==2)
             line=create_line_from_seabird(fileN);
         case '.log'
             line=create_line_from_SupervisorLog(fileN);
+        case {'.xls' '.xlsx' '.csv'}
+            line=create_line_from_xls(fileN);
     end
 else
     line=[];

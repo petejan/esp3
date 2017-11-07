@@ -270,7 +270,7 @@ try
             end
             
             idx_fig=find(strcmp({hfigs(:).Tag},sprintf('attitude%.0f',layer.ID_num)));
-            t1=(t_n-Time(1))*24*60*60;
+            t1=t_n;
             for iu=idx_fig
                 if isvalid(hfigs(iu))
                     hAllAxes = findobj(hfigs(iu),'type','axes');

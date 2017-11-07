@@ -97,6 +97,8 @@ setappdata(main_figure,'Curr_disp',curr_disp);
 
 update_display(main_figure,flag);
 waitfor(curr_disp,'UIupdate',0)
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+axes_panel_comp.axes_panel.Parent.SelectedTab=axes_panel_comp.axes_panel;
 
 enable_listeners(main_figure);
 

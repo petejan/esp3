@@ -62,7 +62,7 @@ pitch=obj.Pitch;
 roll=obj.Roll;
 heave=obj.Heave;
 yaw=obj.Yaw;
-time=(obj.Time-obj.Time(1))*24*60*60;
+time=obj.Time;
 
 h_fig=new_echo_figure(parenth,'Name','Attitude','Tag','attitude');
 if ~isempty(roll)
@@ -115,5 +115,10 @@ else
 end
 
 linkaxes([ax axh axy],'x');
+
+xlim(ax,[time(2) time(end)]);
+xt=get(ax,'XTick');
+xt_n=datestr(xt,'HH:MM:SS');
+set([ax axh axy],'XtickLabels',xt_n,'XtickLabelRotation',90);
 
 end

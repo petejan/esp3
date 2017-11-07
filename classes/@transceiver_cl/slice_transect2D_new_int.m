@@ -15,6 +15,8 @@ addParameter(p,'Motion_correction',0,@isnumeric);
 addParameter(p,'RegInt',0,@isnumeric);
 addParameter(p,'Shadow_zone',0,@isnumeric);
 addParameter(p,'Shadow_zone_height',10,@isnumeric);
+addParameter(p,'DepthMin',0,@isnumeric);
+addParameter(p,'DepthMax',Inf,@isnumeric);
 
 parse(p,trans_obj,varargin{:});
 
@@ -64,11 +66,13 @@ reg_wc_bot=trans_obj.create_WC_region(...
     'Cell_h_unit','meters');
 
 
-output_surf=trans_obj.integrate_region_v2(reg_wc_surf,'horiExtend',[st et],'idx_regs',idx_reg_surf,'select_reg','selected','intersect_only',1,'denoised'...
+output_surf=trans_obj.integrate_region_v2(reg_wc_surf,'vertExtend',[p.Results.DepthMin p.Results.DepthMax],...
+    'horiExtend',[st et],'idx_regs',idx_reg_surf,'select_reg','selected','intersect_only',1,'denoised'...
     ,p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1);
 
 if ~isempty(idx_reg_bot)
-    output_bot=trans_obj.integrate_region_v2(reg_wc_bot,'horiExtend',[st et],'idx_regs',idx_reg_bot,'select_reg','selected','intersect_only',1,'denoised',...
+    output_bot=trans_obj.integrate_region_v2(reg_wc_bot,'vertExtend',[p.Results.DepthMin p.Results.DepthMax],...
+        'horiExtend',[st et],'idx_regs',idx_reg_bot,'select_reg','selected','intersect_only',1,'denoised',...
         p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1);
 else
     output_bot=[];
