@@ -16,6 +16,6 @@ switch curr_disp.Xaxes
 end
 
 range=trans_obj.get_transceiver_range();
-curr_disp.Grid_y=10^(floor(log10(range(end)-range(1))))/2;
+curr_disp.Grid_y=10^(floor(log10(range(end)-range(1))))/5;
 
 end

@@ -40,27 +40,33 @@ switch curr_disp.Xaxes
     otherwise
         dx=curr_disp.Grid_x;
 end
-dxmin=4;
-dymin=4 ;
+
+% idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
+% idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
+
+%set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on');
+
+dxmin=2;
+dymin=2 ;
 dx_min=dx/dxmin;
 dy_min=curr_disp.Grid_y/dymin;
 
 idx_minor_xticks=find((diff(rem(xdata_grid,dx_min))<0))+1;
 idx_minor_yticks=find((diff(rem(ydata_grid,dy_min))<0))+1;
-
-idx_xticks=idx_minor_xticks(1:dxmin:end);
-idx_yticks=idx_minor_yticks(1:dymin:end);
-
-idx_minor_xticks(1:dxmin:end)=[];
-idx_minor_yticks(1:dymin:end)=[];
-
+% 
+idx_xticks=idx_minor_xticks(dxmin:dxmin:end);
+idx_yticks=idx_minor_yticks(dymin:dymin:end);
+% 
+% idx_minor_xticks=setdiff(idx_minor_xticks,idx_xticks);
+% idx_minor_yticks=setdiff(idx_minor_yticks,idx_yticks);
+%
 axes_panel_comp.main_axes.XTick=xdata(idx_xticks);
 axes_panel_comp.main_axes.YTick=ydata(idx_yticks);
-
+ 
 axes_panel_comp.main_axes.XAxis.MinorTickValues=xdata(idx_minor_xticks);
 axes_panel_comp.main_axes.YAxis.MinorTickValues=ydata(idx_minor_yticks);
 
-set(axes_panel_comp.main_axes,'Xgrid','on','Ygrid','on');
+set(axes_panel_comp.main_axes,'Xgrid','on','Ygrid','on','XAxisLocation','top');
 
 set(axes_panel_comp.vaxes,'YTick',ydata(idx_yticks));
 set(axes_panel_comp.haxes,'XTick',xdata(idx_xticks));

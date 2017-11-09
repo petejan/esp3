@@ -222,6 +222,7 @@ try
             curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
         case 'f'
             if length(layer.Frequencies)>1
+                curr_disp.ChannelID=layer.ChannelID(nanmin(rem(idx_freq,length(layer.ChannelID))+1,length(layer.ChannelID)));
                 curr_disp.Freq=layer.Frequencies(nanmin(rem(idx_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
             end
         case 'e'

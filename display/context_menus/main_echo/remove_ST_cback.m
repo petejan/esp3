@@ -6,7 +6,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 trans_obj.rm_ST();
 trans_obj.Data.remove_sub_data('singletarget');
-
+curr_disp.ChannelID=layer.ChannelID{idx_freq};
 curr_disp.Freq=curr_disp.Freq;
 
 end

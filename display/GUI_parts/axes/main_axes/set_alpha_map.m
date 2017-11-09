@@ -33,6 +33,7 @@ end
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 if isempty(trans_obj)
+    curr_disp.ChannelID=layer.ChannelID(1);
     curr_disp.Freq=layer.Frequencies(1);
 	[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 end

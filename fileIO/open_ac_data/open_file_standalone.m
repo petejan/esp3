@@ -62,7 +62,7 @@ parse(p,Filename,ftype,varargin{:});
         case 'asl'
             
             new_layers=open_asl_files(Filename,...
-                'PathToMemmap',p.Results.PathToMemmap,'p.Results.load_bar_comp',p.Results.load_bar_comp);            
+                'PathToMemmap',p.Results.PathToMemmap,'load_bar_comp',p.Results.load_bar_comp);            
             multi_lay_mode=0;
             
         case 'dfile'
@@ -73,7 +73,7 @@ parse(p,Filename,ftype,varargin{:});
                         'PathToMemmap',p.Results.PathToMemmap,'CVSCheck',p.Results.CVSCheck,'CVSroot',p.Results.CVSroot,'SvCorr',p.Results.SvCorr);
                 case 0
                     new_layers=open_dfile(Filename,'CVSCheck',p.Results.CVSCheck,'CVSroot',p.Results.CVSroot,...
-                        'PathToMemmap',p.Results.PathToMemmap,'p.Results.load_bar_comp',p.Results.load_bar_comp,'EsOffset',p.Results.EsOffset);
+                        'PathToMemmap',p.Results.PathToMemmap,'load_bar_comp',p.Results.load_bar_comp,'EsOffset',p.Results.EsOffset);
             end
             multi_lay_mode=0;
             

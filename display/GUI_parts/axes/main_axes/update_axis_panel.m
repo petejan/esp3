@@ -29,8 +29,9 @@ end
 
 if isempty(trans_obj)
     idx_freq=1;
-    curr_disp.Freq=layer.Frequencies(idx_freq);
     curr_disp.ChannelID=layer.ChannelID{idx_freq};
+    curr_disp.Freq=layer.Frequencies(idx_freq);
+    
     return;
 end
 

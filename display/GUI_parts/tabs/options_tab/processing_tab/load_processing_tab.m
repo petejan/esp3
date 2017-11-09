@@ -276,9 +276,10 @@ processing_tab_comp=getappdata(main_figure,'Processing_tab');
 
 freq_vec=get(processing_tab_comp.tog_freq,'string');
 idx_freq=get(processing_tab_comp.tog_freq,'value');
+layer=getappdata(main_figure,'Layer');
 
 freq=str2double(freq_vec(idx_freq,:));
-
+curr_disp.ChannelID=layer.ChannelID{idx_freq};
 curr_disp.Freq=freq;
 if ~isempty(process_list)
     [~,~,found]=find_process_algo(process_list,freq,'Denoise');

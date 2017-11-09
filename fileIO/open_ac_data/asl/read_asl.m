@@ -186,6 +186,7 @@ for i_cell=1:length(Filename_cell)
         
         
         config_obj=config_cl();
+        config_obj.ChannelID=num2str(nanmean(data.freq(ic,:)));
         params_obj=params_cl(nb_pings);
         envdata=env_data_cl('SoundSpeed',1500);
         config_obj.EthernetAddress='';

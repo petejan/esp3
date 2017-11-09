@@ -2,7 +2,7 @@ function Sv_freq_response_func(main_figure,idx_r,idx_pings)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 range=trans_obj.get_transceiver_range();
 
 r_min=nanmin(range(idx_r));

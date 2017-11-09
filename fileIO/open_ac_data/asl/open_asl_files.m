@@ -103,48 +103,6 @@ end
 
 new_layers=read_asl(Filename_out,...
     'PathToMemmap',p.Results.PathToMemmap,'calParms',calParms,'load_bar_comp',p.Results.load_bar_comp);
-% 
-% for i=1:length(new_layers)
-%     new_layers(i).load_bot_regs();
-% end
-% 
-% new_layers.load_echo_logbook_db();
-% 
-% 
-% max_load_days=7;
-% i_cell=1;
-% new_layers_sorted{i_cell}=[];
-% date_ori=dates_out(1);
-% 
-% for i_file=1:length(dates_out)
-%     if i_file>1
-%         if dates_out(i_file)-dates_out(i_file-1)>=1
-%             i_cell=i_cell+1;
-%             new_layers_sorted{i_cell}= new_layers(i_file);
-%             date_ori=dates_out(i_file);
-%             continue;
-%         end
-%     end
-%     
-%     if dates_out(i_file)-date_ori<=max_load_days
-%         new_layers_sorted{i_cell}=[new_layers_sorted{i_cell} new_layers(i_file)];
-%     else
-%         i_cell=i_cell+1;
-%         new_layers_sorted{i_cell}= new_layers(i_file);
-%         date_ori=dates_out(i_file);
-%     end
-%     
-% end
-% 
-% new_layers=[];
-% 
-% for icell=1:length(new_layers_sorted)
-%     new_layers_sorted_tmp=new_layers_sorted{icell}.sort_per_survey_data();
-%     for icell_tmp=1:length(new_layers_sorted_tmp)
-%         new_layers=[layers_out shuffle_layers(new_layers_sorted_tmp{icell_tmp},'multi_layer',0)];
-%     end
-% end
-
 
 
 end
