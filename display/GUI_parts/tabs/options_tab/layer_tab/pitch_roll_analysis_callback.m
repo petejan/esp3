@@ -66,9 +66,9 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
         
 
         layer_curr=layers(idx);
-        idx_freq=find_freq_idx(layer_curr,curr_disp.Freq);
+        [trans_obj,idx_freq]=layer.get_trans(curr_disp);
  
-        bad_ping_pc(i)=layer_curr.Transceivers(idx_freq).get_badtrans_perc();
+        bad_ping_pc(i)=trans_obj.get_badtrans_perc();
         
         [pitch_av(i),pitch_std(i),pitch_grad_av(i),roll_av(i),roll_std(i),roll_grad_av(i)]=layer_curr.produce_pitch_roll_analysis();
         

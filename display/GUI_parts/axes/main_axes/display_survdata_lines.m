@@ -4,16 +4,16 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 ax=axes_panel_comp.main_axes;
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
 
 u=findobj(ax,'Tag','surv_id');
 delete(u);
 
-Time=layer.Transceivers(idx_freq).Time;
+Time=trans_obj.Time;
 idx_start_time=[];
 idx_end_time=[];
 

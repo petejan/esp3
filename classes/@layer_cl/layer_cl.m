@@ -3,6 +3,7 @@ classdef layer_cl < handle
     properties
         ID_num=0;
         Filename={''};
+        ChannelID={''};
         Filetype='';
         Transceivers=transceiver_cl.empty();
         OriginCrest='';
@@ -35,6 +36,7 @@ classdef layer_cl < handle
             addParameter(p,'Transceivers',transceiver_cl.empty(),check_transceiver_class);
             addParameter(p,'Lines',[],check_line_class);
             addParameter(p,'Frequencies',[],@isnumeric);
+            addParameter(p,'ChannelID',{},@iscell);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
             addParameter(p,'Curves',[],check_curve_cl);
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
@@ -62,8 +64,10 @@ classdef layer_cl < handle
             
             
             obj.Frequencies=zeros(1,length(obj.Transceivers));
+            obj.ChannelID=cell(1,length(obj.Transceivers));
             for ifr=1:length(obj.Transceivers)
-                obj.Frequencies(ifr)=obj.Transceivers(ifr).Config.Frequency(1);
+                obj.Frequencies(ifr)=obj.Transceivers(ifr).Config.Frequency;
+                obj.ChannelID{ifr}=obj.Transceivers(ifr).Config.ChannelID;
             end 
         end
         
@@ -83,6 +87,40 @@ classdef layer_cl < handle
             end
         end
         
+        function rm_trans(layer,cid)
+            if ~iscell(cid)
+                cid={cid};
+            end
+            idx_rem=[];
+            for kk=1:length(layer.Transceivers)
+                if ismember(layer.ChannelID{kk},cid)||isempty(cid)
+                    for uu=1:length(layer.Transceivers(kk).Data.SubData)
+                        layer.Transceivers(kk).Data.remove_sub_data();
+                    end
+                    idx_rem=union(idx_rem.kk);
+                end
+            end
+            layer.Transceivers(idx_rem)=[];
+            layer.Frequencies(idx_rem)=[];
+            layer.ChannelID(idx_rem)=[];
+        end
+        
+        function add_trans(layer,trans_obj)
+            layer.rm_trans(trans_obj.Config.ChannelID);
+            freq=trans_obj.Config.Frequency;
+            cid=trans_obj.Config.ChannelID;
+
+            new_freq=[layer.Frequencies,freq];
+            new_cid=[layer.ChannelID cid];
+            layer.Transceivers=[layer.Transceivers trans_obj];
+            
+            [~,idx_order]=sort(new_freq);            
+            layer.Transceivers=layer.Transceivers(idx_order);
+            layer.Frequencies=new_freq(idx_order);
+            layer.ChannelID=new_cid(idx_order);
+        end
+        
+        
         function line_obj=get_first_line(layer_obj)
             if ~isempty(layer_obj.Lines)
                 line_obj=layer_obj.Lines(1);
@@ -91,16 +129,44 @@ classdef layer_cl < handle
             end
         end
         
-        function trans_obj=get_trans(layer,freq)
-            [idx_freq,found]=layer.find_freq_idx(freq);
-            
-            if found==1
-                trans_obj=layer.Transceivers(idx_freq);
-            else
-                trans_obj=[];
+        function [trans_obj,idx_cid]=get_trans(layer,curr_disp)
+            trans_obj=[];
+            idx_cid=[];
+            switch class(curr_disp)
+                case {'struct' 'curr_state_disp_cl'}
+                    [idx_cid,found]=layer.find_cid_idx(curr_disp.ChannelID);
+                    
+                    if found==1
+                        trans_obj=layer.Transceivers(idx_cid);
+                    else
+                        [idx_cid,found]=layer.find_freq_idx(curr_disp.Freq);
+                        
+                        if found==1
+                            trans_obj=layer.Transceivers(idx_cid);
+                        else
+                            trans_obj=[];
+                            idx_cid=[];
+                        end
+                    end
+                case 'char'
+                    [idx_cid,found]=layer.find_cid_idx(curr_disp);
+                    if found==1
+                        trans_obj=layer.Transceivers(idx_cid);
+                    else
+                        trans_obj=[];
+                        idx_cid=[];
+                    end
+                case {'double' 'single' 'int16' 'int8'}
+                    [idx_cid,found]=layer.find_freq_idx(curr_disp);                  
+                    if found==1
+                        trans_obj=layer.Transceivers(idx_cid);
+                    else
+                        trans_obj=[];
+                        idx_cid=[];
+                    end
             end
         end
-        
+            
         
         function fold_lay=get_folder(layer)
             [folders,~,~]=cellfun(@fileparts,layer.Filename,'UniformOutput',0);

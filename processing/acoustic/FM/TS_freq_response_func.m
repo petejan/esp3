@@ -8,8 +8,8 @@ load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).get_transceiver_range();
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+range=trans_obj.get_transceiver_range();
 
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));

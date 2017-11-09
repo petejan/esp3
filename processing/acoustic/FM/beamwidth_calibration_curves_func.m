@@ -9,7 +9,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 ah=axes_panel_comp.main_axes;
 

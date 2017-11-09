@@ -4,13 +4,13 @@ layer=getappdata(main_figure,'Layer');
 lines_tab_comp=getappdata(main_figure,'Lines_tab');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-curr_time=layer.Transceivers(idx_freq).Time;
-curr_pings=layer.Transceivers(idx_freq).get_transceiver_pings();
+curr_time=trans_obj.Time;
+curr_pings=trans_obj.get_transceiver_pings();
 
-curr_range=layer.Transceivers(idx_freq).get_transceiver_range();
-curr_dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+curr_range=trans_obj.get_transceiver_range();
+curr_dist=trans_obj.GPSDataPing.Dist;
 
 main_axes=axes_panel_comp.main_axes;
 

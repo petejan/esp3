@@ -108,26 +108,26 @@ switch class(Ext_obj)
                 obj.SurveyName{i}='';
             end
             
-            [idx_freq,found]=find_freq_idx(layers(i),p.Results.Freq);
+            [trans_obj,idx_freq]=layers(i).get_trans(p.Results.Freq);
             
-            if found==0
+            if isempty(trans_obj)
                 continue;
             end
             
             if p.Results.SliceSize>0
-                idx_reg=1:length(layers(i).Transceivers(idx_freq).Regions);
+                idx_reg=1:length(trans_obj.Regions);
                 idx_bad=zeros(1,length(idx_reg));
-                IDs=layers(i).Transceivers(idx_freq).get_reg_IDs();
+                IDs=trans_obj.get_reg_IDs();
                 for ireg=1:length(idx_reg)
-                    if strcmpi(layers(i).Transceivers(idx_freq).Regions(ireg).Type,'Bad Data')
+                    if strcmpi(trans_obj.Regions(ireg).Type,'Bad Data')
                         idx_bad(ireg)=1;
                     end
                 end
                 idx_reg(idx_bad==1)=[];
                 IDs(idx_bad==1)=[];
-                reg=layers(i).Transceivers(idx_freq).get_reg_spec(idx_reg);
-                output=layers(i).Transceivers(idx_freq).slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
-                %output2D=layers(i).Transceivers(idx_freq).slice_transect2D('regIDs',IDs,'cell_w',p.Results.SliceSize);
+                reg=trans_obj.get_reg_spec(idx_reg);
+                output=trans_obj.slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
+                %output2D=trans_obj.slice_transect2D('regIDs',IDs,'cell_w',p.Results.SliceSize);
                 obj.SliceLat{i}=1/2*(output.slice_lat_s+output.slice_lat_e);
                 obj.SliceLong{i}=1/2*(output.slice_lon_s+output.slice_lon_e);
                 obj.SliceAbscf{i}=output.slice_abscf;

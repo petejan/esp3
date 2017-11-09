@@ -2,9 +2,9 @@ function noise_analysis_callback(~,~,select_plot,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-trans_obj=layer.Transceivers(idx_freq);
+trans_obj=trans_obj;
 
 switch class(select_plot)
     case 'region_cl'

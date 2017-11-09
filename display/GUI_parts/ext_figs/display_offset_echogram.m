@@ -10,7 +10,7 @@ end
 
 layers_Str=list_layers(layer,'nb_char',80);
 
-[ping_new_mat,range_new_mat,data_new]=layer.Transceivers(idx_freq).apply_line_depth(curr_disp.Fieldname);
+[ping_new_mat,range_new_mat,data_new]=trans_obj.apply_line_depth(curr_disp.Fieldname);
 if isempty(ping_new_mat)
     return;
 end

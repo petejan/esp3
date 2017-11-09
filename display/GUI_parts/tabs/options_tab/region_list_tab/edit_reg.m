@@ -49,8 +49,8 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 regions=trans_obj.Regions;
 [idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(1,1),10});
 
@@ -82,8 +82,8 @@ else
 end
 active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
 active_reg.Cell_h_unit=src.Data{evt.Indices(1,1),9};
-layer.Transceivers(idx_freq).rm_region_id(active_reg.Unique_ID);
-layer.Transceivers(idx_freq).add_region(active_reg);
+trans_obj.rm_region_id(active_reg.Unique_ID);
+trans_obj.add_region(active_reg);
 
 setappdata(main_figure,'Layer',layer);
 

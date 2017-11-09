@@ -45,7 +45,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans=layer.get_trans(curr_disp.Freq);
+trans=layer.get_trans(curr_disp);
 
 
 xdata_tot=trans.get_transceiver_pings();       

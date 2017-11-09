@@ -40,7 +40,7 @@ function shift_bottom_callback(~,~,select_plot,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 switch class(select_plot)
     case 'region_cl'
@@ -57,8 +57,8 @@ if isempty(answer)||isnan(str2double(answer{1}))
     return;
 end
 
-old_bot=layer.Transceivers(idx_freq).Bottom;
-layer.Transceivers(idx_freq).shift_bottom(str2double(answer{1}),idx_pings);
+old_bot=trans_obj.Bottom;
+trans_obj.shift_bottom(str2double(answer{1}),idx_pings);
 
 
 curr_disp.Bot_changed_flag=1; 
@@ -67,12 +67,12 @@ setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
 
 
-bot=layer.Transceivers(idx_freq).Bottom;
+bot=trans_obj.Bottom;
 curr_disp.Bot_changed_flag=1;
 setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
 
-add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
+add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');

@@ -8,7 +8,7 @@ if isempty(idx_freq)
     return;
 end
 
-[idx_field,~]=find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+[idx_field,~]=find_field_idx(trans_obj.Data,curr_disp.Fieldname);
 if isempty(idx_field)
     return;
 end

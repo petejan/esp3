@@ -66,7 +66,5 @@ switch echo_ax.Tag
         uistack([zoom_area;bt_im;text_disp;lines;select_area;regions;regions_cont;echo_im],'top');
 end
 
-
-
 echo_ax.Layer='top';
 end

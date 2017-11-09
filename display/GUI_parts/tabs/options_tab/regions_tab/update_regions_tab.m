@@ -2,10 +2,10 @@ function update_regions_tab(main_figure)
 region_tab_comp=getappdata(main_figure,'Region_tab');
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-if ~isempty(layer.Transceivers(idx_freq).GPSDataPing)
-    dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+if ~isempty(trans_obj.GPSDataPing)
+    dist=trans_obj.GPSDataPing.Dist;
 else
     dist=0;
 end
@@ -19,10 +19,10 @@ end
 
 set(region_tab_comp.cell_w_unit,'string',w_units);
 
-%idx_reg=layer.Transceivers(idx_freq).find_regions_Unique_ID(curr_disp.Active_reg_ID);
+%idx_reg=trans_obj.find_regions_Unique_ID(curr_disp.Active_reg_ID);
 
 % if ~isempty(idx_reg)
-%     reg_curr=layer.Transceivers(idx_freq).Regions(idx_reg);
+%     reg_curr=trans_obj.Regions(idx_reg);
 % 
 %     data_types=get(region_tab_comp.data_type,'string');
 %     data_type_idx=find(strcmp(reg_curr.Type,data_types));

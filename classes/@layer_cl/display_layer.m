@@ -42,22 +42,21 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function [dr,dp]=display_layer(layer,freq,fieldname,ax,main_echo,x,y,new)
+function [dr,dp]=display_layer(layer,curr_disp,fieldname,ax,main_echo,x,y,new)
 
-[idx_freq,found]=layer.find_freq_idx(freq);
-if found==0
+
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+if isempty(trans_obj)
     return;
 end
 
 screensize = getpixelposition(ax);
 
-% idx_pings_surveydata=layer.get_idx_pings_survey_data(freq);
-% xdata=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings_surveydata);
-%    
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+ 
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
 
-% ydata_r=layer.Transceivers(idx_freq).get_transceiver_range();
+% ydata_r=trans_obj.get_transceiver_range();
 
 if new==0
     [~,idx_ping_min]=nanmin(abs(xdata-x(1)));
@@ -86,17 +85,17 @@ dr=nanmax(floor(nb_samples/outputSize(2))-1,1);
 dp=nanmax(floor(nb_pings/outputSize(1))-1,1);
 
 % profile on;
-data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
-%data=layer.Transceivers(idx_freq).Data.get_datamat(fieldname);
+data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+%data=trans_obj.Data.get_datamat(fieldname);
 % profile off;
 % profile viewer;
 % % 
 
 
 if isempty(data)
-    fieldname= layer.Transceivers(idx_freq).Data.Fieldname{1};
-    %data=layer.Transceivers(idx_freq).Data.get_datamat(fieldname);
-    data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+    fieldname= trans_obj.Data.Fieldname{1};
+    %data=trans_obj.Data.get_datamat(fieldname);
+    data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
 end
 
 if isempty(data)

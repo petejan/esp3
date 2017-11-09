@@ -75,11 +75,11 @@ switch lower(curr_disp.Cmap)
 end
 
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
-bottom_idx=layer.Transceivers(idx_freq).get_bottom_idx();
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
+bottom_idx=trans_obj.get_bottom_idx();
 
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
@@ -163,8 +163,8 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
 
         switch mode
             case 'horizontal'
-                [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-                x=layer.Transceivers(idx_freq).get_transceiver_pings();
+                [trans_obj,idx_freq]=layer.get_trans(curr_disp);
+                x=trans_obj.get_transceiver_pings();
                 x_box=([x(1) x(end)  x(end) x(1) x(1)]);
             case 'vertical'
             otherwise

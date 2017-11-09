@@ -6,7 +6,7 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 Slice_w=curr_disp.Grid_x;
 Slice_w_units=curr_disp.Xaxes;

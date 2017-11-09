@@ -7,13 +7,11 @@ end
     
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
-
-if found==0
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+if isempty(trans_obj)
     return;
 end
 
-trans_obj=layer.Transceivers(idx_freq);
 trans_obj.create_track_regs('Type',type);
 
 display_tracks(main_figure);

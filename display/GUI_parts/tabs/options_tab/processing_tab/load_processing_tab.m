@@ -217,7 +217,7 @@ set_alpha_map(main_figure);
 
 display_regions(main_figure,'both');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer_curr.get_trans(curr_disp.Freq);
+trans_obj=layer_curr.get_trans(curr_disp);
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 order_stacks_fig(main_figure);
@@ -231,6 +231,7 @@ process_list=getappdata(main_figure,'Process');
 processing_tab_comp=getappdata(main_figure,'Processing_tab');
 idx_freq=get(processing_tab_comp.tog_freq, 'value');
 trans_obj=layer.Transceivers(idx_freq);
+
 if isempty(trans_obj.Algo)
     return;
 end

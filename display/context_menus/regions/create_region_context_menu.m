@@ -42,7 +42,7 @@ function create_region_context_menu(reg_plot,main_figure,ID)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 switch class(ID)
     case 'matlab.graphics.primitive.Patch'
@@ -123,10 +123,8 @@ end
 function freq_diff_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=layer.find_freq_idx(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-
-trans_obj=layer.get_trans(curr_disp.Freq);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 
 layer.copy_region_across(idx_freq,reg_curr,[]);
@@ -139,7 +137,7 @@ uniquev=generate_couples(n);
 output_reg=cell(1,n);
 
 for i=1:n
-    trans=layer.get_trans(frequencies(i));
+    trans=layer.Transceivers(i);
     reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);
     output_reg{i}=trans.integrate_region_v2(reg,'keep_bottom',1);
 end
@@ -183,7 +181,7 @@ function export_region_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 [path_tmp,~,~]=fileparts(layer.Filename{1});
 layers_Str=list_layers(layer,'nb_char',80);
@@ -211,9 +209,9 @@ end
 function copy_region_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=layer.find_freq_idx(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 layer.copy_region_across(idx_freq,reg_curr,[]);
 
@@ -222,7 +220,7 @@ end
 function reg_integrated_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 regCellInt=trans_obj.integrate_region_v2(reg_curr);
 if isempty(regCellInt)
@@ -241,7 +239,7 @@ function disp_hist_region_callback(~,~,select_plot,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans=layer.get_trans(curr_disp.Freq);
+trans=layer.get_trans(curr_disp);
 switch class(select_plot)
     case 'region_cl'
         reg_curr=select_plot;

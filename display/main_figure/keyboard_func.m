@@ -49,8 +49,8 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 if ~isempty(layer)
-    [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-    trans_obj=layer.Transceivers(idx_freq);
+    [trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
     number_lay=trans_obj.get_transceiver_pings();
     samples=trans_obj.get_transceiver_samples();
     

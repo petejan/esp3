@@ -16,7 +16,7 @@ if isa(mini_axes_comp.mini_ax.Parent,'matlab.ui.Figure')
 end
 
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 x_lim=get(axes_panel_comp.main_axes,'xlim');
 y_lim=get(axes_panel_comp.main_axes,'ylim');
 
@@ -24,8 +24,8 @@ v1 = [x_lim(1) y_lim(1);x_lim(2) y_lim(1);x_lim(2) y_lim(2);x_lim(1) y_lim(2)];
 f1=[1 2 3 4];
 
 if new>0
-    pings=layer.Transceivers(idx_freq).get_transceiver_pings();
-    samples=layer.Transceivers(idx_freq).get_transceiver_samples();
+    pings=trans_obj.get_transceiver_pings();
+    samples=trans_obj.get_transceiver_samples();
     
     nb_pings=length(pings);
     nb_samples=length(samples);
@@ -35,7 +35,7 @@ if new>0
     
     idx_r_disp=unique(round(linspace(1,nb_samples,size_mini(2))));
     idx_p_disp=unique(round(linspace(1,nb_pings,size_mini(1))));
-    data=layer.Transceivers(idx_freq).Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);
+    data=trans_obj.Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);
     
     switch lower(deblank(curr_disp.Fieldname))
         case {'y','y_imag','y_real'}

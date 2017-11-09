@@ -9,15 +9,15 @@ if isempty(layer)
     return;
 end
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 set(calibration_tab_comp.calibration_txt,'String',sprintf('Current Frequency: %.0fkHz',curr_disp.Freq/1e3));
 
 set(calibration_tab_comp.soundspeed,'String',num2str(layer.EnvData.SoundSpeed,'%.0f'));
        
 if ~strcmp(layer.Filetype,'CREST')
-    if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
-        cal_cw=get_cal(layer.Transceivers(idx_freq));
+    if strcmp(trans_obj.Mode,'CW')
+        cal_cw=get_cal(trans_obj);
        
         set(calibration_tab_comp.G0,'string',num2str(cal_cw.G0,'%.2f'));
         set(calibration_tab_comp.SACORRECT,'string',num2str(cal_cw.SACORRECT,'%.2f'));
@@ -26,7 +26,7 @@ if ~strcmp(layer.Filetype,'CREST')
 
     set(calibration_tab_comp.string_cal,'string',...
         sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
-        layer.EnvData.SoundSpeed,layer.Transceivers(idx_freq).Params.Absorption(1)*1e3,layer.EnvData.Salinity,layer.EnvData.Temperature));
+        layer.EnvData.SoundSpeed,trans_obj.Params.Absorption(1)*1e3,layer.EnvData.Salinity,layer.EnvData.Temperature));
 
 end
 

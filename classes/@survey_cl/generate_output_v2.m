@@ -101,8 +101,8 @@ for isn=1:length(snaps)
     
     for i_test_bt=idx_lay
         layer_obj_tr=layers(output.Layer_idx(i_test_bt));
-        idx_freq=layer_obj_tr.find_freq_idx(surv_in_obj.Options.Frequency);
-        [perc_temp,nb_ping_temp]=layer_obj_tr.Transceivers(idx_freq).get_badtrans_perc();
+        trans_obj=layer_obj_tr.get_trans(surv_in_obj.Options.Frequency);
+        [perc_temp,nb_ping_temp]=trans_obj.get_badtrans_perc();
         nb_bad_trans=nb_bad_trans+nb_ping_temp*perc_temp/100;
         nb_ping_tot=nb_ping_tot+nb_ping_temp;
     end
@@ -134,10 +134,10 @@ for isn=1:length(snaps)
     
     for i=1:length(idx_lay)
         layer_obj_tr=layers(output.Layer_idx(idx_lay(i)));
-        idx_freq=find_freq_idx(layer_obj_tr,surv_in_obj.Options.Frequency);
-        tag_add=layer_obj_tr.Transceivers(idx_freq).Bottom.Tag;
-        bot_depth_add=layer_obj_tr.Transceivers(idx_freq).get_bottom_depth();
-        gps_add=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
+        trans_obj=layer_obj_tr.get_trans(surv_in_obj.Options.Frequency);
+        tag_add=trans_obj.Bottom.Tag;
+        bot_depth_add=trans_obj.get_bottom_depth();
+        gps_add=trans_obj.GPSDataPing;
         
         if i>1
             gps_tot=concatenate_GPSData(gps_tot,gps_add);
@@ -179,13 +179,10 @@ for isn=1:length(snaps)
     for ilay=idx_lay
         ir=ir+1;
         layer_obj_tr=layers(output.Layer_idx(ilay));
-        idx_freq=layer_obj_tr.find_freq_idx(surv_in_obj.Options.Frequency);
-        gps=layer_obj_tr.Transceivers(idx_freq).GPSDataPing;
-        %bot=layer_obj_tr.Transceivers(idx_freq).Bottom;
+        trans_obj_tr=layer_obj_tr.get_trans(surv_in_obj.Options.Frequency);
+        gps=trans_obj_tr.GPSDataPing;
         gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
-        trans_obj_tr=layer_obj_tr.Transceivers(idx_freq);
-       
-        
+ 
         if isnan(good_bot_tot)
             depth=trans_obj_tr.get_transceiver_depth([],[]);
             good_bot_tot= nanmax(depth(:));

@@ -15,8 +15,8 @@ if isempty(layer)
     return;
 end
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz',curr_disp.Freq/1e3),'units','normalized','Position',[0.05 0.85 0.4 0.1],'BackgroundColor','White');
 
@@ -102,7 +102,7 @@ function update_values(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 new_sal=str2double(get(calibration_tab_comp.sal,'string'));
 if isnan(new_sal)||new_sal<0||new_sal>60
     new_sal=layer.EnvData.Salinity;
@@ -150,7 +150,7 @@ if get(calibration_tab_comp.att_over,'value')==0
 else
     alpha=str2double(get(calibration_tab_comp.att,'string'));
     if isnan(alpha)||alpha<0||alpha>200
-        alpha=layer.Transceivers(idx_freq).Params.Absorption(1);
+        alpha=trans_obj.Params.Absorption(1);
     end
     
 end
@@ -174,7 +174,7 @@ end
 function save_envdata_callback(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 
 new_sal=str2double(get(calibration_tab_comp.sal,'string'));
@@ -191,7 +191,7 @@ layer.apply_soundspeed(new_ss);
 
 new_abs=str2double(get(calibration_tab_comp.att,'string'));
 
-layer.Transceivers(idx_freq).apply_absorption(new_abs/1e3);
+trans_obj.apply_absorption(new_abs/1e3);
 
 set(calibration_tab_comp.string_cal,'string',sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
     new_ss,new_abs,new_sal,new_temp));
@@ -217,11 +217,11 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 
-if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
-    old_cal=layer.Transceivers(idx_freq).get_cal();
+if strcmp(trans_obj.Mode,'CW')
+    old_cal=trans_obj.get_cal();
     
     if ~isnan(str2double(get(calibration_tab_comp.G0,'string')))
         new_cal.G0=str2double(get(calibration_tab_comp.G0,'string'));
@@ -236,7 +236,7 @@ if strcmp(layer.Transceivers(idx_freq).Mode,'CW')
     end
     
     
-    layer.Transceivers(idx_freq).apply_cw_cal(new_cal);
+    trans_obj.apply_cw_cal(new_cal);
     update_calibration_tab(main_figure);
 end
 
@@ -245,30 +245,7 @@ loadEcho(main_figure);
 
 end
 
-% function apply_triangle_wave_corr_cback(~,~,main_figure)
-% curr_disp=getappdata(main_figure,'Curr_disp');
-% layer=getappdata(main_figure,'Layer');
-% calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
-%
-% i=find_freq_idx(layer,curr_disp.Freq);
-%
-% trans_obj=layer.Transceivers(i);
-%
-% esOffset=str2double(get(calibration_tab_comp.EsOffset,'String'));
-%
-% if isnan(esOffset)
-%     set(calibration_tab_comp.EsOffset,'String',num2str(trans_obj.Config.EsOffset,'%.2f'));
-%     return;
-% end
-%
-% if trans_obj.need_escorr()
-%     trans_obj.correctTriangleWave('EsOffset',esOffset);
-%     set(calibration_tab_comp.EsOffset,'String',num2str(trans_obj(i).Config.EsOffset,'%.2f'));
-%     trans_obj.computeSpSv(layer.EnvData);
-%     set(calibration_tab_comp.EsOffset,'String',num2str(trans_obj.Config.EsOffset,'%.2f'));
-% end
-%
-% end
+
 
 function save_CW_calibration(~,~,main_figure)
 apply_calibration([],[],main_figure);

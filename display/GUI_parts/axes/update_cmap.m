@@ -10,9 +10,9 @@ map_tab_comp=getappdata(main_figure,'Map_tab');
 
 set(axes_panel_comp.vaxes,'YColor',col_lab);
 set(axes_panel_comp.haxes,'XColor',col_lab);
-set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',col_grid);
+set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',col_grid,'MinorGridColor',col_grid);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
-set(mini_axes_comp.mini_ax,'Color',col_ax,'GridColor',col_grid);
+set(mini_axes_comp.mini_ax,'Color',col_ax,'GridColor',col_grid,'MinorGridColor',col_grid);
 set(mini_axes_comp.bottom_plot,'Color',col_bot);
 
 

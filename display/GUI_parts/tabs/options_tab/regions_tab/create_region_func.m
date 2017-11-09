@@ -46,7 +46,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 tag=get(region_tab_comp.tag,'string');
 

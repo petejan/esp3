@@ -40,15 +40,16 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 bottom_tab_v2_comp=getappdata(main_figure,'Bottom_tab_v2');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetectionV2');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
+[idx_algo,found]=find_algo_idx(trans_obj,'BottomDetectionV2');
 if found==0
     return
 end
 
-range=layer.Transceivers(idx_freq).get_transceiver_range();
+range=trans_obj.get_transceiver_range();
 
-algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
+algo_obj=trans_obj.Algo(idx_algo);
 algo_varin=algo_obj.Varargin;
 
 

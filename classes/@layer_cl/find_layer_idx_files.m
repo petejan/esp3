@@ -37,6 +37,7 @@ for ifi=1:length(filenames)
                 freq_bool=1;
                 for ifreq=1:length(p.Results.Frequencies)
                     [~,found_freq]=find_freq_idx(layers(idx_tmp),p.Results.Frequencies(ifreq));
+					
                     if found_freq==0
                         freq_bool=0;
                     end

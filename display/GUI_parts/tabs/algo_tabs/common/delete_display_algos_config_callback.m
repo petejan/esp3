@@ -7,7 +7,7 @@ if isempty(layer)
     return;
 end
 update_algos(main_figure);
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 algos=trans_obj.Algo;
 [idx_algo,found]=find_algo_idx(trans_obj,name);

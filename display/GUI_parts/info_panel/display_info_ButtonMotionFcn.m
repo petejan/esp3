@@ -10,8 +10,8 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 info_panel_comp=getappdata(main_figure,'Info_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans=trans_obj;
 Range=trans.get_transceiver_range();
 Bottom=trans.Bottom;
 Time=trans.Time;
@@ -167,15 +167,15 @@ try
                 val_str=sprintf('%s: %.2f dB',curr_disp.Type,cdata(idx_r_red,idx_ping_red));
         end
         
-        iFile=layer.Transceivers(idx_freq).Data.FileId(idx_ping);
+        iFile=trans_obj.Data.FileId(idx_ping);
         [~,file_curr,~]=fileparts(layer.Filename{iFile});
         
-        time_params=layer.Transceivers(idx_freq).Params.Time;
+        time_params=trans_obj.Params.Time;
         [~,idx_params]=min(abs(time_params-Time(idx_ping)));
         
-        summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz Power: %.0fW Pulse: %.3fms',file_curr,layer.Transceivers(idx_freq).Mode,curr_disp.Freq/1000,...
-            layer.Transceivers(idx_freq).Params.TransmitPower(idx_params),...
-            layer.Transceivers(idx_freq).Params.PulseLength(idx_params)*1e3);
+        summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz Power: %.0fW Pulse: %.3fms',file_curr,trans_obj.Mode,curr_disp.Freq/1000,...
+            trans_obj.Params.TransmitPower(idx_params),...
+            trans_obj.Params.PulseLength(idx_params)*1e3);
         
         
         set(info_panel_comp.i_str,'String',i_str);

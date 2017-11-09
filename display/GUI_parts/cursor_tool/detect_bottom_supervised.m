@@ -49,7 +49,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 context_menu=axes_panel_comp.bad_transmits.UIContextMenu;
 childs=findall(context_menu,'Type','uimenu');
 

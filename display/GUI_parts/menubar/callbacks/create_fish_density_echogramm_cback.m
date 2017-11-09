@@ -5,8 +5,8 @@ if isempty(layer)
     return;
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 display_tab_comp=getappdata(main_figure,'Display_tab');
 
 sv=trans_obj.Data.get_datamat('sv');

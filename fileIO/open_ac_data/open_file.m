@@ -218,7 +218,8 @@ for itype = 1:length(ftype_unique)
     % Grab filenames for this ftype
     Filename = Filename_tot(ic==itype);
     ftype = ftype_unique{itype};
-    
+    CVSCheck=0;
+    dfile=0;
     % Figure if the files requested to be open are part of a transect that
     % include other files not requested to be opened. This functionality is
     % not available for all types of files
@@ -244,7 +245,38 @@ for itype = 1:length(ftype_unique)
                 end
             end
             
-        case {'asl','fcv30','dfile'}
+        case {'asl','fcv30'}
+            
+        case 'dfile'
+             % Prompt user on opening raw or original and handle the answer
+            choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
+                'd-file/raw_file',...    % title bar
+                'd-file','raw file', ... % buttons
+                'd-file');               % default choice
+            switch choice
+                case 'raw file'
+                    dfile = 0;
+                case 'd-file'
+                    dfile = 1;
+            end
+            if isempty(choice)
+                continue;
+            end
+            
+            % Prompt user to load bottom and regions and handle the answer
+            choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
+                'Bottom/Region',... % title bar
+                'Yes','No', ...     % buttons
+                'No');              % default choice
+            switch choice
+                case 'Yes'
+                    CVSCheck = 1;
+                case 'No'
+                    CVSCheck = 0;
+            end
+            if isempty(choice)
+                CVSCheck = 0;
+            end
             
         otherwise
             for ifi=1:length(Filename)
@@ -253,34 +285,27 @@ for itype = 1:length(ftype_unique)
             continue;
             
     end
+    [new_layers,multi_lay_mode]=open_file_standalone(Filename,ftype,...
+        'PathToMemmap',app_path.data_temp,...
+        'load_bar_comp',load_bar_comp,...
+        'LoadEKbot',1,'CVSCheck',CVSCheck,...
+        'CVSroot',app_path.cvs_root,'dfile',dfile);
     
-    
+    if isempty(new_layers)
+        continue;
+    end
     % Open the files. Different behavior per type of file
     switch ftype
         
-        case 'fcv30'
-            new_layers=[];
-            for ifi = 1:length(Filename)
-                lays_tmp=open_FCV30_file(Filename{ifi},...
-                    'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
-                new_layers=[new_layers lays_tmp];
-            end
-            if isempty(new_layers)
-                continue;
-            end
-            multi_lay_mode=0;
+        case {'fcv30' 'dfile'}
+
             
-        case {'EK60','EK80'}
-            
-            new_layers=open_EK_file_stdalone(Filename,...
-                'PathToMemmap',app_path.data_temp,'LoadEKbot',1,'load_bar_comp',load_bar_comp);
-            if isempty(new_layers)
-                continue;
-            end
-            
+        case {'EK60','EK80','asl'}
             
             load_bar_comp.status_bar.setText('Loading Bottom and regions');
+            
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
+            
             for i=1:numel(new_layers)
                 set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
                 try
@@ -312,73 +337,7 @@ for itype = 1:length(ftype_unique)
             end
             
             multi_lay_mode=0;
-        case 'asl'
-            
-            new_layers=open_asl_files(Filename,...
-                'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
-            
-            if isempty(new_layers)
-                continue;
-            end
-            load_bar_comp.status_bar.setText('Loading Survey Metadata');
-            new_layers.load_echo_logbook_db();
-            
-            load_bar_comp.status_bar.setText('Loading Bottom and regions');
-            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',0);
-            
-            for i=1:length(new_layers)
-                set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(new_layers),'Value',i);
-                try
-                    new_layers(i).load_bot_regs();
-                catch err
-                    disp(err.message);
-                    fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
-                end
-            end
-            
-            multi_lay_mode=0;
-        case 'dfile'
-            
-            % Prompt user on opening raw or original and handle the answer
-            choice = questdlg('Do you want to open associated Raw File or original d-file?', ...
-                'd-file/raw_file',...    % title bar
-                'd-file','raw file', ... % buttons
-                'd-file');               % default choice
-            switch choice
-                case 'raw file'
-                    dfile = 0;
-                case 'd-file'
-                    dfile = 1;
-            end
-            if isempty(choice)
-                continue;
-            end
-            
-            % Prompt user to load bottom and regions and handle the answer
-            choice = questdlg('Do you want to load associated CVS Bottom and Region?', ...
-                'Bottom/Region',... % title bar
-                'Yes','No', ...     % buttons
-                'No');              % default choice
-            switch choice
-                case 'Yes'
-                    CVSCheck = 1;
-                case 'No'
-                    CVSCheck = 0;
-            end
-            if isempty(choice)
-                CVSCheck = 0;
-            end
-            
-            % Open the files in chosen format
-            switch dfile
-                case 1
-                    new_layers=read_crest(Filename,...
-                        'PathToMemmap',app_path.data_temp,'CVSCheck',CVSCheck,'CVSroot',app_path.cvs_root);
-                case 0
-                    new_layers=open_dfile(Filename,'CVSCheck',CVSCheck,'CVSroot',app_path.cvs_root,...
-                        'PathToMemmap',app_path.data_temp,'load_bar_comp',load_bar_comp);
-            end
-            multi_lay_mode=0;
+       
         case 'invalid'
             for ifi=1:length(Filename)
                 fprintf('Could not open %s\n',Filename{ifi});
@@ -388,8 +347,7 @@ for itype = 1:length(ftype_unique)
             for ifi=1:length(Filename)
                 fprintf('Unrecognized File type for Filename %s\n',Filename{ifi});
             end
-            continue;
-            
+            continue;         
     end
     
     

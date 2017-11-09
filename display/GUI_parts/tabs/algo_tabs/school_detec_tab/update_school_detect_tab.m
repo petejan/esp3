@@ -40,13 +40,13 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'SchoolDetection');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[idx_algo,found]=find_algo_idx(trans_obj,'SchoolDetection');
 if found==0
      return
 end
 
-algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
+algo_obj=trans_obj.Algo(idx_algo);
 varin=algo_obj.Varargin;
 
 

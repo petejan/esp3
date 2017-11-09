@@ -207,21 +207,27 @@ for isn = 1:length(snapshots)
                         if exist(fileN,'file') == 2
                             
                             fType{ifiles} = get_ftype(fileN);
+                            if strcmp(fType{ifiles},'dfile')
+                                dfile=1;
+                            else
+                                dfile=0;
+                            end
                             
+                            [new_lay,~]=open_file_standalone(fileN,fType{ifiles},...
+                                'PathToMemmap',datapath,...
+                                'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),...
+                                'EsOffset',es_offset,...
+                                'load_bar_comp',load_bar_comp,...
+                                'LoadEKbot',1,'CVSCheck',0,...
+                                'force_open',1,...
+                                'CVSroot',cvs_root,'dfile',dfile,'CVSCheck',0,'SvCorr',svCorr);
+                                                       
                             switch lower(fType{ifiles})
                                 case {'ek60','ek80','raw'}
-                                    % profile on;
-                                    new_lay = open_EK_file_stdalone(fileN,...
-                                        'PathToMemmap',datapath,'Frequencies',unique([options.Frequency options.FrequenciesToLoad]),...
-                                        'FieldNames',FieldNames,'EsOffset',es_offset,'load_bar_comp',load_bar_comp,'force_open',1);
                                     new_lay.add_gps_data_to_db();
-                                    % profile off;
-                                    % profile viewer
-                                case 'asl'
-                                    new_lay = read_asl(fileN,...
-                                        'PathToMemmap',datapath,'load_bar_comp',load_bar_comp);
-                                case 'dfile'
-                                    new_lay = read_crest(fileN,'PathToMemmap',datapath,'CVSCheck',0,'SvCorr',svCorr);
+
+                                case {'asl' 'dfile'}
+
                                 otherwise
                                     fprintf('Unrecognized file type for file %s',fileN);
                                     continue
@@ -236,11 +242,12 @@ for isn = 1:length(snapshots)
                                 case 'mbs'
                                     new_lay.OriginCrest = transects{itr}.OriginCrest{ifiles};
                                     new_lay.CVS_BottomRegions(cvs_root);
-                                    surv = survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
+                                    surv = survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,...
+                                        'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
                                     new_lay.set_survey_data(surv);
                                     
                                     switch lower(fType{ifiles})
-                                        case {'ek60','ek80'}
+                                        case {'ek60','ek80','raw'}
                                             new_lay.update_echo_logbook_dbfile();
                                             new_lay.write_reg_to_reg_xml();
                                             new_lay.write_bot_to_bot_xml()
@@ -342,6 +349,7 @@ for isn = 1:length(snapshots)
                 for i_lay = 1:length(layers_out_temp)
                     layer_new = layers_out_temp(i_lay);
                     trans_obj_primary= layer_new.get_trans(options.Frequency);
+                    
                     i_cal = i_cal+length(layer_new.Filename);
                     if iscell(cal)
                         cal_curr = cal{i_cal};
@@ -362,7 +370,7 @@ for isn = 1:length(snapshots)
                                 else
                                     fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                                 end
-                            case 'dfile'
+                            case {'dfile' 'asl'}
                                 
                         end
                         

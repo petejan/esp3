@@ -1,7 +1,7 @@
 function move_patch_select(src,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -21,8 +21,8 @@ if strcmp(current_fig.SelectionType,'normal')
     
 %     x_lim=get(ah,'xlim');
 %     y_lim=get(ah,'ylim');
-    xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-    ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+    xdata=trans_obj.get_transceiver_pings();
+    ydata=trans_obj.get_transceiver_samples();
     
     dx_patch=nanmax(patch_obj.Vertices(:,1))-nanmin(patch_obj.Vertices(:,1));
     dy_patch=nanmax(patch_obj.Vertices(:,2))-nanmin(patch_obj.Vertices(:,2));

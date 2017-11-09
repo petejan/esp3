@@ -61,10 +61,10 @@ switch lower(curr_disp.Cmap)
         
 end
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
 
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
@@ -74,10 +74,10 @@ y_lim=get(ah,'ylim');
 % dy=diff(y_lim);
 
 
-nb_pings=length(layer.Transceivers(idx_freq).Time);
-old_bot=layer.Transceivers(idx_freq).Bottom;
+nb_pings=length(trans_obj.Time);
+old_bot=trans_obj.Bottom;
 
-old_bot=layer.Transceivers(idx_freq).Bottom;
+old_bot=trans_obj.Bottom;
 
 if isempty(old_bot.Sample_idx)
     old_bot.Sample_idx=nan(1,nb_pings);
@@ -224,7 +224,7 @@ end
 
     function end_bottom_edit(val)
         
-        layer.Transceivers(idx_freq).setBottom(bot);
+        trans_obj.setBottom(bot);
         curr_disp.Bot_changed_flag=1;
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);
@@ -233,7 +233,7 @@ end
             replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
             replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
             
-            add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot)
+            add_undo_bottom_action(main_figure,trans_obj,old_bot,bot)
 
         end
         

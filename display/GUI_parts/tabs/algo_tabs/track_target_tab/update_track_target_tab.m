@@ -4,13 +4,13 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 track_target_tab_comp=getappdata(main_figure,'Track_target_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'TrackTarget');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[idx_algo,found]=find_algo_idx(trans_obj,'TrackTarget');
 if found==0
      return
 end
 
-algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
+algo_obj=trans_obj.Algo(idx_algo);
 algo=algo_obj.Varargin;
 
 algo_fields=fields(algo);

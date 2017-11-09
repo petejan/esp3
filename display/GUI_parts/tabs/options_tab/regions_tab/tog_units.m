@@ -41,10 +41,10 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+dist=trans_obj.GPSDataPing.Dist;
 dx=nanmean(diff(dist));
-range=layer.Transceivers(idx_freq).get_transceiver_range();
+range=trans_obj.get_transceiver_range();
 dr=nanmean(diff(range));
 w_units=get(region_tab_comp.cell_w_unit,'string');
 w_unit_idx=get(region_tab_comp.cell_w_unit,'value');

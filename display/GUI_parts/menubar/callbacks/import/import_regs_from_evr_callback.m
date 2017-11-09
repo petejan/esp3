@@ -44,7 +44,7 @@ end
 
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 [path_f,~,~]=fileparts(layer.Filename{1});
 
 [Filename,PathToFile]= uigetfile({fullfile(path_f,'*.evr')}, 'Pick a .evr','MultiSelect','off');
@@ -52,17 +52,17 @@ if ~ischar(Filename)
     return;
 end
 
-regions=create_regions_from_evr(fullfile(PathToFile,Filename),layer.Transceivers(idx_freq).get_transceiver_range(),layer.Transceivers(idx_freq).Time);
+regions=create_regions_from_evr(fullfile(PathToFile,Filename),trans_obj.get_transceiver_range(),trans_obj.Time);
 
 if ~isempty(regions)
-    layer.Transceivers(idx_freq).add_region(regions);
+    trans_obj.add_region(regions);
     setappdata(main_figure,'Layer',layer);
     display_bottom(main_figure);
     
     
     display_regions(main_figure,'both');
     curr_disp=getappdata(main_figure,'Curr_disp');
-    trans_obj=layer.get_trans(curr_disp.Freq);
+    [trans_obj,idx_freq]=layer.get_trans(curr_disp);
     curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     
     set_alpha_map(main_figure);

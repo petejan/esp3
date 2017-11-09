@@ -41,7 +41,7 @@ function apply_bottom_detect_cback(~,~,select_plot,main_figure,ver)
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 switch class(select_plot)
     case 'region_cl'
@@ -62,16 +62,16 @@ end
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-old_bot=layer.Transceivers(idx_freq).Bottom;
-layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
+old_bot=trans_obj.Bottom;
+trans_obj.apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
 curr_disp.Bot_changed_flag=1; 
 hide_status_bar(main_figure);
-bot=layer.Transceivers(idx_freq).Bottom;
+bot=trans_obj.Bottom;
 curr_disp.Bot_changed_flag=1;
 setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
 
-add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
+add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 setappdata(main_figure,'Layer',layer);
 set_alpha_map(main_figure);

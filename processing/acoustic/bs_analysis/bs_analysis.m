@@ -63,7 +63,7 @@ ray_tray_bool = res.RayTrayBool;
 roll_cal = att_cal(2);
 pitch_cal = att_cal(1);
 
-trans=layer.Transceivers(idx_freq);
+trans=trans_obj;
 
 trans.set_position(pos_trans, trans_angle);
 
@@ -91,13 +91,13 @@ alongangle  = trans.Data.get_datamat('alongangle');
 [alongphi, acrossphi] = trans.get_phase();
 
 
-idx_algo_bot = find_algo_idx(layer.Transceivers(idx_freq), 'BottomDetectionV2');
+idx_algo_bot = find_algo_idx(trans_obj, 'BottomDetectionV2');
 
-algo = layer.Transceivers(idx_freq).Algo(idx_algo_bot);
+algo = trans_obj.Algo(idx_algo_bot);
 
 [PulseLength,~] = trans.get_pulse_length(1);
 [amp_est, across_est, along_est] = detec_bottom_bathymetric(sp, alongphi, acrossphi, ...
-    layer.Transceivers(idx_freq).get_transceiver_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
+    trans_obj.get_transceiver_range(), 1/trans.Params.SampleInterval(1), PulseLength, algo.Varargin.thr_bottom, -12, algo.Varargin.r_min);
 z_max = nanmax(amp_est.range) * cos(t_angle);
 ext_len = floor(z_max*(tan(t_angle+bw_mean) - tan(t_angle-bw_mean)) / dr/2);
 

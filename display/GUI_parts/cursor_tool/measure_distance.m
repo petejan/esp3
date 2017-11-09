@@ -61,11 +61,11 @@ end
 
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
 ydata=double(get(axes_panel_comp.main_echo,'YData'));
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 
-range=layer.Transceivers(idx_freq).get_transceiver_range();
-gps_data=layer.Transceivers(idx_freq).GPSDataPing;
+range=trans_obj.get_transceiver_range();
+gps_data=trans_obj.GPSDataPing;
 
 xinit=nan(1,1e2);
 yinit=nan(1,1e2);

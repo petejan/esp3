@@ -40,7 +40,7 @@ function find_bt_cback(~,~,select_plot,main_figure)
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 switch class(select_plot)
     case 'region_cl'

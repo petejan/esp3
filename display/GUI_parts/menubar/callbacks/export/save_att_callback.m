@@ -9,7 +9,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
 
-trans_obj=layer.Transceivers(idx_freq);
+trans_obj=trans_obj;
 att_obj=trans_obj.AttitudeNavPing;
 filenames=layer.Filename;
 

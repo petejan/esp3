@@ -76,7 +76,7 @@ end
 line_offset=layer.Lines(get(lines_tab_comp.tog_line,'value'));
 line_offset.Tag='Offset';
 
-layer.Transceivers(idx_freq).set_transducer_depth_from_line(line_offset);
+trans_obj.set_transducer_depth_from_line(line_offset);
 
 display_offset_echogram(main_figure);
 update_lines_tab(main_figure);
@@ -88,7 +88,7 @@ layer=getappdata(main_figure,'Layer');
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 idx_freq=find(layer.Frequencies==curr_disp.Freq);
-layer.Transceivers(idx_freq).reset_transducer_depth();
+trans_obj.reset_transducer_depth();
 if ~isempty(layer.Lines)
     idx_line=strcmpi([layer.Lines(:).Tag],'Offset');
     if ~isempty(idx_line)       

@@ -4,7 +4,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 processing_tab_comp=getappdata(main_figure,'Processing_tab');
 process_list=getappdata(main_figure,'Process');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 set(processing_tab_comp.tog_freq,'String',layer.Frequencies,'Value',idx_freq);
 

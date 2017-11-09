@@ -31,10 +31,10 @@ end
 
 
 
-[idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
-
-if found==0
-    curr_disp.Freq=layer.Frequencies(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+if isempty(trans_obj)
+    curr_disp.Freq=layer.Frequencies(1);
+	[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 end
 
 min_axis=curr_disp.Cax(1);
@@ -49,7 +49,7 @@ nb_pings=length(xdata);
 [~,nb_pings_red]=size(alpha_map);
 [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im);
 
-idxBad=find(layer.Transceivers(idx_freq).Bottom.Tag==0);
+idxBad=find(trans_obj.Bottom.Tag==0);
 idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
 idx_bad_red(idx_bad_red==0)=[];
 
@@ -59,9 +59,9 @@ if strcmp(curr_disp.DispBadTrans,'on')
 end
 
 
-%bot_vec=layer.Transceivers(idx_freq).get_bottom_range(idx_pings);
+%bot_vec=trans_obj.get_bottom_range(idx_pings);
 
-bot_vec=layer.Transceivers(idx_freq).get_bottom_idx(idx_pings);
+bot_vec=trans_obj.get_bottom_idx(idx_pings);
 n_bot=size(alpha_map,2);
 
 if round(length(bot_vec)/n_bot)==length(bot_vec)/n_bot

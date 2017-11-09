@@ -39,7 +39,7 @@ function apply_track_target_cback(~,~,select_plot,main_figure)
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 
 switch class(select_plot)
@@ -55,7 +55,7 @@ alg_name='TrackTarget';
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
+trans_obj.apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj);
 
 hide_status_bar(main_figure);
 display_tracks(main_figure);

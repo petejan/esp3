@@ -8,8 +8,10 @@ if ~isgraphics(mini_axes_comp.mini_ax.Parent,'figure')
     return;
 end
 
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
-
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+if isempty(trans_obj)
+return;
+end
 xdata=get(mini_axes_comp.mini_echo,'XData');
 ydata=get(mini_axes_comp.mini_echo,'YData');
 
@@ -17,21 +19,21 @@ ydata=get(mini_axes_comp.mini_echo,'YData');
 
 switch curr_disp.Xaxes
     case 'seconds'
-        xdata_grid=layer.Transceivers(idx_freq).Time(idx_pings);
+        xdata_grid=trans_obj.Time(idx_pings);
     case 'pings'
-        xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
+        xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
     case 'meters'
-        xdata_grid=layer.Transceivers(idx_freq).GPSDataPing.Dist(idx_pings);
+        xdata_grid=trans_obj.GPSDataPing.Dist(idx_pings);
         if isempty(xdata)
             disp('NO GPS Data');
             curr_disp.Xaxes='pings';
-            xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);
+            xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
         end
     otherwise
-        xdata_grid=layer.Transceivers(idx_freq).get_transceiver_pings(idx_pings);      
+        xdata_grid=trans_obj.get_transceiver_pings(idx_pings);      
 end
 
-ydata_grid=layer.Transceivers(idx_freq).get_transceiver_range(idx_r);
+ydata_grid=trans_obj.get_transceiver_range(idx_r);
  
 switch curr_disp.Xaxes
     case 'seconds'

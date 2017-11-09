@@ -41,7 +41,7 @@ if bot>0&&exist(fullfile(folder,bFileName),'file')>0
         'Sample_idx',sample_idx,...
         'Tag',double(bad==0));
     
-    layer.Transceivers(idx_freq).setBottom(bottom);
+    trans_obj.setBottom(bottom);
 else
     
     fprintf('Could not find Bottom for file %s\n', dFileName);
@@ -50,8 +50,8 @@ end
 
 if reg>0&&exist(fullfile(folder,rFileName),'file')>0
     
-layer.Transceivers(idx_freq).Regions=[];
-layer.Transceivers(idx_freq).rm_region_origin('Esp2');
+trans_obj.Regions=[];
+trans_obj.rm_region_origin('Esp2');
 
     regions = readEsp2regions(fullfile(folder,rFileName));
     if ~strcmpi(layer.Filetype,'CREST')
@@ -61,7 +61,7 @@ layer.Transceivers(idx_freq).rm_region_origin('Esp2');
         end
     end
     
-    layer.Transceivers(idx_freq).add_region(regions,'Origin','Esp2');
+    trans_obj.add_region(regions,'Origin','Esp2');
 
 else
     

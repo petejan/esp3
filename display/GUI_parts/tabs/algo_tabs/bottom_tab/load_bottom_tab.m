@@ -108,8 +108,7 @@ return;
 end
     
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 [idx_algo,found]=find_algo_idx(trans_obj,'BottomDetection');
 if found==0
@@ -136,17 +135,18 @@ update_algos(main_figure);
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-old_bot=layer.Transceivers(idx_freq).Bottom;
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
+old_bot=trans_obj.Bottom;
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo('BottomDetection','load_bar_comp',load_bar_comp);
+trans_obj.apply_algo('BottomDetection','load_bar_comp',load_bar_comp);
 
 hide_status_bar(main_figure);
 setappdata(main_figure,'Layer',layer);
-bot=layer.Transceivers(idx_freq).Bottom;
+bot=trans_obj.Bottom;
 
-add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
+add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');

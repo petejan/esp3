@@ -16,13 +16,13 @@ if val==0||isempty(select)||select==idx_freq
 end
 
 
-acrossangle_ori=layer.Transceivers(idx_freq).Data.get_datamat('acrossangle');
+acrossangle_ori=trans_obj.Data.get_datamat('acrossangle');
 acrossangle_new=layer.Transceivers(select).Data.get_datamat('acrossangle');
 alongangle_new=layer.Transceivers(select).Data.get_datamat('alongangle');
 
 
-layer.Transceivers(idx_freq).Data.replace_sub_data('acrossangle',imresize(acrossangle_new,size(acrossangle_ori),'nearest'));
-layer.Transceivers(idx_freq).Data.replace_sub_data('alongangle',imresize(alongangle_new,size(acrossangle_ori),'nearest'));
+trans_obj.Data.replace_sub_data('acrossangle',imresize(acrossangle_new,size(acrossangle_ori),'nearest'));
+trans_obj.Data.replace_sub_data('alongangle',imresize(alongangle_new,size(acrossangle_ori),'nearest'));
 update_display(main_figure,0);
 update_mini_ax(main_figure,1)
 end

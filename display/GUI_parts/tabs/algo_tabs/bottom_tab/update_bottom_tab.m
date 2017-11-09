@@ -40,17 +40,18 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 bottom_tab_comp=getappdata(main_figure,'Bottom_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-[idx_algo,found]=find_algo_idx(layer.Transceivers(idx_freq),'BottomDetection');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
+[idx_algo,found]=find_algo_idx(trans_obj,'BottomDetection');
 if found==0
     return
 end
 
-dist=layer.Transceivers(idx_freq).GPSDataPing.Dist;
+dist=trans_obj.GPSDataPing.Dist;
 
-range=layer.Transceivers(idx_freq).get_transceiver_range();
+range=trans_obj.get_transceiver_range();
 
-algo_obj=layer.Transceivers(idx_freq).Algo(idx_algo);
+algo_obj=trans_obj.Algo(idx_algo);
 
 algo_varin=algo_obj.Varargin;
 

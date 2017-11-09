@@ -42,7 +42,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 hfigs=getappdata(main_figure,'ExternalFigures');
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 idx_reg=trans_obj.find_regions_Unique_ID(ID);
 

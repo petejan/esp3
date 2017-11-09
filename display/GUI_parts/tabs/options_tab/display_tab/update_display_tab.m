@@ -4,9 +4,8 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 display_tab_comp=getappdata(main_figure,'Display_tab');
 
-[idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-trans_obj=layer.Transceivers(idx_freq);
 
 Axes_type={'pings','seconds','meters'};
 

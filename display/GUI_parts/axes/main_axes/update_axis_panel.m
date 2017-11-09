@@ -25,11 +25,12 @@ else
     delete(u);
 end
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 if isempty(trans_obj)
     idx_freq=1;
     curr_disp.Freq=layer.Frequencies(idx_freq);
+    curr_disp.ChannelID=layer.ChannelID{idx_freq};
     return;
 end
 
@@ -51,7 +52,7 @@ end
 delete(axes_panel_comp.listeners);
 clear_lines(axes_panel_comp.main_axes);
 
-[dr,dp]=layer.display_layer(curr_disp.Freq,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
+[dr,dp]=layer.display_layer(curr_disp,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
 
 if new
    curr_disp.R_disp=get(axes_panel_comp.main_axes,'YLim');

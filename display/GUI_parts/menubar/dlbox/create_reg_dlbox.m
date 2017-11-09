@@ -292,13 +292,11 @@ layer = getappdata(main_figure,'Layer');
 
 curr_disp = getappdata(main_figure,'Curr_disp');
 
-[idx_freq,found] = find_freq_idx(layer,curr_disp.Freq);
-
-if found==0
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+if isempty(trans_obj)
     return;
 end
 
-trans_obj = layer.Transceivers(idx_freq);
 
 ref = get(reg_fig_comp.tog_ref,'String');
 ref_idx = get(reg_fig_comp.tog_ref,'value');
@@ -346,7 +344,7 @@ display_regions(main_figure,'both');
 
 curr_disp = getappdata(main_figure,'Curr_disp');
 
-trans_obj = layer.get_trans(curr_disp.Freq);
+trans_obj = layer.get_trans(curr_disp);
 
 curr_disp.Active_reg_ID = trans_obj.get_reg_first_Unique_ID();
 

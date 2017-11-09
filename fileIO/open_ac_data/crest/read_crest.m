@@ -10,7 +10,6 @@ p = inputParser;
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
 addParameter(p,'PathToMemmap',path_to_mem_def);
 addParameter(p,'FieldNames',{});
-addParameter(p,'EsOffset',[]);
 addParameter(p,'CVSCheck',0);
 addParameter(p,'CVSroot','');
 addParameter(p,'SvCorr',1);
@@ -107,8 +106,7 @@ if ~isequal(Filename_cell, 0)
         
         
         power=sqrt(samples_val_real_cal.^2+samples_val_imag_cal.^2);
-        
-        
+                
         if strcmp(ifileInfo.sounder_type,'ES70')||strcmp(ifileInfo.sounder_type,'ES60')
             corr=-repmat(es60_error((1:size(power,2))-ifileInfo.es60_zero_error_ping_num),size(power,1),1);
         else

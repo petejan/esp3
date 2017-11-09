@@ -3,7 +3,7 @@ function create_context_menu_main_echo(main_figure)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-idx_freq=layer.find_freq_idx(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 delete(findall(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu'));
 context_menu=uicontextmenu(ancestor(axes_panel_comp.bad_transmits,'figure'),'Tag','btCtxtMenu');
@@ -13,7 +13,7 @@ uimenu(analysis_menu,'Label','Plot Profiles','Callback',{@plot_profiles_callback
 uimenu(analysis_menu,'Label','Remove Tracks','Callback',{@remove_tracks_cback,main_figure});
 uimenu(analysis_menu,'Label','Remove ST','Callback',{@remove_ST_cback,main_figure});
 
-if strcmpi(layer.Transceivers(idx_freq).Mode,'FM')
+if strcmpi(trans_obj.Mode,'FM')
     uimenu(analysis_menu,'Label','Plot Ping TS Spectrum','Callback',{@plot_ping_spectrum_callback,main_figure});
     uimenu(analysis_menu,'Label','Plot Ping Sv Spectrum','Callback',{@plot_ping_sv_spectrum_callback,main_figure});
 end
@@ -46,8 +46,8 @@ end
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans=trans_obj;
 
 ax_main=axes_panel_comp.main_axes;
 x_lim=double(get(ax_main,'xlim'));
@@ -99,8 +99,8 @@ end
 idx_t=idx_ts:idx_te;
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 
 gps_data=trans_obj.GPSDataPing;
 

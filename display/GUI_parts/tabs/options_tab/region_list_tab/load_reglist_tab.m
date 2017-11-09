@@ -85,8 +85,8 @@ end
 function display_regions_callback(src,~,table,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 idx=getappdata(table,'SelectedRegs');
 if ~isempty(idx)
     for i=1:numel(idx)
@@ -112,7 +112,7 @@ function delete_regions_callback(src,~,table,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
- trans_obj=layer.get_trans(curr_disp.Freq);
+ [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 idx=getappdata(table,'SelectedRegs');
 
 if ~isempty(idx)
@@ -145,8 +145,8 @@ end
 function act_reg(src,evt,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 regions=trans_obj.Regions;
 
 

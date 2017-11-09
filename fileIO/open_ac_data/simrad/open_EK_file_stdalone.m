@@ -108,8 +108,7 @@ if ~isequal(Filename_cell, 0)
     for uu=1:nb_files
         Filename=Filename_cell{uu};
         [path_f,fileN,~]=fileparts(Filename);
-        
-        
+         
         str_disp=sprintf('Opening File %d/%d : %s\n',uu,nb_files,Filename);
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_files,'Value',uu-1);
@@ -238,8 +237,10 @@ if ~isequal(Filename_cell, 0)
             
             [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,...
                 'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,...
-                'GPSOnly',p.Results.GPSOnly,'FieldNames',p.Results.FieldNames,...
-                'PathToMemmap',p.Results.PathToMemmap, 'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
+                'GPSOnly',p.Results.GPSOnly,...
+                'FieldNames',p.Results.FieldNames,...
+                'PathToMemmap',p.Results.PathToMemmap,...
+                'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
             
             if isempty(trans_obj)
                 id_rem=union(id_rem,uu);
@@ -284,8 +285,7 @@ if ~isequal(Filename_cell, 0)
                     strcmpi(NMEA.type,'RMC')];
                 
                 [~,idx_GPS]=max(sum(idx_NMEA_gps,2));
-                idx_NMEA=find(idx_NMEA_gps(idx_GPS,:));
-                
+                idx_NMEA=find(idx_NMEA_gps(idx_GPS,:));               
                 [gps_data_tmp,~]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
                 attitude_full= attitude_nav_cl.load_att_from_file(att_file);
             elseif exist(gps_file,'file')==2&&exist(att_file,'file')==2
@@ -294,17 +294,12 @@ if ~isequal(Filename_cell, 0)
                 fprintf('Using _gps.csv file as GPS input for file %s\n',Filename);
                 gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
             else
-
-                
                 idx_NMEA_gps=[strcmpi(NMEA.type,'GGA');...%20 times faster than the old way...
                     strcmpi(NMEA.type,'GLL');...
                     strcmpi(NMEA.type,'RMC')];
                 [~,idx_GPS]=max(sum(idx_NMEA_gps,2));
-
                 idx_NMEA=find(ismember(NMEA.type,{'SHR' 'HDT' 'VLW'})|idx_NMEA_gps(idx_GPS,:));
-
                 [gps_data_tmp,attitude_full]=nmea_to_attitude_gps_v2(NMEA.string,NMEA.time,idx_NMEA);
-
             end
             
             gps_data=gps_data_tmp.clean_gps_track();
@@ -383,35 +378,32 @@ if ~isequal(Filename_cell, 0)
                     id_rem=union(id_rem,uu);
                     continue;
                 end
-                
-                
-                for i =1:length(trans_obj)
-                    
+                               
+                for i =1:length(trans_obj)                   
                     gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Time);
-                    attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);
-                    
-                    
+                    attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);                                    
                     [~,~,algo_vec,~]=load_config_from_xml_v2(0,0,1);
-                    
                     algo_vec_init=init_algos();
-                    
                     algo_vec_init=reset_range(algo_vec_init,trans_obj(i).get_transceiver_range());
                     algo_vec=reset_range(algo_vec,trans_obj(i).get_transceiver_range());
                     trans_obj(i).GPSDataPing=gps_data_ping;
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
-                    trans_obj(i).add_algo(algo_vec);
+                    trans_obj(i).add_algo(algo_vec);                   
+                    trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);   
                     
-                    trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);
-                    
-                end
-                
+                end               
             else
                 trans_obj=transceiver_cl.empty();
                 envdata=env_data_cl.empty();
             end
+           layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
+
+            for i=1:length(trans_obj)
+                layers(uu).add_trans(trans_obj(i));
+                 
+            end
             
-            layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
             layers(uu).add_lines(line_cl('Name','TransducerDepth','Range',trans_depth,'Time',depth_time));
             
         catch err

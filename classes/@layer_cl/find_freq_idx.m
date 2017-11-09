@@ -10,7 +10,7 @@ for ifr=1:numel(freq)
         idx(ifr)=1;
     else
         found(ifr)=1;
-        idx(ifr)=idx_tmp;
+        idx(ifr)=idx_tmp(1);
     end
 end
 

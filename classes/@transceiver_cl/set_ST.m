@@ -3,7 +3,7 @@ function set_ST(trans_obj,ST)
 if ~isempty(ST)
     dataMat=nan(numel(trans_obj.Range),numel(trans_obj.Time));
     np=ceil(nanmean(ST.Transmitted_pulse_length));
-    nb_samples=length(Sp(:));
+    nb_samples=numel(dataMat(:));
     
     for i=-np:np
         idx=ST.idx_target_lin+i;

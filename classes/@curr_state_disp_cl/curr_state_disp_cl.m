@@ -1,6 +1,7 @@
 classdef curr_state_disp_cl <handle
     
     properties (SetObservable = true)
+        ChannelID='';
         Freq
         Fieldname
         Fieldnames
@@ -37,6 +38,7 @@ classdef curr_state_disp_cl <handle
             
             p = inputParser;
             addParameter(p,'Freq',38000,@isnumeric);
+            addParameter(p,'ChannelID','',@ischar);
             addParameter(p,'Fieldname','sv',@ischar);
             addParameter(p,'DispBottom','on',@ischar);
             addParameter(p,'Proj','Lambert Conformal Conic',@ischar);

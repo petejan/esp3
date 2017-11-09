@@ -2,8 +2,8 @@ function Sv_freq_response_func(main_figure,idx_r,idx_pings)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-range=layer.Transceivers(idx_freq).get_transceiver_range();
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+range=trans_obj.get_transceiver_range();
 
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));

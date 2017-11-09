@@ -2,7 +2,7 @@ function init_st_ax(main_figure,ax)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 if isempty(trans_obj)
     return;

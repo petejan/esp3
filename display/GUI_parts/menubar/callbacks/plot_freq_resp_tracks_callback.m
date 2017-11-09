@@ -8,19 +8,18 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 tag=sprintf('Track from %.0f kHz',curr_disp.Freq);
 
-[idx_freq,found]=find_freq_idx(layer,curr_disp.Freq);
-if found==0
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+if isempty(trans_obj)
     return;
 end
 
-Transceiver=layer.Transceivers(idx_freq);
-tracks = Transceiver.Tracks;
+tracks = trans_obj.Tracks;
 
 if isempty(tracks)
     return;
 end
 
-ST = Transceiver.ST;
+ST = trans_obj.ST;
 X_st=ST.Ping_number;
 %R_st=ST.Target_range;
 % R_st_min=ST.Target_range_min;
@@ -34,17 +33,17 @@ end
 
 TS=nan(length(f_vec),length(tracks.target_id));
 
-range_freq=layer.Transceivers(idx_freq).get_transceiver_range();
+range_freq=trans_obj.get_trans_obj_range();
 
 for uui=idx_sort
-    Sp=layer.Transceivers(uui).Data.get_datamat('sp');
-    AcrossAngle=layer.Transceivers(uui).Data.get_datamat('acrossangle');
-    AlongAngle=layer.Transceivers(uui).Data.get_datamat('alongangle');
-    BeamWidthAlongship=layer.Transceivers(uui).Config.BeamWidthAlongship;
-    BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
+    Sp=layer.trans_objs(uui).Data.get_datamat('sp');
+    AcrossAngle=layer.trans_objs(uui).Data.get_datamat('acrossangle');
+    AlongAngle=layer.trans_objs(uui).Data.get_datamat('alongangle');
+    BeamWidthAlongship=layer.trans_objs(uui).Config.BeamWidthAlongship;
+    BeamWidthAthwartship=layer.trans_objs(uui).Config.BeamWidthAthwartship;
     Comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship,AcrossAngle,AlongAngle);
     Comp(Comp>12)=nan;
-    range=layer.Transceivers(uui).get_transceiver_range();
+    range=layer.trans_objs(uui).get_trans_obj_range();
     
     [nb_samples,~]=size(Sp);
     

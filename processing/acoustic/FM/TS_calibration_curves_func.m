@@ -50,7 +50,7 @@ for uui=select
     end
     
     bad_trans=zeros(size(ping_num));
-    bad_trans(layer.Transceivers(idx_freq).Bottom.Tag==0)=1;
+    bad_trans(trans_obj.Bottom.Tag==0)=1;
     mask(:,bad_trans==1)=0;
     
     idx_r=find(range<=r_max&range>=r_min);
@@ -111,7 +111,7 @@ for uui=select
     if Freq>120000&&strcmp(att_model,'Doonan et al (2003)')
         att_model='Francois & Garrison (1982)';
     end
-    alpha=layer.Transceivers(idx_freq).Params.Absorption(1)*1e3;
+    alpha=trans_obj.Params.Absorption(1)*1e3;
     
     if get(calibration_tab_comp.att_over,'value')==0
         switch att_model

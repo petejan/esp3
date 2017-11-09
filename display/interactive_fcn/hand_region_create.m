@@ -62,7 +62,7 @@ switch lower(curr_disp.Cmap)
         col_line='k';
 end
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 
 cp = ah.CurrentPoint;
@@ -72,8 +72,8 @@ yinit=nan(1,1e4);
 xinit(1) = cp(1,1);
 yinit(1)=cp(1,2);
 
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
 
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');

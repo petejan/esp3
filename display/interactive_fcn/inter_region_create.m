@@ -61,9 +61,9 @@ end
 
 clear_lines(ah);
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
 %xdata=double(get(axes_panel_comp.main_echo,'XData'));
 %ydata=double(get(axes_panel_comp.main_echo,'YData'));
 x_lim=get(ah,'xlim');
@@ -159,7 +159,7 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         
         layer=getappdata(main_figure,'Layer');
         
-        [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
+        [trans_obj,idx_freq]=layer.get_trans(curr_disp);
         
         if isempty(y_box)||isempty(x_box)
             delete(txt);
@@ -185,9 +185,9 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         
         switch mode
             case 'horizontal'
-                idx_pings=1:length(layer.Transceivers(idx_freq).get_transceiver_pings());
+                idx_pings=1:length(trans_obj.get_transceiver_pings());
             case 'vertical'
-                idx_r=1:length(layer.Transceivers(idx_freq).get_transceiver_samples());
+                idx_r=1:length(trans_obj.get_transceiver_samples());
                 
         end
         delete(txt);

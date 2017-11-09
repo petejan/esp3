@@ -36,13 +36,15 @@ if ~isempty(PathToFile)&&~isempty(FileName)
         return;
     end
     
-    [idx_freq,found]=find_freq_idx(layer,p.Results.Freq);
-    if found>0
+
+	[trans_obj,idx_freq]=layer.get_trans((p.Results.Freq);
+	
+    if ~isempty(trans_obj)
         
         if bot_cvs==1
             display(['converting bottom and bad pings for dfile ' FileName]);
             bot= get_bottom_from_esp2(PathToFile,FileName,voyage,cvsroot,bot_rev); 
-            layer.Transceivers(idx_freq).setBottom(bot);
+            trans_obj.setBottom(bot);
         end
 
         if reg_cvs==1
@@ -56,19 +58,19 @@ if ~isempty(PathToFile)&&~isempty(FileName)
                 end
             end
             
-            layer.Transceivers(idx_freq).Regions=[];
-            layer.Transceivers(idx_freq).rm_region_origin('Esp2');
+            trans_obj.Regions=[];
+            trans_obj.rm_region_origin('Esp2');
             
             if~isempty(reg)
                 for iu=1:length(regions)     
                     idx_reg=find(regions(iu).ID==[reg(:).id],1);
                     if ~isempty(idx_reg)
-                        layer.Transceivers(idx_freq).add_region(regions(iu),'Origin','Esp2','Tag',regions(iu).Tag);
+                        trans_obj.add_region(regions(iu),'Origin','Esp2','Tag',regions(iu).Tag);
                         
                     end
                 end
             else
-                layer.Transceivers(idx_freq).add_region(regions,'Origin','Esp2');
+                trans_obj.add_region(regions,'Origin','Esp2');
             end
         end
         

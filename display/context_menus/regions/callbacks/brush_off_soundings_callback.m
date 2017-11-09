@@ -2,9 +2,9 @@ function brush_off_soundings_callback(~,~,select_plot,main_figure,set_bad)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-trans_obj=layer.Transceivers(idx_freq);
+trans_obj=trans_obj;
 
 switch class(select_plot)
     case 'region_cl'
@@ -29,13 +29,13 @@ if set_bad>0
     bot.Tag(idx_brush)=0;
 end
 
-layer.Transceivers(idx_freq).setBottom(bot);
+trans_obj.setBottom(bot);
 
 curr_disp.Bot_changed_flag=1;
 setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
 
-add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
+add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 display_bottom(main_figure);
 set_alpha_map(main_figure);

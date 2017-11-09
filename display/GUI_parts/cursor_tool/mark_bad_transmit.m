@@ -58,7 +58,7 @@ clear_lines(ah);
 xdata=double(get(axes_panel_comp.main_echo,'XData'));
 ydata=double(get(axes_panel_comp.main_echo,'YData'));
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 old_bot=trans_obj.Bottom;
 

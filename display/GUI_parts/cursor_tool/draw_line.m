@@ -57,17 +57,17 @@ switch lower(curr_disp.Cmap)
         
 end
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-xdata=layer.Transceivers(idx_freq).get_transceiver_pings();
-ydata=layer.Transceivers(idx_freq).get_transceiver_samples();
-Range=layer.Transceivers(idx_freq).get_transceiver_range();
+xdata=trans_obj.get_transceiver_pings();
+ydata=trans_obj.get_transceiver_samples();
+Range=trans_obj.get_transceiver_range();
 
 x_lim=get(ah,'xlim');
 y_lim=get(ah,'ylim');
 
-nb_pings=length(layer.Transceivers(idx_freq).Time);
-line_obj=line_cl('Tag','Hand Drawn','Range',nan(1,nb_pings),'Time',layer.Transceivers(idx_freq).Time);
+nb_pings=length(trans_obj.Time);
+line_obj=line_cl('Tag','Hand Drawn','Range',nan(1,nb_pings),'Time',trans_obj.Time);
 
 
 xinit=nan(1,nb_pings);

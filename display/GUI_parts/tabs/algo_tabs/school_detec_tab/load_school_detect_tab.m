@@ -110,8 +110,8 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 
 [idx_algo,found]=find_algo_idx(trans_obj,'SchoolDetection');
 if found==0
@@ -149,11 +149,11 @@ layer=getappdata(main_figure,'Layer');
 
 %school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
+trans_obj.apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
 
 hide_status_bar(main_figure);
 
@@ -161,7 +161,7 @@ hide_status_bar(main_figure);
 
 set_alpha_map(main_figure);
 display_regions(main_figure,'both');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 order_stacks_fig(main_figure);
 end

@@ -39,8 +39,8 @@ function move_reg_callback(obj,~,ID,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 
 if ~ismember(curr_disp.CursorMode,{'Normal'})
@@ -92,7 +92,7 @@ switch main_figure.SelectionType
         reg_curr.Idx_pings=reg_curr.Idx_pings-reg_curr.Idx_pings(1)+idx_p_min;
         reg_curr.Idx_r=reg_curr.Idx_r-reg_curr.Idx_r(1)+idx_r_min;
         old_regs=trans_obj.Regions;
-        layer.Transceivers(idx_freq).add_region(reg_curr,'Merge',0);
+        trans_obj.add_region(reg_curr,'Merge',0);
         add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
 
         setappdata(main_figure,'Layer',layer);

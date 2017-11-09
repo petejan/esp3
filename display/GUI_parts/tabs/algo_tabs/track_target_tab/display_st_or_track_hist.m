@@ -1,7 +1,7 @@
 function display_st_or_track_hist(main_figure,ax,disp_var)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 if isempty(ax)
     hfig=new_echo_figure(main_figure,'tag','track_histo');

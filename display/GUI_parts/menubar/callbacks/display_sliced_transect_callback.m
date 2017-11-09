@@ -11,8 +11,8 @@ Slice_w=curr_disp.Grid_x;
 Slice_w_units=curr_disp.Xaxes;
 Slice_h=curr_disp.Grid_y;
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 
 
 idx_reg=trans_obj.find_regions_type('Data');

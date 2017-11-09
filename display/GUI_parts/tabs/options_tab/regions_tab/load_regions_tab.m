@@ -118,10 +118,10 @@ end
 function copy_to_other_freq(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-for uir=1:length(layer.Transceivers(idx_freq).Regions)
-    layer.copy_region_across(idx_freq,layer.Transceivers(idx_freq).Regions(uir),[]);
+for uir=1:length(trans_obj.Regions)
+    layer.copy_region_across(idx_freq,trans_obj.Regions(uir),[]);
 end
 
 setappdata(main_figure,'Layer',layer);
@@ -131,9 +131,9 @@ end
 function rm_over_freq_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-list_reg = layer.Transceivers(idx_freq).regions_to_str();
+list_reg = trans_obj.regions_to_str();
 
 
 if ~isempty(list_reg)
@@ -143,7 +143,7 @@ end
 setappdata(main_figure,'Layer',layer);
 
 display_regions(main_figure,'both');
-curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
+curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 end
 

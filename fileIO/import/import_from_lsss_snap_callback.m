@@ -6,7 +6,7 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 [path_f,file_f,~]=fileparts(layer.Filename{1});
 
 
@@ -18,7 +18,7 @@ if isempty(Filename)||isnumeric(Filename)
     return;
 end
 
-layer.Transceivers(idx_freq).set_bot_reg_from_lsss_snap(fullfile(PathToFile,Filename),idx_freq);
+trans_obj.set_bot_reg_from_lsss_snap(fullfile(PathToFile,Filename),idx_freq);
 
 
 setappdata(main_figure,'Layer',layer);
@@ -26,7 +26,7 @@ display_bottom(main_figure);
 
 display_regions(main_figure,'both');
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 set_alpha_map(main_figure);

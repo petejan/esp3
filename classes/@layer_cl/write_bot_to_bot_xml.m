@@ -19,7 +19,8 @@ for ifile=1:length(bot_file_str)
     if exist(xml_file,'file')==2
         [bottom_xml_old,ver_old]=parse_bottom_xml(xml_file);
         for ib=1:length(bottom_xml_old)
-            [~,found]=find_freq_idx(layer_obj,bottom_xml_old{ib}.Infos.Freq);
+            [~,found]=find_cid_idx(layer_obj,bottom_xml_old{ib}.Infos.ChannelID);
+			
             if found==0
                 if ~strcmpi(ver_old,ver)
                     ver=ver_old;

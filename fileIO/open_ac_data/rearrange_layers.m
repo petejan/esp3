@@ -32,14 +32,14 @@ for uu=1:length(trans_nb)
         if (trans_nb(uu))>0
             for ii=1:trans_nb(uu)
                 curr_trans=curr_layer.Transceivers(ii);
-                layers_grp(uu).freqs(ii,jj)=curr_trans.Config.Frequency;
+                layers_grp(uu).cid{ii,jj}=curr_trans.Config.ChannelID;
                 layers_grp(uu).time_start(ii,jj)=curr_trans.Time(1);
                 layers_grp(uu).time_end(ii,jj)=curr_trans.Time(end);
                 layers_grp(uu).dt(ii,jj)=(curr_trans.Time(end)-curr_trans.Time(1))/length(curr_trans.Time);
                 layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.get_transceiver_range());
             end
         else
-                layers_grp(uu).freqs(1,jj)=0;
+                layers_grp(uu).cid{1,jj}='';
                 if~isempty(curr_layer.GPSData.Time)
                     layers_grp(uu).time_start(1,jj)=curr_layer.GPSData.Time(1);
                     layers_grp(uu).time_end(1,jj)=curr_layer.GPSData.Time(end);
@@ -73,7 +73,7 @@ for uu=1:length(trans_nb)
                             (layers_grp(uu).time_end(:,kki)>=layers_grp(uu).time_start(:,kkj)&...
                             layers_grp(uu).time_end(:,kki)<=layers_grp(uu).time_end(:,kkj)))...
                             ==trans_nb(uu)||...
-                            length(intersect(layers_grp(uu).freqs(:,kki),layers_grp(uu).freqs(:,kkj)))~=trans_nb(uu);
+                            length(intersect(layers_grp(uu).cid(:,kki),layers_grp(uu).cid(:,kkj)))~=trans_nb(uu);
                         continue;
                     end
                     
@@ -175,8 +175,7 @@ for uui=1:length(idx_to_concatenate)
                     else
                         t_2=[];
                     end
-                    
-                    
+                                       
                     if t_1<=t_2
                         layer_conc=concatenate_layers(layer_conc,curr_layers(kk+1));
                     else

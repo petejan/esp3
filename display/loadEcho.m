@@ -57,19 +57,22 @@ nb_layers = length(layers);
 curr_disp = getappdata(main_figure,'Curr_disp');
 
 
-[idx_freq,found_freq] = find_freq_idx(layer,curr_disp.Freq);
-[~,found_field] = find_field_idx(layer.Transceivers(idx_freq).Data,curr_disp.Fieldname);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-if found_freq == 0
+if isempty(trans_obj)
     idx_freq = 1;
     %disp('Cannot Find Frequency...');
+    curr_disp.ChannelID = layer.ChannelID{idx_freq};
     curr_disp.Freq = layer.Frequencies(idx_freq);
+	[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 end
 
+[~,found_field] = find_field_idx(trans_obj.Data,curr_disp.Fieldname);
+
 if found_field == 0
-    [~,found] = find_field_idx(layer.Transceivers(idx_freq).Data,'sv');
+    [~,found] = find_field_idx(trans_obj.Data,'sv');
     if found == 0
-        field = layer.Transceivers(idx_freq).Data.Fieldname{1};
+        field = trans_obj.Data.Fieldname{1};
     else
         field = 'sv';
     end
@@ -91,7 +94,7 @@ curr_disp.Bot_changed_flag = 0;
 curr_disp.Reg_changed_flag = 0;
 curr_disp.UIupdate=1;
 
-curr_disp.Active_reg_ID=layer.Transceivers(idx_freq).get_reg_first_Unique_ID();
+curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 

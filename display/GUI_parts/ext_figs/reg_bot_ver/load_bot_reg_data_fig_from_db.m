@@ -43,14 +43,7 @@ if isempty(layer)
 else
     [path_xml,reg_bot_file_str,bot_file_str]=layer.create_files_str();
 end
-% 
-% version_bot=[];
-% version_reg=[];
-%comments_reg={};
 
-% curr_disp=getappdata(main_figure,'Curr_disp');
-% [idx_freq,~]=layer.find_freq_idx(curr_disp.Freq);
-% [bot_ver_curr,reg_ver_curr]=layer.Transceivers(idx_freq).get_loaded_bot_reg_version();
 
 for ip=1:length(path_xml)
     db_file=fullfile(path_xml{ip},'bot_reg.db');
@@ -65,32 +58,9 @@ for ip=1:length(path_xml)
     bottom_db_temp=dbconn.fetch(sprintf('select Version,Comment,Save_time from bottom where Filename is "%s" order by datetime(Save_time)',bot_file_str{ip}));
     dbconn.close();
     
-%     if ~isempty(regions_db_temp)
-%         [version_reg,~,~]=union(version_reg,cell2mat(regions_db_temp(:,1)),'stable');
-%     end
-%     
-%     if ~isempty(bottom_db_temp)
-%         [version_bot,~,~]=union(version_bot,cell2mat(bottom_db_temp(:,1)),'stable');
-%     end
+
 end
-% 
-% if isempty(version_reg)
-%     id_reg=1;
-% else
-%     id_reg=find(version_reg==reg_ver_curr);
-%     if isempty(id_reg)
-%         id_reg=1;
-%     end
-% end
-% 
-% if isempty(version_bot)
-%     id_bot=1;
-% else
-%     id_bot=find(version_bot==bot_ver_curr);
-%     if isempty(id_bot)
-%         id_bot=1;
-%     end
-% end
+
 
 
 if ~isempty(bottom_db_temp)
@@ -310,7 +280,7 @@ switch src.Parent.Tag
     case 'reg'
         layer.load_bot_regs('bot_ver',[],'reg_ver',ver);
         display_regions(main_figure,'both');
-        trans_obj=layer.get_trans(curr_disp.Freq);
+        [trans_obj,idx_freq]=layer.get_trans(curr_disp);
         curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
         disp('Regions imported from database');
 end

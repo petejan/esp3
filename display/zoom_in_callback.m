@@ -70,7 +70,7 @@ xdata=get(axes_panel_comp.main_echo,'XData');
 ydata=get(axes_panel_comp.main_echo,'YData');
 cp = ah.CurrentPoint;
 
-trans=layer.get_trans(curr_disp.Freq);
+trans=layer.get_trans(curr_disp);
 
 xdata_tot=trans.get_transceiver_pings();       
 ydata_tot=trans.get_transceiver_samples();

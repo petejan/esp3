@@ -3,8 +3,8 @@ function [idx_samples,idx_pings]=get_idx_r_n_pings(layer,curr_disp,main_echo)
 xdata=double(get(main_echo,'XData'));
 ydata=double(get(main_echo,'YData'));
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans=trans_obj;
 
 Number=trans.get_transceiver_pings();
 

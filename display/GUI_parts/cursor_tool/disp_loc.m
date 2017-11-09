@@ -58,9 +58,9 @@ end
         layer=getappdata(main_figure,'Layer');
         curr_disp=getappdata(main_figure,'Curr_disp');
         
-        idx_freq=find_freq_idx(layer,curr_disp.Freq);
+        [trans_obj,idx_freq]=layer.get_trans(curr_disp);
         
-        curr_gps=layer.Transceivers(idx_freq).GPSDataPing;
+        curr_gps=trans_obj.GPSDataPing;
         
         [~,idx_pings]=nanmin(abs(double(xdata)-xinit));
         

@@ -21,6 +21,7 @@ addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
 addParameter(p,'CVScheck',1,@isnumeric);
 addParameter(p,'CVSroot','',@ischar);
 addParameter(p,'PathToMemmap',def_path_m,@ischar);
+addParameter(p,'EsOffset',[]);
 addParameter(p,'load_bar_comp',[]);
 
 
@@ -53,14 +54,8 @@ for uu=1:length(Filename_cell)
         return;
     end
     
-    if exist(fullfile(PathToRawFile{end},'cal_echo.csv'),'file')>0
-        cal=csv2struct_perso(fullfile(PathToRawFile{end},'cal_echo.csv'));
-    else
-        cal=[];
-    end
-
     lay_temp=open_EK_file_stdalone(fullfile(PathToRawFile{1},RawFilename),...
-        'PathToMemmap',p.Results.PathToMemmap,'load_bar_comp',p.Results.load_bar_comp,'Calibration',cal);
+        'PathToMemmap',p.Results.PathToMemmap,'load_bar_comp',p.Results.load_bar_comp,'EsOffset',p.Results.EsOffset);
     lay_temp.OriginCrest=origin;
     
     lay_temp.set_survey_data(survey_data);

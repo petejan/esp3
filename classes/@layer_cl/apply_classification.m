@@ -15,15 +15,15 @@ classification_file=p.Results.classification_file;
 
 disp('Applying classification');
 
-[idx_primary_freq,found]=find_freq_idx(layer,primary_freq);
 
-if ~found
+trans_obj_primary=layer.get_trans(primary_freq);
+if ~ismepty(trans_obj_primary)
     warning('Cannot find %dkHz! Cannot apply classification here....',primary_freq/1e3);
     return;
 end
 
 if isempty(idx_schools)  
-    idx_schools=layer.Transceivers(idx_primary_freq).find_regions_type('Data');
+    idx_schools=trans_obj_primary.find_regions_type('Data');
     if isempty(idx_schools)
          warning('No regions defined on %dkHz!',primary_freq/1e3);
     end
@@ -74,17 +74,16 @@ for i=1:numel(primary_freqs)
     end
 end
 
-%school_regs=layer.Transceivers(idx_primary_freq).Regions(idx_schools);
-%layer.copy_region_across(idx_primary_freq,school_regs,idx_freq);
+
 j=0;
 
 for idx_school=idx_schools
     j=j+1;
     
-    school_reg=layer.Transceivers(idx_primary_freq).Regions(idx_school);
+    school_reg=trans_obj_primary.Regions(idx_school);
     
     if ~any(idx_primary_freqs==idx_primary_freq)&&~any(idx_secondary_freqs==idx_primary_freq)
-        schools_output_temp=layer.Transceivers(idx_primary_freq).integrate_region_v2(school_reg,'denoised',0,'keep_all',1);
+        schools_output_temp=trans_obj_primary.integrate_region_v2(school_reg,'denoised',0,'keep_all',1);
     end
     
     for i=1:numel(primary_freqs)
@@ -129,13 +128,13 @@ for idx_school=idx_schools
     school_struct{j}.sv_mean=pow2db_perso(nanmean(schools_output_temp.Sv_mean_lin(:)));
     school_struct{j}.aggregation_depth_mean=nanmean(schools_output_temp.Range_mean(:));
     school_struct{j}.aggregation_depth_min=nanmax(schools_output_temp.Range_mean(:));
-    school_struct{j}.bottom_depth=nanmean(layer.Transceivers(idx_primary_freq).get_bottom_range(schools_output_temp.Ping_S(1):schools_output_temp.Ping_E(end)));
+    school_struct{j}.bottom_depth=nanmean(trans_obj_primary.get_bottom_range(schools_output_temp.Ping_S(1):schools_output_temp.Ping_E(end)));
     school_struct{j}.lat_mean=nanmean(schools_output_temp.Lat_E(:));   
 end
 
 for j=1:length(school_struct)    
    tag=class_tree_obj.apply_classification_tree(school_struct{j}); 
-   layer.Transceivers(idx_primary_freq).Regions(idx_schools(j)).Tag=tag;  
+   trans_obj_primary.Regions(idx_schools(j)).Tag=tag;  
 end
 
 end

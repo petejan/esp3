@@ -79,18 +79,18 @@ update_algos(main_figure);
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 show_status_bar(main_figure);
 
-old_bot=layer.Transceivers(idx_freq).Bottom;
+old_bot=trans_obj.Bottom;
 load_bar_comp=getappdata(main_figure,'Loading_bar');
-layer.Transceivers(idx_freq).apply_algo('BadPingsV2','load_bar_comp',load_bar_comp,'replace_bot',0);
+trans_obj.apply_algo('BadPingsV2','load_bar_comp',load_bar_comp,'replace_bot',0);
 hide_status_bar(main_figure);
 setappdata(main_figure,'Layer',layer);
-bot=layer.Transceivers(idx_freq).Bottom;
+bot=trans_obj.Bottom;
 
-add_undo_bottom_action(main_figure,layer.Transceivers(idx_freq),old_bot,bot);
+add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 set_alpha_map(main_figure);
 set_alpha_map(main_figure,'main_or_mini','mini');

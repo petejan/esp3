@@ -63,14 +63,14 @@ for i=idx_trans
                 continue;
             end
             
-            [idx_freq,found]=layer(u).find_freq_idx(38000);
-            if found==0
+            trans_obj=layer(u).get_trans(38000);
+            if isempty(trans_obj)
                 continue;
             end
             
             origin=fullfile(dPathToFile{i},sprintf('d%07d',dFileNum(i)));
             layer(u).OriginCrest=origin;
-            layer(u).Transceivers(idx_freq).apply_cw_cal(calRaw{i});
+            trans_obj.apply_cw_cal(calRaw{i});
         case 'crest'
             layer(u)=read_crest(fullfile(dPathToFile{i},sprintf('d%07d',dFileNum(i))),'PathToMemmap',datapath,'CVSCheck',0);
             idx_freq=find_freq_idx(layer(u),38000);
@@ -84,9 +84,9 @@ for i=idx_trans
      svCorr(i)=svCorr_def;
     
     if isnan(mbs.Input.absorption(i))
-        layer(u).Transceivers(idx_freq).apply_absorption(mbs.Header.default_absorption/1e3);
+        trans_obj.apply_absorption(mbs.Header.default_absorption/1e3);
     else
-        layer(u).Transceivers(idx_freq).apply_absorption(absorption(i)/1e3);
+        trans_obj.apply_absorption(absorption(i)/1e3);
     end
     
    
@@ -103,11 +103,9 @@ for i=idx_trans
             
             
         case 'sch'
-            layer(u).CVS_BottomRegions(cvsroot,'BotRev',botRev{i},'RegCVS',0);
-            %layer(u).Transceivers(idx_freq).Algo=init_algos();
-            
+            layer(u).CVS_BottomRegions(cvsroot,'BotRev',botRev{i},'RegCVS',0);            
 
-            layer(u).Transceivers(idx_freq).add_algo(algo_cl('Name','SchoolDetection','Varargin',struct(...
+            trans_obj.add_algo(algo_cl('Name','SchoolDetection','Varargin',struct(...
                 'Type','sv',...
                 'Sv_thr',-62,...
                 'l_min_can',15,...
@@ -118,19 +116,18 @@ for i=idx_trans
                 'horz_link_max',5,...
                 'vert_link_max',5)));  
        
-            layer(u).Transceivers(idx_freq).apply_algo('SchoolDetection');
-            
-            
-            rm_id=nan(1,length(layer(u).Transceivers(idx_freq).Regions));
-            for uuk=1:length(layer(u).Transceivers(idx_freq).Regions)
-                [mean_depth,~]=layer(u).Transceivers(idx_freq).get_mean_depth_from_region(layer(u).Transceivers(idx_freq).Regions(uuk).Unique_ID);
+            trans_obj.apply_algo('SchoolDetection');
+                       
+            rm_id=nan(1,length(trans_obj.Regions));
+            for uuk=1:length(trans_obj.Regions)
+                [mean_depth,~]=trans_obj.get_mean_depth_from_region(trans_obj.Regions(uuk).Unique_ID);
                 if nanmin(mean_depth)<200
-                    rm_id(uuk)=layer(u).Transceivers(idx_freq).Regions(uuk).Unique_ID;
+                    rm_id(uuk)=trans_obj.Regions(uuk).Unique_ID;
                 end
             end
             rm_id(isnan(rm_id))=[];
             for uik=1:length(rm_id)
-                layer(u).Transceivers(idx_freq).rm_region_id(rm_id(uik));
+                trans_obj.rm_region_id(rm_id(uik));
             end
     end
     surv=survey_data_cl('Voyage',voyage,'SurveyName',surveyname,'Snapshot',snapshot(i),'Stratum',stratum{i},'Transect',transect(i));

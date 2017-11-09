@@ -77,6 +77,7 @@ uimenu(uimap,'Label','Plot tracks from selected layers','Callback',{@plot_tracks
 
 str_delete='<HTML><center><FONT color="Red"><b>Delete selected layers</b></Font> ';
 lay_menu=uimenu(rc_menu,'Label','Layer Management');
+uimenu(lay_menu,'Label','Load Other Channels','Callback',{@import_other_cid_callback,layer_tab_comp.table,main_figure});
 uimenu(lay_menu,'Label','Merge Selected Layers','Callback',{@merge_selected_callback,layer_tab_comp.table,main_figure});
 uimenu(lay_menu,'Label','Split Selected Layers (per survey data)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure,1});
 uimenu(lay_menu,'Label','Split Selected Layers (per files)','Callback',{@split_selected_callback,layer_tab_comp.table,main_figure,0});
@@ -181,6 +182,46 @@ setappdata(main_figure,'Layers',layers_out);
 setappdata(main_figure,'Layer',layers_out(1));
 loadEcho(main_figure);
 end
+
+
+
+function import_other_cid_callback(src,~,table,main_figure)
+layers=getappdata(main_figure,'Layers');
+layer=getappdata(main_figure,'Layer');
+selected_layers=getappdata(table,'SelectedLayers');
+
+if isempty(layer)
+    return;
+end
+
+if isempty(selected_layers)
+    return;
+end
+
+idx=nan(1,numel(selected_layers));
+for i=1:length(selected_layers)
+    [idx(i),~]=find_layer_idx(layers,selected_layers(i));
+end
+
+idx(isnan(idx))=[];
+
+layers_to_complete=layers(idx);
+
+
+for i=1:length(layer_to_complete)
+    shuffle_layers(layers_to_shuffle,'multi_layer',-1)
+    
+end
+
+layers(idx)=[];
+
+layers_out=[layers ];
+
+setappdata(main_figure,'Layers',layers_out);
+setappdata(main_figure,'Layer',layers_out(1));
+loadEcho(main_figure);
+end
+
 
 
 function write_gps_and_depth_to_db_callback(src,~,table,main_figure)

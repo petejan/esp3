@@ -2,8 +2,8 @@ function disp_ping_config_params_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find_freq_idx(layer,curr_disp.Freq);
-trans_obj=layer.Transceivers(idx_freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+trans_obj=trans_obj;
 
 ax_main=axes_panel_comp.main_axes;
 x_lim=double(get(ax_main,'xlim'));
@@ -26,7 +26,7 @@ if ~isempty(idx_tag)
     close(hfigs(idx_tag(1)));
 end
 
-new_fig=layer.Transceivers(idx_freq).disp_config_params('idx_ping',idx_ping);
+new_fig=trans_obj.disp_config_params('idx_ping',idx_ping);
 
 hfigs_new=[hfigs new_fig];
 setappdata(main_figure,'ExternalFigures',hfigs_new);

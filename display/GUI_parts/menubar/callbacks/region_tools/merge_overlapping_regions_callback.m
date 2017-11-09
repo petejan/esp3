@@ -43,7 +43,7 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans_obj=layer.get_trans(curr_disp.Freq);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 if ~isempty(trans_obj.Regions)
     old_regs=trans_obj.Regions;
     new_regions=trans_obj.Regions.merge_regions();

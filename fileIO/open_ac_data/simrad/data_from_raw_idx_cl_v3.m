@@ -7,6 +7,7 @@ addParameter(p,'PingRange',[1 inf],@isnumeric);
 addParameter(p,'SampleRange',[1 inf],@isnumeric);
 addParameter(p,'Frequencies',[],@isnumeric);
 addParameter(p,'GPSOnly',0,@isnumeric);
+addParameter(p,'DataOnly',0,@isnumeric);
 addParameter(p,'PathToMemmap',path_f,@ischar);
 addParameter(p,'FieldNames',{});
 addParameter(p,'load_bar_comp',[]);
@@ -99,9 +100,7 @@ else
     nb_samples(nb_samples<0)=0;
 end
 
-
 nb_nmea=idx_raw_obj.get_nb_nmea_dg();
-
 
 time_nmea=idx_raw_obj.get_time_dg('NME0');
 NMEA.time= time_nmea;
@@ -173,6 +172,7 @@ param_str_init=cell(1,nb_trans);
 param_str_init(:)={''};
 
 idx_mru0=strcmp(idx_raw_obj.type_dg,'MRU0');
+
 mru0_att=attitude_nav_cl('Time',idx_raw_obj.time_dg(idx_mru0)');
 
 
@@ -315,11 +315,15 @@ for idg=1:nb_dg
             end
             
         case 'NME0'
+            if p.Results.DataOnly>0
+                continue;
+            end
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
             NMEA.type{i_nmea}=NMEA.string{i_nmea}(4:6);
         case 'FIL1'
+            
             
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             stage=fread(fid,1,'int16','l');
@@ -429,6 +433,9 @@ for idg=1:nb_dg
             end
             
         case 'MRU0'
+            if p.Results.DataOnly>0
+                continue;
+            end
             id_mru0=id_mru0+1;
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             tmp=fread(fid,1,'float32', 'l');

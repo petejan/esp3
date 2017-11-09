@@ -29,7 +29,7 @@ for ifile=1:length(reg_file_str)
     if exist(xml_file,'file')==2
         [reg_xml_old,ver_old]=parse_region_xml(xml_file);
         for ib=1:length(reg_xml_old)
-            [~,found]=find_freq_idx(layer_obj,reg_xml_old{ib}.Infos.Freq);
+            [~,found]=find_cid_idx(layer_obj,reg_xml_old{ib}.Infos.ChannelID);
             if found==0
                 if ~strcmpi(ver_old,ver)
                     ver=ver_old;
