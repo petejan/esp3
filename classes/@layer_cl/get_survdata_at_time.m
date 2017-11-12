@@ -40,7 +40,7 @@ else
         dt_after(dt_after<0)=nan;
         
         if ~any(~isnan(dt_before))
-            start_time=trans.Time(1);
+            start_time=layer_obj.Transceivers(1).Time(1);
         else
             [~,idx_start]=nanmin(dt_before);
             surv_temp=layer_obj.get_survey_data('Idx',idx_start);
@@ -48,7 +48,7 @@ else
         end
         
         if ~any(~isnan(dt_after));
-            end_time=trans.Time(end);
+            end_time=layer_obj.Transceivers(1).Time(end);
         else
             [~,idx_end]=nanmin(dt_after);
             surv_temp=layer_obj.get_survey_data('Idx',idx_end);

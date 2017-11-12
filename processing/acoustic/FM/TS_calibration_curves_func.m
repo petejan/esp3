@@ -20,24 +20,28 @@ att_model=att_list{get(calibration_tab_comp.att_model,'value')};
 f_vec_save=[];
 
 list_freq_str=cell(1,length(layer.Frequencies));
-for ki=1:length(layer.Frequencies)
-
-    list_freq_str{ki}=num2str(layer.Frequencies(ki),'%.0f');
-end
-
-[select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to calibrate',...
-    'PromptString','Choose Frequencies to calibrate','InitialValue',1:length(layer.Frequencies));
-
-if val==0||isempty(select)
-    return;
+if numel(list_freq_str)==1
+    for ki=1:length(layer.Frequencies)
+        list_freq_str{ki}=num2str(layer.Frequencies(ki),'%.0f');
+    end
+    
+    [select,val] = listdlg('ListString',list_freq_str,'SelectionMode','Multiple','Name','Choose Frequencies to calibrate',...
+        'PromptString','Choose Frequencies to calibrate','InitialValue',1:length(layer.Frequencies));
+    
+    if val==0||isempty(select)
+        return;
+    end
+else
+    select=1;
 end
 
 for uui=select
-   
-    range=double(layer.Transceivers(uui).get_transceiver_range());
-    ping_num=layer.Transceivers(uui).get_transceiver_pings();
+    trans_obj=layer.Transceivers(uui);
     
-    mask=layer.Transceivers(uui).mask_from_regions();
+    range=double(trans_obj.get_transceiver_range());
+    ping_num=trans_obj.get_transceiver_pings();
+    
+    mask=trans_obj.mask_from_regions();
     
     
     [samples_m,~]=find(mask);
@@ -62,12 +66,12 @@ for uui=select
     idx_pings=find(nansum(mask)>0);
     
     
-    Sp=layer.Transceivers(uui).Data.get_datamat('Sp');
+    Sp=trans_obj.Data.get_datamat('Sp');
     Sp(mask==0)=nan;
-    AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
-    AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
+    AlongAngle=trans_obj.Data.get_datamat('AlongAngle');
+    AcrossAngle=trans_obj.Data.get_datamat('AcrossAngle');
     
-    Freq=(layer.Transceivers(uui).Config.Frequency);
+    Freq=(trans_obj.Config.Frequency);
 
     [nb_samples,~]=size(AcrossAngle);
     
@@ -141,8 +145,8 @@ for uui=select
     fclose(fid(2));
     
     layer.apply_soundspeed(c);
-    layer.Transceivers(uui).apply_absorption(alpha/1e3);
-    range=double(layer.Transceivers(uui).get_transceiver_range());
+    trans_obj.apply_absorption(alpha/1e3);
+    range=double(trans_obj.get_transceiver_range());
     range_sph=range(idx_peak);
     
     update_axis_panel(main_figure,0);
@@ -156,7 +160,7 @@ for uui=select
     order_stacks_fig(main_figure);
 
 
-    compensation = simradBeamCompensation(layer.Transceivers(uui).Config.BeamWidthAlongship, layer.Transceivers(uui).Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
+    compensation = simradBeamCompensation(trans_obj.Config.BeamWidthAlongship, trans_obj.Config.BeamWidthAthwartship, AlongAngle_sph, AcrossAngle_sph);
     
     [phi, ~] = simradAnglesToSpherical(AlongAngle_sph, AcrossAngle_sph);
     
@@ -166,7 +170,7 @@ for uui=select
     
 
     idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>5|...
-        AlongAngle_sph>layer.Transceivers(uui).Config.BeamWidthAlongship|AcrossAngle_sph>layer.Transceivers(uui).Config.BeamWidthAthwartship;
+        AlongAngle_sph>trans_obj.Config.BeamWidthAlongship|AcrossAngle_sph>trans_obj.Config.BeamWidthAthwartship;
     
     AlongAngle_sph(idx_low)=[];
     AcrossAngle_sph(idx_low)=[];
@@ -183,11 +187,11 @@ for uui=select
     end
     
     if idx_freq==uui
-        plot(ah,layer.Transceivers(uui).get_transceiver_pings(idx_pings),idx_peak,'.k','linewidth',2);
+        plot(ah,trans_obj.get_transceiver_pings(idx_pings),idx_peak,'.k','linewidth',2);
     end
     
     
-    if strcmp(layer.Transceivers(uui).Mode,'FM')
+    if strcmp(trans_obj.Mode,'FM')
         
         xi=linspace(nanmin(AlongAngle_sph),nanmax(AlongAngle_sph),1000);
         yi=linspace(nanmin(AcrossAngle_sph),nanmax(AcrossAngle_sph),1000);
@@ -244,13 +248,13 @@ for uui=select
         end
         
          set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
-        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',trans_obj.Params.Frequency(1)/1e3));
 
            
         
         
         for kk=1:length(idx_pings)
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,[],att_m);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(trans_obj,layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,[],att_m);
             set(load_bar_comp.progress_bar, 'Value',kk);
         end
         
@@ -292,7 +296,7 @@ for uui=select
         freq_vec=f_vec(:,1);
         cal_ts=TS_f_mean;
         
-        g_c=layer.Transceivers(uui).get_current_gain();
+        g_c=trans_obj.get_current_gain();
  
         Gf_ori=g_c +10*log10(freq_vec./Freq);
 
@@ -320,9 +324,9 @@ for uui=select
           
         clear Sp_f Compensation_f TS_f f_vec TS_f_mean
     else
-       fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
+       fprintf('%s not in  FM mode\n',trans_obj.Config.ChannelID);
 
-       layer.Transceivers(uui)=process_data(layer.Transceivers(uui),layer.EnvData,idx_peak,idx_pings,sphere_ts,log_file);
+       trans_obj=process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,sphere_ts,log_file);
 
     end
 end

@@ -48,5 +48,4 @@ import_survey_data_callback([],[],main_figure);
 load_survey_data_fig_from_db(main_figure,1);
 
 
-
 end

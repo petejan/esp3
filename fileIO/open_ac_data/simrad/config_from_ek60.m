@@ -38,6 +38,7 @@ if ~isempty(pings)
     params_obj.ChannelID=cell(1,length(pings.time));
     params_obj.ChannelID(:)={config.channelid};
     params_obj.ChannelMode=pings.mode;
+    params_obj.Frequency=pings.frequency;
     params_obj.FrequencyEnd=pings.frequency;
     params_obj.FrequencyStart=pings.frequency;
     params_obj.PulseForm=zeros(1,length(pings.time));

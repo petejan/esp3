@@ -66,7 +66,7 @@ else
             [path_lay,~]=get_path_files(layer);
             path_f=path_lay{1};
     end
-     file_add=layer.Filename;
+    file_add=layer.Filename;
 end
 
 
@@ -88,21 +88,21 @@ dest_fig=getappdata(main_figure,'echo_tab_panel');
 tag=sprintf('logbook_%s',path_f);
 tab_obj=findobj(dest_fig,'Tag',tag);
 
-if ~isempty(tab_obj)
-    if strcmp(tab_obj(1).Type,'uitab')
-        tab_obj(1).Parent.SelectedTab=tab_obj(1);
-    end
+if ~isempty(tab_obj)   
     if reload==0
+        if strcmp(tab_obj(1).Type,'uitab')
+            tab_obj(1).Parent.SelectedTab=tab_obj(1);
+        end
         return;
     else
         surv_data_tab=tab_obj(1);
         surv_data_table=getappdata(surv_data_tab,'surv_data_table');
         set(surv_data_table.voy,'String',sprintf('Voyage %s, Survey: %s',data_survey{2},data_survey{1}))
-        set(surv_data_tab,'Title',sprintf('Logbook %s',data_survey{2}));    
+        set(surv_data_tab,'Title',sprintf('Logbook %s',data_survey{2}));
     end
 else
     if reload==0
-
+        
         surv_data_tab=uitab(dest_fig,'Title',sprintf('Logbook %s',data_survey{2}),'Tag',tag,'BackgroundColor','White');
         
         surv_data_table.file=uicontrol(surv_data_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[0.55 0.96 0.075 0.03],'String','File','Value',1,'Callback',{@search_callback,surv_data_tab});
@@ -193,7 +193,7 @@ if reload==0
     setappdata(surv_data_tab,'path_data',path_f);
     setappdata(surv_data_tab,'surv_data_table',surv_data_table);
     setappdata(surv_data_tab,'data_ori',survDataSummary);
-    
+    surv_data_tab.Parent.SelectedTab=surv_data_tab;
 else
     reload_logbook_fig(surv_data_tab,file_add);
 end
@@ -406,9 +406,9 @@ if ~isempty(idx_deleted)
         fprintf('Removing %s from logbook... cannot find it anymore.\n',files{i});
         dbconn.exec(sprintf('delete from logbook where Filename like "%s"',selected_files{i}));
     end
-    dbconn.close();  
-files(idx_deleted)=[];
-reload_logbook_fig(surv_data_tab,{});
+    dbconn.close();
+    files(idx_deleted)=[];
+    reload_logbook_fig(surv_data_tab,{});
 end
 
 if isempty(files)

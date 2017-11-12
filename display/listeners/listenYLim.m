@@ -35,7 +35,7 @@
 
 %% Function
 function listenYLim(src,evt,main_figure)
-%disp('listenYLim')
+disp('listenYLim')
 % profile on;
 
 layer=getappdata(main_figure,'Layer');

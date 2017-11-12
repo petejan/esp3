@@ -37,7 +37,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
     end
     
 
-	[trans_obj,idx_freq]=layer.get_trans((p.Results.Freq);
+	[trans_obj,idx_freq]=layer.get_trans(sp.Results.Freq);
 	
     if ~isempty(trans_obj)
         

@@ -68,10 +68,12 @@ axes_panel_comp.main_axes.YAxis.MinorTickValues=ydata(idx_minor_yticks);
 
 set(axes_panel_comp.main_axes,'Xgrid','on','Ygrid','on','XAxisLocation','top');
 
-set(axes_panel_comp.vaxes,'YTick',ydata(idx_yticks));
-set(axes_panel_comp.haxes,'XTick',xdata(idx_xticks));
+axes_panel_comp.haxes.XTick=xdata(idx_xticks);
+
+axes_panel_comp.vaxes.YTick=ydata(idx_yticks);
 
 set(axes_panel_comp.vaxes,'box','on');
+
 fmt=' %.0fm';
 y_labels=cellfun(@(x) num2str(x,fmt),num2cell(ydata_grid(idx_yticks)),'UniformOutput',0);
 set(axes_panel_comp.vaxes,'yticklabels',y_labels);

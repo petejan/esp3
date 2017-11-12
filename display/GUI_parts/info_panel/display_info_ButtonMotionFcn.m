@@ -188,20 +188,17 @@ try
         axh=axes_panel_comp.haxes;
         axh_plot_high=axes_panel_comp.h_axes_plot_high;
         axh_plot_low=axes_panel_comp.h_axes_plot_low;
-        %axh_text=axes_panel_comp.h_axes_text;
-        
+
         axv=axes_panel_comp.vaxes;
         axv_plot=axes_panel_comp.v_axes_plot;
         axv_text=axes_panel_comp.v_axes_text;
         
         delete(findobj(axh,'Tag','curr_val'));
         delete(findobj(axv,'Tag','curr_val'));
-        
-        
+            
         set(axv_plot,'XData',vert_val,'YData',ydata_red);
-        if bot_x_val(2)>bot_x_val(1)
-            set(axv,'ylim',y_lim,'xlim',bot_x_val)
-        end
+
+        
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
         plot(axv,bot_x_val,([bot_val bot_val]),'k','Tag','curr_val');
         
@@ -217,17 +214,7 @@ try
         
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
-        
-        if x_lim(2)>x_lim(1)
-            set(axh,'xlim',x_lim);
-        else
-           disp('Haha!!!') 
-        end
-        
-        if all(~isnan(y_val))&&y_val(2)>y_val(1)
-            set(axh,'ylim',y_val);
-        end
-            
+
             
         
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');

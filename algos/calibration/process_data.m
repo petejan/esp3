@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part 2: Processing of sphere echoes to yield calibration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function transceiver=process_data(transceiver,envData,idx_peak,idx_pings,sphere_ts,log_file)
+function trans_obj=process_data(trans_obj,envData,idx_peak,idx_pings,sphere_ts,log_file)
 
 
 % Optional single target and sphere processing parameters:
@@ -71,23 +71,23 @@ end
 % rest. For power keep the 9 samples that surround the peak too.
 
 
-Sp=transceiver.Data.get_datamat('sp');
-AlongAngle=transceiver.Data.get_datamat('alongangle');
-AcrossAngle=transceiver.Data.get_datamat('acrossangle');
+Sp=trans_obj.Data.get_datamat('sp');
+AlongAngle=trans_obj.Data.get_datamat('alongangle');
+AcrossAngle=trans_obj.Data.get_datamat('acrossangle');
 
-Power=transceiver.Data.get_datamat('power');
+Power=trans_obj.Data.get_datamat('power');
 
-[AcrossPhi,AlongPhi]=transceiver.get_phase();
+[AcrossPhi,AlongPhi]=trans_obj.get_phase();
 % AlongPhi=AlongAngle;
 % AcrossPhi=AcrossAngle;
 
-Freq=double(transceiver.Config.Frequency);
+Freq=double(trans_obj.Config.Frequency);
 freq_str=num2str(Freq);
 
 [pulselength,~]=trans_obj.get_pulse_length(1);
 
-gain=transceiver.get_current_gain();
-[sim_pulse,~]=transceiver.get_pulse();
+gain=trans_obj.get_current_gain();
+[sim_pulse,~]=trans_obj.get_pulse();
 
 Np=length(sim_pulse);
 pp = idx_peak;
@@ -128,7 +128,7 @@ data.cal.power = power;
 % amplitude is counted from the peak of the transmit pulse, which is
 % taken to occur at the range corresponding to half the transmit pulse
 % length.
-data.cal.range = transceiver.get_transceiver_range(range) - ...
+data.cal.range = trans_obj.get_transceiver_range(range) - ...
     pulselength * envData.SoundSpeed/4;
 
 data.cal.sphere_ts = sphere_ts;
@@ -145,8 +145,8 @@ clear tts range pp power
 % Extract some useful data from the data structure for convenience
 amp_ts = data.cal.ts';
 power = data.cal.power';
-faBW = transceiver.Config.BeamWidthAlongship; % [degrees]
-psBW = transceiver.Config.BeamWidthAthwartship; % [degrees]
+faBW = trans_obj.Config.BeamWidthAlongship; % [degrees]
+psBW = trans_obj.Config.BeamWidthAthwartship; % [degrees]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % % Apply an ES60 triangle wave correction to the data
@@ -342,7 +342,7 @@ for k=1:length(p.onAxisMethod)
         outby(k) = data.cal.sphere_ts - max_ts_on_axis;
     elseif strcmp(p.onAxisMethod{k}, 'mean')
         outby(k) = data.cal.sphere_ts - mean_ts_on_axis;
-        old_cal=transceiver.get_cal();
+        old_cal=trans_obj.get_cal();
         new_cal.G0=old_cal.G0-outby(k)/2;
     elseif strcmp(p.onAxisMethod{k}, 'beam fitting')
         outby(k) = data.cal.sphere_ts - peak_ts;
@@ -496,7 +496,7 @@ for ifi=1:length(fid)
     fprintf(fid(ifi),['Port/stbd offset = ' num2str(offset_ps) ' degrees (to be subtracted from EK60 angles)\n']);
     fprintf(fid(ifi),['Results obtained from ' num2str(length(sphere(:,1))) ' sphere echoes\n']);
     fprintf(fid(ifi),['Using c = ' num2str(envData.SoundSpeed) ' m/s\n']);
-    fprintf(fid(ifi),['Using alpha = ' num2str(transceiver.Params.Absorption(1)*1e3) ' dB/km\n']);
+    fprintf(fid(ifi),['Using alpha = ' num2str(trans_obj.Params.Absorption(1)*1e3) ' dB/km\n']);
     fprintf(fid(ifi),['RMS of fit to beam model out to ' num2str(fit_out_to) ' degrees = ' num2str(rms_fit) ' dB\n']);
 end
 
