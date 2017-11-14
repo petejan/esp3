@@ -8,7 +8,7 @@ load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 range=trans_obj.get_transceiver_range();
 
 r_min=nanmin(range(idx_r));
@@ -24,6 +24,7 @@ TS_f=[];
 
 leg_fig=cell(1,length(idx_sort));
 i_leg=1;
+idx_pings_red=idx_pings-idx_pings(1)+1;
 
 for uui=idx_sort
     leg_fig{i_leg}=sprintf('%.0f kHz',layer.Frequencies(uui)/1000);
@@ -35,15 +36,21 @@ for uui=idx_sort
         [~,idx_r]=nanmin(abs(range-r_max));
     end
     
+    field='sp';
+    if ismember('spdenoised',layer.Transceivers(uui).Data.Fieldname)
+        field='spdenoised';
+    end
+       
+    [Sp_red,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=layer.Transceivers(uui).get_data_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),...
+        'field',field);
     
-    Sp=layer.Transceivers(uui).Data.get_datamat('sp');
-
-
-    Sp_red=Sp(idx_r,idx_pings);
+    Sp_red(bad_data_mask|below_bot_mask)=nan;
+    Sp_red(:,bad_trans_vec)=nan;
     
-    [Sp_max,idx_peak]=nanmax(Sp_red,[],1);
-    idx_peak=idx_peak+idx_r(1)-1;
-
+    
+    [Sp_max,idx_peak_red]=nanmax(Sp_red,[],1);
+    idx_peak=idx_peak_red+idx_r(1)-1;
+   
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
         
@@ -56,7 +63,8 @@ for uui=idx_sort
             disp('No calibration file');
             cal=[];
         end
-                
+         idx_pings(isnan(Sp_max))=[];
+         idx_peak(isnan(Sp_max))=[];
          set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
         load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
 
@@ -77,15 +85,20 @@ for uui=idx_sort
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         f_vec_save=[f_vec_save;layer.Frequencies(uui)];
         
-        AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
-        AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
+        AlongAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AlongAngle');
+        AcrossAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AcrossAngle');
         
         BeamWidthAlongship=layer.Transceivers(uui).Config.BeamWidthAlongship;
         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
         
-        comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship , AcrossAngle((idx_pings-1)*length(range)+idx_peak), AlongAngle((idx_pings-1)*length(range)+idx_peak));
+        range=layer.Transceivers(uui).get_transceiver_range();
+        
+        idx_r=find(range<=r_max&range>=r_min);
+        
+        comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship , AcrossAngle((idx_pings_red-1)*length(idx_r)+idx_peak_red), AlongAngle((idx_pings_red-1)*length(idx_r)+idx_peak_red));
         comp(comp>12|comp<0)=nan;
-        TS_f=[TS_f; Sp_max+comp;];
+        
+        TS_f=[TS_f; Sp_max(~isnan(Sp_max))+comp(~isnan(Sp_max))];
     end
 end
 
@@ -115,23 +128,22 @@ if ~isempty(f_vec_save)
     xlabel('kHz')
     ylabel('TS(dB)')
     
-    choice = questdlg('Do you want to save this curve?', ...
-        'Curve save',...
-        'Yes','No', ...
-        'Yes');
-    % Handle response
-    switch choice
-        case 'Yes'
-            
-            choice_tag = questdlg('Do you want to think it is fish or krill?', ...
-                'Identification',...
-                'Fish','Krill','Neither', ...
-                'Krill');
-            curve=curve_cl('XData',f_vec_save,'YData',TS_f_mean,'Xunit','Hz','YUnit','TS(dB)','Tag',choice_tag);
-            layer.add_curves(curve);
-    end
-    
-    
+%     choice = questdlg('Do you want to save this curve?', ...
+%         'Curve save',...
+%         'Yes','No', ...
+%         'Yes');
+%     % Handle response
+%     switch choice
+%         case 'Yes'            
+%             choice_tag = questdlg('Do you want to think it is fish or krill?', ...
+%                 'Identification',...
+%                 'Fish','Krill','Neither', ...
+%                 'Krill');
+%             curve=curve_cl('XData',f_vec_save,'YData',TS_f_mean,'Xunit','Hz','YUnit','TS(dB)','Tag',choice_tag);
+%             layer.add_curves(curve);
+%     end
+%     
+%     
     setappdata(main_figure,'Layer',layer);
     %     hold on;
     %     plot(f_vec_2/1e3,ts,'k','linewidth',2)

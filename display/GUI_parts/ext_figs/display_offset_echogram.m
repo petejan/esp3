@@ -2,11 +2,14 @@ function display_offset_echogram(main_figure)
 
 
 layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
+
 if isempty(layer)
     return;
 end
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
 
 layers_Str=list_layers(layer,'nb_char',80);
 

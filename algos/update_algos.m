@@ -45,7 +45,6 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-trans_obj=trans_obj;
 
 bottom_tab_comp=getappdata(main_figure,'Bottom_tab');
 bottom_tab_v2_comp=getappdata(main_figure,'Bottom_tab_v2');

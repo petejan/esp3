@@ -7,7 +7,8 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 ah=axes_panel_comp.main_axes;
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
+
+[~,idx_freq]=layer.get_trans(curr_disp);
 
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 sphere_list=get(calibration_tab_comp.sphere,'String');
@@ -20,7 +21,7 @@ att_model=att_list{get(calibration_tab_comp.att_model,'value')};
 f_vec_save=[];
 
 list_freq_str=cell(1,length(layer.Frequencies));
-if numel(list_freq_str)==1
+if numel(list_freq_str)>1
     for ki=1:length(layer.Frequencies)
         list_freq_str{ki}=num2str(layer.Frequencies(ki),'%.0f');
     end
@@ -136,13 +137,19 @@ for uui=select
     
     % print out the parameters
     for ifi=1:length(fid)
-        fprintf(fid(ifi),['sound speed at sphere = ' num2str(c_at_sphere) ' m/s\n']);
-        fprintf(fid(ifi),['density at sphere = ' num2str(density_at_sphere) ' kg/m^3\n']);
-        fprintf(fid(ifi),['mean Absorption = ' num2str(alpha) ' dB/km\n']);
-        fprintf(fid(ifi),['mean sound speed = ' num2str(c) ' m/s\n']);
-        fprintf(fid(ifi),['sphere TS = ' num2str(sphere_ts) ' dB\n']);
+        if fid(ifi)>=0
+            fprintf(fid(ifi),['sound speed at sphere = ' num2str(c_at_sphere) ' m/s\n']);
+            fprintf(fid(ifi),['density at sphere = ' num2str(density_at_sphere) ' kg/m^3\n']);
+            fprintf(fid(ifi),['mean Absorption = ' num2str(alpha) ' dB/km\n']);
+            fprintf(fid(ifi),['mean sound speed = ' num2str(c) ' m/s\n']);
+            fprintf(fid(ifi),['sphere TS = ' num2str(sphere_ts) ' dB\n']);
+            if ifi>1
+                fclose(fid(ifi));
+            end
+        end
+        
     end
-    fclose(fid(2));
+    
     
     layer.apply_soundspeed(c);
     trans_obj.apply_absorption(alpha/1e3);
@@ -168,8 +175,7 @@ for uui=select
     
     est_ts = sphere_ts-compensation;
     
-
-    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>5|...
+    idx_low=idx_peak==idx_r(1)|abs(Sp_sph-est_ts)>12|...
         AlongAngle_sph>trans_obj.Config.BeamWidthAlongship|AcrossAngle_sph>trans_obj.Config.BeamWidthAthwartship;
     
     AlongAngle_sph(idx_low)=[];
@@ -326,7 +332,7 @@ for uui=select
     else
        fprintf('%s not in  FM mode\n',trans_obj.Config.ChannelID);
 
-       trans_obj=process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,sphere_ts,log_file);
+       trans_obj=process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,idx_r,sphere_ts,log_file);
 
     end
 end

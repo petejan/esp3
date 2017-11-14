@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part 2: Processing of sphere echoes to yield calibration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trans_obj=process_data(trans_obj,envData,idx_peak,idx_pings,sphere_ts,log_file)
+function trans_obj=process_data(trans_obj,envData,idx_peak,idx_pings,idx_r,sphere_ts,log_file)
 
 
 % Optional single target and sphere processing parameters:
@@ -49,7 +49,7 @@ p.rmsOutTo = 1;
 
 % What colour map to use for the echogram
 p.colourmap = ''; % '' or 'EK500'
-p.SpRange = [sphere_ts-p.maxdBDiff1 p.maxdBDiff1+3];
+p.SpRange = sphere_ts+[-p.maxdBDiff1 +p.maxdBDiff1];
 
 % What method to use when calculating the 'best' estimate of the on-axis
 % sphere TS. Max of on-axis echoes, mean of on-axis echoes, or the peak of
@@ -70,16 +70,20 @@ end
 % Pick out the peak amplitudes for use later on, and discard the
 % rest. For power keep the 9 samples that surround the peak too.
 
+[sim_pulse,~]=trans_obj.get_pulse();
 
-Sp=trans_obj.Data.get_datamat('sp');
-AlongAngle=trans_obj.Data.get_datamat('alongangle');
-AcrossAngle=trans_obj.Data.get_datamat('acrossangle');
+Np=length(sim_pulse);
+range_tot=trans_obj.get_transceiver_range();
+idx_r=ceil(nanmin(idx_r-Np/2)):floor(nanmax(idx_r+Np/2));
+idx_r(idx_r<=0)=[];
+idx_r(idx_r>numel(range_tot))=[];
 
-Power=trans_obj.Data.get_datamat('power');
+Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
+AlongAngle=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','alongangle');
+AcrossAngle=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','acrossangle');
+Power=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','power');
 
-[AcrossPhi,AlongPhi]=trans_obj.get_phase();
-% AlongPhi=AlongAngle;
-% AcrossPhi=AcrossAngle;
+[AcrossPhi,AlongPhi]=trans_obj.get_phase('idx_r',idx_r,'idx_ping',idx_pings);
 
 Freq=double(trans_obj.Config.Frequency);
 freq_str=num2str(Freq);
@@ -87,54 +91,51 @@ freq_str=num2str(Freq);
 [pulselength,~]=trans_obj.get_pulse_length(1);
 
 gain=trans_obj.get_current_gain();
-[sim_pulse,~]=trans_obj.get_pulse();
 
-Np=length(sim_pulse);
-pp = idx_peak;
+pp = idx_peak-idx_r(1)+1;
+idx_pings_red=1:numel(pp);
 tts = zeros(size(pp));
-range = zeros(length(pp),1);
+idx_range = zeros(length(pp),1);
 along = zeros(size(pp))';
 athwart = zeros(size(pp))';
 power = zeros(length(pp),2*Np+1);
 phase_along = zeros(length(pp),2*Np+1);
 phase_athwart = zeros(length(pp),2*Np+1);
 dt=pulselength/Np;
+
 for j = 1:length(pp)
     if (Np < pp(j) && (pp(j) + Np) < size(Sp,1))
-        tts(j) = Sp(pp(j), idx_pings(j));
-        along(j) = AlongAngle(pp(j), idx_pings(j));
-        athwart(j) = AcrossAngle(pp(j), idx_pings(j));
-        power(j,:) = Power(pp(j)-Np:pp(j)+Np, idx_pings(j));
-        phase_along(j,:) = AlongPhi(pp(j)-Np:pp(j)+Np, idx_pings(j));
-        phase_athwart(j,:) = AcrossPhi(pp(j)-Np:pp(j)+Np, idx_pings(j));
-        range(j) = pp(j);
+        tts(j) = Sp(pp(j), idx_pings_red(j));
+        along(j) = AlongAngle(pp(j), idx_pings_red(j));
+        athwart(j) = AcrossAngle(pp(j), idx_pings_red(j));
+        power(j,:) = Power(pp(j)-Np:pp(j)+Np, idx_pings_red(j));
+        phase_along(j,:) = AlongPhi(pp(j)-Np:pp(j)+Np, idx_pings_red(j));
+        phase_athwart(j,:) = AcrossPhi(pp(j)-Np:pp(j)+Np, idx_pings_red(j));
+        idx_range(j) = idx_peak(j);
     end
 end
 
-idx_keep=(range>0);
+% Convert the range from samples to metres. Range to the peak target
+% amplitude is counted from the peak of the transmit pulse, which is
+% taken to occur at the range corresponding to half the transmit pulse
+% length.
+
+idx_keep=(idx_range>0);
+idx_range=idx_range(idx_keep);
 tts= tts(idx_keep);
 along= along(idx_keep);
 athwart= athwart(idx_keep);
 power= power(idx_keep,:);
 phase_along= phase_along(idx_keep,:);
 phase_athwart = phase_athwart(idx_keep,:);
-range = range(idx_keep);
 
-
+data.cal.range = trans_obj.get_transceiver_range(idx_range) - ...
+    pulselength * envData.SoundSpeed/4;
 data.cal.ts = tts;
 data.cal.power = power;
 
-% Convert the range from samples to metres. Range to the peak target
-% amplitude is counted from the peak of the transmit pulse, which is
-% taken to occur at the range corresponding to half the transmit pulse
-% length.
-data.cal.range = trans_obj.get_transceiver_range(range) - ...
-    pulselength * envData.SoundSpeed/4;
-
 data.cal.sphere_ts = sphere_ts;
 
-
-%
 % along = along;
 % athwart = athwart;
 phase_along = phase_along';

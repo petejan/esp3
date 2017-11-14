@@ -46,7 +46,7 @@ for uui=idx_sort
        df=nanmean(diff(f_vec))/1e3;
         fig=new_echo_figure(main_figure,'Tag',sprintf('ts_ping %.0f',df));
         ax=axes();
-        echo=imagesc(ax,f_vec/1e3,r_disp,TS_f);
+        echo=image(ax,f_vec/1e3,r_disp,TS_f,'CDataMapping','scaled');
         set(echo,'AlphaData',TS_f>-80);
         xlabel('Frequency (kHz)');
         ylabel('Range(m)');

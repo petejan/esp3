@@ -34,7 +34,7 @@ if ~isempty(list_reg)
     range=trans_obj.get_transceiver_range(idx_r);
     fig=new_echo_figure(main_figure);
     ax1=axes(fig,'units','normalized','outerposition',[0 0.5 1 0.5]);
-    u=imagesc(trans_obj.Time(idx_pings),range,Sv(idx_r,idx_pings));
+    u=image(trans_obj.Time(idx_pings),range,Sv(idx_r,idx_pings),'CDataMapping','scaled');
     hold(ax1,'on');
     grid(ax1,'on')
     plot(ax1,time,mean_depth,'r','linewidth',2);

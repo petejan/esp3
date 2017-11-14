@@ -51,6 +51,7 @@ create_menu(main_figure);
 load_cursor_tool(main_figure);
 load_display_tab(main_figure,opt_panel);
 load_map_tab(main_figure,opt_panel);
+load_multi_freq_disp_tab(main_figure,opt_panel);
 display_tab_comp=getappdata(main_figure,'Display_tab');
 
 load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.60]);

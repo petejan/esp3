@@ -65,7 +65,7 @@ function offset_line_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 lines_tab_comp=getappdata(main_figure,'Lines_tab');
 
@@ -87,7 +87,8 @@ function remove_offset_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
+[trans_obj,~]=layer.get_trans(curr_disp);
+
 trans_obj.reset_transducer_depth();
 if ~isempty(layer.Lines)
     idx_line=strcmpi([layer.Lines(:).Tag],'Offset');

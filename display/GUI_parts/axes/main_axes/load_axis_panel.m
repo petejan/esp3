@@ -110,7 +110,7 @@ axes_panel_comp.main_axes.Position=[0 0 1 1];
 
 echo_init=imread(fullfile(whereisEcho,'EchoAnalysis.png'));
 
-axes_panel_comp.main_echo=imagesc(1:size(echo_init,1),1:size(echo_init,2),echo_init,'parent',axes_panel_comp.main_axes,'tag','echo');
+axes_panel_comp.main_echo=image(1:size(echo_init,1),1:size(echo_init,2),echo_init,'parent',axes_panel_comp.main_axes,'tag','echo','CDataMapping','scaled');
 axes_panel_comp.bad_transmits=image(1:size(echo_init,1),1:size(echo_init,2),nan(size(echo_init)),'parent',axes_panel_comp.main_axes,'AlphaData',0,'tag','bad_transmits');
 set(axes_panel_comp.main_axes,'xlim',[1 size(echo_init,1)],'ylim',[1 size(echo_init,2)]);
 axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,'tag','bottom');

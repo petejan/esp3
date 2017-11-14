@@ -16,7 +16,13 @@ switch tab
     case 'laylist'
         tab_comp=getappdata(main_figure,'Layer_tab');
         tab_h=tab_comp.layer_tab;
-        tt='Layers';
+        tt='Layers';       
+    case 'multi_freq'
+        tab_comp=getappdata(main_figure,'multi_freq_disp_tab');
+        tab_h=tab_comp.multi_freq_disp_tab;
+        tt='Sv(f)';
+    otherwise
+        tab_h=[];
 end
 
 if~isvalid(tab_h)
@@ -49,6 +55,8 @@ switch tab
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
         load_layer_tab(main_figure,dest_fig);
+    case 'multi_freq'
+        load_multi_freq_disp_tab(main_figure,dest_fig);
 end
 
 
@@ -65,5 +73,7 @@ switch tag
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
         load_layer_tab(main_figure,dest_fig);
+    case 'multi_freq'
+        load_multi_freq_disp_tab(main_figure,dest_fig);
 end
 end

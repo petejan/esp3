@@ -56,7 +56,7 @@ for uui=idx_sort
        df=nanmean(diff(f_vec))/1e3;
         fig=figure();
         ax=axes();
-        echo=imagesc(ax,f_vec/1e3,r_disp,Sv_f);
+        echo=image(ax,f_vec/1e3,r_disp,Sv_f,'CDataMapping','scaled');
         set(echo,'AlphaData',Sv_f>-80);
         xlabel('Frequency (kHz)');
         ylabel('Range(m)');

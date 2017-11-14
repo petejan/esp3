@@ -225,7 +225,7 @@ bs_bottom=bs_bottom+compensation+repmat(compensationAtt(:)',size(compensation,1)
 
 figure();
 subplot(2,1,1)
-imagesc(bs_bottom_uncomp);
+imagesc(image,'CDataMapping','scaled');
 title('UnCompensated BS(dB)')
 xlabel('Ping Number');
 ylabel('Sample Number');
@@ -233,7 +233,7 @@ colormap(gray)
 colorbar;
 caxis([-30 -15]);
 subplot(2,1,2)
-imagesc(bs_bottom);
+image(bs_bottom,'CDataMapping','scaled');
 title('Compensated BS(dB)')
 xlabel('Ping Number');
 ylabel('Sample Number');
@@ -246,7 +246,7 @@ alphamap=sv>=-80;
 
 figure();
 ax1=subplot(1,3,1);
-imagesc(number,range,acrossangle);
+image(number,range,acrossangle,'CDataMapping','scaled');
 hold on;
 % plot(number,bot_range,'r','linewidth',2);
 plot(number,across_est.range,'k','linewidth',2);
@@ -254,7 +254,7 @@ colormap(jet);
 title('Across Angle (deg.)')
 ylabel('Range (m)')
 ax2=subplot(1,3,2);
-imagesc(number,range,alongangle);
+image(number,range,alongangle,'CDataMapping','scaled');
 hold on;
 % plot(number,bot_range,'r','linewidth',2);
 plot(number,along_est.range,'k','linewidth',2);
@@ -262,7 +262,7 @@ colormap(jet);
 title('Along Angle (deg.)')
 xlabel('Ping Number');
 ax3=subplot(1,3,3);
-echo_sv=imagesc(number,range,sv);
+echo_sv=image(number,range,sv);
 hold on;
 % plot(number,bot_range,'r','linewidth',2);
 plot(number,amp_est.range,'k','linewidth',2);
@@ -547,7 +547,7 @@ m_proj('lambert','long',LongLim,'lat',LatLim);
 
 
 figure();
-h3=imagesc(bs_bottom);
+h3=image(bs_bottom,'CDataMapping','scaled');
 title('BS')
 grid on;
 %axis equal;

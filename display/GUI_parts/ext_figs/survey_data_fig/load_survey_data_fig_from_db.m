@@ -148,7 +148,7 @@ if reload==0
     
     
     % Column names and column format
-    columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg','Comment' 'Start Time','End Time'  'id'};
+    columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg. Tags','Comment' 'Start Time','End Time'  'id'};
     columnformat = {'logical' 'char','numeric','char','numeric','logical','char','char','char','char','numeric'};
     
     

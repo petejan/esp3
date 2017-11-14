@@ -31,12 +31,9 @@ classdef curve_cl
                 
                 obj.(props{i})=results.(props{i});
                 
-            end
-            
+            end    
         end
-        
-        
-        
+                
         function delete(obj)
             
             if ~isdeployed

@@ -75,7 +75,7 @@ else
 end
 active_reg.Cell_w_unit=src.Data{evt.Indices(1,1),7};
 
-if ~isnan(src.Data{evt.Indices(1,1),6})
+if ~isnan(src.Data{evt.Indices(1,1),8})
    active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
 else
     src.Data{evt.Indices(1,1),8}=active_reg.Cell_h;

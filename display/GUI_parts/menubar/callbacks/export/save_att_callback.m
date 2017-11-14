@@ -5,11 +5,12 @@ if isempty(layer)
     return;
 end
 
-curr_disp=getappdata(main_figure,'Curr_disp');
-layer=getappdata(main_figure,'Layer');
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
 
-trans_obj=trans_obj;
+layer=getappdata(main_figure,'Layer');
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+[trans_obj,~]=layer.get_trans(curr_disp);
+
 att_obj=trans_obj.AttitudeNavPing;
 filenames=layer.Filename;
 

@@ -116,8 +116,7 @@ if strcmp(trans_obj.Mode,'FM')
     end
     
     
-%         Gf_ori=g_c +10*log10(freq_vec./Freq);
-%         Gf=-(cal_ts-th_ts)/2+Gf_ori(:)';
+
        
     lambda=c./(f_vec);
     
@@ -125,20 +124,7 @@ if strcmp(trans_obj.Mode,'FM')
         
     Sp_f=bsxfun(@minus,bsxfun(@plus,10*log10(Prx_fft)+bsxfun(@times,2*alpha_f,r_tot),40*log10(r_tot)),10*log10(ptx*lambda.^2/(16*pi^2))+2*(Gf));
     
-    %     figure();
-    %     echo=imagesc(f_vec/1e3,r_tot,Sp_f_ping);
-    %     set(echo,'AlphaData',Sp_f_ping>-50);
-    %     xlabel('Frequency (kHz)');
-    %     ylabel('Range(m)');
-    %     caxis([-50 -35]); colormap('jet');
-    %     title(sprintf('Ping %i, Frequency resolution %.1f kHz',iPing,(c/(2*dr)/1e3)));
-    %
-    %
-    %
-    %     figure();
-    %      plot(f_vec/1e3,Sp_f_ping(idx_peak-floor(nfft/2):idx_peak-floor(nfft/2),:));
-    %      hold on;plot(f_vec/1e3,Sp_f,'k');
-    %      xlabel('Frequency (kHz)');
+  
 else
     Sp_f=[];
     compensation_f=[];

@@ -39,9 +39,7 @@ for uui=1:length(layer.Frequencies)
         else
             cal=[];
         end
-        
-       
-
+              
         [Sv_f_temp,f_vec_temp,~,~]=layer.Transceivers(uui).sv_f_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
         Sv_f_temp_mean=10*log10(nanmean(nanmean(10.^(Sv_f_temp/10))));
         Sv_f_temp_mean=permute(Sv_f_temp_mean,[2 3 1]);
@@ -56,13 +54,21 @@ for uui=1:length(layer.Frequencies)
         
         f_vec_temp=layer.Frequencies(uui);
         
-        Sv=layer.Transceivers(uui).Data.get_datamat('Sv');
-        
         range=layer.Transceivers(uui).get_transceiver_range();
 
         idx_r=find(range<=r_max&range>=r_min);
-       
-        Sv_f=[Sv_f 10*log10(nanmean(nanmean(10.^(Sv(idx_r,idx_pings)/10))))];
+             
+        field='sv';
+        if ismember('svdenoised',layer.Transceivers(uui).Data.Fieldname)
+           field='svdenoised';
+        end
+        
+        [Sv,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=layer.Transceivers(uui).get_data_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),...
+            'field',field);
+        Sv(bad_data_mask|below_bot_mask)=nan;
+        Sv(:,bad_trans_vec)=nan;
+        
+        Sv_f=[Sv_f 10*log10(nanmean(10.^(Sv(:)/10)))];
         
         f_vec=[f_vec f_vec_temp];
         clear f_vec_temp

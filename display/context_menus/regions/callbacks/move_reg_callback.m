@@ -101,7 +101,7 @@ switch main_figure.SelectionType
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);
     case 'open'
-        regCellInt=trans_obj.integrate_region_v2(reg_curr);
+        regCellInt=trans_obj.integrate_region_v3(reg_curr);
         
         if isempty(regCellInt)
             return;

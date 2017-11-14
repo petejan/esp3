@@ -19,7 +19,7 @@ classdef survey_options_cl
         Soundspeed=1500;
         SaveBot=0;
         SaveReg=0;
-        DepthMin=5;
+        DepthMin=0;
         DepthMax=Inf;
     end
     methods
@@ -34,7 +34,7 @@ classdef survey_options_cl
                 'ClassifySchool',0,'BadTransThr',100,...
                 'Soundspeed',nan,'SaveBot',0,'SaveReg',...
                 0,'Shadow_zone',0,'Shadow_zone_height',0,...
-                'MinDepth',5);
+                'DepthMin',0,'DepthMax',Inf);
             
             p = inputParser;
             

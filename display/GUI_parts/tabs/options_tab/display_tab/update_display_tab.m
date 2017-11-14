@@ -18,6 +18,7 @@ end
 
 [idx_field,~]=trans_obj.Data.find_field_idx(curr_disp.Fieldname);
 
+
 set(display_tab_comp.grid_x,'String',num2str(curr_disp.Grid_x,'%.0f'));
 set(display_tab_comp.grid_y,'String',num2str(curr_disp.Grid_y,'%.0f'));
 

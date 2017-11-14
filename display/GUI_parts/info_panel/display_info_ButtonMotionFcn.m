@@ -92,7 +92,7 @@ try
         switch curr_disp.CursorMode
             case {'Edit Bottom' 'Bad Transmits'}
                 switch curr_disp.Fieldname
-                    case {'sv','sp','sp_comp','spdenoised','spunmatched','powerunmatched','powerdenoised'}
+                    case {'sv','sp','sp_comp','spdenoised','svdenoised','spunmatched','powerunmatched','powerdenoised'}
                         sub_bot=Bottom.Sample_idx(idx_pings)-idx_r_ori;
                         sub_tag=Bottom.Tag(idx_pings);
                         sub_bot(sub_tag==0)=inf;
@@ -197,6 +197,10 @@ try
         delete(findobj(axv,'Tag','curr_val'));
             
         set(axv_plot,'XData',vert_val,'YData',ydata_red);
+        
+        if bot_x_val(2)>bot_x_val(1)
+            set(axv,'xlim',bot_x_val)
+        end
 
         
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
@@ -214,8 +218,12 @@ try
         
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
-
+    
+        if x_lim(2)>x_lim(1)
+            set(axh,'xlim',x_lim);
             
+        end
+
         
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
         

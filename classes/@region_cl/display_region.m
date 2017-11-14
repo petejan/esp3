@@ -64,7 +64,7 @@ field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
     %       profile on;
     %      output_reg_old=trans_obj.integrate_region(reg_obj);
-    output_reg=trans_obj.integrate_region_v2(reg_obj,'line_obj',p.Results.line_obj);
+    output_reg=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj);
     %     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
     %      profile off;
     %     profile viewer;

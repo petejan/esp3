@@ -68,8 +68,8 @@ uicontrol(display_tab_comp.display_tab,'Style','Text','String','Transp.%','units
 display_tab_comp.trans_bot=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.7 0.7 0.05 0.1],...
     'string',num2str(curr_disp.UnderBotTransparency,'%.0f'),'callback',{@set_bot_trans_cback,main_figure},'TooltipString','Under Bottom Data Transparency');
 
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Max','units','normalized','Position',[0.8 0.85 0.1 0.1]);
-uicontrol(display_tab_comp.display_tab,'Style','Text','String','Disp Min','units','normalized','Position',[0.8 0.7 0.1 0.1]);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Max Thr.(dB)','units','normalized','Position',[0.75 0.85 0.15 0.1]);
+uicontrol(display_tab_comp.display_tab,'Style','Text','String','Min Thr.(dB)','units','normalized','Position',[0.75 0.7 0.15 0.1]);
 
 display_tab_comp.caxis_up=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.9 0.85 0.05 0.1],'string',cax(2));
 display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit','unit','normalized','position',[0.9 0.7 0.05 0.1],'string',cax(1));

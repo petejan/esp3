@@ -139,7 +139,7 @@ output_reg=cell(1,n);
 for i=1:n
     trans=layer.Transceivers(i);
     reg=trans.get_region_from_Unique_ID(reg_curr.Unique_ID);
-    output_reg{i}=trans.integrate_region_v2(reg,'keep_bottom',1);
+    output_reg{i}=trans.integrate_region_v3(reg,'keep_bottom',1);
 end
 
 
@@ -199,7 +199,7 @@ if exist(fullfile(path_tmp,fileN),'file')>1
     delete(fullfile(path_tmp,fileN));
 end
 
-output_reg=trans_obj.integrate_region_v2(reg_curr);
+output_reg=trans_obj.integrate_region_v3(reg_curr);
 
 reg_output_sheet=reg_output_to_sheet(output_reg);
 xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,1);
@@ -222,7 +222,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-regCellInt=trans_obj.integrate_region_v2(reg_curr);
+regCellInt=trans_obj.integrate_region_v3(reg_curr);
 if isempty(regCellInt)
     return;
 end

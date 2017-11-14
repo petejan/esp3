@@ -57,8 +57,8 @@ processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'S
 set([processing_tab_comp.track_target processing_tab_comp.single_target processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bot_detec_v2 processing_tab_comp.bad_transmit processing_tab_comp.school_detec]...
     ,'Callback',{@update_process_list,main_figure})
 
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current data','units','normalized','pos',[0.6 0.70 0.2 0.15],'callback',{@process,main_figure,0});
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all current layers','units','normalized','pos',[0.6 0.50 0.2 0.15],'callback',{@process,main_figure,1});
+uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current layer','units','normalized','pos',[0.6 0.70 0.2 0.15],'callback',{@process,main_figure,0});
+uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all loaded layers','units','normalized','pos',[0.6 0.50 0.2 0.15],'callback',{@process,main_figure,1});
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Select *.raw files','units','normalized','pos',[0.6 0.30 0.2 0.15],'callback',{@process,main_figure,2});
 
 %set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'off');

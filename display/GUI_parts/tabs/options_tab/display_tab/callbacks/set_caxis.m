@@ -1,9 +1,11 @@
 function set_caxis(~,~,main_figure)
 display_tab_comp=getappdata(main_figure,'Display_tab');
-curr_disp=getappdata(main_figure,'Curr_disp');
+
 layer=getappdata(main_figure,'Layer');
 
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
+curr_disp=getappdata(main_figure,'Curr_disp');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
 if isempty(idx_freq)
     return;
 end

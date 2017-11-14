@@ -34,10 +34,10 @@ for i=1:length(fields)
     diff_cells=reg_1_f-out_reg_2.(fields{i});
     diff_mean=nanmean(diff_cells(:));
     
-    imagesc(ax2,reg_1_f,'AlphaData',alpha_1);colorbar(ax2);
-    imagesc(ax3,out_reg_2.(fields{i}),'AlphaData',~isnan(out_reg_2.(fields{i})));colorbar(ax3);
+    image(ax2,reg_1_f,'AlphaData',alpha_1,'CDataMapping','scaled');colorbar(ax2);
+    image(ax3,out_reg_2.(fields{i}),'AlphaData',~isnan(out_reg_2.(fields{i})));colorbar(ax3,'CDataMapping','scaled');
     
-    imagesc(ax,diff_cells);colorbar(ax);
+    image(ax,diff_cells,'CDataMapping','scaled');colorbar(ax);
     title(ax,sprintf('Average diff for %s: %f',fields{i},diff_mean));
     pause(0.1);
     

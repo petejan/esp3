@@ -1,11 +1,14 @@
 function import_angles_cback(~,~,main_figure) 
-curr_disp=getappdata(main_figure,'Curr_disp');
+
 layer=getappdata(main_figure,'Layer');
-idx_freq=find(layer.Frequencies==curr_disp.Freq);
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
 
 list_freq_str=cell(1,length(layer.Frequencies));
-for ki=1:length(layer.Frequencies)
 
+for ki=1:length(layer.Frequencies)
     list_freq_str{ki}=num2str(layer.Frequencies(ki),'%.0f');
 end
 

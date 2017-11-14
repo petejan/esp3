@@ -9,17 +9,6 @@ addParameter(p,'cal_eba',[],@(x) isempty(x)|isstruct(x));
 addParameter(p,'load_bar_comp',[],@(x) isempty(x)|isstruct(x));
 parse(p,trans_obj,reg_obj,varargin{:});
 
-output_reg=trans_obj.integrate_region_v2(reg_obj);
-if isempty(output_reg)
-    Sv_f=[];
-    f_vec=[];
-    pings=[];
-    r_tot=[];
-    return;
-end
-
-[N_y,N_x]=size(output_reg.nb_samples);
-
 
 range=trans_obj.get_transceiver_range(reg_obj.Idx_r);
 pings=trans_obj.get_transceiver_pings(reg_obj.Idx_pings);
@@ -27,13 +16,12 @@ pings=trans_obj.get_transceiver_pings(reg_obj.Idx_pings);
 [~,Np]=trans_obj.get_pulse_length(1);
 
 if ~isempty(p.Results.load_bar_comp)
-  set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',N_y*N_x, 'Value',0);
+  set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',numel(pings),'Value',0);
   p.Results.load_bar_comp.status_bar.setText('Sv Matrix Estimation');
 end
 
 [~,f_vec,r_tot]=trans_obj.processSv_f_r_2(p.Results.envdata,1,range,Np,p.Results.cal,p.Results.cal_eba,[]);
 Sv_f=nan(length(pings),length(r_tot),length(f_vec));
-
 
 for i=1:length(pings)
     
