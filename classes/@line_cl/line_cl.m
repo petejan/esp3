@@ -17,11 +17,10 @@ classdef line_cl < handle
     methods
         
         function obj= line_cl(varargin)
-            pause(1e-2);
-            unique_ID=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
+
             p = inputParser;
             addParameter(p,'Name','Line',@ischar);
-            addParameter(p,'ID',unique_ID,@isnumeric);
+            addParameter(p,'ID',generate_Unique_ID(),@isnumeric);
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Type','',@ischar);
             addParameter(p,'Range',[],@isnumeric);

@@ -8,7 +8,7 @@ end
 mask_inter=false(size(mask_1));
 
 for iu=1:length(regs_2)
-    if reg_1.Unique_ID==regs_2(iu).Unique_ID
+    if strcmpi(reg_1.Unique_ID,regs_2(iu).Unique_ID)
         continue;
     end
     idx_r_2=regs_2(iu).Idx_r;

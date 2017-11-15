@@ -44,7 +44,7 @@ if isempty(layer)
     return;
 end
 
-[idx,~]=find_layer_idx(layers,layer.ID_num);
+[idx,~]=find_layer_idx(layers,layer.Unique_ID);
 
 switch id
     case 'next'

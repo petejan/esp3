@@ -20,7 +20,7 @@ end
 
 ver_reg_loaded=p.Results.reg_ver;
 comment='';
-
+%profile on;
 if ~isempty(p.Results.reg_ver)
     if p.Results.reg_ver>=0
         [ver_reg_loaded,comment]=layer.create_reg_xml_from_db('reg_ver',p.Results.reg_ver);
@@ -29,7 +29,8 @@ if ~isempty(p.Results.reg_ver)
     fprintf('Regions version %d loaded\n',ver_reg_loaded);
 
 end
-
+% profile off;
+% profile viewer
 
 
 end

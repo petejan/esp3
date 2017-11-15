@@ -49,7 +49,7 @@ function pitch_roll_analysis_callback(src,~,table,main_figure)
         return;
     end
     
-    if isempty(selected_layers)
+    if numel(selected_layers)<2
         return;
     end
     pitch_av=nan(1,numel(selected_layers));

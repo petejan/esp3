@@ -10,7 +10,7 @@ layer=getappdata(main_figure,'Layer');
 idx_change_file=find(diff(trans_obj.Data.FileId)>0);
 
 state_file_lines=get(main_menu.display_file_lines,'checked');
-trans_obj=trans_obj;
+
 xdata=trans_obj.get_transceiver_pings();
 ydata=trans_obj.get_transceiver_samples();
 

@@ -58,14 +58,16 @@ reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
     'RowName',[]);
 
 reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
-set(reglist_tab_comp.table,'CellEditCallback',{@edit_reg,main_figure});
-set(reglist_tab_comp.table,'CellSelectionCallback',{@act_reg,main_figure});
-set(reglist_tab_comp.reglist_tab,'SizeChangedFcn',@resize_table);
-set(reglist_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});
+
 pos_t = getpixelposition(reglist_tab_comp.table);
 
 set(reglist_tab_comp.table,'ColumnWidth',...
     num2cell(pos_t(3)*[5/20 1/20 2/20 2/20 2/20 2/20 2/20 2/20 2/20 0]));
+
+set(reglist_tab_comp.table,'CellEditCallback',{@edit_reg,main_figure});
+set(reglist_tab_comp.table,'CellSelectionCallback',{@act_reg,main_figure});
+set(reglist_tab_comp.reglist_tab,'SizeChangedFcn',@resize_table);
+set(reglist_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});
 
 
 rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
@@ -86,7 +88,7 @@ function display_regions_callback(src,~,table,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 idx=getappdata(table,'SelectedRegs');
 if ~isempty(idx)
     for i=1:numel(idx)
@@ -109,27 +111,12 @@ end
 end
 
 function delete_regions_callback(src,~,table,main_figure)
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
 
- [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 idx=getappdata(table,'SelectedRegs');
 
-if ~isempty(idx)
-     old_regs=trans_obj.Regions;
-     
-    for i=1:numel(idx)
-        trans_obj.rm_region_id(idx(i));
-    end
-    
-    display_regions(main_figure,'both');
+delete_regions_from_uid(main_figure,idx);
 
-    add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
-    
-    order_stacks_fig(main_figure);
-    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
-    
-end
+
 end
 
 
@@ -146,7 +133,7 @@ function act_reg(src,evt,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 regions=trans_obj.Regions;
 
 
@@ -154,11 +141,11 @@ if isempty(evt.Indices)
     setappdata(src,'SelectedRegs',[]);
     return;
 else
-    selected_regs=unique([src.Data{evt.Indices(:,1),end}]);
+    selected_regs=src.Data(evt.Indices(:,1),end);
     setappdata(src,'SelectedRegs',selected_regs);
 end
 
-[idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(end,1),10});
+[idx_reg,found]=trans_obj.find_reg_idx(src.Data(evt.Indices(end,1),10));
 
 if evt.Indices(end)~=1
     return;
@@ -178,25 +165,9 @@ end
 
 active_reg=regions(idx_reg);
 
-if active_reg.Unique_ID~=curr_disp.Active_reg_ID
+if ~strcmpi(active_reg.Unique_ID,curr_disp.Active_reg_ID)
     curr_disp.Active_reg_ID=active_reg.Unique_ID;
     set_view_to_region(curr_disp.Active_reg_ID,main_figure);
-end
-
-end
-
-
-
-function resize_table(src,~)
-table=findobj(src,'Type','uitable');
-
-if~isempty(table)
-    column_width=table.ColumnWidth;
-    pos_f=getpixelposition(src);
-    width_t_old=nansum([column_width{:}]);
-    width_t_new=pos_f(3);
-    new_width=cellfun(@(x) x/width_t_old*width_t_new,column_width,'un',0);
-    set(table,'ColumnWidth',new_width);
 end
 
 end

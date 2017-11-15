@@ -8,7 +8,7 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 list_reg = trans_obj.regions_to_str();
 
 if strcmp(curr_disp.Fieldname,'sv')

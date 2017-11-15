@@ -312,7 +312,8 @@ for itype = 1:length(ftype_unique)
                     new_layers(i).load_bot_regs();
                 catch err
                     disp(err.message);
-                    fprintf('Could not load bottom and region for layer %s',list_layers(new_layers(i),'nb_char',80));
+                    lst=list_layers(new_layers(i),'nb_char',80);
+                    fprintf('Could not load bottom and region for layer %s',lst{1});
                 end
             end
             

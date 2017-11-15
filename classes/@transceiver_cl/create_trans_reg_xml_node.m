@@ -59,8 +59,10 @@ for ir=1:length(trans_obj.Regions)
                 switch splitted_reg(irs).Shape
                     case 'Polygon'
                         contours_node = docNode.createElement('contours');
+                         
                         for icont=1:length(splitted_reg(irs).X_cont)
                             contour_node = docNode.createElement('contour');
+                            
                             time_cont=datestr(time(splitted_reg(irs).Idx_pings(1)-1+splitted_reg(irs).X_cont{icont}),'yyyymmddHHMMSSFFF');
                             range_cont=range(splitted_reg(irs).Idx_r(1)+splitted_reg(irs).Y_cont{icont}-1);
                             cont_str=[];

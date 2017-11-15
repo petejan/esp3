@@ -1,7 +1,7 @@
 
 classdef layer_cl < handle
     properties
-        ID_num=0;
+        Unique_ID='';
         Filename={''};
         ChannelID={''};
         Filetype='';
@@ -30,7 +30,7 @@ classdef layer_cl < handle
             check_transceiver_class=@(transceiver_obj) isa(transceiver_obj,'transceiver_cl')|isempty(transceiver_obj);
             check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
             
-            addParameter(p,'ID_num',0,@isnumeric);
+            addParameter(p,'Unique_ID',generate_Unique_ID(),@ischar);
             addParameter(p,'Filename',{'No Data'},@(fname)(iscell(fname)));
             addParameter(p,'Filetype','',@(ftype)(ischar(ftype)));
             addParameter(p,'Transceivers',transceiver_cl.empty(),check_transceiver_class);
@@ -46,12 +46,8 @@ classdef layer_cl < handle
             
             parse(p,varargin{:});
             results=p.Results;
-            if results.ID_num==0
-                results.ID_num=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
-                pause(1e-3);
-            end
-            
-            
+
+                       
             props=fieldnames(results);
             
             for i=1:length(props)
@@ -72,10 +68,26 @@ classdef layer_cl < handle
         end
         
         function regenerate_ID_num(layer_obj)
-            layer_obj.ID_num=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
+            layer_obj.Unique_ID=generate_Unique_ID();
         end
         
-      
+        function fLim=get_flim(layer)
+           fmin=+inf;
+           fmax=-Inf;
+           
+           for it=1:length(layer.Frequencies)
+               fmin=min(fmin,layer.Transceivers(it).Config.FrequencyMinimum);
+               fmax=max(fmax,layer.Transceivers(it).Config.FrequencyMaximum);
+           end
+            fLim=[fmin fmax];
+        end
+        
+        function reg_uid=get_layer_reg_uid(layer)
+            reg_uid={};
+            for it=1:length(layer.Frequencies)
+                    reg_uid=union(reg_uid,layer.Transceivers(it).get_trans_re_uid());
+            end
+        end
         
         function rm_memaps(layer)
             
@@ -236,6 +248,7 @@ classdef layer_cl < handle
         
         function add_curves(obj,curves)
             for i=1:length(curves)
+                obj.rm_curves_per_ID(curves(i).Unique_ID);
                 obj.Curves=[obj.Curves curves(i)];
             end
         end
@@ -248,12 +261,26 @@ classdef layer_cl < handle
             tags=unique(tags);
         end
         
+        function curves_obj=get_curves_per_type(layer_obj,type)
+            if isempty(layer_obj.Curves)
+                curves_obj=[];
+            else
+                curves_obj=layer_obj.Curves(strcmp({layer_obj.Curves(:).Type},type));
+            end
+        end
+        
+         function rm_curves_per_ID(obj,ID)
+            if ~isempty(obj.Curves)
+                idx=strcmp({obj.Curves(:).Unique_ID},ID);
+                obj.Curves(idx)=[];
+            end
+        end
+        
         function idx=get_curves_per_tag(obj,tag)
-            idx=[];
-            for i=1:length(obj.Curves)
-                if strcmp(obj.Curves(i).Tag,tag);
-                    idx=[idx i];
-                end
+            if isempty(obj.Curves)
+                idx=[];
+            else
+                idx=find(strcmp({obj.Curves(:).Tag},tag));
             end
         end
         

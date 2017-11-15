@@ -50,7 +50,7 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 regions=trans_obj.Regions;
 [idx_reg,found]=trans_obj.find_reg_idx(src.Data{evt.Indices(1,1),10});
 

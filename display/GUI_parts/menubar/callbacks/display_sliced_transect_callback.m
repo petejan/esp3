@@ -12,7 +12,7 @@ Slice_w_units=curr_disp.Xaxes;
 Slice_h=curr_disp.Grid_y;
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 
 idx_reg=trans_obj.find_regions_type('Data');

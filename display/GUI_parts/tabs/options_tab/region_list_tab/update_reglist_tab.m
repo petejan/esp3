@@ -53,7 +53,6 @@ if isempty(layer)||isempty(reglist_tab_comp)
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
 
 try     
     jView = reglist_tab_comp.jScroll.getViewport();
@@ -71,7 +70,7 @@ if ~isempty(reg_uniqueID)&&new==0
         reg_table_data=update_reg_data_table(region_mod,reglist_tab_comp.table.Data);
         set(reglist_tab_comp.table,'Data',reg_table_data);
     else
-        idx_mod=find([reglist_tab_comp.table.Data{:,10}]==abs(reg_uniqueID));
+        idx_mod=find(strcmpi(reglist_tab_comp.table.Data{:,10},reg_uniqueID));
         if ~isempty(idx_mod)
             reglist_tab_comp.table.Data(idx_mod,:)=[];
         end
@@ -86,7 +85,7 @@ if isempty(curr_disp.Active_reg_ID)
     return;
 end
 
-idx_reg=find(curr_disp.Active_reg_ID==[reglist_tab_comp.table.Data{:,10}]);
+idx_reg=find(strcmpi(curr_disp.Active_reg_ID,reglist_tab_comp.table.Data(:,10)));
 
 if isempty(idx_reg)
     return;

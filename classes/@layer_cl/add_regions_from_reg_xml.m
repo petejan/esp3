@@ -80,6 +80,9 @@ for ix=1:length(reg_file_str)
             
             ID=reg_xml{i}.ID;
             Unique_ID=reg_xml{i}.Unique_ID;
+            if isnumeric(Unique_ID)
+                Unique_ID=num2str(Unique_ID,'%.0f');
+            end
             Tag=reg_xml{i}.Tag;
             if isempty(Tag)
                 Tag='';

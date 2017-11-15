@@ -16,7 +16,7 @@ for icell=1:length(layers_sorted)
     layers_out=[layers_out shuffle_layers(layers_sorted{icell},'multi_layer',-1)];
 end
 
-id_lay=layers_out(end).ID_num;
+id_lay=layers_out(end).Unique_ID;
 
 layers_out=reorder_layers_time(layers_out);
 

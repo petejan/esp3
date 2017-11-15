@@ -42,6 +42,10 @@ if ~isdeployed
     disp('Clear regions')
 end
 
+if ~iscell(ids)
+    ids={ids};
+end
+
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 mini_ax_comp=getappdata(main_figure,'Mini_axes');
@@ -54,8 +58,8 @@ for iax=1:length(main_axes_tot)
             delete(findall(main_axes_tot(iax),'tag','region','-or','tag','region_text','-or','tag','region_cont'));
     else
         for i=1:numel(ids)
-            delete(findall(main_figure,'Tag','RegionContextMenu','-and','UserData',ids(i)));
-            id_reg=findall(main_axes_tot(iax),{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',ids(i));
+            delete(findall(main_figure,'Tag','RegionContextMenu','-and','UserData',ids{i}));
+            id_reg=findall(main_axes_tot(iax),{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',ids{i});
             delete(id_reg)
         end
     end

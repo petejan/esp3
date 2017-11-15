@@ -111,7 +111,7 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 [idx_algo,found]=find_algo_idx(trans_obj,'SchoolDetection');
 if found==0

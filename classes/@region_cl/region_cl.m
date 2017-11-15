@@ -36,14 +36,11 @@ classdef region_cl
             check_w_unit=@(unit) ~isempty(strcmp(unit,{'pings','meters'}));
             check_h_unit=@(unit) ~isempty(strcmp(unit,{'samples','meters'}));
 
-            unique_ID=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
-            %num2str(unique_ID,'%.0f')
-            
             
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);
             addParameter(p,'Version',-1,@isnumeric);
-            addParameter(p,'Unique_ID',unique_ID,@isnumeric);
+            addParameter(p,'Unique_ID',generate_Unique_ID(),@ischar);
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Origin','',@ischar);
             addParameter(p,'Type','Data',check_type);
@@ -76,6 +73,7 @@ classdef region_cl
                 case 'polygon'
                     if isempty(results.X_cont)&&~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
+                        [x,y]=reduce_reg_contour(x,y,10);
                         if ~isempty(y)
                             obj.X_cont=x;
                             obj.Y_cont=y;
@@ -88,22 +86,13 @@ classdef region_cl
                         end
                         
                     elseif ~isempty(results.X_cont)&&isempty(results.MaskReg)
+                        [obj.X_cont,obj.Y_cont]=reduce_reg_contour(obj.X_cont,obj.Y_cont,10);
                         obj.Shape='Polygon';
                         obj.X_cont=results.X_cont;
                         obj.Y_cont=results.Y_cont;
                         obj.MaskReg=(obj.create_mask());
                     end
-                    idx_rem=[];
-                    for i=1:length(obj.X_cont)
-                        if length(obj.X_cont{i})<3
-                            idx_rem=union(idx_rem,i);
-                        end
-                    end
-                    
-                    obj.X_cont(idx_rem)=[];
-                    obj.Y_cont(idx_rem)=[];
-                    
-                    
+                     
                 otherwise
                     obj.Shape='Rectangular';
                     obj.X_cont=[];

@@ -48,12 +48,12 @@ function delete_layer_callback(~,~,main_figure)
         return;
     end
     
-    [idx,~]=find_layer_idx(layers,layer.ID_num);
+    [idx,~]=find_layer_idx(layers,layer.Unique_ID);
     
     str_cell=list_layers(layers(idx),'nb_char',80);
     try
         fprintf('Deleting temp files from %s\n',str_cell{1});
-        layers=layers.delete_layers(layer.ID_num);
+        layers=layers.delete_layers(layer.Unique_ID);
     catch
         fprintf('Could not clean files from %s\n',str_cell{1});
     end

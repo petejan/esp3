@@ -74,9 +74,6 @@ process_list=getappdata(main_figure,'Process');
 app_path = getappdata(main_figure,'App_path');
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 
-if layer_curr.ID_num==0
-    return;
-end
 
 if mode==0
     layer_to_proc=layer_curr;

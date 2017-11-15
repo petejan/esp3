@@ -1,4 +1,4 @@
-function TS_freq_response_func(main_figure,idx_r,idx_pings)
+function TS_freq_response_func(main_figure,reg_obj)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -8,8 +8,12 @@ load_bar_comp=getappdata(main_figure,'Loading_bar');
 
 ah=axes_panel_comp.main_axes;
 clear_lines(ah);
-[trans_obj,~]=layer.get_trans(curr_disp);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 range=trans_obj.get_transceiver_range();
+
+
+idx_r=reg_obj.Idx_r;
+idx_pings=reg_obj.Idx_pings;
 
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
@@ -26,7 +30,15 @@ leg_fig=cell(1,length(idx_sort));
 i_leg=1;
 idx_pings_red=idx_pings-idx_pings(1)+1;
 
+
+[regs,idx_freq_end]=layer.generate_regions_for_other_freqs(idx_freq,reg_obj,[]);
+
 for uui=idx_sort
+    reg=regs(idx_freq_end==uui);
+    if isempty(reg)
+        reg=reg_obj;
+    end
+    
     leg_fig{i_leg}=sprintf('%.0f kHz',layer.Frequencies(uui)/1000);
     i_leg=i_leg+1;
     range=layer.Transceivers(uui).get_transceiver_range();
@@ -41,7 +53,7 @@ for uui=idx_sort
         field='spdenoised';
     end
        
-    [Sp_red,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=layer.Transceivers(uui).get_data_from_region(region_cl('Idx_pings',idx_pings,'Idx_r',idx_r),...
+    [Sp_red,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=layer.Transceivers(uui).get_data_from_region(reg,...
         'field',field);
     
     Sp_red(bad_data_mask|below_bot_mask)=nan;

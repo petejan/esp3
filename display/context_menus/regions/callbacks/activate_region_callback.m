@@ -44,7 +44,7 @@ end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 reg_curr=trans_obj.get_region_from_Unique_ID(Unique_ID);
 
 
@@ -70,7 +70,7 @@ for i=1:length(ah)
     set(reg_text,'color',txt_col);
     
     for ireg=1:numel(trans_obj.Regions)
-        if trans_obj.Regions(ireg).Unique_ID==reg_curr.Unique_ID
+        if strcmpi(trans_obj.Regions(ireg).Unique_ID,reg_curr.Unique_ID)
            
             col=ac_data_col;
             switch trans_obj.Regions(ireg).Type

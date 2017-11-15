@@ -3,7 +3,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 ax_main=axes_panel_comp.main_axes;
 x_lim=double(get(ax_main,'xlim'));

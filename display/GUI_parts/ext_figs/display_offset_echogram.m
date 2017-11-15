@@ -19,7 +19,7 @@ if isempty(ping_new_mat)
 end
 
 h_fig=new_echo_figure(main_figure,...
-    'Tag',sprintf('OffsetData %.0f%.0f',layer.ID_num,idx_freq),'Name',['Offset ' layers_Str{1}]);
+    'Tag',sprintf('OffsetData %s%.0f',layer.Unique_ID,idx_freq),'Name',['Offset ' layers_Str{1}]);
 ax=axes('Parent',h_fig,'Units','Normalized','position',[0 0 1 1],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
 %pax=pcolor(ax,ping_new_mat,range_new_mat,data_new);
 pax=pcolor(ax,ping_new_mat,range_new_mat,data_new);

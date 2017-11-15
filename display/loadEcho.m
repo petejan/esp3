@@ -81,11 +81,11 @@ end
 setappdata(main_figure,'Curr_disp',curr_disp);
 %old_nb=curr_disp.NbLayers;
 if ~isempty(layer)
-    if layer.ID_num==curr_disp.CurrLayerID && nb_layers==curr_disp.NbLayers
+    if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
         flag = 0;
     else
         flag = 1;
-        curr_disp.CurrLayerID = layer.ID_num;
+        curr_disp.CurrLayerID = layer.Unique_ID;
         curr_disp.NbLayers    = nb_layers;
         %disp('New Layer')
     end

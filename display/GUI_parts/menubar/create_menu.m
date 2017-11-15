@@ -183,9 +183,9 @@ uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@cre
 uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
 
 
-curves_tools=uimenu(mhhh,'Label','Curves');
-uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
-uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});
+% curves_tools=uimenu(mhhh,'Label','Curves');
+% uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
+% uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});
 
 track_tools=uimenu(mhhh,'Label','Track');
 uimenu(track_tools,'Label','Plot Frequency response from Tracked targets','Callback',{@plot_freq_resp_tracks_callback,main_figure});
@@ -260,7 +260,7 @@ end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 gps_data=trans_obj.GPSDataPing;
 

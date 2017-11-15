@@ -11,7 +11,7 @@ try
         str_cell=list_layers(layers(i),'nb_char',80);
         try        
             fprintf('Deleting temp files from %s\n',str_cell{1});
-            layers=layers.delete_layers(layers(i).ID_num);
+            layers=layers.delete_layers(layers(i).Unique_ID);
         catch
             fprintf('Could not clean files from %s\n',str_cell{1});
         end

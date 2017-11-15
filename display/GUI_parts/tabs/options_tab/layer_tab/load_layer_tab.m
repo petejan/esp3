@@ -47,7 +47,7 @@ end
 layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
     'Data', [],...
     'ColumnName', {'Layers' 'ID'},...
-    'ColumnFormat', {'char' 'numeric'},...
+    'ColumnFormat', {'char' 'char'},...
     'ColumnEditable',[false false],...
     'Units','Normalized',...
     'Position',[0.01 0 0.98 1],...
@@ -55,7 +55,11 @@ layer_tab_comp.table= uitable('Parent',layer_tab_comp.layer_tab,...
     'CellSelectionCallback',{@goto_layer_cback,main_figure},...
     'BusyAction','cancel');
 
-set(layer_tab_comp.layer_tab,'SizeChangedFcn',{@resize_table,main_figure});
+pos_t = getpixelposition(layer_tab_comp.table);
+
+set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
+set(layer_tab_comp.layer_tab,'SizeChangedFcn',@resize_table);
+
 set(layer_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});
 
 jtable = findjobj(layer_tab_comp.table);
@@ -63,9 +67,6 @@ jtable = findjobj(layer_tab_comp.table);
 policy = javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 jtable.setHorizontalScrollBarPolicy(policy)
 
-pos_t = getpixelposition(layer_tab_comp.table);
-
-set(layer_tab_comp.table,'ColumnWidth',{pos_t(3), 0});
 
 rc_menu = uicontextmenu(ancestor(parent_tab_group,'figure'));
 layer_tab_comp.table.UIContextMenu =rc_menu;
@@ -84,7 +85,7 @@ uimenu(lay_menu,'Label','Split Selected Layers (per files)','Callback',{@split_s
 uimenu(lay_menu,'Label','Write GPS Data and Depth to database','Callback',{@write_gps_and_depth_to_db_callback,layer_tab_comp.table,main_figure});
 uimenu(lay_menu,'Label',str_delete,'Callback',{@delete_layers_callback,layer_tab_comp.table,main_figure});
 layer_tab_comp.jScroll = findjobj(layer_tab_comp.table, 'class','UIScrollPanel');
-selected_layers=[];
+selected_layers={};
 
 setappdata(layer_tab_comp.table,'SelectedLayers',selected_layers);
 setappdata(main_figure,'Layer_tab',layer_tab_comp);
@@ -98,7 +99,7 @@ selected_layers=getappdata(table,'SelectedLayers');
 
 idx=nan(1,numel(selected_layers));
 for i=1:length(selected_layers)   
-    [idx(i),~]=find_layer_idx(layers,selected_layers(i));  
+    [idx(i),~]=find_layer_idx(layers,selected_layers{i});  
 end
 
 if isempty(idx)
@@ -140,9 +141,9 @@ for i=1:length(selected_layers)
         return;
     end
     
-    [idx,~]=find_layer_idx(layers,selected_layers(i));
+    [idx,~]=find_layer_idx(layers,selected_layers{i});
     
-    layers=layers.delete_layers(selected_layers(i));
+    layers=layers.delete_layers(selected_layers{i});
     layer=layers(nanmin(idx,length(layers)));
     
 end
@@ -166,8 +167,7 @@ end
 
 idx=nan(1,numel(selected_layers));
 for i=1:length(selected_layers)
-
-    [idx(i),~]=find_layer_idx(layers,selected_layers(i));
+    [idx(i),~]=find_layer_idx(layers,selected_layers{i});
 end
 
 idx(isnan(idx))=[];
@@ -175,11 +175,12 @@ idx(isnan(idx))=[];
 layers_to_shuffle=layers(idx);
 
 layers(idx)=[];
-
-layers_out=[layers shuffle_layers(layers_to_shuffle,'multi_layer',-1)];
+new_lays=shuffle_layers(layers_to_shuffle,'multi_layer',-1);
+layers_out=[layers new_lays];
+layers_out=reorder_layers_time(layers_out);
 
 setappdata(main_figure,'Layers',layers_out);
-setappdata(main_figure,'Layer',layers_out(1));
+setappdata(main_figure,'Layer',new_lays(1));
 loadEcho(main_figure);
 end
 
@@ -200,7 +201,7 @@ end
 
 idx=nan(1,numel(selected_layers));
 for i=1:length(selected_layers)
-    [idx(i),~]=find_layer_idx(layers,selected_layers(i));
+    [idx(i),~]=find_layer_idx(layers,selected_layers{i});
 end
 
 idx(isnan(idx))=[];
@@ -228,7 +229,7 @@ end
 
 idx=nan(1,numel(selected_layers));
 for i=1:length(selected_layers)
-    [idx(i),~]=find_layer_idx(layers,selected_layers(i));
+    [idx(i),~]=find_layer_idx(layers,selected_layers{i});
 end
 
 idx(isnan(idx))=[];
@@ -258,7 +259,7 @@ end
 
 idx=nan(1,numel(selected_layers));
 for i=1:length(selected_layers)
-    [idx(i),~]=find_layer_idx(layers,selected_layers(i));
+    [idx(i),~]=find_layer_idx(layers,selected_layers{i});
 end
 
 idx(isnan(idx))=[];
@@ -289,7 +290,7 @@ else
 end
 
 layers_sp_out=reorder_layers_time(layers_sp_out);
-id_lay=layers_sp_out(end).ID_num;
+id_lay=layers_sp_out(end).Unique_ID;
 
 layers=[layers layers_sp_out];
 layers=reorder_layers_time(layers);
@@ -325,7 +326,7 @@ if ~isempty(evt.Indices)
         modifier = get(fig,'CurrentModifier');
         control = ismember({'shift' 'control'},modifier);
         if ~any(control)           
-            if ~(layer.ID_num==src.Data{evt.Indices(1),2})
+            if ~strcmp(layer.Unique_ID,src.Data{evt.Indices(1),2})
                 [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
                 layer=layers(idx);
                 up_display=1;
@@ -333,9 +334,9 @@ if ~isempty(evt.Indices)
         end
         
     end
-    selected_layers=unique([src.Data{evt.Indices(:,1),2}]);
+    selected_layers=src.Data(evt.Indices(:,1),2);
 else
-    selected_layers=[];
+    selected_layers={};
 end
 
 setappdata(src,'SelectedLayers',selected_layers);
@@ -345,24 +346,6 @@ if up_display>0
     setappdata(main_figure,'Layer',layer);
     check_saved_bot_reg(main_figure);
     loadEcho(main_figure);
-end
-
-end
-
-function resize_table(src,~,main_figure)
-layer_tab_comp=getappdata(main_figure,'Layer_tab');
-if isempty(layer_tab_comp)
-    return;
-end
-table=layer_tab_comp.table;
-
-if~isempty(table)&&isvalid(table)
-    column_width=table.ColumnWidth;
-    pos_f=getpixelposition(layer_tab_comp.layer_tab);
-    width_t_old=nansum([column_width{:}]);
-    width_t_new=pos_f(3);
-    new_width=cellfun(@(x) x/width_t_old*width_t_new,column_width,'un',0);
-    set(table,'ColumnWidth',new_width);
 end
 
 end

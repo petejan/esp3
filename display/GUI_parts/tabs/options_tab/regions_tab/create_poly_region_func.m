@@ -48,7 +48,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 region_tab_comp=getappdata(main_figure,'Region_tab');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 %
 % shape_types=get(region_tab_comp.shape_type,'string');
 % shape_type_idx=get(region_tab_comp.shape_type,'value');
@@ -121,7 +121,7 @@ display_regions(main_figure,'both');
 add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
 
 if ~isempty(IDs)
-    curr_disp.Active_reg_ID=IDs(end);   
+    curr_disp.Active_reg_ID=IDs{end};   
     curr_disp.Reg_changed_flag=1;
 end
 setappdata(main_figure,'Layer',layer);

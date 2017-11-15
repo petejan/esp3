@@ -7,31 +7,33 @@ classdef curve_cl
         Xunit='';
         Yunit='';
         Name='';
+        Type='';
+        Unique_ID='';
     end
     
     
     methods
         function obj = curve_cl(varargin)
             p = inputParser;
-            
-            
+                        
             addParameter(p,'XData',[],@isnumeric);
             addParameter(p,'YData',[],@isnumeric);
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Xunit','',@ischar);
             addParameter(p,'Yunit','',@ischar);
+            addParameter(p,'Type','',@ischar);
             addParameter(p,'Name','',@ischar);
+            addParameter(p,'Unique_ID',generate_Unique_ID(),@ischar);
             
             parse(p,varargin{:});
-            
+
             results=p.Results;
             props=fieldnames(results);
             
-            for i=1:length(props)
-                
-                obj.(props{i})=results.(props{i});
-                
+            for i=1:length(props)               
+                obj.(props{i})=results.(props{i});            
             end    
+
         end
                 
         function delete(obj)

@@ -226,7 +226,7 @@ switch flag
                 disp('You should install Notepad++...');
                 system(['start ' fileNames{1}]);
             end
-            pause(1);
+            pause(0.5);
             rmdir(outDir,'s');
         end
         

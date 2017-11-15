@@ -45,6 +45,7 @@ for ifi=1:length(layer_obj.Filename)
     new_layers(ifi).Filename=layer_obj.Filename(ifi);
     new_layers(ifi).Filetype=layer_obj.Filetype;
     new_layers(ifi).Frequencies=layer_obj.Frequencies;
+    new_layers(ifi).ChannelID=layer_obj.ChannelID;
     new_layers(ifi).EnvData=layer_obj.EnvData;
     
     for itrans=1:length(layer_obj.Frequencies)

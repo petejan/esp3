@@ -100,7 +100,7 @@ idx_t=idx_ts:idx_te;
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 gps_data=trans_obj.GPSDataPing;
 

@@ -55,7 +55,7 @@ end
 % layer=getappdata(main_figure,'Layer');
 % curr_disp=getappdata(main_figure,'Curr_disp');
 % [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-% trans_obj=trans_obj;
+% 
 % 
 % [shadow_zone_height_est,~] = trans_obj.get_shadow_zone_height_est();
 % 
@@ -76,7 +76,7 @@ ah=axes_panel_comp.main_axes;
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 [outer_reg,slope_est,shadow_height_est]=trans_obj.estimate_shadow_zone('DispReg',1,'intersect_only',0);
 
@@ -109,7 +109,7 @@ end
 % layer=getappdata(main_figure,'Layer');
 % curr_disp=getappdata(main_figure,'Curr_disp');
 % [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-% trans_obj=trans_obj;
+% 
 % 
 % slope_est=trans_obj.get_slope_est();
 % 
@@ -127,7 +127,7 @@ main_figure=ancestor(src,'Figure');
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 % profile on;
 
@@ -166,7 +166,7 @@ end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 trans_obj.filter_bottom('FilterWidth',w_filter);
 

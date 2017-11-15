@@ -6,7 +6,7 @@ if isempty(layer)
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 display_tab_comp=getappdata(main_figure,'Display_tab');
 
 sv=trans_obj.Data.get_datamat('sv');

@@ -65,8 +65,8 @@ try
     
     layers_Str_comp=list_layers(layers);
     data_new(:,1)=layers_Str_comp;
-    data_new(:,2)=num2cell([layers(:).ID_num]);
-    [idx,~]=find_layer_idx(layers,layer.ID_num);
+    data_new(:,2)={layers(:).Unique_ID};
+    [idx,~]=find_layer_idx(layers,layer.Unique_ID);
     
     if isempty(idx)
         return;

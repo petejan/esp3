@@ -27,8 +27,8 @@ classdef curr_state_disp_cl <handle
         Bot_changed_flag%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         UIupdate
         Proj
-        Active_reg_ID=[]
-        Active_line_ID=[]
+        Active_reg_ID=''
+        Active_line_ID=''
         Reg_changed_flag %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         R_disp=[1 inf];
     end
@@ -52,7 +52,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Grid_x',100,@isnumeric);
             addParameter(p,'Grid_y',100,@isnumeric);
             addParameter(p,'CursorMode','Normal',@ischar);
-            addParameter(p,'CurrLayerID',0,@isnumeric);
+            addParameter(p,'CurrLayerID','',@ischar);
             addParameter(p,'NbLayers',0,@isnumeric);
             addParameter(p,'Bot_changed_flag',0,@isnumeric);
             addParameter(p,'Reg_changed_flag',0,@isnumeric);

@@ -64,8 +64,8 @@ for ireg=1:numel(reg_primary)
         end
         
         sv=pow2db_perso(output_diff{ireg,i}.Sv_mean_lin(:));
-        cax(i,1)=prctile(sv(sv>-999),5);
-        cax(i,2)=prctile(sv(sv>-999),95);
+        cax(i,1)=prctile(sv(sv>-999),20)-5;
+        cax(i,2)=prctile(sv(sv>-999),80)+5;
     end    
     cax(isnan(cax(:,1)),:)=[];    
 end

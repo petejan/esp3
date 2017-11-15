@@ -56,13 +56,13 @@ switch src.SelectionType
         control = ismember({'control','shift'},modifier);
         
         if control(1)
-            mode='rectangular';
+            mode='horizontal';
         else
             return;
         end
         
     case 'extend'
-        mode='horizontal';
+        mode='rectangular';
     case 'open'
         clear_lines(ah);
         u=findobj(ah,'Tag','SelectLine','-or','Tag','SelectArea');

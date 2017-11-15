@@ -1,17 +1,21 @@
 
-function layers=delete_layers(layers,ID_num)
+function layers=delete_layers(layers,Unique_ID)
 
-if isempty(ID_num)
+if~iscell(Unique_ID)
+   Unique_ID={Unique_ID}; 
+end
+
+if isempty(Unique_ID)
     idx=1:length(layers);
 else
     idx=[];
-    for id=1:length(ID_num)
-    [idx_temp,found]=find_layer_idx(layers,ID_num(id));
+    for id=1:length(Unique_ID)
+    [idx_temp,found]=find_layer_idx(layers,Unique_ID{id});
     if found==0
         warning('Cannot find layer to be deleted');
         continue;
     end
-    idx=[idx idx_temp];
+    idx=union(idx,idx_temp);
     end
 end
 

@@ -8,11 +8,6 @@ end
     
 app_path=getappdata(main_figure,'App_path');
 
-
-if layer.ID_num==0
-    return;
-end
-
 layer.CVS_BottomRegions(app_path.cvs_root,'BotCVS',1,'RegCVS',0);
 setappdata(main_figure,'Layer',layer);
 display_bottom(main_figure);

@@ -16,7 +16,7 @@ if isempty(layer)
 end
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-trans_obj=trans_obj;
+
 
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz',curr_disp.Freq/1e3),'units','normalized','Position',[0.05 0.85 0.4 0.1],'BackgroundColor','White');
 

@@ -35,7 +35,7 @@ else
     text_size=10;
 end
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 trans=trans_obj;
 
 Number=trans.get_transceiver_pings();
@@ -63,11 +63,7 @@ for iax=1:length(main_axes_tot)
     
     if~isempty(reg_h)
         id_disp=(get(reg_h,'UserData'));
-        if iscell(id_disp)
-            id_disp=unique([id_disp{:}]);
-        else
-            id_disp=unique(id_disp(:));
-        end
+
         id_reg=trans.get_reg_Unique_IDs();
         id_rem = setdiff(id_disp,id_reg);
         if~isempty(id_rem)
@@ -143,6 +139,7 @@ for iax=1:length(main_axes_tot)
                     cdata(:,:,2)=col(2);
                     cdata(:,:,3)=col(3);
                     
+                    
                     idx_x=reg_curr.X_cont;
                     idx_y=reg_curr.Y_cont;
                     idx_x_out=cell(1,length(idx_x));
@@ -171,6 +168,7 @@ for iax=1:length(main_axes_tot)
                             continue;
                         end
                         len_cont_curr=length(x_reg{jj});
+                        
                         if ~isempty(idx_x)&&len_cont_curr>=len_cont
                             x_max=x_reg{jj};
                             y_max=y_reg{jj};
@@ -178,7 +176,7 @@ for iax=1:length(main_axes_tot)
                             x_text=nanmean(x_reg{jj});
                             y_text=nanmean(y_reg{jj});
                         end
-                        if ~any(strcmpi(reg_curr.Name,'school'))||len_cont_curr>500
+                        if ~any(strcmpi(reg_curr.Name,'school'))||len_cont_curr>100
                             line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                         end
                     end

@@ -106,6 +106,7 @@ bot_data_table.table_main = uitable('Parent',reg_bot_data_fig,...
 pos_t = getpixelposition(bot_data_table.table_main);
 set(bot_data_table.table_main,'ColumnWidth',...
     num2cell(pos_t(3)*[0.1 0.5 0.4]));
+
 rc_menu = uicontextmenu(ancestor(bot_data_table.table_main,'figure'),'tag','bot');
 uimenu(rc_menu,'Label','Load Selected bottom version','Callback',{@import_bot_reg_cback,main_figure});
 uimenu(rc_menu,'Label','Remove Selected bottom version','Callback',{@remove_selected_version,main_figure});

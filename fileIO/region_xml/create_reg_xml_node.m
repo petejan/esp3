@@ -55,6 +55,12 @@ for ir=1:length(reg_xml.Regions)
     
         reg_curr=reg_xml.Regions{ir};
         
+        if isnumeric()
+            Unique_ID=num2str(reg_curr.Unique_ID,'%.0f');
+        else
+            Unique_ID=reg_curr.Unique_ID;
+        end
+        
         region_node = docNode.createElement('region');
         region_node.setAttribute('Name',reg_curr.Name);
         region_node.setAttribute('Tag',reg_curr.Tag);
@@ -64,7 +70,7 @@ for ir=1:length(reg_xml.Regions)
         region_node.setAttribute('Cell_w_unit',reg_curr.Cell_w_unit);
         region_node.setAttribute('Cell_h_unit',reg_curr.Cell_h_unit);
         region_node.setAttribute('ID',num2str(reg_curr.ID,'%.0f'));
-        region_node.setAttribute('Unique_ID',num2str(reg_curr.Unique_ID,'%.0f'));
+        region_node.setAttribute('Unique_ID',Unique_ID);
         region_node.setAttribute('Cell_w',num2str(reg_curr.Cell_w,'%.2f'));
         region_node.setAttribute('Cell_h',num2str(reg_curr.Cell_h,'%.2f'));
         
@@ -85,6 +91,7 @@ for ir=1:length(reg_xml.Regions)
                 switch reg_curr.Shape
                     case 'Polygon'
                         contours_node = docNode.createElement('contours');
+
                         for icont=1:length(reg_curr.Contours)
                             contour_node = docNode.createElement('contour');
                             time_cont=datestr(reg_curr.Contours{icont}.Time,'yyyymmddHHMMSSFFF');

@@ -223,17 +223,17 @@ classdef transceiver_cl < handle
         
         function IDs=get_reg_Unique_IDs(trans_obj)
             if isempty(trans_obj.Regions)
-                IDs=[];
+                IDs={};
             else
-                IDs=[trans_obj.Regions(:).Unique_ID];
+                IDs={trans_obj.Regions(:).Unique_ID};
             end
         end
         
         function IDs=get_reg_first_Unique_ID(trans_obj)
             if isempty(trans_obj.Regions)
-                IDs=[];
+                IDs={};
             else
-                IDs=[trans_obj.Regions(1).Unique_ID];
+                IDs=trans_obj.Regions(1).Unique_ID;
             end
         end
         
@@ -254,12 +254,15 @@ classdef transceiver_cl < handle
         end
         
         function idx=find_regions_Unique_ID(trans_obj,ID)
+            if~iscell(ID)
+                ID={ID};
+            end
             if isempty(trans_obj.Regions)
                 idx=[];
             else
                 idx=[];
                 for i=1:length(ID)
-                    idx=union(idx,find([trans_obj.Regions(:).Unique_ID]==ID(i)));
+                    idx=union(idx,find(strcmpi({trans_obj.Regions(:).Unique_ID},ID{i})));
                 end
             end
         end
@@ -301,17 +304,15 @@ classdef transceiver_cl < handle
         end
         
         function rm_region_name(trans_obj,name)
-            reg_curr=trans_obj.Regions;
-            reg_new=[];
-            for i=1:length(reg_curr)
-                if ~strcmpi((reg_curr(i).Name),(name))
-                    reg_new=[reg_new reg_curr(i)];
-                end
+            if ~isempty(trans_obj.Regions)
+                idx=strcmpi({trans_obj.Regions(:).Name},name);
+                trans_obj.Regions(idx)=[];
             end
-            trans_obj.Regions=reg_new;
+            
         end
         
         function rm_region_name_idx_r_idx_p(trans_obj,name,idx_r,idx_p)
+            
             reg_curr=trans_obj.Regions;
             reg_new=[];
             for i=1:length(reg_curr)
@@ -323,66 +324,48 @@ classdef transceiver_cl < handle
         end
         
         function rm_regions(trans_obj)
-            reg_new=[];
-            
-            trans_obj.Regions=reg_new;
+            trans_obj.Regions=[];
         end
         
         function rm_region_name_id(trans_obj,name,ID)
-            reg_curr=trans_obj.Regions;
-            reg_new=[];
-            for i=1:length(reg_curr)
-                if ~strcmpi((reg_curr(i).Name),(name))||(reg_curr(i).ID~=ID)
-                    reg_new=[reg_new reg_curr(i)];
-                end
+            if ~isempty(trans_obj.Regions)
+                idx=strcmpi({trans_obj.Regions(:).Name},name)&([trans_obj.Regions(:).ID]==ID);
+                trans_obj.Regions(idx)=[];
             end
-            trans_obj.Regions=reg_new;
         end
         
         function rm_region_type_id(trans_obj,type,ID)
-            reg_curr=trans_obj.Regions;
-            reg_new=[];
-            for i=1:length(reg_curr)
-                if ~strcmpi((reg_curr(i).Type),(type))||(reg_curr(i).ID~=ID)
-                    reg_new=[reg_new reg_curr(i)];
-                end
+            if ~isempty(trans_obj.Regions)
+                idx=strcmpi({trans_obj.Regions(:).Type},type)&([trans_obj.Regions(:).ID]==ID);
+                trans_obj.Regions(idx)=[];
             end
-            trans_obj.Regions=reg_new;
         end
         
         function rm_region_id(trans_obj,unique_ID)
-            reg_curr=trans_obj.Regions;
-            reg_new=[];
-            for i=1:length(reg_curr)
-                if reg_curr(i).Unique_ID~=unique_ID;
-                    reg_new=[reg_new reg_curr(i)];
-                end
+            if ~isempty(trans_obj.Regions)
+                idx=strcmpi({trans_obj.Regions(:).Unique_ID},unique_ID);
+                trans_obj.Regions(idx)=[];
             end
-            if isempty(reg_new)
-                trans_obj.Regions=[];
-            else
-                trans_obj.Regions=reg_new;
-            end
+            
+            
         end
         
         function rm_region_origin(trans_obj,origin)
-            reg_curr=trans_obj.Regions;
-            reg_new=[];
-            for i=1:length(reg_curr)
-                if ~strcmpi(reg_curr(i).Origin,origin)
-                    reg_new=[reg_new reg_curr(i)];
-                end
+            if ~isempty(trans_obj.Regions)
+                idx=strcmpi({trans_obj.Regions(:).Origin},origin);
+                trans_obj.Regions(idx)=[];
             end
-            trans_obj.Regions=reg_new;
         end
         
         
         
         function id=new_id(trans_obj)
             reg_curr=trans_obj.Regions;
-            id_list=[];
-            for i=1:length(reg_curr)
-                id_list=[reg_curr(i).ID id_list];
+            
+            if ~isempty(reg_curr)
+                id_list=[reg_curr(:).ID];
+            else
+                id_list=[];
             end
             if~isempty(id_list)
                 new_id=setdiff(1:nanmax(id_list)+1,id_list);
@@ -392,32 +375,18 @@ classdef transceiver_cl < handle
             end
         end
         
-        function unique_id=new_unique_id(trans_obj)
-            reg_curr=trans_obj.Regions;
-            id_list=nan(size(reg_curr));
-            for i=1:length(reg_curr)
-                id_list(i)=reg_curr(i).Unique_ID;
-            end
-            unique_id=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
-            while any(unique_id==id_list)
-                unique_id=str2double(datestr(now,'yyyymmddHHMMSSFFF'));
-            end
-        end
-        
-        function [idx,found]=find_reg_idx(trans,u_id)
-            
-            idx=[];
-            for ii=1:length(trans.Regions)
-                
-                if u_id==trans.Regions(ii).Unique_ID
-                    idx=[idx ii];
-                    found=1;
-                end
+        function [idx,found]=find_reg_idx(trans_obj,unique_ID)
+            if ~isempty(trans_obj.Regions)
+                idx=find(strcmpi({trans_obj.Regions(:).Unique_ID},unique_ID));
+            else
+                idx=[];
             end
             
             if isempty(idx)
                 idx=1;
                 found=0;
+            else
+                found=1;
             end
             
             if length(idx)>1
@@ -427,35 +396,29 @@ classdef transceiver_cl < handle
         end
         
         function [idx,found]=find_reg_name_id(trans_obj,name,ID)
-            reg_curr=trans_obj.Regions;
-            idx=[];
-            found=0;
-            for i=1:length(reg_curr)
-                if (strcmpi((reg_curr(i).Name),(name))&&((reg_curr(i).ID)==ID))
-                    idx=[idx i];
-                    found=found+1;
-                end
+            if ~isempty(trans_obj.Regions)
+                idx=find(strcmpi({trans_obj.Regions(:).Name},name)&([trans_obj.Regions(:).ID]==ID));
+            else
+                idx=[];
             end
-            
             if isempty(idx)
                 idx=1;
                 found=0;
+            else
+                found=1;
             end
             
         end
         
         
-        function [idx,found]=find_reg_idx_id(trans,id)
-            idx=[];
-            for ii=1:length(trans.Regions)
-                if id==trans.Regions(ii).ID
-                    idx=[idx ii];
-                    found=1;
-                end
-            end
+        function [idx,found]=find_reg_idx_id(trans_obj,ID)
+            idx=strcmpi({trans_obj.Regions(:).Name},name)&([trans_obj.Regions(:).ID]==ID);
+            
             if isempty(idx)
                 idx=1;
                 found=0;
+            else
+                found=1;
             end
             
         end
@@ -502,12 +465,12 @@ classdef transceiver_cl < handle
             end
             Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(trans_obj.get_transceiver_range(idx_r),1,size(Sv_reg,2)))=NaN;
             
-            Sv_reg(Sv_reg<-70)=nan;
+            Sv_reg(Sv_reg<-90)=nan;
             range=double(trans_obj.get_transceiver_range(idx_r));
             Sa=10*log10(nansum(10.^(Sv_reg/10).*nanmean(diff(range))));
             
             mean_depth= nansum(10.^(Sv_reg/20).*repmat(range,1,size(Sv_reg,2)))./nansum(10.^(Sv_reg/20));
-            mean_depth(Sa<-70)=NaN;
+            mean_depth(Sa<-90)=NaN;
             
         end
         

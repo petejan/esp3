@@ -44,8 +44,9 @@ end
 
 layers_Str=list_layers(layer);
 new_figs=layer.AttitudeNav.display_att(main_figure);
+
 for i=1:length(new_figs)
-    set(new_figs(i),'Tag',sprintf('attitude%.0f',layer.ID_num),'Name',sprintf('Attitude  %s',layers_Str{1}));
+    set(new_figs(i),'Tag',sprintf('attitude%s',layer.Unique_ID),'Name',sprintf('Attitude  %s',layers_Str{1}));
 end
 
 end
