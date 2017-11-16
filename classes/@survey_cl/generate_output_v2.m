@@ -318,7 +318,7 @@ for isn=1:length(snaps)
             
             
             switch reg_curr.Reference
-                case 'Surface';
+                case 'Surface'
                       refType = 's';
                     if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmin(regCellInt.Ping_S(:)))
                         start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmin(regCellInt.Ping_S(:)));
@@ -330,7 +330,7 @@ for isn=1:length(snaps)
                     else
                         finish_d=0;
                     end
-                case 'Bottom';
+                case 'Bottom'
                     refType = 'b';
                     start_d = 0;
                     finish_d = 0;

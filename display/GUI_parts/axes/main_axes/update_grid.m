@@ -56,9 +56,9 @@ idx_minor_yticks=find((diff(rem(ydata_grid,dy_min))<0))+1;
 % 
 idx_xticks=idx_minor_xticks(dxmin:dxmin:end);
 idx_yticks=idx_minor_yticks(dymin:dymin:end);
-% 
-% idx_minor_xticks=setdiff(idx_minor_xticks,idx_xticks);
-% idx_minor_yticks=setdiff(idx_minor_yticks,idx_yticks);
+
+ idx_minor_xticks=setdiff(idx_minor_xticks,idx_xticks);
+ idx_minor_yticks=setdiff(idx_minor_yticks,idx_yticks);
 %
 axes_panel_comp.main_axes.XTick=xdata(idx_xticks);
 axes_panel_comp.main_axes.YTick=ydata(idx_yticks);

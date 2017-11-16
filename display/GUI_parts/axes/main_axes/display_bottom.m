@@ -3,7 +3,7 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 mini_axes_comp=getappdata(main_figure,'Mini_axes');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 idx_bottom=trans_obj.Bottom.Sample_idx;
 xdata=trans_obj.get_transceiver_pings();
@@ -32,8 +32,8 @@ else
     set(mini_axes_comp.bottom_plot,'XData',nan,'YData',nan,'visible',curr_disp.DispBottom);
 end
 
-if strcmpi(curr_disp.CursorMode,'Normal')
-    create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
-end
+
+create_context_menu_bottom(main_figure,axes_panel_comp.bottom_plot);
+
 
 end

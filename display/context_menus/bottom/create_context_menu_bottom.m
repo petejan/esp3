@@ -38,13 +38,15 @@
 function create_context_menu_bottom(~,bottom_line)
 
 delete(findall(ancestor(bottom_line,'figure'),'Tag','botCtxtMenu'));
-context_menu=uicontextmenu(ancestor(bottom_line,'figure'),'Tag','btCtxtMenu');
+context_menu=uicontextmenu(ancestor(bottom_line,'figure'),'Tag','botCtxtMenu');
 bottom_line.UIContextMenu=context_menu;
 uimenu(context_menu,'Label','Display Bottom Region','Callback',@display_bottom_region_callback);
 uimenu(context_menu,'Label','Filter Bottom','Callback',@filter_bottom_callback);
 % uimenu(context_menu,'Label','Display Slope estimation','Callback',@slope_est_callback);
 % uimenu(context_menu,'Label','Display Shadow zone height estimation','Callback',@shadow_zone_est_callback);
 uimenu(context_menu,'Label','Display Shadow zone content estimation (10m X 10m)','Callback',@shadow_zone_content_est_callback);
+uimenu(context_menu,'Label','Copy Bottom to higher Frequencies','Callback',@copy_bottom_cback);
+
 
 end
 
@@ -67,6 +69,28 @@ end
 % ylabel(ax,'Shadow Zone (m)');
 % 
 % end
+
+function copy_bottom_cback(src,~)
+main_figure=ancestor(src,'Figure');
+
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+[~,idx_freq]=layer.get_trans(curr_disp);
+
+idx_higher_freq=find(layer.Frequencies>layer.Frequencies(idx_freq));
+
+
+[bots,idx_higher_freq]=layer.generate_bottoms_for_other_freqs(idx_freq,idx_higher_freq);
+
+for i=1:numel(idx_higher_freq)
+    old_bot=layer.Transceivers(idx_higher_freq(i)).Bottom;
+    layer.Transceivers(idx_higher_freq(i)).setBottom(bots(i));
+    add_undo_bottom_action(main_figure,layer.Transceivers(idx_higher_freq(i)),old_bot,bots(i));
+end
+
+disp('Bottom copied to higher frequencies.')
+
+end
 
 function shadow_zone_content_est_callback(src,~)
 main_figure=ancestor(src,'Figure');

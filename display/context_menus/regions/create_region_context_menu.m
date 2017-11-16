@@ -42,7 +42,7 @@ function create_region_context_menu(reg_plot,main_figure,ID)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 switch class(ID)
     case 'matlab.graphics.primitive.Patch'

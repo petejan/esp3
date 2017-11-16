@@ -41,7 +41,7 @@ function listenYLim(src,evt,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 ax=evt.AffectedObject;
 x_lim=get(ax,'XLim');
 y_lim=get(ax,'YLim');
@@ -62,7 +62,6 @@ display_file_lines(main_figure);
 display_survdata_lines(main_figure);
 set_alpha_map(main_figure);
 order_stacks_fig(main_figure);
-
 %curr_disp.R_disp
 
 mini_ax_comp=getappdata(main_figure,'Mini_axes');

@@ -69,9 +69,9 @@ else
 end
 
 
-if strcmpi(curr_disp.CursorMode,'Normal')  
-    create_context_menu_main_echo(main_figure);
-end
+% if strcmpi(curr_disp.CursorMode,'Normal')  
+%     create_context_menu_main_echo(main_figure);
+% end
 
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
