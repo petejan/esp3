@@ -228,13 +228,13 @@ for isn=1:length(snaps)
             reg_tot=struct('name','','id',nan,'unique_id',nan,'startDepth',nan,'finishDepth',nan,'startSlice',nan,'finishSlice',nan);
         end
         
-        if ~isempty(~isnan([reg_tot(:).id]))
-            idx_reg=trans_obj_tr.find_regions_Unique_ID([reg_tot(:).id]);
+        if ~isempty(~strcmp({reg_tot(:).id},''))
+            idx_reg=trans_obj_tr.find_regions_Unique_ID({reg_tot(:).id});
         else
             idx_reg=[];
         end
        
-        
+        %%%%%%%%%%Transect Integration%%%%%%%%
         [output_2D_surf,output_2D_bot,regs,regCellInt_tot,output_2D_sh,shadow_height_est]=trans_obj_tr.slice_transect2D_new_int(...
             'Slice_w',vert_slice,'Slice_w_units',vert_slice_units,...
             'Slice_h',horz_slice,...
@@ -247,6 +247,10 @@ for isn=1:length(snaps)
             'DepthMax',surv_in_obj.Options.DepthMax,...
             'RegInt',1,...
             'idx_regs',idx_reg);
+        %%%%%%%%%%
+        
+        
+             
         num_slice=size(output_2D_surf.eint,2);
   
         surf_slice_int=nansum(output_2D_surf.eint);
@@ -370,7 +374,7 @@ for isn=1:length(snaps)
             surv_out_obj.regionSum.mean_d(i_reg)=mean_bot(ir);
             surv_out_obj.regionSum.finish_d(i_reg)=finish_d;
             surv_out_obj.regionSum.av_speed(i_reg)=av_speed(ir);
-            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_esp2));
+            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_tot));
             surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nanmax(regCellInt.Nb_good_pings_esp2));%Abscf Region
             surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
             

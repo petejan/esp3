@@ -16,8 +16,8 @@ classification_file=p.Results.classification_file;
 disp('Applying classification');
 
 
-trans_obj_primary=layer.get_trans(primary_freq);
-if ~ismepty(trans_obj_primary)
+[trans_obj_primary,idx_primary_freq]=layer.get_trans(primary_freq);
+if isempty(trans_obj_primary)
     warning('Cannot find %dkHz! Cannot apply classification here....',primary_freq/1e3);
     return;
 end

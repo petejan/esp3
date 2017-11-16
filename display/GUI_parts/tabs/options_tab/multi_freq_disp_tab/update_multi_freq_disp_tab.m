@@ -38,8 +38,7 @@ else
     else
         idx_new=1:numel(curves);
     end
-       
-
+     
 end
 
 

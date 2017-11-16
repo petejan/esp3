@@ -33,7 +33,7 @@ uimenu(rc_menu,'Label','Produce Sv(f) curves from regions','Callback',{@add_sv_c
 multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_disp_tab,'Units','normalized','box','on',...
      'OuterPosition',[0 0 2/3 1],'visible','off','NextPlot','add','box','on');
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelFormat='%.0fkHz';
- multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=45;
+ multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=0;
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
 
 

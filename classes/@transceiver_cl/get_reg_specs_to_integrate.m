@@ -68,7 +68,7 @@ for in=1:length(tags)
     end
 end
 if ~isempty(reg_tot)
-    ids=[reg_tot(:).id];
+    ids={reg_tot(:).id};
     [ids_unique,ia,~]=unique(ids);
     if length(ids_unique)<length(ids)
         reg_tot=reg_tot(ia);
