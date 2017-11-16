@@ -2,7 +2,8 @@
             % and if defined in surv_obj.SurvOutput into a text file
 
             fids = fopen(file, 'w+');
-            for i = 1:length(fids);
+            for i = 1:length(fids)
+                
                 fid = fids(i);
                 
                 %% Header
@@ -27,7 +28,6 @@
                 fprintf(fid,'computer: %s\n',cmp_out);
                 [~,usr_out]=system('echo %username%');
                 fprintf(fid,'user: %s\n', usr_out);
-
                 
                 %% Stratum Summary              
                 str=surv_obj.SurvOutput.sprint_stratumSum();
@@ -41,7 +41,6 @@
                 str=surv_obj.SurvOutput.sprint_slicedTransectSum();
                 fwrite(fid,str);
                 
-
                 %% Region Summary
                 str=surv_obj.SurvOutput.sprint_regionSum();
                 fwrite(fid,str);

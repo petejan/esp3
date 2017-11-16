@@ -52,76 +52,139 @@ Example follows: -->
 
 <!-- NEW bottom detection algorithm
 tag "BottomDetectionV2" with following attributes:
-* denoised:
-* idx_pings:
-* idx_r:
-* r_max:
-* r_min:
-* shift_bot:
-* thr_backstep:
-* thr_bottom:
-* thr_cum:
-* thr_echo:
+
+I think the first two is to allow applying algo to subsets of pings and range. They do not appear in the GUI, which leaves them empty []
+	idx_pings:
+	idx_r: 		
+
+First is the flag whether to apply on denoised data or not
+	denoised: "Compute on Denoised data" flag (1 to activate, 0 otherwise)
+
+Minimum and maximum depth
+	r_min: "Min Depth(m)" value
+	r_max: "Max Depth(m)" value
+
+Parameters of the actual algorithm, in order of their use.
+	thr_bottom:   "BS thr(dB)" value. Defines the minimum BS value above which to find local maxima.
+	thr_echo: 	  "Around Echo Thr(dB)" value. Defines the dB offset from local maxima to consider data to keep.
+	thr_cum: 	  "Cumul.Thr(%)" value. Defines the location of the bottom after kept data was arranged as a cummulative sum.
+	thr_backstep: "Back Thr(dB)" value. Backsteps towards origin.
+
+Last is the possibility to offset the result by a constant
+	shift_bot: "Shift Bottom(m)" value
+
+Default basic settings:
+	idx_pings=""
+	idx_r=""
+	denoised="0"
+	r_min="0.19"
+	r_max="999.69"
+	shift_bot="0"
+
+Default "Flat Hard" settings:
+	thr_bottom="-30"
+	thr_echo="-20"
+	thr_cum="10"
+	thr_backstep="1"
+	
+Default "Flat Soft" settings:
+	thr_bottom="-40"
+	thr_echo="-30"
+	thr_cum="0.01"
+	thr_backstep="-3"
+	
+Default "Hills" settings:
+	thr_bottom="-45"
+	thr_echo="-20"
+	thr_cum="0.01"
+	thr_backstep="-3"
+
 />
 Example follows: -->
 <BottomDetectionV2
-	denoised="0.000000"
+	
 	idx_pings=""
 	idx_r=""
-	r_max="Inf"
+
+	denoised="0.000000"
+
 	r_min="0.000000"
-	shift_bot="0.000000"
-	thr_backstep="-1.000000"
+	r_max="Inf"
+
 	thr_bottom="-45.000000"
-	thr_cum="1.000000"
 	thr_echo="-40.000000"
+	thr_cum="1.000000"
+	thr_backstep="-1.000000"
+
+	shift_bot="0.000000"
+
 />
 
 
 
 <!-- Bottom detect + bad transmit detection algorithm
 tag "BadPings" with following attributes:
-* botDetecVer:
-* denoised:
-* horz_filt:
-* r_max:
-* r_min:
-* shift_bot:
-* thr_backstep:
-* thr_bottom:
-* vert_filt:
-* thr_cum:
-* thr_echo:
-* Above:
-* BS_std:
-* BS_std_bool:
-* Below:
-* thr_spikes_Above:
-* thr_spikes_Below:
+
+	botDetecVer: the version of the bottom detection agorithm, V1 or V2
+
+Next, the common parameters for both bottom detect algorithms:
+	denoised:
+	r_min:
+	r_max:
+	thr_backstep:
+	thr_bottom:
+	shift_bot:
+	
+Next, the parameters specific to V1:
+	vert_filt:
+	horz_filt:
+
+Next, the parameters specific to V2:
+	thr_echo:
+	thr_cum:
+
+Finally, the paramaters for the bad transmit algorithm. They consist of a flag to activate use of said parameter (1) and value for parameter
+	BS_std_bool: flag to activate use of "BS fluct. limit (dB)", aka BS_std
+	BS_std: value for "BS fluct. limit (dB)"
+	Above: flag to activate use of "Above bot. PDF thr. (%)", aka thr_spikes_Above
+	thr_spikes_Above: value for "Above bot. PDF thr. (%)"
+	Below: flag to activate use of "Below bot. PDF thr. (%)", aka thr_spikes_Below
+	thr_spikes_Below: value for "Below bot. PDF thr. (%)"
+
+default settings are:
+	botDetecVer="V2"
+	... which params?
+	BS_std_bool="1"
+	BS_std="6"
+	Above="1"
+	thr_spikes_Above="3"
+	Below="0"
+	thr_spikes_Below="3"
+
 />
 Example follows: -->
 <BadPings
 
 	botDetecVer="V2"
-	
+
 	denoised="0.000000"
-	horz_filt="50.000000"
-	r_max="Inf"
 	r_min="0.000000"
-	shift_bot="0.000000"
+	r_max="Inf"
 	thr_backstep="-1.000000"
 	thr_bottom="-35.000000"
+	shift_bot="0.000000"
+
 	vert_filt="10.000000"
-	
-	thr_cum="1.000000"
+	horz_filt="50.000000"
+
 	thr_echo="-40.000000"
-	
-	Above="1.000000"
-	BS_std="6.000000"
+	thr_cum="1.000000"
+
 	BS_std_bool="1.000000"
-	Below="0.000000"
-	
+	BS_std="6.000000"
+	Above="1.000000"
 	thr_spikes_Above="3.000000"
+	Below="0.000000"
 	thr_spikes_Below="3.000000"
 	
 />
