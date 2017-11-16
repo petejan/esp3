@@ -321,7 +321,12 @@ for idg=1:nb_dg
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
-            NMEA.type{i_nmea}=NMEA.string{i_nmea}(4:6);
+            if numel(NMEA.string{i_nmea})>=6
+                NMEA.type{i_nmea}=NMEA.string{i_nmea}(4:6);
+            else
+                NMEA.type{i_nmea}='';
+                %NMEA.string{i_nmea}
+            end
         case 'FIL1'
             
             

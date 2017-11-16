@@ -66,8 +66,7 @@ parse(p,Filename,ftype,varargin{:});
             multi_lay_mode=0;
             
         case 'dfile'
- 
-            switch dfile
+             switch p.Results.dfile
                 case 1
                     new_layers=read_crest(Filename,...
                         'PathToMemmap',p.Results.PathToMemmap,'CVSCheck',p.Results.CVSCheck,'CVSroot',p.Results.CVSroot,'SvCorr',p.Results.SvCorr);
