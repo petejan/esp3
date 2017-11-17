@@ -139,9 +139,9 @@ show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 trans_obj.apply_algo('TrackTarget','load_bar_comp',load_bar_comp);
 hide_status_bar(main_figure);
-
-layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
-
+if~isempty(layer.Curves)
+    layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
+end
 setappdata(main_figure,'Layer',layer);
 display_tracks(main_figure);
 update_track_target_tab(main_figure);

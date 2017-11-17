@@ -178,18 +178,9 @@ uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@cre
 uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
 
 
-% curves_tools=uimenu(mhhh,'Label','Curves');
-% uimenu(curves_tools,'Label','Plot Curves by Tag','Callback',{@plot_curves_callback,main_figure});
-% uimenu(curves_tools,'Label','Clear Curves','Callback',{@clear_curves_callback,main_figure});
 
 track_tools=uimenu(mhhh,'Label','Track');
-uimenu(track_tools,'Label','Plot Frequency response from Tracked targets','Callback',{@plot_freq_resp_tracks_callback,main_figure});
-uimenu(track_tools,'Label','Plot Histogram from Tracked Targets','Callback',{@plot_hist_tracks_callback,main_figure});
 uimenu(track_tools,'Label','Create Exclude Regions from Tracked targets','Callback',{@create_regs_from_tracks_callback,'Bad Data',main_figure});
-
-uimenu(track_tools,'Label','Plot Histogram from Single Targets','Callback',{@plot_hist_st_callback,main_figure});
-uimenu(track_tools,'Label','Plot Single Targets positions','Callback',{@plot_st_pos_callback,main_figure,'st'});
-uimenu(track_tools,'Label','Plot Tracks positions','Callback',{@plot_st_pos_callback,main_figure,'tracks'});
 
 survey_tools=uimenu(mhhh,'Label','Survey Results');
 uimenu(survey_tools,'Label','Plot survey time series from Survey Output files','Callback',{@plot_survey_results_callback,main_figure});

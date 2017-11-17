@@ -82,7 +82,9 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 [trans_obj,~]=layer.get_trans(curr_disp);
 tracks = trans_obj.Tracks;
-layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
+if~isempty(layer.Curves)
+    layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
+end
 if isempty(tracks)
     return;
 end

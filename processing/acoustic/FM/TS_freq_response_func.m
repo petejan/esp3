@@ -13,7 +13,6 @@ range=trans_obj.get_transceiver_range();
 
 idx_r=reg_obj.Idx_r;
 
-r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
 
 f_vec=[];
@@ -31,6 +30,7 @@ i_leg=1;
 
 for uui=idx_sort
     reg=regs(idx_freq_end==uui);
+    
     if isempty(reg)
         reg=reg_obj;
     end
@@ -41,7 +41,7 @@ for uui=idx_sort
     
     idx_r=reg.Idx_r;
     idx_pings=reg.Idx_pings;
-    idx_pings_red=idx_pings-idx_pings(1)+1;
+    idx_pings_red=1:numel(idx_pings);
 
     if isempty(idx_r)
         [~,idx_r]=nanmin(abs(range-r_max));
@@ -61,7 +61,7 @@ for uui=idx_sort
     
     
     [Sp_max,idx_peak_red]=nanmax(Sp_red,[],1);
-    idx_peak=idx_peak_red+idx_r(1)-1;
+    idx_peak=idx_r(idx_peak_red);
     
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
