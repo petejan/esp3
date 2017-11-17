@@ -40,7 +40,7 @@ uimenu(rc_menu,'Label',['Produce ' tab_name ' curves from regions'],'Callback',{
 switch tab_tag
     case 'sv_f'
     case 'ts_f'
-        %uimenu(rc_menu,'Label',['Produce ' tab_name ' curves from regions'],'Callback',{@add_ts_curves_from_tracks_cback,main_figure});
+        uimenu(rc_menu,'Label',['Produce ' tab_name ' curves from tracks'],'Callback',{@add_ts_curves_from_tracks_cback,main_figure});
 end
 
 
@@ -81,12 +81,26 @@ function add_ts_curves_from_tracks_cback(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 [trans_obj,~]=layer.get_trans(curr_disp);
+tracks = trans_obj.Tracks;
+layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
+if isempty(tracks)
+    return;
+end
+ST = trans_obj.ST;
+X_st=ST.Ping_number;
+Y_st=ST.idx_r;
+if isempty(tracks.target_id)
+    return;
+end
 
-% 
-% for i=1:length(trans_obj.Tracks)
-%     TS_freq_response_func(main_figure,trans_obj.Regions(i)) ;
-% end
-        
+for k=1:length(tracks.target_id)
+    idx_targets=tracks.target_id{k};
+    idx_pings=X_st(idx_targets);
+    idx_r=Y_st(idx_targets);
+    reg_obj=region_cl('Name','Tracks','Idx_r',idx_r,'Idx_pings',idx_pings,'ID',k,'Unique_ID',sprintf('track%.0f',k));
+    TS_freq_response_func(main_figure,reg_obj) ;
+end
+
 end
 
 

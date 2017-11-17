@@ -11,9 +11,7 @@ clear_lines(ah);
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 range=trans_obj.get_transceiver_range();
 
-
 idx_r=reg_obj.Idx_r;
-idx_pings=reg_obj.Idx_pings;
 
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
@@ -28,8 +26,6 @@ TS_f=[];
 
 leg_fig=cell(1,length(idx_sort));
 i_leg=1;
-idx_pings_red=idx_pings-idx_pings(1)+1;
-
 
 [regs,idx_freq_end]=layer.generate_regions_for_other_freqs(idx_freq,reg_obj,[]);
 
@@ -42,10 +38,14 @@ for uui=idx_sort
     leg_fig{i_leg}=sprintf('%.0f kHz',layer.Frequencies(uui)/1000);
     i_leg=i_leg+1;
     range=layer.Transceivers(uui).get_transceiver_range();
-    idx_r=find(range<=r_max&range>=r_min);
     
+    idx_r=reg.Idx_r;
+    idx_pings=reg.Idx_pings;
+    idx_pings_red=idx_pings-idx_pings(1)+1;
+
     if isempty(idx_r)
         [~,idx_r]=nanmin(abs(range-r_max));
+        reg.Idx_r=idx_r;
     end
     
     field='sp';
@@ -115,9 +115,7 @@ for uui=idx_sort
         clear Sp_f Compensation_f  f_vec_temp
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-         range=layer.Transceivers(uui).get_transceiver_range();
-         idx_r=find(range<=r_max&range>=r_min); 
-        
+
         AlongAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AlongAngle');
         AcrossAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AcrossAngle');
         
