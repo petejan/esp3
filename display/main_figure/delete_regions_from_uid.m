@@ -13,6 +13,7 @@ end
 
 [trans_obj,~]=layer.get_trans(curr_disp);
 if ~isempty(uid)
+    
     old_regs=trans_obj.Regions;
     
     for i=1:numel(uid)
@@ -20,12 +21,20 @@ if ~isempty(uid)
         layer.rm_curves_per_ID(uid{i});
     end
     
+    add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+    
     display_regions(main_figure,'both');
     
-    add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
-    update_multi_freq_disp_tab(main_figure);
+    update_multi_freq_disp_tab(main_figure,'sv_f');
+    update_multi_freq_disp_tab(main_figure,'ts_f');
+    
+    if ~isempty(trans_obj.Regions)
+        curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(uid{1}-1,1)).Unique_ID;
+    else
+        curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+    end
+        
     order_stacks_fig(main_figure);
-    curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 end
 
 end

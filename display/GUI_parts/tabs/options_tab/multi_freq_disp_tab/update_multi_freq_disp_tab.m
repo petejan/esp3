@@ -1,10 +1,24 @@
-function update_multi_freq_disp_tab(main_figure)
+function update_multi_freq_disp_tab(main_figure,tab_tag)
+
+switch tab_tag
+    case 'sv_f'
+        tab_name='Sv(f)';
+    case 'ts_f'
+        tab_name='TS(f)';      
+end
+
+
+multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
+if isempty(multi_freq_disp_tab_comp)
+    opt_panel=getappdata(main_figure,'option_tab_panel');
+    load_multi_freq_disp_tab(main_figure,opt_panel,tab_tag);
+    return;
+end
+
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
-%curr_disp=getappdata(main_figure,'Curr_disp');
-multi_freq_disp_tab_comp=getappdata(main_figure,'multi_freq_disp_tab');
 
 fLim=layer.get_flim();
 set(multi_freq_disp_tab_comp.ax,'XLim',fLim/1e3+[-10 +10]);
@@ -30,7 +44,7 @@ if isempty(layer.Curves)
     idx_new=[];
     set(multi_freq_disp_tab_comp.table,'Data',multi_freq_disp_tab_comp.table.Data);
 else
-    curves=layer.get_curves_per_type('Sv(f)');
+    curves=layer.get_curves_per_type(tab_name);
     if ~isempty(multi_freq_disp_tab_comp.table.Data)
         idx_rem=~ismember(multi_freq_disp_tab_comp.table.Data(:,4),{curves(:).Unique_ID})|strcmp(multi_freq_disp_tab_comp.table.Data(:,4),'1');
         multi_freq_disp_tab_comp.table.Data(idx_rem,:)=[];
@@ -43,16 +57,16 @@ end
 
 
 for ic=idx_new
-    id_c=findobj(multi_freq_disp_tab_comp.ax,'Tag',layer.Curves(ic).Unique_ID);
+    id_c=findobj(multi_freq_disp_tab_comp.ax,'Tag',curves(ic).Unique_ID);
     if isempty(id_c)
-        id_c=plot(multi_freq_disp_tab_comp.ax,layer.Curves(ic).XData,layer.Curves(ic).YData,'Tag',layer.Curves(ic).Unique_ID);
+        id_c=plot(multi_freq_disp_tab_comp.ax,curves(ic).XData,curves(ic).YData,'Tag',curves(ic).Unique_ID);
     end
     color_str=sprintf('rgb(%.0f,%.0f,%.0f)',floor(get(id_c,'Color')*255));
     u=size(multi_freq_disp_tab_comp.table.Data,1)+1;
-    multi_freq_disp_tab_comp.table.Data{u,1}=strcat('<html><FONT color="',color_str,'">',curves(u).Name,'</html>');
-    multi_freq_disp_tab_comp.table.Data{u,2}=curves(u).Tag;
+    multi_freq_disp_tab_comp.table.Data{u,1}=strcat('<html><FONT color="',color_str,'">',curves(ic).Name,'</html>');
+    multi_freq_disp_tab_comp.table.Data{u,2}=curves(ic).Tag;
     multi_freq_disp_tab_comp.table.Data{u,3}=true;
-    multi_freq_disp_tab_comp.table.Data{u,4}=curves(u).Unique_ID;
+    multi_freq_disp_tab_comp.table.Data{u,4}=curves(ic).Unique_ID;
 end
 
 end

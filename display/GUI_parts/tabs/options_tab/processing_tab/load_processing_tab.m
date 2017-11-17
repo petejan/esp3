@@ -40,7 +40,7 @@ function load_processing_tab(main_figure,option_tab_panel)
 processing_tab_comp.processing_tab=uitab(option_tab_panel,'Title','Processing');
 
 
-uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Frequency','units','normalized','Position',[0.05 0.85 0.1 0.1]);
+uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Frequency','units','normalized','Position',[0.05 0.85 0.2 0.1]);
 processing_tab_comp.tog_freq=uicontrol(processing_tab_comp.processing_tab,'Style','popupmenu','String','--','Value',1,'units','normalized','Position', [0.05 0.7 0.2 0.1],'Callback',{@tog_freq,main_figure});
 
 
@@ -54,7 +54,14 @@ processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,'
 processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Track Targets','units','normalized','Position',[0.3 0.15 0.3 0.1]);
 
 
-set([processing_tab_comp.track_target processing_tab_comp.single_target processing_tab_comp.noise_removal processing_tab_comp.bot_detec processing_tab_comp.bot_detec_v2 processing_tab_comp.bad_transmit processing_tab_comp.school_detec]...
+
+set([processing_tab_comp.track_target ...
+    processing_tab_comp.single_target ...
+    processing_tab_comp.noise_removal ...
+    processing_tab_comp.bot_detec ...
+    processing_tab_comp.bot_detec_v2 ...
+    processing_tab_comp.bad_transmit ...
+    processing_tab_comp.school_detec]...
     ,'Callback',{@update_process_list,main_figure})
 
 uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current layer','units','normalized','pos',[0.6 0.70 0.2 0.15],'callback',{@process,main_figure,0});
@@ -74,7 +81,7 @@ process_list=getappdata(main_figure,'Process');
 app_path = getappdata(main_figure,'App_path');
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 
-
+show_status_bar(main_figure);
 if mode==0
     layer_to_proc=layer_curr;
 elseif mode ==1
@@ -139,10 +146,15 @@ for ii=1:length(layer_to_proc)
         end
         
         
-        idx_freq=find_freq_idx(layer,process_list(kk).Freq);
-        trans_obj=layer.Transceivers(idx_freq);
+        trans_obj=layer.get_trans(process_list(kk).Freq);
         
+        if isempty(trans_obj)
+            fprintf('Could not find %.0fkhz on this layer\n',process_list(kk).Freq/1e3);
+            continue;
+        end
+
         
+       
         [~,idx_algo_denoise,noise_rem_algo]=find_process_algo(process_list,process_list(kk).Freq,'Denoise');
         [~,idx_algo_bot,bot_algo]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetection');
         [~,idx_algo_bot_v2,bot_algo_v2]=find_process_algo(process_list,process_list(kk).Freq,'BottomDetectionV2');
@@ -154,43 +166,38 @@ for ii=1:length(layer_to_proc)
         
         if noise_rem_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_denoise));
-            trans_obj.apply_algo('Denoise');
+            trans_obj.apply_algo('Denoise','load_bar_comp',load_bar_comp);
         end
         
         if bot_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot));
-            trans_obj.apply_algo('BottomDetection');
+            trans_obj.apply_algo('BottomDetection','load_bar_comp',load_bar_comp);
         end
         
         if bot_algo_v2
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bot_v2));
-            trans_obj.apply_algo('BottomDetectionV2');
+            trans_obj.apply_algo('BottomDetectionV2','load_bar_comp',load_bar_comp);
         end
         
         if bad_trans_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_algo_bp));
-            trans_obj.apply_algo('BadPingsV2');
+            trans_obj.apply_algo('BadPingsV2','load_bar_comp',load_bar_comp);
         end
         
         if school_detect_algo
-            
-            if isempty(trans_obj.GPSDataPing.Dist)
-                warning('SchoolDetection: No GPS data')
-                return;
-            end
-                       
+                 
             trans_obj.add_algo(process_list(kk).Algo(idx_school_detect));
-            trans_obj.apply_algo('SchoolDetection');
+            trans_obj.apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
             
         end
         
         if single_target_algo
             trans_obj.add_algo(process_list(kk).Algo(idx_single_target));
-            trans_obj.apply_algo('SingleTarget');
+            trans_obj.apply_algo('SingleTarget','load_bar_comp',load_bar_comp);
             
             if single_track_algo
                 trans_obj.add_algo(process_list(kk).Algo(idx_track_target));
-                trans_obj.apply_algo('TrackTarget');
+                trans_obj.apply_algo('TrackTarget','load_bar_comp',load_bar_comp);
                 
             end
             
@@ -199,7 +206,7 @@ for ii=1:length(layer_to_proc)
         
     end
     if mode==2
-        load_bar_comp.status_bar.setText('Saving Resulting Bottom ad regions');
+        load_bar_comp.status_bar.setText('Saving Resulting Bottom and regions');
         layer.write_reg_to_reg_xml();
         layer.write_bot_to_bot_xml();
         layer.rm_memaps();

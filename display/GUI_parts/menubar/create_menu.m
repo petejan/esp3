@@ -103,11 +103,6 @@ uimenu(m_survey,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,
 uimenu(m_survey,'Label','Edit/Display logbook','Callback',{@logbook_dispedit_callback,main_figure});
 uimenu(m_survey,'Label','Look for new files in current folder','Callback',{@look_for_new_files_callback,main_figure})
 
-
-mhhhh = uimenu(main_figure,'Label','Layers','Tag','menulayers');
-uimenu(mhhhh,'Label','Re-shuffle Layers','Callback',{@reshuffle_layers_callback,main_figure});
-uimenu(mhhhh,'Label','Delete Current Layer','Callback',{@delete_layer_callback,main_figure})
-
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
 %uimenu(m_map,'Label','Open/Reload WebMap','Callback',{@display_webmap_from_db_callback,main_figure});
 uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});

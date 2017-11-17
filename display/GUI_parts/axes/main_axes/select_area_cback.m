@@ -67,6 +67,9 @@ switch src.SelectionType
         clear_lines(ah);
         u=findobj(ah,'Tag','SelectLine','-or','Tag','SelectArea');
         delete(u);
+        layer.rm_curves_per_ID('1');
+        update_multi_freq_disp_tab(main_figure,'sv_f');
+        update_multi_freq_disp_tab(main_figure,'ts_f');
         return;
 end
 

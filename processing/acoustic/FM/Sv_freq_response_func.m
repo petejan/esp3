@@ -20,11 +20,26 @@ for uui=1:length(layer.Frequencies)
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
+        file_cal_eba=fullfile(cal_path,[ 'Curve_EBA_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
+        
+         if ~isempty(layer.Transceivers(uui).Config.Cal_FM)
+             %<FrequencyPar Frequency="222062" Gain="30.09" Impedance="75" Phase="0" BeamWidthAlongship="5.43" BeamWidthAthwartship="5.64" AngleOffsetAlongship="0.04" AngleOffsetAthwartship="0.04" />
+             cal_eba_ori.BeamWidthAlongship_f_fit=layer.Transceivers(uui).Config.Cal_FM.BeamWidthAlongship;
+             cal_eba_ori.BeamWidthAthwartship_f_fit=layer.Transceivers(uui).Config.Cal_FM.BeamWidthAthwartship;
+             cal_eba_ori.freq_vec=layer.Transceivers(uui).Config.Cal_FM.Frequency;             
+            cal_ori.freq_vec=layer.Transceivers(uui).Config.Cal_FM.Frequency;
+            cal_ori.Gf=layer.Transceivers(uui).Config.Cal_FM.Gain;
+            
+        else
+            cal_ori=[];
+            cal_eba_ori=[];
+        end
 
         if exist(file_cal_eba,'file')>0
             cal_eba=load(file_cal_eba);
-            disp('EBA Calibration file loaded.');
+        elseif ~isempty(cal_eba_ori)
+            cal_eba=cal_eba_ori;
         else
             cal_eba=[];
         end
@@ -33,6 +48,9 @@ for uui=1:length(layer.Frequencies)
         if exist(file_cal,'file')>0
             disp('Calibration file loaded.');
             cal=load(file_cal);
+        elseif ~isempty(cal_ori)
+            cal=cal_ori;
+             disp('Using *.raw file calibration.');
         else
             cal=[];
         end
@@ -76,19 +94,21 @@ for uui=1:length(layer.Frequencies)
     end
 end
 
-[f_vec,idx_sort]=sort(f_vec);
-Sv_f=Sv_f(idx_sort);
-
-
-  layer.add_curves(curve_cl('XData',f_vec/1e3,...
-      'YData',Sv_f,...
-      'Type','Sv(f)',...
-      'Xunit','kHz',...
-      'Yunit','dB',...
-      'Tag',reg_obj.Tag,...
-      'Name',sprintf('%s %.0f',reg_obj.Name,reg_obj.ID),...
-      'Unique_ID',reg_obj.Unique_ID));
-
-
-update_multi_freq_disp_tab(main_figure);
+if~isempty(f_vec)
+    [f_vec,idx_sort]=sort(f_vec);
+    Sv_f=Sv_f(idx_sort);
+    
+    
+    layer.add_curves(curve_cl('XData',f_vec/1e3,...
+        'YData',Sv_f,...
+        'Type','Sv(f)',...
+        'Xunit','kHz',...
+        'Yunit','dB',...
+        'Tag',reg_obj.Tag,...
+        'Name',sprintf('%s %.0f',reg_obj.Name,reg_obj.ID),...
+        'Unique_ID',reg_obj.Unique_ID));
+    
+    
+    update_multi_freq_disp_tab(main_figure,'sv_f');
+end
 end

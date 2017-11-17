@@ -70,11 +70,6 @@ for uui=idx_sort
 %     end
 %     
     
-    if ~isempty(cal_eba)
-        cal_eba.BeamWidthAlongship_f_fit(idx_null)=nan;
-        cal_eba.BeamWidthAthwartship_f_fit(idx_null)=nan;
-        eba=10*log10(2.2578*sind(cal_eba.BeamWidthAlongship_f_fit/4+cal_eba.BeamWidthAthwartship_f_fit/4).^2);
-    end
     
     if ~isempty(cal)
         plot(ax_1,cal.freq_vec(:)/1e3,cal.Gf(:),'r','linewidth',2);
@@ -85,6 +80,9 @@ for uui=idx_sort
     if~isempty(cal_ori)
         [~,idx_cal]=sort(cal_ori.freq_vec);
         plot(ax_1,cal_ori.freq_vec(idx_cal)/1e3,cal_ori.Gf(idx_cal),'k','linewidth',2);
+        if isempty(cal)
+           plot(ax_1,cal_ori.freq_vec(:)/1e3,gain +10*log10(cal_ori.freq_vec(:)./Freq),'b','linewidth',2); 
+        end
     end
 
     if ~isempty(cal_eba)

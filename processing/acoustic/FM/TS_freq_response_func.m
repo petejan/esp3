@@ -18,7 +18,7 @@ idx_pings=reg_obj.Idx_pings;
 r_min=nanmin(range(idx_r));
 r_max=nanmax(range(idx_r));
 
-f_vec_save=[];
+f_vec=[];
 
 TS_f=[];
 
@@ -52,7 +52,7 @@ for uui=idx_sort
     if ismember('spdenoised',layer.Transceivers(uui).Data.Fieldname)
         field='spdenoised';
     end
-       
+    
     [Sp_red,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=layer.Transceivers(uui).get_data_from_region(reg,...
         'field',field);
     
@@ -62,40 +62,61 @@ for uui=idx_sort
     
     [Sp_max,idx_peak_red]=nanmax(Sp_red,[],1);
     idx_peak=idx_peak_red+idx_r(1)-1;
-   
+    
     
     if strcmp(layer.Transceivers(uui).Mode,'FM')
+        if ~isempty(layer.Transceivers(uui).Config.Cal_FM)
+%             %<FrequencyPar Frequency="222062" Gain="30.09" Impedance="75" Phase="0" BeamWidthAlongship="5.43" BeamWidthAthwartship="5.64" AngleOffsetAlongship="0.04" AngleOffsetAthwartship="0.04" />
+%             cal_eba_ori.BeamWidthAlongship_f_fit=layer.Transceivers(uui).Config.Cal_FM.BeamWidthAlongship;
+%             cal_eba_ori.BeamWidthAthwartship_f_fit=layer.Transceivers(uui).Config.Cal_FM.BeamWidthAthwartship;
+%             cal_eba_ori.freq_vec=layer.Transceivers(uui).Config.Cal_FM.Frequency;             
+            cal_ori.freq_vec=layer.Transceivers(uui).Config.Cal_FM.Frequency;
+            cal_ori.Gf=layer.Transceivers(uui).Config.Cal_FM.Gain;
+            
+        else
+            cal_ori=[];
+            %cal_eba_ori=[];
+        end
         
+        
+             
         file_cal=fullfile(cal_path,['Curve_' num2str(layer.Frequencies(uui),'%.0f') '.mat']);
         
         if exist(file_cal,'file')>0
             cal=load(file_cal);
             disp('Calibration file loaded.');
+        elseif ~isempty(cal_ori)
+            cal=cal_ori;
+            disp('Using *.raw file calibration.');
         else
-            disp('No calibration file');
+            disp('No calibration');
             cal=[];
         end
-         idx_pings(isnan(Sp_max))=[];
-         idx_peak(isnan(Sp_max))=[];
-         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
+        
+        idx_pings(isnan(Sp_max))=[];
+        idx_peak(isnan(Sp_max))=[];
+        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
         load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
-
+        
         
         for kk=1:length(idx_pings)
-            [Sp_f(:,kk),Compensation_f(:,kk),f_vec(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal,[]);
+            [Sp_f(:,kk),Compensation_f(:,kk),f_vec_temp(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal,[]);
             set(load_bar_comp.progress_bar,'Value',kk);
         end
         
-        Compensation_f(Compensation_f>6)=nan;
-        TS_f=[TS_f; Sp_f+Compensation_f];
+        Compensation_f(Compensation_f>12)=nan;
+        TS_f_tmp=(Sp_f+Compensation_f);
+        TS_f_tmp=10*log10(nanmean(10.^(TS_f_tmp'/10)));
         
-        f_vec_save=[f_vec_save; f_vec(:,1)];
+        TS_f=[TS_f TS_f_tmp];        
+        f_vec=[f_vec f_vec_temp(:,1)'];
         
         
-        clear Sp_f Compensation_f  f_vec
+        clear Sp_f Compensation_f  f_vec_temp
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        f_vec_save=[f_vec_save;layer.Frequencies(uui)];
+         range=layer.Transceivers(uui).get_transceiver_range();
+         idx_r=find(range<=r_max&range>=r_min); 
         
         AlongAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AlongAngle');
         AcrossAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AcrossAngle');
@@ -103,62 +124,32 @@ for uui=idx_sort
         BeamWidthAlongship=layer.Transceivers(uui).Config.BeamWidthAlongship;
         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
         
-        range=layer.Transceivers(uui).get_transceiver_range();
-        
-        idx_r=find(range<=r_max&range>=r_min);
-        
+      
         comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship , AcrossAngle((idx_pings_red-1)*length(idx_r)+idx_peak_red), AlongAngle((idx_pings_red-1)*length(idx_r)+idx_peak_red));
         comp(comp>12|comp<0)=nan;
-        
-        TS_f=[TS_f; Sp_max(~isnan(Sp_max))+comp(~isnan(Sp_max))];
+        f_vec=[f_vec layer.Frequencies(uui)];
+        TS_f_tmp=(Sp_max+comp);
+        TS_f_tmp=10*log10(nanmean(10.^(TS_f_tmp(:)/10)));
+        TS_f=[TS_f TS_f_tmp];
     end
 end
 
 
-
-
-if ~isempty(f_vec_save)
+if ~isempty(f_vec)
+    [f_vec,idx_sort]=sort(f_vec);
+    TS_f=TS_f(idx_sort);
     
-    %     f_vec_2=f_vec_save(1):1000:f_vec_save(end);
-    %     ts=nan(1,length(f_vec_2));
-    %
-    %
-    %     for jj=1:length(f_vec_2)
-    %         ts(jj) = spherets(2*pi*f_vec_2(jj)/layer.EnvData.SoundSpeed, .0381/2, layer.EnvData.SoundSpeed, 6853, 4171, 1025, 14900);
-    %     end
-    %
-    TS_f_mean=10*log10(nanmean(10.^(TS_f'/10)));
-    [f_vec_save,idx_sort]=sort(f_vec_save);
-    TS_f_mean=TS_f_mean(idx_sort);
-    TS_f=TS_f(idx_sort,:);
-    h=new_echo_figure(main_figure,'Name','TS Curve','Tag','ts_f_mean');
-    ah=axes(h);
-    plot(ah,f_vec_save/1e3,TS_f,'b','linewidth',0.2);
-    hold on;
-    plot(ah,f_vec_save/1e3,TS_f_mean,'r','linewidth',2)
-    grid on;
-    xlabel('kHz')
-    ylabel('TS(dB)')
-    
-%     choice = questdlg('Do you want to save this curve?', ...
-%         'Curve save',...
-%         'Yes','No', ...
-%         'Yes');
-%     % Handle response
-%     switch choice
-%         case 'Yes'            
-%             choice_tag = questdlg('Do you want to think it is fish or krill?', ...
-%                 'Identification',...
-%                 'Fish','Krill','Neither', ...
-%                 'Krill');
-%             curve=curve_cl('XData',f_vec_save,'YData',TS_f_mean,'Xunit','Hz','YUnit','TS(dB)','Tag',choice_tag);
-%             layer.add_curves(curve);
-%     end
-%     
-%     
-    setappdata(main_figure,'Layer',layer);
-    %     hold on;
-    %     plot(f_vec_2/1e3,ts,'k','linewidth',2)
+    layer.add_curves(curve_cl('XData',f_vec/1e3,...
+        'YData',TS_f,...
+        'Type','TS(f)',...
+        'Xunit','kHz',...
+        'Yunit','dB',...
+        'Tag',reg_obj.Tag,...
+        'Name',sprintf('%s %.0f',reg_obj.Name,reg_obj.ID),...
+        'Unique_ID',reg_obj.Unique_ID));
+
+    update_multi_freq_disp_tab(main_figure,'ts_f');
 end
+
 hide_status_bar(main_figure);
 end

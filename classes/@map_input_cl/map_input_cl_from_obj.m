@@ -108,7 +108,7 @@ switch class(Ext_obj)
                 obj.SurveyName{i}='';
             end
             
-            [trans_obj,idx_freq]=layers(i).get_trans(p.Results.Freq);
+            [trans_obj,~]=layers(i).get_trans(p.Results.Freq);
             
             if isempty(trans_obj)
                 continue;
@@ -117,22 +117,45 @@ switch class(Ext_obj)
             if p.Results.SliceSize>0
                 idx_reg=1:length(trans_obj.Regions);
                 idx_bad=zeros(1,length(idx_reg));
-                IDs=trans_obj.get_reg_IDs();
+
                 for ireg=1:length(idx_reg)
                     if strcmpi(trans_obj.Regions(ireg).Type,'Bad Data')
                         idx_bad(ireg)=1;
                     end
                 end
+                
                 idx_reg(idx_bad==1)=[];
-                IDs(idx_bad==1)=[];
-                reg=trans_obj.get_reg_spec(idx_reg);
-                output=trans_obj.slice_transect('reg',reg,'Slice_w',p.Results.SliceSize,'Slice_units','pings');
-                %output2D=trans_obj.slice_transect2D('regIDs',IDs,'cell_w',p.Results.SliceSize);
-                obj.SliceLat{i}=1/2*(output.slice_lat_s+output.slice_lat_e);
-                obj.SliceLong{i}=1/2*(output.slice_lon_s+output.slice_lon_e);
-                obj.SliceAbscf{i}=output.slice_abscf;
-                obj.SliceTime_S{i}=output.slice_time_start;
-                obj.SliceTime_E{i}=output.slice_time_end;
+                [output_2D_surf,output_2D_bot,~,~,~,~]=trans_obj.slice_transect2D_new_int('Idx_reg',idx_reg,'Slice_w',p.Results.SliceSize,'Slice_w_units','pings');
+                
+                
+                surf_slice_int=nansum(output_2D_surf.eint);
+                good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
+
+                num_slice=size(output_2D_surf.eint,2);
+                
+                if ~isempty(output_2D_bot)
+                    bot_slice_int=nansum(output_2D_bot.eint);
+                    good_pings_bot=nanmax(output_2D_bot.Nb_good_pings_esp2,[],1);
+
+                else
+                    bot_slice_int=zeros(1,num_slice);
+                    good_pings_bot=[];
+                end
+                
+                
+                good_pings=nanmax([good_pings_bot;good_pings_surf],[],1);
+                
+                
+
+                obj.SliceLat{i}=1/2*(output_2D_surf.Lat_S+output_2D_surf.Lat_E);
+                obj.SliceLong{i}=1/2*(output_2D_surf.Lon_S+output_2D_surf.Lon_E);
+                
+                
+                obj.SliceAbscf{i}=((surf_slice_int+bot_slice_int)./good_pings);
+                obj.SliceAbscf{i}(isnan(obj.SliceAbscf{i}))=0;
+                
+                obj.SliceTime_S{i}=output_2D_surf.Time_S;
+                obj.SliceTime_E{i}=output_2D_surf.Time_E;
             end
         end
         

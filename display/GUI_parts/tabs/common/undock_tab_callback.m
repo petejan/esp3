@@ -17,10 +17,14 @@ switch tab
         tab_comp=getappdata(main_figure,'Layer_tab');
         tab_h=tab_comp.layer_tab;
         tt='Layers';       
-    case 'multi_freq'
-        tab_comp=getappdata(main_figure,'multi_freq_disp_tab');
+    case 'sv_f'
+        tab_comp=getappdata(main_figure,tab);
         tab_h=tab_comp.multi_freq_disp_tab;
         tt='Sv(f)';
+    case 'ts_f'
+        tab_comp=getappdata(main_figure,tab);
+        tab_h=tab_comp.multi_freq_disp_tab;
+        tt='TS(f)';
     otherwise
         tab_h=[];
 end
@@ -55,8 +59,8 @@ switch tab
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
         load_layer_tab(main_figure,dest_fig);
-    case 'multi_freq'
-        load_multi_freq_disp_tab(main_figure,dest_fig);
+    case {'sv_f' 'ts_f'}
+        load_multi_freq_disp_tab(main_figure,dest_fig,tab);
 end
 
 
@@ -64,6 +68,7 @@ end
 
 function close_tab(src,~,main_figure)
 tag=src.Tag;
+
 delete(src);
 dest_fig=getappdata(main_figure,'option_tab_panel');
 switch tag
@@ -73,7 +78,7 @@ switch tag
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
         load_layer_tab(main_figure,dest_fig);
-    case 'multi_freq'
-        load_multi_freq_disp_tab(main_figure,dest_fig);
+    case {'sv_f' 'ts_f'}
+        load_multi_freq_disp_tab(main_figure,dest_fig,tag);
 end
 end

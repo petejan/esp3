@@ -13,13 +13,12 @@ Slice_h=curr_disp.Grid_y;
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-
-
 idx_reg=trans_obj.find_regions_type('Data');
 %profile on;
 sh_height=10;
-[output_2D_surf,output_2D_bot,~,~,output_2D_sh,shadow_height_est]=trans_obj.slice_transect2D_new_int('Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
-    'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'Idx_reg',idx_reg);
+[output_2D_surf,output_2D_bot,~,~,output_2D_sh,shadow_height_est]=trans_obj.slice_transect2D_new_int(...
+    'Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
+    'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg);
 
 surf_slice_int=nansum(output_2D_surf.eint);
 good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
@@ -43,7 +42,7 @@ else
     sh_slice_int=zeros(1,num_slice);
     good_pings_sh=[];
 end
-   
+
 good_pings=nanmax([good_pings_sh;good_pings_bot;good_pings_surf],[],1);
 
 fig_disp=new_echo_figure(main_figure,'Tag','Sliced Transect 1D','Keep_old',1);

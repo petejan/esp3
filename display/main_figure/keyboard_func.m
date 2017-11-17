@@ -249,21 +249,7 @@ try
                 switch get(gco,'Tag')
                     case {'region','region_text'}
                         id=get(gco,'Userdata');
-                        idx= trans_obj.find_regions_Unique_ID(id);
-                        old_regs=trans_obj.Regions;
-                        trans_obj.rm_region_id(get(gco,'Userdata'));
-                        layer.rm_curves_per_ID(get(gco,'Userdata'));
-                        add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
-                        
-                        display_regions(main_figure,'both');
-                        
-                        if ~isempty(trans_obj.Regions)
-                            curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;
-                        else
-                            curr_disp.Active_reg_ID='';
-                        end
-                        update_multi_freq_disp_tab(main_figure);      
-                        order_stacks_fig(main_figure);
+                        delete_regions_from_uid(main_figure,id);
                 end
             end
         case 'l'
