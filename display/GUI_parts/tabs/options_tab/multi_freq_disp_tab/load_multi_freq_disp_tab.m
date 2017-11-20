@@ -42,10 +42,15 @@ switch tab_tag
     case 'ts_f'
         uimenu(rc_menu,'Label',['Produce ' tab_name ' curves from tracks'],'Callback',{@add_ts_curves_from_tracks_cback,main_figure});
 end
+select_menu=uimenu(rc_menu,'Label','Select');
+uimenu(select_menu,'Label','All','Callback',{@selection_callback,main_figure,tab_tag},'Tag','se');
+uimenu(select_menu,'Label','De-Select All','Callback',{@selection_callback,main_figure,tab_tag},'Tag','de');
+uimenu(select_menu,'Label','Inverse Selection','Callback',{@selection_callback,main_figure,tab_tag},'Tag','inv');
+
 
 
 multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_disp_tab,'Units','normalized','box','on',...
-     'OuterPosition',[0 0 2/3 1],'visible','off','NextPlot','add','box','on');
+     'OuterPosition',[0 0 2/3 1],'visible','on','NextPlot','add','box','on');
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelFormat='%.0fkHz';
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=0;
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
@@ -53,6 +58,26 @@ multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_di
 
 grid(multi_freq_disp_tab_comp.ax,'on'); 
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
+
+update_multi_freq_disp_tab(main_figure,tab_tag);
+
+end
+
+
+function selection_callback(src,~,main_figure,tab_tag)
+multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
+data=multi_freq_disp_tab_comp.table.Data;
+for i=1:size(data,1)
+    switch src.Tag
+        case 'se'
+            data{i,end-1}=true;
+        case 'de'
+            data{i,end-1}=false;
+        case 'inv'
+            data{i,end-1}=~data{i,end-1};
+    end
+end
+set(multi_freq_disp_tab_comp.table,'Data',data);
 
 update_multi_freq_disp_tab(main_figure,tab_tag);
 

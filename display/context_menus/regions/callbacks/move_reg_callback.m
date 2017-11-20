@@ -39,9 +39,10 @@ function move_reg_callback(obj,~,ID,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
+
 
 if ~ismember(curr_disp.CursorMode,{'Normal'})
     return;
@@ -77,29 +78,36 @@ switch main_figure.SelectionType
             case 'image'
                 move_image_select(obj,[],main_figure);
         end
+        
         waitfor(curr_disp,'UIupdate',1);
         replace_interaction(main_figure,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
-        r_min=nanmin(obj.YData);
+        r_min=nanmin(obj.YData(:));
         samples=trans_obj.get_transceiver_samples();
         [~,idx_r_min]=nanmin(abs(r_min-samples));
         
-        idx_p_min=ceil(nanmin(obj.XData));
+        idx_p_min=ceil(nanmin(obj.XData(:)));
         
-        if reg_curr.Idx_r(1)==idx_p_min&&reg_curr.Idx_r(1)==idx_r_min
+        if reg_curr.Idx_pings(1)==idx_p_min&&reg_curr.Idx_r(1)==idx_r_min
            return; 
         end
         
         reg_curr.Idx_pings=reg_curr.Idx_pings-reg_curr.Idx_pings(1)+idx_p_min;
         reg_curr.Idx_r=reg_curr.Idx_r-reg_curr.Idx_r(1)+idx_r_min;
-        old_regs=trans_obj.Regions;
+%         old_regs=trans_obj.Regions;
+         old_ID=reg_curr.Unique_ID;
+%         trans_obj.rm_region_id(old_ID);
+%         reg_curr.Unique_ID=generate_Unique_ID();
         trans_obj.add_region(reg_curr,'Merge',0);
-        add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+%         add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
 
         setappdata(main_figure,'Layer',layer);
+        
         curr_disp.Reg_changed_flag=1;
-        clear_regions(main_figure,reg_curr.Unique_ID);
+        clear_regions(main_figure,old_ID);
+        
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);
+
     case 'open'
         regCellInt=trans_obj.integrate_region_v3(reg_curr);
         

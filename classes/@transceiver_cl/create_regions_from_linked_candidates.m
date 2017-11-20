@@ -66,6 +66,7 @@ Sv=trans.Data.get_datamat('svdenoised');
 if isempty(Sv)
     Sv=trans.Data.get_datamat('sv');
 end
+reg_schools=trans.get_region_from_name('School');
 
 for j=1:nanmax(linked_candidates(:))
     curr_reg=(linked_candidates==j);
@@ -111,7 +112,13 @@ for j=1:nanmax(linked_candidates(:))
                 'Cell_h',cell_h,...
                 'Cell_h_unit',h_unit);
         end
-
+        
+        for i=1:length(reg_schools)
+            mask_inter=reg_temp.get_mask_from_intersection(reg_schools(i));
+            if any(mask_inter(:))
+               trans.rm_region_id(reg_schools(i).Unique_ID);
+            end
+        end        
         trans.add_region(reg_temp,'Split',0);
         
     end

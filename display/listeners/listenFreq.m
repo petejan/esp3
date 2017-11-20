@@ -66,7 +66,7 @@ if curr_disp.R_disp(2)==Inf
     y_lim_max=numel(range);
 end
 
-clear_regions(main_figure,[]);
+clear_regions(main_figure,{});
 
 delete(findobj(axes_panel_comp.main_axes,'Tag','SelectLine','-or','Tag','SelectArea'));
 

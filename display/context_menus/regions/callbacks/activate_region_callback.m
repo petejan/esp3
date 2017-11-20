@@ -43,10 +43,14 @@ if isempty(Unique_ID)
 end
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 reg_curr=trans_obj.get_region_from_Unique_ID(Unique_ID);
 
+if isempty(reg_curr)
+    fprintf('Cannot find region %s\n',Unique_ID);
+    return;
+end
 
 if~isdeployed()
     fprintf('Activate region %.0f\n',reg_curr.ID);
@@ -100,8 +104,9 @@ for i=1:length(ah)
                 set(reg_image_ac,'Cdata',cdata);
             end
         end
-        reg_patch_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Patch','-not','FaceColor',col);
-        set(reg_patch_ac,'FaceColor',col,'EdgeColor',col);
+        reg_patch_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},...
+            '-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Patch','-not','FaceColor',col);
+        set(reg_patch_ac,'FaceColor',col,'EdgeColor','none');
     end 
 end
 

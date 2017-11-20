@@ -2,7 +2,7 @@ function delete_regions_from_uid(main_figure,uid)
 
 
 layer=getappdata(main_figure,'Layer');
-if isempty(layer)
+if isempty(layer)||isempty(uid)
     return;
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -15,6 +15,8 @@ end
 if ~isempty(uid)
     
     old_regs=trans_obj.Regions;
+    
+    idx=find_regions_Unique_ID(trans_obj,uid{1});
     
     for i=1:numel(uid)
         trans_obj.rm_region_id(uid{i});
@@ -29,7 +31,7 @@ if ~isempty(uid)
     update_multi_freq_disp_tab(main_figure,'ts_f');
     
     if ~isempty(trans_obj.Regions)
-        curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(uid{1}-1,1)).Unique_ID;
+       curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;
     else
         curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
     end

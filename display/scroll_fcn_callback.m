@@ -1,8 +1,14 @@
 function scroll_fcn_callback(src,callbackdata,main_figure)
 
-echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
 
-if~strcmpi(echo_tab_panel.SelectedTab.Tag,'axes_panel')
+echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
+curr_obj=gco;
+if isfield(curr_obj,'Type')
+    type_obj=curr_obj.Type;
+else
+    type_obj='';
+end
+if~strcmpi(echo_tab_panel.SelectedTab.Tag,'axes_panel')||strcmp(type_obj,'uitable')
     return;
 end
 

@@ -41,11 +41,6 @@ region_tab_comp.region_tab=uitab(option_tab_panel,'Title','Regions');
 
 reg_curr=region_cl();
 
-modes={'rectangular' 'vertical' 'horizontal'};
-uicontrol(region_tab_comp.region_tab,'Style','Text','String','Mode','units','normalized','Position',[0.45 0.6 0.1 0.1]);
-region_tab_comp.mode=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',modes,'Value',1,'units','normalized','Position', [0.55 0.55 0.15 0.15]);
-
-
 uicontrol(region_tab_comp.region_tab,'Style','Text','String','Tag','units','normalized','Position',[0.7 0.55 0.1 0.15]);
 region_tab_comp.tag=uicontrol(region_tab_comp.region_tab,'Style','edit','String',reg_curr.Tag,'units','normalized','Position', [0.8 0.55 0.15 0.15]);
 
@@ -72,13 +67,6 @@ region_tab_comp.cell_w_unit_curr=get(region_tab_comp.cell_w_unit,'value');
 region_tab_comp.cell_h_unit_curr=get(region_tab_comp.cell_w_unit,'value');
 set(region_tab_comp.cell_w_unit ,'callback',{@tog_units,main_figure});
 set(region_tab_comp.cell_h_unit ,'callback',{@tog_units,main_figure});
-
-%shape_type={'Vertical' 'Horizontal' 'Rectangular' 'Polygon'};
-shape_type={'Rectangular' 'Hand Drawn' 'Polygon'};
-shape_idx=find(strcmp(shape_type,reg_curr.Shape));
-%shape_type={'Rectangular'};
-uicontrol(region_tab_comp.region_tab,'Style','Text','String','Shape','units','normalized','Position',[0 0.85 0.2 0.1]);
-region_tab_comp.shape_type=uicontrol(region_tab_comp.region_tab,'Style','popupmenu','String',shape_type,'Value',shape_idx,'units','normalized','Position', [0.2 0.85 0.2 0.1]);
 
 
 data_type={'Data' 'Bad Data'};

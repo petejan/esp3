@@ -266,11 +266,18 @@ classdef transceiver_cl < handle
                 end
             end
         end
-        
+        function reg=get_region_from_name(trans_obj,name)
+            idx=trans_obj.find_regions_name(name);
+            if ~isempty(idx)
+                reg=trans_obj.Regions(idx);
+            else
+                reg=[];
+            end
+        end
         
         
         function reg=get_region_from_Unique_ID(trans_obj,ID)
-            idx=find_regions_Unique_ID(trans_obj,ID);
+            idx=trans_obj.find_regions_Unique_ID(ID);
             if ~isempty(idx)
                 reg=trans_obj.Regions(idx);
             else
@@ -303,16 +310,16 @@ classdef transceiver_cl < handle
             trans_obj.Tracks=trans_tmp.Tracks;
         end
         
+        
+        
         function rm_region_name(trans_obj,name)
             if ~isempty(trans_obj.Regions)
                 idx=strcmpi({trans_obj.Regions(:).Name},name);
                 trans_obj.Regions(idx)=[];
-            end
-            
+            end          
         end
         
-        function rm_region_name_idx_r_idx_p(trans_obj,name,idx_r,idx_p)
-            
+        function rm_region_name_idx_r_idx_p(trans_obj,name,idx_r,idx_p)      
             reg_curr=trans_obj.Regions;
             reg_new=[];
             for i=1:length(reg_curr)
@@ -321,6 +328,10 @@ classdef transceiver_cl < handle
                 end
             end
             trans_obj.Regions=reg_new;
+        end
+        
+        function rm_overlapping_region(trans_obj,name,idx_r,idx_p)    
+            
         end
         
         function rm_regions(trans_obj)
@@ -391,6 +402,21 @@ classdef transceiver_cl < handle
             
             if length(idx)>1
                 warning('several regions with the same ID')
+            end
+            
+        end
+        
+        function [idx,found]=find_reg_name(trans_obj,name)
+            if ~isempty(trans_obj.Regions)
+                idx=find(strcmpi({trans_obj.Regions(:).Name},name));
+            else
+                idx=[];
+            end
+            if isempty(idx)
+                idx=1;
+                found=0;
+            else
+                found=1;
             end
             
         end

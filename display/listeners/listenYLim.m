@@ -75,6 +75,7 @@ reset_disp_info(main_figure);
 
 
 setappdata(main_figure,'Curr_disp',curr_disp);
+order_stacks_fig(main_figure);
 % profile off;
 % profile viewer
 end

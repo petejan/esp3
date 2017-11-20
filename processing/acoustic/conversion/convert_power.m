@@ -1,4 +1,14 @@
 function [Sp,Sv]=convert_power(power,range,c,alpha,t_eff,t_nom,ptx,lambda,gain,eq_beam_angle,sacorr,type)
+% TODO: 
+% [nb_samples,nb_pings]=size(power);
+% 
+% 
+% if numel(t_eff)==nb_pings
+%     t_eff=t_eff(:)';
+% else
+%     t_eff=t_eff(1)*ones(1,nb_pings);
+% end
+
 
 dr=nanmean(diff(range(:)));
 

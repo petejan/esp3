@@ -44,17 +44,17 @@ axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 switch class(src)
     case {'matlab.ui.container.toolbar.ToggleTool','matlab.ui.container.toolbar.PushTool','matlab.ui.container.toolbar.ToggleSplitTool'}
-        type=src.Tag;
+        tag=src.Tag;
         src_out=src;
     case 'char'
         src_out.State='on';
-        type=src;
+        tag=src;
 end
 
 
 childs=[findall(main_figure,'type','uitoggletool');findall(main_figure,'type','uitogglesplittool')];
 for i=1:length(childs)
-    if ~strcmp(get(childs(i),'tag'),type)
+    if ~strcmp(get(childs(i),'tag'),tag)
         set(childs(i),'state','off');
     end
 end
@@ -77,7 +77,7 @@ switch state
         iptPointerManager(main_figure,'disable');
         axes_panel_comp.bad_transmits.UIContextMenu=[];
         axes_panel_comp.bottom_plot.UIContextMenu=[];
-        switch type
+        switch tag
             case 'zin'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@zoom_in_callback,main_figure});
             case 'zout'
@@ -113,9 +113,16 @@ switch state
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@disp_loc,main_figure});
             case 'meas'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@measure_distance,main_figure});
-            case 'create_reg'
-                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure});
-                %replace_interaction(main_figure,'interaction','KeyPressFcn','id',2,'interaction_fcn',{@cancel_create_region,main_figure});
+            case 'create_reg_rect'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure,'','rectangular'});
+            case 'create_reg_horz'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure,'','horizontal'});
+            case 'create_reg_vert'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure,'','vertical'});
+            case 'create_reg_poly'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure,'Polygon',''});
+            case 'create_reg_hd'
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure,'Hand Drawn',''});
             case 'draw_line'
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@draw_line,main_figure});
             case 'erase_soundings'

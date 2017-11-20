@@ -116,7 +116,7 @@ replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'inte
             case {'open' 'alt'}
 
                 wbucb(main_figure,[]);
-                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure});
+                replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',{@create_region,main_figure,'Polygon',''});
 
 %                 set(enabled_obj,'Enable','on');
                 return;

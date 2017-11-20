@@ -42,7 +42,7 @@ function create_region_context_menu(reg_plot,main_figure,ID)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,~]=layer.get_trans(curr_disp);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 switch class(ID)
     case 'matlab.graphics.primitive.Patch'
@@ -64,12 +64,20 @@ for ii=1:length(reg_plot)
 end
 
 if isreg>0
-        region_menu=uimenu(context_menu,'Label','Region');
-        uimenu(region_menu,'Label','Display Region SV','Callback',{@display_region_callback,main_figure,ID});
-        uimenu(region_menu,'Label','Display Region Fish Density','Callback',{@display_region_fishdensity_callback,main_figure,ID});
-        uimenu(region_menu,'Label','Delete Region','Callback',{@delete_region_uimenu_callback,ID,main_figure});
-        uimenu(region_menu,'Label','Copy to other frequencies','Callback',{@copy_region_callback,ID,main_figure});
-        uimenu(region_menu,'Label','Display Frequency differences','Callback',{@freq_diff_callback,ID,main_figure});
+ idx_other=setdiff(1:numel(layer.Frequencies),idx_freq);
+    region_menu=uimenu(context_menu,'Label','Region');
+        uidisp=uimenu(region_menu,'Label','Display');
+        uimenu(uidisp,'Label','Region SV','Callback',{@display_region_callback,main_figure,ID});
+        uimenu(uidisp,'Label','Region Fish Density','Callback',{@display_region_fishdensity_callback,main_figure,ID});
+        uimenu(uidisp,'Label','Frequency differences','Callback',{@freq_diff_callback,ID,main_figure});
+        
+        uifreq=uimenu(region_menu,'Label','Copy to other channels');
+        uimenu(uifreq,'Label','all','Callback',{@copy_region_callback,ID,main_figure,[]});
+        for ifreq=idx_other
+            uimenu(uifreq,'Label',sprintf('%.0fkHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_region_callback,ID,main_figure,ifreq});
+        end
+        
+        
         uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
 end
@@ -181,7 +189,7 @@ function export_region_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 [path_tmp,~,~]=fileparts(layer.Filename{1});
 layers_Str=list_layers(layer,'nb_char',80);
@@ -206,13 +214,13 @@ xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,1);
 
 end
 
-function copy_region_callback(~,~,ID,main_figure)
+function copy_region_callback(~,~,ID,main_figure,idx_freq_end)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-layer.copy_region_across(idx_freq,reg_curr,[]);
+layer.copy_region_across(idx_freq,reg_curr,idx_freq_end);
 
 end
 

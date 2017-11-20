@@ -19,8 +19,8 @@ if strcmp(current_fig.SelectionType,'normal')
     x0 = cp(1,1);
     y0 = cp(1,2);
     
-%     x_lim=get(ah,'xlim');
-%     y_lim=get(ah,'ylim');
+    %     x_lim=get(ah,'xlim');
+    %     y_lim=get(ah,'ylim');
     xdata=trans_obj.get_transceiver_pings();
     ydata=trans_obj.get_transceiver_samples();
     
@@ -38,37 +38,38 @@ end
         
         d_move=[x1 y1]-[x0 y0];
         
-        new_vert=patch_obj.Vertices+repmat(d_move,4,1);
+        new_vert=patch_obj.Vertices+repmat(d_move,size(patch_obj.Vertices,1),1);
         
-        if any(new_vert(:,1)<xdata(1))
-            new_vert(:,1)=[xdata(1) xdata(1)+dx_patch xdata(1)+dx_patch xdata(1)];
+        if size(new_vert,1)==4
+            if any(new_vert(:,1)<xdata(1))
+                new_vert(:,1)=[xdata(1) xdata(1)+dx_patch xdata(1)+dx_patch xdata(1)];
+            end
+            
+            if any(new_vert(:,1)>xdata(end))
+                new_vert(:,1)=[xdata(end)-dx_patch xdata(end) xdata(end) xdata(end)-dx_patch];
+            end
+            
+            if any(new_vert(:,2)<ydata(1))
+                new_vert(:,2)=[ydata(1) ydata(1) ydata(1)+dy_patch ydata(1)+dy_patch];
+            end
+            
+            if any(new_vert(:,2)>ydata(end))
+                new_vert(:,2)=[ydata(end)-dy_patch ydata(end)-dy_patch ydata(end) ydata(end)];
+            end
         end
-        
-        if any(new_vert(:,1)>xdata(end))
-            new_vert(:,1)=[xdata(end)-dx_patch xdata(end) xdata(end) xdata(end)-dx_patch];
-        end
-        
-        if any(new_vert(:,2)<ydata(1))
-            new_vert(:,2)=[ydata(1) ydata(1) ydata(1)+dy_patch ydata(1)+dy_patch];
-        end
-        
-        if any(new_vert(:,2)>ydata(end))
-            new_vert(:,2)=[ydata(end)-dy_patch ydata(end)-dy_patch ydata(end) ydata(end)];
-        end
-        
         patch_obj.Vertices=new_vert;
         
         x0=x1;
         y0=y1;
-
+        
         
     end
 
     function wbucb(~,~)
         
-    replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2);
-    replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
-    curr_disp.UIupdate=1;
+        replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2);
+        replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2);
+        curr_disp.UIupdate=1;
     end
 end
 

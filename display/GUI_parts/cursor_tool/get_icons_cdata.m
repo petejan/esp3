@@ -35,7 +35,11 @@ icon.undock= iconRead(fullfile(icon_dir,'undock.png'));
 
 icon.ruler= iconRead(fullfile(icon_dir,'ruler.png'));
 
-icon.create_reg= iconRead(fullfile(icon_dir,'create_reg.png'));
+icon.create_reg_rect= iconRead(fullfile(icon_dir,'create_reg_rect.png'));
+icon.create_reg_poly= iconRead(fullfile(icon_dir,'create_reg_poly.png'));
+icon.create_reg_vert= iconRead(fullfile(icon_dir,'create_reg_vert.png'));
+icon.create_reg_horz= iconRead(fullfile(icon_dir,'create_reg_horz.png'));
+icon.create_reg_hd= iconRead(fullfile(icon_dir,'create_reg_hd.png'));
 
 icon.brush= iconRead(fullfile(icon_dir,'brush.png'));
 

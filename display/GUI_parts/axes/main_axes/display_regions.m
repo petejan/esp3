@@ -63,7 +63,6 @@ for iax=1:length(main_axes_tot)
     
     if~isempty(reg_h)
         id_disp=(get(reg_h,'UserData'));
-
         id_reg=trans.get_reg_Unique_IDs();
         id_rem = setdiff(id_disp,id_reg);
         if~isempty(id_rem)
@@ -72,18 +71,20 @@ for iax=1:length(main_axes_tot)
     end
     
     nb_reg=numel(trans.Regions);
+    %reg_graph_obj=findobj(main_axes,{'tag','region','-or','tag','region_cont'},'-depth',1);
+    reg_text_obj=findobj(main_axes,{'tag','region_text'},'-depth',1);
+    
     for i=1:nb_reg
          try
             reg_curr=trans.Regions(i);
-            id_reg=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'},'-and','UserData',reg_curr.Unique_ID,'-depth',1);
-           
-            
-            if ~isempty(id_reg)
-                id_text=findall(id_reg,{'tag','region_text'},'-and','UserData',reg_curr.Unique_ID,'-depth',0);
+                      
+            if ~isempty(reg_text_obj)
+                id_text=findall(reg_text_obj,'UserData',reg_curr.Unique_ID,'-depth',0);
                 if ~isempty(id_text)
                     set(id_text,'String',reg_curr.disp_str());
+                    continue;
                 end
-                continue;
+                
             end
             
             if i==active_reg
@@ -123,23 +124,17 @@ for iax=1:length(main_axes_tot)
                     %cdata(:,:,2)=col(2);
                     %cdata(:,:,3)=col(3);
                     
-                    %reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in,'visible',curr_disp.DispReg);
                     plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
                     
-                    reg_plot(1)=patch('XData',x_reg_rect(1:4),'YData',y_reg_rect(1:4),'FaceColor',col,'parent',main_axes,'FaceAlpha',alpha_in,'EdgeColor',col,'tag','region','UserData',reg_curr.Unique_ID,'visible',curr_disp.DispReg);
+                    reg_plot(1)=patch('XData',x_reg_rect(1:4),'YData',y_reg_rect(1:4),'FaceColor',col,'parent',main_axes,'FaceAlpha',alpha_in,'EdgeColor','none','tag','region','UserData',reg_curr.Unique_ID,'visible',curr_disp.DispReg);
                     
                     
                     x_text=nanmean(x_reg_rect(:));
                     y_text=nanmean(y_reg_rect(:));
                     
                 case 'Polygon'
-                    reg_plot=gobjects(1,3);
-                    cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
-                    cdata(:,:,1)=col(1);
-                    cdata(:,:,2)=col(2);
-                    cdata(:,:,3)=col(3);
-                    
-                    
+                    reg_plot=gobjects(1,2);
+                            
                     idx_x=reg_curr.X_cont;
                     idx_y=reg_curr.Y_cont;
                     idx_x_out=cell(1,length(idx_x));
@@ -152,10 +147,8 @@ for iax=1:length(main_axes_tot)
                     len_cont=0;
                     x_text=0;
                     y_text=0;
-                    x_max=[];
-                    y_max=[];
-                    for jj=1:nb_cont
-                        
+
+                    for jj=1:nb_cont                        
                         idx_x_out{jj}=idx_x{jj}+reg_curr.Idx_pings(1)-1;
                         idx_y_out{jj}=idx_y{jj}+reg_curr.Idx_r(1)-1;
                         try
@@ -170,8 +163,6 @@ for iax=1:length(main_axes_tot)
                         len_cont_curr=length(x_reg{jj});
                         
                         if ~isempty(idx_x)&&len_cont_curr>=len_cont
-                            x_max=x_reg{jj};
-                            y_max=y_reg{jj};
                             len_cont=len_cont_curr;
                             x_text=nanmean(x_reg{jj});
                             y_text=nanmean(y_reg{jj});
@@ -180,11 +171,15 @@ for iax=1:length(main_axes_tot)
                             line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                         end
                     end
-                    line(x_max,y_max,'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
-                    
-                    reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
-                    reg_plot(3)=line(x_max,y_max,'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
-                    
+                    [f, v] = poly2fv(x_reg, y_reg);
+
+                    reg_plot(1)=patch('Faces', f, 'Vertices', v, 'FaceColor',col,...
+                        'parent',main_axes,'FaceAlpha',alpha_in,...
+                        'EdgeColor','none',...
+                        'tag','region',...
+                        'UserData',reg_curr.Unique_ID,...
+                        'visible',curr_disp.DispReg);
+                           
             end
                        
             reg_plot(2)=text(x_text,y_text,reg_curr.disp_str(),'FontWeight','Bold','Fontsize',text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);

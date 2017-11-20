@@ -51,6 +51,7 @@ for ifi=1:length(layer_obj.Filename)
     for itrans=1:length(layer_obj.Frequencies)
         new_layers(ifi).Transceivers(itrans)=layer_obj.Transceivers(itrans).get_transceiver_from_file_ID(ifi);
     end
+    
     for il=1:length(layer_obj.Lines)
         new_layers(ifi).Lines(il)=layer_obj.Lines(il).get_line_time_section(start_time(ifi),end_time(ifi));
     end

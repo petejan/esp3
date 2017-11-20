@@ -1,4 +1,4 @@
-function regions=split_region(reg_obj,idx_files,keep_uid)
+function [regions,file_ids]=split_region(reg_obj,idx_files,keep_uid)
 
 file_ids=unique(idx_files);
 regions(numel(file_ids))=region_cl();
@@ -43,10 +43,11 @@ for ifile=file_ids
                 'Cell_w_unit',reg_obj.Cell_w_unit,...
                 'Cell_h',reg_obj.Cell_h,...
                 'Cell_h_unit',reg_obj.Cell_h_unit);
+            
             if keep_uid
                 new_reg.Unique_ID=unique_id;
             end
-                
+            
         else
             regions=reg_obj;
             return;
@@ -65,5 +66,5 @@ for i=1:numel(regions)
 end
 
 regions(find(idx_rem))=[];
-
+file_ids(find(idx_rem))=[];
 end

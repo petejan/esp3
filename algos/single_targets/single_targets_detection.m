@@ -33,7 +33,7 @@ addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'MaxBeamComp',defaultMaxBeamComp,checkBeamComp);
 addParameter(p,'MaxStdMinAxisAngle',defaultMaxStdMinAxisAngle,checkMaxStdMinAxisAngle);
 addParameter(p,'MaxStdMajAxisAngle',defaultMaxStdMajAxisAngle,checkMaxStdMajAxisAngle);
-addParameter(p,'DataType','CW',check_data_type);
+addParameter(p,'DataType',trans_obj.Mode,check_data_type);
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
@@ -47,7 +47,7 @@ else
     idx_pings=p.Results.reg_obj.Idx_pings;
     idx_r=p.Results.reg_obj.Idx_r;
     mask=~(p.Results.reg_obj.create_mask());
-    reg_obj=p.Results.reg_obj; 
+    reg_obj=p.Results.reg_obj;
 end
 
 idx_r=idx_r(:);
@@ -70,17 +70,16 @@ switch p.Results.DataType
         if isempty(TS)
             TS=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
         end
-        if isempty(TS)
-            disp('Can''t find single targets with no Sp datagram...');
-            single_targets=[];
-            return;
-        end
+        
     case 'FM'
-        TSun=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','spunmatched');
         TS=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
 end
 
-
+if isempty(TS)
+    disp('Can''t find single targets with no Sp datagram...');
+    single_targets=[];
+    return;
+end
 
 idx_bad=find(trans_obj.Bottom.Tag==0);
 idx_p_inter=intersect(idx_bad,idx_pings);
@@ -123,9 +122,9 @@ along=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','AlongAngle');
 athwart=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','AcrossAngle');
 
 if isempty(along)||isempty(along)
-    disp('Cannot compute single targets.... No angles');
-    single_targets=[];
-    return;
+    disp('Computing using single beam data');
+    along=zeros(size(TS));
+    athwart=zeros(size(TS));
 end
 
 Range=repmat(trans_obj.get_transceiver_range(idx_r),1,nb_pings);
@@ -136,15 +135,6 @@ Time=repmat(trans_obj.get_transceiver_time(idx_pings),nb_samples,1);
 
 [T,Np]=trans_obj.get_pulse_length(1);
 
-
-switch p.Results.DataType
-    case 'CW'
-        simu_pulse=ones(1,Np);
-    case 'FM'
-        TSun(idx_r_max:end,:)=[];
-        [simu_pulse,~]=generate_sim_pulse(trans_obj.Params,trans_obj.Filters(1),trans_obj.Filters(2));
-        Np=4;
-end
 
 Pulse_length_sample=Np*ones(size(TS));
 
@@ -178,7 +168,6 @@ switch peak_calc
         peak_mat=TS;
 end
 
-idx_peaks=zeros(nb_samples,nb_pings);
 
 switch p.Results.DataType
     case 'CW'
@@ -194,201 +183,207 @@ switch p.Results.DataType
         idx_peaks=(diff_idx_peaks==1);
         idx_peaks(TS==-999)=0;
         
-    case 'FM'
-        corr=correlogramm_v2(10.^(TSun/10),abs(simu_pulse));
-        idx_peaks=corr>0.6;
-end
-
-
-% idx_peaks=idx_peaks&(peak_mat>=[nan(1,nb_pings);peak_mat(1:nb_samples-1,:)]&peak_mat>=[peak_mat(2:nb_samples,:);nan(1,nb_pings)])...
-%      &idx_comp;
-
-%Level of the local maxima (power dB)...
-idx_peaks_lin = find(idx_peaks);
-[i_peaks_lin,j_peaks_lin] = find(idx_peaks);
-nb_peaks=length(idx_peaks_lin);
-pulse_level=peak_mat(idx_peaks_lin)-p.Results.PLDL;
-idx_samples_lin=Idx_samples_lin(idx_peaks);
-pulse_env_after_lin=zeros(nb_peaks,1);
-pulse_env_before_lin=zeros(nb_peaks,1);
-idx_sup_after=ones(nb_peaks,1);
-idx_sup_before=ones(nb_peaks,1);
-max_pulse_length=nanmax(Pulse_length_max_sample(:));
-
-
-for j=1:max_pulse_length
-    idx_sup_before=idx_sup_before.*(pulse_level<=peak_mat(nanmax(i_peaks_lin-j,1)+(j_peaks_lin-1)*nb_samples));
-    
-    idx_sup_after=idx_sup_after.*(pulse_level<=peak_mat(nanmin(i_peaks_lin+j,nb_samples)+(j_peaks_lin-1)*nb_samples));
-    pulse_env_before_lin=pulse_env_before_lin+idx_sup_before;
-    pulse_env_after_lin=pulse_env_after_lin+idx_sup_after;
-end
-
-temp_pulse_length_sample=Pulse_length_sample(idx_peaks);
-pulse_length_lin=pulse_env_before_lin+pulse_env_after_lin+1;
-idx_good_pulses=(pulse_length_lin<=Pulse_length_max_sample(idx_peaks))&(pulse_length_lin>=Pulse_length_min_sample(idx_peaks));
-
-idx_target_lin=idx_peaks_lin(idx_good_pulses);
-idx_samples_lin=idx_samples_lin(idx_good_pulses);
-pulse_length_lin=pulse_length_lin(idx_good_pulses);
-pulse_length_trans_lin=temp_pulse_length_sample;
-pulse_env_before_lin=pulse_env_before_lin(idx_good_pulses);
-pulse_env_after_lin=pulse_env_after_lin(idx_good_pulses);
-
-nb_targets=length(idx_target_lin);
-
-
-samples_targets_power=nan(max_pulse_length,nb_targets);
-samples_targets_comp=nan(max_pulse_length,nb_targets);
-samples_targets_range=nan(max_pulse_length,nb_targets);
-samples_targets_sample=nan(max_pulse_length,nb_targets);
-samples_targets_along=nan(max_pulse_length,nb_targets);
-samples_targets_athwart=nan(max_pulse_length,nb_targets);
-target_ping_number=nan(1,nb_targets);
-target_time=nan(1,nb_targets);
-
-load_bar_comp=p.Results.load_bar_comp;
-if ~isempty(p.Results.load_bar_comp)
-    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_targets, 'Value',0);
-    load_bar_comp.status_bar.setText('Target Detection Step 1');
-end
-
-for i=1:nb_targets
-    if mod(i,floor(nb_targets/10))==0
-        if ~isempty(p.Results.load_bar_comp)
-            set(load_bar_comp.progress_bar,'Value',i);
+        idx_peaks_lin = find(idx_peaks);
+        
+        % idx_peaks=idx_peaks&(peak_mat>=[nan(1,nb_pings);peak_mat(1:nb_samples-1,:)]&peak_mat>=[peak_mat(2:nb_samples,:);nan(1,nb_pings)])...
+        %      &idx_comp;
+        
+        %Level of the local maxima (power dB)...
+        
+        [i_peaks_lin,j_peaks_lin] = find(idx_peaks);
+        nb_peaks=length(idx_peaks_lin);
+        pulse_level=peak_mat(idx_peaks_lin)-p.Results.PLDL;
+        idx_samples_lin=Idx_samples_lin(idx_peaks);
+        pulse_env_after_lin=zeros(nb_peaks,1);
+        pulse_env_before_lin=zeros(nb_peaks,1);
+        idx_sup_after=ones(nb_peaks,1);
+        idx_sup_before=ones(nb_peaks,1);
+        max_pulse_length=nanmax(Pulse_length_max_sample(:));
+        
+        
+        for j=1:max_pulse_length
+            idx_sup_before=idx_sup_before.*(pulse_level<=peak_mat(nanmax(i_peaks_lin-j,1)+(j_peaks_lin-1)*nb_samples));
+            idx_sup_after=idx_sup_after.*(pulse_level<=peak_mat(nanmin(i_peaks_lin+j,nb_samples)+(j_peaks_lin-1)*nb_samples));
+            pulse_env_before_lin=pulse_env_before_lin+idx_sup_before;
+            pulse_env_after_lin=pulse_env_after_lin+idx_sup_after;
         end
-    end
-    idx_pulse=idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i);
-    samples_targets_power(1:pulse_length_lin(i),i)=Power(idx_pulse);
-    samples_targets_comp(1:pulse_length_lin(i),i)=simradBeamComp(idx_pulse);
-    samples_targets_range(1:pulse_length_lin(i),i)=Range(idx_pulse);
-    samples_targets_sample(1:pulse_length_lin(i),i)=Samples(idx_pulse);
-    samples_targets_along(1:pulse_length_lin(i),i)=along(idx_pulse);
-    samples_targets_athwart(1:pulse_length_lin(i),i)=athwart(idx_pulse);
-    target_ping_number(i)=Ping(idx_target_lin(i));
-    target_time(i)=Time(idx_target_lin(i));
-end
-
-[target_peak_power,idx_peak_power]=nanmax(samples_targets_power);
-target_comp=samples_targets_comp(idx_peak_power+(0:nb_targets-1)*max_pulse_length);
-samples_targets_idx_r=nanmin(samples_targets_sample)+idx_peak_power-1;
-
-std_along=nanstd(samples_targets_along);
-std_athwart=nanstd(samples_targets_athwart);
-phi_along=nanmean(samples_targets_along);
-phi_athwart=nanmean(samples_targets_athwart);
-
-samples_targets_power(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
-samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
-
-
-switch trans_obj.Mode
-    case 'CW'
+        
+        temp_pulse_length_sample=Pulse_length_sample(idx_peaks);
+        pulse_length_lin=pulse_env_before_lin+pulse_env_after_lin+1;
+        idx_good_pulses=(pulse_length_lin<=Pulse_length_max_sample(idx_peaks))&(pulse_length_lin>=Pulse_length_min_sample(idx_peaks));
+        
+        idx_target_lin=idx_peaks_lin(idx_good_pulses);
+        idx_samples_lin=idx_samples_lin(idx_good_pulses);
+        pulse_length_lin=pulse_length_lin(idx_good_pulses);
+        pulse_length_trans_lin=temp_pulse_length_sample;
+        pulse_env_before_lin=pulse_env_before_lin(idx_good_pulses);
+        pulse_env_after_lin=pulse_env_after_lin(idx_good_pulses);
+        
+        nb_targets=length(idx_target_lin);
+        
+        
+        samples_targets_power=nan(max_pulse_length,nb_targets);
+        samples_targets_comp=nan(max_pulse_length,nb_targets);
+        samples_targets_range=nan(max_pulse_length,nb_targets);
+        samples_targets_sample=nan(max_pulse_length,nb_targets);
+        samples_targets_along=nan(max_pulse_length,nb_targets);
+        samples_targets_athwart=nan(max_pulse_length,nb_targets);
+        target_ping_number=nan(1,nb_targets);
+        target_time=nan(1,nb_targets);
+        
+        load_bar_comp=p.Results.load_bar_comp;
+        if ~isempty(p.Results.load_bar_comp)
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_targets, 'Value',0);
+            load_bar_comp.status_bar.setText('Target Detection Step 1');
+        end
+        
+        for i=1:nb_targets
+            if mod(i,floor(nb_targets/10))==0
+                if ~isempty(p.Results.load_bar_comp)
+                    set(load_bar_comp.progress_bar,'Value',i);
+                end
+            end
+            idx_pulse=idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i);
+            samples_targets_power(1:pulse_length_lin(i),i)=Power(idx_pulse);
+            samples_targets_comp(1:pulse_length_lin(i),i)=simradBeamComp(idx_pulse);
+            samples_targets_range(1:pulse_length_lin(i),i)=Range(idx_pulse);
+            samples_targets_sample(1:pulse_length_lin(i),i)=Samples(idx_pulse);
+            samples_targets_along(1:pulse_length_lin(i),i)=along(idx_pulse);
+            samples_targets_athwart(1:pulse_length_lin(i),i)=athwart(idx_pulse);
+            target_ping_number(i)=Ping(idx_target_lin(i));
+            target_time(i)=Time(idx_target_lin(i));
+        end
+        
+        [target_peak_power,idx_peak_power]=nanmax(samples_targets_power);
+        target_comp=samples_targets_comp(idx_peak_power+(0:nb_targets-1)*max_pulse_length);
+        samples_targets_idx_r=nanmin(samples_targets_sample)+idx_peak_power-1;
+        
+        std_along=nanstd(samples_targets_along);
+        std_athwart=nanstd(samples_targets_athwart);
+        phi_along=nanmean(samples_targets_along);
+        phi_athwart=nanmean(samples_targets_athwart);
+        
+        samples_targets_power(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
+        samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
+        
+        
         dr=double(c*T/4);
         target_range=nansum(samples_targets_power.*samples_targets_range)./nansum(samples_targets_power)-dr;
-    otherwise
-        [~,target_range_idx]=nanmin(samples_targets_power);
-        target_range=samples_targets_range(target_range_idx+size(samples_targets_range,1)*(0:size(samples_targets_range,2)-1));
-        dr=0;
-end
-target_range(target_range<0)=0;
-
-target_range_min=nanmin(samples_targets_range);
-target_range_max=nanmax(samples_targets_range);
-
-
-TVG=real(40*log10(target_range))+double(2*alpha*target_range);
-
-target_TS_uncomp=target_peak_power+TVG;
-target_TS_comp=target_TS_uncomp+target_comp;
-target_TS_comp(target_TS_comp<=p.Results.TS_threshold|target_comp>p.Results.MaxBeamComp|target_TS_comp>max_TS)=nan;
-target_TS_uncomp(target_TS_comp<=p.Results.TS_threshold|target_comp>p.Results.MaxBeamComp|target_TS_comp>max_TS)=nan;
-
-%removing all non-valid_targets again...
-idx_keep= ~isnan(target_TS_comp);
-pulse_length_lin=pulse_length_lin(idx_keep);
-pulse_length_trans_lin=pulse_length_trans_lin(idx_keep);
-target_TS_comp=target_TS_comp(idx_keep);
-target_TS_uncomp=target_TS_uncomp(idx_keep);
-target_range=target_range(idx_keep);
-target_range_min=target_range_min(idx_keep);
-target_range_max=target_range_max(idx_keep);
-target_idx_r=samples_targets_idx_r(idx_keep);
-std_along=std_along(idx_keep);
-std_athwart=std_athwart(idx_keep);
-phi_along=phi_along(idx_keep);
-phi_athwart=phi_athwart(idx_keep);
-target_ping_number=target_ping_number(idx_keep);
-target_time=target_time(idx_keep);
-nb_valid_targets=nansum(idx_keep);
-idx_target_lin=idx_target_lin(idx_keep);
-idx_samples_lin=idx_samples_lin(idx_keep);
-pulse_env_before_lin=pulse_env_before_lin(idx_keep);
-pulse_env_after_lin=pulse_env_after_lin(idx_keep);
-
-%let's remove overlapping targets just in case...
-idx_target=zeros(nb_samples,nb_pings);
-
-if ~isempty(p.Results.load_bar_comp)
-    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_valid_targets, 'Value',0);
-    load_bar_comp.status_bar.setText('Target Detection Step 2');
-end
-
-for i=1:nb_valid_targets
-    if mod(i,floor(nb_valid_targets/10))==0
+        
+        target_range(target_range<0)=0;
+        
+        target_range_min=nanmin(samples_targets_range);
+        target_range_max=nanmax(samples_targets_range);
+        
+        
+        TVG=real(40*log10(target_range))+double(2*alpha*target_range);
+        
+        target_TS_uncomp=target_peak_power+TVG;
+        target_TS_comp=target_TS_uncomp+target_comp;
+        target_TS_comp(target_TS_comp<=p.Results.TS_threshold|target_comp>p.Results.MaxBeamComp|target_TS_comp>max_TS)=nan;
+        target_TS_uncomp(target_TS_comp<=p.Results.TS_threshold|target_comp>p.Results.MaxBeamComp|target_TS_comp>max_TS)=nan;
+        
+        %removing all non-valid_targets again...
+        idx_keep= ~isnan(target_TS_comp);
+        pulse_length_lin=pulse_length_lin(idx_keep);
+        pulse_length_trans_lin=pulse_length_trans_lin(idx_keep);
+        target_TS_comp=target_TS_comp(idx_keep);
+        target_TS_uncomp=target_TS_uncomp(idx_keep);
+        target_range=target_range(idx_keep);
+        target_range_min=target_range_min(idx_keep);
+        target_range_max=target_range_max(idx_keep);
+        target_idx_r=samples_targets_idx_r(idx_keep);
+        std_along=std_along(idx_keep);
+        std_athwart=std_athwart(idx_keep);
+        phi_along=phi_along(idx_keep);
+        phi_athwart=phi_athwart(idx_keep);
+        target_ping_number=target_ping_number(idx_keep);
+        target_time=target_time(idx_keep);
+        nb_valid_targets=nansum(idx_keep);
+        idx_target_lin=idx_target_lin(idx_keep);
+        idx_samples_lin=idx_samples_lin(idx_keep);
+        pulse_env_before_lin=pulse_env_before_lin(idx_keep);
+        pulse_env_after_lin=pulse_env_after_lin(idx_keep);
+        
+        %let's remove overlapping targets just in case...
+        idx_target=zeros(nb_samples,nb_pings);
+        
         if ~isempty(p.Results.load_bar_comp)
-            set(load_bar_comp.progress_bar,'Value',i);
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_valid_targets, 'Value',0);
+            load_bar_comp.status_bar.setText('Target Detection Step 2');
         end
-    end
-    idx_same_ping=find(target_ping_number==target_ping_number(i));
-    same_target=find((target_range_max(idx_same_ping)==target_range_max(i)&(target_range_min(i)==target_range_min(idx_same_ping))));
-    
-    if  length(same_target)>=2
-        target_TS_comp(idx_same_ping(same_target(2:end)))=nan;
-        target_range_max(idx_same_ping(same_target(2:end)))=nan;
-        target_range_min(idx_same_ping(same_target(2:end)))=nan;
-    end
-    
-    overlapping_target=(target_range(idx_same_ping)<=target_range_max(i)&(target_range_min(i)<=target_range(idx_same_ping)))|...
-        (target_range_max(idx_same_ping)<=target_range_max(i)&(target_range_min(i)<=target_range_max(idx_same_ping)))|...
-        (target_range_min(idx_same_ping)<=target_range_max(i)&(target_range_min(i)<=target_range_min(idx_same_ping)));
-    
-    idx_target(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i))=1;
-    
-    if nansum(overlapping_target)>=2
-        idx_overlap=target_TS_comp(idx_same_ping(overlapping_target))<nanmax(target_TS_comp(idx_same_ping(overlapping_target)));
-        target_TS_comp(idx_same_ping(idx_overlap))=nan;
-        target_range_max(idx_same_ping(idx_overlap))=nan;
-        target_range_min(idx_same_ping(idx_overlap))=nan;
-    end
+        
+        for i=1:nb_valid_targets
+            if mod(i,floor(nb_valid_targets/10))==0
+                if ~isempty(p.Results.load_bar_comp)
+                    set(load_bar_comp.progress_bar,'Value',i);
+                end
+            end
+            idx_same_ping=find(target_ping_number==target_ping_number(i));
+            same_target=find((target_range_max(idx_same_ping)==target_range_max(i)&(target_range_min(i)==target_range_min(idx_same_ping))));
+            
+            if  length(same_target)>=2
+                target_TS_comp(idx_same_ping(same_target(2:end)))=nan;
+                target_range_max(idx_same_ping(same_target(2:end)))=nan;
+                target_range_min(idx_same_ping(same_target(2:end)))=nan;
+            end
+            
+            overlapping_target=(target_range(idx_same_ping)<=target_range_max(i)&(target_range_min(i)<=target_range(idx_same_ping)))|...
+                (target_range_max(idx_same_ping)<=target_range_max(i)&(target_range_min(i)<=target_range_max(idx_same_ping)))|...
+                (target_range_min(idx_same_ping)<=target_range_max(i)&(target_range_min(i)<=target_range_min(idx_same_ping)));
+            
+            idx_target(idx_target_lin(i)-pulse_env_before_lin(i):idx_target_lin(i)+pulse_env_after_lin(i))=1;
+            
+            if nansum(overlapping_target)>=2
+                idx_overlap=target_TS_comp(idx_same_ping(overlapping_target))<nanmax(target_TS_comp(idx_same_ping(overlapping_target)));
+                target_TS_comp(idx_same_ping(idx_overlap))=nan;
+                target_range_max(idx_same_ping(idx_overlap))=nan;
+                target_range_min(idx_same_ping(idx_overlap))=nan;
+            end
+        end
+        
+        
+        
+        
+        %removing all non-valid_targets again an storing results in single target
+        %structure...
+        idx_keep_final= ~isnan(target_TS_comp);
+        
+        single_targets.TS_comp=target_TS_comp(idx_keep_final);
+        single_targets.TS_uncomp=target_TS_uncomp(idx_keep_final);
+        single_targets.Target_range=target_range(idx_keep_final);
+        single_targets.Target_range_disp=target_range(idx_keep_final)+dr;
+        single_targets.idx_r=target_idx_r(idx_keep_final);
+        single_targets.Target_range_min=target_range_min(idx_keep_final);
+        single_targets.Target_range_max=target_range_max(idx_keep_final);
+        single_targets.StandDev_Angles_Minor_Axis=std_along(idx_keep_final);
+        single_targets.StandDev_Angles_Major_Axis=std_athwart(idx_keep_final);
+        single_targets.Angle_minor_axis=phi_along(idx_keep_final);
+        single_targets.Angle_major_axis=phi_athwart(idx_keep_final);
+        single_targets.Ping_number=target_ping_number(idx_keep_final);
+        single_targets.Time=target_time(idx_keep_final);
+        single_targets.nb_valid_targets=nansum(idx_keep_final);
+        idx_target_lin=idx_target_lin(idx_keep_final)';
+        single_targets.idx_target_lin=idx_samples_lin(idx_keep_final)';
+        single_targets.pulse_env_before_lin=pulse_env_before_lin(idx_keep_final)';
+        single_targets.pulse_env_after_lin=pulse_env_after_lin(idx_keep_final)';
+        single_targets.PulseLength_Normalized_PLDL=(pulse_env_after_lin(idx_keep_final)'+pulse_env_before_lin(idx_keep_final)'+1)./pulse_length_trans_lin(idx_keep_final)';
+        single_targets.Transmitted_pulse_length=pulse_length_lin(idx_keep_final)';
+        
+        
+    case 'FM'
+        peak_mat=10*log10(filter(ones(floor(Np/2),1)/floor(Np/2),1,10.^(peak_mat/10)));
+        idx_peaks=false(size(TS));
+                  
+        for i=1:size(TS,2)
+            [~,tmp]=findpeaks(peak_mat(:,i),'MinPeakDistance',Np);
+            idx_peaks(tmp,i)=true;
+        end
+        idx_samples_lin=Idx_samples_lin(idx_peaks);
+        single_targets=[];
+        disp('Algorithm not working in FM mode yet');
+        return;
 end
-
-
-%removing all non-valid_targets again an storing results in single target
-%structure...
-idx_keep_final= ~isnan(target_TS_comp);
-
-single_targets.TS_comp=target_TS_comp(idx_keep_final);
-single_targets.TS_uncomp=target_TS_uncomp(idx_keep_final);
-single_targets.Target_range=target_range(idx_keep_final);
-single_targets.Target_range_disp=target_range(idx_keep_final)+dr;
-single_targets.idx_r=target_idx_r(idx_keep_final);
-single_targets.Target_range_min=target_range_min(idx_keep_final);
-single_targets.Target_range_max=target_range_max(idx_keep_final);
-single_targets.StandDev_Angles_Minor_Axis=std_along(idx_keep_final);
-single_targets.StandDev_Angles_Major_Axis=std_athwart(idx_keep_final);
-single_targets.Angle_minor_axis=phi_along(idx_keep_final);
-single_targets.Angle_major_axis=phi_athwart(idx_keep_final);
-single_targets.Ping_number=target_ping_number(idx_keep_final);
-single_targets.Time=target_time(idx_keep_final);
-single_targets.nb_valid_targets=nansum(idx_keep_final);
-idx_target_lin=idx_target_lin(idx_keep_final)';
-single_targets.idx_target_lin=idx_samples_lin(idx_keep_final)';
-single_targets.pulse_env_before_lin=pulse_env_before_lin(idx_keep_final)';
-single_targets.pulse_env_after_lin=pulse_env_after_lin(idx_keep_final)';
-single_targets.PulseLength_Normalized_PLDL=(pulse_env_after_lin(idx_keep_final)'+pulse_env_before_lin(idx_keep_final)'+1)./pulse_length_trans_lin(idx_keep_final)';
-single_targets.Transmitted_pulse_length=pulse_length_lin(idx_keep_final)';
 
 
 heading=trans_obj.AttitudeNavPing.Heading;
@@ -436,11 +431,11 @@ single_targets.Heading=heading_mat(idx_target_lin);
 
 % if~isempty(old_single_targets)
 %     if ~isempty(old_single_targets.TS_comp)
-%         
+%
 %         idx_rem=(old_single_targets.idx_r>=idx_r(1)&old_single_targets.idx_r<=idx_r(end))&(old_single_targets.Ping_number>=idx_pings(1)&old_single_targets.Ping_number<=idx_pings(end));
-%         
+%
 %         props=fields(old_single_targets);
-%         
+%
 %         for i=1:length(props)
 %             if length(old_single_targets.(props{i}))==length(idx_rem)
 %             old_single_targets.(props{i})(idx_rem)=[];
@@ -448,7 +443,7 @@ single_targets.Heading=heading_mat(idx_target_lin);
 %             end
 %         end
 %     end
-%     
+%
 %     single_targets.nb_valid_targets=length(single_targets.TS_comp);
 % end
 

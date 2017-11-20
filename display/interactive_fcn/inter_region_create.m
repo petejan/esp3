@@ -89,8 +89,6 @@ switch mode
         yinit = ydata(1);
 end
 
-
-
 x_box=xinit;
 y_box=yinit;
 

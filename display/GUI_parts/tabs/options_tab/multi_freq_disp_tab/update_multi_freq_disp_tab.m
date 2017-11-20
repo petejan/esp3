@@ -26,7 +26,7 @@ set(multi_freq_disp_tab_comp.ax,'XTick',layer.Frequencies/1e3);
 lines=findobj(multi_freq_disp_tab_comp.ax,'Type','line');
 
 if ~isempty(layer.Curves)
-    set(multi_freq_disp_tab_comp.ax,'visible','on');
+    %set(multi_freq_disp_tab_comp.ax,'visible','on');
     if ~isempty(lines)
         idx_rem=~ismember({lines(:).Tag},{layer.Curves(:).Unique_ID});
         idx_rem=idx_rem|strcmp({lines(:).Tag},'1');
@@ -35,7 +35,7 @@ if ~isempty(layer.Curves)
     end
 else
     delete(lines);
-    set(multi_freq_disp_tab_comp.ax,'visible','off');
+    %set(multi_freq_disp_tab_comp.ax,'visible','off');
 end
 
 
@@ -69,4 +69,17 @@ for ic=idx_new
     multi_freq_disp_tab_comp.table.Data{u,4}=curves(ic).Unique_ID;
 end
 
+nb_lines=size(multi_freq_disp_tab_comp.table.Data,1);
+
+for il=1:nb_lines
+    line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','line','-and','Tag',multi_freq_disp_tab_comp.table.Data{il,4}});
+    if ~isempty(line_obj)
+        switch multi_freq_disp_tab_comp.table.Data{il,3}
+            case true
+                set(line_obj,'Visible','on');
+            case false
+                set(line_obj,'Visible','off');
+        end
+    end
+end
 end
