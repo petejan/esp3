@@ -115,7 +115,7 @@ switch lower(deblank(fieldname))
         data_mat=data;
 end
 
-data_mat=(real(data_mat));
+data_mat=single(real(data_mat));
 
 x_data_disp=xdata(idx_ping);
 y_data_disp=ydata(idx_r);

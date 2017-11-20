@@ -35,7 +35,11 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function create_context_menu_bottom(~,bottom_line)
+function create_context_menu_bottom(main_figure,bottom_line)
+curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+[~,idx_freq]=layer.get_trans(curr_disp);
+
 
 delete(findall(ancestor(bottom_line,'figure'),'Tag','botCtxtMenu'));
 context_menu=uicontextmenu(ancestor(bottom_line,'figure'),'Tag','botCtxtMenu');
@@ -45,46 +49,32 @@ uimenu(context_menu,'Label','Filter Bottom','Callback',@filter_bottom_callback);
 % uimenu(context_menu,'Label','Display Slope estimation','Callback',@slope_est_callback);
 % uimenu(context_menu,'Label','Display Shadow zone height estimation','Callback',@shadow_zone_est_callback);
 uimenu(context_menu,'Label','Display Shadow zone content estimation (10m X 10m)','Callback',@shadow_zone_content_est_callback);
-uimenu(context_menu,'Label','Copy Bottom to higher Frequencies','Callback',@copy_bottom_cback);
 
+uifreq=uimenu(context_menu,'Label','Copy to other channels');
+uimenu(uifreq,'Label','all','Callback',{@copy_bottom_cback,main_figure,[]});
+idx_higher_freq=find(layer.Frequencies>layer.Frequencies(idx_freq));
+idx_other=setdiff(1:numel(layer.Frequencies),idx_freq);
+uimenu(uifreq,'Label','Higher Frequencies','Callback',{@copy_bottom_cback,main_figure,idx_higher_freq});
+for ifreq=idx_other
+    uimenu(uifreq,'Label',sprintf('%.0fkHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_bottom_cback,main_figure,ifreq});
+end
 
 end
 
-% 
-% function shadow_zone_est_callback(src,~)
-% main_figure=ancestor(src,'Figure');
-% 
-% layer=getappdata(main_figure,'Layer');
-% curr_disp=getappdata(main_figure,'Curr_disp');
-% [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-% 
-% 
-% [shadow_zone_height_est,~] = trans_obj.get_shadow_zone_height_est();
-% 
-% fig_handle=new_echo_figure(main_figure,'Tag','shadow_zone');
-% ax=axes(fig_handle);
-% plot(ax,shadow_zone_height_est);
-% grid(ax,'on');
-% xlabel(ax,'Ping number')
-% ylabel(ax,'Shadow Zone (m)');
-% 
-% end
 
-function copy_bottom_cback(src,~)
-main_figure=ancestor(src,'Figure');
+
+
+function copy_bottom_cback(src,~,main_figure,ifreq)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [~,idx_freq]=layer.get_trans(curr_disp);
 
-idx_higher_freq=find(layer.Frequencies>layer.Frequencies(idx_freq));
+[bots,ifreq]=layer.generate_bottoms_for_other_freqs(idx_freq,ifreq);
 
-
-[bots,idx_higher_freq]=layer.generate_bottoms_for_other_freqs(idx_freq,idx_higher_freq);
-
-for i=1:numel(idx_higher_freq)
+for i=1:numel(ifreq)
     old_bot=layer.Transceivers(idx_higher_freq(i)).Bottom;
-    layer.Transceivers(idx_higher_freq(i)).setBottom(bots(i));
+    layer.Transceivers(ifreq(i)).setBottom(bots(i));
     add_undo_bottom_action(main_figure,layer.Transceivers(idx_higher_freq(i)),old_bot,bots(i));
 end
 

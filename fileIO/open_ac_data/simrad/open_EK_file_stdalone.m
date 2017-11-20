@@ -390,18 +390,17 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
                     trans_obj(i).add_algo(algo_vec);                   
-                    trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);   
-                    
+                    trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);                     
                 end               
             else
                 trans_obj=transceiver_cl.empty();
                 envdata=env_data_cl.empty();
             end
+            
            layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
 
             for i=1:length(trans_obj)
-                layers(uu).add_trans(trans_obj(i));
-                 
+                layers(uu).add_trans(trans_obj(i));                
             end
             
             layers(uu).add_lines(line_cl('Name','TransducerDepth','Range',trans_depth,'Time',depth_time));

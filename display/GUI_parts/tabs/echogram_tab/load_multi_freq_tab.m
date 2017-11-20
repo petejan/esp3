@@ -114,7 +114,6 @@ if isempty(secondary_freqs)
     return;
 end
 curr_disp.ChannelID=layer.ChannelID{layer.Frequencies==primary_freq};
-curr_disp.Freq=primary_freq;
 
 curr_disp.setField(sprintf('Sv%.0fkHz',secondary_freqs(end)/1e3));
 curr_disp.setCax(cax(end,:));

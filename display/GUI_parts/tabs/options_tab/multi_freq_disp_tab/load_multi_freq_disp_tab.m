@@ -50,18 +50,21 @@ uimenu(select_menu,'Label','Inverse Selection','Callback',{@selection_callback,m
 
 
 multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_disp_tab,'Units','normalized','box','on',...
-     'OuterPosition',[0 0 2/3 1],'visible','on','NextPlot','add','box','on');
+     'OuterPosition',[0 0 2/3 0.95],'visible','on','NextPlot','add','box','on');
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelFormat='%.0fkHz';
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=0;
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
-
-
 grid(multi_freq_disp_tab_comp.ax,'on'); 
+ multi_freq_disp_tab_comp.ax_lim_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[2/3-0.25 0.9 0.25 0.1],'String','Link YLim to Echo.','Value',0,'Callback',{@link_ylim_to_echo_clim,main_figure,tab_tag});
+
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 
 update_multi_freq_disp_tab(main_figure,tab_tag);
 
 end
+
+
+
 
 
 function selection_callback(src,~,main_figure,tab_tag)

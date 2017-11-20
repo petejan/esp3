@@ -37,7 +37,6 @@
 %% Function
 function load_reglist_tab(main_figure,tab_panel)
 
-
 switch tab_panel.Type
     case 'uitabgroup'
         reglist_tab_comp.reglist_tab=new_echo_tab(main_figure,tab_panel,'Title','Region List','UiContextMenuName','reglist');
@@ -72,8 +71,14 @@ set(reglist_tab_comp.table,'KeyPressFcn',{@keypresstable,main_figure});
 
 rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
 reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT color="REd"><b>Delete region(s)</b></Font> ';
+
+
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,reglist_tab_comp.table,main_figure});
 uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
+uifreq=uimenu(rc_menu,'Label','Copy to other channels');
+uimenu(uifreq,'Label','all','Callback',{@copy_region_from_selected_cback,reglist_tab_comp.table,main_figure});
+
+
 reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 
 setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
@@ -83,11 +88,18 @@ update_reglist_tab(main_figure,[],1);
 
 end
 
+function copy_region_from_selected_cback(~,~,table,main_figure)
+idx=getappdata(table,'SelectedRegs');
+if ~isempty(idx)
+    copy_region_callback([],[],idx,main_figure,[])
+end
+end
+
 
 function display_regions_callback(src,~,table,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 idx=getappdata(table,'SelectedRegs');
 if ~isempty(idx)

@@ -48,18 +48,24 @@ setappdata(main_figure,'option_tab_panel',opt_panel);
 setappdata(main_figure,'algo_tab_panel',algo_panel);
 
 create_menu(main_figure);
+
+%fixed Tab in option panel
 load_cursor_tool(main_figure);
 load_display_tab(main_figure,opt_panel);
+load_regions_tab(main_figure,opt_panel);
+load_lines_tab(main_figure,opt_panel);
+load_calibration_tab(main_figure,opt_panel);
+load_processing_tab(main_figure,opt_panel);
+
+%Undockable tabs
+%load_layer_tab(main_figure,opt_panel);
+%load_reglist_tab(main_figure,opt_panel);
 load_map_tab(main_figure,opt_panel);
 load_multi_freq_disp_tab(main_figure,opt_panel,'sv_f');
 load_multi_freq_disp_tab(main_figure,opt_panel,'ts_f');
 display_tab_comp=getappdata(main_figure,'Display_tab');
 
 load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.60]);
-load_regions_tab(main_figure,opt_panel);
-load_lines_tab(main_figure,opt_panel);
-load_calibration_tab(main_figure,opt_panel);
-load_processing_tab(main_figure,opt_panel);
 
 
 load_bottom_tab(main_figure,algo_panel);

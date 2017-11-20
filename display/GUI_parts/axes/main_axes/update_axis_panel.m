@@ -25,13 +25,11 @@ else
     delete(u);
 end
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 if isempty(trans_obj)
     idx_freq=1;
-    curr_disp.ChannelID=layer.ChannelID{idx_freq};
-    curr_disp.Freq=layer.Frequencies(idx_freq);
-    
+    curr_disp.ChannelID=layer.ChannelID{idx_freq};  
     return;
 end
 

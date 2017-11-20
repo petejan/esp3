@@ -73,11 +73,11 @@ if isreg>0
         
         uifreq=uimenu(region_menu,'Label','Copy to other channels');
         uimenu(uifreq,'Label','all','Callback',{@copy_region_callback,ID,main_figure,[]});
+        
         for ifreq=idx_other
             uimenu(uifreq,'Label',sprintf('%.0fkHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_region_callback,ID,main_figure,ifreq});
         end
-        
-        
+              
         uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
         uimenu(region_menu,'Label','Merge Overlapping Regions (per Tag)','CallBack',{@merge_overlapping_regions_per_tag_callback,main_figure});
 end
@@ -214,15 +214,7 @@ xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,1);
 
 end
 
-function copy_region_callback(~,~,ID,main_figure,idx_freq_end)
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-reg_curr=trans_obj.get_region_from_Unique_ID(ID);
-layer.copy_region_across(idx_freq,reg_curr,idx_freq_end);
-
-end
 
 function reg_integrated_callback(~,~,ID,main_figure)
 layer=getappdata(main_figure,'Layer');
@@ -303,6 +295,3 @@ xlabel(xlab);
 
 end
 
-function delete_region_uimenu_callback(~,~,ID,main_figure)
-delete_regions_from_uid(main_figure,ID);
-end

@@ -39,7 +39,7 @@ function load_layer_tab(main_figure,parent_tab_group)
 
 switch parent_tab_group.Type
     case 'uitabgroup'        
-        layer_tab_comp.layer_tab=new_echo_tab(main_figure,parent_tab_group,'Title','Layers','UiContextMenuName','laylist');      
+        layer_tab_comp.layer_tab=new_echo_tab(main_figure,parent_tab_group,'Title','Layer List','UiContextMenuName','laylist');      
     case 'figure'
         layer_tab_comp.layer_tab=parent_tab_group;
 end
@@ -206,7 +206,6 @@ end
 
 idx(isnan(idx))=[];
 
-layers_to_complete=layers(idx);
 
 
 

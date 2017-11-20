@@ -30,7 +30,6 @@ cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CDa
 
 setappdata(main_figure,'Cursor_mode_tool',cursor_mode_tool_comp);
 
-
 end
 
 

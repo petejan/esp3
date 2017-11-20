@@ -66,6 +66,8 @@ set(school_detect_tab_comp.nb_min_sples,'string',num2str(varin.nb_min_sples,'%.0
 
 set(school_detect_tab_comp.Sv_thr,'string',num2str(varin.Sv_thr,'%.0f'));
 
+set(school_detect_tab_comp.Sv_max,'string',num2str(varin.Sv_max,'%.0f'));
+
 %set(findall(school_detect_tab_comp.school_detect_tab, '-property', 'Enable'), 'Enable', 'on');
 
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);

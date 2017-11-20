@@ -47,7 +47,7 @@ y_ini=1;
 x_sep=0.02;
 y_sep=0.02;
 
-pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
+pos=create_pos_2(5,2,x_ini,y_ini,x_sep,y_sep);
 
 parameters_1=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0. 0.2 0.3 0.7],'fontsize',11);
 
@@ -80,7 +80,10 @@ uicontrol(parameters_2,'Style','text','units','normalized','string','Min. sple n
 school_detect_tab_comp.nb_min_sples=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.nb_min_sples),'BackgroundColor','white','callback',{@ check_fmt_box,0,1000,varin.nb_min_sples,'%.0f'});
 
 uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Thr.(dB)','pos',pos{4,1},'HorizontalAlignment','right');
-school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,-10,varin.Sv_thr,'%.0f'});
+school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,0,varin.Sv_thr,'%.0f'});
+
+uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Max.(dB)','pos',pos{5,1},'HorizontalAlignment','right');
+school_detect_tab_comp.Sv_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{5,2},'string',num2str(varin.Sv_max),'BackgroundColor','white','callback',{@ check_fmt_box,-120,Inf,varin.Sv_max,'%.0f'});
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
 

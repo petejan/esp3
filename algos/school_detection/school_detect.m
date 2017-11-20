@@ -41,10 +41,10 @@ p = inputParser;
 check_trans_class=@(obj) isa(obj,'transceiver_cl');
 
 default_Sv_thr=-70;
-check_Sv_thr=@(thr)(thr>=-120&&thr<=-30);
+check_Sv_thr=@(thr)(thr>=-999&&thr<=0);
 
-default_Sv_max=default_Sv_thr+36;
-check_Sv_max=@(thr)(thr>=-70&&thr<=0);
+default_Sv_max=Inf;
+check_Sv_max=@(thr)(thr>=-999&&thr<=Inf);
 
 default_l_min_can=15;
 check_l_min_can=@(l)(l>=0&&l<=500);
@@ -121,6 +121,7 @@ Bottom=trans_obj.get_bottom_range(idx_pings);
 
 [~,Np]=trans_obj.get_pulse_Teff();
 Sv_thr=p.Results.Sv_thr;
+Sv_max=p.Results.Sv_max;
 l_min_can=p.Results.l_min_can;
 h_min_can=p.Results.h_min_can;
 l_min_tot=p.Results.l_min_tot;
@@ -144,10 +145,10 @@ mask=reg_obj.get_mask_from_intersection(regs_bad);
 mask(:,idx_bad)=1;
 
 if nansum(~isnan(Bottom))==0
-    Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np));
+    Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&Sv_mat<=Sv_max&(mask<1),(1:nb_samples)'>3*Np));
 else
     Bottom(isnan(Bottom))=nb_samples;
-    Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&(mask<1),(1:nb_samples)'>3*Np)&(bsxfun(@lt,range,Bottom)));
+    Sv_mask_ori=double(bsxfun(@and,Sv_mat>=Sv_thr&Sv_mat<=Sv_max&(mask<1),(1:nb_samples)'>3*Np)&(bsxfun(@lt,range,Bottom)));
 end
 
 Sv_mask_ori(range>=p.Results.depth_max,:)=0;

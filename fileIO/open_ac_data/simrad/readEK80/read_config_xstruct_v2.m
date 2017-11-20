@@ -58,11 +58,11 @@ for i=1:nb_transceivers
         
         for jj=1:length(fields)
             if isstruct(config_temp.(fields{jj}))
-                config(i_lay).(fields{jj})=config_temp.(fields{jj});
+                config_temp(i_lay).(fields{jj})=config_temp.(fields{jj});
                 continue;
             end
-            val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
-            if any(isnan(val_temp))
+            val_temp=sscanf([config_temp.(fields{jj}) ';'],'%f;');
+            if any(isnan(val_temp))||isempty(val_temp)
                 config(i_lay).(fields{jj})=config_temp.(fields{jj});
             else
                 config(i_lay).(fields{jj})=val_temp;
@@ -103,9 +103,8 @@ if isfield(conf,'Transducers')
         fields=fieldnames(config_temp);
         for itrans_out=i_trans
             for jj=1:length(fields)
-                
-                val_temp=str2double(strsplit(config_temp.(fields{jj}),';'));
-                if any(isnan(val_temp))
+                val_temp=sscanf([config_temp.(fields{jj}) ';'],'%f;');
+                if any(isnan(val_temp))||isempty(val_temp)
                     config(itrans_out).(fields{jj})=config_temp.(fields{jj});
                 else
                     config(itrans_out).(fields{jj})=val_temp;
@@ -142,15 +141,13 @@ if isfield(conf,'ConfiguredSensors')
             for j=1:length(att)
                 sensor_temp.(att{j})=Sensor.Attributes.(att{j});
             end
-            
-            
-            
+                     
+  
             fields=fieldnames(sensor_temp);
             
             for jj=1:length(fields)
-                
-                val_temp=str2double(strsplit(sensor_temp.(fields{jj}),';'));
-                if any(isnan(val_temp))
+                 val_temp=sscanf([sensor_temp.(fields{jj}) ';'],'%f;');
+                if any(isnan(val_temp))||isempty(val_temp)
                     sensor(i).(fields{jj})=sensor_temp.(fields{jj});
                 else
                     sensor(i).(fields{jj})=val_temp;

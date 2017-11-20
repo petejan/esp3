@@ -222,15 +222,26 @@ try
             curr_disp.Cmap=cmaps{nanmin(rem(id_map,length(cmaps))+1,length(cmaps))};
         case 'f'
             if length(layer.Frequencies)>1
-                curr_disp.ChannelID=layer.ChannelID(nanmin(rem(idx_freq,length(layer.ChannelID))+1,length(layer.ChannelID)));
-                curr_disp.Freq=layer.Frequencies(nanmin(rem(idx_freq,length(layer.Frequencies))+1,length(layer.Frequencies)));
+                if isempty(callbackdata.Modifier)
+                    curr_disp.ChannelID=layer.ChannelID{nanmin(rem(idx_freq,length(layer.ChannelID))+1,length(layer.ChannelID))};
+                elseif  strcmpi(callbackdata.Modifier,'shift')
+                    id=idx_freq-1;
+                    id(id==0)=length(layer.ChannelID);
+                    curr_disp.ChannelID=layer.ChannelID{id};
+                end
             end
         case 'e'
             if~isempty(trans_obj.Data)
                 if length(trans_obj.Data.Fieldname)>1
                     fields=trans_obj.Data.Fieldname;
                     id_field=find(strcmp(curr_disp.Fieldname,fields));
-                    curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
+                    if isempty(callbackdata.Modifier)
+                        curr_disp.setField(fields{nanmin(rem(id_field,length(fields))+1,length(fields))});
+                    elseif  strcmpi(callbackdata.Modifier,'shift')
+                        id=id_field-1;
+                        id(id==0)=length(fields);
+                       curr_disp.setField(fields{id});
+                    end
                 end
             end
             
