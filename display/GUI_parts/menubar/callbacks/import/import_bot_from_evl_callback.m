@@ -19,6 +19,5 @@ trans_obj.setBottom_from_evl(fullfile(PathToFile,Filename))
 setappdata(main_figure,'Layer',layer);
 display_bottom(main_figure);
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
 order_stacks_fig(main_figure);
 end

@@ -39,6 +39,5 @@ add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 display_bottom(main_figure);
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
 
 end

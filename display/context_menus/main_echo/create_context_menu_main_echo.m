@@ -130,6 +130,5 @@ setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
 
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
 
 end

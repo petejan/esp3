@@ -287,7 +287,7 @@ switch src.Parent.Tag
 end
 
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
+
 order_stacks_fig(main_figure);
 
 end

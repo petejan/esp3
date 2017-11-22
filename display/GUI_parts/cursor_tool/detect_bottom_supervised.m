@@ -177,13 +177,16 @@ wbmcb([],[])
         
 
         set_alpha_map(main_figure,'update_bt',0);
+        
         if val>0
             setappdata(main_figure,'Curr_disp',curr_disp);
             setappdata(main_figure,'Layer',layer);
             
             add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
             
-            set_alpha_map(main_figure,'main_or_mini','mini','update_bt',0);
+            set_alpha_map(main_figure,'update_bt',0);
+        else
+            set_alpha_map(main_figure,'main_or_mini','main');
         end
 
     end

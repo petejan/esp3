@@ -99,6 +99,6 @@ curr_disp.setField('svdenoised');
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Curr_disp',curr_disp);
-loadEcho(main_figure);
+
 
 end

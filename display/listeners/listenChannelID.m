@@ -20,6 +20,7 @@ update_processing_tab(main_figure);
 update_display_tab(main_figure);
 
 load_calibration_tab(main_figure,opt_panel);
+
 load_info_panel(main_figure);
 update_reglist_tab(main_figure,[],1);
 

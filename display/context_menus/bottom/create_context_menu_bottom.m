@@ -73,12 +73,14 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [bots,ifreq]=layer.generate_bottoms_for_other_freqs(idx_freq,ifreq);
 
 for i=1:numel(ifreq)
-    old_bot=layer.Transceivers(idx_higher_freq(i)).Bottom;
+    old_bot=layer.Transceivers(ifreq(i)).Bottom;
+    bots(i).Tag=old_bot.Tag;
     layer.Transceivers(ifreq(i)).setBottom(bots(i));
-    add_undo_bottom_action(main_figure,layer.Transceivers(idx_higher_freq(i)),old_bot,bots(i));
+    add_undo_bottom_action(main_figure,layer.Transceivers(ifreq(i)),old_bot,bots(i));
 end
 
-disp('Bottom copied to higher frequencies.')
+display_bottom(main_figure);
+set_alpha_map(main_figure);
 
 end
 
@@ -189,6 +191,5 @@ setappdata(main_figure,'Curr_disp',curr_disp);
 setappdata(main_figure,'Layer',layer);
 display_bottom(main_figure);
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
 
 end

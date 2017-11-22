@@ -76,7 +76,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
 order_stacks_fig(main_figure);
 
 

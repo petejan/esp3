@@ -134,7 +134,14 @@ for iax=1:length(main_axes_tot)
                     
                 case 'Polygon'
                     reg_plot=gobjects(1,2);
-                            
+                    [status,~]=license('checkout','MAP_Toolbox');
+                    if status==0
+                        cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
+                        cdata(:,:,1)=col(1);
+                        cdata(:,:,2)=col(2);
+                        cdata(:,:,3)=col(3);
+                    end
+                    
                     idx_x=reg_curr.X_cont;
                     idx_y=reg_curr.Y_cont;
                     idx_x_out=cell(1,length(idx_x));
@@ -171,14 +178,18 @@ for iax=1:length(main_axes_tot)
                             line(x_reg{jj},y_reg{jj},'color',col,'LineWidth',1,'parent',main_axes,'tag','region_cont','UserData',reg_curr.Unique_ID);
                         end
                     end
-                    [f, v] = poly2fv(x_reg, y_reg);
-
-                    reg_plot(1)=patch('Faces', f, 'Vertices', v, 'FaceColor',col,...
-                        'parent',main_axes,'FaceAlpha',alpha_in,...
-                        'EdgeColor','none',...
-                        'tag','region',...
-                        'UserData',reg_curr.Unique_ID,...
-                        'visible',curr_disp.DispReg);
+                    
+                    if status>0
+                        [f, v] = poly2fv(x_reg, y_reg);
+                        reg_plot(1)=patch('Faces', f, 'Vertices', v, 'FaceColor',col,...
+                            'parent',main_axes,'FaceAlpha',alpha_in,...
+                            'EdgeColor','none',...
+                            'tag','region',...
+                            'UserData',reg_curr.Unique_ID,...
+                            'visible',curr_disp.DispReg);
+                    else
+                       reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
+                    end
                            
             end
                        

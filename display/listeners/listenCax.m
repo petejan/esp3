@@ -3,6 +3,7 @@ replace_interaction(main_figure,'interaction','KeyPressFcn','id',1);
 update_display_tab(main_figure);
 set_alpha_map(main_figure,'main_or_min','mini');
 set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_min','secondary');
 curr_disp=getappdata(main_figure,'Curr_disp');
 map_tab_comp=getappdata(main_figure,'Map_tab');
 

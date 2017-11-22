@@ -226,8 +226,7 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
         display_bottom(main_figure);
-        set_alpha_map(main_figure);
-        set_alpha_map(main_figure,'main_or_mini','mini');     
+        set_alpha_map(main_figure);   
     end
 
 
