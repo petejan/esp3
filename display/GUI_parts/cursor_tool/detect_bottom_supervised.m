@@ -175,8 +175,6 @@ wbmcb([],[])
         curr_disp.Bot_changed_flag=1;
         display_bottom(main_figure);
         
-
-        set_alpha_map(main_figure,'update_bt',0);
         
         if val>0
             setappdata(main_figure,'Curr_disp',curr_disp);

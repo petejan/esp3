@@ -1,3 +1,4 @@
+
 function load_multi_freq_disp_tab(main_figure,tab_panel,tab_tag)
 
 switch tab_tag
@@ -56,13 +57,17 @@ multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_di
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
 grid(multi_freq_disp_tab_comp.ax,'on'); 
  multi_freq_disp_tab_comp.ax_lim_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[2/3-0.25 0.9 0.25 0.1],'String','Link YLim to Echo.','Value',0,'Callback',{@link_ylim_to_echo_clim,main_figure,tab_tag});
-
+ multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[2/3-0.5 0.9 0.25 0.1],'String','DeTrend Curves.','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+ multi_freq_disp_tab_comp.detrend=0;
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 
 update_multi_freq_disp_tab(main_figure,tab_tag);
 
 end
 
+function detrend_curves_cback(src,evt,main_figure,tab_tag)
+update_multi_freq_disp_tab(main_figure,tab_tag);
+end
 
 
 

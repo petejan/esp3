@@ -25,7 +25,11 @@ for i=1:nb_reg_groups
         case '0.2'
             region_xml{i}.Regions=get_regions_node_v2(xml_struct.Children(i));
     end
+    if isnumeric(region_xml{i}.Infos.ChannelID)
+        region_xml{i}.Infos.ChannelID=num2str(region_xml{i}.Infos.ChannelID);
+    end
 end
+
 
 end
 

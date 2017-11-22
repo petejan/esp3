@@ -68,11 +68,14 @@ if new==1
     update_reglist_tab(main_figure,[],new);
     clear_regions(main_figure,{});
     update_multi_freq_tab(main_figure);
-    load_secondary_freq_win(main_figure);
+    
 end
 
 update_axis_panel(main_figure,new);
 
+if new==1
+    load_secondary_freq_win(main_figure);
+end
 
 try
     update_mini_ax(main_figure,new);

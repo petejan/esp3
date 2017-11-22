@@ -6,7 +6,10 @@ found=ones(1,numel(cid));
 idx=ones(1,numel(cid));
 
 for ifr=1:numel(cid)
-    idx_tmp=find(strcmpi(deblank(layer.ChannelID),deblank(cid{ifr})));
+    if isnumeric(cid{ifr})
+        cid{ifr}=num2str(cid{ifr});
+    end
+        idx_tmp=find(strcmpi(deblank(layer.ChannelID),deblank(cid{ifr})));
     
     if isempty(idx_tmp)
         found(ifr)=0;
