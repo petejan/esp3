@@ -76,11 +76,23 @@ display_tab_comp.caxis_down=uicontrol(display_tab_comp.display_tab,'Style','edit
 
 set([display_tab_comp.caxis_up display_tab_comp.caxis_down],'callback',{@set_caxis,main_figure});
 
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.8725 0.25 0.1 0.15],'callback',{@display_attitude_cback,main_figure});
-uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Speed.','units','normalized','pos',[0.8725 0.1 0.1 0.15],'callback',{@display_speed_callback,main_figure});
+display_tab_comp.sec_freq_disp=uicontrol(display_tab_comp.display_tab,'Style','checkbox','Value',curr_disp.DispSecFreqs,...
+    'String','Disp Other F.','units','normalized','Position',[0.86 0.4 0.14 0.15],...
+    'BackgroundColor','w',...
+    'callback',{@change_DispSecFreqs_cback,main_figure});
+
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Att.','units','normalized','pos',[0.86 0.25 0.14 0.15],'callback',{@display_attitude_cback,main_figure});
+uicontrol(display_tab_comp.display_tab,'Style','pushbutton','String','Disp Speed.','units','normalized','pos',[0.86 0.1 0.14 0.15],'callback',{@display_speed_callback,main_figure});
 
 %set(findall(display_tab_comp.display_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Display_tab',display_tab_comp);
 
 
 end
+
+
+function change_DispSecFreqs_cback(src,~,main_figure)
+	curr_disp=getappdata(main_figure,'Curr_disp');
+    curr_disp.DispSecFreqs=get(src,'Value');
+end
+

@@ -136,8 +136,9 @@ for i=1:length(selected_layers)
         warning('You cannot delete the last layer standing');
         setappdata(main_figure,'Layers',layers);
         setappdata(main_figure,'Layer',layer);
-        loadEcho(main_figure);
-        
+        if i>1
+            loadEcho(main_figure);
+        end
         return;
     end
     

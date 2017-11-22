@@ -75,7 +75,6 @@ setappdata(main_figure,'Layer',layer);
 add_undo_bottom_action(main_figure,trans_obj,old_bot,bot);
 
 set_alpha_map(main_figure);
-set_alpha_map(main_figure,'main_or_mini','mini');
 display_bottom(main_figure);
 order_stacks_fig(main_figure);
 

@@ -55,7 +55,8 @@ uiundo(main_figure,'clear');
 
 nb_layers = length(layers);
 curr_disp = getappdata(main_figure,'Curr_disp');
-
+curr_disp.SecChannelIDs=layer.ChannelID;
+curr_disp.SecFreqs=layer.Frequencies;
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
@@ -66,6 +67,7 @@ if isempty(trans_obj)
     curr_disp.Freq = layer.Frequencies(idx_freq);
 	[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 end
+curr_disp.ChannelID = layer.ChannelID{idx_freq};
 
 [~,found_field] = find_field_idx(trans_obj.Data,curr_disp.Fieldname);
 
@@ -99,6 +101,7 @@ curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 setappdata(main_figure,'Curr_disp',curr_disp);
 
 update_display(main_figure,flag);
+
 waitfor(curr_disp,'UIupdate',0)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 axes_panel_comp.axes_panel.Parent.SelectedTab=axes_panel_comp.axes_panel;

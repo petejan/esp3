@@ -152,7 +152,7 @@ classdef layer_cl < handle
                         trans_obj=layer.Transceivers(idx_cid);
                     else
                         [idx_cid,found]=layer.find_freq_idx(curr_disp.Freq);
-                        
+
                         if found==1
                             trans_obj=layer.Transceivers(idx_cid);
                         else

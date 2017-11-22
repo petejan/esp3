@@ -36,6 +36,9 @@
 
 %% Function
 function update_display(main_figure,new)
+if ~isdeployed
+    disp('Update Display');
+end
 
 
 opt_panel=getappdata(main_figure,'option_tab_panel');
@@ -65,9 +68,11 @@ if new==1
     update_reglist_tab(main_figure,[],new);
     clear_regions(main_figure,{});
     update_multi_freq_tab(main_figure);
+    load_secondary_freq_win(main_figure);
 end
 
 update_axis_panel(main_figure,new);
+
 
 try
     update_mini_ax(main_figure,new);

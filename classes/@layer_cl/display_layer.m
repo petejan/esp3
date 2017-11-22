@@ -11,7 +11,7 @@
 % *INPUT VARIABLES*
 %
 % * |layer|: TODO: write description and info on variable
-% * |freq|: TODO: write description and info on variable
+% * |curr_disp|: TODO: write description and info on variable
 % * |fieldname|: TODO: write description and info on variable
 % * |ax|: TODO: write description and info on variable
 % * |main_echo|: TODO: write description and info on variable
@@ -45,14 +45,13 @@
 function [dr,dp]=display_layer(layer,curr_disp,fieldname,ax,main_echo,x,y,new)
 
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 if isempty(trans_obj)
     return;
 end
 
 screensize = getpixelposition(ax);
 
- 
 xdata=trans_obj.get_transceiver_pings();
 ydata=trans_obj.get_transceiver_samples();
 

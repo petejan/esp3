@@ -3,6 +3,10 @@ layer=getappdata(main_figure,'Layer');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
+if ~isdeployed
+    disp('Update Axis Panel');
+end
+
 if any(~isvalid([axes_panel_comp.main_echo axes_panel_comp.main_axes]))
     load_axis_panel(main_figure,axes_panel_comp.axes_panel); 
     axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -33,6 +37,8 @@ if isempty(trans_obj)
     return;
 end
 
+set(axes_panel_comp.axes_panel,'Title',sprintf('%.0fkHz',curr_disp.Freq/1e3),'Userdata',curr_disp.ChannelID)
+
 [~,found]=find_field_idx(trans_obj.Data,curr_disp.Fieldname);
 
 if found==0
@@ -41,10 +47,8 @@ if found==0
         field=trans_obj.Data.Fieldname{1};
     else
         field='sv';
-    end
-    
+    end    
     curr_disp.setField(field);
-    setappdata(main_figure,'Curr_disp',curr_disp);
     return;
 end
 
@@ -66,7 +70,6 @@ else
     set(info_panel_comp.display_subsampling,'String',str_subsampling,'ForegroundColor',[0 0.5 0],'Fontweight','normal');
 end
 
-
 % if strcmpi(curr_disp.CursorMode,'Normal')  
 %     create_context_menu_main_echo(main_figure);
 % end
@@ -74,4 +77,5 @@ end
 axes_panel_comp.listeners=addlistener(axes_panel_comp.main_axes,'YLim','PostSet',@(src,envdata)listenYLim(src,envdata,main_figure)); 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);
 update_grid(main_figure);
+
 end

@@ -35,8 +35,8 @@
 
 %% Function
 function listenYLim(src,evt,main_figure)
-%disp('listenYLim')
-% profile on;
+disp('listenYLim')
+ profile on;
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -47,10 +47,13 @@ x_lim=get(ax,'XLim');
 y_lim=get(ax,'YLim');
 
 range=trans_obj.get_transceiver_range();
+%time=trans_obj.get_transceiver_time();
 y_lim=ceil(y_lim);
 y_lim(y_lim>numel(range))=numel(range);
 curr_disp.R_disp=range(y_lim);
 
+
+update_secondary_freq_win(main_figure);
 update_axis_panel(main_figure,0);
 set_axes_position(main_figure);
 %update_cmap(main_figure);

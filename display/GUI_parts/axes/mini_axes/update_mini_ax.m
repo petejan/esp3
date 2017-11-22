@@ -1,5 +1,9 @@
 function update_mini_ax(main_figure,new)
 
+if~isdeployed
+    disp('Update Mini Ax');
+end
+
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;

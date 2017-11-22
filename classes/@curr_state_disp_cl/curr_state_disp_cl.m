@@ -3,6 +3,9 @@ classdef curr_state_disp_cl <handle
     properties (SetObservable = true)
         ChannelID='';
         Freq
+        SecChannelIDs={};
+        SecFreqs=[];
+        DispSecFreqs=1;
         Fieldname
         Fieldnames
         Type
@@ -39,8 +42,11 @@ classdef curr_state_disp_cl <handle
             p = inputParser;
             addParameter(p,'Freq',38000,@isnumeric);
             addParameter(p,'ChannelID','',@ischar);
+            addParameter(p,'SecChannelIDs',{},@iscell);
+            addParameter(p,'SecFreqs',[],@isnumeric);
+            addParameter(p,'DispSecFreqs',1,@isnumeric);
             addParameter(p,'Fieldname','sv',@ischar);
-            addParameter(p,'DispBottom','on',@ischar);
+            addParameter(p,'DispBottom','on',@ischar);          
             addParameter(p,'Proj','Lambert Conformal Conic',@ischar);
             addParameter(p,'DispBotHighVis','off',@ischar);
             addParameter(p,'DispUnderBottom','on',@ischar);
