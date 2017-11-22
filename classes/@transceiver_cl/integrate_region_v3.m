@@ -175,7 +175,7 @@ bot_int(isnan(bot_int)) = inf;
 [~,sub_samples_mat] = meshgrid(bot_int,sub_samples);
 
 
-%% reference line
+%% reference line -related stuff
 switch region.Reference
     case 'Surface'
         line_ref = zeros(size(x));
@@ -192,7 +192,7 @@ line_mat(isnan(line_mat)) = 0;
 % offseting Y using the reference line
 y_mat = y_mat - line_mat;
 
-% ?
+% identifying which samples are beyond the range imposed by vertExtend
 switch region.Reference
     case 'Bottom'
         idx_rem_y = ( y_mat<=-p.Results.vertExtend(2) | y_mat>=-p.Results.vertExtend(1) | isinf(y_mat));
@@ -202,17 +202,29 @@ switch region.Reference
         idx_rem_y = ( y_mat>= p.Results.vertExtend(2) | y_mat<= p.Results.vertExtend(1) );
 end
 
+% adding those to mask
 Mask_reg(idx_rem_y) = false;
 
+% mask region and bottom
 Mask_reg_min_bot = Mask_reg & ~below_bot_mask;
 
+
+%% cell work
+
+% get cell width and height
 cell_w = region.Cell_w;
 cell_h = region.Cell_h;
 
+% column index of cells composing the region. Note that reference is
+% beggining of echogram so that if data starts at ping #11 in the file
+% while cell width is 10 pings, then first cell of the region is cell #2
 x_mat_idx = ceil(x_mat/cell_w);
+
+% column index of cell in the region
 slice_idx = ceil(x/cell_w);
 slice_idx = slice_idx-slice_idx(1)+1;
 
+% row index of cells composing the region
 switch region.Reference
     case {'Bottom' 'Line'}
         y_mat_idx = floor(y_mat/cell_h)+1;
@@ -220,63 +232,77 @@ switch region.Reference
         y_mat_idx = ceil(y_mat/cell_h);
 end
 
+% row and column index of top left cell in the region
 y0 = min(y_mat_idx(~isinf(y_mat_idx)));
 x0 = min(x_mat_idx(:));
+
+% bringing back to 1
 y_mat_idx = y_mat_idx-y0+1;
 x_mat_idx = x_mat_idx-x0+1;
 
 
+%% INTEGRATION CALCULATIONS
+
+% get s_v in linear values and remove total region and bottom mask
 Sv_reg_lin = 10.^(Sv_reg/10);
 Sv_reg_lin(~Mask_reg_min_bot) = nan;
 
+% number of cells in x and y
 N_x = max(x_mat_idx(:));
 N_y = max(y_mat_idx(:));
 
+% total number of valid samples in each cell
 output.nb_samples = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Mask_reg_min_bot(Mask_reg_min_bot) , [N_y N_x] , @sum , 0 );
 
+% cells empty of valid samples:
 Mask_reg_sub = (output.nb_samples==0);
-
 output.nb_samples(Mask_reg_sub) = NaN;
 
 % s_a as the sum of the s_v of valid samples within each cell, multiplied
 % by the average between-sample range
 eint_sparse = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Sv_reg_lin(Mask_reg_min_bot) , size(Mask_reg_sub) , @sum , 0 ) * dr;
-
 output.eint = eint_sparse;
 
 output.Slice_Idx = accumarray( x_mat_idx(1,:)' , slice_idx(:) , [N_x 1] , @nanmin , NaN)';
+
+% first and last ping in each cell
 output.Ping_S    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmin , NaN)';
 output.Ping_E    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmax , NaN)';
 
+% number of pings not flagged as bad transmits, in each cell
 output.Nb_good_pings = repmat(accumarray(x_mat_idx(1,:)',(bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
-
 output.Nb_good_pings_esp2 = output.Nb_good_pings;
 output.Nb_good_pings_esp2(Mask_reg_sub) = NaN;
 
+% first and last sample in each cell
 output.Sample_S = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
 output.Sample_E = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
 
+% "thickness" (height of each cell)
 output.Thickness_tot = ( output.Sample_E - output.Sample_S + 1 )*dr;
 output.Thickness_tot(Mask_reg_sub) = NaN;
 
+% minimum and maximum depth of samples in each cell
 output.Layer_depth_min = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@min,NaN);
 output.Layer_depth_max = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@max,NaN);
 
+% average depth of each cell
 output.Range_mean = (output.Layer_depth_min+output.Layer_depth_max)/2;
-
 output.Range_mean(Mask_reg_sub) = NaN;
 
+% ?
 switch region.Cell_h_unit
     case 'samples'
         output.Range_ref_min = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN)*dr;
         output.Range_ref_max = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN)*dr;
+        output.Range_ref_min(Mask_reg_sub) = NaN;
+        output.Range_ref_max(Mask_reg_sub) = NaN;
     case 'meters'
         output.Range_ref_min = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
         output.Range_ref_max = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
+        output.Range_ref_min(Mask_reg_sub) = NaN;
+        output.Range_ref_max(Mask_reg_sub) = NaN;
 end
-
-output.Range_ref_min(Mask_reg_sub) = NaN;
-output.Range_ref_max(Mask_reg_sub) = NaN;
 
 output.Thickness_mean = (output.nb_samples)./output.Nb_good_pings*dr;
 output.Thickness_mean(Mask_reg_sub) = NaN;
