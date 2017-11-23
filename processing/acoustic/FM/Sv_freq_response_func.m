@@ -63,10 +63,8 @@ for uui=1:length(layer.Frequencies)
         
               
         clear f_vec_temp Sv_f_temp
-    else
-
-              
-        fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
+    else              
+        %fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
         
         f_vec_temp=layer.Frequencies(uui);
         

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
    <algos>
-      <BottomDetectionV2 denoised="0.000000" r_max="57.240000" r_min="0.000000" savename="--" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" thr_cum="0.010000" thr_echo="-40.000000"/>
+      <BottomDetectionV2 denoised="0.000000" r_max="258.450000" r_min="0.070000" savename="--" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-40.000000" thr_cum="0.010000" thr_echo="-20.000000"/>
       <BottomDetectionV2 denoised="0.000000" r_max="49.960000" r_min="0.020000" savename="high" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" thr_cum="0.100000" thr_echo="-40.000000"/>
       <BottomDetectionV2 denoised="0.000000" r_max="49.960000" r_min="0.020000" savename="low" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-35.000000" thr_cum="0.000001" thr_echo="-40.000000"/>
    </algos>

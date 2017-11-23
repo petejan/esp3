@@ -114,10 +114,18 @@ for uui=idx_sort
         
         clear Sp_f Compensation_f  f_vec_temp
     else
-        fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
+        %fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
 
         AlongAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AlongAngle');
         AcrossAngle=layer.Transceivers(uui).Data.get_subdatamat(idx_r,idx_pings,'field','AcrossAngle');
+        
+        if isempty(AlongAngle)
+             AlongAngle=zeros(numel(idx_r),numel(idx_pings));
+        end
+        
+        if isempty(AcrossAngle)
+            AcrossAngle=zeros(numel(idx_r),numel(idx_pings));
+        end
         
         BeamWidthAlongship=layer.Transceivers(uui).Config.BeamWidthAlongship;
         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
