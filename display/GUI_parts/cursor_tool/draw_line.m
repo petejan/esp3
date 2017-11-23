@@ -143,7 +143,6 @@ end
         u=length(xinit)+1;
         update_line(xinit,yinit);       
         replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
-        set_alpha_map(main_figure);
 
         if isvalid(hp)
             set(hp,'XData',xinit,'YData',yinit);

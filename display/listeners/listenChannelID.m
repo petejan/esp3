@@ -32,7 +32,7 @@ if curr_disp.R_disp(2)==Inf
     y_lim_max=numel(range);
 end
 
-clear_regions(main_figure,{});
+clear_regions(main_figure,{},{'main' 'mini'});
 
 delete(findobj(axes_panel_comp.main_axes,'Tag','SelectLine','-or','Tag','SelectArea'));
 
@@ -46,7 +46,7 @@ display_regions(main_figure,'both');
 display_bottom(main_figure);
 display_tracks(main_figure);
 display_lines(main_figure);
-set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_mini',{'main','mini'});
 order_stacks_fig(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
 

@@ -113,7 +113,7 @@ for uir=1:length(trans_obj.Regions)
 end
 
 setappdata(main_figure,'Layer',layer);
-
+display_regions(main_figure,'all');
 end
 
 function rm_over_freq_callback(~,~,main_figure)
@@ -130,7 +130,7 @@ end
 
 setappdata(main_figure,'Layer',layer);
 
-display_regions(main_figure,'both');
+display_regions(main_figure,'all');
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
 end

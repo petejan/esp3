@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function clear_regions(main_figure,ids)
+function clear_regions(main_figure,ids,channelIDS)
 
 %profile on;
 if ~isdeployed
@@ -45,12 +45,12 @@ end
 if ~iscell(ids)
     ids={ids};
 end
-
-axes_panel_comp=getappdata(main_figure,'Axes_panel');
-
-mini_ax_comp=getappdata(main_figure,'Mini_axes');
-
-main_axes_tot=[mini_ax_comp.mini_ax axes_panel_comp.main_axes];
+layer=getappdata(main_figure,'Layer');
+if isempty(channelIDS)
+    [~,main_axes_tot,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'}, layer.ChannelID));
+else
+    [~,main_axes_tot,~,~,~]=get_axis_from_cids(main_figure,channelIDS);
+end
 
 for iax=1:length(main_axes_tot)
     if isempty(ids)

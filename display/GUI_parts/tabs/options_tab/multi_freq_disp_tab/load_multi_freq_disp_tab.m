@@ -24,7 +24,7 @@ multi_freq_disp_tab_comp.table = uitable('Parent', multi_freq_disp_tab_comp.mult
     'ColumnFormat', columnformat,...
     'CellSelectionCallback',{@active_curve_cback,main_figure,tab_tag},...
     'CellEditCallback',{@edit_cell_cback,main_figure,tab_tag},...
-    'ColumnEditable', [false false true false],...
+    'ColumnEditable', [false true true false],...
     'Units','Normalized','Position',[2/3 0 1/3 1],...
     'RowName',[]);
 
@@ -57,7 +57,7 @@ multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_di
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
 grid(multi_freq_disp_tab_comp.ax,'on'); 
  multi_freq_disp_tab_comp.ax_lim_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[2/3-0.25 0.9 0.25 0.1],'String','Link YLim to Echo.','Value',0,'Callback',{@link_ylim_to_echo_clim,main_figure,tab_tag});
- multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[2/3-0.5 0.9 0.25 0.1],'String','DeTrend Curves.','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+ multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox','BackgroundColor','White','units','normalized','position',[2/3-0.5 0.9 0.25 0.1],'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
  multi_freq_disp_tab_comp.detrend=0;
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 
@@ -139,7 +139,7 @@ end
 end
 
 
-function edit_cell_cback(src,evt,main_figure,tab_tag)
+function edit_cell_cback(~,evt,main_figure,tab_tag)
 switch evt.Indices(2)
     case 3
         multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
@@ -153,6 +153,17 @@ switch evt.Indices(2)
                     set(line_obj,'Visible','off');
             end
         end
+    case 2
+        multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
+        %curr_disp=getappdata(main_figure,'Curr_disp');
+        data=multi_freq_disp_tab_comp.table.Data(evt.Indices(1),:);
+        layer=getappdata(main_figure,'Layer');       
+        idx_mod=layer.set_tag_to_region_with_uid(data{4},data{2});
+        idx_c=strcmp(data{4},{layer.Curves(:).Unique_ID});
+        layer.Curves(idx_c).Tag=data{2};
+        update_regions_tab(main_figure);
+        update_reglist_tab(main_figure,[],0);
+        display_regions(main_figure,union({'main' 'mini'},layer.ChannelID(idx_mod)));
     otherwise
 end
 
@@ -176,4 +187,8 @@ if ~isempty(line_obj)
      set(line_obj,'Linewidth',2);
 end
 
+text_obj=findobj(multi_freq_disp_tab_comp.ax,'Tag','DataText');
+if ~isempty(text_obj)
+    delete(text_obj);
+end
 end

@@ -19,8 +19,12 @@ end
 disp_node = docNode.createElement('Display');
 fields=properties(curr_disp);
 for ifi=1:length(fields)
-    if ~ismember(fields{ifi},{'Type','Fieldname','CursorMode','NbLayers','Cax','CurrLayerID','Fieldnames','Caxes','R_disp','UIupdate','Reg_changed_flag','Bot_changed_flag','Active_line_ID','Active_reg_ID'})
+    if ~ismember(fields{ifi},{'ChannelID' 'Type','Fieldname','CursorMode','NbLayers','Cax','CurrLayerID','Fieldnames','Caxes','R_disp','UIupdate','Reg_changed_flag','Bot_changed_flag','Active_line_ID','Active_reg_ID'})
         val=curr_disp.(fields{ifi});
+        if (isnumeric(val)&&numel(val)>1)||iscell(val)
+            continue;
+        end
+        
         if ~isnan(num2str(val,'%.0f'))
             disp_node.setAttribute(fields{ifi},num2str(val,'%.0f'));
         else

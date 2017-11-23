@@ -22,7 +22,7 @@
 %
 % *NEW FEATURES*
 %
-% * 2017-04-02: header (Alex Schimel). 
+% * 2017-04-02: header (Alex Schimel).
 % * 2016-06-17: first version (Yoann Ladroit). TODO: complete date and comment
 %
 % *EXAMPLE*
@@ -35,8 +35,10 @@
 
 %% Function
 function listenYLim(src,evt,main_figure)
-disp('listenYLim')
- profile on;
+if ~isdeployed
+    disp('listenYLim')
+end
+%profile on;
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -63,7 +65,7 @@ reverse_y_axis(main_figure);
 display_tracks(main_figure);
 display_file_lines(main_figure);
 display_survdata_lines(main_figure);
-set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},layer.ChannelID));
 order_stacks_fig(main_figure);
 %curr_disp.R_disp
 

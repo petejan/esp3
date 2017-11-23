@@ -4,7 +4,7 @@ if curr_disp.DispSecFreqs<=0
     return;
 end
 if ~isdeployed
-    disp('Update_secondary Freq Window');
+    disp('Update Secondary Freq Window');
 end
 
 if ~isappdata(main_figure,'Secondary_freq')
@@ -29,7 +29,7 @@ y=double(get(axes_panel_comp.main_axes,'ylim'));
 nb_chan=numel(curr_disp.SecChannelIDs);
 
 for i=1:nb_chan
-    echo_obj=findobj(secondary_freq.axes(i),'Tag',curr_disp.SecChannelIDs{i});
+    echo_obj=findobj(secondary_freq.axes(i),{'Type','image','-and','Tag',curr_disp.SecChannelIDs{i}});
     if ~isempty(echo_obj)
         struct_temp.ChannelID=curr_disp.SecChannelIDs{i};
         struct_temp.Freq=curr_disp.SecFreqs(i);

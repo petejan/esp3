@@ -27,6 +27,28 @@ if~isempty(idx_bottom)&&~isempty(xdata)&&~isempty(ydata)
     %y(trans_obj.Bottom.Tag==0)=nan;
     set(axes_panel_comp.bottom_plot,'XData',x,'YData',y,'visible',curr_disp.DispBottom);
     set(mini_axes_comp.bottom_plot,'XData',x,'YData',y,'visible',curr_disp.DispBottom);
+    
+    if isappdata(main_figure,'Secondary_freq')&&curr_disp.DispSecFreqs>0
+        secondary_freq=getappdata(main_figure,'Secondary_freq');
+        for iax=1:numel(layer.ChannelID)
+            idx=(strcmp(layer.ChannelID{iax},{secondary_freq.echoes(:).Tag}));
+            bottom_plot_sec=secondary_freq.bottom_plots(idx);
+            for i=1:length(bottom_plot_sec)
+                [trans_obj_sec,~]=layer.get_trans(layer.ChannelID{iax});
+                if isempty(trans_obj_sec)
+                    continue;
+                end
+                xdata_sec=trans_obj_sec.get_transceiver_pings();
+                ydata_sec=trans_obj_sec.get_transceiver_samples();
+                idx_bottom_sec=trans_obj_sec.Bottom.Sample_idx;
+                x_sec=linspace(xdata_sec(1),xdata_sec(end),length(xdata_sec));
+                y_sec=nan(size(x_sec));
+                y_sec(~isnan(idx_bottom_sec))=ydata_sec(idx_bottom_sec(~isnan(idx_bottom_sec)));
+                y_sec(y_sec==numel(ydata_sec))=nan;
+            end
+            set(bottom_plot_sec,'XData',x_sec,'YData',y_sec,'visible',curr_disp.DispBottom);
+        end
+    end
 else
     set(axes_panel_comp.bottom_plot,'XData',nan,'YData',nan,'visible',curr_disp.DispBottom);
     set(mini_axes_comp.bottom_plot,'XData',nan,'YData',nan,'visible',curr_disp.DispBottom);

@@ -1,10 +1,6 @@
 function gpu_comp=get_gpu_comp_stat()
 
-% if  license('test','Distrib_Computing_Toolbox')
-%     gpu_comp=gpuDeviceCount>0;
-% else   
-%     gpu_comp=1==0;
-% end
-gpu_comp=0;
+[gpu_comp,~]=license('checkout','Distrib_Computing_Toolbox');
+
 
 end

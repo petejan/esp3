@@ -11,7 +11,7 @@ function answer=close_dialog_fig(main_figure)
         font=[];
     end
     QuestFig=new_echo_figure(main_figure,'units','pixels','position',[200 200 200 100],...
-        'WindowStyle','modal','Visible','on','resize','off');
+        'WindowStyle','modal','Visible','on','resize','off','tag','doyouwanttoquit');
     
 
     centerfig(QuestFig);

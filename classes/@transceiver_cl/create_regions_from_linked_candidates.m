@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function create_regions_from_linked_candidates(trans,linked_candidates,varargin)
+function id_rem=create_regions_from_linked_candidates(trans,linked_candidates,varargin)
 
 p = inputParser;
 
@@ -113,9 +113,11 @@ for j=1:nanmax(linked_candidates(:))
                 'Cell_h_unit',h_unit);
         end
         
+        id_rem={};
         for i=1:length(reg_schools)
             mask_inter=reg_temp.get_mask_from_intersection(reg_schools(i));
             if any(mask_inter(:))
+               id_rem=union(id_rem,reg_schools(i).Unique_ID);
                trans.rm_region_id(reg_schools(i).Unique_ID);
             end
         end        

@@ -85,7 +85,7 @@ classdef layer_cl < handle
         function reg_uid=get_layer_reg_uid(layer)
             reg_uid={};
             for it=1:length(layer.Frequencies)
-                    reg_uid=union(reg_uid,layer.Transceivers(it).get_trans_re_uid());
+                    reg_uid=union(reg_uid,layer.Transceivers(it).get_reg_Unique_IDs());
             end
         end
         

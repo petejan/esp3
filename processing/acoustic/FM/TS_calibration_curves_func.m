@@ -149,8 +149,7 @@ for uui=select
         end
         
     end
-    
-    
+        
     layer.apply_soundspeed(c);
     trans_obj.apply_absorption(alpha/1e3);
     range=double(trans_obj.get_transceiver_range());
@@ -161,9 +160,10 @@ for uui=select
     display_bottom(main_figure);
     display_tracks(main_figure);
     display_file_lines(main_figure);
-    display_regions(main_figure,'both');
+    display_regions(main_figure,'all');
     display_survdata_lines(main_figure);
-    set_alpha_map(main_figure);
+    layer=getappdata(main_figure,'Layer');
+    set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},layer.ChannelID));
     order_stacks_fig(main_figure);
 
 

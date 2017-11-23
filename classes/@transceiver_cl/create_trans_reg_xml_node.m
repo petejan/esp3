@@ -19,7 +19,7 @@ region_file.appendChild(regions_node);
 
 
 for ir=1:length(trans_obj.Regions)
-    
+    try 
     splitted_reg=trans_obj.Regions(ir).split_region(trans_obj.Data.FileId,1);
     
     for irs=1:length(splitted_reg)
@@ -104,7 +104,9 @@ for ir=1:length(trans_obj.Regions)
         
         regions_node.appendChild(region_node);
     end
-    
+    catch
+        sprintf('Could not save region %.0f from %.0fkHz',trans_obj.Regions(ir).ID,trans_obj.Config.Frequency/1e3);
+    end
     
 end
 

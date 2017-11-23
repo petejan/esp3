@@ -66,7 +66,7 @@ if new==1
     load_calibration_tab(main_figure,opt_panel);
     update_layer_tab(main_figure);
     update_reglist_tab(main_figure,[],new);
-    clear_regions(main_figure,{});
+    clear_regions(main_figure,{},{});
     update_multi_freq_tab(main_figure);
     
 end
@@ -96,7 +96,7 @@ display_file_lines(main_figure);
 display_lines(main_figure);
 display_survdata_lines(main_figure);
 
-set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},layer.ChannelID));
 %hide_status_bar(main_figure);
 
 order_stacks_fig(main_figure);

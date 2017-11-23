@@ -21,8 +21,7 @@ switch reverse_y_axis_state
         set(mini_axes_comp.mini_ax,'YDir','normal');
         if isappdata(main_figure,'Secondary_freq')&&curr_disp.DispSecFreqs>0
             secondary_freq=getappdata(main_figure,'Secondary_freq');
-            set(secondary_freq.axes,'YDir','normal');
-            
+            set(secondary_freq.axes,'YDir','normal');          
         end
 end
 

@@ -103,7 +103,7 @@ switch main_figure.SelectionType
         setappdata(main_figure,'Layer',layer);
         
         curr_disp.Reg_changed_flag=1;
-        clear_regions(main_figure,old_ID);
+        clear_regions(main_figure,old_ID,{});
         
         display_regions(main_figure,'both');
         order_stacks_fig(main_figure);

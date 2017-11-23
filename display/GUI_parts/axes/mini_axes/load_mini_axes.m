@@ -59,7 +59,7 @@ mini_axes_comp.mini_ax=axes('Parent',parent,'Units','normalized','box','on',...
 
 mini_axes_comp.mini_echo=image(1,1,1,'Parent',mini_axes_comp.mini_ax,'tag','echo','AlphaData',0,'CDataMapping','scaled');
 mini_axes_comp.mini_echo_bt=image(1,1,1,'Parent',mini_axes_comp.mini_ax,'tag','bad_transmits','AlphaData',0);
-mini_axes_comp.bottom_plot=plot(mini_axes_comp.mini_ax,nan,'tag','bottom');
+mini_axes_comp.bottom_plot=plot(mini_axes_comp.mini_ax,nan,nan,'tag','bottom');
 mini_axes_comp.patch_obj=patch('Faces',[],'Vertices',[],'FaceColor','r','FaceAlpha',.2,'EdgeColor','r','Tag','zoom_area','Parent',mini_axes_comp.mini_ax);
 
 iptSetPointerBehavior(mini_axes_comp.patch_obj,pointerBehavior);

@@ -15,7 +15,7 @@ set(mini_axes_comp.mini_ax,'Color',col_ax,'GridColor',col_grid,'MinorGridColor',
 set(mini_axes_comp.bottom_plot,'Color',col_bot);
 
 
-display_regions(main_figure,'both');
+display_regions(main_figure,'all');
 
 txt_obj=[findobj(axes_panel_comp.main_axes,'Type','Text','-not','Tag','lines');
     findobj(mini_axes_comp.mini_ax,'Type','Text','-not','Tag','lines')];
@@ -30,6 +30,7 @@ if isappdata(main_figure,'Secondary_freq')&&curr_disp.DispSecFreqs>0
     set(secondary_freq.axes,'Color',col_ax,'GridColor',col_grid,'MinorGridColor',col_grid);
     for iax=1:numel(secondary_freq.axes)
         colormap(secondary_freq.axes(iax),cmap);
+        set(secondary_freq.bottom_plots(iax),'color',col_bot);
     end
 end
 end

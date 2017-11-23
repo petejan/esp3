@@ -1,7 +1,8 @@
-    
+
+
 function display_regions(main_figure,varargin)
 
-%profile on;
+% profile on;
 if ~isdeployed
     disp('Display regions')
 end
@@ -16,47 +17,43 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
 
 
+
 if ~isempty(varargin)
-    mini_ax_comp=getappdata(main_figure,'Mini_axes');
+    if ischar(varargin{1})
     switch varargin{1}
         case 'both'
-            main_axes_tot=[mini_ax_comp.mini_ax axes_panel_comp.main_axes];
-            text_size=[6 10];
+            main_or_mini={'main' 'mini' curr_disp.ChannelID};
         case 'mini'
-            main_axes_tot=mini_ax_comp.mini_ax;
-            text_size=6;
+            main_or_mini={'mini'};
         case 'main'
-            main_axes_tot=axes_panel_comp.main_axes;
-            text_size=10;
-            
+            main_or_mini={'main' curr_disp.ChannelID};
+        case 'all'
+            main_or_mini=union({'main' 'mini'},layer.ChannelID);
+    end
+    elseif iscell(varargin{1})
+        main_or_mini=varargin{1};
     end
 else
-    main_axes_tot=axes_panel_comp.main_axes;
-    text_size=10;
+    main_or_mini=union({'main' 'mini'},layer.ChannelID);
 end
 
-[trans_obj,~]=layer.get_trans(curr_disp);
-trans=trans_obj;
+[~,main_axes_tot,~,trans_obj,text_size]=get_axis_from_cids(main_figure,main_or_mini);
 
-Number=trans.get_transceiver_pings();
-Samples=trans.get_transceiver_samples();
 
-x=Number;
-y=Samples;
-
-alpha_in=0.4;
 
 for iax=1:length(main_axes_tot)
+    trans=trans_obj{iax};
+    Number=trans.get_transceiver_pings();
+    Samples=trans.get_transceiver_samples();
+    
+    x=Number;
+    y=Samples;
+    
+    alpha_in=0.4;
+    
     main_axes=main_axes_tot(iax);
     
     
-%     x_lim=get(main_axes,'xlim');
-%     y_lim=get(main_axes,'ylim');
-%     
-%     rect_lim_x=[x_lim(1) x_lim(2) x_lim(2) x_lim(1) x_lim(1)];
-%     rect_lim_y=[y_lim(1) y_lim(1) y_lim(2) y_lim(2) y_lim(1)];
-%     
-%     
     active_reg=trans.find_regions_Unique_ID(curr_disp.Active_reg_ID);
     
     reg_h=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'});
@@ -65,9 +62,11 @@ for iax=1:length(main_axes_tot)
         id_disp=(get(reg_h,'UserData'));
         id_reg=trans.get_reg_Unique_IDs();
         id_rem = setdiff(id_disp,id_reg);
+        
         if~isempty(id_rem)
-            clear_regions(main_figure,id_rem);
+            clear_regions(main_figure,id_rem,{});
         end
+        
     end
     
     nb_reg=numel(trans.Regions);
@@ -75,9 +74,9 @@ for iax=1:length(main_axes_tot)
     reg_text_obj=findobj(main_axes,{'tag','region_text'},'-depth',1);
     
     for i=1:nb_reg
-         try
+        try
             reg_curr=trans.Regions(i);
-                      
+            
             if ~isempty(reg_text_obj)
                 id_text=findall(reg_text_obj,'UserData',reg_curr.Unique_ID,'-depth',0);
                 if ~isempty(id_text)
@@ -108,13 +107,13 @@ for iax=1:length(main_axes_tot)
             y_reg_rect=y([reg_curr.Idx_r(end) reg_curr.Idx_r(end) reg_curr.Idx_r(1) reg_curr.Idx_r(1) reg_curr.Idx_r(end)]);
             
             
-%             x_reg_poly=[x(reg_curr.Idx_pings(:)') x(reg_curr.Idx_pings(end))*ones(size(reg_curr.Idx_r(:)')) x(reg_curr.Idx_pings) x(reg_curr.Idx_pings(1))*ones(size(reg_curr.Idx_r(:)'))];
-%             y_reg_poly=[y(reg_curr.Idx_r(1))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))' y(reg_curr.Idx_r(end))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))'];
-%             
-%             if ~any(inpolygon(x_reg_poly,y_reg_poly,rect_lim_x,rect_lim_y))&&~any(inpolygon(rect_lim_x,rect_lim_y,x_reg_rect,y_reg_rect))
-%                 continue;
-%             end
-%             
+            %             x_reg_poly=[x(reg_curr.Idx_pings(:)') x(reg_curr.Idx_pings(end))*ones(size(reg_curr.Idx_r(:)')) x(reg_curr.Idx_pings) x(reg_curr.Idx_pings(1))*ones(size(reg_curr.Idx_r(:)'))];
+            %             y_reg_poly=[y(reg_curr.Idx_r(1))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))' y(reg_curr.Idx_r(end))*ones(size(reg_curr.Idx_pings(:)))' y(reg_curr.Idx_r(:))'];
+            %
+            %             if ~any(inpolygon(x_reg_poly,y_reg_poly,rect_lim_x,rect_lim_y))&&~any(inpolygon(rect_lim_x,rect_lim_y,x_reg_rect,y_reg_rect))
+            %                 continue;
+            %             end
+            %
             
             switch reg_curr.Shape
                 case 'Rectangular'
@@ -124,7 +123,7 @@ for iax=1:length(main_axes_tot)
                     %cdata(:,:,2)=col(2);
                     %cdata(:,:,3)=col(3);
                     
-                    plot(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
+                    line(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
                     
                     reg_plot(1)=patch('XData',x_reg_rect(1:4),'YData',y_reg_rect(1:4),'FaceColor',col,'parent',main_axes,'FaceAlpha',alpha_in,'EdgeColor','none','tag','region','UserData',reg_curr.Unique_ID,'visible',curr_disp.DispReg);
                     
@@ -135,6 +134,7 @@ for iax=1:length(main_axes_tot)
                 case 'Polygon'
                     reg_plot=gobjects(1,2);
                     [status,~]=license('checkout','MAP_Toolbox');
+                    
                     if status==0
                         cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);
                         cdata(:,:,1)=col(1);
@@ -154,8 +154,8 @@ for iax=1:length(main_axes_tot)
                     len_cont=0;
                     x_text=0;
                     y_text=0;
-
-                    for jj=1:nb_cont                        
+                    
+                    for jj=1:nb_cont
                         idx_x_out{jj}=idx_x{jj}+reg_curr.Idx_pings(1)-1;
                         idx_y_out{jj}=idx_y{jj}+reg_curr.Idx_r(1)-1;
                         try
@@ -180,6 +180,12 @@ for iax=1:length(main_axes_tot)
                     end
                     
                     if status>0
+                        nb_elt=cellfun(@numel,x_reg);
+                        if any(nb_elt>100)
+                            x_reg(nb_elt<=100)=[];
+                            y_reg(nb_elt<=100)=[];
+                        end
+                        [x_reg, y_reg]=poly2cw(x_reg, y_reg);
                         [f, v] = poly2fv(x_reg, y_reg);
                         reg_plot(1)=patch('Faces', f, 'Vertices', v, 'FaceColor',col,...
                             'parent',main_axes,'FaceAlpha',alpha_in,...
@@ -188,13 +194,13 @@ for iax=1:length(main_axes_tot)
                             'UserData',reg_curr.Unique_ID,...
                             'visible',curr_disp.DispReg);
                     else
-                       reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
+                        reg_plot(1)=image('XData',x(reg_curr.Idx_pings),'YData',y(reg_curr.Idx_r),'CData',cdata,'parent',main_axes,'tag','region','UserData',reg_curr.Unique_ID,'AlphaData',alpha_in*(reg_curr.MaskReg>0),'visible',curr_disp.DispReg);
                     end
-                           
+                    
             end
-                       
+            
             reg_plot(2)=text(x_text,y_text,reg_curr.disp_str(),'FontWeight','Bold','Fontsize',text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
-                       
+            
             if main_axes==axes_panel_comp.main_axes
                 create_region_context_menu(reg_plot,main_figure,reg_curr.Unique_ID);
                 enterFcn =  @(figHandle, currentPoint)...
@@ -205,8 +211,9 @@ for iax=1:length(main_axes_tot)
             warning('Error display region ID %.0f',reg_curr.ID);
         end
     end
+    %     profile off;
+    %     profile viewer;
     
-
-
+    
 end
 

@@ -1,19 +1,20 @@
 
 function set_alpha_map(main_figure,varargin)
-
-p = inputParser;
-
-%profile on;
-addRequired(p,'main_figure',@ishandle);
-addParameter(p,'main_or_mini',{'main','mini','secondary'});
-addParameter(p,'update_bt',1);
-
-parse(p,main_figure,varargin{:});
-
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+curr_disp=getappdata(main_figure,'Curr_disp');
+p = inputParser;
+
+%profile on;
+addRequired(p,'main_figure',@ishandle);
+addParameter(p,'main_or_mini',union({'main','mini'},curr_disp.ChannelID));
+addParameter(p,'update_bt',1);
+
+parse(p,main_figure,varargin{:});
+
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 update_bt=p.Results.update_bt;
 
@@ -23,59 +24,8 @@ else
    main_or_mini=p.Results.main_or_mini;
 end
 
-echo_im_tot=[];
-echo_ax_tot=[];
-echo_im_bt_tot=[];
-trans_obj={};
-for im=1:length(main_or_mini)
-    
-    switch main_or_mini{im}
-        case 'main'
-            axes_panel_comp=getappdata(main_figure,'Axes_panel');
-            echo_im_tmp=axes_panel_comp.main_echo;
-            echo_ax_tmp=axes_panel_comp.main_axes;
-            echo_im_bt_tmp=axes_panel_comp.bad_transmits;
-            set(axes_panel_comp.bottom_plot,'vis',curr_disp.DispBottom);
-            [trans_obj_temp,~]=layer.get_trans(curr_disp);
-            
-            if isempty(trans_obj_temp)
-                continue;
-            end
-            trans_obj{numel(trans_obj)+1}=trans_obj_temp;
-        case 'mini'
-            mini_axes_comp=getappdata(main_figure,'Mini_axes');
-            echo_im_tmp=mini_axes_comp.mini_echo;
-            echo_ax_tmp=mini_axes_comp.mini_ax;
-            echo_im_bt_tmp=mini_axes_comp.mini_echo_bt;
-            
-            [trans_obj_temp,~]=layer.get_trans(curr_disp);
-            
-            if isempty(trans_obj_temp)
-                continue;
-            end
-            trans_obj{numel(trans_obj)+1}=trans_obj_temp;
-        case 'secondary'
-            secondary_freq=getappdata(main_figure,'Secondary_freq');
-            if~isempty(secondary_freq)&&curr_disp.DispSecFreqs>0
-                echo_ax_tmp=secondary_freq.axes;
-                echo_im_tmp=secondary_freq.echoes;
-                echo_im_bt_tmp=secondary_freq.echoes_bt;
-                for i=1:length(echo_ax_tmp)
-                    [trans_obj_temp,~]=layer.get_trans(curr_disp.SecChannelIDs{i});
-                    if isempty(trans_obj_temp)
-                        continue;
-                    end
-                    trans_obj{numel(trans_obj)+1}=trans_obj_temp;
-                end
-            else
-                continue;
-            end
-    end
-    echo_im_tot=[echo_im_tot echo_im_tmp];
-    echo_ax_tot=[echo_ax_tot echo_ax_tmp];
-    echo_im_bt_tot=[echo_im_bt_tot echo_im_bt_tmp];
+[echo_im_tot,echo_ax_tot,echo_im_bt_tot,trans_obj]=get_axis_from_cids(main_figure,main_or_mini);
 
-end
 min_axis=curr_disp.Cax(1);
 for iax=1:length(echo_ax_tot)
     

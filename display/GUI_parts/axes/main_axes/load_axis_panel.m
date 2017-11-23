@@ -78,7 +78,7 @@ axes_panel_comp.vaxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fo
     'YDir','reverse',...
     'visible','on');
 
-axes_panel_comp.v_axes_plot=plot(axes_panel_comp.vaxes,nan,'r');
+axes_panel_comp.v_axes_plot=plot(axes_panel_comp.vaxes,nan,nan,'r');
 axes_panel_comp.v_axes_text=text(nan,nan,'','Color','k','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.vaxes);
 
 
@@ -99,8 +99,8 @@ axes_panel_comp.haxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fo
 linkaxes([axes_panel_comp.main_axes axes_panel_comp.haxes],'x');
 linkaxes([axes_panel_comp.main_axes axes_panel_comp.vaxes],'y');
 
-axes_panel_comp.h_axes_plot_low=plot(axes_panel_comp.haxes,nan,'color',[0 0.8 0]);
-axes_panel_comp.h_axes_plot_high=plot(axes_panel_comp.haxes,nan,'color','r','linestyle','-','marker','o');
+axes_panel_comp.h_axes_plot_low=plot(axes_panel_comp.haxes,nan,nan,'color',[0 0.8 0]);
+axes_panel_comp.h_axes_plot_high=plot(axes_panel_comp.haxes,nan,nan,'color','r','linestyle','-','marker','o');
 
 axes_panel_comp.h_axes_text=text(nan,nan,'','Color','r','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.haxes);
 
@@ -113,7 +113,7 @@ echo_init=imread(fullfile(whereisEcho,'EchoAnalysis.png'));
 axes_panel_comp.main_echo=image(1:size(echo_init,1),1:size(echo_init,2),uint8(echo_init),'parent',axes_panel_comp.main_axes,'tag','echo','CDataMapping','scaled');
 axes_panel_comp.bad_transmits=image(1:size(echo_init,1),1:size(echo_init,2),zeros(size(echo_init),'uint8'),'parent',axes_panel_comp.main_axes,'AlphaData',0,'tag','bad_transmits');
 set(axes_panel_comp.main_axes,'xlim',[1 size(echo_init,1)],'ylim',[1 size(echo_init,2)]);
-axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,'tag','bottom');
+axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,nan,'tag','bottom');
 enterFcn =  @(figHandle, currentPoint)...
     set(figHandle, 'Pointer', 'hand');
 iptSetPointerBehavior(axes_panel_comp.bottom_plot,enterFcn);

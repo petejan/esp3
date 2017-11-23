@@ -80,6 +80,7 @@ if ~isnan(src.Data{evt.Indices(1,1),8})
 else
     src.Data{evt.Indices(1,1),8}=active_reg.Cell_h;
 end
+
 active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
 active_reg.Cell_h_unit=src.Data{evt.Indices(1,1),9};
 trans_obj.rm_region_id(active_reg.Unique_ID);
@@ -89,7 +90,16 @@ setappdata(main_figure,'Layer',layer);
 
 display_regions(main_figure,'both');
 activate_region_callback(active_reg.Unique_ID,main_figure);
-
+if ~isempty(layer.Curves)
+    idx=find(strcmp(active_reg.Unique_ID,{layer.Curves(:).Unique_ID}));
+    if ~isempty(idx)
+        for ic=idx
+            layer.Curves(ic).Tag=active_reg.Tag;
+        end
+        update_curves_and_table(main_figure,'sv_f',active_reg.Unique_ID);
+        update_curves_and_table(main_figure,'ts_f',active_reg.Unique_ID);
+    end
+end
 order_stacks_fig(main_figure);
 
 end

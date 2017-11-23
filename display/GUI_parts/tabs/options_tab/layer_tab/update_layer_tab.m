@@ -51,7 +51,7 @@ if isempty(layer)
 end
 
 if ~isdeployed
-    disp('update_layer_tab');
+    disp('Update Layer Tab');
 end
 
 nb_layer=length(layers);

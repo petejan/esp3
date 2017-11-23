@@ -40,7 +40,7 @@ end
 trans_obj.rm_all_region();
 IDs=trans_obj.add_region(regs);
 curr_disp=getappdata(main_figure,'Curr_disp');
-display_regions(main_figure,'both');
+display_regions(main_figure,'all');
 order_stacks_fig(main_figure);
 curr_disp.Reg_changed_flag=1;
 if ~isempty(IDs)

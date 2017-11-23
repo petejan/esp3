@@ -152,19 +152,18 @@ layer=getappdata(main_figure,'Layer');
 
 %school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 trans_obj.apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
-
+update_multi_freq_disp_tab(main_figure,'sv_f');
+update_multi_freq_disp_tab(main_figure,'ts_f');
 hide_status_bar(main_figure);
-
-
 
 set_alpha_map(main_figure);
 display_regions(main_figure,'both');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 order_stacks_fig(main_figure);
 end

@@ -73,6 +73,7 @@ classdef region_cl
                 case 'polygon'
                     if isempty(results.X_cont)&&~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
+                        
                         [x,y]=reduce_reg_contour(x,y,10);
                         if ~isempty(y)
                             obj.X_cont=x;

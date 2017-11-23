@@ -154,10 +154,10 @@ end
         setappdata(main_figure,'Layer',layer);
         
         add_undo_bottom_action(main_figure,trans_obj,old_bot,new_bot);
-        
-        display_bottom(main_figure);
-        set_alpha_map(main_figure);
         update_mini_ax(main_figure,0);
+        display_bottom(main_figure);
+  
+        set_alpha_map(main_figure);
 %         profile off;
 %         profile viewer;
     end

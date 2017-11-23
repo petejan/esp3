@@ -62,13 +62,7 @@ end
 
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
 
-axes_panel_comp=getappdata(main_figure,'Axes_panel');
-mini_ax_comp=getappdata(main_figure,'Mini_axes');
-
-
-ah=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
-
-
+[~,ah,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'},layer.ChannelID));
 for i=1:length(ah)
     reg_text=findobj(ah(i),'Tag','region_text');
     set(reg_text,'color',txt_col);

@@ -70,12 +70,12 @@ disp('Bottom and regions imported');
 display_bottom(main_figure);
 
 
-display_regions(main_figure,'both');
+display_regions(main_figure,'all');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
 
-set_alpha_map(main_figure);
+set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},layer.ChannelID));
 order_stacks_fig(main_figure);
 
 

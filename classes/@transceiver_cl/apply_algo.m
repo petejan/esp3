@@ -165,7 +165,6 @@ switch algo_name
         trans_obj.create_regions_from_linked_candidates(linked_candidates,'w_unit',w_unit,'h_unit','meters',...
             'cell_w',cell_w,'cell_h',nanmax(dr*2,algo_obj.Varargin.h_min_can/10));
 
-
     case 'SingleTarget'
         trans_obj.set_ST(single_targets);
     case 'TrackTarget'

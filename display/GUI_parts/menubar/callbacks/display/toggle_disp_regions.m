@@ -1,11 +1,9 @@
 function toggle_disp_regions(main_figure)
 
-axes_panel_comp=getappdata(main_figure,'Axes_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
 
-mini_ax_comp=getappdata(main_figure,'Mini_axes');
-main_axes_tot=[axes_panel_comp.main_axes mini_ax_comp.mini_ax];
-
+[~,main_axes_tot,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'},layer.ChannelID));
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
     u_reg_line=findobj(main_axes,'tag','region','-and','Type','line');

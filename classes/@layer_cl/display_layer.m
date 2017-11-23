@@ -92,14 +92,21 @@ data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_pin
 
 
 if isempty(data)
-    fieldname= trans_obj.Data.Fieldname{1};
-    %data=trans_obj.Data.get_datamat(fieldname);
-    data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+    switch  fieldname
+        case 'spdenoised'
+            fieldname='sp';
+            data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+        case 'svdenoised'
+            fieldname='sv';
+            data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);           
+    end
+    
 end
 
+x_data_disp=xdata(idx_ping);
+y_data_disp=ydata(idx_r);
 if isempty(data)
-    set(main_echo,'XData',1,'YData',1,'CData',1);
-    return;
+    data=nan(numel(y_data_disp),numel(x_data_disp));
 end
 
 
@@ -116,8 +123,6 @@ end
 
 data_mat=single(real(data_mat));
 
-x_data_disp=xdata(idx_ping);
-y_data_disp=ydata(idx_r);
 
 set(main_echo,'XData',x_data_disp,'YData',y_data_disp,'CData',data_mat);
 

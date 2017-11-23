@@ -338,7 +338,6 @@ trans_obj.add_region(reg_wc);
 
 close(reg_fig);
 
-set_alpha_map(main_figure);
 
 display_regions(main_figure,'both');
 
