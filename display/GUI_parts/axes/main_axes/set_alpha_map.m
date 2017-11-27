@@ -74,16 +74,16 @@ for iax=1:length(echo_ax_tot)
     end
     
     if update_bt>0
-        data_temp=nan(size(alpha_map));
+        data_temp=nan(2,size(alpha_map,2));
         data_temp(:,idx_bad_red)=Inf;
         
         if strcmp(curr_disp.DispBadTrans,'on')
             alpha_map_bt=(~isnan(data_temp))-0.6;
         else
-            alpha_map_bt=zeros(size(data_temp));
+            alpha_map_bt=zeros(2,size(data_temp,2));
         end
         
-        set(echo_im_bt,'XData',xdata,'YData',ydata,'CData',data_temp,'AlphaData',alpha_map_bt);
+        set(echo_im_bt,'XData',xdata,'YData',[ydata(1) ydata(end)],'CData',data_temp,'AlphaData',alpha_map_bt);
     end
     
     alpha_map(data<min_axis|isnan(data))=0;

@@ -14,3 +14,4 @@ for i=idx_order
    Mask_out(y{i}+(x{i}-1)*nb_x)=contour_type(i);
 end
 
+Mask_out=Mask_out>=1;

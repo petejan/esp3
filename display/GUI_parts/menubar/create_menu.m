@@ -196,7 +196,9 @@ uimenu(mbs,'Label','XML Scripts','Callback',{@load_xml_scripts_callback,main_fig
 
 options = uimenu(main_figure,'Label','Config','Tag','options');
 uimenu(options,'Label','Path','Callback',{@load_path_fig,main_figure});
-uimenu(options,'Label','Save Current Display Configuration','Callback',{@save_disp_config_cback,main_figure});
+uimenu(options,'Label','Save Current Display Configuration (Survey)','Callback',{@save_disp_config_survey_cback,main_figure});
+uimenu(options,'Label','Save Current Display Configuration (Default)','Callback',{@save_disp_config_cback,main_figure});
+
 
 help_shortcuts=uimenu(main_figure,'Label','Shortcuts/Help');
 uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@help_menu,main_figure});
@@ -207,7 +209,21 @@ end
 
 function save_disp_config_cback(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
-write_config_display_to_xml(curr_disp)
+
+write_config_display_to_xml(curr_disp);
+
+end
+
+
+function save_disp_config_survey_cback(~,~,main_figure)
+curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+
+if isempty(layer)
+    return;
+end
+filepath=fileparts(layer.Filename{1});
+write_config_display_to_xml(curr_disp,'file_path',filepath);
 
 end
 

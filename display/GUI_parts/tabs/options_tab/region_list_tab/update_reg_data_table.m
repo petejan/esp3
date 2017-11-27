@@ -35,40 +35,43 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function reg_table_data_new = update_reg_data_table(regions,reg_table_data)
+function update_reg_data_table(regions,reg_table)
 
-nb_regions=length(regions);
-reg_table_data_new=cell(nb_regions,10);
 
 for i=1:length(regions)
-    if~isempty(reg_table_data)
-        idx_mod=find([reg_table_data{:,10}]==regions(i).Unique_ID);
+    
+    if~isempty(reg_table.Data)
+        idx_mod=find(strcmp(regions(i).Unique_ID,reg_table.Data(:,10)));
     else
         idx_mod=[];
     end
     
-    if ~isempty(idx_mod)
-        reg_table_data(idx_mod,:)=[];
+    if isempty(idx_mod)
+        if ~isempty(reg_table.Data)
+            idx_mod=numel(reg_table.Data(:,1))+1;
+        else
+            idx_mod=1;
+        end
     end
     
-    reg_table_data_new{i,1}=regions(i).Name;
-    reg_table_data_new{i,2}=regions(i).ID;
-    reg_table_data_new{i,3}=regions(i).Tag;
-    reg_table_data_new{i,4}=regions(i).Type;
-    reg_table_data_new{i,5}=regions(i).Reference;
-    reg_table_data_new{i,6}=regions(i).Cell_w;
-    reg_table_data_new{i,7}=regions(i).Cell_w_unit;
-    reg_table_data_new{i,8}=regions(i).Cell_h;
-    reg_table_data_new{i,9}=regions(i).Cell_h_unit;
-    reg_table_data_new{i,10}=regions(i).Unique_ID;
+    reg_table.Data{idx_mod,1}=regions(i).Name;
+    reg_table.Data{idx_mod,2}=regions(i).ID;
+    reg_table.Data{idx_mod,3}=regions(i).Tag;
+    reg_table.Data{idx_mod,4}=regions(i).Type;
+    reg_table.Data{idx_mod,5}=regions(i).Reference;
+    reg_table.Data{idx_mod,6}=regions(i).Cell_w;
+    reg_table.Data{idx_mod,7}=regions(i).Cell_w_unit;
+    reg_table.Data{idx_mod,8}=regions(i).Cell_h;
+    reg_table.Data{idx_mod,9}=regions(i).Cell_h_unit;
+    reg_table.Data{idx_mod,10}=regions(i).Unique_ID;
 end
 
-reg_table_data_new=[reg_table_data;reg_table_data_new];
-
-% [~,idx_sort]=sort([reg_table_data_new{:,10}]);
-% reg_table_data_new=reg_table_data_new(idx_sort,:);
-
-
+idx_html=find(cellfun(@(x) ~isempty(strfind(x,'html')),reg_table.Data(:,1)));
+for i=1:idx_html
+    idx_start=strfind(reg_table.Data{i,1},'<b>');
+    idx_end=strfind(reg_table.Data{i,1},'</b>');
+    reg_table.Data{i,1}=reg_table.Data{i,1}(idx_start+3:idx_end-1);
+end
 
 
 end

@@ -27,7 +27,7 @@ y=nanmin(y,y_lim(2));
 
 
 
-switch curr_disp.Xaxes
+switch curr_disp.Xaxes_current
     case 'seconds'
         xlab_str='Time';
         xdata=trans.get_transceiver_time();
@@ -91,7 +91,7 @@ xlabel(axh,xlab_str);
 ylabel(axh,ylab_str);
 
 
-switch curr_disp.Xaxes
+switch curr_disp.Xaxes_current
     case 'seconds'
         xlab_str='Time';
         datetick(axh,'x','dd-mmm-yyyy HH:MM:SS')

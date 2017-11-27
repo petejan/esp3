@@ -33,7 +33,7 @@ if ~isempty(uid)
     if ~isempty(trans_obj.Regions)
        curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;
     else
-        curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+        curr_disp.Active_reg_ID='';
     end
         
     order_stacks_fig(main_figure);

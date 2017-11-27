@@ -56,7 +56,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispReg','on',@ischar);
             addParameter(p,'DispLines','on',@ischar);
             addParameter(p,'Xaxes',{'meters' 'pings' 'seconds'},@iscell);
-            addParameter(p,'Xaxes_current','pings',@ischar);
+            addParameter(p,'Xaxes_current','meters',@ischar);
             addParameter(p,'Grid_x',[0 0 0],@isnumeric);
             addParameter(p,'Grid_y',0,@isnumeric);
             addParameter(p,'CursorMode','Normal',@ischar);

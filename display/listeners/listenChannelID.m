@@ -22,7 +22,6 @@ update_display_tab(main_figure);
 load_calibration_tab(main_figure,opt_panel);
 
 load_info_panel(main_figure);
-update_reglist_tab(main_figure,[],1);
 
 range=trans_obj.get_transceiver_range();
 [~,y_lim_min]=nanmin(abs(range-curr_disp.R_disp(1)));

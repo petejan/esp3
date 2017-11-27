@@ -71,7 +71,7 @@ active_reg.Reference=src.Data{evt.Indices(1,1),5};
 if ~isnan(src.Data{evt.Indices(1,1),6})
     active_reg.Cell_w=src.Data{evt.Indices(1,1),6};
 else
-    src.Data{evt.Indices(1,1),6}=active_reg.Cell_w;
+    src.Data(evt.Indices(1,1),6)=active_reg.Cell_w;
 end
 active_reg.Cell_w_unit=src.Data{evt.Indices(1,1),7};
 

@@ -48,13 +48,28 @@ layers = getappdata(main_figure,'Layers');
 if isempty(layers)
     return;
 end
-
+curr_disp=getappdata(main_figure,'Curr_disp');
 remove_interactions(main_figure);
 disable_listeners(main_figure);
 uiundo(main_figure,'clear');
 
 nb_layers = length(layers);
-curr_disp = getappdata(main_figure,'Curr_disp');
+
+[display_config_file,~,~]=get_config_files();
+[~,fname,fext]=fileparts(display_config_file);
+filepath=fileparts(layer.Filename{1});
+disp_config_file=fullfile(filepath,[fname fext]);
+
+if exist(disp_config_file,'file')==2
+    curr_disp_new=read_config_display_xml(disp_config_file);
+else
+    [~,curr_disp_new,~,~]=load_config_from_xml_v2(0,1,0);    
+end
+props=properties(curr_disp);
+for i=1:numel(props)
+    curr_disp.(props{i})=curr_disp_new.(props{i});
+end
+
 curr_disp.SecChannelIDs=layer.ChannelID;
 curr_disp.SecFreqs=layer.Frequencies;
 
@@ -105,6 +120,7 @@ update_display(main_figure,flag);
 waitfor(curr_disp,'UIupdate',0)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 axes_panel_comp.axes_panel.Parent.SelectedTab=axes_panel_comp.axes_panel;
+
 
 enable_listeners(main_figure);
 

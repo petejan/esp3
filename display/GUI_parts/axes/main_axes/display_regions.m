@@ -124,7 +124,6 @@ for iax=1:length(main_axes_tot)
                     %cdata(:,:,3)=col(3);
                     
                     line(main_axes,x_reg_rect,y_reg_rect,'color',col,'LineWidth',1,'Tag','region_cont','UserData',reg_curr.Unique_ID);
-                    
                     reg_plot(1)=patch('XData',x_reg_rect(1:4),'YData',y_reg_rect(1:4),'FaceColor',col,'parent',main_axes,'FaceAlpha',alpha_in,'EdgeColor','none','tag','region','UserData',reg_curr.Unique_ID,'visible',curr_disp.DispReg);
                     
                     

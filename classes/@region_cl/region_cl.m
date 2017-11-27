@@ -78,7 +78,11 @@ classdef region_cl
                         if ~isempty(y)
                             obj.X_cont=x;
                             obj.Y_cont=y;
-                            obj.MaskReg=(results.MaskReg);
+                            if islogical(results.MaskReg)
+                                obj.MaskReg=(results.MaskReg);
+                            else
+                                 obj.MaskReg=(results.MaskReg)>1;
+                            end
                         else
                             obj.Shape='Rectangular';
                             obj.X_cont=[];
@@ -118,7 +122,7 @@ classdef region_cl
         function mask=create_mask(obj)
             nb_pings=length(obj.Idx_pings);
             nb_samples=length(obj.Idx_r);
-            mask=ones(nb_samples,nb_pings);
+            mask=true(nb_samples,nb_pings);
             
             switch obj.Shape
                 case 'Polygon'

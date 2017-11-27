@@ -19,6 +19,8 @@ end
 if bool_disp
     try
         curr_disp=read_config_display_xml(display_config_file);
+        curr_disp.Grid_x=[0 0 0];
+        curr_disp.Grid_y=0;
     catch
         disp('Could not read XML display config file. Creating a standard one');
         curr_disp=curr_state_disp_cl();

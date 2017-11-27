@@ -84,7 +84,7 @@ reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPan
 setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 
-update_reglist_tab(main_figure,[],1);
+update_reglist_tab(main_figure,[]);
 
 end
 

@@ -1,14 +1,16 @@
-function write_config_display_to_xml(curr_disp)
+function write_config_display_to_xml(curr_disp,varargin)
 
 [file_xml,~,~]=get_config_files();
-
+[file_path,fname,fext]=fileparts(file_xml);
 p = inputParser;
 addRequired(p,'curr_disp',@(obj) isempty(obj)||isa(obj,'curr_state_disp_cl'));
-addParameter(p,'file_xml',file_xml,@(x) ischar(x));
+addParameter(p,'file_path',file_path,@(x) ischar(x));
 
-parse(p,curr_disp);
+parse(p,curr_disp,varargin{:});
 
-file_xml=p.Results.file_xml;
+file_path=p.Results.file_path;
+
+file_xml=fullfile(file_path,[fname fext]);
 
 docNode = com.mathworks.xml.XMLUtils.createDocument('config_file');
 

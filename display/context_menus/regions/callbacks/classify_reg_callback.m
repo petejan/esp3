@@ -55,8 +55,8 @@ layer.apply_classification('primary_freq',curr_disp.Freq,'idx_schools',idx_reg);
 setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);
 
-update_regions_tab(main_figure);
-update_reglist_tab(main_figure,[],0);
+
+update_reglist_tab(main_figure,[]);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
 
