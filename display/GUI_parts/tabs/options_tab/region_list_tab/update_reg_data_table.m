@@ -66,12 +66,12 @@ for i=1:length(regions)
     reg_table.Data{idx_mod,10}=regions(i).Unique_ID;
 end
 
-idx_html=find(cellfun(@(x) ~isempty(strfind(x,'html')),reg_table.Data(:,1)));
-for i=1:idx_html
-    idx_start=strfind(reg_table.Data{i,1},'<b>');
-    idx_end=strfind(reg_table.Data{i,1},'</b>');
-    reg_table.Data{i,1}=reg_table.Data{i,1}(idx_start+3:idx_end-1);
-end
+% idx_html=find(cellfun(@(x) ~isempty(strfind(x,'html')),reg_table.Data(:,1)));
+% for i=idx_html
+%     idx_start=strfind(reg_table.Data{i,1},'<b>');
+%     idx_end=strfind(reg_table.Data{i,1},'</b>');
+%     reg_table.Data{i,1}=reg_table.Data{i,1}(idx_start+3:idx_end-1);
+% end
 
 
 end
