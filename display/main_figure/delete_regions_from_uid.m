@@ -27,8 +27,8 @@ if ~isempty(uid)
     
     display_regions(main_figure,'both');
     
-    update_multi_freq_disp_tab(main_figure,'sv_f');
-    update_multi_freq_disp_tab(main_figure,'ts_f');
+    update_multi_freq_disp_tab(main_figure,'sv_f',0);
+    update_multi_freq_disp_tab(main_figure,'ts_f',0);
     
     if ~isempty(trans_obj.Regions)
        curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;

@@ -36,19 +36,23 @@
 %% Function
 function update_school_detect_tab(main_figure)
 
-layer=getappdata(main_figure,'Layer');
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+
+load_default_params(school_detect_tab_comp.default_params,main_figure,'SchoolDetection');
+
+layer=getappdata(main_figure,'Layer');
+[trans_obj,~]=layer.get_trans(curr_disp);
 [idx_algo,found]=find_algo_idx(trans_obj,'SchoolDetection');
+
 if found==0
      return
 end
 
 algo_obj=trans_obj.Algo(idx_algo);
 varin=algo_obj.Varargin;
-
 
 set(school_detect_tab_comp.l_min_can,'string',num2str(varin.l_min_can,'%.2f'));
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
    <algos>
-      <BottomDetection denoised="0.000000" horz_filt="50.000000" r_max="249.540000" r_min="0.190000" savename="Hills" shift_bot="0.000000" thr_backstep="-1.000000" thr_bottom="-40.000000" vert_filt="5.000000"/>
+      <BottomDetection denoised="0.000000" horz_filt="50.000000" r_max="249.540000" r_min="0.190000" savename="Hills" shift_bot="0.000000" thr_backstep="-3.000000" thr_bottom="-45.000000" vert_filt="5.000000"/>
       <BottomDetection denoised="0.000000" horz_filt="50.000000" r_max="249.540000" r_min="0.190000" savename="--" shift_bot="0.000000" thr_backstep="-3.000000" thr_bottom="-45.000000" vert_filt="5.000000"/>
    </algos>
 </config_file>

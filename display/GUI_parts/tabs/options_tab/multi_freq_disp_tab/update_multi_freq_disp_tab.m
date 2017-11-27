@@ -1,4 +1,4 @@
-function update_multi_freq_disp_tab(main_figure,tab_tag)
+function update_multi_freq_disp_tab(main_figure,tab_tag,replot)
 
 switch tab_tag
     case 'sv_f'
@@ -15,11 +15,6 @@ if isempty(multi_freq_disp_tab_comp)
     return;
 end
 
-if multi_freq_disp_tab_comp.detrend~=multi_freq_disp_tab_comp.detrend_cbox.Value
-    replot=1;
-else
-    replot=0;
-end
 
 
 multi_freq_disp_tab_comp.detrend=multi_freq_disp_tab_comp.detrend_cbox.Value;
@@ -76,12 +71,13 @@ else
             strcmp(multi_freq_disp_tab_comp.table.Data(:,4),'1');
         
         multi_freq_disp_tab_comp.table.Data(idx_rem,:)=[];
-        idx_new=find(~ismember({curves(:).Unique_ID},multi_freq_disp_tab_comp.table.Data(:,4)));
+        %idx_new=find(~ismember({curves(:).Unique_ID},multi_freq_disp_tab_comp.table.Data(:,4)));
     else
         multi_freq_disp_tab_comp.table.Data(:,:)=[];
-        idx_new=1:numel(curves);
+        %idx_new=1:numel(curves);
     end 
-    id_new={curves(idx_new).Unique_ID};
+    %id_new={curves(idx_new).Unique_ID};
+    id_new={curves(:).Unique_ID};
 end
 
 update_curves_and_table(main_figure,tab_tag,id_new);
@@ -99,5 +95,9 @@ for il=1:nb_lines
         end
     end
 end
+
+cax=get(multi_freq_disp_tab_comp.ax,'YLim');
+set(multi_freq_disp_tab_comp.thr_up,'String',num2str(cax(2),'%.0f'));
+set(multi_freq_disp_tab_comp.thr_down,'String',num2str(cax(1),'%.0f'));
 
 end

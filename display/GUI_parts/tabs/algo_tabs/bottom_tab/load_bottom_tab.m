@@ -87,7 +87,7 @@ uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Defaults Values','
 
 list_params=names;
 
-bottom_tab_comp.default_params=uicontrol(bottom_tab_comp.bottom_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
+bottom_tab_comp.default_params=uicontrol(bottom_tab_comp.bottom_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_params,main_figure});
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
 uicontrol(bottom_tab_comp.bottom_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'BottomDetection'});
@@ -100,34 +100,9 @@ setappdata(main_figure,'Bottom_tab',bottom_tab_comp);
 
 end
 
-function load_default_params(src,~,main_figure)
-layer=getappdata(main_figure,'Layer');
 
-if isempty(layer)
-return;
-end
-    
-curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
-[idx_algo,found]=find_algo_idx(trans_obj,'BottomDetection');
-if found==0
-    return
-end
-
-[~,~,algo_files]=get_config_files('BottomDetection');
-[~,algo_alt,names]=read_config_algo_xml(algo_files{1});
-
-idx_algo_xml=strcmpi(names,src.String{src.Value});
-
-if ~isempty(idx_algo_xml)
-    trans_obj.Algo(idx_algo).Varargin.thr_bottom= algo_alt(idx_algo_xml).Varargin.thr_bottom;
-    trans_obj.Algo(idx_algo).Varargin.thr_backstep= algo_alt(idx_algo_xml).Varargin.thr_backstep;
-end
-
-setappdata(main_figure,'Layer',layer);
-update_bottom_tab(main_figure);
-
+function load_params(~,~,main_figure)
+    update_bottom_tab(main_figure);
 end
 
 function validate(~,~,main_figure)

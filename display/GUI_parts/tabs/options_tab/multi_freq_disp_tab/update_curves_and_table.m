@@ -24,9 +24,6 @@ average=ones(1,numel(id_new));
 for i=1:numel(id_new)
     
     id_c=findobj(multi_freq_disp_tab_comp.ax,'Tag',id_new{i});
-    if ~isempty(id_c)
-        delete(id_c);
-    end
     
     idx=find(strcmp(id_new{i},{curves(:).Unique_ID}));
     
@@ -38,21 +35,26 @@ for i=1:numel(id_new)
         average(i)=nanmean(db2pow_perso(curves(idx).YData));
     end
     
-    id_c=plot(multi_freq_disp_tab_comp.ax,curves(idx).XData,curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID,'ButtonDownFcn',{@display_line_cback,main_figure,tab_tag});
-    color_str=sprintf('rgb(%.0f,%.0f,%.0f)',floor(get(id_c,'Color')*255));
-    if ~isempty(multi_freq_disp_tab_comp.table.Data)
-        u=find(strcmp(id_new{i},multi_freq_disp_tab_comp.table.Data(:,4)));
+    if ~isempty(id_c)
+        set(id_c,'XData',curves(idx).XData,'YData',curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID);
     else
-        u=[];
+        id_c=plot(multi_freq_disp_tab_comp.ax,curves(idx).XData,curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID,'ButtonDownFcn',{@display_line_cback,main_figure,tab_tag});
+        
+        color_str=sprintf('rgb(%.0f,%.0f,%.0f)',floor(get(id_c,'Color')*255));
+        if ~isempty(multi_freq_disp_tab_comp.table.Data)
+            u=find(strcmp(id_new{i},multi_freq_disp_tab_comp.table.Data(:,4)));
+        else
+            u=[];
+        end
+        if isempty(u)
+            u=size(multi_freq_disp_tab_comp.table.Data,1)+1;
+        end
+        
+        multi_freq_disp_tab_comp.table.Data{u,1}=strcat('<html><FONT color="',color_str,'">',curves(idx).Name,'</html>');
+        multi_freq_disp_tab_comp.table.Data{u,2}=curves(idx).Tag;
+        multi_freq_disp_tab_comp.table.Data{u,3}=true;
+        multi_freq_disp_tab_comp.table.Data{u,4}=curves(idx).Unique_ID;
     end
-    if isempty(u)
-        u=size(multi_freq_disp_tab_comp.table.Data,1)+1;
-    end
-    
-    multi_freq_disp_tab_comp.table.Data{u,1}=strcat('<html><FONT color="',color_str,'">',curves(idx).Name,'</html>');
-    multi_freq_disp_tab_comp.table.Data{u,2}=curves(idx).Tag;
-    multi_freq_disp_tab_comp.table.Data{u,3}=true;
-    multi_freq_disp_tab_comp.table.Data{u,4}=curves(idx).Unique_ID;
     
 end
 end

@@ -10,16 +10,24 @@ switch class(select_plot)
         
         reg_obj=region_cl('Name','Select Area','Idx_r',idx_r,'Idx_pings',idx_pings,'Unique_ID','1');
 end
-
-
+layer=getappdata(main_figure,'Layer');
+if~isempty(layer.Curves)
+    layer.Curves(cellfun(@(x) strcmp(x,reg_obj.Unique_ID),{layer.Curves(:).Unique_ID}))=[];
+end
 
 switch(field)
     case {'sp','spdenoised','spunmatched'}
-        TS_freq_response_func(main_figure,reg_obj)
+        update_multi_freq_disp_tab(main_figure,'ts_f',0);
+        TS_freq_response_func(main_figure,reg_obj);
+        update_multi_freq_disp_tab(main_figure,'ts_f',0);
     case {'sv','svdenoised'}
-        Sv_freq_response_func(main_figure,reg_obj)
+        update_multi_freq_disp_tab(main_figure,'sv_f',0);
+        Sv_freq_response_func(main_figure,reg_obj);
+        update_multi_freq_disp_tab(main_figure,'sv_f',0);
     otherwise
-        TS_freq_response_func(main_figure,reg_obj)
+        update_multi_freq_disp_tab(main_figure,'ts_f',0);
+        TS_freq_response_func(main_figure,reg_obj);
+        update_multi_freq_disp_tab(main_figure,'ts_f',0);
 end
 
 

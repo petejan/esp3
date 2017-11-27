@@ -53,7 +53,7 @@ for im=1:length(main_or_mini)
                         continue;
                     end
                     trans_obj{numel(trans_obj)+1}=trans_obj_temp;
-                    text_size(numel(text_size)+1)=6;
+                    text_size(numel(text_size)+1)=8;
                 end
             else
                 continue;

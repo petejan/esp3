@@ -106,7 +106,6 @@ if~isempty(f_vec)
         'Name',sprintf('%s %.0f %.0fkHz',reg_obj.Name,reg_obj.ID,layer.Frequencies(idx_freq)/1e3),...
         'Unique_ID',reg_obj.Unique_ID));
     
-    
-    update_multi_freq_disp_tab(main_figure,'sv_f');
+   
 end
 end

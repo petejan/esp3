@@ -145,7 +145,7 @@ end
 setappdata(main_figure,'Layer',layer);
 display_tracks(main_figure);
 update_track_target_tab(main_figure);
-update_multi_freq_disp_tab(main_figure,'ts_f');
+update_multi_freq_disp_tab(main_figure,'ts_f',1);
 end
 
 

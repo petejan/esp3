@@ -60,8 +60,8 @@ if new==1
     update_display_tab(main_figure);
     update_regions_tab(main_figure);
     update_map_tab(main_figure);
-    update_multi_freq_disp_tab(main_figure,'sv_f');
-    update_multi_freq_disp_tab(main_figure,'ts_f');
+    update_multi_freq_disp_tab(main_figure,'sv_f',0);
+    update_multi_freq_disp_tab(main_figure,'ts_f',0);
     update_lines_tab(main_figure);
     load_calibration_tab(main_figure,opt_panel);
     update_layer_tab(main_figure);

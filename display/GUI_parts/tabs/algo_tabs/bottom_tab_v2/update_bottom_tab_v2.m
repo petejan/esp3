@@ -40,6 +40,8 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 bottom_tab_v2_comp=getappdata(main_figure,'Bottom_tab_v2');
 
+load_default_params(bottom_tab_v2_comp.default_params,main_figure,'BottomDetectionV2');
+
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 [idx_algo,found]=find_algo_idx(trans_obj,'BottomDetectionV2');

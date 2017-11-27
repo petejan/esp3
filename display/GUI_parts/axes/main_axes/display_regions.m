@@ -133,7 +133,14 @@ for iax=1:length(main_axes_tot)
                     
                 case 'Polygon'
                     reg_plot=gobjects(1,2);
-                    [status,~]=license('checkout','MAP_Toolbox');
+                    
+                    
+                    if main_axes==axes_panel_comp.main_axes
+                        [status,~]=license('checkout','MAP_Toolbox');    
+                    else
+                        status=false;
+                    end
+                    
                     
                     if status==0
                         cdata=zeros(length(reg_curr.Idx_r),length(reg_curr.Idx_pings),3);

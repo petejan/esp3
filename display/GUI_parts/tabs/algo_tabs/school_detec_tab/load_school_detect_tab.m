@@ -92,7 +92,7 @@ uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defa
 
 list_params=names;
 
-school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_default_params,main_figure});
+school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_params,main_figure});
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
@@ -103,50 +103,15 @@ uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String'
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
 end
 
-
-
-function load_default_params(src,~,main_figure)
-layer=getappdata(main_figure,'Layer');
-
-if isempty(layer)
-    return;
+function load_params(src,~,main_figure)
+    update_school_detect_tab(main_figure);
 end
-
-curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
-
-[idx_algo,found]=find_algo_idx(trans_obj,'SchoolDetection');
-if found==0
-    return
-end
-
-[~,~,algo_files]=get_config_files('SchoolDetection');
-[~,algo_alt,names]=read_config_algo_xml(algo_files{1});
-
-idx_algo_xml=strcmpi(names,src.String{src.Value});
-
-if ~isempty(idx_algo_xml)
-    
-    trans_obj.Algo(idx_algo).Varargin.l_min_can=algo_alt(idx_algo_xml).Varargin.l_min_can;
-    trans_obj.Algo(idx_algo).Varargin.l_min_tot=algo_alt(idx_algo_xml).Varargin.l_min_tot;
-    trans_obj.Algo(idx_algo).Varargin.h_min_can=algo_alt(idx_algo_xml).Varargin.h_min_can;
-    trans_obj.Algo(idx_algo).Varargin.h_min_tot=algo_alt(idx_algo_xml).Varargin.h_min_tot;
-    trans_obj.Algo(idx_algo).Varargin.nb_min_sples=algo_alt(idx_algo_xml).Varargin.nb_min_sples;
-    trans_obj.Algo(idx_algo).Varargin.horz_link_max=algo_alt(idx_algo_xml).Varargin.horz_link_max;
-    trans_obj.Algo(idx_algo).Varargin.vert_link_max=algo_alt(idx_algo_xml).Varargin.vert_link_max;
-end
-setappdata(main_figure,'Layer',layer);
-update_school_detect_tab(main_figure);
-
-end
-
-
 
 
 function validate(~,~,main_figure)
 
 update_algos(main_figure);
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
@@ -157,8 +122,8 @@ layer=getappdata(main_figure,'Layer');
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 trans_obj.apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
-update_multi_freq_disp_tab(main_figure,'sv_f');
-update_multi_freq_disp_tab(main_figure,'ts_f');
+update_multi_freq_disp_tab(main_figure,'sv_f',0);
+update_multi_freq_disp_tab(main_figure,'ts_f',0);
 hide_status_bar(main_figure);
 
 set_alpha_map(main_figure);

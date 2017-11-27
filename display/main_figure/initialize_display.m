@@ -36,11 +36,11 @@
 %% Function
 function initialize_display(main_figure)
 
-opt_panel=uitabgroup(main_figure,'Position',[0 .7 0.5 .3]);
-algo_panel=uitabgroup(main_figure,'Position',[0.5 .7 0.5 .3]);
+opt_panel=uitabgroup(main_figure,'Position',[0 2/3 0.5 1/3]);
+algo_panel=uitabgroup(main_figure,'Position',[0.5 2/3 0.5 1/3]);
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-echo_tab_panel=uitabgroup(main_figure,'Units','Normalized','Position',[0 0.05 1 0.65]);
+echo_tab_panel=uitabgroup(main_figure,'Units','Normalized','Position',[0 0.05 1 2/3-0.05]);
 axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel','Title',sprintf('%.0fkHz',curr_disp.Freq/1e3));
 
 setappdata(main_figure,'echo_tab_panel',echo_tab_panel);
