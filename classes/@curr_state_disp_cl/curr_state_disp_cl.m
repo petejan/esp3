@@ -6,33 +6,34 @@ classdef curr_state_disp_cl <handle
         SecChannelIDs={};
         SecFreqs=[];
         DispSecFreqs=1;
-        Fieldname
-        Fieldnames
-        Type
-        Xaxes
+        Fieldname='sv';
+        Fieldnames={'sv'};
+        Type='Sv'
+        Xaxes={'meters' 'pings' 'seconds'};
+        Xaxes_current={'meters'};
         Cax     
         Caxes
-        DispBottom
-        DispUnderBottom
-        UnderBotTransparency=90
+        DispBottom='on';
+        DispUnderBottom='off';
+        UnderBotTransparency=90;
         DispBotHighVis
-        DispTracks
-        DispBadTrans
-        DispReg
-        DispLines
-        CursorMode
-        Grid_x
-        Grid_y
-        CurrLayerID
-        NbLayers
-        Cmap
-        Font
-        Bot_changed_flag%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
-        UIupdate
-        Proj
-        Active_reg_ID=''
-        Active_line_ID=''
-        Reg_changed_flag %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
+        DispTracks='on';
+        DispBadTrans='on';
+        DispReg='on';
+        DispLines='on';
+        CursorMode='Normal'
+        Grid_x=[0 0 0];
+        Grid_y=0;
+        CurrLayerID='';
+        NbLayers=0;
+        Cmap='ek60';
+        Font='';
+        Bot_changed_flag=0;%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
+        UIupdate=0;
+        Proj='Lambert Conformal Conic';
+        Active_reg_ID='';
+        Active_line_ID='';
+        Reg_changed_flag=0; %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         R_disp=[1 inf];
     end
     
@@ -54,9 +55,10 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispBadTrans','on',@ischar);
             addParameter(p,'DispReg','on',@ischar);
             addParameter(p,'DispLines','on',@ischar);
-            addParameter(p,'Xaxes','pings',@ischar);
-            addParameter(p,'Grid_x',100,@isnumeric);
-            addParameter(p,'Grid_y',100,@isnumeric);
+            addParameter(p,'Xaxes',{'meters' 'pings' 'seconds'},@iscell);
+            addParameter(p,'Xaxes_current','pings',@ischar);
+            addParameter(p,'Grid_x',[0 0 0],@isnumeric);
+            addParameter(p,'Grid_y',0,@isnumeric);
             addParameter(p,'CursorMode','Normal',@ischar);
             addParameter(p,'CurrLayerID','',@ischar);
             addParameter(p,'NbLayers',0,@isnumeric);
@@ -83,6 +85,23 @@ classdef curr_state_disp_cl <handle
     end
     
     methods
+        
+        function [dx,dy]=get_dx_dy(obj)
+            dy=obj.Grid_y;
+            dx=obj.Grid_x(strcmp(obj.Xaxes_current,obj.Xaxes));
+        end
+        
+        function set_dx_dy(obj,dx,dy,curr_axes)
+            if ~isempty(dy)
+                obj.Grid_y=dy;
+            end
+            if~isempty(curr_axes)
+                obj.Xaxes_current=curr_axes;
+            end
+            if ~isempty(dx)
+                obj.Grid_x(strcmp(obj.Xaxes_current,obj.Xaxes))=dx;
+            end
+        end
         
         function setCax(obj,cax)
             if cax(2)>cax(1)

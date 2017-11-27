@@ -7,10 +7,10 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[Slice_w,Slice_h]=curr_disp.get_dx_dy();
 
-Slice_w=curr_disp.Grid_x;
-Slice_w_units=curr_disp.Xaxes;
-Slice_h=curr_disp.Grid_y;
+Slice_w_units=curr_disp.Xaxes_current;
+
 
 idx_reg=trans_obj.find_regions_type('Data');
 

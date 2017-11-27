@@ -13,16 +13,20 @@ ydata=get(axes_panel_comp.main_echo,'YData');
 
 [idx_r,idx_pings]=get_idx_r_n_pings(layer,curr_disp,axes_panel_comp.main_echo);
 
-switch curr_disp.Xaxes
+curr_disp=init_grid_val(main_figure);
+[dx,dy]=curr_disp.get_dx_dy();
+
+switch curr_disp.Xaxes_current
     case 'seconds'
         xdata_grid=trans_obj.Time(idx_pings);
+        dx=dx/(24*60*60);
     case 'pings'
         xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
     case 'meters'
         xdata_grid=trans_obj.GPSDataPing.Dist();
         if isempty(xdata_grid)
             disp('NO GPS Data');
-            curr_disp.Xaxes='pings';
+            curr_disp.Xaxes_current='pings';
             xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
         else
             xdata_grid=xdata_grid(idx_pings);
@@ -33,23 +37,11 @@ end
 
 ydata_grid=trans_obj.get_transceiver_range(idx_r);
 
- 
-switch curr_disp.Xaxes
-    case 'seconds'
-        dx=curr_disp.Grid_x/(24*60*60);
-    otherwise
-        dx=curr_disp.Grid_x;
-end
-
-% idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
-% idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
-
-%set(axes_panel_comp.main_axes,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on');
 
 dxmin=2;
 dymin=2 ;
 dx_min=dx/dxmin;
-dy_min=curr_disp.Grid_y/dymin;
+dy_min=dy/dymin;
 
 idx_minor_xticks=find((diff(rem(xdata_grid,dx_min))<0))+1;
 idx_minor_yticks=find((diff(rem(ydata_grid,dy_min))<0))+1;
@@ -81,7 +73,7 @@ set(axes_panel_comp.vaxes,'yticklabels',y_labels);
 set(axes_panel_comp.haxes,'XTickLabelRotation',-90,'box','on');
 str_start=' ';
 
-switch lower(curr_disp.Xaxes)
+switch lower(curr_disp.Xaxes_current)
     case 'seconds'
         h_fmt='  HH:MM:SS';
         x_labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);

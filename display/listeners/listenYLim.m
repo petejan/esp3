@@ -51,7 +51,9 @@ y_lim=get(ax,'YLim');
 range=trans_obj.get_transceiver_range();
 %time=trans_obj.get_transceiver_time();
 y_lim=ceil(y_lim);
+
 y_lim(y_lim>numel(range))=numel(range);
+y_lim(y_lim<=0)=1;
 curr_disp.R_disp=range(y_lim);
 
 

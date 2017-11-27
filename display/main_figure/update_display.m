@@ -48,7 +48,6 @@ if isempty(layer)
 end
 
 if new==1  
-    init_grid_val(main_figure)
     update_bottom_tab(main_figure);
     update_bottom_tab_v2(main_figure);
     update_bad_pings_tab(main_figure);
@@ -57,7 +56,7 @@ if new==1
     update_single_target_tab(main_figure,1);
     update_track_target_tab(main_figure);
     update_processing_tab(main_figure);
-    update_display_tab(main_figure);
+    
     update_regions_tab(main_figure);
     update_map_tab(main_figure);
     update_multi_freq_disp_tab(main_figure,'sv_f',0);
@@ -74,6 +73,7 @@ end
 update_axis_panel(main_figure,new);
 
 if new==1
+    update_display_tab(main_figure);
     load_secondary_freq_win(main_figure);
 end
 

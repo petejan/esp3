@@ -16,17 +16,19 @@ xdata=get(mini_axes_comp.mini_echo,'XData');
 ydata=get(mini_axes_comp.mini_echo,'YData');
 
 [idx_r,idx_pings]=get_idx_r_n_pings(layer,curr_disp,mini_axes_comp.mini_echo);
+[dx,dy]=curr_disp.get_dx_dy();
 
-switch curr_disp.Xaxes
+switch curr_disp.Xaxes_current
     case 'seconds'
-        xdata_grid=trans_obj.Time(idx_pings);
+        xdata_grid=trans_obj.Time(idx_pings)/(24*60*60);
+        dx=dx/(24*60*60);
     case 'pings'
         xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
     case 'meters'
         xdata_grid=trans_obj.GPSDataPing.Dist(idx_pings);
         if isempty(xdata)
             disp('NO GPS Data');
-            curr_disp.Xaxes='pings';
+            curr_disp.Xaxes_current='pings';
             xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
         end
     otherwise
@@ -35,14 +37,9 @@ end
 
 ydata_grid=trans_obj.get_transceiver_range(idx_r);
  
-switch curr_disp.Xaxes
-    case 'seconds'
-        dx=curr_disp.Grid_x/(24*60*60);
-    otherwise
-        dx=curr_disp.Grid_x;
-end
+
 idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
-idx_yticks=find((diff(rem(ydata_grid,curr_disp.Grid_y))<0))+1;
+idx_yticks=find((diff(rem(ydata_grid,dy))<0))+1;
 
 set(mini_axes_comp.mini_ax,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on','YDir','reverse');
 
