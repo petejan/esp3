@@ -17,6 +17,9 @@ if ~isempty(uid)
     old_regs=trans_obj.Regions;
     
     idx=find_regions_Unique_ID(trans_obj,uid{1});
+    if isempty(idx)
+        return;
+    end
     
     for i=1:numel(uid)
         trans_obj.rm_region_id(uid{i});
