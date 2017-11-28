@@ -93,19 +93,21 @@ switch main_figure.SelectionType
         
         reg_curr.Idx_pings=reg_curr.Idx_pings-reg_curr.Idx_pings(1)+idx_p_min;
         reg_curr.Idx_r=reg_curr.Idx_r-reg_curr.Idx_r(1)+idx_r_min;
-%         old_regs=trans_obj.Regions;
+        old_regs=trans_obj.Regions;
          old_ID=reg_curr.Unique_ID;
-%         trans_obj.rm_region_id(old_ID);
-%         reg_curr.Unique_ID=generate_Unique_ID();
-        trans_obj.add_region(reg_curr,'Merge',0);
-%         add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
-
+         trans_obj.rm_region_id(old_ID);
+         reg_curr.Unique_ID=generate_Unique_ID();
+         trans_obj.add_region(reg_curr,'Merge',0);
+         add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+         
         setappdata(main_figure,'Layer',layer);
         
         curr_disp.Reg_changed_flag=1;
         clear_regions(main_figure,old_ID,{});
-        
         display_regions(main_figure,'both');
+        curr_disp.Active_reg_ID=reg_curr.Unique_ID;
+        update_multi_freq_disp_tab(main_figure,'sv_f',0);
+        update_multi_freq_disp_tab(main_figure,'ts_f',0);
         order_stacks_fig(main_figure);
 
     case 'open'
