@@ -29,7 +29,7 @@ if set_bad>0
     bot.Tag(idx_brush)=0;
 end
 
-trans_obj.setBottom(bot);
+trans_obj.Bottom=bot;
 
 curr_disp.Bot_changed_flag=1;
 setappdata(main_figure,'Curr_disp',curr_disp);

@@ -38,7 +38,7 @@ if~isdeployed()
     disp('Undo Bottom')
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
-trans_obj.setBottom(bot);
+trans_obj.Bottom=bot;
 display_bottom(main_figure);
 layer=getappdata(main_figure,'Layer');
 set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},layer.ChannelID));

@@ -58,11 +58,11 @@ grid(multi_freq_disp_tab_comp.ax,'on');
 % pos=getpixelposition(multi_freq_disp_tab_comp.multi_freq_disp_tab);
 
  multi_freq_disp_tab_comp.ax_lim_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
-     'BackgroundColor','White','units','pixel','position',[10 0 90 25],'String','Fix YLim.','Value',0);
+     'BackgroundColor','White','units','pixels','position',[10 0 90 25],'String','Fix YLim.','Value',0);
  
 cax=get(multi_freq_disp_tab_comp.ax,'YLim'); 
-multi_freq_disp_tab_comp.thr_down=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'Style','edit','units','pixel','position',[110 2 30 23],'string',cax(1));
-multi_freq_disp_tab_comp.thr_up=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'Style','edit','units','pixel','position',[150 2 30 23],'string',cax(2));
+multi_freq_disp_tab_comp.thr_down=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'Style','edit','units','pixels','position',[110 2 30 23],'string',cax(1));
+multi_freq_disp_tab_comp.thr_up=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'Style','edit','units','pixels','position',[150 2 30 23],'string',cax(2));
 
 set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_freq_disp_tab_comp.thr_down],'callback',{@fix_ylim,main_figure,tab_tag});
 
@@ -70,7 +70,7 @@ set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_
 %      'BackgroundColor','White','units','normalized','position',[0.25 0.9 0.25 0.1],'String','Link YLim to Echo.','Value',0,'Callback',{@link_ylim_to_echo_clim,main_figure,tab_tag});
 %  
  multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
-     'BackgroundColor','White','units','pixel','position',[10 30 200 25],'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+     'BackgroundColor','White','units','pixels','position',[10 30 200 25],'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
  multi_freq_disp_tab_comp.detrend=0;
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 

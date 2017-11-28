@@ -218,7 +218,7 @@ hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
     function end_bottom_edit()
         replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2);
         replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
-        trans_obj.setBottom(bot);
+        trans_obj.Bottom=bot;
         curr_disp.Bot_changed_flag=1; 
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);

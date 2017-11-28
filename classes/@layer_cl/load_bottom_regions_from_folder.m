@@ -41,7 +41,7 @@ if bot>0&&exist(fullfile(folder,bFileName),'file')>0
         'Sample_idx',sample_idx,...
         'Tag',double(bad==0));
     
-    trans_obj.setBottom(bottom);
+    trans_obj.Bottom=bottom;
 else
     
     fprintf('Could not find Bottom for file %s\n', dFileName);

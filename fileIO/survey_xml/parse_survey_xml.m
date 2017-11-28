@@ -34,7 +34,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function survey_input = parse_survey_xml(xml_file)
+function survey_input = parse_survey_xml(xml_file,varargin)
 
 xml_struct = parseXML(xml_file);
 
@@ -44,15 +44,28 @@ if ~strcmpi(xml_struct.Name,'survey_processing')
     return;
 end
 
-Algos = {};
-Regions_WC = {};
-Cal = [];
+
 nb_child = length(xml_struct.Children);
 nb_reg = 0;
 nb_snap = 0;
 nb_cal = 0;
+surv_def=survey_input_cl();
 
-for i = 1:nb_child
+Infos=surv_def.Infos;
+Options=surv_def.Options;
+Algos = {};
+Regions_WC = {};
+Cal = [];
+Snapshots=surv_def.Snapshots;
+
+if nargin>1
+    nodes=varargin{1};
+    [~,idx_child]=find(ismember({xml_struct.Children(:).Name},nodes));
+else
+   idx_child=1:nb_child;
+end
+    
+for i = idx_child
     switch xml_struct.Children(i).Name
         case 'survey'
             Infos = get_node_att(xml_struct.Children(i));

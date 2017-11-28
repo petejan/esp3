@@ -58,7 +58,7 @@ addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
-%% 
+%%
 
 field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
@@ -150,7 +150,7 @@ end
 
 %% create new figure here
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
-    'Units','Normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked','CloseRequestFcn',@close_reg_fig);
+    'Units','normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked');
 
 %% main region display
 
@@ -164,7 +164,7 @@ switch reg_obj.Reference
     case 'Surface'
         y_disp=(output_reg.Range_ref_max);
     case {'Bottom','Line'}
-     
+        
         y_disp=-(output_reg.Range_ref_max);
 end
 
@@ -231,7 +231,7 @@ end
 %% side display
 
 % axes
-ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on');
+ax_vert=axes('Parent',h_fig,'Units','Normalized','position',[0.05 0.25 0.15 0.65],'xaxislocation','top','nextplot','add','box','on','DeleteFcn',@delete_axes);
 
 % data
 plot(ax_vert,vert_plot,y_disp,'r');
@@ -246,10 +246,10 @@ switch reg_obj.Reference
         axis(ax_in,'ij');
         axis(ax_vert,'ij');
     case 'Bottom'
-        ylabel(ax_vert,'Distance Above bottom(m)');       
+        ylabel(ax_vert,'Distance Above bottom(m)');
     case 'Line'
         ylabel(ax_vert,'Distance From line (m)');
-
+        
 end
 
 grid(ax_vert,'on');
@@ -267,30 +267,42 @@ set(ax_in,'Ylim',[ymin-reg_obj.Cell_h/2 ymax+reg_obj.Cell_h/2]);
 
 %% nest functions
 
-    % Figure close request callback for region display
-    function close_reg_fig(src,~,~)
-        try
-            delete(cmap_list) ;
-            delete(cax_list) ;
+% Figure close request callback for region display
+    function delete_axes(src,~)
+        if ~isdeployed
+            disp('delete_axes reg listeners')
         end
-        delete(src)
+        delete(cmap_list) ;
+        delete(cax_list) ;
+        delete(src);
     end
-    
-    % Listener for colourmap
+
+% Listener for colourmap
     function listenCmapReg(src,evt)
+        if ~isdeployed
+            disp('listenCmapReg')
+        end
         [cmap,~,~,col_grid,~,~]=init_cmap(evt.AffectedObject.Cmap);
         if isvalid(ax_in)
-            colormap(ax_in,cmap);
+            if isvalid(ax_in)
+                colormap(ax_in,cmap);
+            end
         end
     end
 
-    % Listener for alpha values to limit data shown
+% Listener for alpha values to limit data shown
     function listenCaxReg(src,evt)
         cax=evt.AffectedObject.getCaxField(field);
-        if isvalid(ax_in)
-            caxis(ax_in,cax);
-            alphadata=double(var_disp>cax(1));
-            set(reg_plot,'alphadata',alphadata)
+        if ~isdeployed
+            disp('listenCaxReg')
+        end
+        if exist('ax_in','var')>0
+            
+            if isvalid(ax_in)
+                caxis(ax_in,cax);
+                alphadata=double(var_disp>cax(1));
+                set(reg_plot,'alphadata',alphadata)
+            end
         end
     end
 

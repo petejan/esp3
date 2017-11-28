@@ -48,7 +48,7 @@ trans_file_ID=transceiver_cl();
 trans_file_ID.Data=trans_obj.Data.get_data_idx_file(fileID);
 trans_file_ID.Range=trans_obj.Range;
 trans_file_ID.Time=trans_obj.Time(idx_file);
-trans_file_ID.setBottom(trans_obj.Bottom.get_bottom_idx_section(idx_file));
+trans_file_ID.Bottom=trans_obj.Bottom.get_bottom_idx_section(idx_file);
 
 for ireg=1:numel(trans_obj.Regions)
     [reg_temp,fids]=trans_obj.Regions(ireg).split_region(fileID_vec,1);

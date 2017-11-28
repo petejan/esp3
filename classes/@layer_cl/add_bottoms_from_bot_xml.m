@@ -113,7 +113,7 @@ for idx_freq=1:length(layer_obj.Transceivers)
     if isempty(new_bottom{idx_freq})
         continue;
     end
-    trans_obj.setBottom(new_bottom{idx_freq});
+    trans_obj.Bottom=new_bottom{idx_freq};
     
 end
 

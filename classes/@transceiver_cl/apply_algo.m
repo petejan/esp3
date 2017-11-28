@@ -84,14 +84,14 @@ end
 switch algo_name
     case'BottomDetection'
         old_tag=trans_obj.Bottom.Tag;
-        trans_obj.setBottom(bottom_cl('Origin','Algo_v3',...
+        trans_obj.Bottom=bottom_cl('Origin','Algo_v3',...
             'Sample_idx',bottom,...
-            'Tag',old_tag));
+            'Tag',old_tag);
     case'BottomDetectionV2'
         old_tag=trans_obj.Bottom.Tag;
-        trans_obj.setBottom(bottom_cl('Origin','Algo_v4',...
+        trans_obj.Bottom=bottom_cl('Origin','Algo_v4',...
             'Sample_idx',bottom,...
-            'Tag',old_tag));
+            'Tag',old_tag);
     case 'BadPings'
         tag=double(idx_noise_sector==0);
         if p.Results.replace_bot==0
@@ -115,7 +115,7 @@ switch algo_name
                 'Sample_idx',bottom,...
                 'Tag',tag);
         end
-        trans_obj.setBottom(new_bot);
+        trans_obj.Bottom=new_bot;
     case 'BadPingsV2'        
          tag=trans_obj.Bottom.Tag;
          if isempty(p.Results.reg_obj)
@@ -126,7 +126,7 @@ switch algo_name
         new_bot=bottom_cl('Origin','Algo_v3_bp',...
             'Sample_idx',trans_obj.get_bottom_idx(),...
             'Tag',tag);
-        trans_obj.setBottom(new_bot);
+        trans_obj.Bottom=new_bot;
     case 'Denoise'
         if ~isempty(power_unoised)
             trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);

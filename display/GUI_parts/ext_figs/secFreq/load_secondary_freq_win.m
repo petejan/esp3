@@ -10,7 +10,8 @@ if isappdata(main_figure,'Secondary_freq')
     delete(secondary_freq.axes);
     delete(secondary_freq.echoes);
 else
-    secondary_freq.fig=new_echo_figure(main_figure,'Name','All Channels','CloseRequestFcn',@rm_Secondary_freq,'Tag','Secondary_freq_win');
+    secondary_freq.fig=new_echo_figure(main_figure,'Position',[0 0.1 1 0.8],'Units','normalized',...
+        'Name','All Channels','CloseRequestFcn',@rm_Secondary_freq,'Tag','Secondary_freq_win');
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');

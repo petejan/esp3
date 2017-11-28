@@ -44,7 +44,7 @@ if ~isempty(PathToFile)&&~isempty(FileName)
         if bot_cvs==1
             display(['converting bottom and bad pings for dfile ' FileName]);
             bot= get_bottom_from_esp2(PathToFile,FileName,voyage,cvsroot,bot_rev); 
-            trans_obj.setBottom(bot);
+            trans_obj.Bottom=bot;
         end
 
         if reg_cvs==1

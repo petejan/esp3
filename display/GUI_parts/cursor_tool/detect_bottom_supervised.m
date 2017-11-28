@@ -171,7 +171,7 @@ wbmcb([],[])
             replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1);
         end
         
-        trans_obj.setBottom(bot);
+        trans_obj.Bottom=bot;
         curr_disp.Bot_changed_flag=1;
         display_bottom(main_figure);
         

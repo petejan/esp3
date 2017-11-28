@@ -38,7 +38,7 @@ if length(trans_1)==length(trans_2)
                 regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_first.get_transceiver_pings());
             end    
 
-        trans_out(i).setBottom(new_bot);
+        trans_out(i).Bottom=new_bot;
  
         trans_out(i).add_region(regions_1);
         trans_out(i).add_region(regions_2);

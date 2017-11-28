@@ -70,7 +70,54 @@ classdef transceiver_cl < handle
                 end
             end
             
-            trans_obj.setBottom(p.Results.Bottom);
+            trans_obj.Bottom=p.Results.Bottom;
+        end
+        
+        function set.Bottom(obj,bottom_obj)
+
+            
+            if isempty(bottom_obj)
+                bottom_obj=bottom_cl();
+            end
+            
+            samples=obj.get_transceiver_samples();
+            pings=obj.get_transceiver_pings();
+            
+            IdxBad=find(bottom_obj.Tag==0);
+            
+            IdxBad(IdxBad<=0)=[];
+            
+            new_bot_sple=nan(size(pings));
+            
+            bot_sple=bottom_obj.Sample_idx;
+            
+            if ~isempty(bot_sple)
+                i0=abs(length(bot_sple)-length(pings));
+                
+                if length(bot_sple)>length(pings)
+                    new_bot_sple(1+i0:end)=bot_sple(1:end-(i0+1));
+                    IdxBad=IdxBad+i0;
+                elseif length(bot_sple)<length(pings)
+                    new_bot_sple(1+i0:i0+length(bot_sple))=bot_sple;
+                    IdxBad=IdxBad+i0;
+                else
+                    new_bot_sple=bot_sple;
+                end
+                
+                while nanmax(IdxBad)>length(pings)
+                    IdxBad=IdxBad-1;
+                end
+                
+                new_bot_sple(new_bot_sple>length(samples))=length(samples);
+                new_bot_sple(new_bot_sple<=0)=1;
+            end
+            
+            tag=ones(size(new_bot_sple));
+            tag(IdxBad)=0;
+            
+            new_bot_sple(isnan(new_bot_sple(:))&tag(:)==1)=length(samples);
+            obj.Bottom=bottom_cl('Origin',bottom_obj.Origin(:)','Sample_idx',new_bot_sple(:)','Tag',tag(:)','Version',bottom_obj.Version);
+            
         end
         
         
@@ -135,10 +182,14 @@ classdef transceiver_cl < handle
         end
         
         function samples=get_transceiver_samples(trans_obj,varargin)
+            if ~isempty(trans_obj.Data)
             samples=(1:trans_obj.Data.Nb_samples)';
             if nargin>=2
                 idx=varargin{1};
                 samples=samples(idx);
+            end
+            else
+                samples=[];
             end
             
         end
@@ -152,10 +203,15 @@ classdef transceiver_cl < handle
         end
         
         function pings=get_transceiver_pings(trans_obj,varargin)
-            pings=(1:trans_obj.Data.Nb_pings);
-            if nargin>=2
-                idx=varargin{1};
-                pings=pings(idx);
+            if ~isempty(trans_obj.Data)
+                pings=(1:trans_obj.Data.Nb_pings);
+                if nargin>=2
+                    idx=varargin{1};
+                    pings=pings(idx);
+                    
+                end
+            else
+                pings=[];
             end
         end
         

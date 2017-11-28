@@ -168,7 +168,7 @@ classdef curr_state_disp_cl <handle
             if ~isempty(idx_field)
                 cax=obj.Caxes{idx_field};
             else
-                cax=obj.Cax;
+                [cax,~]=init_cax(field);
             end
         end
         

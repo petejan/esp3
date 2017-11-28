@@ -70,7 +70,7 @@ Filenames=dir(fullfile(scripts,'*.xml'));
 k=0;
 for i=idx_sort
     try
-        xml_surveys_input_tmp=parse_survey_xml(fullfile(scripts,Filenames(i).name));
+        xml_surveys_input_tmp=parse_survey_xml(fullfile(scripts,Filenames(i).name),{'survey'});
     catch
         fprintf('Could not parse xml survey from file %s\n',Filenames(i).name);
         continue;

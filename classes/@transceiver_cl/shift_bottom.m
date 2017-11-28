@@ -47,6 +47,6 @@ if isempty(idx_p)
 end
 
 Bottom.Sample_idx(idx_p)=bot_sample(idx_p)-round(r_shift/dr);
-trans_obj.setBottom(Bottom);
+trans_obj.Bottom=Bottom;
 
 end

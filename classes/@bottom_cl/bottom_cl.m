@@ -56,8 +56,8 @@ classdef bottom_cl
 
         end
         
-        function samples=get_sample(bot_obj)
-            samples=bot_obj.Sample_idx(:);
+        function Sample_idx=get.Sample_idx(bot_obj)
+            Sample_idx=bot_obj.Sample_idx(:)';
         end
         
         function delete(obj)

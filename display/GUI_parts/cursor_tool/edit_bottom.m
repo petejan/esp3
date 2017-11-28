@@ -224,7 +224,7 @@ end
 
     function end_bottom_edit(val)
         
-        trans_obj.setBottom(bot);
+        trans_obj.Bottom=bot;
         curr_disp.Bot_changed_flag=1;
         setappdata(main_figure,'Curr_disp',curr_disp);
         setappdata(main_figure,'Layer',layer);

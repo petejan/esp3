@@ -13,6 +13,6 @@ range=trans_obj.get_transceiver_range();
 
 obj=create_bottom_from_evl(filename,range,timevec);
 
-trans_obj.setBottom(obj);
+trans_obj.Bottom=obj;
 
 end

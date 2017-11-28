@@ -1,12 +1,28 @@
 function fig_handle=new_echo_figure(main_figure,varargin)
 
+size_max = get(0, 'MonitorPositions');
 
+def_pos=[0.2 0.2 0.6 0.6];
+
+if ~isempty(main_figure)
+    pos_main=getpixelposition(main_figure);
+else
+    pos_main=size_max(1,:);
+end
+
+if size(size_max,1)>1
+    [~,id_screen]=nanmin(abs(size_max(:,1)-pos_main(1)));
+    size_max(id_screen,:)=[];
+end
+
+def_pos=def_pos.*[size_max(end,3:4) size_max(end,3:4)];
+    
 p = inputParser;
 addRequired(p,'main_figure',@(x) isempty(x)||ishandle(x));
 addParameter(p,'fig_handle',[],@(x) isempty(x)||ishandle(x));
 addParameter(p,'Name','',@ischar);
-addParameter(p,'Position',[0.2 0.2 0.6 0.6],@isnumeric);
-addParameter(p,'Units','normalized',@ischar);
+addParameter(p,'Position',def_pos,@isnumeric);
+addParameter(p,'Units','pixels',@ischar);
 addParameter(p,'MenuBar','none',@ischar);
 addParameter(p,'Toolbar','none',@ischar);
 addParameter(p,'Resize','on',@ischar);
@@ -29,11 +45,16 @@ else
     hfigs=getappdata(main_figure,'ExternalFigures');
 end
      
-    
+ switch lower(p.Results.Units)
+     case 'pixels'
+         pos_final=p.Results.Position+[size_max(end,1:2) 0 0];
+     case 'normalized'
+         pos_final=p.Results.Position.*[size_max(end,3:4) size_max(end,3:4)]+[size_max(end,1:2) 0 0];
+ end
 
 if isempty(p.Results.fig_handle)
-    fig_handle=figure('Units',p.Results.Units,...
-        'Position',p.Results.Position,...
+    fig_handle=figure('Units','pixels',...
+        'Position',pos_final,...
         'Color','White',...
         'Tag',p.Results.Tag,...
         'WindowStyle',p.Results.WindowStyle,...

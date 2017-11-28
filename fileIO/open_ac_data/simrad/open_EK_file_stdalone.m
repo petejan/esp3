@@ -355,7 +355,7 @@ if ~isequal(Filename_cell, 0)
                             depth_resampled=depth_resampled-trans_obj(itrans).Params.TransducerDepth;
                             sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
                             sample_idx(sample_idx==1)=nan;
-                            trans_obj(itrans).setBottom(bottom_cl('Origin','Simrad','Sample_idx',sample_idx));
+                            trans_obj(itrans).Bottom=bottom_cl('Origin','Simrad','Sample_idx',sample_idx);
                             
                             
                             
