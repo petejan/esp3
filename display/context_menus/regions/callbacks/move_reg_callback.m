@@ -100,8 +100,7 @@ switch main_figure.SelectionType
          trans_obj.add_region(reg_curr,'Merge',0);
          add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
          
-        setappdata(main_figure,'Layer',layer);
-        
+               
         curr_disp.Reg_changed_flag=1;
         clear_regions(main_figure,old_ID,{});
         display_regions(main_figure,'both');
