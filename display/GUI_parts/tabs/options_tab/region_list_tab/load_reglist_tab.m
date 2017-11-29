@@ -73,35 +73,31 @@ rc_menu = uicontextmenu(ancestor(tab_panel,'figure'));
 reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT color="REd"><b>Delete region(s)</b></Font> ';
 
 
-uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,reglist_tab_comp.table,main_figure});
-uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,reglist_tab_comp.table,main_figure});
+uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,main_figure});
+uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,main_figure});
 uifreq=uimenu(rc_menu,'Label','Copy to other channels');
-uimenu(uifreq,'Label','all','Callback',{@copy_region_from_selected_cback,reglist_tab_comp.table,main_figure});
+uimenu(uifreq,'Label','all','Callback',{@copy_region_from_selected_cback,main_figure});
 
 
 reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 
-setappdata(reglist_tab_comp.table,'SelectedRegs',[]);
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 
-update_reglist_tab(main_figure,[]);
+update_reglist_tab(main_figure);
 
 end
 
-function copy_region_from_selected_cback(~,~,table,main_figure)
-idx=getappdata(table,'SelectedRegs');
-if ~isempty(idx)
-    copy_region_callback([],[],idx,main_figure,[])
-end
+function copy_region_from_selected_cback(~,~,main_figure)
+    copy_region_callback([],[],main_figure,[]);
 end
 
 
-function display_regions_callback(src,~,table,main_figure)
+function display_regions_callback(src,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,~]=layer.get_trans(curr_disp);
 
-idx=getappdata(table,'SelectedRegs');
+idx=curr_disp.Active_reg_ID;
 if ~isempty(idx)
     for i=1:numel(idx)
         [ireg,found]=trans_obj.find_reg_idx(idx(i));
@@ -122,12 +118,11 @@ if ~isempty(idx)
 end
 end
 
-function delete_regions_callback(src,~,table,main_figure)
+function delete_regions_callback(src,~,main_figure)
 
-idx=getappdata(table,'SelectedRegs');
-
+curr_disp=getappdata(main_figure,'Curr_disp');
+idx=curr_disp.Active_reg_ID;
 delete_regions_from_uid(main_figure,idx);
-
 
 end
 
@@ -144,42 +139,21 @@ end
 function act_reg(src,evt,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
-regions=trans_obj.Regions;
-
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 if isempty(evt.Indices)
-    setappdata(src,'SelectedRegs',[]);
-    return;
+    selected_regs=[];
 else
     selected_regs=src.Data(evt.Indices(:,1),end);
-    setappdata(src,'SelectedRegs',selected_regs);
 end
 
-[idx_reg,found]=trans_obj.find_reg_idx(src.Data(evt.Indices(end,1),10));
-
-if evt.Indices(end)~=1
-    return;
+active_regs=trans_obj.get_region_from_Unique_ID(selected_regs);
+if ~isempty(active_regs)    
+    if ~all(ismember({active_regs(:).Unique_ID},curr_disp.Active_reg_ID))||isempty(setdiff({active_regs(:).Unique_ID},curr_disp.Active_reg_ID))
+        curr_disp.setActive_reg_ID({active_regs(:).Unique_ID});
+        set_view_to_region(active_regs(1).Unique_ID,main_figure);
+    end
+else
+   curr_disp.setActive_reg_ID({}); 
 end
-
-if ~found
-    return;
-end
-
-fig=ancestor(src,'figure');
-modifier = get(fig,'CurrentModifier');
-control = ismember({'shift' 'control'},modifier);
-
-if any(control)
-    return;
-end
-
-active_reg=regions(idx_reg);
-
-if ~strcmpi(active_reg.Unique_ID,curr_disp.Active_reg_ID)
-    curr_disp.Active_reg_ID=active_reg.Unique_ID;
-    set_view_to_region(curr_disp.Active_reg_ID,main_figure);
-end
-
 end

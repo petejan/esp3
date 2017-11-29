@@ -15,7 +15,7 @@ end
 trans_obj.create_track_regs('Type',type);
 
 display_tracks(main_figure);
-update_reglist_tab(main_figure,[]);
+update_reglist_tab(main_figure);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
 

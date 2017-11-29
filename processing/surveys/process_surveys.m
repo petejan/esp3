@@ -146,9 +146,20 @@ for i = 1:length(Filenames)
     layers_out = [layers_old layers_new];
     layers_out = reorder_layers_time(layers_out);
     
+    % path for saving results
+    if isempty(gui_main_handle)
+        [PathToFile,~,~] = fileparts(layers_new(end).Filename{1});
+    else
+        app_path = getappdata(gui_main_handle,'App_path');
+        PathToFile = app_path.results;
+        if exist(PathToFile,'dir') == 0
+            mkdir(PathToFile);
+        end
+    end
+    
     % step 3: run the integration script
     try
-        surv_obj.generate_output_v2(layers_new);
+        surv_obj.generate_output_v2(layers_new,'PathToResults',PathToFile);
     catch err
         disp(err.message);
         warning('Script file %s could not be run.',Filenames{i});
@@ -157,16 +168,6 @@ for i = 1:length(Filenames)
     % step 4: Save results in output files
     try
         
-        % path
-        if isempty(gui_main_handle)
-            [PathToFile,~,~] = fileparts(layers_new(end).Filename{1});
-        else
-            app_path = getappdata(gui_main_handle,'App_path');
-            PathToFile = app_path.results;
-            if exist(PathToFile,'dir') == 0
-                mkdir(PathToFile);
-            end
-        end
         
         save(fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_survey_output.mat']),'surv_obj');
         outputFile = fullfile(PathToFile,[surv_obj.SurvInput.Infos.Title '_mbs_output.txt']);

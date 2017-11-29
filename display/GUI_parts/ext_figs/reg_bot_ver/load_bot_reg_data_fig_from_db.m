@@ -282,7 +282,7 @@ switch src.Parent.Tag
         layer.load_bot_regs('bot_ver',[],'reg_ver',ver);
         display_regions(main_figure,'all');
         [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-        curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+        curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
         disp('Regions imported from database');
 end
 

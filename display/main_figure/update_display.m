@@ -63,7 +63,7 @@ if new==1
     update_lines_tab(main_figure);
     load_calibration_tab(main_figure,opt_panel);
     update_layer_tab(main_figure);
-    update_reglist_tab(main_figure,[]);
+    update_reglist_tab(main_figure);
     clear_regions(main_figure,{},{});
     update_multi_freq_tab(main_figure);
     

@@ -126,8 +126,8 @@ for idx_school=idx_schools
     
     school_struct{j}.nb_cell=length(~isnan(schools_output_temp.Sv_mean_lin(:)));
     school_struct{j}.sv_mean=pow2db_perso(nanmean(schools_output_temp.Sv_mean_lin(:)));
-    school_struct{j}.aggregation_depth_mean=nanmean(schools_output_temp.Range_mean(:));
-    school_struct{j}.aggregation_depth_min=nanmax(schools_output_temp.Range_mean(:));
+    school_struct{j}.aggregation_depth_mean=nanmean(schools_output_temp.Depth_mean(:));
+    school_struct{j}.aggregation_depth_min=nanmax(schools_output_temp.Depth_mean(:));
     school_struct{j}.bottom_depth=nanmean(trans_obj_primary.get_bottom_range(schools_output_temp.Ping_S(1):schools_output_temp.Ping_E(end)));
     school_struct{j}.lat_mean=nanmean(schools_output_temp.Lat_E(:));   
 end

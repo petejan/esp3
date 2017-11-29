@@ -3,7 +3,7 @@ function toggle_disp_regions(main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
-[~,main_axes_tot,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'},layer.ChannelID));
+[~,main_axes_tot,~,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'},layer.ChannelID));
 for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
     u_reg_line=findobj(main_axes,'tag','region','-and','Type','line');

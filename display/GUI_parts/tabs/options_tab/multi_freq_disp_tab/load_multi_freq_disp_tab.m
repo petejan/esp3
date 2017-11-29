@@ -176,7 +176,7 @@ switch evt.Indices(2)
         idx_mod=layer.set_tag_to_region_with_uid(data{4},data{2});
         idx_c=strcmp(data{4},{layer.Curves(:).Unique_ID});
         layer.Curves(idx_c).Tag=data{2};
-        update_reglist_tab(main_figure,[]);
+        update_reglist_tab(main_figure);
         display_regions(main_figure,union({'main' 'mini'},layer.ChannelID(idx_mod)));
     otherwise
 end

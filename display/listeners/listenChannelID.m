@@ -39,8 +39,8 @@ set(axes_panel_comp.main_axes,'ylim',[y_lim_min y_lim_max]);
 
 update_mini_ax(main_figure,1);
 
-curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
-
+curr_disp.setActive_reg_ID({});
+update_reglist_tab(main_figure);
 display_regions(main_figure,'both');
 display_bottom(main_figure);
 display_tracks(main_figure);

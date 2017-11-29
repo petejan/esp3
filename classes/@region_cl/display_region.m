@@ -64,7 +64,7 @@ field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
     %       profile on;
     %      output_reg_old=trans_obj.integrate_region(reg_obj);
-    output_reg=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj);
+    output_reg=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj,'denoised',1);
     %     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
     %      profile off;
     %     profile viewer;
@@ -94,7 +94,7 @@ switch field
         var_lin=(var_disp);
         var_scale='lin';
         ylab='(number/m3)';
-    case 'sv'
+    case {'sv' 'sp' 'spdenoised' 'svdenoised'}
         var_disp=pow2db_perso(output_reg.Sv_mean_lin);
         var_lin=db2pow_perso(var_disp);
         var_scale='db';

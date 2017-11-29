@@ -60,7 +60,7 @@ setappdata(main_figure,'Layers',layers);
 curr_disp=getappdata(main_figure,'Curr_disp');
 display_regions(main_figure,'all');
 [trans_obj,~]=layer.get_trans(curr_disp);
-curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
 
 display_bottom(main_figure);
 

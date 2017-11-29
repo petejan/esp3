@@ -44,7 +44,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 reg_curr=trans_obj.get_region_from_Unique_ID(ID);
 
 
-if ~ismember(curr_disp.CursorMode,{'Normal'})
+if ~ismember(curr_disp.CursorMode,{'Normal'})||isempty(reg_curr)
     return;
 end
 
@@ -66,8 +66,8 @@ switch main_figure.SelectionType
             return;
         end
         
-        enterFcn =  @(figHandle, currentPoint)...
-            set(figHandle, 'Pointer', 'fleur');
+        enterFcn =  @(obj_h, currentPoint)...
+            set(obj_h, 'Pointer', 'fleur');
         iptSetPointerBehavior(obj,enterFcn);
         replace_interaction(main_figure,'interaction','KeyPressFcn','id',1);
         curr_disp.UIupdate=0;
@@ -80,6 +80,9 @@ switch main_figure.SelectionType
         end
         
         waitfor(curr_disp,'UIupdate',1);
+                        enterFcn =  @(obj_h, currentPoint)...
+                 set(obj_h, 'Pointer', 'hand');
+                iptSetPointerBehavior(obj,enterFcn);
         replace_interaction(main_figure,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
         r_min=nanmin(obj.YData(:));
         samples=trans_obj.get_transceiver_samples();
@@ -97,14 +100,19 @@ switch main_figure.SelectionType
          old_ID=reg_curr.Unique_ID;
          trans_obj.rm_region_id(old_ID);
          reg_curr.Unique_ID=generate_Unique_ID();
+         
+         delete(findobj(obj.Parent,'UserData',old_ID));
+         
+                 
          trans_obj.add_region(reg_curr,'Merge',0);
          add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
          
-               
+            
         curr_disp.Reg_changed_flag=1;
         clear_regions(main_figure,old_ID,{});
         display_regions(main_figure,'both');
-        curr_disp.Active_reg_ID=reg_curr.Unique_ID;
+
+        curr_disp.setActive_reg_ID(reg_curr.Unique_ID);
         update_multi_freq_disp_tab(main_figure,'sv_f',0);
         update_multi_freq_disp_tab(main_figure,'ts_f',0);
         order_stacks_fig(main_figure);

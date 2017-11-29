@@ -47,9 +47,9 @@ if ~iscell(ids)
 end
 layer=getappdata(main_figure,'Layer');
 if isempty(channelIDS)
-    [~,main_axes_tot,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'}, layer.ChannelID));
+    [~,main_axes_tot,~,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'}, layer.ChannelID));
 else
-    [~,main_axes_tot,~,~,~]=get_axis_from_cids(main_figure,channelIDS);
+    [~,main_axes_tot,~,~,~,~]=get_axis_from_cids(main_figure,channelIDS);
 end
 
 for iax=1:length(main_axes_tot)

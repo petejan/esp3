@@ -38,23 +38,11 @@
 %% Function
 function activate_region_callback(Unique_ID,main_figure)
 
-if isempty(Unique_ID)
-    return;
-end
+
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,~]=layer.get_trans(curr_disp);
 
-reg_curr=trans_obj.get_region_from_Unique_ID(Unique_ID);
 
-if isempty(reg_curr)
-    fprintf('Cannot find region %s\n',Unique_ID);
-    return;
-end
-
-if~isdeployed()
-    fprintf('Activate region %.0f\n',reg_curr.ID);
-end
 
 if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'})
      return;
@@ -62,14 +50,19 @@ end
 
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
 
-[~,ah,~,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'},layer.ChannelID));
+[~,ah,~,trans_ax,~,~]=get_axis_from_cids(main_figure,union({'main' 'mini'},layer.ChannelID));
+
 for i=1:length(ah)
     reg_text=findobj(ah(i),'Tag','region_text');
     set(reg_text,'color',txt_col);
-    
+    trans_obj=trans_ax{i};
+    if isempty(trans_obj)
+        continue;
+    end
     for ireg=1:numel(trans_obj.Regions)
-        if strcmpi(trans_obj.Regions(ireg).Unique_ID,reg_curr.Unique_ID)
-           
+        
+        if ismember(trans_obj.Regions(ireg).Unique_ID,Unique_ID) 
+            
             col=ac_data_col;
             switch trans_obj.Regions(ireg).Type
                 case 'Data'

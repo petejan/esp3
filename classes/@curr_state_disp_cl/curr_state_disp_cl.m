@@ -31,7 +31,7 @@ classdef curr_state_disp_cl <handle
         Bot_changed_flag=0;%flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         UIupdate=0;
         Proj='Lambert Conformal Conic';
-        Active_reg_ID='';
+        Active_reg_ID={};
         Active_line_ID='';
         Reg_changed_flag=0; %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         R_disp=[1 inf];
@@ -42,6 +42,7 @@ classdef curr_state_disp_cl <handle
             
             p = inputParser;
             addParameter(p,'Freq',38000,@isnumeric);
+            addParameter(p,'Active_reg_ID',{},@iscell);       
             addParameter(p,'ChannelID','',@ischar);
             addParameter(p,'SecChannelIDs',{},@iscell);
             addParameter(p,'SecFreqs',[],@isnumeric);
@@ -85,6 +86,13 @@ classdef curr_state_disp_cl <handle
     end
     
     methods
+        
+        function setActive_reg_ID(obj,ID)
+           if~iscell(ID)
+               ID={ID};
+           end         
+           obj.Active_reg_ID=ID;
+        end
         
         function [dx,dy]=get_dx_dy(obj)
             dy=obj.Grid_y;

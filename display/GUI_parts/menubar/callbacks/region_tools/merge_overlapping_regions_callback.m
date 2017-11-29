@@ -56,7 +56,7 @@ if ~isempty(trans_obj.Regions)
     
     
     if ~isempty(IDs)
-        curr_disp.Active_reg_ID=IDs{end};
+        curr_disp.setActive_reg_ID(IDs{end});
         curr_disp.Reg_changed_flag=1;
     end
     

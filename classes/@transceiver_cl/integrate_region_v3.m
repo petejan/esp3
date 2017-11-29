@@ -80,8 +80,8 @@ end
 
 %% getting Sv
 if p.Results.denoised>0   
-    field='sv_denoised';
-    if ~ismember('svdenoised',trans_bj.Data.Fieldnames)
+    field='svdenoised';
+    if ~ismember('svdenoised',trans_obj.Data.Fieldname)
         disp('Cannot find denoised Sv, integrating normal Sv.')
         field='sv';
     end
@@ -272,40 +272,37 @@ output.Ping_E    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanma
 % number of pings not flagged as bad transmits, in each cell
 output.Nb_good_pings = repmat(accumarray(x_mat_idx(1,:)',(bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
 output.Nb_good_pings_esp2 = output.Nb_good_pings;
-output.Nb_good_pings_esp2(Mask_reg_sub) = NaN;
+
 
 % first and last sample in each cell
-output.Sample_S = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
-output.Sample_E = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],sub_samples_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
+output.Sample_S = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@min,NaN);
+output.Sample_E = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@max,NaN);
 
 % "thickness" (height of each cell)
 output.Thickness_tot = ( output.Sample_E - output.Sample_S + 1 )*dr;
-output.Thickness_tot(Mask_reg_sub) = NaN;
 
 % minimum and maximum depth of samples in each cell
-output.Layer_depth_min = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@min,NaN);
-output.Layer_depth_max = accumarray([y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)],sub_r_mat(Mask_reg_min_bot),size(Mask_reg_sub),@max,NaN);
+output.Layer_depth_min = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),size(Mask_reg_sub),@min,NaN);
+output.Layer_depth_max = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),size(Mask_reg_sub),@max,NaN);
 
 % average depth of each cell
-output.Range_mean = (output.Layer_depth_min+output.Layer_depth_max)/2;
-output.Range_mean(Mask_reg_sub) = NaN;
+output.Depth_mean = (output.Layer_depth_min+output.Layer_depth_max)/2;
 
-% ?
+% minimum and maximum range of samples in each cell (referenced to the surface, bottom or line)
 switch region.Cell_h_unit
     case 'samples'
-        output.Range_ref_min = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN)*dr;
-        output.Range_ref_max = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN)*dr;
+        output.Range_ref_min = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@min,NaN)*dr;
+        output.Range_ref_max = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@max,NaN)*dr;
         output.Range_ref_min(Mask_reg_sub) = NaN;
         output.Range_ref_max(Mask_reg_sub) = NaN;
     case 'meters'
-        output.Range_ref_min = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@min,NaN);
-        output.Range_ref_max = accumarray([y_mat_idx(Mask_reg) x_mat_idx(Mask_reg)],y_mat(Mask_reg),size(Mask_reg_sub),@max,NaN);
+        output.Range_ref_min = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@min,NaN);
+        output.Range_ref_max = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@max,NaN);
         output.Range_ref_min(Mask_reg_sub) = NaN;
         output.Range_ref_max(Mask_reg_sub) = NaN;
 end
 
 output.Thickness_mean = (output.nb_samples)./output.Nb_good_pings*dr;
-output.Thickness_mean(Mask_reg_sub) = NaN;
 
 output.Dist_S = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
 output.Dist_E = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';

@@ -131,7 +131,7 @@ end
 setappdata(main_figure,'Layer',layer);
 
 display_regions(main_figure,'all');
-curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
 
 end
 

@@ -37,6 +37,8 @@ for i=1:numel(id_new)
     
     if ~isempty(id_c)
         set(id_c,'XData',curves(idx).XData,'YData',curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID);
+        u=find(strcmp(id_new{i},multi_freq_disp_tab_comp.table.Data(:,4)));
+        multi_freq_disp_tab_comp.table.Data{u,2}=curves(idx).Tag;
     else
         id_c=plot(multi_freq_disp_tab_comp.ax,curves(idx).XData,curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID,'ButtonDownFcn',{@display_line_cback,main_figure,tab_tag});
         

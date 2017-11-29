@@ -111,7 +111,7 @@ curr_disp.Bot_changed_flag = 0;
 curr_disp.Reg_changed_flag = 0;
 curr_disp.UIupdate=1;
 
-curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 

@@ -13,7 +13,7 @@
 %
 % * |surv_obj|: TODO: write description and info on variable
 % * |layers|: TODO: write description and info on variable
-% * |PathToMemmap|: TODO: write description and info on variable
+% * |PathToResults|: TODO: write description and info on variable
 %
 % *OUTPUT VARIABLES*
 %
@@ -43,7 +43,7 @@ p = inputParser;
 
 addRequired(p,'surv_obj',@(obj) isa(obj,'survey_cl'));
 addRequired(p,'layers',@(obj) isa(obj,'layer_cl')||isempty(obj));
-addParameter(p,'PathToMemmap','',@ischar);
+addParameter(p,'PathToResults',pwd,@ischar)
 parse(p,surv_obj,layers,varargin{:});
 
 
@@ -252,6 +252,8 @@ for isn=1:length(snaps)
         
              
         num_slice=size(output_2D_surf.eint,2);
+        
+        
   
         surf_slice_int=nansum(output_2D_surf.eint);
         good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
@@ -270,6 +272,27 @@ for isn=1:length(snaps)
         else
             sh_slice_int=zeros(1,num_slice);
             good_pings_sh=[];
+        end
+        
+        if  surv_in_obj.Options.ExportSlicedTransects>0           
+            outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap%d_strat%s_trans%d.xlsx',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num));
+            if exist(outputFileXLS,'file')>0
+                delete(outputFileXLS);
+            end
+            reg_output_sheet=reg_output_to_sheet(output_2D_surf);
+            xlswrite(outputFileXLS,reg_output_sheet,1);
+            id_sheet=1;
+            if ~isempty(output_2D_bot)
+                id_sheet=id_sheet+1;
+                reg_output_sheet=reg_output_to_sheet(output_2D_bot);
+                xlswrite(outputFileXLS,reg_output_sheet,id_sheet);
+            end
+            
+            if ~isempty(output_2D_sh)
+                id_sheet=id_sheet+1;
+                reg_output_sheet=reg_output_to_sheet(output_2D_sh);
+                xlswrite(outputFileXLS,reg_output_sheet,id_sheet);
+            end     
         end
         
         good_pings=nanmax([good_pings_sh;good_pings_bot;good_pings_surf],[],1);     

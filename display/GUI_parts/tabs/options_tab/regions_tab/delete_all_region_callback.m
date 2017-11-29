@@ -62,7 +62,7 @@ switch choice
             add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
 
                
-            curr_disp.Active_reg_ID=trans_obj.get_reg_first_Unique_ID();
+            curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
             order_stacks_fig(main_figure);
             curr_disp.Reg_changed_flag=1;
             

@@ -17,7 +17,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
 
 
-
 if ~isempty(varargin)
     if ischar(varargin{1})
     switch varargin{1}
@@ -37,8 +36,7 @@ else
     main_or_mini=union({'main' 'mini'},layer.ChannelID);
 end
 
-[~,main_axes_tot,~,trans_obj,text_size]=get_axis_from_cids(main_figure,main_or_mini);
-
+[~,main_axes_tot,~,trans_obj,text_size,cids]=get_axis_from_cids(main_figure,main_or_mini);
 
 
 for iax=1:length(main_axes_tot)
@@ -54,7 +52,7 @@ for iax=1:length(main_axes_tot)
     main_axes=main_axes_tot(iax);
     
     
-    active_reg=trans.find_regions_Unique_ID(curr_disp.Active_reg_ID);
+    active_regs=trans.find_regions_Unique_ID(curr_disp.Active_reg_ID);
     
     reg_h=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'});
     
@@ -64,7 +62,7 @@ for iax=1:length(main_axes_tot)
         id_rem = setdiff(id_disp,id_reg);
         
         if~isempty(id_rem)
-            clear_regions(main_figure,id_rem,{});
+            clear_regions(main_figure,id_rem,union({'main' 'mini'}, cids{iax}));
         end
         
     end
@@ -86,7 +84,7 @@ for iax=1:length(main_axes_tot)
                 
             end
             
-            if i==active_reg
+            if any(i==active_regs)
                 
                 switch lower(reg_curr.Type)
                     case 'data'

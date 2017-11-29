@@ -24,7 +24,7 @@ else
    main_or_mini=p.Results.main_or_mini;
 end
 
-[echo_im_tot,echo_ax_tot,echo_im_bt_tot,trans_obj]=get_axis_from_cids(main_figure,main_or_mini);
+[echo_im_tot,echo_ax_tot,echo_im_bt_tot,trans_obj,~,~]=get_axis_from_cids(main_figure,main_or_mini);
 
 min_axis=curr_disp.Cax(1);
 for iax=1:length(echo_ax_tot)

@@ -34,12 +34,13 @@ if ~isempty(uid)
     update_multi_freq_disp_tab(main_figure,'ts_f',0);
     
     if ~isempty(trans_obj.Regions)
-       curr_disp.Active_reg_ID=trans_obj.Regions(nanmax(idx-1,1)).Unique_ID;
+       curr_disp.setActive_reg_ID(trans_obj.Regions(nanmax(idx-1,1)).Unique_ID);
     else
-        curr_disp.Active_reg_ID='';
+        curr_disp.setActive_reg_ID({});
     end
         
     order_stacks_fig(main_figure);
 end
+update_reglist_tab(main_figure);
 
 end

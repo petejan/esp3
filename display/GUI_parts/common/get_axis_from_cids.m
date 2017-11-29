@@ -1,4 +1,4 @@
-function [echo_im_tot,echo_ax_tot,echo_im_bt_tot,trans_obj,text_size]=get_axis_from_cids(main_figure,main_or_mini)
+function [echo_im_tot,echo_ax_tot,echo_im_bt_tot,trans_obj,text_size,cids]=get_axis_from_cids(main_figure,main_or_mini)
 
 
 echo_im_tot=[];
@@ -6,7 +6,7 @@ echo_ax_tot=[];
 echo_im_bt_tot=[];
 trans_obj={};
 text_size=[];
-
+cids={};
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
@@ -26,6 +26,7 @@ for im=1:length(main_or_mini)
             if isempty(trans_obj_temp)
                 continue;
             end
+            cids{numel(trans_obj)+1}=curr_disp.ChannelID;
             trans_obj{numel(trans_obj)+1}=trans_obj_temp;
             text_size(numel(text_size)+1)=10;
         case 'mini'
@@ -39,6 +40,7 @@ for im=1:length(main_or_mini)
             if isempty(trans_obj_temp)
                 continue;
             end
+            cids{numel(trans_obj)+1}=curr_disp.ChannelID;
             trans_obj{numel(trans_obj)+1}=trans_obj_temp;
             text_size(numel(text_size)+1)=6;
         otherwise
@@ -52,6 +54,7 @@ for im=1:length(main_or_mini)
                     if isempty(trans_obj_temp)
                         continue;
                     end
+                    cids{numel(trans_obj)+1}=main_or_mini{im};
                     trans_obj{numel(trans_obj)+1}=trans_obj_temp;
                     text_size(numel(text_size)+1)=8;
                 end

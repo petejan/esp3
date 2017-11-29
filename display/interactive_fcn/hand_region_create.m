@@ -146,8 +146,7 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         
         feval(func,main_figure,poly_r,poly_pings);
         
-        
-        
+              
     end
 
 end
