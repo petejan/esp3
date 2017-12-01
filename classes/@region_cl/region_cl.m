@@ -85,20 +85,23 @@ classdef region_cl
                 case 'polygon' 
                     if ~isempty(results.Poly)
                         obj.Poly=results.Poly;
+                        obj.MaskReg=mask_from_poly(obj.Poly);
                     elseif ~isempty(results.X_cont)
-                        obj.Poly=polyshape(results.X_cont,results.Y_cont,'Simplify',false);                      
+                        obj.Poly=polyshape(results.X_cont,results.Y_cont,'Simplify',false); 
+                        obj.MaskReg=mask_from_poly(obj.Poly);
                     elseif ~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
-                        obj.Poly=polyshape(x,y,'Simplify',false);
+                        obj.Poly=polyshape(cellfun(@(u) u+results.Idx_pings(1)-1, x,'un',0),cellfun(@(u) u+results.Idx_r(1)-1, y,'un',0),'Simplify',false);
                     end
                     
-                    if ~obj.Poly.issimplified()
-                        obj.Poly.simplify();
-                    end
+%                     if ~obj.Poly.issimplified()
+%                         obj.Poly.simplify();
+%                     end
+
                     [xlim,ylim]=obj.Poly.boundingbox;
                     obj.Idx_pings=xlim(1):xlim(end);
                     obj.Idx_r=ylim(1):ylim(end);
-                    obj.MaskReg=mask_from_poly(obj.Poly);
+                    
                    
                 otherwise
                     obj.Shape='Rectangular';

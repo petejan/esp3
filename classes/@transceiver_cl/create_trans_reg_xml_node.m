@@ -48,6 +48,7 @@ for ir=1:length(trans_obj.Regions)
                 region_node.setAttribute('Remove_ST',num2str(splitted_reg(irs).Remove_ST,'%.0f'));
             end
             [X_cont,Y_cont]=vertices2contours(splitted_reg(irs).Poly.Vertices);
+            
             switch ver
                 case '0.1'
                     
@@ -64,7 +65,7 @@ for ir=1:length(trans_obj.Regions)
                             contours_node = docNode.createElement('contours');
                             non_empty=false;
                             
-                            for icont=1:length(splitted_reg(irs).X_cont)
+                            for icont=1:length(X_cont)
                                 contour_node = docNode.createElement('contour');
                                 
                                 time_cont=datestr(time(X_cont{icont}),'yyyymmddHHMMSSFFF');
@@ -86,20 +87,22 @@ for ir=1:length(trans_obj.Regions)
                     end
                     
                 case '0.2'
-                    bbox_p_s=splitted_reg(irs).Idx_pings(1)-idx_ping(1)+1;
-                    bbox_p_e=splitted_reg(irs).Idx_pings(end)-idx_ping(1)+1;
+                    
+                    bbox_p_s=splitted_reg(irs).Idx_pings(1)-idx_ping(1)+1
+                    bbox_p_e=splitted_reg(irs).Idx_pings(end)-idx_ping(1)+1
                     bbox_str=sprintf('%d %d ',bbox_p_s,splitted_reg(irs).Idx_r(1),bbox_p_e,splitted_reg(irs).Idx_r(end));
                     
                     bbox_node = docNode.createElement('bbox');
                     bbox_node.appendChild(docNode.createTextNode(bbox_str));
                     region_node.appendChild(bbox_node);
-                    
+
                     switch splitted_reg(irs).Shape
                         case 'Polygon'
                             contours_node = docNode.createElement('contours');
                             for icont=1:length(X_cont)
                                 contour_node = docNode.createElement('contour');
-                                ping_cont=X_cont{icont}-splitted_reg(irs).Idx_pings(1)+1;
+                                ping_cont=X_cont{icont}-splitted_reg(irs).Idx_pings(1)+1-idx_ping(1);
+
                                 sample_cont=Y_cont{icont}-splitted_reg(irs).Idx_r(1)+1;
                                 cont_str=[];
                                 for istr=1:length(sample_cont)

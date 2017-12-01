@@ -182,7 +182,8 @@ for ix=1:length(reg_file_str)
                             end
                     end
             end
-            
+            Idx_pings(1)
+            Idx_pings(end)
             new_reg=region_cl(...
                 'ID',ID,...
                 'Version',p.Results.Version,...

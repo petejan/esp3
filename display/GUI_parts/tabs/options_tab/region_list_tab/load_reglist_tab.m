@@ -88,7 +88,7 @@ uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,main_figu
 % 
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 
-update_reglist_tab(main_figure);
+update_reglist_tab(main_figure,0);
 
 end
 

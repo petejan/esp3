@@ -54,10 +54,24 @@ for i=1:length(layer.Transceivers)
             
     end
     
-    poly=active_reg.Poly;
-    poly.Vertices(:,1)=floor(poly.Vertices(:,1)*t_factor);
-    poly.Vertices(:,2)=floor(poly.Vertices(:,2)*r_factor);
+    switch active_reg.Shape
+        case 'Polygon'
+            nb_samples=length(idx_r);
+            nb_pings=length(idx_pings);
+            if nb_samples~=nb_samples_ori||nb_pings~=nb_pings_ori
+                MaskReg=imresize(mask_reg_ori,[nb_samples nb_pings],'nearest');
+            else
+                MaskReg=mask_reg_ori;
+            end
+        otherwise
+            MaskReg=ones(length(idx_r),length(idx_pings));
+    end
+
     
+%     poly=active_reg.Poly;
+%     poly.Vertices(:,1)=floor(poly.Vertices(:,1)*t_factor);
+%     poly.Vertices(:,2)=floor(poly.Vertices(:,2)*r_factor);
+%     
     regs=[regs region_cl(...
         'ID',active_reg.ID,...
         'Unique_ID',active_reg.Unique_ID,...
@@ -67,7 +81,7 @@ for i=1:length(layer.Transceivers)
         'Idx_pings',idx_pings,...
         'Idx_r',idx_r,...
         'Shape',active_reg.Shape,...
-        'Poly',poly,...
+        'MaskReg',MaskReg,...
         'Reference',active_reg.Reference,...
         'Cell_w',cell_w,...
         'Cell_w_unit',active_reg.Cell_w_unit,...

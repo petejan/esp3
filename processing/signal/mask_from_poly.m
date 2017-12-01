@@ -23,10 +23,9 @@ for ireg=1:numel(regs)
     
     contour_type=false(1,numel(x));
     contour_type(1)=true;
-    
-    for i=1:numel(x)
-        in=poly2mask(x{i},y{i},nb_y_sub,nb_x_sub);
-        Mask_out_tmp(in)=contour_type(i);
+    in=cellfun(@(u,v) poly2mask(u,v,nb_y_sub,nb_x_sub),x,y,'un',0);
+    for i=1:numel(in)        
+        Mask_out_tmp(in{i})=contour_type(i);
         Mask_out_tmp(y{i}+(x{i}-1)*nb_y_sub)=contour_type(i);
     end
     

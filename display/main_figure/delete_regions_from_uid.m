@@ -39,6 +39,6 @@ if ~isempty(uid)
         
     order_stacks_fig(main_figure);
 end
-update_reglist_tab(main_figure);
+update_reglist_tab(main_figure,0);
 
 end

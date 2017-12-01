@@ -53,7 +53,7 @@ setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);
 
 
-update_reglist_tab(main_figure);
+update_reglist_tab(main_figure/0);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
 

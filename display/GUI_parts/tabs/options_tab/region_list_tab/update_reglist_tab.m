@@ -36,7 +36,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function update_reglist_tab(main_figure)
+function update_reglist_tab(main_figure,force_repop)
 
 layer=getappdata(main_figure,'Layer');
 
@@ -66,7 +66,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 regions=trans_obj.Regions;
 
 %{regions(:).Unique_ID}
-if ~isempty(reglist_tab_comp.table.Data)
+if ~isempty(reglist_tab_comp.table.Data)&&~force_repop
     if isempty(regions)
         reglist_tab_comp.table.Data(:)=[];
         return;
