@@ -65,7 +65,7 @@ global MAP_PROJECTION MAP_VAR_LIST
 if isempty(MAP_PROJECTION),
     disp('No Map Projection initialized - call M_PROJ first!');
     return;
-end;
+end
 
 % Recognize Octave
 a=ver;
@@ -73,7 +73,7 @@ if strcmp(a(1).Name,'Octave'),
     IsOctave=logical(1);
 else
     IsOctave=logical(0);
-end;
+end
 
 % I use bitmax in various places as 'a large number', but
 % as of 2014b this has been renamed
@@ -84,7 +84,7 @@ if verLessThan('matlab','8.3'),
     LARGVAL=bitmax;
 else
     LARGVAL=flintmax;
-end;
+end
 
 % Otherwise we are drawing a grid!
 
@@ -137,13 +137,13 @@ while k<=length(varargin),
                 xtick=sort(varargin{k+1});   % Added 'sort' here for people who put things in
             else                           % a random order near poles
                 xlabels=varargin{k+1};
-            end;
+            end
         case 'yti',
             if length(varargin{k})==5,
                 ytick=sort(varargin{k+1});
             else
                 ylabels=varargin{k+1};
-            end;
+            end
         case 'xla',
             gxticklabeldir=varargin{k+1};
         case 'yla',
@@ -158,14 +158,14 @@ while k<=length(varargin),
                     glinewidth=varargin{k+1};
                 case 'lines',
                     glinestyle=varargin{k+1};
-            end;
+            end
         case 'fon',
             switch lower(varargin{k}(1:5)),
                 case 'fonts',
                     gfontsize=varargin{k+1};
                 case 'fontn',
                     gfontname=varargin{k+1};
-            end;
+            end
         case 'xax',
             gxaxisloc=varargin{k+1};
         case 'yax',
@@ -178,7 +178,7 @@ while k<=length(varargin),
                     gtickdir=varargin{k+1};
                 case 'ticks',
                     gtickstyle=varargin{k+1};
-            end;
+            end
         case {'get','usa'},
             disp('      ''box'',( ''on'' | ''fancy'' | ''off'' )');
             disp('      ''xtick'',( num | [value1 value2 ...])');
@@ -216,22 +216,22 @@ while k<=length(varargin),
             disp(['      XaxisLocation = ' gxaxisloc]);
             disp(['      YaxisLocation = ' gyaxisloc]);
             return;
-    end;
+    end
     k=k+2;
-end;
+end
 
 if IsOctave && strcmp(gbox,'fancy'),
     warning('No fancy box outlines with Octave');
     gbox='on';
-end;
+end
 
 
 if strcmp(gbox,'fancy'),
     if strcmp(MAP_VAR_LIST.rectbox,'on') || strcmp(MAP_VAR_LIST.rectbox,'circle'),
         gbox='on';
         warning([' No fancy outline with ''rectbox'' set to ''' MAP_VAR_LIST.rectbox '''']);
-    end;
-end;
+    end
+end
 
 % Draw the plot box
 
@@ -239,7 +239,7 @@ end;
 
 if strcmp(gbox,'on');
     line(ax,X(:),Y(:),'linestyle','-','linewidth',glinewidth,'color',gcolor,'tag','m_grid_box','clipping','off');
-end;
+end
 
 % Axes background - to defeat the inverthardcopy, I need a non-white border (the edgecolor),
 % but sneakily I can set it's width to (effectively) 0 so it doesn't actually show!
@@ -277,7 +277,7 @@ if ~IsOctave,
     
     
 
-    %if  (sscanf(a(1:3),'%f') >6.0 & sscanf(a(1:3),'%f') <7.4)  & ~ispc,
+    %if  (sscanf(a(1:3),'%f') >6.0 && sscanf(a(1:3),'%f') <7.4)  && ~ispc,
     
     %%    if verLessThan('matlab','8.4.0'),
     patch(ax,'xdata',X(:),'ydata',Y(:),'zdata',-LARGVAL*ones(size(X(:))),'facecolor',gbackcolor,...
@@ -285,7 +285,7 @@ if ~IsOctave,
     %%    else
     %%     patch('xdata',X(:),'ydata',Y(:),'zdata',-LARGVAL*(size(X(:))),'facecolor',gbackcolor,...
     %%	   'edgecolor','k','linestyle','none','tag','m_grid_color');
-    %%    end;
+    %%    end
     %
     %else
     % Now, I used to set this at a large (negative) zdata, but this didn't work for PC users,
@@ -322,16 +322,16 @@ if ~isempty(xtick)
     % together. So we can sort of fudge this by altering MAP_VAR_LIST.lats to be slightly smaller,
     % and then changing it back again later.
     fudge_north='n';fudge_south='n';
-    if ~isempty(ytick) & length(ytick)>1,
+    if ~isempty(ytick) && length(ytick)>1,
         if MAP_VAR_LIST.lats(2)==90,
             fudge_north='y';
             MAP_VAR_LIST.lats(2)=ytick(end);
-        end;
+        end
         if MAP_VAR_LIST.lats(1)==-90,
             fudge_south='y';
             MAP_VAR_LIST.lats(1)=ytick(1);
-        end;
-    end;
+        end
+    end
     
     [X,Y,lg,lgI]=feval(MAP_PROJECTION.routine,'xgrid',xtick,gxaxisloc,gtickstyle);
     [labs,scl]=m_labels('lon',lg,xlabels,gtickstyle);
@@ -350,11 +350,11 @@ if ~isempty(xtick)
     % Draw ticks if labels are on top or bottom (not if they are in the middle)
     
     if strcmp(gxticklabeldir,'middle'),
-        if lgI==size(X,1) & strcmp(gxaxisloc,'top'),  % Check to see if the projection supports this option.
+        if lgI==size(X,1) && strcmp(gxaxisloc,'top'),  % Check to see if the projection supports this option.
             vert='bottom';
             horiz='center';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+90;
-        elseif lgI==1 & strcmp(gxaxisloc,'bottom')
+        elseif lgI==1 && strcmp(gxaxisloc,'bottom')
             vert='top';
             horiz='center';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi-90;
@@ -362,13 +362,13 @@ if ~isempty(xtick)
             vert='middle';
             horiz='center';lgIp1=lgI+1;drawticks=0;
             xx=X(lgI,:); yy=Y(lgI,:);rotang=atan2(Y(lgIp1,:)-Y(lgI,:),X(lgIp1,:)-X(lgI,:))*180/pi-90;
-        end;
+        end
     else
-        if lgI==size(X,1) & strcmp(gxaxisloc,'top'),  % Check to see if the projection supports this option.
+        if lgI==size(X,1) && strcmp(gxaxisloc,'top') % Check to see if the projection supports this option.
             vert='middle';
             horiz='left';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+180;
-        elseif lgI==1 & strcmp(gxaxisloc,'bottom')
+        elseif lgI==1 && strcmp(gxaxisloc,'bottom')
             vert='middle';
             horiz='right';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi;
@@ -376,46 +376,46 @@ if ~isempty(xtick)
             vert='top';
             horiz='center';lgIp1=lgI+1;drawticks=0;
             xx=X(lgI,:); yy=Y(lgI,:);rotang=atan2(Y(lgIp1,:)-Y(lgI,:),X(lgIp1,:)-X(lgI,:))*180/pi;
-        end;
-    end;
+        end
+    end
     
-    if strcmp(gbox,'fancy'),
-        if gtickdir(1)=='i',
+    if strcmp(gbox,'fancy')
+        if gtickdir(1)=='i'
             fancybox(ax,lg,MAP_VAR_LIST.longs,'xgrid','bottom',dpatch,gticklen,gtickstyle);
             drawticks=0;
         else
             fancybox2(ax,lg,MAP_VAR_LIST.longs,'xgrid','bottom',dpatch,gticklen,gtickstyle);
-        end;
-    end;
-    if drawticks,
+        end
+    end
+    if drawticks
         [n,m]=size(ltx);
         line(ax,reshape([ltx;NaN+ones(1,m)],(n+1)*m,1),reshape([lty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_xticks-lower','clipping','off');
         line(ax,reshape([utx;NaN+ones(1,m)],(n+1)*m,1),reshape([uty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_xticks-upper','clipping','off');
-    end;
+    end
     
     % Add the labels! (whew)
     
     ik=1:size(X,2);
     
-    for k=ik,
+    for k=ik
         [rotang(k), horizk, vertk] = upright(rotang(k), horiz, vert);
         text(ax,xx(k),yy(k),labs{k},'horizontalalignment',horizk,'verticalalignment',vertk, ...
             'rotation',rotang(k),'fontsize',gfontsize*scl(k),'color',gcolor,...
             'tag','m_grid_xticklabel','fontname',gfontname);
-    end;
+    end
     
-    if fudge_north=='y',
+    if fudge_north=='y'
         MAP_VAR_LIST.lats(2)=90;
-    end;
-    if fudge_south=='y',
+    end
+    if fudge_south=='y'
         MAP_VAR_LIST.lats(1)=-90;
-    end;
-    
-end;
+    end
+   
+end
 
-if ~isempty(ytick),
+if ~isempty(ytick)
     % Y-axis labels and grid
     
     [X,Y,lt,ltI]=feval(MAP_PROJECTION.routine,'ygrid',ytick,gyaxisloc,gtickstyle);
@@ -430,22 +430,22 @@ if ~isempty(ytick),
     [ltx,lty,utx,uty]=maketicks(X,Y,gticklen,gtickdir);
     
     % Draw ticks if labels are on left or right (not if they are in the middle)
-    if strcmp(gyticklabeldir,'end'),
-        if ltI==size(X,1) & strcmp(gyaxisloc,'right'),  % Check to see if the projection supports this option.
+    if strcmp(gyticklabeldir,'end')
+        if ltI==size(X,1) && strcmp(gyaxisloc,'right')  % Check to see if the projection supports this option.
             horiz='left';vert='middle';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+180;
-        elseif ltI==1 & strcmp(gyaxisloc,'left');
+        elseif ltI==1 && strcmp(gyaxisloc,'left')
             horiz='right';vert='middle';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi;
         else
             horiz='center';vert='top';ltIp1=ltI+1;drawticks=0;
             xx=X(ltI,:); yy=Y(ltI,:);rotang=atan2(Y(ltIp1,:)-Y(ltI,:),X(ltIp1,:)-X(ltI,:))*180/pi;
-        end;
+        end
     else
-        if ltI==size(X,1) & strcmp(gyaxisloc,'right'),  % Check to see if the projection supports this option.
+        if ltI==size(X,1) && strcmp(gyaxisloc,'right') % Check to see if the projection supports this option.
             horiz='center';vert='top';drawticks=1;
             xx=utx(1,:);yy=uty(1,:);rotang=atan2(diff(uty),diff(utx))*180/pi+270;
-        elseif ltI==1 & strcmp(gyaxisloc,'left');
+        elseif ltI==1 && strcmp(gyaxisloc,'left')
             horiz='center';
             vert='bottom';drawticks=1;
             xx=ltx(1,:);yy=lty(1,:);rotang=atan2(diff(lty),diff(ltx))*180/pi+90;
@@ -453,36 +453,36 @@ if ~isempty(ytick),
             horiz='left';
             vert='middle';ltIp1=ltI+1;drawticks=0;
             xx=X(ltI,:); yy=Y(ltI,:);rotang=atan2(Y(ltIp1,:)-Y(ltI,:),X(ltIp1,:)-X(ltI,:))*180/pi+90;
-        end;
-    end;
+        end
+    end
     
-    if strcmp(gbox,'fancy'),
-        if gtickdir(1)=='i',
+    if strcmp(gbox,'fancy')
+        if gtickdir(1)=='i'
             fancybox(ax,lt,MAP_VAR_LIST.lats,'ygrid','left',dpatch,gticklen,gtickstyle);
             drawticks=0;
         else
             fancybox2(ax,lt,MAP_VAR_LIST.lats,'ygrid','left',dpatch,gticklen,gtickstyle);
-        end;
-    end;
-    if drawticks,
+        end
+    end
+    if drawticks
         [n,m]=size(ltx);
         line(ax,reshape([ltx;NaN+ones(1,m)],(n+1)*m,1),reshape([lty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_yticks-left','clipping','off');
         line(ax,reshape([utx;NaN+ones(1,m)],(n+1)*m,1),reshape([uty;NaN+ones(1,m)],(n+1)*m,1),...
             'linestyle','-','color',gcolor,'linewidth',glinewidth,'tag','m_grid_yticks-right','clipping','off');
-    end;
+    end
     
     % Finally - the labels!
     ik=1:size(X,2);
     
-    for k=ik,
+    for k=ik
         [rotang(k), horizk, vertk] = upright(rotang(k), horiz, vert);
         text(ax,xx(k),yy(k),labs{k},'horizontalalignment',horizk,'verticalalignment',vertk,...
             'rotation',rotang(k),'fontsize',gfontsize*scl(k),'color',gcolor,...
             'tag','m_grid_yticklabel','fontname',gfontname);
-    end;
+    end
     
-end;
+end
 
 % Give a 1-1 aspect ratio and get rid of the matlab-provided axes stuff.
 
@@ -559,7 +559,7 @@ if isempty(uservals),
     L=cellstr(char(' '*ones(length(vals),1)));
     fs=1.0*ones(length(L),1);
     return;
-end;
+end
 
 % If the user has specified strings, we merely need to make
 % sure that there are enough to cover all ticks.
@@ -568,20 +568,20 @@ if any(ischar(uservals)),
     L=cellstr( uservals((rem([0:length(vals)-1],length(uservals))+1),:) );
     fs=1.0*ones(length(L),1);
     return;
-end;
+end
 
 % Otherwise we are going to have to generate labels from numeric
 % data.
 
-if length(uservals)==1 & isnan(uservals),  % use default values
+if length(uservals)==1 && isnan(uservals),  % use default values
     vals=vals(:)'; % make it a row.
 else                                       % or ones provided
     lv=length(vals);
     vals=uservals(:)';
     while length(vals)<lv,
         vals=[vals uservals(:)'];
-    end;
-end;
+    end
+end
 
 % longitudes and latitudes have some differences....
 if findstr(dir,'lat'),
@@ -589,7 +589,7 @@ if findstr(dir,'lat'),
 else
     labname=['W';'E';' '];
     vals=rem(vals+540,360)-180;
-end;
+end
 
 i=[vals<0;vals>0;vals==0];  % get the 'names' (i.e. N/S or E/W)
 vals=abs(vals);             % Convert to +ve values
@@ -615,8 +615,8 @@ if strcmp(tickstyle,'dm'),
         else
             L{k}=sprintf([' %2.2f'' '],rem(vals(k),1)*60);
             fs(k)=0.75;
-        end;
-    end;
+        end
+    end
     
     % In most cases, the map will have at least one tick with an even degree label,
     % but for very small regions (<1 degree in size) this won't happen so we
@@ -628,7 +628,7 @@ if strcmp(tickstyle,'dm'),
         L{k}={sprintf([' %3.0f^o' labname(nam) ' '],fix(vals(k))),...
             sprintf([' %2.2f'' '],rem(vals(k),1)*60)};
         fs(k)=1;
-    end;
+    end
     
 elseif strcmp(tickstyle,'dd'),
     % For each label we have different options:
@@ -645,8 +645,8 @@ elseif strcmp(tickstyle,'dd'),
         else
             L{k}=sprintf([' %6.4f'],vals(k));
             fs(k)=0.75;
-        end;
-    end;
+        end
+    end
     
     
     % write code.
@@ -674,7 +674,7 @@ if strcmp(gtickdir,'out'),
 else
     ltx=[X(1,:);X(1,:)+tlen*(X(2,:)-X(1,:))./lx];
     lty=[Y(1,:);Y(1,:)+tlen*(Y(2,:)-Y(1,:))./lx];
-end;
+end
 
 lx=sqrt((X(end,:)-X(end-1,:)).^2+(Y(end,:)-Y(end-1,:)).^2);
 
@@ -684,7 +684,7 @@ if strcmp(gtickdir,'out'),
 else
     utx=[X(end,:);X(end,:)+tlen*(X(end-1,:)-X(end,:))./lx];
     uty=[Y(end,:);Y(end,:)+tlen*(Y(end-1,:)-Y(end,:))./lx];
-end;
+end
 
 
 %---------------------------------------------------------
@@ -711,7 +711,7 @@ xval=[xval(:);lims(2)];
 [X2,Y2,lg2,lgI2]=feval(MAP_PROJECTION.routine,gridarg1,xval,gridarg2,gridarg3);
 [l2x,l2y,u2x,u2y]=maketicks(X2,Y2,gticklen,'in');
 
-if gridarg1(1)=='x', sig=1; else sig=-1; end;
+if gridarg1(1)=='x', sig=1; else sig=-1; end
 
 id=[1:dpatch size(l2x,2)+[-dpatch+1:0]];
 dx=diff(l2x(:,id));
@@ -769,7 +769,7 @@ xval=[xval(:);lims(2)];
 [X2,Y2,lg2,lgI2]=feval(MAP_PROJECTION.routine,gridarg1,xval,gridarg2,gridarg3);
 [l2x,l2y,u2x,u2y]=maketicks(X2,Y2,gticklen,'in');
 
-if gridarg1(1)=='x', sig=1; else sig=-1; end;
+if gridarg1(1)=='x', sig=1; else sig=-1; end
 
 id=[1:dpatch size(l2x,2)+[-dpatch+1:0]];
 dx=diff(l2x(:,id));

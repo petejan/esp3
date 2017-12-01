@@ -31,9 +31,8 @@ lines=findobj(multi_freq_disp_tab_comp.ax,'Type','line');
 reg_uid=layer.get_layer_reg_uid();
 
 
-
 if ~isempty(layer.Curves)
-    idx_rem_c=~ismember({layer.Curves(:).Unique_ID},union(reg_uid,{'1'}))&(cellfun(@(x) isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}));
+    idx_rem_c=~ismember({layer.Curves(:).Unique_ID},union(reg_uid,{'1'}))&(cellfun(@(x) ~contains(x,'track'),{layer.Curves(:).Unique_ID}));
     layer.Curves(idx_rem_c)=[];
 end
 

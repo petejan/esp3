@@ -50,7 +50,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 if ~isempty(layer)
     [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
+    
     number_lay=trans_obj.get_transceiver_pings();
     samples=trans_obj.get_transceiver_samples();
     
@@ -70,11 +70,11 @@ try
         
         case {'leftarrow','rightarrow','uparrow','downarrow','a','d'}
             
+            
             axes_panel_comp=getappdata(main_figure,'Axes_panel');
             main_axes=axes_panel_comp.main_axes;
             
             if ~isfield(axes_panel_comp,'main_echo')
-                
                 return;
             end
             
@@ -84,13 +84,24 @@ try
             dy=(y_lim(2)-y_lim(1));
             
             switch callbackdata.Key
-                case {'leftarrow' 'a'}
-                    if x_lim(1)>xdata(1)
-                        x_lim=[nanmax(xdata(1),x_lim(1)-0.2*dx),nanmax(xdata(1),x_lim(1)-0.2*dx)+dx];
-                        
-                        set(main_axes,'xlim',x_lim);
-                        set(main_axes,'ylim',y_lim);
+                
+                case {'a'}
+                    if strcmpi(callbackdata.Modifier,'control')
+                        if ~isempty(trans_obj.Regions)
+                            curr_disp.setActive_reg_ID({trans_obj.Regions(:).Unique_ID});
+                        end
+                    else
+                        if x_lim(1)>xdata(1)
+                            x_lim=[nanmax(xdata(1),x_lim(1)-0.2*dx),nanmax(xdata(1),x_lim(1)-0.2*dx)+dx];
+                            
+                            set(main_axes,'xlim',x_lim);
+                            set(main_axes,'ylim',y_lim);
+                        end
                     end
+                    
+                case {'leftarrow'}
+                    
+                    
                 case {'rightarrow' 'd'}
                     if x_lim(2)<xdata(end)
                         x_lim=[nanmin(xdata(end),x_lim(2)+0.2*dx)-dx,nanmin(xdata(end),x_lim(2)+0.2*dx)];
@@ -213,7 +224,7 @@ try
             end
             
         case 'c'
-
+            
             cmaps=list_cmaps(1);
             id_map=find(strcmpi(curr_disp.Cmap,cmaps));
             if isempty(id_map)
@@ -240,7 +251,7 @@ try
                     elseif  strcmpi(callbackdata.Modifier,'shift')
                         id=id_field-1;
                         id(id==0)=length(fields);
-                       curr_disp.setField(fields{id});
+                        curr_disp.setField(fields{id});
                     end
                 end
             end
@@ -259,8 +270,7 @@ try
             if ~isempty(get(gco,'Tag'))
                 switch get(gco,'Tag')
                     case {'region','region_text'}
-                        id=get(gco,'Userdata');
-                        delete_regions_from_uid(main_figure,id);
+                        delete_regions_from_uid(main_figure,curr_disp.Active_reg_ID);
                 end
             end
         case 'l'
@@ -270,7 +280,7 @@ try
             if isempty(callbackdata.Modifier)
                 load_survey_data_fig_from_db(main_figure,0);
             elseif  strcmpi(callbackdata.Modifier,'shift')
-               load_survey_data_fig_from_db(main_figure,0,1);
+                load_survey_data_fig_from_db(main_figure,0,1);
             end
             hide_status_bar(main_figure);
         case 'w'
@@ -279,7 +289,7 @@ try
             if isempty(callbackdata.Modifier)
                 keyboard_zoom(1,main_figure)
             elseif strcmpi(callbackdata.Modifier,'control')
-            
+
                 save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
 
             end
@@ -292,16 +302,16 @@ try
                 go_to_ping(1,main_figure);
             elseif  strcmpi(callbackdata.Modifier,'control')
                 uiundo(main_figure,'execUndo')
-            end          
+            end
         case 'home'
             go_to_ping(1,main_figure);
         case {'x' 'end'}
             go_to_ping(length(number_lay),main_figure);
     end
 catch
-   if~isdeployed
-      disp('Error in Keyboard_func');    
-   end
+    if~isdeployed
+        disp('Error in Keyboard_func');
+    end
 end
 replace_interaction(src,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
 %

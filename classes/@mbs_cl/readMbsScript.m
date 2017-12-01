@@ -16,7 +16,7 @@ sn=[];
 st='';
 tr=[];
 
-if ~exist(fileName,'file');
+if ~exist(fileName,'file')
     error([fileName ' does not exist']);
 else
     fid=fopen(fileName,'r+');
@@ -30,35 +30,35 @@ else
                 break; % end of file
             end
             
-            if isempty(tline);
+            if isempty(tline)
                 tline = fgetl(fid);
                 continue;
             end
             
-            if strncmp(strrep(tline,' ',''),'#',1);
+            if strncmp(strrep(tline,' ',''),'#',1)
                 tline = fgetl(fid);
                 continue;  % ignore commented lines
-            end;
+            end
             
-            if strfind(tline,'snapshot')
+            if contains(tline,'snapshot')
                 sn = str2double(tline(strfind(tline,':')+2:end));tline = fgetl(fid);
                 continue;
             end
             
-            if strfind(tline,'stratum');
+            if contains(tline,'stratum')
                 st = tline(strfind(tline,':')+2:end);tline = fgetl(fid);
                 continue;
             end
             
-            if strfind(tline,'transect');
+            if contains(tline,'transect')
                 tr = str2double(tline(strfind(tline,':')+2:end));tline = fgetl(fid);
                 ab=nan;
                 ln=nan;
                 continue;
             end
             
-            if ~isempty(strfind(tline,'absorption'))&&isempty(strfind(tline,'default_absorption'));
-                if isempty(strfind(tline,'#'))
+            if contains(tline,'absorption')&&~contains(tline,'default_absorption');
+                if ~contains(tline,'#')
                     ab = tline(strfind(tline,':')+2:end);
                 else
                     ab = tline(strfind(tline,':')+2:strfind(tline,'#')-1);
@@ -67,21 +67,21 @@ else
                 continue;
             end
             
-            if strfind(tline,'length');
+            if contains(tline,'length')
                 ln = tline(strfind(tline,':')+2:end);
                 tline = fgetl(fid);
                 continue;
             end
             
-            if ~isempty(strfind(tline, ': '))
+            if contains(tline, ': ')
                 name = tline(1: strfind(tline, ': ')-1);
                 name=strrep(name,' ','');
                 value = tline(strfind(tline, ': ')+2:end);
-                if ~isempty(strfind(value, '#')); value = value(1:strfind(value, '#')-1); end;% ignore what's written after #
+                if contains(value, '#'); value = value(1:strfind(value, '#')-1); end;% ignore what's written after #
                 if  ~isnan(str2double(value))
                     value=str2double(value);
                 end
-                if  ~isempty(value);
+                if  ~isempty(value)
                     mbs.Header.(name) =value;  % save mbs overall specifications
                 else
                     mbs.Header.(name) ='';  % save mbs overall specifications
@@ -90,7 +90,7 @@ else
                 continue;
             end
             
-            if ~isempty(sn)&&~isempty(tr)&&~strcmp(st,'');
+            if ~isempty(sn)&&~isempty(tr)&&~strcmp(st,'')
                 
                 mbs.Input.snapshot(i) = sn;
                 mbs.Input.stratum{i} = st;

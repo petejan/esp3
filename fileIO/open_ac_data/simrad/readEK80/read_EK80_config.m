@@ -12,7 +12,7 @@ switch (dgType)
         t_line=(fread(fid,len-HEADER_LEN,'*char','l'))';
         t_line=deblank(t_line);
         
-        if isempty(strfind(lower(t_line),'xml'))
+        if ~contains(lower(t_line),'xml')
             header=-1;
             config=-1;
             fclose(fid);

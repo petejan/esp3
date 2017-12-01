@@ -173,15 +173,25 @@ switch p.Results.DataType
     case 'CW'
         peak_mat=10*log10(filter(ones(floor(Np/2),1)/floor(Np/2),1,10.^(peak_mat/10)));
         peak_mat(TS==-999)=-999;
-        idx_peaks=idx_comp;
+        %         idx_peaks=idx_comp;
+        %
+        %         for i=1:floor(Np/4)+2
+        %             idx_peaks=idx_peaks&(peak_mat>=[nan(i,nb_pings);peak_mat(1:nb_samples-i,:)])&(peak_mat>=[peak_mat(i+1:nb_samples,:);nan(i,nb_pings)]);
+        %         end
         
-        for i=1:floor(Np/4)+2
-            idx_peaks=idx_peaks&(peak_mat>=[nan(i,nb_pings);peak_mat(1:nb_samples-i,:)])&(peak_mat>=[peak_mat(i+1:nb_samples,:);nan(i,nb_pings)]);
-        end
-        
+        idx_peaks = islocalmax(peak_mat,1, 'FlatSelection', 'first','MinSeparation',Np);
         diff_idx_peaks=[zeros(1,nb_pings);diff(idx_peaks)];
         idx_peaks=(diff_idx_peaks==1);
         idx_peaks(TS==-999)=0;
+        
+        
+    case 'FM'
+        peak_mat=10*log10(filter(ones(floor(Np/2),1)/floor(Np/2),1,10.^(peak_mat/10)));
+        
+        idx_peaks = islocalmax(peak_mat,1, 'FlatSelection', 'first','MinSeparation',Np/2);
+        
+        
+end
         
         idx_peaks_lin = find(idx_peaks);
         
@@ -210,8 +220,9 @@ switch p.Results.DataType
         
         temp_pulse_length_sample=Pulse_length_sample(idx_peaks);
         pulse_length_lin=pulse_env_before_lin+pulse_env_after_lin+1;
+  
         idx_good_pulses=(pulse_length_lin<=Pulse_length_max_sample(idx_peaks))&(pulse_length_lin>=Pulse_length_min_sample(idx_peaks));
-        
+
         idx_target_lin=idx_peaks_lin(idx_good_pulses);
         idx_samples_lin=idx_samples_lin(idx_good_pulses);
         pulse_length_lin=pulse_length_lin(idx_good_pulses);
@@ -263,9 +274,11 @@ switch p.Results.DataType
         phi_along=nanmean(samples_targets_along);
         phi_athwart=nanmean(samples_targets_athwart);
         
-        samples_targets_power(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
-        samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
-        
+        switch p.Results.DataType
+            case 'CW'
+                samples_targets_power(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
+                samples_targets_range(:,std_along>p.Results.MaxStdMinAxisAngle|std_athwart>p.Results.MaxStdMajAxisAngle)=nan;
+        end
         
         dr=double(c*T/4);
         target_range=nansum(samples_targets_power.*samples_targets_range)./nansum(samples_targets_power)-dr;
@@ -369,21 +382,6 @@ switch p.Results.DataType
         single_targets.pulse_env_after_lin=pulse_env_after_lin(idx_keep_final)';
         single_targets.PulseLength_Normalized_PLDL=(pulse_env_after_lin(idx_keep_final)'+pulse_env_before_lin(idx_keep_final)'+1)./pulse_length_trans_lin(idx_keep_final)';
         single_targets.Transmitted_pulse_length=pulse_length_lin(idx_keep_final)';
-        
-        
-    case 'FM'
-        peak_mat=10*log10(filter(ones(floor(Np/2),1)/floor(Np/2),1,10.^(peak_mat/10)));
-        idx_peaks=false(size(TS));
-                  
-        for i=1:size(TS,2)
-            [~,tmp]=findpeaks(peak_mat(:,i),'MinPeakDistance',Np);
-            idx_peaks(tmp,i)=true;
-        end
-        idx_samples_lin=Idx_samples_lin(idx_peaks);
-        single_targets=[];
-        disp('Algorithm not working in FM mode yet');
-        return;
-end
 
 
 heading=trans_obj.AttitudeNavPing.Heading;

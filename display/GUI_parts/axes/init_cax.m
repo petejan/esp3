@@ -65,7 +65,7 @@ switch lower(deblank(Fieldname))
         Cax=[0 12];
         Type='Motion Compensation';
     otherwise
-        if ~isempty(strfind(lower(Fieldname),'khz'))
+        if contains(lower(Fieldname),'khz')
             Type=['Sv-' Fieldname];
             Cax=[-10 10];
         else

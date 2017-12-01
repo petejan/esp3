@@ -20,10 +20,10 @@ for ireg_1=1:length(regions)
         end
         
         region_2=regions(ireg_2);
-        mask_inter=region_1.get_mask_from_intersection(region_2);
-              
+
+        u=intersect(region_2.Poly,region_1.Poly);      
         if p.Results.overlap_only>0
-            if nansum(mask_inter(:))==0
+            if u.NumRegions==0
                 continue;
             end
         end
@@ -55,10 +55,10 @@ for ireg=1:length(regions)
             region_1=regions(ireg);
             if ~strcmp(regions(i).Name,'')&&i~=ireg
                region_2=regions(i); 
-               [MaskReg,idx_r,idx_pings,Type]=region_1.get_combined_mask(region_2,'union');
-                
+               [poly_combined,Type]=region_1.get_combined_poly(region_2,'union');
+
                if p.Results.overlap_only>0
-                   if nansum(MaskReg(:))==0
+                   if poly_combined.NumRegions==0
                        continue;
                    end
                end
@@ -67,13 +67,11 @@ for ireg=1:length(regions)
                 reg_comp_mat(ireg_2,ireg_1)=1;
                
                 regions(ireg)=region_cl(...
+                    'Shape','Polygon',...
                     'ID',region_1.ID,...
                     'Name',region_1.Name,...
                     'Type',Type,...
-                    'Idx_pings',idx_pings,...
-                    'Idx_r',idx_r,...
-                    'Shape','Polygon',...
-                    'MaskReg',MaskReg,...
+                    'Poly',poly_combined,...
                     'Reference','Surface',...
                     'Cell_w',region_1.Cell_w,...
                     'Cell_w_unit',region_1.Cell_w_unit,...

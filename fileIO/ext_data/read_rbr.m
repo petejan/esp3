@@ -3,7 +3,7 @@ function [temp,depth,pressure,date]=read_rbr(file)
 
 fid=fopen(file);
 line='';
-while isempty(strfind(line,'Depth'))
+while ~contains(line,'Depth')
     line=fgetl(fid);
 end
 

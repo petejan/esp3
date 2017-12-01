@@ -45,7 +45,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 
 if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'})
-     return;
+    return;
 end
 
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
@@ -61,7 +61,7 @@ for i=1:length(ah)
     end
     for ireg=1:numel(trans_obj.Regions)
         
-        if ismember(trans_obj.Regions(ireg).Unique_ID,Unique_ID) 
+        if ismember(trans_obj.Regions(ireg).Unique_ID,Unique_ID)
             
             col=ac_data_col;
             switch trans_obj.Regions(ireg).Type
@@ -78,28 +78,16 @@ for i=1:length(ah)
                     col=in_bad_data_col;
             end
         end
-        reg_lines_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','line','-not','color',col);
-        set(reg_lines_ac,'color',col);
-        if ~isempty(reg_lines_ac)
-            reg_image_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},'-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Image','-not','color',col);
-            
-            if ~isempty(reg_image_ac)
-                cdata=get(reg_image_ac,'CData');
-                cdata(:,:,1)=col(1);
-                cdata(:,:,2)=col(2);
-                cdata(:,:,3)=col(3);
-                set(reg_image_ac,'Cdata',cdata);
-            end
-        end
+        
         reg_patch_ac=findobj(ah(i),{'Tag','region','-or','Tag','region_cont'},...
-            '-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Patch','-not','FaceColor',col);
-        set(reg_patch_ac,'FaceColor',col,'EdgeColor','none');
-    end 
+            '-and','UserData',trans_obj.Regions(ireg).Unique_ID,'-and','Type','Polygon','-not','FaceColor',col);
+        set(reg_patch_ac,'FaceColor',col,'EdgeColor',col);
+    end
 end
 
 setappdata(main_figure,'Layer',layer);
 
-     
+
 end
 
 

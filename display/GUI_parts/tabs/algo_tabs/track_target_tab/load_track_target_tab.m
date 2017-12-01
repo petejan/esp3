@@ -140,7 +140,7 @@ load_bar_comp=getappdata(main_figure,'Loading_bar');
 trans_obj.apply_algo('TrackTarget','load_bar_comp',load_bar_comp);
 hide_status_bar(main_figure);
 if~isempty(layer.Curves)
-    layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
+    layer.Curves(contains({layer.Curves(:).Unique_ID},'track'))=[];
 end
 setappdata(main_figure,'Layer',layer);
 display_tracks(main_figure);

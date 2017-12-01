@@ -45,7 +45,7 @@ cd(outDir)
 [~,output] = system(command);
 cd(work_path)
 
-if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))
+if contains(output,{'checkout aborted' 'cannot find module'})
     disp(output);
     filenames={};
     return;

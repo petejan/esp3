@@ -86,7 +86,7 @@ update_algos(main_figure);
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 
 show_status_bar(main_figure);
@@ -96,9 +96,6 @@ trans_obj.apply_algo('Denoise','load_bar_comp',load_bar_comp);
 hide_status_bar(main_figure);
 
 curr_disp.setField('svdenoised');
-
-setappdata(main_figure,'Layer',layer);
-setappdata(main_figure,'Curr_disp',curr_disp);
 
 
 end

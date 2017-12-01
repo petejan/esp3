@@ -27,6 +27,8 @@ mask_from_st=[];
 
 
 idx_pings_tot=region.Idx_pings;
+
+
 time=trans_obj.get_transceiver_time(idx_pings_tot);
 
 idx_keep_x=(time<=p.Results.horiExtend(2)&time>=p.Results.horiExtend(1));
@@ -35,7 +37,15 @@ if ~any(idx_keep_x)
 end
 idx_pings=idx_pings_tot(idx_keep_x);
 idx_r=region.Idx_r;
-
+% tic
+% [ping_mat,r_mat]=meshgrid(idx_pings,idx_r);
+% isin=arrayfun(@(x,y) isinterior(region.Poly,x,y),ping_mat,r_mat);
+% toc
+% figure();imagesc(isin)
+% tic
+% isin_2=region.Poly.isinterior(ping_mat(:),r_mat(:));
+% isin_2=reshape(isin,size(ping_mat));
+% toc
 data=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.field);
 
 bot_sple=trans_obj.get_bottom_idx(idx_pings);

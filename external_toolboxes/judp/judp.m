@@ -151,7 +151,7 @@ else
     catch receiveError
 
         % Determine whether error occurred because of a timeout.
-        if ~isempty(strfind(receiveError.message,'java.net.SocketTimeoutException'))
+        if contains(receiveError.message,'java.net.SocketTimeoutException')
             errorStr = sprintf('%s.m--Failed to receive UDP packet; connection timed out.\n',mfilename);
         else
             errorStr = sprintf('%s.m--Failed to receive UDP packet.\nJava error message follows:\n%s',mfilename,receiveError.message);

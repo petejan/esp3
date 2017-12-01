@@ -43,6 +43,8 @@ switch tab_tag
     case 'ts_f'
         uimenu(rc_menu,'Label',['Produce ' tab_name ' curves from tracks'],'Callback',{@add_ts_curves_from_tracks_cback,main_figure});
 end
+uimenu(rc_menu,'Label',['Clear ' tab_name ' curves'],'Callback',{@clear_curves_cback,main_figure,tab_tag});
+
 select_menu=uimenu(rc_menu,'Label','Select');
 uimenu(select_menu,'Label','All','Callback',{@selection_callback,main_figure,tab_tag},'Tag','se');
 uimenu(select_menu,'Label','De-Select All','Callback',{@selection_callback,main_figure,tab_tag},'Tag','de');
@@ -104,6 +106,17 @@ update_multi_freq_disp_tab(main_figure,tab_tag,0);
 
 end
 
+
+function clear_curves_cback(~,~,main_figure,tab_name)
+
+layer=getappdata(main_figure,'Layer');
+if isempty(layer.Curves)
+    return;
+end
+layer.Curves(strcmp({layer.Curves(:).Type},tab_name))=[];
+update_multi_freq_disp_tab(main_figure,tab_name,1);
+end
+
 function add_curves_from_regions_cback(~,~,main_figure,tab_name)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
@@ -115,14 +128,14 @@ switch tab_name
         for i=1:length(regs)
             Sv_freq_response_func(main_figure,regs(i)) ;
         end     
-           update_multi_freq_disp_tab(main_figure,'sv_f',1);  
+
     case 'ts_f'        
         for i=1:length(trans_obj.Regions)
             TS_freq_response_func(main_figure,regs(i)) ;
         end
-        update_multi_freq_disp_tab(main_figure,'ts_f',1);
+      
 end
-
+update_multi_freq_disp_tab(main_figure,tab_name,1);
 end
 
 function add_ts_curves_from_tracks_cback(~,~,main_figure)
@@ -131,7 +144,7 @@ layer=getappdata(main_figure,'Layer');
 [trans_obj,~]=layer.get_trans(curr_disp);
 tracks = trans_obj.Tracks;
 if~isempty(layer.Curves)
-    layer.Curves(cellfun(@(x) ~isempty(strfind(x,'track')),{layer.Curves(:).Unique_ID}))=[];
+    layer.Curves(contains({layer.Curves(:).Unique_ID},'track'))=[];
 end
 if isempty(tracks)
     return;

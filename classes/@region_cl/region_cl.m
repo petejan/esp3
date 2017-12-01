@@ -13,9 +13,8 @@ classdef region_cl
         Idx_pings
         Idx_r
         Shape
-        X_cont
-        Y_cont
         MaskReg
+        Poly
         Reference
         Cell_w
         Cell_w_unit
@@ -35,7 +34,7 @@ classdef region_cl
             check_reference=@(ref) ~isempty(strcmp(ref,{'Surface','Bottom','Line'}));
             check_w_unit=@(unit) ~isempty(strcmp(unit,{'pings','meters'}));
             check_h_unit=@(unit) ~isempty(strcmp(unit,{'samples','meters'}));
-
+            
             
             addParameter(p,'Name','',@ischar);
             addParameter(p,'ID',0,@isnumeric);
@@ -44,11 +43,12 @@ classdef region_cl
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Origin','',@ischar);
             addParameter(p,'Type','Data',check_type);
-            addParameter(p,'Idx_pings',[],@isnumeric);
-            addParameter(p,'Idx_r',[],@isnumeric);
-            addParameter(p,'MaskReg',[],@(x) isnumeric(x)||islogical(x));
-            addParameter(p,'X_cont',[],@(x) isempty(x)||iscell(x));
+            addParameter(p,'X_cont',[],@(x) isnumeric(x)||iscell(x));
             addParameter(p,'Y_cont',[],@(x) isnumeric(x)||iscell(x));
+            addParameter(p,'Idx_r',[],@isnumeric);
+            addParameter(p,'Idx_pings',[],@isnumeric);
+            addParameter(p,'Poly',[],@(x) isempty(x)||isa(x,'polyshape'));
+            addParameter(p,'MaskReg',[],@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Shape','Rectangular',check_shape);
             addParameter(p,'Remove_ST',0,@(x) isnumeric(x)||islogical(x));
             addParameter(p,'Reference','Surface',check_reference);
@@ -60,49 +60,58 @@ classdef region_cl
             parse(p,varargin{:});
             
             results=p.Results;
-            props=fieldnames(results);
+            props=properties(obj);
             
             for i=1:length(props)
-                obj.(props{i})=results.(props{i});
+                if isfield(results,props{i})
+                    obj.(props{i})=results.(props{i});
+                end
             end
             
             switch lower(obj.Shape)
                 case 'rectangular'
-                    obj.X_cont=[];
-                    obj.Y_cont=[];
-                case 'polygon'
-                    if isempty(results.X_cont)&&~isempty(results.MaskReg)
-                        [x,y]=cont_from_mask(results.MaskReg);
-                        
-                        [x,y]=reduce_reg_contour(x,y,10);
-                        if ~isempty(y)
-                            obj.X_cont=x;
-                            obj.Y_cont=y;
-                            if islogical(results.MaskReg)
-                                obj.MaskReg=(results.MaskReg);
-                            else
-                                 obj.MaskReg=(results.MaskReg)>1;
-                            end
-                        else
-                            obj.Shape='Rectangular';
-                            obj.X_cont=[];
-                            obj.Y_cont=[];
-                            obj.MaskReg=[];
+                    if ~isempty(obj.Idx_pings)
+                        x_reg_rect=([obj.Idx_pings(1) obj.Idx_pings(end) obj.Idx_pings(end) obj.Idx_pings(1) obj.Idx_pings(1)]);
+                        y_reg_rect=([obj.Idx_r(end) obj.Idx_r(end) obj.Idx_r(1) obj.Idx_r(1) obj.Idx_r(end)]);
+                        obj.Poly=polyshape(x_reg_rect,y_reg_rect,'Simplify',false);
+                        if ~obj.Poly.issimplified()
+                            obj.Poly.simplify();
                         end
-                        
-                    elseif ~isempty(results.X_cont)&&isempty(results.MaskReg)
-                        [obj.X_cont,obj.Y_cont]=reduce_reg_contour(obj.X_cont,obj.Y_cont,10);
-                        obj.Shape='Polygon';
-                        obj.X_cont=results.X_cont;
-                        obj.Y_cont=results.Y_cont;
-                        obj.MaskReg=(obj.create_mask());
+                    elseif ~isempty(results.Poly)
+                        [xlim,ylim]=obj.Poly.boundingbox;
+                        obj.Idx_pings=xlim(1):xlim(end);
+                        obj.Idx_r=ylim(1):ylim(end);
                     end
-                     
+                case 'polygon' 
+                    if ~isempty(results.Poly)
+                        obj.Poly=results.Poly;
+                    elseif ~isempty(results.X_cont)
+                        obj.Poly=polyshape(results.X_cont,results.Y_cont,'Simplify',false);                      
+                    elseif ~isempty(results.MaskReg)
+                        [x,y]=cont_from_mask(results.MaskReg);
+                        obj.Poly=polyshape(x,y,'Simplify',false);
+                    end
+                    
+                    if ~obj.Poly.issimplified()
+                        obj.Poly.simplify();
+                    end
+                    [xlim,ylim]=obj.Poly.boundingbox;
+                    obj.Idx_pings=xlim(1):xlim(end);
+                    obj.Idx_r=ylim(1):ylim(end);
+                    obj.MaskReg=mask_from_poly(obj.Poly);
+                   
                 otherwise
                     obj.Shape='Rectangular';
-                    obj.X_cont=[];
-                    obj.Y_cont=[];
                     obj.MaskReg=[];
+                    
+                    if ~isempty(obj.Idx_pings)
+                        x_reg_rect=([obj.Idx_pings(1) obj.Idx_pings(end) obj.Idx_pings(end) obj.Idx_pings(1) obj.Idx_pings(1)]);
+                        y_reg_rect=([obj.Idx_r(end) obj.Idx_r(end) obj.Idx_r(1) obj.Idx_r(1) obj.Idx_r(end)]);
+                        obj.Poly=polyshape(x_reg_rect,y_reg_rect,'Simplify',false);
+                        if ~obj.Poly.issimplified()
+                            obj.Poly.simplify();
+                        end
+                    end
             end
             
         end
@@ -126,11 +135,13 @@ classdef region_cl
             
             switch obj.Shape
                 case 'Polygon'
-                    mask=mask_from_cont(obj.X_cont,obj.Y_cont,nb_samples,nb_pings);
+                    %mask=mask_from_cont(obj.X_cont,obj.Y_cont,nb_samples,nb_pings);
+                    mask=mask_from_poly(obj.Poly);
             end
             
             
         end
+        
         
         function mask=get_mask(obj)
             nb_pings=length(obj.Idx_pings);

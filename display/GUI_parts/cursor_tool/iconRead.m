@@ -32,7 +32,7 @@ if isequal(lower(ext),'.mat')
     cdata = [];
     s = whos('-file',filename);
     for i=1:length(s)
-        if ~isempty(strfind(lower(s(i).name), 'cdata'))
+        if contains(lower(s(i).name), 'cdata')
             data = load(filename,s(i).name);
             cdata = data.(s(i).name);
         end

@@ -13,7 +13,7 @@ nmeadata = nmea_string(idx(1) + 1:end);
 %  remove checksum - add trailing comma for output lacking last field
 idx = strfind(nmeadata, '*');
 
-if (isempty(idx));
+if (isempty(idx))
     nmeadata = [nmeadata ','];
 else
     nmeadata = [nmeadata(1:idx - 1) ','];
@@ -28,7 +28,7 @@ nmeadata = strrep(nmeadata, ',,', ',0');
 switch type(3:end)    
     case 'SHR'
        
-        if ~isempty(strfind(nmeadata,'ATT'))
+        if contains(nmeadata,'ATT')
             %'$PASHR,ATT,348466.00,147.26310,-0.66647,0.28198,0.0011,0.0037,0 ,';
             format = '%s %2.0f %2d %f %f %f %f %f %f %f %f %d %d';
             out = textscan(nmeadata, format, 1, 'delimiter', ',');

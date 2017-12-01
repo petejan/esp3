@@ -36,7 +36,7 @@ end
 %Read in file, skipping lines until 'EndAlgorithm' is found
 %and ignoring columns 1 (the old bottom) and 2 (current bottom)
 line = fgetl(fid);
-if ~isempty(strfind(line,'head'));
+if contains(line,'head');
     ver=line(end-3:end-1);
 else
     ver=[];

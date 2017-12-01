@@ -150,6 +150,7 @@ for i=1:length(selected_layers)
 end
 setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Layer',layer);
+%clear_regsions(main_figure,{},{});
 loadEcho(main_figure);
 end
 
@@ -182,6 +183,7 @@ layers_out=reorder_layers_time(layers_out);
 
 setappdata(main_figure,'Layers',layers_out);
 setappdata(main_figure,'Layer',new_lays(1));
+clear_regions(main_figure,{},{});
 loadEcho(main_figure);
 end
 
@@ -300,6 +302,7 @@ layer=layers(idx);
 
 setappdata(main_figure,'Layers',layers);
 setappdata(main_figure,'Layer',layer);
+clear_regions(main_figure,{},{});
 loadEcho(main_figure);
 end
 

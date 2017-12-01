@@ -17,18 +17,18 @@ for ifile=file_ids
     
     if ~isempty(idx_reg_inter)
         Idx_pings=idx_reg_inter;
-        if isempty(reg_obj.X_cont)
-            reg_obj.Shape='Rectangular';
-        end
-        
+        x_reg_rect=([Idx_pings(1) Idx_pings(end) Idx_pings(end) Idx_pings(1) Idx_pings(1)]);
+        y_reg_rect=([reg_obj.Idx_r(end) reg_obj.Idx_r(end) reg_obj.Idx_r(1) reg_obj.Idx_r(1) reg_obj.Idx_r(end)]);
+        poly_file=polyshape(x_reg_rect,y_reg_rect,'Simplify',false);
         if length(idx_reg_inter)<length(reg_obj.Idx_pings)
             switch reg_obj.Shape
                 case 'Polygon'
-                    mask=reg_obj.MaskReg(:,Idx_pings-reg_obj.Idx_pings(1)+1);
+                    
+                    poly=intersect(poly_file,reg_obj.Poly);
                 case 'Rectangular'
-                    mask=[];
+                    poly=[];
             end
-            
+            poly.Vertices=round(poly.Vertices);
             new_reg=region_cl(...
                 'ID',reg_obj.ID,...
                 'Name',reg_obj.Name,...
@@ -37,7 +37,7 @@ for ifile=file_ids
                 'Idx_pings',Idx_pings,...
                 'Idx_r',reg_obj.Idx_r,...
                 'Shape',reg_obj.Shape,...
-                'MaskReg',mask,...
+                'Poly',poly,...
                 'Reference',reg_obj.Reference,...
                 'Cell_w',reg_obj.Cell_w,...
                 'Cell_w_unit',reg_obj.Cell_w_unit,...
@@ -50,6 +50,7 @@ for ifile=file_ids
             
         else
             regions=reg_obj;
+            file_ids=ifile;
             return;
         end
         

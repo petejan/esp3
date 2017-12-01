@@ -7,8 +7,7 @@ AlongAngle=obj.Data.get_datamat('alongangle');
 AcrossAngle=obj.Data.get_datamat('acrossangle');
 
 
-if ~isempty(strfind(obj.Config.TransceiverName,'ES60'))||~isempty(strfind(obj.Config.TransceiverName,'ES70'))...
-        ||~isempty(strfind(obj.Config.TransceiverName,'ER60'))||~isempty(strfind(obj.Config.TransceiverName,'GPT'))
+if contains(obj.Config.TransceiverName,{'ES60' 'ER60' 'ES70' 'GPT'})
     if isempty(AlongAngle)
         obj.Data.replace_sub_data('alongangle',AcrossPhi*180/127/obj.Config.AngleSensitivityAthwartship-obj.Config.AngleOffsetAthwartship);
     end

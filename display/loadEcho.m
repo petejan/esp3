@@ -111,7 +111,7 @@ curr_disp.Bot_changed_flag = 0;
 curr_disp.Reg_changed_flag = 0;
 curr_disp.UIupdate=1;
 
-curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
+curr_disp.setActive_reg_ID({});
 
 setappdata(main_figure,'Curr_disp',curr_disp);
 
@@ -120,7 +120,6 @@ update_display(main_figure,flag);
 waitfor(curr_disp,'UIupdate',0)
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 axes_panel_comp.axes_panel.Parent.SelectedTab=axes_panel_comp.axes_panel;
-
 
 enable_listeners(main_figure);
 

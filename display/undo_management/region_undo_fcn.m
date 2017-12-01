@@ -44,7 +44,7 @@ display_regions(main_figure,'all');
 order_stacks_fig(main_figure);
 curr_disp.Reg_changed_flag=1;
 if ~isempty(IDs)
-    curr_disp.setActive_reg_ID(IDs{end});   
+    curr_disp.setActive_reg_ID({});   
     curr_disp.Reg_changed_flag=1;
 end
 end

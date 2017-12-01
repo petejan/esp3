@@ -119,7 +119,7 @@ end
 function rm_over_freq_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 list_reg = trans_obj.regions_to_str();
 
@@ -130,8 +130,7 @@ end
 
 setappdata(main_figure,'Layer',layer);
 
-display_regions(main_figure,'all');
-curr_disp.setActive_reg_ID(trans_obj.get_reg_first_Unique_ID());
+curr_disp.setActive_reg_ID({});
 
 end
 

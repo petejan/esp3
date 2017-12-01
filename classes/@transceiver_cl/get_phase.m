@@ -11,7 +11,7 @@ parse(p,trans_obj,varargin{:});
 AlongAngle=trans_obj.Data.get_subdatamat(p.Results.idx_r,p.Results.idx_ping,'field','alongangle');
 AcrossAngle=trans_obj.Data.get_subdatamat(p.Results.idx_r,p.Results.idx_ping,'field','acrossangle');
 
-if ~isempty(strfind(trans_obj.Config.TransceiverName,'ES60'))||~isempty(strfind(trans_obj.Config.TransceiverName,'ES70'))||~isempty(strfind(trans_obj.Config.TransceiverName,'ER60'))
+if contains(trans_obj.Config.TransceiverName,{'ES60' 'ES70''ER60'})
     AcrossPhi=(AcrossAngle+trans_obj.Config.AngleOffsetAthwartship)*trans_obj.Config.AngleSensitivityAthwartship*127/180;
     AlongPhi=(AlongAngle+trans_obj.Config.AngleOffsetAlongship)*trans_obj.Config.AngleSensitivityAlongship*127/180;
 else

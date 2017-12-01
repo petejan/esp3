@@ -33,11 +33,9 @@ if ~isempty(uid)
     update_multi_freq_disp_tab(main_figure,'sv_f',0);
     update_multi_freq_disp_tab(main_figure,'ts_f',0);
     
-    if ~isempty(trans_obj.Regions)
-       curr_disp.setActive_reg_ID(trans_obj.Regions(nanmax(idx-1,1)).Unique_ID);
-    else
-        curr_disp.setActive_reg_ID({});
-    end
+
+    curr_disp.setActive_reg_ID({});
+    
         
     order_stacks_fig(main_figure);
 end

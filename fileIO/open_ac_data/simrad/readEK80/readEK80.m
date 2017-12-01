@@ -142,20 +142,20 @@ for ii=1:length(filenames)
                 
                 t_line=(fread(fid,len-HEADER_LEN,'*char','l'))';      
                 t_line=deblank(t_line);
-                if ~isempty(strfind(t_line,'Configuration'))
+                if contains(t_line,'Configuration')
                     if conf_dg==1
                         fread(fid, 1, 'int32', 'l');
                         continue;
                     end
                     conf_dg=1;
-                elseif ~isempty(strfind(t_line,'Environment'))
+                elseif contains(t_line,'Environment')
                     if env_dg==1
                         fread(fid, 1, 'int32', 'l');
                         continue;
                     end
                    
-                elseif ~isempty(strfind(t_line,'Parameter'))
-                    if nansum(param_dg)==length(CIDs_freq);
+                elseif contains(t_line,'Parameter')
+                    if nansum(param_dg)==length(CIDs_freq)
                         fread(fid, 1, 'int32', 'l');
                         continue
                     end

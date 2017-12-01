@@ -199,16 +199,16 @@ for idg=1:nb_dg
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             t_line=(fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char','l'))';
             t_line=deblank(t_line);
-            if ~isempty(strfind(t_line,'<Configuration>'))&&conf_dg==1
+            if contains(t_line,'<Configuration>')&&conf_dg==1
                 if conf_dg==1
                     fread(fid, 1, 'int32', 'l');
                     continue;
                 end
                 
-            elseif ~isempty(strfind(t_line,'<Environment>'))&&env_dg==1
+            elseif contains(t_line,'<Environment>')&&env_dg==1
                 fread(fid, 1, 'int32', 'l');
                 continue;
-            elseif ~isempty(strfind(t_line,'<Parameter>'))
+            elseif contains(t_line,'<Parameter>')
                 idx = find(strcmp(t_line,param_str_init));
                 if ~isempty(idx)
                     dgTime=idx_raw_obj.time_dg(idg);

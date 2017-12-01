@@ -157,8 +157,6 @@ if ~isdeployed
     uimenu(reg_tools,'Label','Slice Transect','CallBack',{@display_sliced_transect_callback,main_figure});
 end
 
-uimenu(reg_tools,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
-
 towbody_tools=uimenu(mhhh,'Label','Towed body Tools');
 uimenu(towbody_tools,'Label','Correct position based on cable angle and towbody depth','Callback',{@correct_pos_angle_depth_cback,main_figure});
 
@@ -171,11 +169,14 @@ end
 
 data_tools=uimenu(mhhh,'Label','Data tools');
 if ~isdeployed
-    uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});
-    
+    uimenu(data_tools,'Label','Import angles from other frequency','Callback',{@import_angles_cback,main_figure});   
 end
 uimenu(data_tools,'Label','Create Motion Compensation echogram','Callback',{@create_motion_compensation_echogramm_cback,main_figure});
 uimenu(data_tools,'Label','Convert Sv to fish Density','Callback',{@create_fish_density_echogramm_cback,main_figure});
+rm_tools=uimenu(data_tools,'Label','Remove Data');
+uimenu(rm_tools,'Label','Denoised data','Callback',{@rm_subdata_cback,main_figure,'denoised'});
+uimenu(rm_tools,'Label','Single Targets','Callback',{@rm_subdata_cback,main_figure,'st'});
+
 
 
 

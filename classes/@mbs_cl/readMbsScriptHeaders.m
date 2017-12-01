@@ -7,7 +7,7 @@ mbs_header=mbs_header_cl();
 mbs_header.MbsId=MbsId;
 mbs_header.Script=fileName;
 
-if ~exist(fileName,'file');
+if ~exist(fileName,'file')
     error([fileName ' does not exist']);
 else
     fid=fopen(fileName,'r+');
@@ -25,7 +25,7 @@ else
             if strncmp(strrep(tline,' ',''),'#',1)
                 continue
             end   % ignore commented lines
-            if ~isempty(strfind(tline,'snapshot'))||~isempty(strfind(tline,'transect'))||~isempty(strfind(tline,'stratum'))
+            if contains(tline,'snapshot')||contains(tline,'transect')||contains(tline,'stratum')
                 break;
             elseif isempty(tline)
                 continue;             % skip empty rows
@@ -36,13 +36,13 @@ else
                 if isempty(value)
                     continue;
                 end
-                if ~isempty(strfind(value, '#'));
+                if contains(value, '#')
                     value = value(1:strfind(value, '#')-1);
                 end% ignore what's written after #
                 if  ~isnan(str2double(value))
                     value=str2double(value);
                 end
-                if  ~isempty(value);
+                if  ~isempty(value)
                     mbs_header.(name) =value;  % save mbs overall specifications
                 else
                     mbs_header.(name) ='';  % save mbs overall specifications

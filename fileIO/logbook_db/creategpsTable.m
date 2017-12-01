@@ -12,7 +12,7 @@ if isempty(gps_data_table)
         'FOREIGN KEY(Filename) REFERENCES logbook(Filename))'];
     dbconn.exec(creategpsTable_str);
 else
-    if isempty(strfind(gps_data_table{1},'Depth'))
+    if ~contains(gps_data_table{1},'Depth')
         dbconn.exec(['ALTER TABLE gps_data '...
             'ADD Depth VARCHAR DEFAULT NULL']);
     end

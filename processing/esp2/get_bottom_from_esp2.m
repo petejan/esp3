@@ -49,7 +49,7 @@ cd(outDir)
 [~,output] = system(command,'-echo');
 cd(work_path)
 
-if ~isempty(strfind(output,'checkout aborted'))||~isempty(strfind(output,'cannot find module'))||~isempty(strfind(output,'Unknown command'))
+if contains(output,'checkout aborted')||contains(output,'cannot find module')||contains(output,'Unknown command')
     rmdir(outDir,'s');
     bottom=bottom_cl(...
         'Origin','Esp2',...

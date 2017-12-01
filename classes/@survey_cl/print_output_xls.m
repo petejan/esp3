@@ -106,7 +106,7 @@ for i=1:numel(fields)
         idx_info=union(idx_info,i);
         str_obj_cell_info_rfmt{i_info}=curr_f;
         
-        if ~isempty(strfind(fields{i},'time'))
+        if contains(fields{i},'time')
             str_obj_cell_info_rfmt{i_info}=datestr(curr_f,'dd/mm/yyyy HH:MM:SS');
         end
         
@@ -115,7 +115,7 @@ for i=1:numel(fields)
         idx_tot=union(idx_tot,i);
         
         
-        if ~isempty(strfind(fields{i},'time'))
+        if contains(fields{i},'time')
             curr_f=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS'),num2cell(curr_f),'UniformOutput',0);
         end
         

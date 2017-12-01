@@ -555,7 +555,7 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
             catch
                 % Probably not a Menu container, but maybe a top-level JMenu, so discard duplicates
                 %if isa(handles(end).java,'javax.swing.JMenuBar')
-                if ~menuRootFound && strcmp(class(java(handles(end))),'javax.swing.JMenuBar')  %faster...
+                if ~menuRootFound && isa(java(handles(end)),'javax.swing.JMenuBar')  %faster...
                     if removeDuplicateNode(thisIdx)
                         menuRootFound = true;
                         return;
@@ -568,7 +568,7 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
         %if isa(jcontainer,'java.awt.Container')
         try  % try-catch is faster than checking isa(jcontainer,'java.awt.Container')...
             %if jcontainer.getComponentCount,  jcontainer.getComponents,  end
-            if ~nomenu || menuBarFoundFlag || isempty(strfind(class(jcontainer),'FigureMenuBar'))
+            if ~nomenu || menuBarFoundFlag || ~contains(class(jcontainer),'FigureMenuBar')
                 lastChildComponent = java.lang.Object;
                 child = 0;
                 while (child < jcontainer.getComponentCount)
@@ -3281,7 +3281,7 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
             nodeTitleStr = sprintf('<html>Class name: <font color="blue">%s</font><br>Text/title: %s',objClass,objName);
 
             % If the component is invisible, state this in the tooltip
-            if ~isempty(strfind(nodeName,'color="gray"'))
+            if contains(nodeName,'color="gray"')
                 nodeTitleStr = [nodeTitleStr '<br><font color="gray"><i><b>*** Invisible ***</b></i></font>'];
             end
             nodeTitleStr = [nodeTitleStr '<hr>Right-click for context-menu'];

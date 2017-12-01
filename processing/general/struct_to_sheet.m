@@ -13,7 +13,7 @@ for i=1:size(str_obj_cell,1)
 %         continue;
 %     end
     
-    if ~isempty(strfind(lower(trans_fields{i}),'time'))
+    if contains(lower(trans_fields{i}),'time')
         str_obj_cell{i}=cellfun(@(x) datestr(x,'dd/mm/yyyy HH:MM:SS.FFF'),num2cell(str_obj_cell{i}),'UniformOutput',0);
     end
     

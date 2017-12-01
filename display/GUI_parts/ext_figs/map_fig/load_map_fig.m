@@ -381,7 +381,7 @@ end
 childs=findall(box.lim_axes,'type','patch');
 
 for i=1:length(childs)
-    if ~isempty(strfind(get(childs(i),'Tag'),'m_gshh'))
+    if contains(get(childs(i),'Tag'),'m_gshh')
         if get(box.coast_box,'value')>=1
             set(childs(i),'visible','on');
         else

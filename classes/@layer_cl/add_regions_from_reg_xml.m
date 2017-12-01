@@ -131,12 +131,12 @@ for ix=1:length(reg_file_str)
                     
                     switch Shape
                         case 'Rectangular'
-                            X_cont=[];
-                            Y_cont=[];
+                            X_cont={};
+                            Y_cont={};
                         case 'Polygon'
                             i_cont=0;
-                            X_cont=[];
-                            Y_cont=[];
+                            X_cont={};
+                            Y_cont={};
                             for ic=1:length(reg_xml{i}.Contours)
                                 idx_rem=reg_xml{i}.Contours{ic}.Time>t_max|reg_xml{i}.Contours{ic}.Time<t_min;
                                 reg_xml{i}.Contours{ic}.Time(idx_rem)=[];
@@ -166,12 +166,12 @@ for ix=1:length(reg_file_str)
                     
                     switch Shape
                         case 'Rectangular'
-                            X_cont=[];
-                            Y_cont=[];
+                            X_cont={};
+                            Y_cont={};
                         case 'Polygon'
                             i_cont=0;
-                            X_cont=[];
-                            Y_cont=[];
+                            X_cont={};
+                            Y_cont={};
                             for ic=1:length(reg_xml{i}.Contours)
                                 if isempty(reg_xml{i}.Contours{ic}.Ping)
                                     continue;
@@ -194,8 +194,8 @@ for ix=1:length(reg_file_str)
                 'Idx_pings',Idx_pings,...
                 'Idx_r',Idx_r,...
                 'Shape',Shape,...
-                'X_cont',X_cont,...
-                'Y_cont',Y_cont,...
+                'X_cont',cellfun(@(u) u+Idx_pings(1)-1, X_cont,'un',0),...
+                'Y_cont',cellfun(@(u) u+Idx_r(1)-1, Y_cont,'un',0),...
                 'Reference',Reference,...
                 'Cell_w',Cell_w,...
                 'Cell_w_unit',Cell_w_unit,...

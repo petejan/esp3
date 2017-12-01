@@ -41,7 +41,7 @@ for ilay=1:length(layers_obj)
     for ip=1:length(path_lay)
         
         path_f=path_lay{ip};
-        curr_files=files_lay(cellfun(@(x) ~isempty(strfind(x,path_f)),files_lay));
+        curr_files=files_lay(cellfun(@(x) contains(x,path_f),files_lay));
         
         db_file=fullfile(path_f,'echo_logbook.db');
         if ~(exist(db_file,'file')==2)

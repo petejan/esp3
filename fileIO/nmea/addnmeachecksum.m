@@ -1,7 +1,7 @@
 
 function NMEA_String = addnmeachecksum(NMEA_String)
 checksum = 0;
-if~isempty(strfind(NMEA_String,'*'))
+if contains(NMEA_String,'*')
     NMEA_String = strtok(NMEA_String,'*');
 end
 

@@ -56,7 +56,6 @@ reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
     'Units','Normalized','Position',[0 0 1 1],...
     'RowName',[]);
 
-reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 
 pos_t = getpixelposition(reglist_tab_comp.table);
 
@@ -75,21 +74,25 @@ reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT co
 
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,main_figure});
 uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,main_figure});
-uifreq=uimenu(rc_menu,'Label','Copy to other channels');
-uimenu(uifreq,'Label','all','Callback',{@copy_region_from_selected_cback,main_figure});
 
-
-reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
-
+% reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
+% 
+% jscrollpane = findjobj(reglist_tab_comp.table);
+% jtable = jscrollpane.getViewport.getView;
+%  
+% % Now turn the JIDE sorting on
+% jtable.setSortable(true);		% or: set(jtable,'Sortable','on');
+% jtable.setAutoResort(true);
+% jtable.setMultiColumnSortable(true);
+% jtable.setPreserveSelectionsAfterSorting(true);
+% 
 setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 
 update_reglist_tab(main_figure);
 
 end
 
-function copy_region_from_selected_cback(~,~,main_figure)
-    copy_region_callback([],[],main_figure,[]);
-end
+
 
 
 function display_regions_callback(src,~,main_figure)
@@ -131,7 +134,7 @@ end
 function keypresstable(src,evt,main_figure)
 switch evt.Key
     case 'delete'
-        delete_regions_callback(src,[],src,main_figure);
+        delete_regions_callback(src,[],main_figure);
 end
 
 end

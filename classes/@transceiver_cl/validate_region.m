@@ -98,20 +98,7 @@ switch region.Shape
         region.Idx_r=intersect(Idx_r,region.Idx_r);
     case 'Polygon'
         region.Idx_pings=intersect((1:length(pings_t)),region.Idx_pings);
-        region.Idx_r=intersect(Idx_r,region.Idx_r);
-        region.MaskReg=region.MaskReg(1:length(region.Idx_r),1:length(region.Idx_pings));
-        [x,y]=cont_from_mask(region.MaskReg);
-        if ~isempty(y)
-            region.X_cont=x;
-            region.Y_cont=y;
-            region.MaskReg=(region.MaskReg);
-        else
-            region.Shape='Rectangular';
-            region.X_cont=[];
-            region.Y_cont=[];
-            region.MaskReg=[];
-        end
-        
+        region.Idx_r=intersect(Idx_r,region.Idx_r);    
 end
 
 

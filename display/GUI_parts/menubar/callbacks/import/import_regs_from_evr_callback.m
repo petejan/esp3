@@ -62,9 +62,8 @@ if ~isempty(regions)
     
     display_regions(main_figure,'both');
     curr_disp=getappdata(main_figure,'Curr_disp');
-    [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-    curr_disp.setActive_reg_ID((trans_obj.get_reg_first_Unique_ID());
-    
+    curr_disp.setActive_reg_ID({});
+
     set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},curr_disp.ChannelID));
     order_stacks_fig(main_figure);
 end
