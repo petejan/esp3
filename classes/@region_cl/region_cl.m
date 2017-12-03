@@ -82,39 +82,31 @@ classdef region_cl
                         obj.Idx_pings=xlim(1):xlim(end);
                         obj.Idx_r=ylim(1):ylim(end);
                     end
-                case 'polygon' 
+                otherwise 
                     if ~isempty(results.Poly)
                         obj.Poly=results.Poly;
                         obj.MaskReg=mask_from_poly(obj.Poly);
+                        [xlim,ylim]=obj.Poly.boundingbox;
+                        obj.Idx_pings=xlim(1):xlim(end);
+                        obj.Idx_r=ylim(1):ylim(end);
                     elseif ~isempty(results.X_cont)
-                        obj.Poly=polyshape(results.X_cont,results.Y_cont,'Simplify',false); 
+                        obj.Poly=polyshape(results.X_cont,results.Y_cont,'Simplify',false);                         
                         obj.MaskReg=mask_from_poly(obj.Poly);
+                        
+                        [xlim,ylim]=obj.Poly.boundingbox;
+                        obj.Idx_pings=xlim(1):xlim(2);
+                        obj.Idx_r=ylim(1):ylim(2);  
+                        
                     elseif ~isempty(results.MaskReg)
                         [x,y]=cont_from_mask(results.MaskReg);
+                        [x,y]=reduce_reg_contour(x,y,10);
                         obj.Poly=polyshape(cellfun(@(u) u+results.Idx_pings(1)-1, x,'un',0),cellfun(@(u) u+results.Idx_r(1)-1, y,'un',0),'Simplify',false);
+                        obj.Idx_pings=results.Idx_pings;
+                        obj.Idx_r=results.Idx_r;
                     end
                     
-%                     if ~obj.Poly.issimplified()
-%                         obj.Poly.simplify();
-%                     end
-
-                    [xlim,ylim]=obj.Poly.boundingbox;
-                    obj.Idx_pings=xlim(1):xlim(end);
-                    obj.Idx_r=ylim(1):ylim(end);
                     
-                   
-                otherwise
-                    obj.Shape='Rectangular';
-                    obj.MaskReg=[];
                     
-                    if ~isempty(obj.Idx_pings)
-                        x_reg_rect=([obj.Idx_pings(1) obj.Idx_pings(end) obj.Idx_pings(end) obj.Idx_pings(1) obj.Idx_pings(1)]);
-                        y_reg_rect=([obj.Idx_r(end) obj.Idx_r(end) obj.Idx_r(1) obj.Idx_r(1) obj.Idx_r(end)]);
-                        obj.Poly=polyshape(x_reg_rect,y_reg_rect,'Simplify',false);
-                        if ~obj.Poly.issimplified()
-                            obj.Poly.simplify();
-                        end
-                    end
             end
             
         end

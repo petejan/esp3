@@ -88,8 +88,8 @@ for ir=1:length(trans_obj.Regions)
                     
                 case '0.2'
                     
-                    bbox_p_s=splitted_reg(irs).Idx_pings(1)-idx_ping(1)+1
-                    bbox_p_e=splitted_reg(irs).Idx_pings(end)-idx_ping(1)+1
+                    bbox_p_s=splitted_reg(irs).Idx_pings(1)-idx_ping(1)+1;
+                    bbox_p_e=splitted_reg(irs).Idx_pings(end)-idx_ping(1)+1;
                     bbox_str=sprintf('%d %d ',bbox_p_s,splitted_reg(irs).Idx_r(1),bbox_p_e,splitted_reg(irs).Idx_r(end));
                     
                     bbox_node = docNode.createElement('bbox');

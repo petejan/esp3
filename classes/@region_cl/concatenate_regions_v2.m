@@ -1,4 +1,4 @@
-function merged_reg=concatenate_regions(regions)
+function merged_reg=concatenate_regions_v2(regions)
 
 if isempty(regions)
     merged_reg=[];

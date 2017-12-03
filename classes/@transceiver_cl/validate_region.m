@@ -91,7 +91,6 @@ parse(p,trans_obj,region,varargin{:});
 pings_t=trans_obj.get_transceiver_pings();
 Idx_r=trans_obj.get_transceiver_samples();
 
-
 switch region.Shape
     case 'Rectangular'
         region.Idx_pings=intersect((1:length(pings_t)),region.Idx_pings);
@@ -99,6 +98,13 @@ switch region.Shape
     case 'Polygon'
         region.Idx_pings=intersect((1:length(pings_t)),region.Idx_pings);
         region.Idx_r=intersect(Idx_r,region.Idx_r);    
+        region.Idx_r=intersect(Idx_r,region.Idx_r);
+        region.MaskReg=region.MaskReg(1:length(region.Idx_r),1:length(region.Idx_pings));
+        if ~any(region.MaskReg)
+            region.Shape='Rectangular';
+            region.MaskReg=[];
+        end
+
 end
 
 

@@ -21,8 +21,16 @@ for ireg=1:numel(regs)
     x=cellfun(@(u) u-xlim_sub(1)+1,x,'un',0);
     y=cellfun(@(u) u-ylim_sub(1)+1,y,'un',0);
     
+    [x,y]=reduce_reg_contour(x,y,10);
+    if isempty(x)
+        continue;
+    end
+    
+    %temp=poly2mask(regs(ireg).Vertices(2,:),regs(ireg).Vertices(1,:),nb_y_sub,nb_x_sub);
+    
     contour_type=false(1,numel(x));
     contour_type(1)=true;
+    
     in=cellfun(@(u,v) poly2mask(u,v,nb_y_sub,nb_x_sub),x,y,'un',0);
     for i=1:numel(in)        
         Mask_out_tmp(in{i})=contour_type(i);

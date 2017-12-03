@@ -106,8 +106,7 @@ for ir=1:length(reg_xml.Regions)
                         region_node.appendChild(contours_node);
                 end
             case '0.2'
-                bbox_p_s=reg_curr.bbox_p(1);
-                bbox_p_e=reg_curr.bbox_p(2);
+
                 bbox_str=sprintf('%d %d ',bbox_p_s,reg_curr.bbox_s(1),bbox_p_e,reg_curr.bbox_s(2));
                 
                 bbox_node = docNode.createElement('bbox');

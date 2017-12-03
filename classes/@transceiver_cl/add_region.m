@@ -24,7 +24,9 @@ IDs_out={};
 
 for i=1:length(regions)
     regions(i).Idx_pings=regions(i).Idx_pings-Ping_offset;
-
+    if ~isempty(regions(i).Poly)
+        regions(i).Poly.Vertices(:,1)=regions(i).Poly.Vertices(:,1)-Ping_offset;
+    end
 
     regions(i)=trans_obj.validate_region(regions(i));
 
@@ -39,7 +41,7 @@ for i=1:length(regions)
         reg_curr=regions(i);
     else
         reg_tmp=[regions(i) regs_id];
-        reg_curr=reg_tmp.concatenate_regions();
+                reg_curr=reg_tmp.concatenate_regions();
     end
 
     reg_curr.Unique_ID=regions(i).Unique_ID;
@@ -72,9 +74,9 @@ for i=1:length(regions)
             end
         end
     end
-
+    %Split=1
     if Split>0
-        splitted_reg=reg_curr.split_region(trans_obj.Data.FileId);
+        splitted_reg=reg_curr.split_region(trans_obj.Data.FileId,0);
         trans_obj.Regions=[trans_obj.Regions splitted_reg];
         IDs_out=union(IDs_out,{splitted_reg(:).Unique_ID});
     else

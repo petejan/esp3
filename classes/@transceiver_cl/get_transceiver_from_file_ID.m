@@ -52,7 +52,9 @@ trans_file_ID.Bottom=trans_obj.Bottom.get_bottom_idx_section(idx_file);
 
 for ireg=1:numel(trans_obj.Regions)
     [reg_temp,fids]=trans_obj.Regions(ireg).split_region(fileID_vec,1);
-    trans_file_ID.add_region(reg_temp(fids==fileID),'Ping_offset',idx_file(1)-1);
+    if any(fids==fileID)
+        trans_file_ID.add_region(reg_temp(fids==fileID),'Ping_offset',idx_file(1)-1);
+    end
 end
 
 trans_file_ID.Params=trans_obj.Params.get_params_idx_section(idx_file);

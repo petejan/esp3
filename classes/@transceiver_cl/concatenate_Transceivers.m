@@ -36,6 +36,7 @@ if length(trans_1)==length(trans_2)
             
             for ir2=1:length(regions_2)
                 regions_2(ir2).Idx_pings=regions_2(ir2).Idx_pings+length(trans_first.get_transceiver_pings());
+                %regions_2(ir2).Poly.Vertices(2,:)=regions_2(ir2).Poly.Vertices(2,:)+length(trans_first.get_transceiver_pings());
             end    
 
         trans_out(i).Bottom=new_bot;

@@ -146,9 +146,9 @@ for ix=1:length(reg_file_str)
                                 end
                                 i_cont=i_cont+1;
                                 X_cont{i_cont}=resample_data_v2(1:length(trans_obj.Time),trans_obj.Time,reg_xml{i}.Contours{ic}.Time,'Opt','Nearest');
-                                X_cont{i_cont}=X_cont{i_cont}-Idx_pings(1)+1;
+                                X_cont{i_cont}=X_cont{i_cont};
                                 Y_cont{i_cont}=resample_data_v2(1:length(trans_obj.get_transceiver_range()),trans_obj.get_transceiver_range(),reg_xml{i}.Contours{ic}.Range,'Opt','Nearest');
-                                Y_cont{i_cont}=Y_cont{i_cont}-Idx_r(1)+1;
+                                Y_cont{i_cont}=Y_cont{i_cont};
                             end
                     end
                     
@@ -177,13 +177,12 @@ for ix=1:length(reg_file_str)
                                     continue;
                                 end
                                 i_cont=i_cont+1;
-                                X_cont{i_cont}=reg_xml{i}.Contours{ic}.Ping;
+                                X_cont{i_cont}=reg_xml{i}.Contours{ic}.Ping+iping_file(1)-1;
                                 Y_cont{i_cont}=reg_xml{i}.Contours{ic}.Sample;
                             end
                     end
             end
-            Idx_pings(1)
-            Idx_pings(end)
+
             new_reg=region_cl(...
                 'ID',ID,...
                 'Version',p.Results.Version,...
