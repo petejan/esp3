@@ -1,7 +1,7 @@
 function undock_mini_axes_callback(src,~,main_figure,dest)
 
 layer=getappdata(main_figure,'Layer');
-if isempty(layer);
+if isempty(layer)
     return;
 end
 

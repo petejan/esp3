@@ -49,8 +49,8 @@ switch curr_dispCmap
 end
 
 ac_data_col=[1 0 0];
-ac_bad_data_col=[240,230,140]/256;
-in_data_col=[0 1 0];
-in_bad_data_col=[0.5 0.5 0];
+in_bad_data_col=[240,200,140]/256;
+in_data_col=[0 0.8 0];
+ac_bad_data_col=[0.5 0.5 0];
 
 end

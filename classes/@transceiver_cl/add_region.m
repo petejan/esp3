@@ -24,6 +24,7 @@ IDs_out={};
 
 for i=1:length(regions)
     regions(i).Idx_pings=regions(i).Idx_pings-Ping_offset;
+    
     if ~isempty(regions(i).Poly)
         regions(i).Poly.Vertices(:,1)=regions(i).Poly.Vertices(:,1)-Ping_offset;
     end

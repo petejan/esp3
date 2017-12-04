@@ -66,7 +66,7 @@ end
 
 [~,~,~]=layer.load_bot_regs('bot_ver',bot,'reg_ver',reg);
 
-
+clear_regions(main_figure,{},{});
 display_bottom(main_figure);
 
 display_regions(main_figure,'all');

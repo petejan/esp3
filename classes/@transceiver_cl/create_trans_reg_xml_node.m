@@ -101,7 +101,7 @@ for ir=1:length(trans_obj.Regions)
                             contours_node = docNode.createElement('contours');
                             for icont=1:length(X_cont)
                                 contour_node = docNode.createElement('contour');
-                                ping_cont=X_cont{icont}-splitted_reg(irs).Idx_pings(1)+1-idx_ping(1);
+                                ping_cont=X_cont{icont}-splitted_reg(irs).Idx_pings(1)+1;
 
                                 sample_cont=Y_cont{icont}-splitted_reg(irs).Idx_r(1)+1;
                                 cont_str=[];

@@ -88,8 +88,6 @@ for i=1:length(reg_evr)
             Y_cont=resample_data_v2(1:length(range),range,reg_evr(i).depth,'Opt','Nearest');
             Idx_pings=nanmin(X_cont):nanmax(X_cont);
             Idx_r=nanmin(Y_cont):nanmax(Y_cont);
-            X_cont=X_cont-Idx_pings(1)+1;
-            Y_cont=Y_cont-Idx_r(1)+1;
 
     end
     regions=[regions region_cl(...

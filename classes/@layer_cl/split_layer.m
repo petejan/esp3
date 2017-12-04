@@ -53,7 +53,10 @@ for ifi=1:length(layer_obj.Filename)
     end
     
     for il=1:length(layer_obj.Lines)
-        new_layers(ifi).Lines(il)=layer_obj.Lines(il).get_line_time_section(start_time(ifi),end_time(ifi));
+        line_temp=layer_obj.Lines(il).get_line_time_section(start_time(ifi),end_time(ifi));
+        if ~isempty(line_temp.Range)
+            new_layers(ifi).Lines(numel(new_layers(ifi).Lines)+1)=line_temp;
+        end
     end
     
     new_layers(ifi).GPSData=layer_obj.GPSData.get_GPSDData_time_section(start_time(ifi),end_time(ifi));
