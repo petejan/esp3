@@ -98,10 +98,16 @@ else
     reg_obj=p.Results.reg_obj; 
 end
 
-Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',p.Results.Type);
-if isempty(Sv_mat)
-   Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
+
+
+if ismember(p.Results.Type,trans_obj.Data.Fieldname)
+    field=p.Results.Type;
+else
+    field='sv';
 end
+
+
+Sv_mat=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field',field);
 
 Sv_mat(mask>0)=-999;
 

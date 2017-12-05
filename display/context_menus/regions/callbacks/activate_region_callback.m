@@ -42,7 +42,9 @@ function activate_region_callback(Unique_ID,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-
+if ~iscell(Unique_ID)
+   Unique_ID={Unique_ID}; 
+end
 
 if ~ismember(curr_disp.CursorMode,{'Normal','Create Region','Zoom In','Zoom Out'})
     return;

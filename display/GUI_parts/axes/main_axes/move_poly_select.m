@@ -1,14 +1,14 @@
-function move_patch_select(src,~,main_figure)
+function move_poly_select(src,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 [trans_obj,~]=layer.get_trans(curr_disp);
 
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
-patch_obj=src;
+poly_obj=src;
 ah=axes_panel_comp.main_axes;
 
-if isempty(patch_obj.Vertices)||~ismember(curr_disp.CursorMode,{'Normal'})
+if isempty(poly_obj.Shape.Vertices)||~ismember(curr_disp.CursorMode,{'Normal'})
     return;
 end
 
@@ -24,8 +24,8 @@ if strcmp(current_fig.SelectionType,'normal')
     xdata=trans_obj.get_transceiver_pings();
     ydata=trans_obj.get_transceiver_samples();
     
-    dx_patch=nanmax(patch_obj.Vertices(:,1))-nanmin(patch_obj.Vertices(:,1));
-    dy_patch=nanmax(patch_obj.Vertices(:,2))-nanmin(patch_obj.Vertices(:,2));
+    dx_patch=nanmax(poly_obj.Shape.Vertices(:,1))-nanmin(poly_obj.Shape.Vertices(:,1));
+    dy_patch=nanmax(poly_obj.Shape.Vertices(:,2))-nanmin(poly_obj.Shape.Vertices(:,2));
     
     replace_interaction(current_fig,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb,'Pointer','fleur');
     replace_interaction(current_fig,'interaction','WindowButtonUpFcn','id',2,'interaction_fcn',@wbucb,'Pointer','fleur');
@@ -38,7 +38,7 @@ end
         
         d_move=[x1 y1]-[x0 y0];
         
-        new_vert=patch_obj.Vertices+repmat(d_move,size(patch_obj.Vertices,1),1);
+        new_vert=poly_obj.Shape.Vertices+repmat(d_move,size(poly_obj.Shape.Vertices,1),1);
         
         if size(new_vert,1)==4
             if any(new_vert(:,1)<xdata(1))
@@ -57,7 +57,8 @@ end
                 new_vert(:,2)=[ydata(end)-dy_patch ydata(end)-dy_patch ydata(end) ydata(end)];
             end
         end
-        patch_obj.Vertices=new_vert;
+        
+        poly_obj.Shape.Vertices=new_vert;
 
         x0=x1;
         y0=y1;

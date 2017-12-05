@@ -2,8 +2,8 @@ function app_path=app_path_create(varargin)
 
 app_path_data_temp=fullfile(tempdir,'data_echo');
 app_path_cvs_root=':local:Z:\';
-app_path_data_root=fullfile(whereisEcho,'example_data');
-app_path_data=fullfile(whereisEcho,'example_data');
+app_path_data_root=fullfile(whereisEcho,'example_data\ek60');
+app_path_data=fullfile(whereisEcho,'example_data\ek60');
 app_path_scripts=fullfile(whereisEcho,'echo_scripts');
 app_path_results=fullfile(whereisEcho,'echo_results');
 p = inputParser;

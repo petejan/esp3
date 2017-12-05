@@ -283,7 +283,7 @@ sub_idx_bad=sub_idx_bad-reg_curr.Idx_pings(1)+1;
 
 switch reg_curr.Shape
     case 'Polygon'
-        mask=reg_curr.create_mask();
+        mask=reg_curr.MaskReg;
         data(~mask)=nan;
     case 'Rectangular'
         

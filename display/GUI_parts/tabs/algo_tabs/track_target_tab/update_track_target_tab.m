@@ -4,7 +4,7 @@ layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 track_target_tab_comp=getappdata(main_figure,'Track_target_tab');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 [idx_algo,found]=find_algo_idx(trans_obj,'TrackTarget');
 if found==0
      return
@@ -17,7 +17,12 @@ algo_fields=fields(algo);
 
 for i=1:length(algo_fields)
     if ~any(strcmp(algo_fields{i},{'ST','idx_r','idx_pings','reg_obj'}))
-        set(track_target_tab_comp.(algo_fields{i}),'string',num2str(algo.(algo_fields{i})));
+        switch track_target_tab_comp.(algo_fields{i}).Style
+            case 'edit'
+                set(track_target_tab_comp.(algo_fields{i}),'string',num2str(algo.(algo_fields{i})));
+            case 'checkbox'
+                set(track_target_tab_comp.(algo_fields{i}),'value',algo.(algo_fields{i}));
+        end
     end
 end
 

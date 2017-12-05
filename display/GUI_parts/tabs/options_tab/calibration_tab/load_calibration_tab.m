@@ -162,12 +162,11 @@ end
 
 function reprocess_TS_calibration(~,~,main_figure)
 TS_calibration_curves_func(main_figure);
-loadEcho(main_figure);
 end
 
 function reprocess_EBA_calibration(~,~,main_figure)
 beamwidth_calibration_curves_func(main_figure);
-loadEcho(main_figure);
+
 end
 
 

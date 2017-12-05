@@ -45,12 +45,11 @@ else
     t_eff=pulse_length;
 end
 
-switch trans_obj.Config.TransceiverType
-    
+switch trans_obj.Config.TransceiverType   
     case list_WBTs()
-        t_nom=0; 
+        [t_nom,~]=trans_obj.get_pulse_length(1);  
     otherwise  
-        [t_nom,~]=trans_obj.get_pulse_length(1);        
+        t_nom=0;      
 end
 
 power=trans_obj.Data.get_datamat('Power');

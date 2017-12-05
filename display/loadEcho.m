@@ -41,7 +41,6 @@ if isempty(main_figure)
     return;
 end
 
-
 layer  = getappdata(main_figure,'Layer');
 layers = getappdata(main_figure,'Layers');
 
@@ -55,21 +54,40 @@ uiundo(main_figure,'clear');
 
 nb_layers = length(layers);
 
-[display_config_file,~,~]=get_config_files();
-[~,fname,fext]=fileparts(display_config_file);
-filepath=fileparts(layer.Filename{1});
-disp_config_file=fullfile(filepath,[fname fext]);
 
-if exist(disp_config_file,'file')==2
-    curr_disp_new=read_config_display_xml(disp_config_file);
-else
-    [~,curr_disp_new,~,~]=load_config_from_xml_v2(0,1,0);    
-end
-props=properties(curr_disp);
-for i=1:numel(props)
-    curr_disp.(props{i})=curr_disp_new.(props{i});
+if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
+    flag = 0;
+    up_curr_disp=0;
+elseif ~strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers<=curr_disp.NbLayers
+    flag = 1;  
+    up_curr_disp=0;
+elseif nb_layers>curr_disp.NbLayers
+    flag = 1;
+    up_curr_disp=1;
 end
 
+if up_curr_disp>=1
+    [display_config_file,~,~]=get_config_files();
+    [~,fname,fext]=fileparts(display_config_file);
+    filepath=fileparts(layer.Filename{1});
+    disp_config_file=fullfile(filepath,[fname fext]);
+    
+    if exist(disp_config_file,'file')==2
+        curr_disp_new=read_config_display_xml(disp_config_file);
+    else
+        [~,curr_disp_new,~,~]=load_config_from_xml_v2(0,1,0);
+    end
+    props=properties(curr_disp);
+    
+    for i=1:numel(props)
+        if ~ismember((props{i}),{'Fieldnames' 'Fieldname' 'Type' 'Xaxes_current' 'Cax' 'Caxes' 'Freq'})
+            curr_disp.(props{i})=curr_disp_new.(props{i});
+        end
+    end
+end
+
+curr_disp.CurrLayerID = layer.Unique_ID;
+curr_disp.NbLayers    = nb_layers;
 curr_disp.SecChannelIDs=layer.ChannelID;
 curr_disp.SecFreqs=layer.Frequencies;
 
@@ -97,16 +115,7 @@ if found_field == 0
 end
 setappdata(main_figure,'Curr_disp',curr_disp);
 %old_nb=curr_disp.NbLayers;
-if ~isempty(layer)
-    if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
-        flag = 0;
-    else
-        flag = 1;
-        curr_disp.CurrLayerID = layer.Unique_ID;
-        curr_disp.NbLayers    = nb_layers;
-        %disp('New Layer')
-    end
-end
+
 curr_disp.Bot_changed_flag = 0;
 curr_disp.Reg_changed_flag = 0;
 curr_disp.UIupdate=1;

@@ -37,7 +37,6 @@ end
 
 ydata_grid=trans_obj.get_transceiver_range(idx_r);
 
-
 dxmin=2;
 dymin=2 ;
 dx_min=dx/dxmin;
@@ -75,7 +74,7 @@ str_start=' ';
 
 switch lower(curr_disp.Xaxes_current)
     case 'seconds'
-        h_fmt='  HH:MM:SS';
+        h_fmt='HH:MM:SS';
         x_labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
     case 'pings'
         fmt=[str_start '%.0f'];

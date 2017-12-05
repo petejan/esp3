@@ -25,7 +25,10 @@ else
 end
 
 [echo_im_tot,echo_ax_tot,echo_im_bt_tot,trans_obj,~,~]=get_axis_from_cids(main_figure,main_or_mini);
-
+if isempty(echo_im_tot)
+    return;
+end
+[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im_tot(1));
 min_axis=curr_disp.Cax(1);
 for iax=1:length(echo_ax_tot)
     
@@ -37,17 +40,21 @@ for iax=1:length(echo_ax_tot)
     data=double(get(echo_im,'CData'));
     xdata=double(get(echo_im,'XData'));
     ydata=double(get(echo_im,'YData'));
-    alpha_map=ones(size(data));
+    alpha_map=ones(size(data),'single');
     
     nb_pings=length(xdata);
     
     [~,nb_pings_red]=size(alpha_map);
-    [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im);
-    
+
     idxBad=find(trans_obj{iax}.Bottom.Tag==0);
-    idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
-    idx_bad_red(idx_bad_red==0)=[];
     
+    if nb_pings_red~=nb_pings
+        idx_bad_red=unique(floor(nb_pings_red/nb_pings*(intersect(idxBad,idx_pings)-idx_pings(1)+1)));
+        idx_bad_red(idx_bad_red==0)=[];
+    else
+        idx_bad_red=(intersect(idxBad,idx_pings)-idx_pings(1)+1);
+        idx_bad_red(idx_bad_red==0)=[];
+    end
     
     if strcmp(curr_disp.DispBadTrans,'on')
         alpha_map(:,idx_bad_red)=1;

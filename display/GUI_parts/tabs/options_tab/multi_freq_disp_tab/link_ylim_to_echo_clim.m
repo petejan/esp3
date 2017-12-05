@@ -8,10 +8,6 @@ switch tab_tag
         field='sp';
 end
 
-if multi_freq_disp_tab_comp.ax_lim_cbox.Value>0
+if multi_freq_disp_tab_comp.ax_lim_cbox.Value==0
     ylim(multi_freq_disp_tab_comp.ax,curr_disp.getCaxField(field));
-else
-    ylim(multi_freq_disp_tab_comp.ax,'auto');
-end
-
 end

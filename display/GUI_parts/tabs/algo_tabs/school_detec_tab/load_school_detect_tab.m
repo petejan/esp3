@@ -87,6 +87,8 @@ school_detect_tab_comp.Sv_max=uicontrol(parameters_2,'Style','Edit','units','nor
 
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
 
+school_detect_tab_comp.denoised=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','checkbox','Value',0,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.4 0.3 0.1]);
+
 [~,~,algo_files]=get_config_files('SchoolDetection');
 [~,~,names]=read_config_algo_xml(algo_files{1});
 

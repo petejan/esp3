@@ -6,7 +6,6 @@ if multi_freq_disp_tab_comp.ax_lim_cbox.Value>0
     cax=str2double(get([multi_freq_disp_tab_comp.thr_down multi_freq_disp_tab_comp.thr_up],'String'));
     if cax(2)<cax(1)||isnan(cax(1))||isnan(cax(2))
         cax=cax_ori;
-
     end
     set(multi_freq_disp_tab_comp.thr_up,'String',num2str(cax(2),'%.0f'));
     set(multi_freq_disp_tab_comp.thr_down,'String',num2str(cax(1),'%.0f'));

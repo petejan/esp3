@@ -5,7 +5,6 @@ Np=c*t_nom/2/dr;
 
 [TVG_Sp,TVG_Sv]=computeTVG(range,Np);
 
-
 r_corr = Np/2*dr;
 %r_corr=0;
 

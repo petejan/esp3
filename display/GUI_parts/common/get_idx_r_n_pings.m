@@ -3,7 +3,7 @@ function [idx_samples,idx_pings]=get_idx_r_n_pings(layer,curr_disp,main_echo)
 xdata=double(get(main_echo,'XData'));
 ydata=double(get(main_echo,'YData'));
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 trans=trans_obj;
 
 Number=trans.get_transceiver_pings();

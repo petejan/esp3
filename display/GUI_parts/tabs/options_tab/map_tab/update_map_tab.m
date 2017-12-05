@@ -71,7 +71,7 @@ end
 
 if p.Results.histo
     display_st_or_track_hist(main_figure,map_tab_comp.ax_hist,{'tracks','st'});
-    cax=curr_disp.getCaxField('singletargets');
+    cax=curr_disp.getCaxField('singletarget');
     xlim(map_tab_comp.ax_hist,cax);
 end
 

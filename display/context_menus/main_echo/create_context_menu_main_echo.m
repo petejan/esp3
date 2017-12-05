@@ -54,6 +54,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 for i=1:numel(ifreq)
     old_bot=layer.Transceivers(ifreq(i)).Bottom;
     bots(i).Sample_idx=old_bot.Sample_idx;
+    bots(i).Tag=(old_bot.Tag&bots(i).Tag);
     layer.Transceivers(ifreq(i)).Bottom=bots(i);
     add_undo_bottom_action(main_figure,layer.Transceivers(ifreq(i)),old_bot,bots(i));
 end

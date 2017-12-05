@@ -19,14 +19,14 @@ end
 [idx_field,~]=trans_obj.Data.find_field_idx(curr_disp.Fieldname);
 [dx,dy]=curr_disp.get_dx_dy();
 
-set(display_tab_comp.grid_x,'String',num2str(dx,'%.0f'));
-set(display_tab_comp.grid_y,'String',num2str(dy,'%.0f'));
+set(display_tab_comp.grid_x,'String',int2str(dx));
+set(display_tab_comp.grid_y,'String',int2str(dy));
 
-set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'),'Value',idx_freq);
+set(display_tab_comp.tog_freq,'String',int2str(layer.Frequencies'),'Value',idx_freq);
 set(display_tab_comp.tog_type,'String',trans_obj.Data.Type,'Value',idx_field);
 set(display_tab_comp.tog_axes,'String',Axes_type,'Value',idx_axes);
-set(display_tab_comp.caxis_up,'String',num2str(curr_disp.Cax(2),'%.0f'));
-set(display_tab_comp.caxis_down,'String',num2str(curr_disp.Cax(1),'%.0f'));
+set(display_tab_comp.caxis_up,'String',int2str(curr_disp.Cax(2)));
+set(display_tab_comp.caxis_down,'String',int2str(curr_disp.Cax(1)));
 
 %set(findall(display_tab_comp.display_tab, '-property', 'Enable'), 'Enable', 'on');
 

@@ -6,6 +6,7 @@ reverse_y_axis(main_figure);
 update_secondary_freq_win(main_figure);
 
 curr_disp.setTypeCax();
+
 load_info_panel(main_figure);
 display_info_ButtonMotionFcn([],[],main_figure,1);
 

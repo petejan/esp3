@@ -60,7 +60,7 @@ grid(multi_freq_disp_tab_comp.ax,'on');
 % pos=getpixelposition(multi_freq_disp_tab_comp.multi_freq_disp_tab);
 
  multi_freq_disp_tab_comp.ax_lim_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
-     'BackgroundColor','White','units','pixels','position',[10 2 90 21],'String','Fix YLim.','Value',0);
+     'BackgroundColor','White','units','pixels','position',[10 2 90 21],'String','Fix YLim.','Value',0,'Callback',{@fix_ylim,main_figure,tab_tag});
  
 cax=get(multi_freq_disp_tab_comp.ax,'YLim'); 
 multi_freq_disp_tab_comp.thr_down=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'Style','edit','units','pixels','position',[110 2 30 21],'string',cax(1));
@@ -113,7 +113,12 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer.Curves)
     return;
 end
-layer.Curves(strcmp({layer.Curves(:).Type},tab_name))=[];
+switch tab_name
+    case 'ts_f'
+    layer.Curves(strcmp({layer.Curves(:).Type},'TS(f)'))=[];    
+    case 'sv_f'
+    layer.Curves(strcmp({layer.Curves(:).Type},'Sv(f)'))=[];
+end
 update_multi_freq_disp_tab(main_figure,tab_name,1);
 end
 
@@ -158,8 +163,9 @@ end
 
 for k=1:length(tracks.target_id)
     idx_targets=tracks.target_id{k};
-    idx_pings=X_st(idx_targets);
-    idx_r=Y_st(idx_targets);
+    idx_pings=sort(X_st(idx_targets));
+    idx_r=sort(Y_st(idx_targets));
+    
     reg_obj=region_cl('Name','Tracks','Idx_r',idx_r,'Idx_pings',idx_pings,'ID',k,'Unique_ID',sprintf('track%.0f',k));
     TS_freq_response_func(main_figure,reg_obj) ;
 end

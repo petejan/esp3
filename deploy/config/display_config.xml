@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
-   <Display Cmap="ek60" DispBadTrans="on" DispBotHighVis="off" DispBottom="on" DispLines="on" DispReg="on" DispTracks="on" DispUnderBottom="on" Font="default" Freq="38000" Grid_x="100" Grid_y="100" Proj="Lambert Conformal Conic" UnderBotTransparency="90" Xaxes="pings"/>
+   <Display Cmap="ek60" DispBadTrans="on" DispBotHighVis="off" DispBottom="on" DispLines="on" DispReg="on" DispSecFreqs="1" DispTracks="on" DispUnderBottom="on" Font="default" Freq="38000" Grid_x="100;0;60" Grid_y="20" Proj="Lambert Conformal Conic" UnderBotTransparency="90" Xaxes_current="seconds"/>
 </config_file>

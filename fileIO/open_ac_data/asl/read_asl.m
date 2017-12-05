@@ -193,17 +193,20 @@ for i_cell=1:length(Filename_cell)
         config_obj.IPAddress='';
         config_obj.SerialNumber='';
         
+        SvOffset = CalcSvOffset(data.freq(1,ic),params_obj.PulseLength(1));
+        
         config_obj.PulseLength=nanmean(data.pulse_length(ic,:));
         config_obj.BeamType='';
         config_obj.BeamWidthAlongship=6;
         config_obj.BeamWidthAthwartship=6;
-        config_obj.EquivalentBeamAngle=10*log10(calParms.BP(ic));%10*log10(1.4*pi*(1-cosd(config_obj.BeamWidthAlongship))
+        config_obj.EquivalentBeamAngle=10*log10(calParms.BP(ic));
         config_obj.Frequency=nanmean(data.freq(ic,:));
         config_obj.FrequencyMaximum=nanmax(data.freq(ic,:));
         config_obj.FrequencyMinimum=nanmin(data.freq(ic,:));
         config_obj.Gain=0;
-        config_obj.SaCorrection=0;
-        config_obj.TransducerName='';
+        config_obj.SaCorrection=-SvOffset/2;
+        config_obj.TransducerName='ASL';
+        config_obj.TransceiverName='ASL';
         
         params_obj.Time=data.time;
         params_obj.Frequency(:)=data.freq(ic,:);
@@ -214,11 +217,12 @@ for i_cell=1:length(Filename_cell)
         params_obj.TransducerDepth(:)=0;
         params_obj.TransmitPower(:)=1;
         params_obj.Absorption(:)= seawater_absorption(params_obj.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
-
-        SvOffset = CalcSvOffset(data.freq(1,ic),params_obj.PulseLength(1));
-        data_struct.power=db2pow_perso(pow2db_perso(data.(sprintf('chan_%.0f',ic)))-calParms.TVR(ic)-20*log10(calParms.VTX(ic)));
-        data_struct.sv = pow2db_perso(data.(sprintf('chan_%.0f',ic)))-calParms.TVR(ic)-20*log10(calParms.VTX(ic)) + repmat(20*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings) - 10*log10(c*params_obj.PulseLength(1)/2)-config_obj.EquivalentBeamAngle+SvOffset;
-        data_struct.sp = pow2db_perso(data.(sprintf('chan_%.0f',ic)))-calParms.TVR(ic)-20*log10(calParms.VTX(ic)) + repmat(40*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings);
+        
+        
+        power_db=pow2db_perso(data.(sprintf('chan_%.0f',ic)))-calParms.TVR(ic)-20*log10(calParms.VTX(ic));
+        data_struct.power=db2pow_perso(power_db);
+        data_struct.sv = power_db + repmat(20*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings) - 10*log10(c*params_obj.PulseLength(1)/2)-config_obj.EquivalentBeamAngle+SvOffset;
+        data_struct.sp = power_db + repmat(40*log10(range)+2*params_obj.Absorption(1)*range,1,nb_pings);
         
         [sub_ac_data_temp,curr_name]=sub_ac_data_cl.sub_ac_data_from_struct(data_struct,dir_data,{});
         

@@ -332,7 +332,7 @@ for uui=select
     else
        fprintf('%s not in  FM mode\n',trans_obj.Config.ChannelID);
 
-       trans_obj=process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,idx_r,sphere_ts,log_file);
+       process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,idx_r,sphere_ts,log_file);
 
     end
 end

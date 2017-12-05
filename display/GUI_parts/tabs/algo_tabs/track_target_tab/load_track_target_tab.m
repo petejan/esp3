@@ -116,6 +116,8 @@ track_target_tab_comp.Min_Pings_Track=uicontrol(accept,'Style','Edit','units','n
 uicontrol(accept,'Style','text','units','normalized','string','MaxPingGap #','pos',pos{3,1},'HorizontalAlignment','right');
 track_target_tab_comp.Max_Gap_Track=uicontrol(accept,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(2),'BackgroundColor','white','callback',{@check_box,[0 100]});
 
+track_target_tab_comp.IgnoreAttitude=uicontrol(track_target_tab_comp.track_target_tab,'Style','checkbox','Value',0,'String','Ignore Attitude','units','normalized','Position',[0.75 0.4 0.25 0.1]);
+
 
 uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.6 0.15 0.1 0.1],'callback',{@validate,main_figure});
 uicontrol(track_target_tab_comp.track_target_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.6 0.05 0.1 0.1],'callback',{@copy_across_algo,main_figure,'TrackTarget'});

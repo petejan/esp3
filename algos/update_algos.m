@@ -135,7 +135,7 @@ end
 
 
 if found_school>0
-    if get(bottom_tab_comp.denoised,'Value')>0
+    if get(school_detect_tab_comp.denoised,'Value')>0
         Type='svdenoised';
     else
         Type='sv';
@@ -212,6 +212,7 @@ if found_track
         'WeightPingGap',str2double(get(track_target_tab_comp.WeightPingGap,'string')),...
         'Min_ST_Track',str2double(get(track_target_tab_comp.Min_ST_Track,'string')),...
         'Min_Pings_Track',str2double(get(track_target_tab_comp.Min_Pings_Track,'string')),...
+        'IgnoreAttitude',get(track_target_tab_comp.IgnoreAttitude,'value'),...
         'Max_Gap_Track',str2double(get(track_target_tab_comp.Max_Gap_Track,'string')),...
         'reg_obj',region_cl.empty());
 end

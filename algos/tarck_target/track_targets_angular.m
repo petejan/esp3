@@ -51,6 +51,7 @@ addParameter(p,'WeightPingGap',defaultWeightPingGap,checkWeigt);
 addParameter(p,'Min_ST_Track',default_min_ST_Track,check_min_ST_track);
 addParameter(p,'Min_Pings_Track',default_Min_Pings_Track,check_accept);
 addParameter(p,'Max_Gap_Track',default_Max_Gap_Track,check_accept);
+addParameter(p,'IgnoreAttitude',0,@isnumeric);
 addParameter(p,'load_bar_comp',[]);
 addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 
@@ -95,11 +96,14 @@ tracks_allocation=nan(1,nb_targets);
 %Compute target position in each pings (relative to transducer position+dist)
 % X_st = zeros(1,nb_targets);
 % Y_st = zeros(1,nb_targets);
-
+ p.Results.IgnoreAttitude
 
 %Minor is along Major is Across(Athwart)
-[X_st,Y_st,Z_st]=angles_to_pos(ST.Target_range,ST.Angle_minor_axis,ST.Angle_major_axis,ST.Heave,ST.Pitch,ST.Roll);
-%[X_st,Y_st,Z_st]=angles_to_pos(ST.Target_range,ST.Angle_minor_axis,ST.Angle_major_axis,0,0,0);
+if p.Results.IgnoreAttitude==0
+    [X_st,Y_st,Z_st]=angles_to_pos(ST.Target_range,ST.Angle_minor_axis,ST.Angle_major_axis,ST.Heave,ST.Pitch,ST.Roll);
+else
+    [X_st,Y_st,Z_st]=angles_to_pos(ST.Target_range,ST.Angle_minor_axis,ST.Angle_major_axis,0,0,0);
+end
 
 %X_st=X_st+ST.Dist;
 Z_st=-Z_st;
