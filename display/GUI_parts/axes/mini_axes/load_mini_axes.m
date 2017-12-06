@@ -75,7 +75,12 @@ if isgraphics(parent,'figure')
 else
     set(mini_axes_comp.mini_ax,'ButtonDownFcn',{@move_mini_axis_grab,main_figure});
 end
+axes_panel_comp=getappdata(main_figure,'Axes_panel');
+
+mini_axes_comp.link_props=linkprop([axes_panel_comp.main_axes mini_axes_comp.mini_ax],{'YColor','XColor','GridLineStyle','Color','Clim','GridColor','MinorGridColor','YDir'}); 
 
 setappdata(main_figure,'Mini_axes',mini_axes_comp);
+update_grid_mini_ax(main_figure)
 create_context_menu_mini_echo(main_figure);
+
 end

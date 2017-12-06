@@ -85,7 +85,7 @@ try
             
             switch callbackdata.Key
                 
-                case {'a'}
+                case {'a' 'leftarrow'}
                     if strcmpi(callbackdata.Modifier,'control')
                         if ~isempty(trans_obj.Regions)
                             curr_disp.setActive_reg_ID({trans_obj.Regions(:).Unique_ID});
@@ -98,10 +98,7 @@ try
                             set(main_axes,'ylim',y_lim);
                         end
                     end
-                    
-                case {'leftarrow'}
-                    
-                    
+                        
                 case {'rightarrow' 'd'}
                     if x_lim(2)<xdata(end)
                         x_lim=[nanmin(xdata(end),x_lim(2)+0.2*dx)-dx,nanmin(xdata(end),x_lim(2)+0.2*dx)];

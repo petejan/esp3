@@ -120,6 +120,7 @@ iptSetPointerBehavior(axes_panel_comp.bottom_plot,enterFcn);
 
 axes_panel_comp.track_plot=[];
 axes_panel_comp.listeners=[];
-
+axes_panel_comp.link_proph=linkprop([axes_panel_comp.haxes axes_panel_comp.main_axes],{'GridLineStyle','XTick','XColor'});
+axes_panel_comp.link_propv=linkprop([axes_panel_comp.vaxes axes_panel_comp.main_axes],{'GridLineStyle','YTick','YDir','YColor'});
 
 setappdata(main_figure,'Axes_panel',axes_panel_comp);

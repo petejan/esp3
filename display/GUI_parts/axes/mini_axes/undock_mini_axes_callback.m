@@ -6,6 +6,10 @@ if isempty(layer)
 end
 
 mini_axes_comp=getappdata(main_figure,'Mini_axes');
+if ~isempty(mini_axes_comp)
+    mini_axes_comp.link_props=[];
+end
+
 
 switch dest
     case 'main_figure'

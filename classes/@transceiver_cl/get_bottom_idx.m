@@ -14,6 +14,8 @@ bot_idx=bot_idx(:)';
 bot_idx(bot_idx==0)=1;
 
 if ~isempty(varargin)
-    bot_idx=bot_idx(varargin{1});
+    idx=varargin{1};
+    idx(idx<=0|idx>numel(bot_idx))=[];
+    bot_idx=bot_idx(idx);
 end
     

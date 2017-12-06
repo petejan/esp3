@@ -15,7 +15,7 @@ if isempty(layer)
     return;
 end
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.calibration_tab,'Style','Text','String',sprintf('Current Frequency: %.0fkHz',curr_disp.Freq/1e3),'units','normalized','Position',[0.05 0.85 0.4 0.1],'BackgroundColor','White');
@@ -253,10 +253,10 @@ layer=getappdata(main_figure,'Layer');
 [cal_path,~,~]=fileparts(layer.Filename{1});
 
 fid=fopen(fullfile(cal_path,'cal_echo.csv'),'w+');
-fprintf(fid,'%s,%s,%s\n', 'F', 'G0', 'SACORRECT');
+fprintf(fid,'%s,%s,%s,%s\n', 'F', 'G0', 'SACORRECT','alpha');
 for i=1:length(layer.Transceivers)
     cal_cw=get_cal(layer.Transceivers(i));
-    fprintf(fid,'%.0f,%.2f,%.2f\n',layer.Frequencies(i),cal_cw.G0,cal_cw.SACORRECT);
+    fprintf(fid,'%.0f,%.2f,%.2f,%.2f\n',layer.Frequencies(i),cal_cw.G0,cal_cw.SACORRECT,layer.Transceivers(i).Params.Absorption(1)*1e3);
 end
 fclose(fid);
 

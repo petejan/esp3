@@ -39,7 +39,7 @@ parse(p,Filename,ftype,varargin{:});
             new_layers=[];
             for ifi = 1:length(Filename)
                 lays_tmp=open_FCV30_file(Filename{ifi},...
-                    'PathToMemmap',p.Results.PathToMemmap,'p.Results.load_bar_comp',p.Results.load_bar_comp);
+                    'PathToMemmap',p.Results.PathToMemmap,'load_bar_comp',p.Results.load_bar_comp);
                 new_layers=[new_layers lays_tmp];
             end
             multi_lay_mode=0;

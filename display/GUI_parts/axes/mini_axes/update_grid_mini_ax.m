@@ -8,7 +8,7 @@ if ~isgraphics(mini_axes_comp.mini_ax.Parent,'figure')
     return;
 end
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 if isempty(trans_obj)
 return;
 end
@@ -41,6 +41,6 @@ ydata_grid=trans_obj.get_transceiver_range(idx_r);
 idx_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
 idx_yticks=find((diff(rem(ydata_grid,dy))<0))+1;
 
-set(mini_axes_comp.mini_ax,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on','YDir','reverse');
+set(mini_axes_comp.mini_ax,'Xtick',xdata(idx_xticks),'Ytick',ydata(idx_yticks),'XAxisLocation','top','XGrid','on','YGrid','on');
 
 end

@@ -5,12 +5,17 @@ if isempty(layer)
     return;
 end
 
+echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
+
+if ~strcmpi(echo_tab_panel.SelectedTab.Tag,'axes_panel')
+   return 
+end
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 info_panel_comp=getappdata(main_figure,'Info_panel');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 trans=trans_obj;
 Range=trans.get_transceiver_range();
 Bottom=trans.Bottom;

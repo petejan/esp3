@@ -1,5 +1,8 @@
 
 function set_alpha_map(main_figure,varargin)
+if ~isdeployed
+    disp('set_alpha_map')
+end
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
@@ -28,10 +31,11 @@ end
 if isempty(echo_im_tot)
     return;
 end
-[~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im_tot(1));
+
 min_axis=curr_disp.Cax(1);
 for iax=1:length(echo_ax_tot)
     
+    [~,idx_pings]=get_idx_r_n_pings(layer,curr_disp,echo_im_tot(iax));
     echo_im=echo_im_tot(iax);
     echo_ax=echo_ax_tot(iax);
     echo_im_bt=echo_im_bt_tot(iax);
@@ -60,8 +64,7 @@ for iax=1:length(echo_ax_tot)
         alpha_map(:,idx_bad_red)=1;
     end
     
-    
-    
+        
     bot_vec=trans_obj{iax}.get_bottom_idx(idx_pings);
     n_bot=size(alpha_map,2);
     
@@ -88,14 +91,15 @@ for iax=1:length(echo_ax_tot)
             alpha_map_bt=(~isnan(data_temp))-0.6;
         else
             alpha_map_bt=zeros(2,size(data_temp,2));
-        end
-        
+        end       
         set(echo_im_bt,'XData',xdata,'YData',[ydata(1) ydata(end)],'CData',data_temp,'AlphaData',alpha_map_bt);
     end
     
     alpha_map(data<min_axis|isnan(data))=0;
     
-    set(echo_ax,'CLim',curr_disp.Cax);
+    if strcmp(echo_ax.Tag,'main')
+        set(echo_ax,'CLim',curr_disp.Cax);
+    end
     set(echo_im,'AlphaData',alpha_map);
     
     % if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')

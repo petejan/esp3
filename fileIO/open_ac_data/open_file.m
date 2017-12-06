@@ -335,6 +335,31 @@ for itype = 1:length(ftype_unique)
                     laystr=list_layers(new_layers(i),'nb_char',80);
                     fprintf('Could not load lines for layer %s',laystr{1});
                 end
+                
+                [cal_path,~,~]=fileparts(new_layers(i).Filename{1});
+                cal_file=fullfile(cal_path,'cal_echo.csv');
+                try
+                if isfile(cal_file)
+                    cal_curr=csv2struct(cal_file);
+                    for i_freq=1:numel(new_layers(i).Frequencies)
+                        fprintf('Loading calibration file for Frequency %.0fkHz.\n',new_layers(i).Frequencies(i_freq)/1e3);
+                        if any([cal_curr(:).F] == new_layers(i).Frequencies(i_freq))
+                            idx_cal=find(cal_curr.F == new_layers(i).Frequencies(i_freq), 1);
+                            if ~isempty(idx_cal)
+                                new_layers(i).Transceivers(i_freq).apply_cw_cal(struct('G0',cal_curr.G0(idx_cal),'SACORRECT',cal_curr.SACORRECT(idx_cal)));
+                                if isfield(cal_curr,'alpha')
+                                    new_layers(i).Transceivers(i_freq).apply_absorption(cal_curr.alpha(idx_cal)/1e3);
+                                end
+                            end
+                        else
+                            fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',new_layers(i).Frequencies(i_freq)/1e3);
+                        end
+                    end
+                end
+                catch
+                    fprintf('Could not load calibration file %s\n',cal_file);
+                end
+                    
             end
             
             multi_lay_mode=0;

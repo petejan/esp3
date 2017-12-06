@@ -274,8 +274,9 @@ for isn=1:length(snaps)
             good_pings_sh=[];
         end
         
-        if  surv_in_obj.Options.ExportSlicedTransects>0           
-            outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap%d_strat%s_trans%d.xlsx',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num));
+        if  surv_in_obj.Options.ExportSlicedTransects>0   
+            
+            outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d.xlsx',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
             if exist(outputFileXLS,'file')>0
                 delete(outputFileXLS);
             end

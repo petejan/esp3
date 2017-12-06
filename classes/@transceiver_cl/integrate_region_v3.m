@@ -99,6 +99,11 @@ end
     'keep_bottom',p.Results.keep_bottom,...
     'keep_all',p.Results.keep_all);
 
+if isempty(Sv_reg)
+    output=[];
+    return;
+end
+
 %% motion correction
 if p.Results.motion_correction>0
     motion_corr=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','motioncompensation');

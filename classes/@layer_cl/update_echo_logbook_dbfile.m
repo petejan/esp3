@@ -78,12 +78,13 @@ for ilay=1:length(layers_obj)
         
         [list_raw,~]=list_ac_files(path_f,1);
         
-        [new_files,idx_new]=setdiff(list_raw,files_logbook);
+        [new_files,~]=setdiff(list_raw,files_logbook);
         if~isempty(new_files)
             ftypes=get_ftype_cell(cellfun(@(x) fullfile(path_f,x),new_files,'UniformOutput',0));
             idx_rem=strcmpi('unknown',ftypes);
             new_files(idx_rem)=[];
             new_files(idx_rem)=[];
+            ftypes(idx_rem)=[];
         end
         dbconn=sqlite(db_file,'connect');
         survdata_temp=survey_data_cl('Voyage',voy,'SurveyName',surv_name);
@@ -91,7 +92,7 @@ for ilay=1:length(layers_obj)
         if numel(new_files)==0
             disp('The logbook seems to be up to date...');
         else
-            add_files_to_db(path_f,new_files,ftypes(idx_new),dbconn,survdata_temp)
+            add_files_to_db(path_f,new_files,ftypes,dbconn,survdata_temp)
         end
         
         

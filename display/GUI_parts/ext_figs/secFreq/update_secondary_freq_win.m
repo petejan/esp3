@@ -29,11 +29,17 @@ y=double(get(axes_panel_comp.main_axes,'ylim'));
 nb_chan=numel(curr_disp.SecChannelIDs);
 
 for i=1:nb_chan
+    
     echo_obj=findobj(secondary_freq.axes(i),{'Type','image','-and','Tag',curr_disp.SecChannelIDs{i}});
     if ~isempty(echo_obj)
         struct_temp.ChannelID=curr_disp.SecChannelIDs{i};
         struct_temp.Freq=curr_disp.SecFreqs(i);
-        layer.display_layer(struct_temp,curr_disp.Fieldname,secondary_freq.axes(i),echo_obj,x,y,0);
+        trans_obj=layer.get_trans(struct_temp);
+        range=trans_obj.get_transceiver_range();
+        y1=find(range>=curr_disp.R_disp(1),1);
+        y2=find(range<=curr_disp.R_disp(2),1,'last');
+
+        layer.display_layer(struct_temp,curr_disp.Fieldname,secondary_freq.axes(i),echo_obj,x,[y1 y2],0);
     end
 end
 

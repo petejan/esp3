@@ -136,7 +136,7 @@ switch main_figure.SelectionType
             else
                 curr_disp.setActive_reg_ID(setdiff(curr_disp.Active_reg_ID,{ID}));
             end
-
+            
         end
         
     case 'normal'
@@ -256,64 +256,72 @@ end
 
 
 function disp_hist_region_callback(~,~,select_plot,main_figure)
-
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-trans=layer.get_trans(curr_disp);
+
 switch class(select_plot)
     case 'region_cl'
-        reg_curr=select_plot;
+        [trans_obj,~]=layer.get_trans(curr_disp);
+        
+        reg_obj=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
     otherwise
         idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
         idx_r=round(nanmin(select_plot.YData)):round(nanmax(select_plot.YData));
-        reg_curr=region_cl('Idx_pings',idx_pings,'Idx_r',idx_r);
-end
-data=trans.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field',curr_disp.Fieldname);
-
-sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
-idxBad=find(trans.Bottom.Tag==0);
-
-
-
-[sub_bot_mat,sub_sample_mat]=meshgrid(sub_bot,reg_curr.Idx_r);
-
-sub_idx_bad=intersect(reg_curr.Idx_pings,idxBad);
-sub_idx_bad=sub_idx_bad-reg_curr.Idx_pings(1)+1;
-
-switch reg_curr.Shape
-    case 'Polygon'
-        mask=reg_curr.MaskReg;
-        data(~mask)=nan;
-    case 'Rectangular'
-        
-end
-data(sub_sample_mat>=sub_bot_mat)=nan;
-data(:,sub_idx_bad)=nan;
-
-if ~any(~isnan(data))
-    return;
+        reg_obj=region_cl('Name','Select Area','Idx_r',idx_r,'Idx_pings',idx_pings,'Unique_ID','1');
 end
 
-[pdf,x]=pdf_perso(data,'bin',50);
+trans=layer.get_trans(curr_disp);
 
-tt=reg_curr.print();
-switch lower(deblank(curr_disp.Fieldname))
-    case{'alongangle','acrossangle'}
-        xlab=sprintf('Angle (deg)');
-    case{'alongphi','acrossphi'}
-        xlab='Phase (deg)';
-    otherwise
-        xlab=sprintf('%s (dB)',curr_disp.Type);
+for i=1:length(reg_obj)
+    reg_curr=reg_obj(i);
+    data=trans.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field',curr_disp.Fieldname);
+    
+    sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
+    idxBad=find(trans.Bottom.Tag==0);
+    
+    
+    
+    [sub_bot_mat,sub_sample_mat]=meshgrid(sub_bot,reg_curr.Idx_r);
+    
+    sub_idx_bad=intersect(reg_curr.Idx_pings,idxBad);
+    sub_idx_bad=sub_idx_bad-reg_curr.Idx_pings(1)+1;
+    
+    switch reg_curr.Shape
+        case 'Polygon'
+            mask=reg_curr.MaskReg;
+            data(~mask)=nan;
+        case 'Rectangular'
+            
+    end
+    data(sub_sample_mat>=sub_bot_mat)=nan;
+    data(:,sub_idx_bad)=nan;
+    
+    if ~any(~isnan(data))
+        return;
+    end
+    
+    [pdf,x]=pdf_perso(data,'bin',50);
+    
+    tt=reg_curr.print();
+    switch lower(deblank(curr_disp.Fieldname))
+        case{'alongangle','acrossangle'}
+            xlab=sprintf('Angle (deg)');
+        case{'alongphi','acrossphi'}
+            xlab='Phase (deg)';
+        otherwise
+            xlab=sprintf('%s (dB)',curr_disp.Type);
+    end
+    
+    new_echo_figure(main_figure,'Name',sprintf('Region %d Histogram: %s',reg_curr.ID,curr_disp.Type),'Tag',sprintf('histo%s',reg_curr.UniqueID));
+    hold on;
+    title(tt);
+    bar(x,pdf);
+    grid on;
+    ylabel('Pdf');
+    xlabel(xlab);
+    
 end
-
-new_echo_figure(main_figure,'Name',sprintf('Region Histogram: %s',curr_disp.Type),'Tag','region_pdf');
-hold on;
-title(tt);
-bar(x,pdf);
-grid on;
-ylabel('Pdf');
-xlabel(xlab);
 
 end
 

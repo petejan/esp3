@@ -67,7 +67,7 @@ reverse_y_axis(main_figure);
 display_tracks(main_figure);
 display_file_lines(main_figure);
 display_survdata_lines(main_figure);
-set_alpha_map(main_figure,'main_or_mini',union({'main','mini'},layer.ChannelID));
+set_alpha_map(main_figure,'main_or_mini',union({'main'},layer.ChannelID));
 order_stacks_fig(main_figure);
 %curr_disp.R_disp
 

@@ -5,7 +5,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 [dx,dy]=curr_disp.get_dx_dy();
 
-if dx==0;
+if dx==0
     switch curr_disp.Xaxes_current
         case 'seconds'
             x_vec=trans_obj.Time*(24*60*60);
@@ -13,6 +13,7 @@ if dx==0;
         case 'meters'
             x_vec=trans_obj.GPSDataPing.Dist;
             dx=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
+            
         case 'pings'
             x_vec=trans_obj.get_transceiver_pings();
             dx=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
