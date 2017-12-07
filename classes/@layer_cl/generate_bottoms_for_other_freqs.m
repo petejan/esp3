@@ -35,11 +35,14 @@ for i=1:length(layer.Transceivers)
     if numel(new_time)==numel(time_ori)
         if all(new_time-time_ori)
             bot_idx_new=bot_idx_tmp;
+            bot_tag_new=new_bot.Tag;
         else
             bot_idx_new=resample_data_v2(bot_idx_tmp,time_ori,new_time);
+            bot_tag_new=resample_data_v2(new_bot.Tag,time_ori,new_time,'Opt','Nearest');
         end
     else
-        bot_idx_new=resample_data_v2(bot_idx_tmp,time_ori,new_time);
+        bot_idx_new=resample_data_v2(new_bot.Tag,time_ori,new_time);
+        bot_tag_new=resample_data_v2(new_bot.Tag,time_ori,new_time,'Opt','Nearest');
     end
     
     bot_idx_new=round(bot_idx_new);
@@ -48,7 +51,7 @@ for i=1:length(layer.Transceivers)
      
     bots=[bots bottom_cl('Origin',bot_ori.Origin,...
         'Sample_idx',bot_idx_new,...
-        'Tag',new_bot.Tag)];
+        'Tag',bot_tag_new)];
     
 end
 

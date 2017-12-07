@@ -342,13 +342,15 @@ for itype = 1:length(ftype_unique)
                 if isfile(cal_file)
                     cal_curr=csv2struct(cal_file);
                     for i_freq=1:numel(new_layers(i).Frequencies)
-                        fprintf('Loading calibration file for Frequency %.0fkHz.\n',new_layers(i).Frequencies(i_freq)/1e3);
+                        fprintf('Loading calibration for Frequency %.0fkHz.\n',new_layers(i).Frequencies(i_freq)/1e3);
                         if any([cal_curr(:).F] == new_layers(i).Frequencies(i_freq))
                             idx_cal=find(cal_curr.F == new_layers(i).Frequencies(i_freq), 1);
                             if ~isempty(idx_cal)
                                 new_layers(i).Transceivers(i_freq).apply_cw_cal(struct('G0',cal_curr.G0(idx_cal),'SACORRECT',cal_curr.SACORRECT(idx_cal)));
                                 if isfield(cal_curr,'alpha')
+                                    fprintf('Applying new absorption to %.0fkHz.\n',new_layers(i).Frequencies(i_freq)/1e3);
                                     new_layers(i).Transceivers(i_freq).apply_absorption(cal_curr.alpha(idx_cal)/1e3);
+                                    
                                 end
                             end
                         else

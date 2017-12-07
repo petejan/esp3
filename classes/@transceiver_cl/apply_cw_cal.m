@@ -10,6 +10,8 @@ end
 if old_cal.G0==new_cal.G0&&old_cal.SACORRECT==new_cal.SACORRECT
     return;
 end
+fprintf('   Old Calibration values: G0=%.2f dB SaCorr=%.2f dB\n',old_cal.G0,old_cal.SACORRECT);
+fprintf('   New Calibration values: G0=%.2f dB SaCorr=%.2f dB\n',new_cal.G0,new_cal.SACORRECT);
 
 if isnan(new_cal.G0)
     new_cal.G0=old_cal.G0;
