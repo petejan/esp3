@@ -56,7 +56,7 @@ end
 
 dist=obj.Dist;
 time=obj.Time(1:end);
-if ~isempty(dist)
+if any(dist>0)
     speed=diff(dist/1852)./diff(time*24*60*60/3600);
     h_fig=new_echo_figure(parenth,'Name','Speed','Tag','attitude');
     ax= axes(h_fig,'nextplot','add','OuterPosition',[0 0 1 1]);

@@ -133,12 +133,13 @@ Sp(idx_r_max:end,:)=nan;
 dist=trans_obj.GPSDataPing.Dist;
 heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
 
-if ~isempty(dist)&&nb_pings>1&&p.Results.horz_filt>0
+if ~all(diff(dist)==0)&&nb_pings>1&&p.Results.horz_filt>0
     b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
 else
     b_filter=ceil(nanmin(15,nb_pings/10));
     %b_filter=nb_pings;
 end
+
 if p.Results.rm_rd
     idx_ringdown=analyse_ringdown(RingDown);
 else
