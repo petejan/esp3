@@ -34,8 +34,7 @@ for i=1:nb_chan
     secondary_freq.axes(i).XTick=axes_panel_comp.main_axes.XTick;
 end
 set(secondary_freq.axes,'GridLineStyle',axes_panel_comp.main_axes.GridLineStyle,...
-    'XTick',axes_panel_comp.main_axes.XTick,...
-    'YTick',axes_panel_comp.main_axes.YTick);
+    'XTick',axes_panel_comp.main_axes.XTick);
 secondary_freq.link_props=linkprop([secondary_freq.axes axes_panel_comp.main_axes],{'YColor','XColor','GridLineStyle','XTick','Color','Clim','GridColor','MinorGridColor','YDir'});
 
 setappdata(main_figure,'Secondary_freq',secondary_freq);

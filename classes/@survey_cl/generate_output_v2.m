@@ -253,9 +253,7 @@ for isn=1:length(snaps)
              
         num_slice=size(output_2D_surf.eint,2);
         
-        
-  
-        surf_slice_int=nansum(output_2D_surf.eint);
+         surf_slice_int=nansum(output_2D_surf.eint);
         good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
         
         if ~isempty(output_2D_bot)

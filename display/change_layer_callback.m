@@ -40,7 +40,9 @@ function change_layer_callback(~,~,main_figure,id)
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
 
-if isempty(layer)
+if isempty(layer)||~isvalid(layer)
+    layer=layers(1);
+    setappdata(main_figure,'Layer',layer);
     return;
 end
 

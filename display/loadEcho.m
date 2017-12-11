@@ -47,6 +47,7 @@ layers = getappdata(main_figure,'Layers');
 if isempty(layers)
     return;
 end
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 remove_interactions(main_figure);
 disable_listeners(main_figure);
@@ -54,16 +55,24 @@ uiundo(main_figure,'clear');
 
 nb_layers = length(layers);
 
-
-if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
-    flag = 0;
-    up_curr_disp=0;
-elseif ~strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers<=curr_disp.NbLayers
-    flag = 1;  
-    up_curr_disp=0;
-elseif nb_layers>curr_disp.NbLayers
+try
+    if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
+        flag = 0;
+        up_curr_disp=0;
+    elseif ~strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers<=curr_disp.NbLayers
+        flag = 1;
+        up_curr_disp=0;
+    elseif nb_layers>curr_disp.NbLayers
+        flag = 1;
+        up_curr_disp=1;
+    end
+    
+catch
     flag = 1;
     up_curr_disp=1;
+    if ~isdeployed()
+        disp('Error in Load Echo');
+    end
 end
 
 if up_curr_disp>=1

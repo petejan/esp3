@@ -17,6 +17,7 @@ end
 
 [~,filenames_lay_short,~]=cellfun(@fileparts,filenames_lays,'UniformOutput',0);
 idx_lays=[];
+
 for ifi=1:length(filenames)
     
     [~,file_short,~]=fileparts(filenames{ifi});

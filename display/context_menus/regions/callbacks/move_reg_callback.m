@@ -71,7 +71,7 @@ switch main_figure.SelectionType
         iptSetPointerBehavior(obj,enterFcn);
         replace_interaction(main_figure,'interaction','KeyPressFcn','id',1);
         curr_disp.UIupdate=0;
-        obj.Shape.Vertices
+
         switch obj.Type
             case 'patch'
                 move_patch_select(obj,[],main_figure);

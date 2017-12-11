@@ -3,7 +3,8 @@ function Sv_freq_response_func(main_figure,reg_obj)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 [~,idx_freq]=layer.get_trans(curr_disp);
-
+show_status_bar(main_figure);
+load_bar_comp=getappdata(main_figure,'Loading_bar');
 f_vec=[];
 Sv_f=[];
 
@@ -54,7 +55,9 @@ for uui=1:length(layer.Frequencies)
         else
             cal=[];
         end
-              
+        
+        load_bar_comp.status_bar.setText(sprintf('Processing Sv estimation at %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+                      
         [Sv_f_temp,f_vec_temp,~,~]=layer.Transceivers(uui).sv_f_from_region(reg,'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
         Sv_f_temp_mean=10*log10(nanmean(nanmean(10.^(Sv_f_temp/10))));
         Sv_f_temp_mean=permute(Sv_f_temp_mean,[2 3 1]);
@@ -105,7 +108,9 @@ if~isempty(f_vec)
         'Tag',reg_obj.Tag,...
         'Name',sprintf('%s %.0f %.0fkHz',reg_obj.Name,reg_obj.ID,layer.Frequencies(idx_freq)/1e3),...
         'Unique_ID',reg_obj.Unique_ID));
-    
-   
+       
 end
+
+
+hide_status_bar(main_figure);
 end

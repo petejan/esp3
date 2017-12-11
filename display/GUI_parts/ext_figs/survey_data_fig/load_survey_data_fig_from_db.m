@@ -373,9 +373,11 @@ selected_files=unique(data_ori([data_ori{:,1}],2));
 path_f=getappdata(surv_data_tab,'path_data');
 files=fullfile(path_f,selected_files);
 layers=getappdata(main_figure,'Layers');
+
 if ~isempty(layers)
     [old_files,lay_IDs]=layers.list_files_layers();
     idx_already_open=cellfun(@(x) any(strcmpi(x,old_files)),files);
+    
     if any(idx_already_open)
         fprintf('File %s already open in existing layer\n',files{idx_already_open});
         files_open=files(idx_already_open);
@@ -386,6 +388,7 @@ else
 end
 
 idx_deleted= find(~cellfun(@(x) exist(x,'file')==2,files));
+
 if ~isempty(idx_deleted)
     
     dbconn=sqlite(fullfile(path_f,'echo_logbook.db'),'connect');
@@ -401,7 +404,7 @@ end
 if isempty(files)
     if any(idx_already_open)
         idx_open=find(strcmpi(files_open{end},old_files));
-        [idx_lay,~]=find_layer_idx(layers,lay_IDs(idx_open(end)));
+        [idx_lay,~]=find_layer_idx(layers,lay_IDs{idx_open(end)});
         setappdata(main_figure,'Layer',layers(idx_lay));
         loadEcho(main_figure);
         return;

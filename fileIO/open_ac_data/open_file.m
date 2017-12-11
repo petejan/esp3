@@ -402,8 +402,9 @@ if isempty(layers)||~exist('files_lay','var')
     return;
 end
 
+layers(~isvalid(layers))=[];
 [idx,~]=find_layer_idx_files(layers,files_lay);
-layer=layers(idx);
+layer=layers(idx(1));
 
 setappdata(main_figure,'Layer',layer);
 setappdata(main_figure,'Layers',layers);

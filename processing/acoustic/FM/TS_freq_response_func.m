@@ -96,9 +96,8 @@ for uui=idx_sort
         idx_pings(isnan(Sp_max))=[];
         idx_peak(isnan(Sp_max))=[];
         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(idx_pings), 'Value',0);
-        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation Frequency %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
-        
-        
+        load_bar_comp.status_bar.setText(sprintf('Processing TS estimation at %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
+                
         for kk=1:length(idx_pings)
             [Sp_f(:,kk),Compensation_f(:,kk),f_vec_temp(:,kk)]=processTS_f_v2(layer.Transceivers(uui),layer.EnvData,idx_pings(kk),range(idx_peak(kk)),1,cal,[]);
             set(load_bar_comp.progress_bar,'Value',kk);

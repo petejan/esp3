@@ -25,7 +25,7 @@ try
             xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
         case 'meters'
             xdata_grid=trans_obj.GPSDataPing.Dist();
-            if  ~any(trans_obj.GPSDataPing.Lat~=0)
+            if  ~any(~isnan(trans_obj.GPSDataPing.Lat))
                 disp('NO GPS Data');
                 curr_disp.Xaxes_current='pings';
                 xdata_grid=trans_obj.get_transceiver_pings(idx_pings);

@@ -1,7 +1,11 @@
 function display_info_ButtonMotionFcn(~,~,main_figure,force_update)
 
 layer=getappdata(main_figure,'Layer');
-if isempty(layer)
+if isempty(layer)||~isvalid(layer)
+    return;
+end
+
+if ~isvalid(layer)
     return;
 end
 

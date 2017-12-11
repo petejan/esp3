@@ -41,7 +41,7 @@ for i=1:length(layer.Transceivers)
             bot_tag_new=resample_data_v2(new_bot.Tag,time_ori,new_time,'Opt','Nearest');
         end
     else
-        bot_idx_new=resample_data_v2(new_bot.Tag,time_ori,new_time);
+        bot_idx_new=resample_data_v2(bot_idx_tmp,time_ori,new_time);
         bot_tag_new=resample_data_v2(new_bot.Tag,time_ori,new_time,'Opt','Nearest');
     end
     

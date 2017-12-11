@@ -97,8 +97,7 @@ for iax=1:length(main_axes_tot)
                 end
             end
             
-            
-            
+                       
             reg_plot(1)=plot(main_axes,reg_curr.Poly, 'FaceColor',col,...
                 'parent',main_axes,'FaceAlpha',alpha_in,...
                 'EdgeColor',col,...

@@ -1,7 +1,7 @@
 
 classdef layer_cl < handle
     properties
-        Unique_ID='';
+        Unique_ID=generate_Unique_ID();
         Filename={''};
         ChannelID={''};
         Filetype='';

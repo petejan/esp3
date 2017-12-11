@@ -321,6 +321,18 @@ function goto_layer_cback(src,evt,main_figure)
 
 layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
+layers(~isvalid(layers))=[];
+
+if isempty(layer)
+    uid='';
+else
+    
+    if ~isvalid(layer)
+        uid='';
+    else
+        uid=layer.Unique_ID;
+    end
+end
 up_display=0;
 
 if ~isempty(evt.Indices)
@@ -329,7 +341,7 @@ if ~isempty(evt.Indices)
         modifier = get(fig,'CurrentModifier');
         control = ismember({'shift' 'control'},modifier);
         if ~any(control)           
-            if ~strcmp(layer.Unique_ID,src.Data{evt.Indices(1),2})
+            if ~strcmp(uid,src.Data{evt.Indices(1),2})
                 [idx,~]=find_layer_idx(layers,src.Data{evt.Indices(1),2});
                 layer=layers(idx);
                 up_display=1;
