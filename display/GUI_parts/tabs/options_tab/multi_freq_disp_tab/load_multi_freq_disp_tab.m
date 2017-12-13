@@ -72,8 +72,10 @@ set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_
 %      'BackgroundColor','White','units','normalized','position',[0.25 0.9 0.25 0.1],'String','Link YLim to Echo.','Value',0,'Callback',{@link_ylim_to_echo_clim,main_figure,tab_tag});
 %  
  multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
-     'BackgroundColor','White','units','pixels','position',[10 27 200 21],'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
- multi_freq_disp_tab_comp.detrend=0;
+     'BackgroundColor','White','units','pixels','position',[10 27 150 21],'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+ multi_freq_disp_tab_comp.show_sd_bar=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
+     'BackgroundColor','White','units','pixels','position',[160 27 200 21],'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 
 update_multi_freq_disp_tab(main_figure,tab_tag,0);
@@ -83,8 +85,6 @@ end
 function detrend_curves_cback(src,evt,main_figure,tab_tag)
 update_multi_freq_disp_tab(main_figure,tab_tag,0);
 end
-
-
 
 
 function selection_callback(src,~,main_figure,tab_tag)
@@ -178,7 +178,7 @@ switch evt.Indices(2)
     case 3
         multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
         data=multi_freq_disp_tab_comp.table.Data(evt.Indices(1),:);
-        line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','line','-and','Tag',data{4}});
+        line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Tag',data{4}});
         if ~isempty(line_obj)
             switch data{3}
                 case true
@@ -209,8 +209,8 @@ end
 
 multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
 data=multi_freq_disp_tab_comp.table.Data(evt.Indices(end,1),:);
-line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','line','-and','Tag',data{4}});
-other_lines_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','line','-and','-not','Tag',data{4}});
+line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','errorbar','-and','Tag',data{4}});
+other_lines_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','errorbar','-and','-not','Tag',data{4}});
 
 if ~isempty(other_lines_obj)
      set(other_lines_obj,'Linewidth',1);

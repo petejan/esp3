@@ -3,6 +3,7 @@ classdef curve_cl
     properties
         XData=[];
         YData=[];
+        SD=[];
         Tag='';
         Xunit='';
         Yunit='';
@@ -18,6 +19,7 @@ classdef curve_cl
                         
             addParameter(p,'XData',[],@isnumeric);
             addParameter(p,'YData',[],@isnumeric);
+            addParameter(p,'SD',[],@isnumeric);
             addParameter(p,'Tag','',@ischar);
             addParameter(p,'Xunit','',@ischar);
             addParameter(p,'Yunit','',@ischar);
@@ -33,6 +35,10 @@ classdef curve_cl
             for i=1:length(props)               
                 obj.(props{i})=results.(props{i});            
             end    
+            
+            if isempty(obj.SD)
+                obj.SD=nan(size(obj.XData));
+            end
 
         end
                 

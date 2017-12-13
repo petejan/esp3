@@ -4,7 +4,6 @@ if exist(xml_file,'file')==0
     return;
 end
 
-
 surv_data_struct=import_survey_data_xml(xml_file);
 
 if isempty(surv_data_struct)

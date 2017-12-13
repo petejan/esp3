@@ -53,7 +53,9 @@ for ip=1:length(pathtofile)
         initialize_echo_logbook_dbfile(pathtofile{ip},0);
     end
     
-    dbconn=sqlite(fileN,'connect');
+    
+    dbconn=sqlite(fileN,'connect');    
+    createlogbookTable(dbconn);
     
     files_db=dbconn.fetch('select Filename from logbook');
     close(dbconn);

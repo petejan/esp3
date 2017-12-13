@@ -18,6 +18,7 @@ r_max=nanmax(range(idx_r));
 f_vec=[];
 
 TS_f=[];
+SD_f=[];
 
 [cal_path,~,~]=fileparts(layer.Filename{1});
 
@@ -105,9 +106,11 @@ for uui=idx_sort
         
         Compensation_f(Compensation_f>12)=nan;
         TS_f_tmp=(Sp_f+Compensation_f);
-        TS_f_tmp=10*log10(nanmean(10.^(TS_f_tmp'/10)));
+        tsf_f_tmp=(10.^(TS_f_tmp'/10));
         
-        TS_f=[TS_f TS_f_tmp];        
+        SD_f=[SD_f nanstd(TS_f_tmp')];
+        SD_f=[];
+        TS_f=[TS_f 10*log10(nanmean(tsf_f_tmp))];        
         f_vec=[f_vec f_vec_temp(:,1)'];
         
         
@@ -134,7 +137,10 @@ for uui=idx_sort
         comp(comp>12|comp<0)=nan;
         f_vec=[f_vec layer.Frequencies(uui)];
         TS_f_tmp=(Sp_max+comp);
-        TS_f_tmp=10*log10(nanmean(10.^(TS_f_tmp(:)/10)));
+        tsf_f_tmp=(10.^(TS_f_tmp(:)/10));
+        
+        SD_f=[SD_f nanstd(TS_f_tmp)];
+        TS_f_tmp=10*log10(nanmean(tsf_f_tmp));
         TS_f=[TS_f TS_f_tmp];
     end
 end
@@ -145,7 +151,8 @@ if ~isempty(f_vec)
     TS_f=TS_f(idx_sort);
     
     layer.add_curves(curve_cl('XData',f_vec/1e3,...
-        'YData',TS_f,...
+        'YData',TS_f,...       
+        'SD',SD_f,...
         'Type','TS(f)',...
         'Xunit','kHz',...
         'Yunit','dB',...

@@ -7,6 +7,7 @@ show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
 f_vec=[];
 Sv_f=[];
+SD_f=[];
 
 [cal_path,~,~]=fileparts(layer.Filename{1});
 
@@ -59,9 +60,16 @@ for uui=1:length(layer.Frequencies)
         load_bar_comp.status_bar.setText(sprintf('Processing Sv estimation at %.0fkz',layer.Transceivers(uui).Params.Frequency(1)/1e3));
                       
         [Sv_f_temp,f_vec_temp,~,~]=layer.Transceivers(uui).sv_f_from_region(reg,'envdata',layer.EnvData,'cal',cal,'cal_eba',cal_eba);
-        Sv_f_temp_mean=10*log10(nanmean(nanmean(10.^(Sv_f_temp/10))));
-        Sv_f_temp_mean=permute(Sv_f_temp_mean,[2 3 1]);
-        Sv_f=[Sv_f Sv_f_temp_mean];
+        
+        sv_f_temp=10.^(Sv_f_temp/10);
+        Sv_f_temp=10*log10(nanmean(nanmean(sv_f_temp)));
+        SD_f_temp=nanstd(10*log10(nanmean(sv_f_temp)));
+        
+        Sv_f_temp=permute(Sv_f_temp,[2 3 1]);
+        
+        %SD_f=[SD_f SD_f_temp]; 
+        SD_f=[];
+        Sv_f=[Sv_f Sv_f_temp];
         f_vec=[f_vec f_vec_temp];
         
               
@@ -84,12 +92,16 @@ for uui=1:length(layer.Frequencies)
        
         if all(Sv(:)==-999|isnan(Sv(:)))
             tmp=nan;
+            SD_f_temp=nan;
         else
-            tmp=10*log10(nanmean(10.^(Sv(:)/10)));
+            sv_lin=(10.^(Sv(:)/10));
+            SD_f_temp=nanstd(Sv(:));
+            tmp=10*log10(nanmean(sv_lin));
         end
          
         Sv_f=[Sv_f tmp];
         
+        SD_f=[SD_f SD_f_temp]; 
         f_vec=[f_vec f_vec_temp];
         clear f_vec_temp
     end
@@ -102,6 +114,7 @@ if~isempty(f_vec)
     
     layer.add_curves(curve_cl('XData',f_vec/1e3,...
         'YData',Sv_f,...
+        'SD',SD_f,...
         'Type','Sv(f)',...
         'Xunit','kHz',...
         'Yunit','dB',...

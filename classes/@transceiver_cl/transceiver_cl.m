@@ -74,7 +74,6 @@ classdef transceiver_cl < handle
         end
         
         function set.Bottom(obj,bottom_obj)
-
             
             if isempty(bottom_obj)
                 bottom_obj=bottom_cl();

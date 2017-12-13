@@ -16,8 +16,6 @@ if isempty(multi_freq_disp_tab_comp)
 end
 
 
-
-multi_freq_disp_tab_comp.detrend=multi_freq_disp_tab_comp.detrend_cbox.Value;
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
@@ -27,7 +25,7 @@ end
 fLim=layer.get_flim();
 set(multi_freq_disp_tab_comp.ax,'XLim',fLim/1e3+[-10 +10]);
 set(multi_freq_disp_tab_comp.ax,'XTick',layer.Frequencies/1e3);
-lines=findobj(multi_freq_disp_tab_comp.ax,'Type','line');
+lines=findobj(multi_freq_disp_tab_comp.ax,'Type','errorbar');
 reg_uid=layer.get_layer_reg_uid();
 
 
@@ -84,7 +82,7 @@ update_curves_and_table(main_figure,tab_tag,id_new);
 nb_lines=size(multi_freq_disp_tab_comp.table.Data,1);
 
 for il=1:nb_lines
-    line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','line','-and','Tag',multi_freq_disp_tab_comp.table.Data{il,4}});
+    line_obj=findobj(multi_freq_disp_tab_comp.ax,{'Type','errorbar','-and','Tag',multi_freq_disp_tab_comp.table.Data{il,4}});
     if ~isempty(line_obj)
         switch multi_freq_disp_tab_comp.table.Data{il,3}
             case true

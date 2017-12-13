@@ -14,7 +14,7 @@ if ~(exist(db_file,'file')==2)
 end
 
 dbconn=sqlite(db_file,'connect');
-
+createlogbookTable(dbconn);
 
 for i=1:nb_files
     file_curr=deblank(list_raw{i});

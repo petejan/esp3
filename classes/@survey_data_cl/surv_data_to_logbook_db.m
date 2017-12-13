@@ -25,28 +25,18 @@ end
 
 et=datestr(et_num,'yyyy-mm-dd HH:MM:SS');
 
+strat=surv_data_obj.Stratum;
 snap=surv_data_obj.Snapshot;
-
-if ~ischar(surv_data_obj.Comment)
-    comm=num2str(surv_data_obj.Comment,'%.0f');
-else
-    comm=surv_data_obj.Comment;
-end
-
-if ~ischar(surv_data_obj.Stratum)
-    strat=num2str(surv_data_obj.Stratum,'%.0f');
-else
-    strat=surv_data_obj.Stratum;
-end
-
 trans=surv_data_obj.Transect;
+type=surv_data_obj.Type;
+comm=surv_data_obj.Comment;
 try
     %before=dbconn.fetch(sprintf('select * from logbook where Filename like "%s"',filename))
     dbconn.exec('delete from survey');
     dbconn.insert('survey',{'Voyage' 'SurveyName'},...
         {surv_data_obj.Voyage surv_data_obj.SurveyName});
-    dbconn.insert('logbook',{'Filename' 'Snapshot' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
-        {filename snap strat trans st et comm});
+    dbconn.insert('logbook',{'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect' 'StartTime' 'EndTime' 'Comment'},...
+        {filename snap type strat trans st et comm});
 %     after_log=dbconn.fetch(sprintf('select * from logbook where Filename like "%s"',filename))
 %     after=dbconn.fetch('select * from survey')
 catch err

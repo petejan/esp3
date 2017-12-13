@@ -89,6 +89,7 @@ if ~isempty(reglist_tab_comp.table.Data)&&~force_repop
         update_reg_data_table(regions(idx_reg_to_update),reglist_tab_comp.table);
     end
 else
+    reglist_tab_comp.table.Data(:)=[];
     update_reg_data_table(regions,reglist_tab_comp.table);    
 end
 

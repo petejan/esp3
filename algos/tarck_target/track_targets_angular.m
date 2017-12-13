@@ -96,7 +96,7 @@ tracks_allocation=nan(1,nb_targets);
 %Compute target position in each pings (relative to transducer position+dist)
 % X_st = zeros(1,nb_targets);
 % Y_st = zeros(1,nb_targets);
- p.Results.IgnoreAttitude
+
 
 %Minor is along Major is Across(Athwart)
 if p.Results.IgnoreAttitude==0

@@ -34,13 +34,18 @@ for i=1:numel(id_new)
     if multi_freq_disp_tab_comp.detrend_cbox.Value>0
         average(i)=nanmean(db2pow_perso(curves(idx).YData));
     end
-    
-    if ~isempty(id_c)
-        set(id_c,'XData',curves(idx).XData,'YData',curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID);
+    if multi_freq_disp_tab_comp.show_sd_bar.Value>0
+        sd=curves(idx).SD;
+    else
+        sd=[];
+    end
+    if ~isempty(id_c)        
+        set(id_c,'XData',curves(idx).XData,'YData',curves(idx).YData-pow2db_perso(average(i)),'YNegativeDelta',sd,'YPositiveDelta',sd,'Tag',curves(idx).Unique_ID);
         u=find(strcmp(id_new{i},multi_freq_disp_tab_comp.table.Data(:,4)));
         multi_freq_disp_tab_comp.table.Data{u,2}=curves(idx).Tag;
     else
-        id_c=plot(multi_freq_disp_tab_comp.ax,curves(idx).XData,curves(idx).YData-pow2db_perso(average(i)),'Tag',curves(idx).Unique_ID,'ButtonDownFcn',{@display_line_cback,main_figure,tab_tag});
+        id_c=errorbar(multi_freq_disp_tab_comp.ax,curves(idx).XData,curves(idx).YData-pow2db_perso(average(i)),sd,...
+            'Tag',curves(idx).Unique_ID,'ButtonDownFcn',{@display_line_cback,main_figure,tab_tag});
         
         color_str=sprintf('rgb(%.0f,%.0f,%.0f)',floor(get(id_c,'Color')*255));
         if ~isempty(multi_freq_disp_tab_comp.table.Data)

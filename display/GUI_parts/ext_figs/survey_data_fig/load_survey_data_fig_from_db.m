@@ -148,8 +148,8 @@ if reload==0
     
     
     % Column names and column format
-    columnname = {'' 'File','Snap.','Strat.','Trans.','Bot','Reg. Tags','Comment' 'Start Time','End Time'  'id'};
-    columnformat = {'logical' 'char','numeric','char','numeric','logical','char','char','char','char','numeric'};
+    columnname = {'' 'File','Snap.','Type','Strat.','Trans.','Bot','Reg. Tags','Comment','Start Time','End Time','id'};
+    columnformat = {'logical' 'char','numeric',init_trans_type(),'char','numeric','logical','char','char','char','char','numeric'};
     
     
     % Create the uitable
@@ -158,7 +158,7 @@ if reload==0
         'ColumnName', columnname,...
         'ColumnFormat', columnformat,...
         'CellSelectionCallback',{@cell_select_cback,main_figure},...
-        'ColumnEditable', [true false true true true false false true false false false],...
+        'ColumnEditable', [true false true true true true false false true false false false],...
         'Units','Normalized','Position',[0 0 1 0.95],...
         'KeyPressFcn',{@logbook_keypress_fcn,main_figure},...
         'RowName',[]);
@@ -167,7 +167,7 @@ if reload==0
     
     pos_t = getpixelposition(surv_data_table.table_main);
     set(surv_data_table.table_main,'ColumnWidth',...
-        num2cell(pos_t(3)*[1/36,4*1/18, 1/18, 1/18, 1/18,1/36,3*1/36, 4*1/18, 2*1/18,2*1/18, 1/36]));
+        num2cell(pos_t(3)*[1/36,4*1/18, 1/18, 2*1/18,1/18, 1/18,1/36,3*1/36, 2*1/18, 2*1/18,2*1/18, 1/36]));
     set(surv_data_table.table_main,'CellEditCallback',{@edit_surv_data_db,surv_data_tab,main_figure});
     %set(surv_data_table.table_main,'CellSelectionCallback',{@update_surv_data_struct,surv_data_tab});
     
@@ -298,21 +298,22 @@ if isnan(src.Data{evt.Indices(1,1),evt.Indices(1,2)})
     src.Data{evt.Indices(1),evt.Indices(2)}=0;
 end
 
-idx_struct=src.Data{evt.Indices(1,1),11};
+idx_struct=src.Data{evt.Indices(1,1),12};
 
 switch evt.Indices(1,2)
     case {1}
         data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1),evt.Indices(1,2)};
         setappdata(surv_data_tab,'data_ori',data_ori);
         return;
-    case{3,4,5,8}
+    case{3,4,5,6,9}
         filename=src.Data{evt.Indices(1,1),2};
         snap=src.Data{evt.Indices(1,1),3};
-        strat=src.Data{evt.Indices(1,1),4};
-        trans=src.Data{evt.Indices(1,1),5};
-        st=src.Data{evt.Indices(1,1),9};
-        et=src.Data{evt.Indices(1,1),10};
-        comm=src.Data{evt.Indices(1,1),8};
+        type=src.Data{evt.Indices(1,1),4};
+        strat=src.Data{evt.Indices(1,1),5};
+        trans=src.Data{evt.Indices(1,1),6};
+        st=src.Data{evt.Indices(1,1),10};
+        et=src.Data{evt.Indices(1,1),11};
+        comm=src.Data{evt.Indices(1,1),9};
         data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1,1),evt.Indices(1,2)};
     otherwise
         return;
@@ -335,8 +336,8 @@ if dbconn.IsReadOnly
 end
 
 %dbconn.fetch(sprintf('delete from logbook where Filename like "%s" and StartTime=%.0f',filename,st));
-dbconn.insert('logbook',{'Filename' 'Snapshot' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
-    {filename snap strat trans st et comm});
+dbconn.insert('logbook',{'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
+    {filename snap type strat trans st et comm});
 
 dbconn.close();
 
@@ -359,7 +360,7 @@ for i=1:size(data,1)
         case 'inv'
             data{i,1}=~data{i,1};
     end
-    data_ori{data{i,11},1}=data{i,1};
+    data_ori{data{i,12},1}=data{i,1};
 end
 set(surv_data_table.table_main,'Data',data);
 setappdata(surv_data_tab,'data_ori',data_ori);
@@ -420,7 +421,7 @@ path_f=getappdata(surv_data_tab,'path_data');
 surv_data_struct=get_struct_from_db(path_f);
 data_ori=get(surv_data_table.table_main,'Data');
 path_f=getappdata(surv_data_tab,'path_data');
-idx_struct=unique([data_ori{[data_ori{:,1}],11}]);
+idx_struct=unique([data_ori{[data_ori{:,1}],12}]);
 
 survey_input_obj=survey_input_cl();
 

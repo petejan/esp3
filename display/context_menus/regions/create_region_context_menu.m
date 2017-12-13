@@ -313,7 +313,7 @@ for i=1:length(reg_obj)
             xlab=sprintf('%s (dB)',curr_disp.Type);
     end
     
-    new_echo_figure(main_figure,'Name',sprintf('Region %d Histogram: %s',reg_curr.ID,curr_disp.Type),'Tag',sprintf('histo%s',reg_curr.UniqueID));
+    new_echo_figure(main_figure,'Name',sprintf('Region %d Histogram: %s',reg_curr.ID,curr_disp.Type),'Tag',sprintf('histo%s',reg_curr.Unique_ID));
     hold on;
     title(tt);
     bar(x,pdf);
