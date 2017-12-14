@@ -30,14 +30,15 @@ snap=surv_data_obj.Snapshot;
 trans=surv_data_obj.Transect;
 type=surv_data_obj.Type;
 comm=surv_data_obj.Comment;
+
 try
-    %before=dbconn.fetch(sprintf('select * from logbook where Filename like "%s"',filename))
+    %before=dbconn.fetch(sprintf('select * from logbook where Filename is "%s"',filename))
     dbconn.exec('delete from survey');
     dbconn.insert('survey',{'Voyage' 'SurveyName'},...
         {surv_data_obj.Voyage surv_data_obj.SurveyName});
     dbconn.insert('logbook',{'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect' 'StartTime' 'EndTime' 'Comment'},...
         {filename snap type strat trans st et comm});
-%     after_log=dbconn.fetch(sprintf('select * from logbook where Filename like "%s"',filename))
+%     after_log=dbconn.fetch(sprintf('select * from logbook where Filename is "%s"',filename))
 %     after=dbconn.fetch('select * from survey')
 catch err
     disp(err.message)

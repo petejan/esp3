@@ -181,8 +181,7 @@ if exist(p.Results.Filename,'file')==2
     dbconn=sqlite(db_file,'connect');
     survey_data=dbconn.fetch('select * from survey');
     
-    
-    
+       
     if ~isempty(survey_data{1})
         if ~any(strcmp(p.UsingDefaults,'SurveyName'))
             survdata_temp.SurveyName=results.SurveyName;
@@ -202,7 +201,7 @@ if exist(p.Results.Filename,'file')==2
     else
         survdata_temp.Voyage=results.Voyage;
     end
-    dbconn.exec(sprintf('delete from logbook where Filename like "%s"',[file_r end_file]));
+    dbconn.exec(sprintf('delete from logbook where Filename is "%s"',[file_r end_file]));
     survdata_temp.surv_data_to_logbook_db(dbconn,[file_r end_file],'StartTime',start_time,'EndTime',end_time);
     dbconn.close();
 end

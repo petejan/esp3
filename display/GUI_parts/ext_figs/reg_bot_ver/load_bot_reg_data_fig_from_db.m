@@ -188,7 +188,7 @@ for ip=1:length(path_xml)
     
     dbconn=sqlite(db_file,'connect');
      
-    data_db=dbconn.fetch(sprintf('select Filename,%s,Save_time,Comment,Version from %s WHERE Filename like "%s" AND Version = %f',...
+    data_db=dbconn.fetch(sprintf('select Filename,%s,Save_time,Comment,Version from %s WHERE Filename is "%s" AND Version = %f',...
         str_file,str_w,files{ip},ver));
     dbconn.exec(sprintf('delete from %s WHERE Filename is "%s" AND Version = %f',str_w,files{ip},ver));
     dbconn.insert(str_w,{'Filename' str_file 'Save_time' 'Comment' 'Version'},...
@@ -230,12 +230,11 @@ switch choice
         return;
 end
 
-
 for ip=1:length(path_xml)
     db_file=fullfile(path_xml{ip},'bot_reg.db');
     
     dbconn=sqlite(db_file,'connect');
-    %test=dbconn.fetch(sprintf('select * from %s WHERE Filename like "%s" AND Version = %f',str_w,file_str{ip},ver));
+    %test=dbconn.fetch(sprintf('select * from %s WHERE Filename is "%s" AND Version = %f',str_w,file_str{ip},ver));
     dbconn.exec(sprintf('delete from %s WHERE Filename is "%s" AND Version = %f',str_w,files{ip},ver));
     dbconn.close();
 end

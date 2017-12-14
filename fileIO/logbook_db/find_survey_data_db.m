@@ -16,6 +16,7 @@ for ip=1:length(unique_paths)
     
     dbconn=sqlite(db_file,'connect');
     createlogbookTable(dbconn);
+    
     for i=1:length(files_temp)
         
         curr_file_data=dbconn.fetch(sprintf('select Snapshot,Type,Stratum,Transect,StartTime,EndTime,Comment from logbook where Filename like "%s%s"',files_temp{i},term_file{i}));

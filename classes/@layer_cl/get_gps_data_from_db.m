@@ -53,17 +53,20 @@ for ip=1:length(pathtofile)
     gps_data_table=dbconn.fetch('select name FROM sqlite_master WHERE type=''table'' AND name=''gps_data''');
     if ~isempty(gps_data_table)
         gps_data_temp=dbconn.fetch('select Filename,Lat,Long,Time from gps_data');
+    else
+        close(dbconn);
+        return;
     end
-    
+    close(dbcont);
     %         end
-    close(dbconn);
+    
     
     for id=1:size(gps_data_temp,1)
-       nb_data= nb_data+1;
+        nb_data= nb_data+1;
         lat=str2double(strsplit(gps_data_temp{id,2}));
         lon=str2double(strsplit(gps_data_temp{id,3}));
         time=datenum(strsplit(gps_data_temp{id,4}),'yyyymmddHHMMSSFFF');
-        gps_data(nb_data)=gps_data_cl('Lat',lat,'Long',lon,'Time',time);      
+        gps_data(nb_data)=gps_data_cl('Lat',lat,'Long',lon,'Time',time);
         files{nb_data}=gps_data_temp{id,1};
     end
 end

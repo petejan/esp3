@@ -40,7 +40,15 @@ end
 
 config_menu=uimenu(context_menu,'Label','Configuration');
 uimenu(config_menu,'Label','Display Current Ping Config','Callback',{@disp_ping_config_params_callback,main_figure});
+
+
+export_menu=uimenu(context_menu,'Label','Export');
+uimenu(export_menu,'Label','Copy Echogramm to clipboard','Callback',{@copy_echo_to_clipboard_callback,main_figure});
 %toc
+end
+
+function copy_echo_to_clipboard_callback(src,~,main_figure)
+    save_echo(main_figure,[],'-clipboard');
 end
 
 function copy_bt_cback(src,~,main_figure,ifreq)

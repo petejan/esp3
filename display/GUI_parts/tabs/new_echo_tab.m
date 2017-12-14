@@ -15,3 +15,5 @@ if ~isempty(p.Results.UiContextMenuName)
     tab_menu=create_context_menu_tabs(main_figure_handle,parent_tab_group,p.Results.UiContextMenuName);
     tab_handle.UIContextMenu=tab_menu;
 end
+
+tab_handle.Parent.SelectedTab=tab_handle;

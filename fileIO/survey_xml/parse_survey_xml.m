@@ -130,8 +130,7 @@ nb_att = length(node.Attributes);
 node_atts = [];
 
 for j = 1:nb_att
-    node_atts.(node.Attributes(j).Name) = node.Attributes(j).Value;
-    
+    node_atts.(node.Attributes(j).Name) = node.Attributes(j).Value;    
     if ischar(node_atts.(node.Attributes(j).Name))
         if strcmpi(node_atts.(node.Attributes(j).Name),'nan')
             node_atts.(node.Attributes(j).Name) = nan;

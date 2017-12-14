@@ -59,10 +59,7 @@ try
     if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
         flag = 0;
         up_curr_disp=0;
-    elseif ~strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers<=curr_disp.NbLayers
-        flag = 1;
-        up_curr_disp=0;
-    elseif nb_layers>curr_disp.NbLayers
+    elseif ~strcmp(layer.Unique_ID,curr_disp.CurrLayerID)
         flag = 1;
         up_curr_disp=1;
     end

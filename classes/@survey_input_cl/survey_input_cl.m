@@ -17,10 +17,11 @@ classdef survey_input_cl < handle
             p = inputParser;
             
             
-            default_info=struct('Script','','XmlId','','Title','','Main_species','','Areas','','Voyage','','SurveyName','','Author','','Created','','Comments','');
-            default_cal=struct('G0',25.10,'SACORRECT',0.0,'FREQ',38000);
-
+            default_info=struct('Script','','XmlId','','Title','','Main_species','','Areas','','Voyage','','SurveyName','','Type','',...
+                'Author','','Created','','Comments','');
             
+            default_cal=struct('G0',25.10,'SACORRECT',0.0,'FREQ',38000);
+           
             addParameter(p,'Infos',default_info);
             addParameter(p,'Cal',default_cal);
             addParameter(p,'Options',survey_options_cl);

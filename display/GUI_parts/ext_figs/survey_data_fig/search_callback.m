@@ -22,13 +22,13 @@ else
     
     
     if trans>0
-        idx_trans=cell2mat(data_ori(:,5))==str2double(text_search);
+        idx_trans=cell2mat(data_ori(:,6))==str2double(text_search);
     else
         idx_trans=zeros(size(data_ori,1),1);
     end
     
     if strat>0
-        idx_strat=strcmpi(data_ori(:,4),text_search);
+        idx_strat=strcmpi(data_ori(:,5),text_search);
     else
         idx_strat=zeros(size(data_ori,1),1);
     end
@@ -42,7 +42,7 @@ else
     end
     
     if reg>0
-        regs=regexprep(data_ori(:,7),'[^\w'']','');
+        regs=regexprep(data_ori(:,8),'[^\w'']','');
         out_regs=regexpi(regs,text_search);
         idx_regs=cellfun(@(x) ~isempty(x),out_regs);
     else

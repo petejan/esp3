@@ -132,6 +132,7 @@ end
 
 if reload==0
     dbconn=sqlite(db_file,'connect');
+    
     data_logbook=dbconn.fetch('select Filename from logbook order by datetime(StartTime)');
     dbconn.close();
     nb_lines=size(data_logbook,1);
@@ -142,11 +143,14 @@ if reload==0
     end
     
     dbconn=sqlite(db_file,'connect');
+    createlogbookTable(dbconn);
+    %deletegpsTable(dbconn);
+    creategpsTable(dbconn);
+    
     survDataSummary=update_data_table(dbconn,[],data_logbook,path_f);
     
     dbconn.close();
-    
-    
+       
     % Column names and column format
     columnname = {'' 'File','Snap.','Type','Strat.','Trans.','Bot','Reg. Tags','Comment','Start Time','End Time','id'};
     columnformat = {'logical' 'char','numeric',init_trans_type(),'char','numeric','logical','char','char','char','char','numeric'};
@@ -335,7 +339,7 @@ if dbconn.IsReadOnly
     return;
 end
 
-%dbconn.fetch(sprintf('delete from logbook where Filename like "%s" and StartTime=%.0f',filename,st));
+%dbconn.fetch(sprintf('delete from logbook where Filename is "%s" and StartTime=%.0f',filename,st));
 dbconn.insert('logbook',{'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
     {filename snap type strat trans st et comm});
 
@@ -395,7 +399,7 @@ if ~isempty(idx_deleted)
     dbconn=sqlite(fullfile(path_f,'echo_logbook.db'),'connect');
     for i=idx_deleted
         fprintf('Removing %s from logbook... cannot find it anymore.\n',files{i});
-        dbconn.exec(sprintf('delete from logbook where Filename like "%s"',selected_files{i}));
+        dbconn.exec(sprintf('delete from logbook where Filename is "%s"',selected_files{i}));
     end
     dbconn.close();
     files(idx_deleted)=[];

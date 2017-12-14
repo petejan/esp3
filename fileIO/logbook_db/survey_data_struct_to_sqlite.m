@@ -20,7 +20,7 @@ for i=1:nb_files
     file_curr=deblank(list_raw{i});
     idx_file_xml=find(strcmpi(file_curr,surv_data_struct.Filename));
     survdata_temp=survey_data_cl();
-    dbconn.exec(sprintf('delete from logbook where Filename like "%s"',file_curr));
+    dbconn.exec(sprintf('delete from logbook where Filename is "%s"',file_curr));
     
     if ~isempty(idx_file_xml)
         for is=idx_file_xml

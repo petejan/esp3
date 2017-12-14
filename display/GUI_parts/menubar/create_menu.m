@@ -223,6 +223,7 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+
 filepath=fileparts(layer.Filename{1});
 write_config_display_to_xml(curr_disp,'file_path',filepath);
 

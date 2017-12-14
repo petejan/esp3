@@ -11,6 +11,7 @@ end
 switch tab_panel.Type
     case 'uitabgroup'
         multi_freq_disp_tab_comp.multi_freq_disp_tab=new_echo_tab(main_figure,tab_panel,'Title',tab_name,'UiContextMenuName',tab_tag);
+        
     case 'figure'
         multi_freq_disp_tab_comp.multi_freq_disp_tab=tab_panel;
 end
@@ -77,7 +78,7 @@ set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_
      'BackgroundColor','White','units','pixels','position',[160 27 200 21],'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
 
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
-
+create_context_menu_mf_plot(main_figure,tab_tag);
 update_multi_freq_disp_tab(main_figure,tab_tag,0);
 
 end
@@ -135,7 +136,7 @@ switch tab_name
         end     
 
     case 'ts_f'        
-        for i=1:length(trans_obj.Regions)
+        for i=1:length(regs)
             TS_freq_response_func(main_figure,regs(i)) ;
         end
       
