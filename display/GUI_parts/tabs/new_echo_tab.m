@@ -1,6 +1,5 @@
 function tab_handle=new_echo_tab(main_figure_handle,parent_tab_group,varargin)
 
-
 p = inputParser;
 addRequired(p,'main_figure_handle',@(x) isa(x,'matlab.ui.Figure'));
 addRequired(p,'parent_tab_group',@(x) isa(x,'matlab.ui.container.TabGroup'));

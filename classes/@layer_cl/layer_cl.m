@@ -248,7 +248,7 @@ classdef layer_cl < handle
         
         function add_curves(obj,curves)
             for i=1:length(curves)
-                obj.rm_curves_per_ID(curves(i).Unique_ID);
+                obj.rm_curves_per_ID_and_type(curves(i).Unique_ID,curves(i).Type);
                 obj.Curves=[obj.Curves curves(i)];
             end
         end
@@ -272,6 +272,13 @@ classdef layer_cl < handle
          function rm_curves_per_ID(obj,ID)
             if ~isempty(obj.Curves)
                 idx=strcmp({obj.Curves(:).Unique_ID},ID);
+                obj.Curves(idx)=[];
+            end
+         end
+        
+        function rm_curves_per_ID_and_type(obj,ID,type)
+            if ~isempty(obj.Curves)
+                idx=strcmp({obj.Curves(:).Unique_ID},ID)&strcmp({obj.Curves(:).Type},type);
                 obj.Curves(idx)=[];
             end
         end

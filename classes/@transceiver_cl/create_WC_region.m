@@ -23,14 +23,23 @@ parse(p,trans_obj,varargin{:});
 
 switch p.Results.Cell_w_unit
     case 'pings'
-        xdata=trans_obj.get_transceiver_pings();  
+        xdata=trans_obj.get_transceiver_pings();
+        cell_w=p.Results.Cell_w;
+        cell_w_units='pings';
     case 'meters'
         if ~isempty(trans_obj.GPSDataPing.Dist)
             xdata=trans_obj.GPSDataPing.Dist;
+            cell_w=p.Results.Cell_w;
+            cell_w_units='meters';
         else
-            p.Results.Cell_w_unit='pings';
+            cell_w_units='pings';
+            cell_w=p.Results.Cell_w;
             xdata=trans_obj.get_transceiver_pings();
         end
+    case 'seconds'
+        xdata=trans_obj.get_transceiver_pings();
+        cell_w_units='pings';
+        cell_w=ceil(p.Results.Cell_w/nanmean(diff(trans_obj.get_transceiver_time()*24*60*60)));
 end
 
 switch p.Results.Cell_h_unit
@@ -91,8 +100,8 @@ reg_wc=region_cl(...
     'Idx_pings',idx_pings,...
     'Idx_r',idx_r,...
     'Reference',p.Results.Ref,...
-    'Cell_w',p.Results.Cell_w,...
-    'Cell_w_unit',p.Results.Cell_w_unit,...
+    'Cell_w',cell_w,...
+    'Cell_w_unit',cell_w_units,...
     'Cell_h',p.Results.Cell_h,...
     'Cell_h_unit',p.Results.Cell_h_unit);
 

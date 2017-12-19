@@ -146,9 +146,9 @@ switch algo_name
             
         end
         
-        dd=nanmean(diff(trans_obj.GPSDataPing.Dist(idx_pings)));
+        dd=nanmax(diff(trans_obj.GPSDataPing.Dist(idx_pings)));
      
-        dr=nanmean(diff(trans_obj.get_transceiver_range(idx_r)));
+        dr=nanmax(diff(trans_obj.get_transceiver_range(idx_r)));
         
         if dd>0
             w_unit='meters';

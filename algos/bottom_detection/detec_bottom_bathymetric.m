@@ -229,7 +229,7 @@ n_eval_along(isnan(n_eval_along))=1;
 n_eval_across((n_eval_across)>nb_samples|(n_eval_across)<=0)=1;
 n_eval_along((n_eval_along)>nb_samples|(n_eval_along)<=0)=1;
 
-dr=nanmean(diff(Range));
+dr=nanmax(diff(Range));
 phi_slope_across=phi_slope_across/dr;
 phi_slope_along=phi_slope_across/dr;
 

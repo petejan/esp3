@@ -123,7 +123,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 list_reg = trans_obj.regions_to_str();
 
-
 if ~isempty(list_reg)
     layer.rm_region_across_id(curr_disp.Active_reg_ID);
 end

@@ -75,7 +75,7 @@ set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_
  multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
      'BackgroundColor','White','units','pixels','position',[10 27 150 21],'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
  multi_freq_disp_tab_comp.show_sd_bar=uicontrol(multi_freq_disp_tab_comp.multi_freq_disp_tab,'style','checkbox',...
-     'BackgroundColor','White','units','pixels','position',[160 27 200 21],'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+     'BackgroundColor','White','units','pixels','position',[160 27 150 21],'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
 
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 create_context_menu_mf_plot(main_figure,tab_tag);
@@ -165,8 +165,7 @@ end
 for k=1:length(tracks.target_id)
     idx_targets=tracks.target_id{k};
     idx_pings=sort(X_st(idx_targets));
-    idx_r=sort(Y_st(idx_targets));
-    
+    idx_r=sort(Y_st(idx_targets));    
     reg_obj=region_cl('Name','Tracks','Idx_r',idx_r,'Idx_pings',idx_pings,'ID',k,'Unique_ID',sprintf('track%.0f',k));
     TS_freq_response_func(main_figure,reg_obj) ;
 end
@@ -198,6 +197,12 @@ switch evt.Indices(2)
         layer.Curves(idx_c).Tag=data{2};
         update_reglist_tab(main_figure,0);
         display_regions(main_figure,union({'main' 'mini'},layer.ChannelID(idx_mod)));
+        switch tab_tag
+            case 'ts_f'
+                update_curves_and_table(main_figure,'sv_f',{layer.Curves(:).Unique_ID});
+            case 'sv_f'
+                update_curves_and_table(main_figure,'ts_f',{layer.Curves(:).Unique_ID});
+        end
     otherwise
 end
 

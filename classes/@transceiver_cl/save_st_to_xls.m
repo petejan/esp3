@@ -19,3 +19,5 @@ st_sheet=struct_to_sheet(st);
 
 xlswrite(file,algo_sheet,1);
 xlswrite(file,st_sheet',2);
+
+fprintf('Single targets save to %s\n',file);

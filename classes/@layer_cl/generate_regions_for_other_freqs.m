@@ -20,7 +20,8 @@ mask_reg_ori=active_reg.get_mask();
 regs=[];
 
 for i=1:length(layer.Transceivers)
-    if i==idx_freq||nansum(i==idx_freq_end)==0
+    
+    if i==idx_freq||~any(i==idx_freq_end)
         continue;
     end
     
@@ -71,7 +72,7 @@ for i=1:length(layer.Transceivers)
 %     poly=active_reg.Poly;
 %     poly.Vertices(:,1)=floor(poly.Vertices(:,1)*t_factor);
 %     poly.Vertices(:,2)=floor(poly.Vertices(:,2)*r_factor);
-%     
+try
     regs=[regs region_cl(...
         'ID',active_reg.ID,...
         'Unique_ID',active_reg.Unique_ID,...
@@ -87,6 +88,10 @@ for i=1:length(layer.Transceivers)
         'Cell_w_unit',active_reg.Cell_w_unit,...
         'Cell_h',cell_h,...
         'Cell_h_unit',active_reg.Cell_h_unit)];
+catch
+    warning('Could not copy region %d to channel %s',active_reg.ID,layer.Transceivers(i).Config.ChannelID);
+    idx_freq_end(idx_freq_end==i)=[];
+end
     
 end
 

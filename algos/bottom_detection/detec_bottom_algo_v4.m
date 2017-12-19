@@ -231,7 +231,7 @@ BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
 
 
-Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
+Bottom=Bottom- ceil(p.Results.shift_bot./nanmax(diff(Range)));
 Bottom(Bottom<=0)=1;
 
 bottom_ori=trans_obj.get_bottom_idx();

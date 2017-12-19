@@ -21,7 +21,7 @@ end
 if ~isempty(tracks)
 x_lim=get(axes_panel_comp.main_axes,'xlim');
 
-idx_remove=find(cellfun(@(x) any(x<x_lim(1)-diff(x_lim)/10|x>x_lim(2)+diff(x_lim)/10),tracks.target_ping_number));
+idx_remove=find(cellfun(@(x) all(x<x_lim(1)-diff(x_lim)/10|x>x_lim(2)+diff(x_lim)/10),tracks.target_ping_number));
 
 tracks.target_id(idx_remove)=[];
 tracks.target_ping_number(idx_remove)=[];

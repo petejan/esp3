@@ -4,6 +4,9 @@ layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+curr_disp=getappdata(main_figure,'Curr_disp');
+layer=getappdata(main_figure,'Layer');
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 main_axes=axes_panel_comp.main_axes;
@@ -23,7 +26,7 @@ set(text_obj,'Fontsize',16);
 line_obj=findobj(new_fig,'Type','Line');
 set(line_obj,'Linewidth',2);
 layers_Str=list_layers(layer,'nb_char',80);
-title(new_axes,sprintf('%s',layers_Str{1}),'interpreter','none');
+title(new_axes,sprintf('%s : %s',deblank(trans_obj.Config.ChannelID),layers_Str{1}),'interpreter','none');
 colorbar(new_axes);
 
 switch fileN

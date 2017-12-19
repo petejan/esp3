@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function classify_reg_callback(~,~,ID,main_figure)
+function classify_reg_callback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -53,7 +53,7 @@ setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);
 
 
-update_reglist_tab(main_figure/0);
+update_reglist_tab(main_figure,0);
 display_regions(main_figure,'both');
 order_stacks_fig(main_figure);
 

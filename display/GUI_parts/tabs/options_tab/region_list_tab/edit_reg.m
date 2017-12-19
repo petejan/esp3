@@ -68,6 +68,7 @@ active_reg.ID=id;
 active_reg.Tag=src.Data{evt.Indices(1,1),3};
 active_reg.Type=src.Data{evt.Indices(1,1),4};
 active_reg.Reference=src.Data{evt.Indices(1,1),5};
+
 if ~isnan(src.Data{evt.Indices(1,1),6})
     active_reg.Cell_w=src.Data{evt.Indices(1,1),6};
 else
@@ -85,6 +86,11 @@ active_reg.Cell_h=src.Data{evt.Indices(1,1),8};
 active_reg.Cell_h_unit=src.Data{evt.Indices(1,1),9};
 trans_obj.rm_region_id(active_reg.Unique_ID);
 trans_obj.add_region(active_reg);
+
+reg_added=trans_obj.get_region_from_Unique_ID(active_reg.Unique_ID);
+
+src.Data{evt.Indices(1,1),6}=reg_added.Cell_w;
+src.Data{evt.Indices(1,1),8}=reg_added.Cell_h;
 
 setappdata(main_figure,'Layer',layer);
 

@@ -77,11 +77,15 @@ load_multi_freq_tab(main_figure,algo_panel)
 load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.60]);
 
 format_color_gui(main_figure,curr_disp.Font);
+display_tab_comp=getappdata(main_figure,'Display_tab');
+opt_panel.SelectedTab=display_tab_comp.display_tab;
+
 obj_enable=findobj(main_figure,'Enable','on','-not','Type','uimenu');
 set(obj_enable,'Enable','off');
 centerfig(main_figure);
 set(main_figure,'Visible','on');
 drawnow;
+
 load_loading_bar(main_figure);
 load_info_panel(main_figure);
 

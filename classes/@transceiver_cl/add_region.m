@@ -25,6 +25,21 @@ IDs_out={};
 for i=1:length(regions)
     regions(i).Idx_pings=regions(i).Idx_pings-Ping_offset;
     
+    switch (regions(i).Cell_w_unit)
+        case 'meters'
+          regions(i).Cell_w=nanmax(nanmax(diff(trans_obj.GPSDataPing.Dist(regions(i).Idx_pings))),regions(i).Cell_w);  
+        case 'pings'
+          regions(i).Cell_w=nanmax(1,regions(i).Cell_w);
+    end
+    
+        
+    switch (regions(i).Cell_h_unit)
+        case 'meters'
+            regions(i).Cell_h=nanmax(nanmax(diff(trans_obj.get_transceiver_range(regions(i).Idx_r))),regions(i).Cell_h); 
+        case 'samples'
+            regions(i).Cell_h=nanmax(1,regions(i).Cell_h);
+    end
+    
     if ~isempty(regions(i).Poly)
         regions(i).Poly.Vertices(:,1)=regions(i).Poly.Vertices(:,1)-Ping_offset;
     end

@@ -272,7 +272,7 @@ BS_filter(Bottom_region==0)=nan;
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
 
-Bottom=Bottom- ceil(p.Results.shift_bot./nanmean(diff(Range)));
+Bottom=Bottom- ceil(p.Results.shift_bot./nanmax(diff(Range)));
 Bottom(Bottom<=0)=1;
 
 

@@ -27,8 +27,12 @@ st_tracks.Track_ID=[];
 for k=1:length(tracks.target_id)
     idx_targets=tracks.target_id{k};
     st_tracks.Track_ID=[st_tracks.Track_ID k*ones(1,numel(idx_targets))];
-    for ifi=1:numel(fields_st)       
-        st_tracks.(fields_st{ifi})=[st_tracks.(fields_st{ifi}) st.(fields_st{ifi})(idx_targets)];
+    for ifi=1:numel(fields_st)    
+        if iscolumn(st_tracks.(fields_st{ifi}))
+            st_tracks.(fields_st{ifi})=[st_tracks.(fields_st{ifi});st.(fields_st{ifi})(idx_targets)];
+        else
+            st_tracks.(fields_st{ifi})=[st_tracks.(fields_st{ifi}) st.(fields_st{ifi})(idx_targets)];
+        end
     end  
 end
 
@@ -37,3 +41,5 @@ st_sheet=struct_to_sheet(st_tracks);
 xlswrite(file,algo_sheet,1);
 xlswrite(file,algo_tt_sheet,2);
 xlswrite(file,st_sheet',3);
+
+fprintf('Tracked targets save to %s\n',file);

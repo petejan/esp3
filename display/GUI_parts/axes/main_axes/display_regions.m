@@ -1,5 +1,4 @@
 
-
 function display_regions(main_figure,varargin)
 
 % profile on;
@@ -15,7 +14,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 
 [ac_data_col,ac_bad_data_col,in_data_col,in_bad_data_col,txt_col]=set_region_colors(curr_disp.Cmap);
-
 
 if ~isempty(varargin)
     if ischar(varargin{1})
@@ -52,14 +50,13 @@ for iax=1:length(main_axes_tot)
     reg_h=findobj(main_axes,{'tag','region','-or','tag','region_text','-or','tag','region_cont'});
     
     if~isempty(reg_h)
-        id_disp=(get(reg_h,'UserData'));
+        id_disp=get(reg_h,'UserData');
         id_reg=trans.get_reg_Unique_IDs();
         id_rem = setdiff(id_disp,id_reg);
         
         if~isempty(id_rem)
             clear_regions(main_figure,id_rem,union({'main' 'mini'}, cids{iax}));
-        end
-        
+        end        
     end
     
     nb_reg=numel(trans.Regions);

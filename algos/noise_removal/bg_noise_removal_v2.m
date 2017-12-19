@@ -60,7 +60,7 @@ if isempty(power)
 end
 
 
-h_filt=ceil(nanmin(p.Results.VertFilt,size(power,1))/nanmean(diff(range)));
+h_filt=ceil(nanmin(p.Results.VertFilt,size(power,1))/nanmax(diff(range)));
 w_filt=nanmin(p.Results.HorzFilt,size(power,2));
 noise_thr=p.Results.NoiseThr;
 SNR_thr=p.Results.SNRThr;

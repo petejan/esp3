@@ -262,11 +262,11 @@ Mask_reg_sub = (output.nb_samples==0);
 eint_sparse = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Sv_reg_lin(Mask_reg_min_bot) , size(Mask_reg_sub) , @sum , 0 ) * dr;
 output.eint = eint_sparse;
 
-output.Slice_Idx = accumarray( x_mat_idx(1,:)' , slice_idx(:) , [N_x 1] , @nanmin , 0)';
+output.Slice_Idx = accumarray( x_mat_idx(1,:)' , slice_idx(:) , [N_x 1] , @nanmin , nan)';
 
 % first and last ping in each cell
-output.Ping_S    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmin , 0)';
-output.Ping_E    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmax , 0)';
+output.Ping_S    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmin , nan)';
+output.Ping_E    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmax , nan)';
 
 % number of pings not flagged as bad transmits, in each cell
 output.Nb_good_pings = repmat(accumarray(x_mat_idx(1,:)',(bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
@@ -274,15 +274,15 @@ output.Nb_good_pings_esp2 = output.Nb_good_pings;
 
 
 % first and last sample in each cell
-output.Sample_S = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@min,0);
-output.Sample_E = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@max,0);
+output.Sample_S = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@min,nan);
+output.Sample_E = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@max,nan);
 
 % "thickness" (height of each cell)
 output.Thickness_tot = ( output.Sample_E - output.Sample_S + 1 )*dr;
 
 % minimum and maximum depth of samples in each cell
-output.Layer_depth_min = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),size(Mask_reg_sub),@min,0);
-output.Layer_depth_max = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),size(Mask_reg_sub),@max,0);
+output.Layer_depth_min = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),size(Mask_reg_sub),@min,nan);
+output.Layer_depth_max = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_r_mat(:),size(Mask_reg_sub),@max,nan);
 
 % average depth of each cell
 output.Depth_mean = (output.Layer_depth_min+output.Layer_depth_max)/2;
@@ -290,20 +290,20 @@ output.Depth_mean = (output.Layer_depth_min+output.Layer_depth_max)/2;
 % minimum and maximum range of samples in each cell (referenced to the surface, bottom or line)
 switch lower(region.Cell_h_unit)
     case 'samples'
-        output.Range_ref_min = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@min,0)*dr;
-        output.Range_ref_max = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@max,0)*dr;
+        output.Range_ref_min = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@min,nan)*dr;
+        output.Range_ref_max = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@max,nan)*dr;
     case 'meters'
-        output.Range_ref_min = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@min,0);
-        output.Range_ref_max = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@max,0);
+        output.Range_ref_min = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@min,nan);
+        output.Range_ref_max = accumarray([y_mat_idx(:) x_mat_idx(:)],y_mat(:),size(Mask_reg_sub),@max,nan);
 end
 
 output.Thickness_mean = (output.nb_samples)./output.Nb_good_pings*dr;
 
-output.Dist_S = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,0)';
-output.Dist_E = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,0)';
+output.Dist_S = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
+output.Dist_E = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';
 
-output.Time_S = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,0)';
-output.Time_E = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,0)';
+output.Time_S = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,nan)';
+output.Time_E = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,nan)';
 
 output.Lat_S = accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmin,nan)';
 output.Lon_S = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';

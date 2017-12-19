@@ -110,8 +110,7 @@ end
 if~isempty(f_vec)
     [f_vec,idx_sort]=sort(f_vec);
     Sv_f=Sv_f(idx_sort);
-    
-    
+       
     layer.add_curves(curve_cl('XData',f_vec/1e3,...
         'YData',Sv_f,...
         'SD',SD_f,...
