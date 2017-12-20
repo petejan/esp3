@@ -9,7 +9,7 @@ addParameter(p,'Rmax',2,@isnumeric);
 addParameter(p,'SliceSize',100,@isnumeric);
 addParameter(p,'Freq',38000,@isnumeric);
 addParameter(p,'Coast',1,@isnumeric);
-addParameter(p,'Depth_Contour',500,@isnumeric);
+addParameter(p,'Depth_Contour',0,@isnumeric);
 
 parse(p,Ext_obj,varargin{:});
 obj=map_input_cl();

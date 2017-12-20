@@ -58,7 +58,7 @@ for usnap=1:nb_snap
     list_proj_str={proj(:).name};
     sucess=0;
     i=0;
-    while sucess==0&&i<length(list_proj_str);
+    while sucess==0&&i<length(list_proj_str)
         try
             m_proj(obj.Proj,'long',LongLim,'lat',LatLim);
             sucess=1;
