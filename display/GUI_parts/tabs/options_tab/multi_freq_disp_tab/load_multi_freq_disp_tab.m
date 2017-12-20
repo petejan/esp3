@@ -116,9 +116,9 @@ if isempty(layer.Curves)
 end
 switch tab_name
     case 'ts_f'
-    layer.Curves(strcmp({layer.Curves(:).Type},'TS(f)'))=[];    
+    layer.Curves(strcmp({layer.Curves(:).Type},'ts_f'))=[];    
     case 'sv_f'
-    layer.Curves(strcmp({layer.Curves(:).Type},'Sv(f)'))=[];
+    layer.Curves(strcmp({layer.Curves(:).Type},'sv_f'))=[];
 end
 update_multi_freq_disp_tab(main_figure,tab_name,1);
 end
@@ -193,7 +193,8 @@ switch evt.Indices(2)
         data=multi_freq_disp_tab_comp.table.Data(evt.Indices(1),:);
         layer=getappdata(main_figure,'Layer');       
         idx_mod=layer.set_tag_to_region_with_uid(data{4},data{2});
-        idx_c=strcmp(data{4},{layer.Curves(:).Unique_ID});
+
+        idx_c=strcmp(data{4},{layer.Curves(:).Unique_ID}&strcmp({layer.Curves(:).Type},tab_tag));
         layer.Curves(idx_c).Tag=data{2};
         update_reglist_tab(main_figure,0);
         display_regions(main_figure,union({'main' 'mini'},layer.ChannelID(idx_mod)));

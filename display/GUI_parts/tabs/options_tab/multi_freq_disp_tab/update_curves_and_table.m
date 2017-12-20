@@ -25,7 +25,7 @@ for i=1:numel(id_new)
     
     id_c=findobj(multi_freq_disp_tab_comp.ax,'Tag',id_new{i});
     
-    idx=find(strcmp(id_new{i},{curves(:).Unique_ID}));
+    idx=find(strcmp(id_new{i},{curves(:).Unique_ID})&strcmp({layer.Curves(:).Type},tab_tag));
     
     if isempty(idx)
         continue;
