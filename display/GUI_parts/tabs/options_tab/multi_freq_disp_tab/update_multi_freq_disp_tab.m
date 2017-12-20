@@ -1,12 +1,5 @@
 function update_multi_freq_disp_tab(main_figure,tab_tag,replot)
 
-switch tab_tag
-    case 'sv_f'
-        tab_name='Sv(f)';
-    case 'ts_f'
-        tab_name='TS(f)';      
-end
-
 
 multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
 if isempty(multi_freq_disp_tab_comp)
@@ -60,7 +53,7 @@ if isempty(layer.Curves)
     set(multi_freq_disp_tab_comp.table,'Data',multi_freq_disp_tab_comp.table.Data);
     return;
 else
-    curves=layer.get_curves_per_type(tab_name);
+    curves=layer.get_curves_per_type(tab_tag);
     if ~isempty(multi_freq_disp_tab_comp.table.Data)
         idx_rem=~ismember(multi_freq_disp_tab_comp.table.Data(:,4),{curves(:).Unique_ID})|...
             ~ismember(multi_freq_disp_tab_comp.table.Data(:,4),tag_lines)|...

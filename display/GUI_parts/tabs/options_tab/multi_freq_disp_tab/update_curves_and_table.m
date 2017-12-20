@@ -18,14 +18,14 @@ end
 
 multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
 
-curves=layer.get_curves_per_type(tab_name);
+curves=layer.get_curves_per_type(tab_tag);
 average=ones(1,numel(id_new));
 
 for i=1:numel(id_new)
     
     id_c=findobj(multi_freq_disp_tab_comp.ax,'Tag',id_new{i});
     
-    idx=find(strcmp(id_new{i},{curves(:).Unique_ID})&strcmp({layer.Curves(:).Type},tab_tag));
+    idx=find(strcmp(id_new{i},{curves(:).Unique_ID})&strcmp({curves(:).Type},tab_tag));
     
     if isempty(idx)
         continue;

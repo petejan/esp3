@@ -172,10 +172,8 @@ try
         mkdir(app_path.data_temp);
         disp('Data Temp Folder Created')
         disp(app_path.data_temp)
-    end
-    
+    end   
 catch 
-    disp('Error: Unable to create temporary data Folder: ')
     disp('creating new config_path.xml file with standard path and options')
     [~,path_config_file,~]=get_config_files();
     delete(path_config_file);
