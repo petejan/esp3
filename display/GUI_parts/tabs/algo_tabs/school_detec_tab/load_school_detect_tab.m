@@ -123,7 +123,10 @@ layer=getappdata(main_figure,'Layer');
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
+old_regs=trans_obj.Regions;
 trans_obj.apply_algo('SchoolDetection','load_bar_comp',load_bar_comp);
+add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+
 update_multi_freq_disp_tab(main_figure,'sv_f',0);
 update_multi_freq_disp_tab(main_figure,'ts_f',0);
 hide_status_bar(main_figure);

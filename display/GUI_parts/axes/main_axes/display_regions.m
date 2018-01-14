@@ -103,7 +103,13 @@ for iax=1:length(main_axes_tot)
                 'UserData',reg_curr.Unique_ID,...
                 'visible',curr_disp.DispReg);
             
-            reg_plot(2)=text(nanmean(reg_curr.Idx_pings),nanmean(reg_curr.Idx_r),reg_curr.disp_str(),'FontWeight','Bold','Fontsize',text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
+            reg_plot(2)=text(nanmean(reg_curr.Idx_pings),nanmean(reg_curr.Idx_r),reg_curr.disp_str(),'FontWeight','Bold','Fontsize',...
+                text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
+            
+            for ii=1:length(reg_plot)
+                iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,reg_curr.Unique_ID,main_figure});
+                iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@move_reg_callback,reg_curr.Unique_ID,main_figure});
+            end
             
             if main_axes==axes_panel_comp.main_axes
                 create_region_context_menu(reg_plot,main_figure,reg_curr.Unique_ID);

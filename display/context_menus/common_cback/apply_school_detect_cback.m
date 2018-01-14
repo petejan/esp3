@@ -39,7 +39,7 @@ function apply_school_detect_cback(~,~,select_plot,main_figure)
 update_algos(main_figure);
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 switch class(select_plot)
     case 'region_cl'
         reg_obj=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
@@ -53,9 +53,15 @@ alg_name='SchoolDetection';
 
 show_status_bar(main_figure);
 load_bar_comp=getappdata(main_figure,'Loading_bar');
+old_regs=trans_obj.Regions;
+
 for i=1:numel(reg_obj)
     trans_obj.apply_algo(alg_name,'load_bar_comp',load_bar_comp,'reg_obj',reg_obj(i));
 end
+
+add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+
+
 hide_status_bar(main_figure);
     
 set_alpha_map(main_figure);

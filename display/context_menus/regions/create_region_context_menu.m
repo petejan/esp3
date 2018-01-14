@@ -55,10 +55,6 @@ context_menu=uicontextmenu(main_figure,'Tag','RegionContextMenu','UserData',ID);
 
 for ii=1:length(reg_plot)
     reg_plot(ii).UIContextMenu=context_menu;
-    if ID>0
-        iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,ID,main_figure});
-        iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@move_reg_callback,ID,main_figure});
-    end
 end
 
 if isreg>0
@@ -119,31 +115,6 @@ uimenu(algo_menu,'Label','Apply School Detection','Callback',{@apply_school_dete
 
 
 
-end
-
-function set_active_reg(src,~,ID,main_figure)
-curr_disp=getappdata(main_figure,'Curr_disp');
-
-switch main_figure.SelectionType
-    case 'alt'
-        
-        modifier = get(main_figure,'CurrentModifier');
-        control = ismember({'control'},modifier);
-        
-        if any(control)
-            if ~ismember(ID,curr_disp.Active_reg_ID)
-                curr_disp.setActive_reg_ID(union(ID,curr_disp.Active_reg_ID));
-            else
-                curr_disp.setActive_reg_ID(setdiff(curr_disp.Active_reg_ID,{ID}));
-            end
-            
-        end
-        
-    case 'normal'
-        curr_disp.setActive_reg_ID(ID);
-    otherwise
-        return;
-end
 end
 
 function freq_diff_callback(~,~,main_figure)

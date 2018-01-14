@@ -112,18 +112,17 @@ switch main_figure.SelectionType
         
        
         
-        old_regs=trans_obj.Regions;
+         old_regs=trans_obj.Regions;
          old_ID=reg_curr.Unique_ID;
          trans_obj.rm_region_id(old_ID);
          reg_curr.Unique_ID=generate_Unique_ID();
          
          delete(findobj(obj.Parent,'UserData',old_ID));
-         
-                 
+                         
          trans_obj.add_region(reg_curr,'Merge',0);
-         add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
          
-            
+         add_undo_region_action(main_figure,trans_obj,old_regs,trans_obj.Regions);
+                     
         curr_disp.Reg_changed_flag=1;
         clear_regions(main_figure,old_ID,{});
         display_regions(main_figure,'both');
