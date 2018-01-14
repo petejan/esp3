@@ -274,7 +274,7 @@ for iconfig=id_config
     trans_obj.AttitudeNavPing=attitude;
     trans_obj.Algo=algo_vec; trans_obj.add_algo(algo_vec_init);
     
-    layers(ilay)=layer_cl('Filename',file_mat_ini(iconfig),'Filetype','FCV30','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude,'EnvData',env_data);
+    layers(ilay)=layer_cl('ChannelID',{'FCV30'},'Filename',file_mat_ini(iconfig),'Filetype','FCV30','Transceivers',trans_obj,'GPSData',gps_data,'AttitudeNav',attitude,'EnvData',env_data);
     
     
 end

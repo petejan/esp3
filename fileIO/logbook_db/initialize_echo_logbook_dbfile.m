@@ -23,7 +23,7 @@ dbconn=sqlite(db_file,'create');
 
 createlogbookTable(dbconn);
 createsurveyTable(dbconn);
-creategpsTable(dbconn);
+%creategpsTable(dbconn);
 
 dbconn.insert('survey',{'SurveyName' 'Voyage' },{'' ''});
 

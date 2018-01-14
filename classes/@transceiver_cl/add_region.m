@@ -23,6 +23,7 @@ Ping_offset=p.Results.Ping_offset;
 IDs_out={};
 
 for i=1:length(regions)
+    
     regions(i).Idx_pings=regions(i).Idx_pings-Ping_offset;
     
     switch (regions(i).Cell_w_unit)

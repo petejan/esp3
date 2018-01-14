@@ -181,7 +181,7 @@ try
         
         time_params=trans_obj.Params.Time;
         [~,idx_params]=min(abs(time_params-Time(idx_ping)));
-        
+
         summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz Power: %.0fW Pulse: %.3fms',file_curr,trans_obj.Mode,curr_disp.Freq/1000,...
             trans_obj.Params.TransmitPower(idx_params),...
             trans_obj.Params.PulseLength(idx_params)*1e3);

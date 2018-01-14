@@ -318,7 +318,9 @@ for itype = 1:length(ftype_unique)
             end
             
             load_bar_comp.status_bar.setText('Updating Database with GPS Data');
-            new_layers.add_gps_data_to_db();
+            
+            %new_layers.add_gps_data_to_db();
+            %new_layers.add_ping_data_to_db();
             
             load_bar_comp.status_bar.setText('Loading Survey Metadata');
             new_layers.load_echo_logbook_db();

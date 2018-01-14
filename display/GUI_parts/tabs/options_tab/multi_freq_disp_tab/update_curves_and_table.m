@@ -5,12 +5,6 @@ if isempty(layer)
     return;
 end
 
-switch tab_tag
-    case 'sv_f'
-        tab_name='Sv(f)';
-    case 'ts_f'
-        tab_name='TS(f)';
-end
 
 if ~iscell(id_new)
     id_new={id_new};

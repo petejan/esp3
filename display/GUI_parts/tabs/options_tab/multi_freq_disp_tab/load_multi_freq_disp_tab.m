@@ -194,10 +194,13 @@ switch evt.Indices(2)
         layer=getappdata(main_figure,'Layer');       
         idx_mod=layer.set_tag_to_region_with_uid(data{4},data{2});
 
-        idx_c=strcmp(data{4},{layer.Curves(:).Unique_ID}&strcmp({layer.Curves(:).Type},tab_tag));
-        layer.Curves(idx_c).Tag=data{2};
+        idx_c=find(strcmp(data{4},{layer.Curves(:).Unique_ID}));
+        for it=1:numel(idx_c)
+            layer.Curves(idx_c(it)).Tag=data{2};
+        end
         update_reglist_tab(main_figure,0);
         display_regions(main_figure,union({'main' 'mini'},layer.ChannelID(idx_mod)));
+        
         switch tab_tag
             case 'ts_f'
                 update_curves_and_table(main_figure,'sv_f',{layer.Curves(:).Unique_ID});
