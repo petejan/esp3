@@ -53,7 +53,7 @@ pointerBehavior.traverseFcn = @(figHandle, currentPoint)...
     set(figHandle, 'Pointer', 'fleur');
 
 mini_axes_comp.mini_ax=axes('Parent',parent,'Units','normalized','box','on',...
-    'Position',pos_in_parent,'visible','on','NextPlot','add','box','on','tag','mini');
+    'Position',pos_in_parent,'visible','on','NextPlot','add','box','on','tag','mini','ClippingStyle','rectangle');
 
 %iptSetPointerBehavior(mini_axes_comp.mini_ax,pointerBehavior);
 

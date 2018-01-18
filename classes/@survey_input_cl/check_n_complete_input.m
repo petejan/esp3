@@ -39,6 +39,7 @@ for isn=1:length(snapshots)
     end
     
     snap_num=snapshots{isn}.Number;
+    snap_type=snapshots{isn}.Type;
     
     if ~isfield(snapshots{isn},'Stratum')
         fprintf('No stratum for %s Snapshot %.0f\n',surveyName,snap_num);
@@ -91,16 +92,19 @@ for isn=1:length(snapshots)
             trans_num=transects{itr}.number;
             
             if ~isfield(transects{itr},'files')
-                
-                surv_temp=survey_data_cl('Voyage',voyage,...
-                    'Type',infos.Type,...
-                    'SurveyName',surveyName,...
-                    'Snapshot',snap_num,...
-                    'Stratum',strat_name,...
-                    'Transect',trans_num);
-                filenames=get_files_from_db(dbconn,surv_temp);
-
-                
+                               
+                filenames={};
+                for itype=1:length(snap_type)
+                    surv_temp=survey_data_cl('Voyage',voyage,...,...
+                        'SurveyName',surveyName,...
+                        'Type',snap_type{itype},...
+                        'Snapshot',snap_num,...
+                        'Stratum',strat_name,...
+                        'Transect',trans_num);
+                    filenames_tmp=get_files_from_db(dbconn,surv_temp);
+                    filenames=union(filenames,filenames_tmp);
+                end
+               
                 if ~isempty(filenames(:))
                     fprintf(' Files added to Snapshot %.0f Stratum %s Transect %.0f:\n',...
                         snap_num,strat_name,trans_num);                    

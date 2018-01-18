@@ -498,6 +498,7 @@ end
 i_strat=0;
 
 snapshots=unique(snaps);
+
 for isn = 1:length(snapshots)
     % loop over all snapshots and get Data subset
     ix = find(surv_out_obj.transectSum.snapshot==snapshots(isn));
@@ -511,11 +512,11 @@ for isn = 1:length(snapshots)
         jx = strcmpi(surv_out_obj.transectSum.stratum(ix), strats{j});
         idx=ix(jx);
         
-        [type,radius]=surv_in_obj.get_start_type_and_radius(snapshots(isn),strats{j});
+        [design,radius]=surv_in_obj.get_start_design_and_radius(snapshots(isn),strats{j});
         i_trans_strat=find(surv_out_obj.slicedTransectSum.snapshot==snapshots(isn)&strcmp(strats{j},surv_out_obj.slicedTransectSum.stratum)); 
         il=0;
         slice_trans_obj=surv_out_obj.slicedTransectSum;
-        switch type
+        switch design
             case 'hill'
                 [~,~,lat_trans,long_trans] = find_centre(slice_trans_obj.latitude(i_trans_strat),...
                     slice_trans_obj.longitude(i_trans_strat));

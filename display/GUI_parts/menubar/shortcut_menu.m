@@ -1,4 +1,4 @@
-function help_menu(~,~,main_figure)
+function shortcut_menu(~,~,main_figure)
 import java.awt.Color;
 curr_disp=getappdata(main_figure,'Curr_disp');
 dialog_fig=new_echo_figure(main_figure,...

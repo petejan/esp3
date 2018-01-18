@@ -51,6 +51,7 @@ end
 if isempty(layer)||isempty(reglist_tab_comp)
     return;
 end
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 [trans_obj,~]=layer.get_trans(curr_disp);
 
@@ -83,10 +84,13 @@ if ~isempty(reglist_tab_comp.table.Data)&&~force_repop
         update_reg_data_table(regions(idx_reg_to_add),reglist_tab_comp.table);
     end
     
-     [~,idx_reg_to_update]=setdiff({regions(:).Tag},reglist_tab_comp.table.Data(:,3));
-     
-    if ~isempty(idx_reg_to_update)
-        update_reg_data_table(regions(idx_reg_to_update),reglist_tab_comp.table);
+    if numel({regions(:).Tag})==numel(reglist_tab_comp.table.Data(:,3))
+        idx_reg_to_update=find(~strcmpi({regions(:).Tag},reglist_tab_comp.table.Data(:,3)'));
+        
+        if ~isempty(idx_reg_to_update)
+            update_reg_data_table(regions(idx_reg_to_update),reglist_tab_comp.table);
+        end
+
     end
 else
     reglist_tab_comp.table.Data(:)=[];

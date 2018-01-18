@@ -40,7 +40,12 @@ end
 for iax=1:length(main_axes_tot)
     trans=trans_obj{iax};
     
-    alpha_in=0.4;
+    switch curr_disp.DispReg
+        case 'off'
+           alpha_in=0;
+        case 'on'
+           alpha_in=0.4;
+    end
     
     main_axes=main_axes_tot(iax);
     
@@ -100,11 +105,10 @@ for iax=1:length(main_axes_tot)
                 'EdgeColor',col,...
                 'LineWidth',1,...
                 'tag','region',...
-                'UserData',reg_curr.Unique_ID,...
-                'visible',curr_disp.DispReg);
+                'UserData',reg_curr.Unique_ID);
             
             reg_plot(2)=text(nanmean(reg_curr.Idx_pings),nanmean(reg_curr.Idx_r),reg_curr.disp_str(),'FontWeight','Bold','Fontsize',...
-                text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID);
+                text_size(iax),'Tag','region_text','color',txt_col,'parent',main_axes,'UserData',reg_curr.Unique_ID,'Clipping', 'on');
             
             for ii=1:length(reg_plot)
                 iptaddcallback(reg_plot(ii),'ButtonDownFcn',{@set_active_reg,reg_curr.Unique_ID,main_figure});

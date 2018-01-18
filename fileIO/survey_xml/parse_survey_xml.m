@@ -206,6 +206,13 @@ end
 function snapshot_struct = get_snapshot(node,options)
 snapshot_struct.Number = get_att(node,'number');
 snapshot_struct.Folder = get_att(node,'folder');
+type_ori = get_att(node,'type');
+if ischar(type_ori)
+    type = strsplit(type_ori,';');
+else
+    type = {' '};
+end
+snapshot_struct.Type=type;
 stratum = get_childs(node,'stratum');
 snapshot_struct.Options = update_options(options,get_options_node(get_childs(node,'options')));
 snapshot_struct.Stratum = cell(1,length(stratum));
@@ -227,7 +234,7 @@ end
 function strat_curr = get_strat_node(stratum,options)
 strat_curr.Name = get_att(stratum,'name');
 strat_curr.Transects = get_transects(stratum);
-strat_curr.Type = get_att(stratum,'type');
+strat_curr.Design = get_att(stratum,'design');
 strat_curr.Radius = get_att(stratum,'radius');
 if isnumeric(strat_curr.Name)
     strat_curr.Name = num2str(strat_curr.Name,'%.0f');

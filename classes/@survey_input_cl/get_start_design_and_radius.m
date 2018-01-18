@@ -1,4 +1,4 @@
-%% get_start_type_and_radius.m
+%% get_start_design_and_radius.m
 %
 % TODO: write short description of function
 %
@@ -36,7 +36,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function [type,radius] = get_start_type_and_radius(surv_in_obj,snap_num,strat_name)
+function [design,radius] = get_start_design_and_radius(surv_in_obj,snap_num,strat_name)
 nb_snap=length(surv_in_obj.Snapshots);
 snap_numbers=nan(1,nb_snap);
 
@@ -46,7 +46,7 @@ end
 
 idx_snap=find(snap_numbers==snap_num);
 
-type='';
+design='';
 radius=0;
 
 for i=1:length(idx_snap)
@@ -61,14 +61,14 @@ for i=1:length(idx_snap)
     
     idx_strat=find(strcmpi(strat_name,strat_names),1);
     
-    if~isempty(idx_strat)&&isfield(strats{idx_strat},'Type')
-        type=strats{idx_strat}.Type;
+    if~isempty(idx_strat)&&isfield(strats{idx_strat},'Design')
+        design=strats{idx_strat}.Design;
         radius=strats{idx_strat}.Radius;
     end
 end
 
-if isempty(type)
-    type='';
+if isempty(design)
+    design='';
 end
 
 if isempty(radius)

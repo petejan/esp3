@@ -202,10 +202,17 @@ uimenu(options,'Label','Save Current Display Configuration (Default)','Callback'
 
 
 help_shortcuts=uimenu(main_figure,'Label','Shortcuts/Help');
-uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@help_menu,main_figure});
+uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@shortcut_menu,main_figure});
+uimenu(help_shortcuts,'Label','Help','Callback',{@help_menu,main_figure});
+
+
 
 setappdata(main_figure,'main_menu',main_menu);
 
+end
+
+function help_menu(~,~,main_figure)
+    web('https://bitbucket.org/echoanalysis/esp3/wiki/Home','-browser');
 end
 
 function save_disp_config_cback(~,~,main_figure)

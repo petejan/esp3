@@ -17,7 +17,7 @@ classdef survey_input_cl < handle
             p = inputParser;
             
             
-            default_info=struct('Script','','XmlId','','Title','','Main_species','','Areas','','Voyage','','SurveyName','','Type','',...
+            default_info=struct('Script','','XmlId','','Title','','Main_species','','Areas','','Voyage','','SurveyName','',...
                 'Author','','Created','','Comments','');
             
             default_cal=struct('G0',25.10,'SACORRECT',0.0,'FREQ',38000);
@@ -27,7 +27,7 @@ classdef survey_input_cl < handle
             addParameter(p,'Options',survey_options_cl);
             addParameter(p,'Algos',{});
             addParameter(p,'Regions_WC',{});
-            addParameter(p,'Snapshots',{struct('Number',0,'Folder','','Stratum','','Type','','Cal',[])});
+            addParameter(p,'Snapshots',{struct('Number',0,'Folder','','Stratum','','Type',' ','Design',' ','Cal',[])});
             parse(p,varargin{:});
             
             

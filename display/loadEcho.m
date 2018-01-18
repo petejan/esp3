@@ -107,7 +107,6 @@ if isempty(trans_obj)
 	[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 end
 
-curr_disp.Freq
 curr_disp.ChannelID = layer.ChannelID{idx_freq};
 
 [~,found_field] = find_field_idx(trans_obj.Data,curr_disp.Fieldname);

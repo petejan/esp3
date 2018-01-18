@@ -140,9 +140,6 @@ if ispc
 end
 
 
-%% Software version
-echo_ver = get_ver();
-fprintf('Version %s\n',echo_ver);
 
 %% Default font size for Controls and Panels
 set(0,'DefaultUicontrolFontSize',10);
@@ -251,6 +248,9 @@ if ~isempty(p.Results.Filenames)
         delete(main_figure);
     end
 end
+%% Software version
+new_version_figure(main_figure);
+
 
 end
 
