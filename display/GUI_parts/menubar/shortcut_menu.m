@@ -1,5 +1,5 @@
 function shortcut_menu(~,~,main_figure)
-import java.awt.Color;
+
 curr_disp=getappdata(main_figure,'Curr_disp');
 dialog_fig=new_echo_figure(main_figure,...
     'Units','pixels','Position',[500 100 500 800],...                                      
@@ -45,7 +45,8 @@ labelStr = ['<html><ul>Shortcuts:'...
     '</ul></html>'];
 jLabel = javaObjectEDT('javax.swing.JLabel',labelStr);
 [jcomp,~] = javacomponent(jLabel,[0,25,500,775],dialog_fig);
-jcomp.setBackground(Color.WHITE);
+bgcolor = num2cell(get(main_figure, 'Color'));
+jcomp.setBackground(java.awt.Color(bgcolor{:}));
 format_color_gui(dialog_fig,curr_disp.Font);
 
 set(dialog_fig,'Visible','on');

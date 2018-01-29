@@ -204,6 +204,7 @@ uimenu(options,'Label','Save Current Display Configuration (Default)','Callback'
 help_shortcuts=uimenu(main_figure,'Label','Shortcuts/Help');
 uimenu(help_shortcuts,'Label','Shortcuts','Callback',{@shortcut_menu,main_figure});
 uimenu(help_shortcuts,'Label','Help','Callback',{@help_menu,main_figure});
+uimenu(help_shortcuts,'Label','Infos','Callback',{@info_menu,main_figure});
 
 
 

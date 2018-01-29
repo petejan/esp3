@@ -49,14 +49,14 @@ try
     idx_minor_xticks=find((diff(rem(xdata_grid,dx_min))<0))+1;
     
     if isempty(idx_minor_xticks)
-        idx_minor_xticks=1:numel(xdata_grid);
+        idx_minor_xticks=find((diff(rem(xdata_grid,dx))<0))+1;
         dxmin=1;
     end
     
     idx_minor_yticks=find((diff(rem(ydata_grid,dy_min))<0))+1;
     
     if isempty(idx_minor_yticks)
-        idx_minor_yticks=1:numel(ydata_grid);
+        idx_minor_yticks=find((diff(rem(ydata_grid,dy))<0))+1;
         dymin=1;
     end
 

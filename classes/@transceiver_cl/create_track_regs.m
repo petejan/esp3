@@ -31,7 +31,7 @@ if ~isempty(tracks)
         idx_pings(idx_rem)=[];
         idx_r_tracks(idx_rem)=[];
         
-        idx_r=max(1,min(idx_r_tracks-ceil(3/2*Np))):min(max(idx_r_tracks)+ceil(5/2*Np),nb_samples);
+        idx_r=max(1,min(idx_r_tracks-ceil(5/2*Np))):min(max(idx_r_tracks)+ceil(3/2*Np),nb_samples);
 
         MaskReg=zeros(length(idx_r),length(idx_pings));
         MaskReg((idx_r_tracks-min(idx_r)+1)+(idx_pings-min(idx_pings))*(length(idx_r)))=1;
@@ -41,8 +41,9 @@ if ~isempty(tracks)
         nb_max=0;
         id_max=1;
         for ui=1:num_can
-            if nansum(full_candidates==ui)>nb_max
+            if nansum(full_candidates(:)==ui)>nb_max
                id_max=ui; 
+               nb_max=nansum(full_candidates(:)==ui);
             end
         end
         MaskReg=(full_candidates==id_max);

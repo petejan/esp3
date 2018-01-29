@@ -91,7 +91,7 @@ idx=trans_obj.find_regions_type('Bad Data');
 bad_data_mask=region.get_mask_from_intersection(trans_obj.Regions(idx));
 
 if region.Remove_ST
-    mask_from_st=trans_obj.Mask_from_st();
+    mask_from_st=trans_obj.mask_from_st();
     mask_from_st=mask_from_st(idx_r,idx_pings);
 else
     mask_from_st=false(size(data)); 

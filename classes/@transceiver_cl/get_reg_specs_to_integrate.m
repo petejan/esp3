@@ -38,12 +38,12 @@ else
 
         for i_temp=1:length(idx_temp)
             reg_temp=trans_obj.get_reg_spec(idx_temp(i_temp));
-            if ~isempty(out_cell{2});
+            if ~isempty(out_cell{2})
                 reg_temp.startDepth=out_cell{2};
             end
-            if ~isempty(out_cell{3});
+            if ~isempty(out_cell{3})
                 reg_temp.finishDepth=out_cell{3};
-            elseif isempty(out_cell{3})&&~isempty(out_cell{2});
+            elseif isempty(out_cell{3})&&~isempty(out_cell{2})
                 reg_temp.startDepth=0;
                 reg_temp.finishDepth=-out_cell{2};
             end

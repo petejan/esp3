@@ -86,7 +86,7 @@ if up_curr_disp>=1
     props=properties(curr_disp);
     
     for i=1:numel(props)
-        if ~ismember((props{i}),{'Fieldnames' 'Fieldname' 'Type' 'Xaxes_current' 'Cax' 'Caxes' 'Freq'})
+        if ~ismember((props{i}),{'Fieldnames' 'Fieldname' 'Type' 'Xaxes_current' 'Cax' 'Caxes' 'Freq' 'DispSecFreqs'})
             curr_disp.(props{i})=curr_disp_new.(props{i});
         end
     end

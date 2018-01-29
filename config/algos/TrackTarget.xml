@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
    <algos>
-      <TrackTarget AlphaMajAxis="0.300000" AlphaMinAxis="0.300000" AlphaRange="0.300000" BetaMajAxis="0.500000" BetaMinAxis="0.500000" BetaRange="0.500000" ExcluDistMajAxis="1.000000" ExcluDistMinAxis="1.000000" ExcluDistRange="1.000000" IgnoreAttitude="0.000000" MaxStdMajorAxisAngle="1.000000" MaxStdMinorAxisAngle="1.000000" Max_Gap_Track="2.000000" Min_Pings_Track="8.000000" Min_ST_Track="5.000000" MissedPingExpMajAxis="5.000000" MissedPingExpMinAxis="5.000000" MissedPingExpRange="5.000000" WeightMajAxis="20.000000" WeightMinAxis="20.000000" WeightPingGap="20.000000" WeightRange="20.000000" WeightTS="20.000000" savename="--"/>
+      <TrackTarget AlphaMajAxis="0.500000" AlphaMinAxis="0.500000" AlphaRange="0.500000" BetaMajAxis="0.300000" BetaMinAxis="0.300000" BetaRange="0.300000" ExcluDistMajAxis="3.000000" ExcluDistMinAxis="3.000000" ExcluDistRange="1.000000" IgnoreAttitude="0.000000" MaxStdMajorAxisAngle="1.500000" MaxStdMinorAxisAngle="1.500000" Max_Gap_Track="3.000000" Min_Pings_Track="3.000000" Min_ST_Track="3.000000" MissedPingExpMajAxis="5.000000" MissedPingExpMinAxis="5.000000" MissedPingExpRange="5.000000" WeightMajAxis="25.000000" WeightMinAxis="25.000000" WeightPingGap="0.000000" WeightRange="50.000000" WeightTS="0.000000" savename="--"/>
    </algos>
 </config_file>

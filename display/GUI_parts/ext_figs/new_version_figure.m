@@ -35,7 +35,7 @@ if isdeployed()
             hjLabel.setCursor(java.awt.Cursor.getPredefinedCursor(java.awt.Cursor.HAND_CURSOR));
             hjLabel.setBackground(java.awt.Color(bgcolor{:}));
             % Set the label's tooltip
-            hjLabel.setToolTipText(['Visit the ' real_struct.url ' website']);
+            %hjLabel.setToolTipText(['Visit the ' real_struct.url ' website']);
             
             % Set the mouse-click callback
             set(hjLabel, 'MouseClickedCallback', @(h,e)web(real_struct.url, '-browser'))
