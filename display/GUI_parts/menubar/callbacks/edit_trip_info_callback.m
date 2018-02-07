@@ -42,8 +42,6 @@ update_layer_tab(main_figure);
 load_info_panel(main_figure);
 update_mini_ax(main_figure,0);
 
-
-
 load_survey_data_fig_from_db(main_figure,1);
 
 end

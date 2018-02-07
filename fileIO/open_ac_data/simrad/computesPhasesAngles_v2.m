@@ -4,9 +4,12 @@ function data=computesPhasesAngles_v2(trans_obj,data)
 for idx_freq=1:length(trans_obj)
     angleSensitivityAlongship=trans_obj(idx_freq).Config.AngleSensitivityAlongship;
     angleSensitivityAthwartship=trans_obj(idx_freq).Config.AngleSensitivityAthwartship;
-    switch trans_obj(idx_freq).Config.TransceiverType
-        case list_WBTs()
-            k_angle=1;
+    
+    if data.pings(idx_freq).datatype(2)==dec2bin(1)
+        k_angle=180/127;
+    else
+        k_angle=1;
+        if data.pings(idx_freq).datatype(1)==dec2bin(0)
             switch trans_obj(idx_freq).Config.TransducerName
                 case {'ES38-7' 'ES333' }
                     switch trans_obj(idx_freq).Config.TransducerName
@@ -34,7 +37,7 @@ for idx_freq=1:length(trans_obj)
                     
                     data.pings(idx_freq).AlongPhi=1/sqrt(3)*(phi31+phi32);
                     data.pings(idx_freq).AcrossPhi=(phi32-phi31);
-
+                    
                     
                 case 'ES38-18|200-18C'
                     if trans_obj(idx_freq).Config.Frequency==38000
@@ -45,11 +48,11 @@ for idx_freq=1:length(trans_obj)
                         phi32=angle(sec3.*conj(sec2))/pi*180;
                         data.pings(idx_freq).AlongPhi=1/sqrt(3)*(phi31+phi32);
                         data.pings(idx_freq).AcrossPhi=(phi32-phi31);
-
+                        
                     else
                         data.pings(idx_freq).AlongPhi=nan(size(data.pings(idx_freq).comp_sig_1));
                         data.pings(idx_freq).AcrossPhi=nan(size(data.pings(idx_freq).comp_sig_1));
-   
+                        
                     end
                 otherwise
                     
@@ -65,13 +68,8 @@ for idx_freq=1:length(trans_obj)
                     
                     data.pings(idx_freq).AlongPhi=angle(fore.*conj(aft))/pi*180;
                     data.pings(idx_freq).AcrossPhi=angle((stbd).*conj(port))/pi*180;
-                    
             end
-            
-        case list_GPTs()
-            k_angle=180/127;
-        otherwise
-            k_angle=180/127;
+        end
     end
     
     data.pings(idx_freq).AlongAngle=(data.pings(idx_freq).AlongPhi)*k_angle/angleSensitivityAlongship-trans_obj(idx_freq).Config.AngleOffsetAthwartship;
@@ -81,7 +79,11 @@ end
 
 switch trans_obj(idx_freq).Config.TransceiverType
     case list_WBTs()
-        data.pings=rmfield(data.pings,{'comp_sig_1','comp_sig_2','comp_sig_3','comp_sig_4','AlongPhi','AcrossPhi'});
+        if isfield(data.pings,'comp_sig_1')
+            data.pings=rmfield(data.pings,{'comp_sig_1','comp_sig_2','comp_sig_3','comp_sig_4','AlongPhi','AcrossPhi'});
+        else
+            data.pings=rmfield(data.pings,{'AlongPhi','AcrossPhi'});
+        end
     otherwise
         data.pings=rmfield(data.pings,{'AlongPhi','AcrossPhi'});
 end

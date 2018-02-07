@@ -18,7 +18,7 @@ addParameter(p,'Cell_w',10,@isnumeric);
 addParameter(p,'Cell_h',10,@isnumeric);
 addParameter(p,'Cell_w_unit','pings',check_w_unit);
 addParameter(p,'Cell_h_unit','meters',check_h_unit);
-
+addParameter(p,'Remove_ST',0,@isnumeric);
 parse(p,trans_obj,varargin{:});
 
 switch p.Results.Cell_w_unit
@@ -103,6 +103,7 @@ reg_wc=region_cl(...
     'Cell_w',cell_w,...
     'Cell_w_unit',cell_w_units,...
     'Cell_h',p.Results.Cell_h,...
-    'Cell_h_unit',p.Results.Cell_h_unit);
+    'Cell_h_unit',p.Results.Cell_h_unit,...
+    'Remove_ST',p.Results.Remove_ST);
 
 end

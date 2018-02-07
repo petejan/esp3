@@ -51,8 +51,11 @@ end
 reg_temp.Reference='Bottom';
 
 if ~isempty(output_bot)
-    reg_temp.display_region(output_bot,'main_figure',main_figure,'Name','Sliced Transect 2D (Bottom Ref)');
-    
+    try
+        reg_temp.display_region(output_bot,'main_figure',main_figure,'Name','Sliced Transect 2D (Bottom Ref)');
+    catch
+       disp('Could not display_sliced transect');
+    end
     [fileN, path_tmp] = uiputfile('*.xlsx',...
         'Save Sliced transect (integration results)',...
         fullfile(path_tmp,[layers_Str{1} '_sliced_bot.xlsx']));

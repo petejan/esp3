@@ -180,28 +180,36 @@ function export_region_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[trans_obj,~]=layer.get_trans(curr_disp);
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 reg_curr=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
 [path_tmp,~,~]=fileparts(layer.Filename{1});
 layers_Str=list_layers(layer,'nb_char',80);
-for i=1:numel(reg_curr)
-    
+
+for i=1:numel(reg_curr)    
     [fileN, path_tmp] = uiputfile('*.xlsx',...
         'Save Sliced transect (integration results)',...
         fullfile(path_tmp,[layers_Str{1} 'reg_' reg_curr(i).disp_str() '.xlsx']));
     
     if isequal(path_tmp,0)
         return;
-    end
-    
+    end    
     if exist(fullfile(path_tmp,fileN),'file')>1
         delete(fullfile(path_tmp,fileN));
     end
     
-    output_reg=trans_obj.integrate_region_v3(reg_curr(i));
+    [regs_end,idx_freq_end]=layer.generate_regions_for_other_freqs(idx_freq,reg_curr(i),[]);  
+    regs=[reg_curr(i) regs_end];
+    [idx_freq_sort,is]=sort([idx_freq,idx_freq_end]);
+    regs=regs(is);
+    reg_descriptors=trans_obj.get_region_descriptors(reg_curr(i));
+    reg_descriptors_sheet=[fieldnames(reg_descriptors) struct2cell(reg_descriptors)];
+    xlswrite(fullfile(path_tmp,fileN),reg_descriptors_sheet,1)
+    for ir=1:length(idx_freq_sort)
+        output_reg=layer.Transceivers(ir).integrate_region_v3(regs(ir));
+        reg_output_sheet=reg_output_to_sheet(output_reg);
+        xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,ir+1);
+    end
     
-    reg_output_sheet=reg_output_to_sheet(output_reg);
-    xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,1);
 end
 end
 

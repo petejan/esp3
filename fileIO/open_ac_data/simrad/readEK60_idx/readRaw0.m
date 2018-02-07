@@ -1,7 +1,7 @@
 function data=readRaw0(data,idx_data,i_ping,PingRange,SampleRange,fid)
 
 temp=fread(fid,4,'int8', 'l');
-
+data.pings(idx_data).datatype='11000000000';
 data.pings(idx_data).number(i_ping) = i_ping+PingRange(1)-1;
 data.pings(idx_data).mode(i_ping) = 256 * temp(3) + temp(4);
 

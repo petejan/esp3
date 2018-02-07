@@ -143,18 +143,7 @@ for i=1:nb_trans
         end
     end
     
-    switch config(i).TransceiverType
-        case list_WBTs()
-            data.pings(i).comp_sig_1=nan(nb_samples(i),nb_pings(i),array_type);
-            data.pings(i).comp_sig_2=nan(nb_samples(i),nb_pings(i),array_type);
-            data.pings(i).comp_sig_3=nan(nb_samples(i),nb_pings(i),array_type);
-            data.pings(i).comp_sig_4=nan(nb_samples(i),nb_pings(i),array_type);
-            
-        case list_GPTs()
-            data.pings(i).power=nan(nb_samples(i),nb_pings(i),array_type);
-            data.pings(i).AlongPhi=zeros(nb_samples(i),nb_pings(i),array_type);
-            data.pings(i).AcrossPhi=zeros(nb_samples(i),nb_pings(i),array_type);
-    end
+    
 end
 
 i_ping = ones(nb_trans,1);
@@ -360,6 +349,7 @@ for idg=1:nb_dg
             idx = find(strcmp(deblank(CIDs_freq),deblank(channelID)));
             
             
+            
             if isempty(idx)
                 fread(fid, idx_raw_obj.len_dg(idg) - HEADER_LEN -128);
             else
@@ -367,12 +357,27 @@ for idg=1:nb_dg
                     
                     datatype=fread(fid,1,'int16', 'l');
                     fread(fid,1,'int16', 'l');
+                    data.pings(idx).datatype=fliplr(dec2bin(datatype,11));
+                    
+                    if i_ping(idx)==p.Results.PingRange(1)                        
+                        switch data.pings(idx).datatype(1)
+                            case dec2bin(1)
+                                data.pings(idx).power=nan(nb_samples(idx),nb_pings(idx),array_type);
+                                data.pings(idx).AlongPhi=zeros(nb_samples(idx),nb_pings(idx),array_type);
+                                data.pings(idx).AcrossPhi=zeros(nb_samples(idx),nb_pings(idx),array_type);
+                            otherwise
+                                data.pings(idx).comp_sig_1=nan(nb_samples(idx),nb_pings(idx),array_type);
+                                data.pings(idx).comp_sig_2=nan(nb_samples(idx),nb_pings(idx),array_type);
+                                data.pings(idx).comp_sig_3=nan(nb_samples(idx),nb_pings(idx),array_type);
+                                data.pings(idx).comp_sig_4=nan(nb_samples(idx),nb_pings(idx),array_type);
+                        end
+                    end
                     
                     temp=fread(fid,2,'int32', 'l');
                     %  store sample number if required/valid
                     number=i_ping(idx);
                     data.pings(idx).channelID=channelID;
-                    data.pings(idx).datatype=fliplr(dec2bin(datatype));
+                    
                     data.pings(idx).offset(i_ping(idx)-p.Results.PingRange(1)+1)=temp(1);
                     data.pings(idx).sampleCount(i_ping(idx)-p.Results.PingRange(1)+1)=temp(2);
                     data.pings(idx).number(i_ping(idx)-p.Results.PingRange(1)+1)=number;
@@ -381,44 +386,46 @@ for idg=1:nb_dg
                     
                     switch config(idx).TransceiverType
                         
-                        case list_WBTs()
-                            nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
-                            if data.pings(idx).datatype(4)==dec2bin(1)
-                                fmt='float32';
-                            elseif data.pings(idx).datatype(5)==dec2bin(1)
-                                fmt='float16';
-                            end
-                            if (sampleCount > 0)
-                                temp = fread(fid,nb_cplx_per_samples*sampleCount,fmt, 'l');
-                            else
-                                continue;
-                            end
-                            
-                            if length(temp)/(nb_cplx_per_samples)~=sampleCount
-                                continue;
-                            end
-                            
-                            if (sampleCount > 0)
-                                for isig=1:nb_cplx_per_samples/2
-                                    data.pings(idx).(sprintf('comp_sig_%1d',isig))(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1+2*(isig-1):nb_cplx_per_samples:end)+1i*temp(2+2*(isig-1):nb_cplx_per_samples:end);
-                                end
-                            end
-                            
-                        case list_GPTs()
-                            if data.pings(idx).datatype(1)==dec2bin(1)
-                                data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
-                            end
-                            if length(data.pings(idx).datatype)>=2
-                                if data.pings(idx).datatype(2)==dec2bin(1)
-                                    if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
-                                        angle=fread(fid,[2 sampleCount],'int8', 'l');
-                                        data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
-                                        data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
-                                    else
-                                        data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
-                                        data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                        case union(list_WBTs(),list_GPTs())
+                            switch data.pings(idx).datatype(1)
+                                case dec2bin(1)                                    
+                                    data.pings(idx).power(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
+                                    if data.pings(idx).datatype(2)==dec2bin(1)
+                                        if data.pings(idx).datatype(2)==dec2bin(1)
+                                            if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
+                                                angle=fread(fid,[2 sampleCount],'int8', 'l');
+                                                data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(1,:);
+                                                data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=angle(2,:);
+                                            else
+                                                data.pings(idx).AcrossPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                                data.pings(idx).AlongPhi(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=zeros(sampleCount,1);
+                                            end
+                                        end
                                     end
-                                end
+                                otherwise
+                                    nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
+                                    if data.pings(idx).datatype(4)==dec2bin(1)
+                                        fmt='float32';
+                                    elseif data.pings(idx).datatype(3)==dec2bin(1)
+                                        fmt='float16';
+                                    end
+                                    
+                                    if (sampleCount > 0)
+                                        temp = fread(fid,nb_cplx_per_samples*sampleCount,fmt, 'l');
+                                    else
+                                        continue;
+                                    end
+                                    
+                                    if length(temp)/(nb_cplx_per_samples)~=sampleCount
+                                        continue;
+                                    end
+                                    
+                                    if (sampleCount > 0)
+                                        for isig=1:nb_cplx_per_samples/2
+                                            data.pings(idx).(sprintf('comp_sig_%1d',isig))(1:sampleCount,i_ping(idx)-p.Results.PingRange(1)+1)=temp(1+2*(isig-1):nb_cplx_per_samples:end)+1i*temp(2+2*(isig-1):nb_cplx_per_samples:end);
+                                        end
+                                    end
+                                    
                             end
                         otherwise
                             fprintf('Unknown Transceiver Type: %s\n Cannot read file\n',config(idx).TransceiverType);
@@ -516,10 +523,9 @@ if p.Results.GPSOnly==0
     
     switch ftype
         case 'EK80'
+            
             data_ori=data;
-            
             [data,mode]=match_filter_data_v2(trans_obj,data);
-            
             
             if gpu_comp
                 data=data_to_gpu(data);
@@ -528,6 +534,7 @@ if p.Results.GPSOnly==0
             
             data=compute_PwEK80_v2(trans_obj,data);
             data=computesPhasesAngles_v2(trans_obj,data);
+            
             data_ori=compute_PwEK80_v2(trans_obj,data_ori);
             data_ori=computesPhasesAngles_v2(trans_obj,data_ori);
             
@@ -538,14 +545,14 @@ if p.Results.GPSOnly==0
             end
             
         case 'EK60'
-  
+            
             mode=cell(1,length(trans_obj));
             mode(:)={'CW'};
             for i=1:length(idx_freq)
                 [trans_obj(i).Config,trans_obj(i).Params]=config_from_ek60(data.pings(i),config_EK60(idx_freq(i)));
             end
             data=computesPhasesAngles_v2(trans_obj,data);
-
+            
             envdata=env_data_cl();
             envdata.SoundSpeed=data.pings(1).soundvelocity(1);
             
@@ -581,7 +588,11 @@ if p.Results.GPSOnly==0
                     curr_data.acrossangle=single(data.pings(i).AcrossAngle);
                     curr_data.alongangle=single(data.pings(i).AlongAngle);
                 else
-                    curr_data.power=single(data_ori.pings(i).power);
+                    if data_ori.pings(i).datatype(1)==dec2bin(1)       
+                         curr_data.power=db2pow_perso(single(data_ori.pings(i).power));
+                    else
+                         curr_data.power=single(data_ori.pings(i).power);
+                    end
                     curr_data.acrossangle=single(data_ori.pings(i).AcrossAngle);
                     curr_data.alongangle=single(data_ori.pings(i).AlongAngle);
                 end
@@ -606,7 +617,7 @@ if p.Results.GPSOnly==0
         range=trans_obj(i).compute_transceiver_range(c);
         trans_obj(i).set_transceiver_range(range);
         trans_obj(i).set_transceiver_time(data.pings(i).time);
-            
+        
         trans_obj(i).Bottom=[];
     end
     

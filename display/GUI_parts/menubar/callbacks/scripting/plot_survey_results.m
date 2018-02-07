@@ -20,7 +20,7 @@ end
 for i=1:length(obj_vec)
     abscf_mean(i)=obj_vec(i).SurvOutput.stratumSum.abscf_mean;
     abscf_wmean(i)=obj_vec(i).SurvOutput.stratumSum.abscf_wmean;
-    abscf_std(i)=obj_vec(i).SurvOutput.stratumSum.abscf_sd;
+    abscf_std(i)=obj_vec(i).SurvOutput.stratumSum.abscf_sd/sqrt(obj_vec(i).SurvOutput.stratumSum.no_transects);
     abscf_wstd(i)=sqrt(obj_vec(i).SurvOutput.stratumSum.abscf_var);
     time(i)=(obj_vec(i).SurvOutput.stratumSum.time_start+obj_vec(i).SurvOutput.stratumSum.time_end)/2;
     

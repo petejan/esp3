@@ -170,6 +170,10 @@ for isn=1:length(snaps)
         iping0=length(idx_pings);
     end
     
+    if isempty(idx_good_pings)
+        warning('    No good pings in Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
+        continue;
+    end
     
     av_speed_tot=dist_tot/timediff_tot;
     
@@ -246,14 +250,18 @@ for isn=1:length(snaps)
             'DepthMin',surv_in_obj.Options.DepthMin,...
             'DepthMax',surv_in_obj.Options.DepthMax,...
             'RegInt',1,...
+            'Remove_ST',surv_in_obj.Options.Remove_ST,...
             'idx_regs',idx_reg);
         %%%%%%%%%%
         
-        
+        if isempty(output_2D_surf)
+             warning('    Nothing to integrate in Snapshot %.0f Stratum %s Transect %d in layer %d\n',snap_num,strat_name,trans_num,ilay);
+            continue;
+        end
              
         num_slice=size(output_2D_surf.eint,2);
         
-         surf_slice_int=nansum(output_2D_surf.eint);
+        surf_slice_int=nansum(output_2D_surf.eint);
         good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
         
         if ~isempty(output_2D_bot)
@@ -275,12 +283,15 @@ for isn=1:length(snaps)
         if  surv_in_obj.Options.ExportSlicedTransects>0   
             
             outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d.xlsx',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
+            
             if exist(outputFileXLS,'file')>0
                 delete(outputFileXLS);
             end
+            
             reg_output_sheet=reg_output_to_sheet(output_2D_surf);
             xlswrite(outputFileXLS,reg_output_sheet,1);
             id_sheet=1;
+            
             if ~isempty(output_2D_bot)
                 id_sheet=id_sheet+1;
                 reg_output_sheet=reg_output_to_sheet(output_2D_bot);
@@ -486,8 +497,11 @@ for isn=1:length(snaps)
     slice_shadow_zone_abscf_temp(surv_out_obj.slicedTransectSum.slice_abscf{i_trans}==0)=0;
     surv_out_obj.slicedTransectSum.slice_shadow_zone_abscf{i_trans}=slice_shadow_zone_abscf_temp;
     catch err
-        disp(err.message);
+        
         warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
+        [~,f_temp,e_temp]=fileparts(err.stack(1).file);
+        fprintf('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
+        disp(err.message);
         continue;
     end
 end

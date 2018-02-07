@@ -359,6 +359,19 @@ for isn = 1:length(snapshots)
                     for i_freq = 1:length(layer_new.Frequencies)
                         curr_freq = layer_new.Frequencies(i_freq);
                         
+                        switch origin
+                            case 'xml'
+                                switch lower(layer_new.Filetype)
+                                    case {'ek60','ek80'}
+                                        layer_new.load_echo_logbook_db();
+                                    case 'asl'
+                                        surv = survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
+                                        layer_new.set_survey_data(surv);
+                                end
+                                layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'bot_ver',bot_ver,'reg_ver',reg_ver);
+                                layer_new.add_lines_from_line_xml();              
+                        end
+                        
                         if ~isnan(options.Soundspeed)
                             layer_new.apply_soundspeed(options.Soundspeed);
                         end
@@ -386,19 +399,7 @@ for isn = 1:length(snapshots)
                         
                     end
                     
-                    switch origin
-                        case 'xml'
-                            switch lower(layer_new.Filetype)
-                                case {'ek60','ek80'}
-                                    layer_new.load_echo_logbook_db();
-                                case 'asl'
-                                    surv = survey_data_cl('Voyage',infos.Voyage,'SurveyName',infos.SurveyName,'Snapshot',snap_num,'Stratum',strat_name,'Transect',trans_num);
-                                    layer_new.set_survey_data(surv);
-                            end
-                            layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'bot_ver',bot_ver,'reg_ver',reg_ver);
-                            layer_new.add_lines_from_line_xml();
-                            
-                    end
+                    
                     
                     for ial = 1:length(algos)
                         if isempty(algos{ial}.Varargin.Frequencies)
@@ -455,12 +456,16 @@ for isn = 1:length(snapshots)
                                             'Cell_h',regions_wc{irewc}.Cell_h,...
                                             'Cell_w_unit',regions_wc{irewc}.Cell_w_unit,...
                                             'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
-                                        reg_wc.Remove_ST = options.Remove_ST;
+                                       
                                         
                                         trans_obj_primary.add_region(reg_wc,'Split',0);
                                     end
                             end
                         end
+                    end
+                    
+                    for ireg=1:length(trans_obj_primary.Regions)
+                        trans_obj_primary.Regions(ireg).Remove_ST=options.Remove_ST;
                     end
                     
                     if options.ClassifySchool>0

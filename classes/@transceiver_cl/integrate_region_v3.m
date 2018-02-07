@@ -223,22 +223,16 @@ cell_h = region.Cell_h;
 % column index of cells composing the region. Note that reference is
 % beggining of echogram so that if data starts at ping #11 in the file
 % while cell width is 10 pings, then first cell of the region is cell #2
-x_mat_idx = floor(x_mat/cell_w)+1;
+x_mat_idx = floor((x_mat-nanmin(x_mat(:)))/cell_w)+1;
 
 % column index of cell in the region
-slice_idx = floor(x/cell_w)+1;
-slice_idx = slice_idx-slice_idx(1)+1;
+slice_idx = floor((x-nanmin(x(:)))/cell_w)+1;
 
 % row index of cells composing the region
-y_mat_idx = floor(y_mat/cell_h)+1;
+y_mat_idx = floor((y_mat-nanmin(y_mat(:)))/cell_h)+1;
 
-% row and column index of top left cell in the region
-y0 = min(y_mat_idx(~isinf(y_mat_idx)));
-x0 = min(x_mat_idx(:));
-
-% bringing back to 1
-y_mat_idx = y_mat_idx-y0+1;
-x_mat_idx = x_mat_idx-x0+1;
+x_vec=nanmin(x_mat_idx(:)):nanmax(x_mat_idx(:));
+idx_x_empty=setdiff(x_vec,unique(x_mat_idx));
 
 
 %% INTEGRATION CALCULATIONS
@@ -261,6 +255,7 @@ Mask_reg_sub = (output.nb_samples==0);
 % by the average between-sample range
 eint_sparse = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Sv_reg_lin(Mask_reg_min_bot) , size(Mask_reg_sub) , @sum , 0 ) * dr;
 output.eint = eint_sparse;
+output.Sv_std = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Sv_reg_lin(Mask_reg_min_bot) , size(Mask_reg_sub) , @std , 0 );
 
 output.Slice_Idx = accumarray( x_mat_idx(1,:)' , slice_idx(:) , [N_x 1] , @nanmin , nan)';
 
@@ -302,8 +297,8 @@ output.Thickness_mean = (output.nb_samples)./output.Nb_good_pings*dr;
 output.Dist_S = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
 output.Dist_E = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';
 
-output.Time_S = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,nan)';
-output.Time_E = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,nan)';
+output.Time_S = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,0)';
+output.Time_E = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,0)';
 
 output.Lat_S = accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmin,nan)';
 output.Lon_S = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
@@ -321,10 +316,15 @@ output.ABC = output.Thickness_mean.*output.Sv_mean_lin;
 output.NASC = 4*pi*1852^2*output.ABC;
 output.Lon_S(output.Lon_S>180) = output.Lon_S(output.Lon_S>180)-360;
 
+%remove empty vertical slices (no data in those)
+fields = fieldnames(output);
+for ifi = 1:length(fields)
+    output.(fields{ifi})(:,idx_x_empty) = [];
+end
 
 if p.Results.keep_all==0
     
-    fields = fieldnames(output);
+    
     idx_rem = [];
     
     idx_zeros_start =  find(nansum(output.Sv_mean_lin,2)>0,1);

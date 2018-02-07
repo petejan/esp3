@@ -187,7 +187,6 @@ if reload==0
     uimenu(select_menu,'Label','Deselect all','Callback',{@selection_callback,surv_data_tab},'Tag','de');
     uimenu(select_menu,'Label','Invert Selection','Callback',{@selection_callback,surv_data_tab},'Tag','inv');
     uimenu(process_menu,'Label','Plot/Display bad pings per files','Callback',{@plot_bad_pings_callback,surv_data_tab,main_figure});
-    uimenu(survey_menu,'Label','Edit Voyage Info','Callback',{@edit_trip_info_callback,main_figure});
     uimenu(survey_menu,'Label','Load Transect Data from CSV','Callback',{@load_logbook_from_csv_callback,main_figure});
     uimenu(survey_menu,'Label','Load Transect Data from xml','Callback',{@load_logbook_from_xml_callback,main_figure});
     uimenu(survey_menu,'Label','Export MetaData to .csv','Callback',{@export_metadata_to_csv_callback,main_figure});

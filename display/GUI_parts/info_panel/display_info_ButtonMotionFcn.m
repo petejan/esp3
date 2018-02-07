@@ -155,7 +155,7 @@ try
         end
         
         if ~isempty(Lat)&&nansum(Lat+Long)>0
-            pos_string=sprintf('Lat: %.6f \n Long:%.6f',Lat(idx_ping),Long(idx_ping));
+            pos_string=print_pos(Lat(idx_ping),Long(idx_ping));
             pos_weigtht='normal';
             pos_col='k';
         else
@@ -240,8 +240,7 @@ try
         
         try
             map_tab_comp=getappdata(main_figure,'Map_tab');
-            if ~isempty(map_tab_comp.Proj)
-                
+            if ~isempty(map_tab_comp.Proj)                
                 delete(map_tab_comp.boat_pos);
                 map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
                 setappdata(main_figure,'Map_tab',map_tab_comp);
