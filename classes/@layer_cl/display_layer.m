@@ -71,6 +71,8 @@ else
     idx_ping=1:length(xdata);
     idx_r=1:length(ydata);
     idx_ping=idx_ping(1:floor(nanmin(screensize(3),length(idx_ping))));
+    x=[xdata(idx_ping(1)) xdata(idx_ping(end))];
+    y=[ydata(1) ydata(end)];
 end
 
 
@@ -125,13 +127,15 @@ data_mat=single(real(data_mat));
 
 
 set(main_echo,'XData',x_data_disp,'YData',y_data_disp,'CData',data_mat);
-
-if length(x_data_disp)>1
-    set(ax,'xlim',[x_data_disp(1) x_data_disp(end)]);
+% x
+% [x_data_disp(1) x_data_disp(end)]
+if length(x)>1
+    set(ax,'xlim',[x(1) x(end)]);
 end
-
+% y
+% [y_data_disp(1) y_data_disp(end)]
 if length(y_data_disp)>1
-    set(ax,'ylim',[y_data_disp(1) y_data_disp(end)]);
+    set(ax,'ylim',[y(1) y(end)]);
 end
 
 end

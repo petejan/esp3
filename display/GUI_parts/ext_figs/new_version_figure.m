@@ -4,7 +4,7 @@ fprintf('Version %s\n',echo_ver);
 if isdeployed()
     try
         %echo_ver='0.8.1';
-        fprintf('Checking for updates...');
+        fprintf('Checking for updates...\n');
         tmp=webread('http://sourceforge.net/projects/esp3/best_release.json',weboptions('ContentType','json'));
         real_struct=tmp.platform_releases.windows;
         real_filename=real_struct.filename;
@@ -42,7 +42,7 @@ if isdeployed()
                        
         end
     catch
-        disp('Could not check for updates online');
+        disp('Could not check for updates online\n');
     end
 end
 

@@ -36,8 +36,9 @@ for i=1:nb_chan
         struct_temp.Freq=curr_disp.SecFreqs(i);
         trans_obj=layer.get_trans(struct_temp);
         range=trans_obj.get_transceiver_range();
-        y1=find(range>=curr_disp.R_disp(1),1);
-        y2=find(range<=curr_disp.R_disp(2),1,'last');
+        dr=nanmean(diff(range));
+        y1=(curr_disp.R_disp(1)-range(1))/dr;
+        y2=(curr_disp.R_disp(2)-range(1))/dr;
 
         layer.display_layer(struct_temp,curr_disp.Fieldname,secondary_freq.axes(i),echo_obj,x,[y1 y2],0);
     end

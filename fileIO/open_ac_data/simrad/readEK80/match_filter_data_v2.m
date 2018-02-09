@@ -26,7 +26,7 @@ for idx_freq=1:length(trans_obj)
         val_sq=sum(abs(y_tx_matched).^2); 
              
   
-        n = size(y_tx_matched,1) + size(s1,1) - 1; 
+           n = size(y_tx_matched,1) + size(s1,1) - 1; 
         yc_1_temp = ifft(bsxfun(@times,fft(y_tx_matched,n),fft(s1,n,1)),n,1)/val_sq; 
         yc_2_temp = ifft(bsxfun(@times,fft(y_tx_matched,n),fft(s2,n,1)),n,1)/val_sq; 
         yc_3_temp = ifft(bsxfun(@times,fft(y_tx_matched,n),fft(s3,n,1)),n,1)/val_sq; 

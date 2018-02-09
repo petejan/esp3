@@ -56,9 +56,10 @@ delete(axes_panel_comp.listeners);
 clear_lines(axes_panel_comp.main_axes);
 
 [dr,dp]=layer.display_layer(curr_disp,curr_disp.Fieldname,axes_panel_comp.main_axes,axes_panel_comp.main_echo,x,y,new);
-
+trans_obj=layer.get_trans(curr_disp);
+range=trans_obj.get_transceiver_range();
 if new
-   curr_disp.R_disp=get(axes_panel_comp.main_axes,'YLim');
+    curr_disp.R_disp=range(get(axes_panel_comp.main_axes,'YLim'));
 end
 
 str_subsampling=sprintf('Disp. SubSampling: [%.0fx%.0f]',dp,dr);
