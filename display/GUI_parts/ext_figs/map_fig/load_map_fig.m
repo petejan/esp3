@@ -38,8 +38,12 @@ box.r_max=2;
 box.nb_pts=100;
 proj=m_getproj;
 box.list_proj_str={proj(:).name};
-box.proj_idx=8;
-box.proj=box.list_proj_str{box.proj_idx};
+box.proj= init_proj('Mercator',box.lon_lim,box.lat_lim);
+if isempty(box.proj)
+    return;
+end
+box.proj_idx=find(strcmp(box.proj,box.list_proj_str));
+
 box.depth_contour_size=1000;
 
 
@@ -186,27 +190,23 @@ box.proj=box.list_proj_str{box.proj_idx};
 cont=box.depth_contour_size;
 
 [lon,lat]=create_box(box.lon_box,box.lat_box,box.nb_pts);
-axes(box.lim_axes);
-cla;
-hold on;
-sucess=0;
-i=0;
-while sucess==0&&i<length(box.list_proj_str);
-    try
-        m_proj(box.proj,'long',box.lon_lim,...
-            'lat',box.lat_lim);
-        sucess=1;
-    catch
-        i=i+1;
-        fprintf(1,'Can''t use %s projection inside this area... Trying %s\n',box.proj,box.list_proj_str{i});
-        box.proj_idx=i;
-        box.proj=box.list_proj_str{box.proj_idx};
-        set(box.tog_proj,'value',box.proj_idx);
+
+cla(box.lim_axes);
+hold(box.lim_axes,'on');
+
+try
+    m_proj(box.proj,'long',box.lon_lim,'lat',box.lat_lim);
+catch
+    box.proj= init_proj('Mercator',box.lon_lim,box.lat_lim);
+    
+    if isempty(box.proj)
+        close(map_fig);
+        return;
+    else
+       box.proj_idx=find(strcmp(box.proj,box.list_proj_str)); 
     end
 end
 m_grid('box','fancy','tickdir','in');
-
-
 
 
 box.plot=m_line(lon,lat,'Color','b ','linewidth',2,'tag','box','parent',box.lim_axes);
@@ -220,7 +220,7 @@ try
         vis='off';
     end
     if length(lon_c)>=2&&length(lat_c)>=2
-        [box.Cs,box.hs]=m_contour(lon_c,lat_c,bathy,-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible',vis);
+        [box.Cs,box.hs]=m_contour(lon_c,lat_c,bathy,-10000:cont:-1,'edgecolor',[.4 .4 .4],'visible',vis,'parent',box.lim_axes);
     else
         box.Cs=[];
         box.hs=[];
@@ -248,15 +248,18 @@ index_selected = get(box.listbox,'Value');
 for i=1:length(box.lat_lays)
     if ~isempty(box.lat_lays{i})
         if any(index_selected==i)
-            box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','r','linewidth',2,'linestyle','none','marker','.');
+            box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','r','linewidth',2,'linestyle','none','marker','.','parent',box.lim_axes);
         else
-            box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','k','linewidth',1,'linestyle','none','marker','.');
+            box.trans(i)=m_plot(box.lon_lays{i},box.lat_lays{i},'color','k','linewidth',1,'linestyle','none','marker','.','parent',box.lim_axes);
         end
     end
 end
 
 m_ruler([0.1 0.3],0.1);
-
+Map_info.Proj=box.proj;
+Map_info.LongLim=box.lon_lim;
+Map_info.LatLim=box.lat_lim;
+set(box.lim_axes,'UserData',Map_info);
 setappdata(map_fig,'Box',box);
 create_box_impoints(map_fig,100);
 end

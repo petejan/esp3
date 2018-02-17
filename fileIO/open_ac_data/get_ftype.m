@@ -4,6 +4,11 @@ if exist(filename,'file')>0
     
     [~,fname,end_file]=fileparts(filename);
     
+    if strcmp(end_file,'.db')
+        ftype='db';
+       return; 
+    end
+    
     if strcmp(end_file,'.lst')
         ftype='fcv30';
        return; 

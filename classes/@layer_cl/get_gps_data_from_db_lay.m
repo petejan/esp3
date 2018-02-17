@@ -1,4 +1,4 @@
-%% get_gps_data_from_db.m
+%% get_gps_data_from_db_lay.m
 %
 % TODO: write short description of function
 %
@@ -33,7 +33,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function [gps_data,files]=get_gps_data_from_db(layer_obj)
+function [gps_data,files]=get_gps_data_from_db_lay(layer_obj)
 
 
 [pathtofile,~,~]=cellfun(@fileparts,layer_obj.Filename,'UniformOutput',0);
@@ -66,7 +66,8 @@ for ip=1:length(pathtofile)
         lat=str2double(strsplit(gps_data_temp{id,2}));
         lon=str2double(strsplit(gps_data_temp{id,3}));
         time=datenum(strsplit(gps_data_temp{id,4}),'yyyymmddHHMMSSFFF');
-        gps_data(nb_data)=gps_data_cl('Lat',lat,'Long',lon,'Time',time);
+        idx_nan=isnan(lat);
+        gps_data(nb_data)=gps_data_cl('Lat',lat(~idx_nan),'Long',lon(~idx_nan),'Time',time(~idx_nan));
         files{nb_data}=gps_data_temp{id,1};
     end
 end

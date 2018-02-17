@@ -32,7 +32,7 @@ for i=1:nb_layers
             
         otherwise
             if ~isempty(layers(i).get_survey_data())
-                new_name=[layers(i).get_survey_data().print_survey_data() file_curr];
+                new_name=[deblank(layers(i).get_survey_data().print_survey_data()) file_curr];
             else
                 new_name=file_curr;
             end

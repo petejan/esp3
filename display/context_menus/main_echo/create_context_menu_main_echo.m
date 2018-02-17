@@ -137,12 +137,21 @@ end
 idx_t=idx_ts:idx_te;
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
-
+[trans_obj,~]=layer.get_trans(curr_disp);
 gps_data=trans_obj.GPSDataPing;
 
-[new_lat,new_long,hfig]=correct_pos_angle_depth(gps_data.Lat(idx_t),gps_data.Long(idx_t),angle_deg,depth_m,curr_disp.Proj);
+LongLim=[nanmin(gps_data.Long(idx_t)) nanmax(gps_data.Long(idx_t))];
+
+LatLim=[nanmin(gps_data.Lat(idx_t)) nanmax(gps_data.Lat(idx_t))];
+
+[LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.3);
+proj_i=init_proj('Mercator',LongLim,LatLim);
+
+
+if isemty(proj_i)
+    return;
+end
+[new_lat,new_long,hfig]=correct_pos_angle_depth(gps_data.Lat(idx_t),gps_data.Long(idx_t),angle_deg,depth_m,proj_i);
 
 % Construct a questdlg with three options
 choice = questdlg('Would you like to use this corrected track (in red)?', ...

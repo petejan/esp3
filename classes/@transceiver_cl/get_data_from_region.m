@@ -10,6 +10,7 @@ addParameter(p,'horiExtend',[0 Inf],@isnumeric);
 addParameter(p,'field','sv',@ischar);
 addParameter(p,'intersect_only',0,@isnumeric);
 addParameter(p,'idx_regs',[],@isnumeric);
+addParameter(p,'regs',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'select_reg','all',@ischar);
 addParameter(p,'keep_bottom',0,@isnumeric);
 addParameter(p,'keep_all',0,@isnumeric);
@@ -83,6 +84,10 @@ if p.Results.intersect_only==1
             idx=p.Results.idx_regs;
     end
     intersection_mask=region.get_mask_from_intersection(trans_obj.Regions(idx));
+    if ~isempty(p.Results.regs)
+        intersection_mask_2=region.get_mask_from_intersection(p.Results.regs);
+        intersection_mask=intersection_mask_2|intersection_mask;
+    end
 else
    intersection_mask=true(size(data)); 
 end

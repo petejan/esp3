@@ -71,6 +71,6 @@ hjLabelas.setToolTipText('mailto:alex.schimel@niwa.co.nz');
 format_color_gui(dialog_fig,curr_disp.Font);
 
 set(dialog_fig,'Visible','on');
-centerfig(dialog_fig);
+
 
 end

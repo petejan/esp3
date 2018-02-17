@@ -1,6 +1,5 @@
 function update_map_tab(main_figure,varargin)
 
-
 p = inputParser;
 addRequired(p,'main_figure',@(obj) isa(obj,'matlab.ui.Figure'));
 addParameter(p,'map',1,@isnumeric);
@@ -20,52 +19,40 @@ if isempty(layer)
 end
 
 if p.Results.map
-    delete(get(map_tab_comp.ax,'children'));
-    
+    %delete(get(map_tab_comp.ax,'children'));
+    cla(map_tab_comp.ax);
     lat=layer.GPSData.Lat;
     long=layer.GPSData.Long;
     if ~isempty(lat)
         
         set(map_tab_comp.ax,'visible','on');
-        LongLim=[nanmin(long) nanmax(long)];
+        LongLim=[nanmin(long) nanmax(long)];        
+        LatLim=[nanmin(lat) nanmax(lat)];      
         
-        LatLim=[nanmin(lat) nanmax(lat)];
+        [LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.3);     
         
-        [LatLimExt,LongLimExt]=ext_lat_lon_lim(LatLim,LongLim,0.3);
+        proj_i=init_proj('Mercator',LongLim,LatLim);
         
-        list_proj=m_getproj;
-        proj={list_proj(:).name};
-        proj_i=curr_disp.Proj;
-        sucess=0;
-        i=0;
-        while sucess==0&&i<length(proj)
-            try
-                m_proj(proj_i,'long',LongLimExt,'lat',LatLimExt);
-                sucess=1;
-            catch
-                i=i+1;
-                fprintf(1,'Can''t use %s projection inside this area... Trying %s\n',proj_i,proj{i});
-                proj_i=proj{i};
-                if i==length(proj)
-                    fprintf(1,'Could not find any appropriate projection\n');
-                    
-                end
-            end
+        if isempty(proj_i)
+            return;
         end
-        curr_disp.Proj=proj_i;
-        map_tab_comp.Proj=proj_i;
-        map_tab_comp.LongLim=LongLimExt;
-        map_tab_comp.LatLim=LatLimExt;
-        map_tab_comp.tracks(1)=m_plot(map_tab_comp.ax,long(1),lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
-        map_tab_comp.tracks(2)=m_plot(map_tab_comp.ax,long,lat,'Color','k','tag','Nav');
-        
         try
             m_grid('tickdir','in','axes',map_tab_comp.ax);
         catch
-            warning('area too small for ticks to display')
+            set(map_tab_comp.ax,'visible','off');
+            warning('area too small for ticks to display');
         end
+        
+        map_tab_comp.Proj=proj_i;
+        map_tab_comp.LongLim=LongLim;
+        map_tab_comp.LatLim=LatLim;
+        
+        map_tab_comp.tracks(1)=m_plot(map_tab_comp.ax,long(1),lat(1),'Marker','o','Markersize',10,'Color',[0 0.5 0],'tag','start');
+        map_tab_comp.tracks(2)=m_plot(map_tab_comp.ax,long,lat,'Color','k','tag','Nav');
+        
+                       
     else
-       set(map_tab_comp.ax,'visible','off'); 
+        set(map_tab_comp.ax,'visible','off');
     end
 end
 
@@ -82,6 +69,5 @@ if p.Results.st
 end
 
 setappdata(main_figure,'Map_tab',map_tab_comp);
-
 
 end

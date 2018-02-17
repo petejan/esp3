@@ -1,0 +1,558 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ESP3 version 0.9.3</title>
+    <link href="esp3_1.css" rel="stylesheet">
+  </head>
+  <body>
+  
+	<header>
+      <div id="header-inner">
+	   <h1>ESP3 ver. 0.9.3</h1>
+       <div id="logo"> <a href="./index.html"><img alt="logo" src="./img/logo.png"></a> </div>      
+      </div>
+    </header>	
+	
+<nav>
+  <ul>
+	<li><a href="./index.html">Home page</a> </li>
+    <li><a href="./release_notes.html">Release notes</a> </li>
+    <li><a href="./tutorials.html">Tutorials</a> </li>
+	<li><a href="./links.html">Links</a> </li>
+	<li><a href="./subscribe.html">Subscribe</a> </li>
+	<li><a href="./howtocite.html">How to cite</a> </li>
+  </ul>
+</nav>
+
+
+<section>
+<h2> Quick Start Tutorial </h2> 
+
+<h4> Introduction </h4> 
+<section>
+This is a first-time-user tutorial to **discover ESP3** and **understand its basic functions**, using the example dataset provided with the software.
+<br> </br>
+Assuming ESP3 is installed and running normally, this tutorial takes approximately 20 minutes to complete.
+<br> </br>
+**Bullet points** show the actions to take within the context of the tutorial. The rest are notes and comments to understand the software.
+</section>
+<br> </br>
+<section>
+Note: The writing of this tutorial is currently in progress, but it's being made already available online to provide a basic help for the early adopters of ESP3. Ellipses (...) show parts that still require completion.
+</section>
+
+<h4>  1. Setup example data files </h4> 
+<section>
+ESP3 comes with a set of EK60 example files, acquired by NIWA in 2015. They are required for this tutorial. You will find them under `\example_data\ek60\` from the ESP3 root folder.
+<br> </br>
+The example dataset consists of 7 raw files (extension .raw) with corresponding bottom files (extension .bot) and index files (extension .idx).
+<br> </br>
+ESP3 creates a number of files when loading and interacting with the data so if the dataset has been loaded before, the example dataset folder may also contain the two folders `bot_reg` and `echoanalysisfiles`, as well as the `echo_logbook.db` file. For this tutorial, we will start from scratch so, if they exist, delete the two folders `bot_reg` and `echoanalysisfiles`, as well as the `echo_logbook.db` file.
+</section>
+
+<h4>  2. Run ESP3 </h4>
+<section>
+- For the MATLAB source code version; run MATLAB, make the ESP3 root folder the Current Folder, and in the Command Window type "EchoAnalysis" and enter.
+<br> </br>
+- For the compiled version, execute `EchoAnalysis.exe` from the ESP3 root folder.
+<br> </br>
+The ESP3 main window should appear. It looks the same in both versions:
+<figure><img src="./img/ESP3_start.PNG" \="" height="600" width="1060" style="margin-left: -40px; margin-bottom: -20px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.1: ESP3 start up window </figcaption>
+</section>
+
+<h4>   3. Set the Default Data Folder </h4>
+<section>
+- In the `Menu`, select `Config` then `Path`.
+<br> </br>
+- Ensure the `Default Data Folder` is set to the `\example_data\ek60\` folder that came with ESP3.
+<br> </br>
+- Leave the other fields as default and save to exit.
+</section>
+<br> </br>
+<section>
+Note: This is a useful path to set when you work on one dataset for an extended length of time.
+</section>
+
+<h4>  4. Open a first file </h4>
+<section>
+- In the `Menu`, select `File(s)` then `Open file`.
+<br> </br>
+The contents of the `\example_data\ek60\` folder should show: seven raw data files of the example dataset.
+<br> </br>
+- Open the first file in the list, i.e. `tan1505-D20150428-T010855.raw`.
+<br> </br>
+- Since the example data provided was collected with a multi-frequency system, at the window prompt for frequencies load all (default) and click `OK`.
+<br> </br>
+Because 38 kHz is the most commonly used frequency in fisheries acoustics, it will be displayed on ESP3 once the loading is complete by default. 
+To visualise data from the other frequencies, access the Freq. drop-down menu of the Display Option tab.    
+<figure><img src="./img/ESP3_start_data_loaded.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -15px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.2: Example data (38 kHz) successfully loaded into ESP3. Red rectangle shows the drop-down Frequency menu </figcaption>
+<br> </br>
+Note that with the development of the multi-frequency capabilities in the most recent versions of ESP3, upon loading multi-frequency data a new window will pop out (named 'All Channels') displaying data from all frequencies. 
+Although this window is mainly for displaying all frequencies simultaneous, it is also possible open any of the available frequencies in the main window of ESP3 by clicking on the channel of interest located in the bottom-left corner of each channel (e.g., 120 kHz).    
+<br> </br>
+<figure><img src="./img/All_channels.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -15px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.3: All Channels window. By clicking on frequency (black rectangle) data is displayed in ESP3 main window </figcaption>
+<br> </br>
+- Open a Windows File Explorer window and navigate to the `\example_data\ek60\` folder. Note that ESP3 has created an `\echoanalysisfiles\` folder and an `echo_logbook.db` file.
+<br> </br>
+The `\echoanalysisfiles\` folder contains index files to speed up ESP3's future loading of files that have been previously loaded. In our case, it only contains index data for the one file we opened.
+<br> </br>
+The `echo_logbook.db` file is a database for all files in the folder. We will have a closer look at this logbook later.
+<br> </br>
+<h4> 5. Getting a feel for ESP3 </h4>
+
+5.1. ESP3's main window organisation
+<br> </br>
+The ESP3 main window has 6 basic components, from top to bottom:
+<br> </br>
+<section style="margin-left: 60px;">
+i. The `Menu` allows access to every function of ESP3.
+<br> </br>
+ii. The `Toolbar` is a series of icons allowing fast access to ESP3's various -Cursor Modes*, as well as some basic commands.
+<br> </br>
+iii. The `Control Panel` on the left is composed of tabs allowing a variety of display windows (Overview, Maps, Attitude, etc.), display options (frequency selection, data variables, etc.), actions (calibration, application of algorithms, etc.), lists (regions, layers, etc.). It is where ESP3 is mostly controlled from.
+<br> </br>
+iv. The `Algorithms Panel` on the right is composed of tabs allowing setting parameters for ESP3's algorithms and applying them to the data.
+<br> </br>
+v. The `Main Panel` in the center will be mainly used to show the `Echogram`, but also later the`Logbook`. The `Echogram` comes by default with the `Vertical Profile` on its left and the `Colorbar` on its right although they can both be hidden, while another profile - the `Horizontal Profile` - while not shown by default, can be made visible.
+<br> </br>
+vi. The `Metadata Panel` at the very bottom shows various information about the current file or layer shown in the `Echogram`, and about the ping and sample corresponding to the location of the mouse cursor when on the `Echogram`.
+</section>
+<figure><img src="./img/ESP3_menus.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.4: ESP3 window organisation (see text) </figcaption>
+<br> </br>
+
+5.2 Understanding ESP3's -Cursor modes-
+<br> </br>
+ESP3 has different "Modes" of operation, allowing the user to interact with the `Echogram` in different manners for different purposes.
+<br> </br>
+The actions resulting from the use of the mouse buttons on the `Echogram` differ between each Mode, so it is important to be aware of which Mode you are currently operating under.
+<br> </br>
+The current Mode is indicated as **text** in the middle of the `Metadata Panel`, by the **aspect of the mouse cursor** when it is over the `Echogram`, and by which **icon in the Tools bar** is highlighted (if any).
+<br> </br>
+5.2.1 "Normal" mode
+<br> </br>
+Normal Mode, shown in the `Metadata Panel` as `Cursor mode: Normal`, is displayed as a regular arrow mouse cursor when placed over the `Echogram`, and as the regular arrow icon in `Toolbar'.
+(If this is not the case, press the keyboard shortcut `0` (zero) to get into Normal mode.)
+<br> </br>
+"Normal" mode is the default mode, used mainly to view the data, but also to interact with existing Regions and set rectangular selection areas to allow the use of some actions on limited portions of data (more information on those later).
+<br> </br>
+For accessing the different cursor modes click the appropriate icon in the toolbar or by using the appropriate **keyboard shortcut**.
+<br> </br>
+5.2.2 "Zoom In" mode
+<br> </br>
+This mode is used for zooming in on the `Echogram`. Note how the `Metadata Panel` text changed to `Cursor mode: Zoom In`, the mouse cursor aspect changed to a zoom-in cursor, and the zoom-in icon in the toolbar is now highlighted:
+<br> </br>
+- Press the keyboard shortcut `1` to switch to "Zoom In" mode, and press it again or press '0' to return to Normal mode. You can also switch to Zoom in mode from the toolbar.
+<br> </br>
+As you might have noticed, pressing the keyboard shortcut for a mode which is already under use switches ESP3 back to Normal mode.
+<br> </br>
+5.2.3 "Zoom Out" mode
+<br> </br>
+This mode is used for zooming out on the `Echogram`. Note how the `Metadata Panel` text changed to `Cursor mode: Zoom Out`, how the mouse cursor aspect changed to a zoom-out cursor, and how the zoom-out icon in the `Tools` bar is now highlighted:
+<br> </br>
+- Press the keyboard shortcut `Shift` + `1` to switch to the "Zoom Out" mode.
+<br> </br>
+5.2.4 "Bad Transmit" mode
+<br> </br>
+This mode is used to flag/unflag pings as bad transmits. Note how the `Metadata Panel` text changed to `Cursor mode: Bad Transmits`, how the mouse cursor aspect changed to two small, opposite, black arrows, and how the Bad transmit icon in the `Tools` bar is now highlighted:
+<br> </br>
+- Press the keyboard shortcut `2` to switch to the "Bad Transmit" mode.
+<br> </br>
+5.2.5 "Edit Bottom" mode
+<br> </br>
+This mode is used to create/edit/delete bottom detect. Note how the `Metadata Panel` text changed to `Cursor mode: Edit Bottom`, how the mouse cursor aspect changed to a large '+' cross, and how the Edit Bottom icon in the `Tools` bar is now highlighted:
+<br> </br>
+- Press the keyboard shortcut `3` to switch to the "Edit Bottom" mode.
+<br> </br>
+Several tools are available to manually create, edit or delete bottom detect, and available by clicking the small arrow next to the icon:
+<figure><img src="./img/Bottom_options.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.5: Bottom tools available while on Edit Bottom mode from the drop-down menu in the toolbar </figcaption>
+<br> </br>
+
+5.2.6 "Create Region" mode
+<br> </br>
+This mode is used to to create/edit/delete regions for echo-integration. Note how the `Metadata Panel` text changed to `Cursor mode: Create Region`, how the mouse cursor aspect changed to a small double '+' cross, and how the Create Region icon in the `Tools` bar is now highlighted:
+<br> </br>
+- Press the keyboard shortcut `4` to switch to the "Create Region" mode.
+<br> </br>
+5.2.7 "Measure Distance" mode
+<br> </br>
+This mode is used to to measure distances. Note how the `Metadata Panel` text changed to `Cursor mode: Measure`, how the mouse cursor aspect changed to a small white '+' cross, and how the Measure icon in the `Tools` bar is now highlighted:
+<br> </br>
+- Press the keyboard shortcut `5` to switch to the "Measure Distance" mode.
+<br> </br>
+Note: Modes for flagging pins as bad transmits, editing the bottom, and creating regions will be explored more in details in later sections.
+<br> </br>
+5.3 Moving around the Echogram
+<br> </br>
+- Press `0` to get into Normal mode.
+<br> </br>
+- Use the scroll button on the mouse or the keyboard shortcuts `W` and `S` to zoom in and out on the `Echogram`.
+<br> </br>
+- Use the keyboard's up/down/left/right arrow keys to move the zoomed area around. You can also use the keyboard shortcuts `A` to move left and `D` to move right.
+<br> </br>
+Note how the blue box in the `Overview display` that is in the `Control Panel` under the `Display Option` tab changes as you zoom in and out or move around.
+<br> </br>
+While the `Overview display` shows the entire file/layer at all times, the **blue box** superimposed on it represents the extent of data currently shown in the `Echogram`.
+<br> </br>
+Using the `Overview display` and the blue box is another convenient way to move around the data:
+<br> </br>
+- **Move** the blue box around the `Overview Display` with the mouse's left button, thus allowing to conserve the same level of zoom in the `Echogram`.
+<br> </br>
+- **Create** a new blue box on another part of the `Overview Display` by left-clicking **outside** of the current blue box, holding, dragging and releasing the button.
+<br> </br>
+Because of the convenience of manipulating the blue box in the `Overview Display` to rapidly change the data displayed, it is a good idea to undock it from the `Control Panel` to always have it on the screen, particularly if your machine has multiple screens.
+<br> </br>
+-  Right-click anywhere on the `Overview Display` to open its contextual menu and select `Dock/Undock MiniAxes` to undock it from the `Control Panel` and into its own separate window (Fig.6).
+<figure><img src="./img/Undocking_overview_display.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.6: Undocking Overview display from Control Panel to an external window  </figcaption>
+<br> </br>
+- Close the `Overview Display` window to redock it into the `Control Panel`.
+<br> </br>
+Note: The Map&CO, Sv(f), TS(f), Layer list and Region list tabs from the Control Panel, can also be undocked by right-clicking to an external window or the Main Panel (Echogram).
+<br> </br>
+The last option to move around the data is to use the zoom-in and zoom-out Modes. Although less convenient, they offer some additional zoom actions compared to the other options discussed above.
+<br> </br>
+- Press `1` to get in zoom-in Mode and explore the corresponding mouse commands:
+<br> </br>
+<section style="margin-left: 60px;">
+    i. Left-click- or -right-click- to zoom in one step.
+	<br> </br>
+    ii. Left-click, drag & release- on the `Echogram` to create a zoom-in box.
+	<br> </br>
+    iii. Right-click, drag & release- or -Ctrl + left-click, drag & release- to create a zoom box that spans all pings currently shown on the `Echogram`.
+<br> </br>
+</section>
+- Press `Shift`+`1` to get in zoom-out mode and explore the corresponding mouse commands:
+<br> </br>
+<section style="margin-left: 60px;">
+    i. Left-click- to zoom-out one step.
+	<br> </br>
+    ii. Right-click- or -Ctrl + left-click- or -double left-click- to zoom all the way out.
+</section>
+	<br> </br>
+
+5.4 Components of the Echogram
+<br> </br>
+By default, the `Echogram` is shown accompanied with the `Vertical Profile` on its left and the `Colorbar` on its right.
+<br> </br>
+The `Vertical Profile` in red shows the level of all samples for the ping where the mouse cursor is. The location of the sample where the mouse cursor is shows as a dashed blue line.
+<br> </br>
+- In the `Menu`, select `Display` and check `Show Horz Profile` to show the `Horizontal Profile` in green.
+<br> </br>
+In all modes except "Bad Transmit" and "Edit Bottom", the `Horizontal Profile` shows the level of all pings for the sample where the mouse cursor is. The location of the ping where the mouse cursor is shows as a dashed blue line.
+<br> </br>
+In "Bad Transmit" and "Edit Bottom", the `Horizontal Profile` shows the **average of the four samples immediately above the bottom detection**, to assist with edition of bottom detect and bad transmits.
+<br> </br>
+Note that just like the `Horizontal Profile` was originally hidden, it is also possible to show/hide the `Vertical Profile` and the `Colorbar` by checking `Show Horz Profile` and `Show Colorbar` (respectively) also found under the `Display` part of the `Menu`.
+<br> </br>
+For now however, we will just use the default display so:
+<br> </br>
+- In the `Menu`, select `Display` and uncheck `Show Horz Profile` to hide the `Horizontal Profile`.
+<br> </br>
+5.5 Changing the data displayed
+<br> </br>
+In the `Control Panel`, the `Display Option` tab offers not only the `Overview Display` but also different variables to display and different display options.
+<br> </br>
+- Change the `Frequency`. Frequencies available are those you selected in the first place when you loaded the file.
+<br> </br>
+- Change the `Data` variable. Options are:
+<br> </br>
+<section style="margin-left: 60px;">
+    - `Power`: ...
+	<br> </br>
+    - `Angle Across`: ...
+	<br> </br>
+    - `Angle along`: ...
+	<br> </br>
+    - `Sv` (default): ...
+	<br> </br>
+    - `TS Unc`: ...
+	<br> </br>
+</section>	
+- The next text fields `X grid` and `Y grid` are for the grid spacing in the X and Y axes, with the unit of the X axis to be chosen in meters, ping numbers, or seconds.
+<br> </br>
+- `TS(dB)` ...
+<br> </br>
+- `Transp.%` ...
+<br> </br>
+- `Disp Max` and `Disp Min` ...
+<br> </br>
+...
+
+6. Logbook and file metadata
+<br> </br>
+- In the `Control Panel`, select the `Layer list` tab.
+<br> </br>
+The `Layer list` tab shows the "layers" currently loaded in ESP3. "Layers" are not the same thing as files and we will see how they differ later, but for now note how the layer only shows the name of the file that was loaded.
+<br> </br>
+<figure><img src="./img/Layer_list_tab.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.7: Layer list tab from the Control Panel </figcaption>
+<br> </br>
+
+- In the `Menu`, select `Survey Data` then `Edit/Display Logbook`.
+<br> </br>
+This opens the logbook as a new tab in the `Main Panel`, which lists all data files in the folder containing the file currently displayed, as well as the files' metadata.
+<br> </br>
+<figure><img src="./img/Logbook.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.8: Survey logbook in the Main Panel </figcaption>
+<br> </br>
+
+All displayed info is recorded in the `echo_logbook.db` file that was created earlier by ESP3 in the data folder.
+<br> </br>
+Note: The logbook can also be opened using the keyboard shortcut `L`. Multiple logbooks can be opened using the keyboard shortcut 'Shift+L' while on the Echogram view in the Main Panel.
+<br> </br>
+- Right-click on the logbook's file list to show the contextual menu and select `SurveyData` then `Edit Voyage Info`.
+<br> </br>
+- Add the info for this dataset:
+<br> </br>
+<section style="margin-left: 60px;">
+    i. `Survey Name`: `East Coast North Island NZ`
+	<br> </br>
+    ii. `Voyage`: `tan1505`
+	<br> </br>
+    iii. and press `OK`
+</section>
+<br> </br>
+- Next, edit the metadata for the first acoustic file in the logbook itself:
+<br> </br>
+<section style="margin-left: 60px;">
+    i. `Snap.`: `1`
+	<br> </br>
+    ii. `Strat.`: `A`
+	<br> </br>
+    iii. `Trans.`: `1`
+	<br> </br>
+    iv. `Comment`: `added metadata`
+</section> 
+<br> </br>
+<figure><img src="./img/Voyage_info.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.9: Survey logbook including voyage information and metadata for the first acoustic file</figcaption>
+<br> </br>
+
+All changes are effective immediately in the database. Note how the file in the `Layers` tab is now listed with the metadata newly entered.
+<br> </br>
+Also notice how ESP3 added all the .raw files to the logbook since these were contained in the same folder as the file we loaded previously.
+<br> </br>
+- Now let's open a new file. In the `Menu`, select `File(s)` then `Open next file`. Again, select all frequencies and click `OK`.
+<br> </br>
+Notice in the `Layers` tab that the new file has no metadata. We're going to enter it, this time from the `Echogram`.
+<br> </br>
+- Making sure that this new file is selected in the `Layers` tab so that the `Echogram` displayed is that of this new file, right-click on the `Echogram`, select `Survey Data` then `edit/add survey data for this file`. Enter `1`, `A` and `2` and press `OK`.
+<br> </br>
+The new metadata should show both in the Layers tab and in the logbook.
+<br> </br>
+There is a third way to open files. On the logbook tick the box on the first column of the acoustic file(s) you wish to open, and then right click and select: Open selected file(s).
+<br> </br>
+It is worth to note that files do not need to be opened to complete their metadata field in the logbook. It may be more efficient to complete all the metadata for a particular survey before moving to post-processing. 
+<br> </br>
+- In the `Layers` tab, select the two files, right-click, select `Mapping` then `Plot tracks from selected layers` to show the layers' geographical location in a new Navigation window.
+<figure><img src="./img/Mapping_survey.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.10: Map showing the two layers selected from the Layer list tab </figcaption>
+<br> </br>
+- Move the mouse over different pings on the `Echogram` to see the position of any ping on the Navigation window. Repeat after selecting the other layer in the `Layers` tab.
+<br> </br>
+7. Understanding layers
+<br> </br>
+We will now open two more files, this time from the logbook.
+<br> </br>
+- In the logbook, check the boxes for the two next files, i.e. `tan1505-D20150428-T020308.raw` and `tan1505-D20150428-T021300.raw`, right-click and select `Open selected files`. Again, select all frequencies and click `OK`.
+<br> </br>
+After ESP3 has loaded the two new files, note that the `Layers` list has updated with the files newly loaded, **but this time on a same line**.
+<figure><img src="./img/Two_files_per_layer.PNG" \="" height="600" width="1060" style="margin-left: -40px;margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.11: Layer list showing two acoustic files as part of one layer </figcaption>
+<br> </br>
+This is because the `Layer list` tab does not show individual files but individual **layers**, which are defined in ESP3 as any data to be displayed and analysed together, independently of the files in which they are found. This design allows to "split" files that contain data that were intended as separate (for example, a file containing several transects) or to "concatenate" files that contain data that were intended as combined (for example, consecutive files making up a single transect).
+<br> </br>
+ESP3 recognizes layers by their unique metadata (Snapshot, Stratum & Transect). In our case, the two files newly opened have the same (empty) metadata so ESP3 assumed they were intended as one single layer and concatenated them.
+<br> </br>
+- In the `Layer list` tab, make sure that latest layer is selected. Then, in the `Menu`, select `Display` then `Display File Lines`. A vertical line appears in the `Echogram`, showing the boundary between the two files in that layer.
+<br> </br>
+- In the `Layers list` tab, select the three layers, right-click, select `Mapping` then `Plot tracks from selected layers` to update the Navigation window.
+<br> </br>
+- In the `Layers` tab, make sure the new layer is selected and move the mouse over the `Echogram`. Notice how the transition from one file to the next corresponds to the end of a turn and beginning of the third transect. We need to update the files' metadata accordingly.
+<br> </br>
+7.1 Set different files as different layers
+<br> </br>
+- In the `Echogram`, right-click on the area corresponding to the **first** file (left of the file line), select `Survey Data` then `Edit/Add Survey Data for this file`. Enter `1`, `turn 2 to 3` and `0` and press `OK`.
+<br> </br>
+Note the newly appeared vertical red and green lines on the `Echogram`, encasing the black file line. They indicate that the `Echogram` now has two layers instead of one.
+<br> </br>
+- Right-click on the area corresponding to the **second** file (right of the file line), select `Survey Data` then `Edit/Add Survey Data for this file`. Enter `1`, `A` and `3` and press `OK`.
+<br> </br>
+Notice the metadata changed both in the logbook and in the `Layers` tab. Indeed, we could have just updated the metadata in the logbook, rather than from the `Echogram`, with the same result.
+<br> </br>
+Since the metadata for the two files is now different, ESP3 should recognize them as different layers.
+<br> </br>
+- Right-click on that layer, select `Layer Management`, then `Split Selected Layers (per survey data)`.
+<br> </br>
+The contents of the `Layers` tab will update accordingly.
+<br> </br>
+- In the `Layer list` tab, select the four layers, right-click, select `Mapping` then `Plot tracks from selected layers` to update the Navigation window. The navigation now shows the two layers separately.
+<br> </br>
+7.2 Split one file into different layers
+<br> </br>
+Remember that the second file we loaded as a single layer and tagged as transect #2 was actually composed of a turn (from transect #1 to transect #2), followed by transect #2 itself. We are going to split it into the appropriate layers.
+<br> </br>
+- Select this layer in the `Layers` tab.
+<br> </br>
+- Mouse over the `Echogram`, using the Navigation window as a reference to find the ping where the turn ends and the transect starts.
+<br> </br>
+- When you are happy with the location, right-click and select `Survey Data` then `Split Transect Here`.
+<br> </br>
+- A window will pop up prompting for metadata **before** the split. This is the turn section so enter `1`, `turn 1 to 2`, and `0`and press `OK`.
+<br> </br>
+- A second window will then pop up prompting for metadata **after** the split. This is the transect section so enter `1`, `A`, and `2` and press `OK`.
+<br> </br>
+- The `Echogram` now shows the green and red vertical lines indicating the boundary between the now two separated layers.
+<br> </br>
+Notice on the logbook that the file is now represented on two lines, with different metadata. This illustrates that each line in the logbook corresponds to sections of files.
+<br> </br>
+
+8. Bottom detection
+<br> </br>
+The bottom detection is represented as a black line over the `Echogram`. Some files have one and some don't. For those who do, it might be more or less accurate or all over the place. In all cases, it's a good idea to create and/or edit it.
+<br> </br>
+- In the `Control Panel`, `Layers` tab, select the first layer.
+<br> </br>
+- In the `Menu`, select `Display`, check the `Display bottom` option and uncheck the `Display Under Bottom data` option.
+<br> </br>
+- In the `Control Panel`, `Display Option` tab, set a under bottom data transparency (`Transp.%`) value of 80.  
+<br> </br>
+- In the `Algorithms panel`, `Bottom Detect V2` tab, set the `Default Values` to `high` and click `Apply`.
+<br> </br>
+The bottom detect resulting from the algorithm now shows on the echogram as a black line and all data below it are partially masked with 80% transparency.
+<br> </br>
+This automatic detection is not perfect and needs some manual editing.
+<br> </br>
+- Zoom-in around the bottom at the beggining of the layer.
+<br> </br>
+- In the `Menu`, select `Display` and check `Show Horz Profile` to show the bottom edit assistant window.
+<br> </br>
+- Click the keyboard shortcut `3` to get into "Bottom editing mode".
+<br> </br>
+Stay with the "Classic Tool", which allows fine control over creating the bottom detect (hand-drawn or polyline) or deleting it locally.
+<br> </br>
+Peaks in the horizontal profile show pings with high energy above the detected bottom. Red circles emphasize unusually high values. Investigate those pings for bottom detection.
+<br> </br>
+- Use the following mouse commands to edit the bottom:
+<br> </br>
+<section style="margin-left: 60px;">
+    i. Left-click- : to start setting bottom, then...
+	<br> </br>
+	<section style="margin-left: 90px;">
+        a. Maintain left button pressed and drag- : to create a hand-drawn section over a series of pings, or...
+		<br> </br>
+        b. Release button and left-click again*: to create a polyline section over a series of pings.
+		<br> </br>
+        c. Double left-click- : to complete.
+		<br> </br>
+	</section>
+    ii. Right-click- or -Ctrl + left-click- : to remove bottom for one ping.
+	<br> </br>
+    iii. Right-click, drag and release- or -Ctrl + left-click, drag and release*: to remove bottom for series of pings.
+</section>
+	<br> </br>
+- Use the keyboard's arrow keys to advance in the file to check next pings.
+<br> </br>
+Once you are happy with the bottom detection,
+<br> </br>
+- In the `Menu`, select `Bottom/Regions` then `XML` then `Save Bottom to xml` (or use the keyboard shortcut -Ctrl+S*)
+<br> </br>
+- Open the project folder in `Windows Explorer` and notice the new folder `bot_reg` just created by ESP3 to contain data related to bottom detection ('bot') and regions ('reg').
+<br> </br>
+In this folder is a single xml file `b_tan1505-D20150428-T010855.xml` that is composed of the prefix `b_` (for bottom) followed by the name of the file which bottom was just edited
+<br> </br>
+- Open this xml file to see the format of ESP3's bottom record. Notice how the bottom is only recorded for the frequency that was edited.
+<br> </br>
+- Repeat this procedure for all other layers/files.
+<br> </br>
+
+9. Flag bad transmits
+<br> </br>
+
+"Bad Transmits Editing" mode:
+<br> </br>
+- Mode used to flag/unflag pings as bad transmits.
+<br> </br>
+- **Keyboard shortcut**: `2`
+<br> </br>
+- **Mouse cursor aspect:**
+<br> </br>
+- **Mouse actions:**
+<br> </br>
+<section style="margin-left: 60px;">
+    i. Left-click- : Flag ping as bad transmit.
+	<br> </br>
+    ii. Left-click, drag and release- : Flag series of pings as bad transmits.
+	<br> </br>
+    iii. Right-click- : Remove bad transmit flag.
+	<br> </br>
+    iv. Right-click, drag and release- : Remove bad transmit flag for series of pings.
+	<br> </br>
+</section>
+10. Create regions
+<br> </br>
+
+"Create Regions" mode:
+<br> </br>
+- Mode to create/edit/delete regions.
+<br> </br>
+- **Keyboard shortcut:** `4`
+<br> </br>
+- **Mouse cursor aspect:** Small double '+' cross
+<br> </br>
+- **Mouse actions:**
+<br> </br>
+<section style="margin-left: 60px;">
+    i. Left-click, drag & release- : Create a region.
+    ii. Left-click on a region- : Make region active when in "Display Regions" (filled regions) mode.
+    iii. Delete- : Delete active region.
+</section>
+<br> </br>
+
+"Normal" mode:
+<br> </br>
+- Default mode. Used to explore the data, interact with Regions and set rectangle selection areas.
+<br> </br>
+- Use this mode at all times, unless using another mode for specific purpose.
+<br> </br>
+- **Keyboard shortcut:** `0`
+<br> </br>
+- **Mouse cursor aspect:** Normal arrow.
+<br> </br>
+- **Mouse actions:**
+<br> </br>
+<section style="margin-left: 60px;">
+    i. Left-click on region- : Make region active.
+    <br> </br>
+	ii. Right-click on bottom/region/selection/display- : Specific contextual menu. If on a region, this also makes it active.
+    <br> </br>
+	iii. Ctrl + left-click, drag & release- : Create a rectangle selection box.
+    <br> </br>
+	iv. Shift + left-click, drag & release- : Create a rectangle selection box spreading across all pings.
+    <br> </br>
+	v. Double left-click- : Delete selection box.
+</section>
+	<br> </br>
+11. Create script
+<br> </br>
+
+<br> </br>
+## 12. Run script
+<br> </br>
+
+<br> </br>
+## 13. Visualise results
+<br> </br>
+...
+
+</section>
+	  
+  </body>
+</html>

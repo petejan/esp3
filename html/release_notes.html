@@ -1,0 +1,294 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ESP3 version 0.9.3</title>
+    <link href="esp3_2.css" rel="stylesheet">
+  </head>
+  <body>
+  
+	<header>
+      <div id="header-inner">
+	   <h1>ESP3 ver. 0.9.3</h1>
+       <div id="logo"> <a href="./index.html"><img alt="logo" src="./img/logo.png"></a> </div>      
+      </div>
+    </header>	
+	
+<nav>
+  <ul>
+	<li><a href="./index.html">Home page</a> </li>
+    <li><a href="./release_notes.html">Release notes</a> </li>
+    <li><a href="./tutorials.html">Tutorials</a> </li>
+	<li><a href="./links.html">Links</a> </li>
+	<li><a href="./subscribe.html">Subscribe</a> </li>
+	<li><a href="./howtocite.html">How to cite</a> </li>
+  </ul>
+</nav>
+
+
+<div id="column_right"> 
+	<figure><img src="./img/multi_f.png" \="" height="400"></figure>
+</div>
+
+
+<div id="column_left"> 
+<section>
+<h2> Release Notes </h2> 
+</section>
+<section>
+<h4> <li> Version 0.9.3 </li></h4> 
+<section>
+- More changes following the last Simrad updates... Now possible to have different ranges per frequencies in the multifrequency display
+</section>
+<section>
+- Fixed FM processing when recording data in Auto range mode (Incomplete pings were dropped...)
+</section>
+<section>
+- Fixed bug for reading EK60/ES60/ES70 data with auto range. Introduced reading new data format</l2>
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.9.2 </li></h4>
+<section>
+- New EK80 compressed file formats in CW can now be read properly (as produced by version 1.12.1 of EK80)
+</section>
+<section>
+- Changes in region export: added global region parameter in the first sheet of the export
+</section>
+<section>
+- Added "type" attribute in logbook. Replaced old "type" in scripts (for hills) with "design".
+</section>
+<section>- Fixed ctrl+z bugs for removing regions created with school detection
+- Fixed issues with track regions
+</section>
+<section>
+- Added testing for available new versions on start
+</section>
+</section>
+
+
+<section>
+<h4> <li>  Version 0.9.1</li></h4>
+<section>
+- Added "Type" attribute in dB. WARNING: once opened with this version, the logbook db file will no longer work with the older versions.
+</section>
+<section>
+- Fixed bug for compatibility with non-Nvidia card or old-Nvidia card. 
+</section>
+<section>
+- Fixed bug of interaction between TS(f) and Sv(f) tabs.
+</section>
+<section>
+- Added "Save to clipboard" option on echogram and frequency curves.
+</section>
+</section>
+
+<section>
+<h4> <li> Version 0.9.0</li></h4>
+<section>
+- Version 0.9.0 is a major update, that introduces major new functionalities
+</section>
+<section>
+- It requires to install the MCR version R2017b (9.3) available at https://au.mathworks.com/products/compiler/matlab-runtime.html
+</section>
+<section>
+- If you have a CUDA compatible graphic card, it needs to be updated to the latest graphic driver to have CUDA 8.0 or higher.
+</section>
+<section>
+- New Multifrequency display window that shows all available frequency in one window, synchronized with the main analysis window. WARNING: this might slow down ESP3, but will get back to normal if you close it.
+</section>
+<section>
+- You can now select multiple regions to export, display or apply certain algorithms to those regions only.
+</section>
+<section>
+- Separate display config file in each folder so that you can save your grid display/integration size for each surveys.
+</section>
+<section>
+- Export of 2D-sliced transect per cell now available as an output from the scripts with the "ExportSlicedTransects" option (each transect in a separate *.xlsx file, to supplement the standard output.)
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.8.1</li></h4>
+<section>
+- Version 0.8.0 was a bit of an early release with a lot of bugs there at multiple levels following major internal changes.
+</section>
+<section>
+- Major and minor bug fixes
+</section>
+<section>
+- Dedicated tabs to display of Sv(f) and TS(f) curves
+</section>
+<section>
+- Performances improvements for loading of complex regions (saved from school-detection results)
+</section>
+<section>
+- This version was calibrated against ESP2 on 4 different surveys. Identical results.
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.8.0 </li></h4>
+<section>
+- Fixed bug for reading ASL files introduced in version 0.7.1
+</section>
+<section>
+- Gives opportunity to the user to change certain tabs position
+</section>
+<section>
+- New Map&Co tab with single target position and histogram
+</section>
+<section>
+- Improved region/bottom database interface
+</section>
+<section>
+- Added multi-frequency analysis tab
+</section>
+<section>
+- Users can add and remove presets for algorithms parameters values
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.7.2 </li></h4>
+<section>
+- New Bottom edit mode.
+</section>
+<section>
+- New Bad transmit algorithm. Can be applied on various selected area/regions. Much faster.
+</section>
+<section>
+- Export integrated region via region context menu (right click)
+</section>
+<section>
+- Export integrated transect via main menu
+</section>
+<section>
+- Updated calibration tab with calculation options for environmental variables
+</section>
+<section>
+- Horizontal axis display estimated bottom backscatter when in bottom edit of bad transmit mode and show high values in red
+</section>
+<section>
+- Undo/redo works for region creation/deletion as well as bottom/ bad transmit edit/algorithms
+</section>
+<section>
+- Minor bugs fixes and performances improvements. 
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.7.1</li></h4>
+<section>
+- Added functionality so that you can apply target tracking to a region or a selected area (via context menu).
+</section>
+<section>
+- Added Tracked Target export function in the export menu.
+</section>
+<section>
+- Water Column region dialog box modified.
+</section>
+</section>
+
+<section>
+<h4> <li> Version 0.7.0</li></h4>
+<section>
+- Fixed Memory leak when changing layer that would not clean graphic objects properly and would slowly fill the ram.
+</section>
+<section>
+- Changes in the integration method: 
+</section>
+<section>
+Sliced transect are now sliced independently of region cell size (cell size defined in the scripts).
+</section>
+<section>
+- Main edit bottom method changed. To stop editing double or right-click.
+</section>
+<section>
+- Minor bugs fixes and performances improvements.
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.6.2</li></h4>
+<section>
+- Fixed some minor integration problems encountered while integrating shallow water data with small cell sizes and multiple complex regions.
+</section>
+<section>
+- Added choice of Model for computation of absorption in the calibration tab. Default was Francois and Garisson (1982), now Doonan(2003) or override available.
+</section>
+<section>
+- Added display of single target detected.
+</section>
+<section>
+- Added templates for algorithms in echo scripts.
+</section>
+<section>
+- Minor bugs fixes and performances improvements.
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.6.1</li></h4>
+<section>
+- Fixed problem to read EK80 files where Frequency is not in the initial XML0 but only FrequencyStart and FrequecyEnd (Introduced in Version 0.6.0).
+</section>
+<section>
+ - Added warning when acquisition parameters are changed during while file is recorded. Sv and or range will not be properly calculated if pulse length is changed during acquisition (this should be fixed soon).
+</section>
+<section> 
+- Work on Normalization of frequency response for Sv/Sp/TS. Some more to do...
+ </section>
+<section>
+- TS(f) processing is right (as compared to Simrad EK80 calibration program).
+</section>
+<section>
+ - Sv(f) processing might need some more testing.
+</section>
+</section>
+
+<section>
+<h4> <li>  Version 0.6.0</li></h4>
+<section>
+ - Added multiple edit bottom modes
+</section>
+<section>
+ - Created a Undo/Redo manager, working for bottom edit/algorithms and bad transmit edit/algorithms.
+</section>
+<section>
+ - Improved raw FCV30 file reading.
+</section>
+<section>
+ - Multi channel reading for ASL file now available.
+</section>
+<section>
+ - Revamped the display tab.
+</section>
+<section>
+ - You can now specify the transparency for under bottom data.
+</section>
+<section>
+ - Multiple bug fixes...
+</section>
+<section>
+ - WARNING: NOT SUITABLE TO READ CW EK80 files. New Version on the way...
+</section>
+</section>
+
+<section>
+<h4> <li>   Version 0.5.4</li></h4>
+<section>
+ - This version has a bug... To work properly, you need to manually delete the config_echo.xml file in the C:\Program Files\ESP3_ver_0.5.4.0\config folder and restart ESP3. This will create a clean version of the config file.
+</section>
+</section>
+<br> </br>
+<br> </br>
+</section>
+</div>
+
+
+	  
+  </body>
+</html>

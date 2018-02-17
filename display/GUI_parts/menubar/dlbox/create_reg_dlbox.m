@@ -64,8 +64,6 @@ uicontrol(reg_fig, ...
     'fontsize',14,...
     'String','Create WC Region');
 
-% center
-centerfig(reg_fig);
 
 
 %% Reference

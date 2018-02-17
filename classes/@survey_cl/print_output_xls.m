@@ -42,6 +42,7 @@ if exist(file,'file')>0
 end
 warning('off','MATLAB:xlswrite:AddSheet');
 infos=surv_obj.SurvInput.Infos;
+
 info_sheet=[fieldnames(infos) struct2cell(infos)];
 options=surv_obj.SurvInput.Options.struct();
 info_sheet=[info_sheet;[fieldnames(options) struct2cell(options)]];

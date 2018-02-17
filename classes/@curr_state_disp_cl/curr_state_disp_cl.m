@@ -6,6 +6,7 @@ classdef curr_state_disp_cl <handle
         SecChannelIDs={};
         SecFreqs=[];
         DispSecFreqs=1;
+        DispSecFreqsOr='vert';
         Fieldname='sv';
         Fieldnames={'sv'};
         Type='Sv'
@@ -47,6 +48,7 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'SecChannelIDs',{},@iscell);
             addParameter(p,'SecFreqs',[],@isnumeric);
             addParameter(p,'DispSecFreqs',1,@isnumeric);
+            addParameter(p,'DispSecFreqsOr','vert',@ischar);
             addParameter(p,'Fieldname','sv',@ischar);
             addParameter(p,'DispBottom','on',@ischar);          
             addParameter(p,'Proj','Lambert Conformal Conic',@ischar);

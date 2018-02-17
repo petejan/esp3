@@ -2,13 +2,10 @@ function [LatLim_out,LongLim_out]=ext_lat_lon_lim(LatLim_in,LongLim_in,fext)
 
 lon_box_w=diff(LongLim_in);
 lat_box_w=diff(LatLim_in);
-lon_box_w=nanmax([lon_box_w,lat_box_w]);
+box_w=nanmax([lon_box_w,lat_box_w]);
 
-lat_box_w=nanmax([lon_box_w,lat_box_w]);
-
-dlon=[-1 1]*lon_box_w*fext;
-dlat=[-1 1]*lat_box_w*fext;
-
+dlon=[-1 1]*nanmax(box_w,5*1e-4)*fext;
+dlat=[-1 1]*nanmax(box_w,5* 1e-4)*fext;
 
 
 LongLim_out=[LongLim_in(1)+dlon(1) LongLim_in(2)+dlon(2)];

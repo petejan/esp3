@@ -34,12 +34,13 @@ end
 surv.StartTime=start_time;
 surv.EndTime=end_time;
 
-[surv.Voyage,surv.SurveyName,surv.Snapshot,surv.Stratum,surv.Transect,cancel]=fill_survey_data_dlbox(surv,'title','Enter New Survey Data');
 
-if cancel>0
+ surv=edit_survey_data_fig(main_figure,surv,{'off' 'off' 'on' 'on' 'on' 'on' 'on'},'Transect');
+if isempty(surv)>0
     return;
 end
-
+surv.StartTime=start_time;
+surv.EndTime=end_time;
 layer_cl.empty.update_echo_logbook_dbfile('Filename',layer.Filename{trans.Data.FileId(idx_ping)},'SurveyData',surv);
 layer.load_echo_logbook_db();
 setappdata(main_figure,'Layer',layer);

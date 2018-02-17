@@ -56,6 +56,7 @@ addParameter(p,'denoised',0,@isnumeric);
 addParameter(p,'motion_correction',0,@isnumeric);
 addParameter(p,'intersect_only',0,@isnumeric);
 addParameter(p,'idx_regs',[],@isnumeric);
+addParameter(p,'regs',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'select_reg','all',@ischar);
 addParameter(p,'keep_bottom',0,@isnumeric);
 addParameter(p,'keep_all',0,@isnumeric);
@@ -95,6 +96,7 @@ end
     'horiExtend',p.Results.horiExtend,...
     'intersect_only',p.Results.intersect_only,...
     'idx_regs',p.Results.idx_regs,...
+    'regs',p.Results.regs,...
     'select_reg',p.Results.select_reg,...
     'keep_bottom',p.Results.keep_bottom,...
     'keep_all',p.Results.keep_all);
@@ -231,6 +233,7 @@ slice_idx = floor((x-nanmin(x(:)))/cell_w)+1;
 % row index of cells composing the region
 y_mat_idx = floor((y_mat-nanmin(y_mat(:)))/cell_h)+1;
 
+
 x_vec=nanmin(x_mat_idx(:)):nanmax(x_mat_idx(:));
 idx_x_empty=setdiff(x_vec,unique(x_mat_idx));
 
@@ -255,9 +258,10 @@ Mask_reg_sub = (output.nb_samples==0);
 % by the average between-sample range
 eint_sparse = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Sv_reg_lin(Mask_reg_min_bot) , size(Mask_reg_sub) , @sum , 0 ) * dr;
 output.eint = eint_sparse;
-output.Sv_std = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , Sv_reg_lin(Mask_reg_min_bot) , size(Mask_reg_sub) , @std , 0 );
+output.Sv_dB_std = accumarray( [y_mat_idx(Mask_reg_min_bot) x_mat_idx(Mask_reg_min_bot)] , pow2db_perso(Sv_reg_lin(Mask_reg_min_bot)) , size(Mask_reg_sub) , @std , 0 );
 
-output.Slice_Idx = accumarray( x_mat_idx(1,:)' , slice_idx(:) , [N_x 1] , @nanmin , nan)';
+output.Vert_Slice_Idx = accumarray( x_mat_idx(1,:)' , slice_idx(:) , [N_x 1] , @nanmin , 0)';
+output.Horz_Slice_Idx = accumarray( [y_mat_idx(:) x_mat_idx(:)] ,y_mat_idx(:), [N_y N_x] , @nanmin , 0);
 
 % first and last ping in each cell
 output.Ping_S    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanmin , nan)';
@@ -265,8 +269,6 @@ output.Ping_E    = accumarray( x_mat_idx(1,:)' , sub_pings(:) , [N_x 1] , @nanma
 
 % number of pings not flagged as bad transmits, in each cell
 output.Nb_good_pings = repmat(accumarray(x_mat_idx(1,:)',(bad_trans_vec(:))==0,[N_x 1],@nansum,0),1,N_y)';
-output.Nb_good_pings_esp2 = output.Nb_good_pings;
-
 
 % first and last sample in each cell
 output.Sample_S = accumarray([y_mat_idx(:) x_mat_idx(:)],sub_samples_mat(:),size(Mask_reg_sub),@min,nan);
@@ -297,8 +299,8 @@ output.Thickness_mean = (output.nb_samples)./output.Nb_good_pings*dr;
 output.Dist_S = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmin,nan)';
 output.Dist_E = accumarray(x_mat_idx(1,:)',sub_dist(:),[N_x 1],@nanmax,nan)';
 
-output.Time_S = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,0)';
-output.Time_E = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,0)';
+output.Time_S = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmin,nan)';
+output.Time_E = accumarray(x_mat_idx(1,:)',sub_time(:),[N_x 1],@nanmax,nan)';
 
 output.Lat_S = accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmin,nan)';
 output.Lon_S = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
@@ -306,9 +308,9 @@ output.Lon_S = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
 output.Lat_E = accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmax,nan)';
 output.Lon_E = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmax,nan)';
 
-output.Sv_mean_lin_esp2 = eint_sparse./(output.Nb_good_pings_esp2.*output.Thickness_tot);
-output.Sv_mean_lin      = eint_sparse./output.nb_samples/dr;
-output.Sv_mean_lin(output.nb_samples==0)=0;
+output.Sv_mean_lin = eint_sparse./(output.Nb_good_pings.*output.Thickness_tot);
+% output.Sv_mean_lin      = eint_sparse./output.nb_samples/dr;
+% output.Sv_mean_lin(output.nb_samples==0)=0;
 
 output.PRC = output.nb_samples*dr./(output.Nb_good_pings.*output.Thickness_tot);
 

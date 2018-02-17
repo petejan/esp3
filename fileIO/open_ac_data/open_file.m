@@ -278,9 +278,14 @@ for itype = 1:length(ftype_unique)
                 CVSCheck = 0;
             end
             
+        case 'db'
+            for ifi=1:length(Filename)
+                load_survey_data_fig_from_db(main_figure,0,1,Filename{ifi});
+            end
+            continue;
         otherwise
             for ifi=1:length(Filename)
-                fprintf('Unrecognized File type for Filename %s\n',Filename{ifi});
+                fprintf('Could not open Filename %s\n',Filename{ifi});
             end
             continue;
             
@@ -319,7 +324,7 @@ for itype = 1:length(ftype_unique)
             
             load_bar_comp.status_bar.setText('Updating Database with GPS Data');
             
-            %new_layers.add_gps_data_to_db();
+            new_layers.add_gps_data_to_db();
             %new_layers.add_ping_data_to_db();
             
             load_bar_comp.status_bar.setText('Loading Survey Metadata');

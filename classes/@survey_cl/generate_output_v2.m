@@ -262,11 +262,11 @@ for isn=1:length(snaps)
         num_slice=size(output_2D_surf.eint,2);
         
         surf_slice_int=nansum(output_2D_surf.eint);
-        good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
+        good_pings_surf=nanmax(output_2D_surf.Nb_good_pings,[],1);
         
         if ~isempty(output_2D_bot)
             bot_slice_int=nansum(output_2D_bot.eint);
-            good_pings_bot=nanmax(output_2D_bot.Nb_good_pings_esp2,[],1);
+            good_pings_bot=nanmax(output_2D_bot.Nb_good_pings,[],1);
         else
             bot_slice_int=zeros(1,num_slice);
             good_pings_bot=[];
@@ -274,7 +274,7 @@ for isn=1:length(snaps)
         
         if ~isempty(output_2D_sh)
             sh_slice_int=nansum(output_2D_sh.eint).*shadow_height_est/surv_in_obj.Options.Shadow_zone_height;
-            good_pings_sh=nanmax(output_2D_sh.Nb_good_pings_esp2,[],1);
+            good_pings_sh=nanmax(output_2D_sh.Nb_good_pings,[],1);
         else
             sh_slice_int=zeros(1,num_slice);
             good_pings_sh=[];
@@ -288,21 +288,19 @@ for isn=1:length(snaps)
                 delete(outputFileXLS);
             end
             
-            reg_output_sheet=reg_output_to_sheet(output_2D_surf);
-            xlswrite(outputFileXLS,reg_output_sheet,1);
-            id_sheet=1;
+            reg_output_table=reg_output_to_table(output_2D_surf);            
+            writetable(reg_output_table,outputFileXLS,'Sheet','Surface Reference');
+
             
             if ~isempty(output_2D_bot)
-                id_sheet=id_sheet+1;
-                reg_output_sheet=reg_output_to_sheet(output_2D_bot);
-                xlswrite(outputFileXLS,reg_output_sheet,id_sheet);
+                reg_output_table=reg_output_to_table(output_2D_bot);               
+                writetable(reg_output_table,outputFileXLS,'Sheet','Bottom Reference');
             end
             
             if ~isempty(output_2D_sh)
-                id_sheet=id_sheet+1;
-                reg_output_sheet=reg_output_to_sheet(output_2D_sh);
-                xlswrite(outputFileXLS,reg_output_sheet,id_sheet);
-            end     
+                reg_output_table=reg_output_to_table(output_2D_sh);               
+                writetable(reg_output_table,outputFileXLS,'Sheet','Shadow Zone');
+            end
         end
         
         good_pings=nanmax([good_pings_sh;good_pings_bot;good_pings_surf],[],1);     
@@ -407,8 +405,8 @@ for isn=1:length(snaps)
             surv_out_obj.regionSum.mean_d(i_reg)=mean_bot(ir);
             surv_out_obj.regionSum.finish_d(i_reg)=finish_d;
             surv_out_obj.regionSum.av_speed(i_reg)=av_speed(ir);
-            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nansum(regCellInt.Nb_good_pings_esp2.*regCellInt.Thickness_tot));
-            surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nanmax(regCellInt.Nb_good_pings_esp2));%Abscf Region
+            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nansum(regCellInt.Nb_good_pings.*regCellInt.Thickness_tot));
+            surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nanmax(regCellInt.Nb_good_pings));%Abscf Region
             surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
             
             %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
@@ -418,17 +416,17 @@ for isn=1:length(snaps)
             surv_out_obj.regionSumAbscf.transmit_start{i_reg} = regCellInt.Ping_S; % transmit Start vertical slice
             surv_out_obj.regionSumAbscf.latitude{i_reg} = regCellInt.Lat_S; % lat vertical slice
             surv_out_obj.regionSumAbscf.longitude{i_reg} = regCellInt.Lon_S; % lon vertical slice
-            surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.eint)./nanmax(regCellInt.Nb_good_pings_esp2);%sum up all abcsf per vertical slice
+            surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.eint)./nanmax(regCellInt.Nb_good_pings);%sum up all abcsf per vertical slice
             
             %% Region vbscf (6th Mbs Output Block)
             surv_out_obj.regionSumVbscf.time_end{i_reg}=regCellInt.Time_E;
             surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellInt.Time_S;
-            surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,1);% num_h_slices
-            surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt.Sv_mean_lin_esp2,2); % num_v_slices
+            surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt.Sv_mean_lin,1);% num_h_slices
+            surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt.Sv_mean_lin,2); % num_v_slices
             tmp=surv_out_obj.regionSum.vbscf(i_reg);
             tmp(isnan(tmp))=0;
             surv_out_obj.regionSumVbscf.region_vbscf(i_reg) = tmp; % Vbscf Region
-            surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt.Sv_mean_lin_esp2; %
+            surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt.Sv_mean_lin; %
             
             %% Region echo integral for Transect Summary
             eint =eint + nansum(regCellInt.eint(:));

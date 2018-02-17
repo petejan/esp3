@@ -8,7 +8,7 @@ switch tab_panel.Type
 end
 
 map_tab_comp.ax=axes('Parent',map_tab_comp.map_tab,'Units','normalized','box','on',...
-     'OuterPosition',[0 0 1/3 1],'visible','off','NextPlot','add','box','on','tag','nav');
+     'OuterPosition',[0 0 1/3 1],'visible','off','NextPlot','add','box','on');
  
  map_tab_comp.ax_hist=axes('Parent',map_tab_comp.map_tab,'Units','normalized',...
      'OuterPosition',[2/3 0 1/3 1],'visible','on','NextPlot','add','box','on','tag','tt_ax');
@@ -16,7 +16,7 @@ map_tab_comp.ax=axes('Parent',map_tab_comp.map_tab,'Units','normalized','box','o
  grid(map_tab_comp.ax_hist,'on');
 
 map_tab_comp.ax_pos=axes('Parent',map_tab_comp.map_tab,'Units','normalized',...
-    'OuterPosition',[1/3 0 1/3 1],'visible','off','NextPlot','add','box','on','tag','st_ax');
+    'OuterPosition',[1/3 0 1/3 1],'visible','off','box','on','tag','st_ax');
 
 map_tab_comp.tracks=[];
 map_tab_comp.boat_pos=[];

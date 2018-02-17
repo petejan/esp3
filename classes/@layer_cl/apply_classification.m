@@ -87,7 +87,7 @@ for idx_school=idx_schools
     end
     
     for i=1:numel(primary_freqs)
-        [regs,idx_freq_out]=layer.generate_regions_for_other_freqs(idx_primary_freq,school_reg,[idx_primary_freqs(i) idx_secondary_freqs(i)]);
+        [regs,idx_freq_out,~,~]=layer.generate_regions_for_other_freqs(idx_primary_freq,school_reg,[idx_primary_freqs(i) idx_secondary_freqs(i)]);
         
         if idx_primary_freqs(i)==idx_primary_freq
             reg_prim=school_reg;

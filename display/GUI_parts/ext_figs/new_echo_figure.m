@@ -104,6 +104,7 @@ else
     font=[];
 end
 format_color_gui(fig_handle,font);
+set(fig_handle,'Position',getnicedialoglocation(pos_final,get(fig_handle,'Units')));
 
 if ~isempty(main_figure)
     setappdata(main_figure,'ExternalFigures',[fig_handle hfigs]);

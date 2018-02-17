@@ -40,12 +40,21 @@ if ~isdeployed
     disp('Update Display');
 end
 
+if ~isappdata(main_figure,'Axes_panel')
+    echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
+    axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel');
+    load_axis_panel(main_figure,axes_panel);
+    display_tab_comp=getappdata(main_figure,'Display_tab');
+    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.60]);
+end
 
 opt_panel=getappdata(main_figure,'option_tab_panel');
+sel_tab=opt_panel.SelectedTab;
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
     return;
 end
+
 
 if new==1  
     update_bottom_tab(main_figure);
@@ -74,6 +83,7 @@ update_axis_panel(main_figure,new);
 if new==1
     update_display_tab(main_figure);
     load_secondary_freq_win(main_figure);
+    update_file_panel(main_figure);
 end
 
 try
@@ -83,7 +93,7 @@ catch
     load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.55]);
     update_mini_ax(main_figure,new);
 end
-
+opt_panel.SelectedTab=sel_tab;
 set_axes_position(main_figure);
 update_cmap(main_figure);
 reverse_y_axis(main_figure);

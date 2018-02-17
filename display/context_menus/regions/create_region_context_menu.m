@@ -193,24 +193,9 @@ for i=1:numel(reg_curr)
     if isequal(path_tmp,0)
         return;
     end    
-    if exist(fullfile(path_tmp,fileN),'file')>1
-        delete(fullfile(path_tmp,fileN));
-    end
-    
-    [regs_end,idx_freq_end]=layer.generate_regions_for_other_freqs(idx_freq,reg_curr(i),[]);  
-    regs=[reg_curr(i) regs_end];
-    [idx_freq_sort,is]=sort([idx_freq,idx_freq_end]);
-    regs=regs(is);
-    reg_descriptors=trans_obj.get_region_descriptors(reg_curr(i));
-    reg_descriptors_sheet=[fieldnames(reg_descriptors) struct2cell(reg_descriptors)];
-    xlswrite(fullfile(path_tmp,fileN),reg_descriptors_sheet,1)
-    for ir=1:length(idx_freq_sort)
-        output_reg=layer.Transceivers(ir).integrate_region_v3(regs(ir));
-        reg_output_sheet=reg_output_to_sheet(output_reg);
-        xlswrite(fullfile(path_tmp,fileN),reg_output_sheet,ir+1);
-    end
-    
+    layer.export_region_to_xls(reg_curr(i),'output_f',fullfile(path_tmp,fileN),'idx_freq',idx_freq);   
 end
+
 end
 
 

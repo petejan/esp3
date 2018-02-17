@@ -85,6 +85,7 @@ uimenu(st_exp_menu,'Label','Export Tracked Targets to xls file','Callback',{@sav
 int_exp_menu= uimenu(export_menu,'Label','Integration Results','Tag','menuexportint');
 uimenu(int_exp_menu,'Label','Export Sliced transect','Callback',{@save_sliced_transect_to_xls_callback,main_figure});
 
+
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 
 ext_imp_menu= uimenu(m_import,'Label','Attitude and position','Tag','menuimportatt');
@@ -366,7 +367,7 @@ end
 list_font_figure= new_echo_figure(main_fig,'Units','Pixels','Position',[100 100 200 600],'Resize','off',...
     'Name','Choose Font',...
     'Tag','font_choice');
-centerfig(list_font_figure);
+
 uicontrol(list_font_figure,'Style','listbox','min',0,'max',0,'value',i_font,'string',fonts,'units','normalized','position',[0.1 0.05 0.8 0.9],'callback',{@list_font_cback,main_fig})
 
 end

@@ -53,26 +53,14 @@ n_ax=gobjects(nb_snap,1);
 
 for usnap=1:nb_snap
     n_ax(usnap)=subplot(nb_row,nb_col,usnap,'parent',hfig);
-    hold on;
-    proj=m_getproj;
-    list_proj_str={proj(:).name};
-    sucess=0;
-    i=0;
-    while sucess==0&&i<length(list_proj_str)
-        try
-            m_proj(obj.Proj,'long',LongLim,'lat',LatLim);
-            sucess=1;
-        catch
-            i=i+1;
-            fprintf(1,'Can''t use %s projection inside this area... Trying %s\n',obj.Proj,list_proj_str{i});
-            obj.Proj=list_proj_str{i};
-            if i==length(list_proj_str)
-                fprintf(1,'Could not find any appropriate projection\n');
-                close(hfig);
-                return
-            end
-        end
+    hold(n_ax(usnap),'on');
+
+    obj.Proj=init_proj('Mercator',LongLim,LatLim);
+    if isempty(obj.Proj)
+        close(hfig);
+        return;
     end
+   
     
     try
         m_grid('box','fancy','tickdir','in','parent',n_ax(usnap));
@@ -209,7 +197,7 @@ Map_info.Proj=obj.Proj;
 Map_info.LongLim=LongLim;
 Map_info.LatLim=LatLim;
 setappdata(hfig,'Idx_select',[]);
-setappdata(hfig,'Map_info',Map_info);
+set(n_ax,'UserData',Map_info);
 setappdata(hfig,'Map_input',obj);
 end
 

@@ -50,6 +50,6 @@ jcomp.setBackground(java.awt.Color(bgcolor{:}));
 format_color_gui(dialog_fig,curr_disp.Font);
 
 set(dialog_fig,'Visible','on');
-centerfig(dialog_fig);
+
 
 end

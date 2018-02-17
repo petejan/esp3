@@ -22,6 +22,7 @@ classdef survey_options_cl
         DepthMin=0;
         DepthMax=Inf;
         ExportSlicedTransects=0;
+        ExportRegions=0;
     end
     methods
         function options=survey_options_cl(varargin)
@@ -38,7 +39,8 @@ classdef survey_options_cl
                 'Soundspeed',nan,...
                 'SaveBot',0,'SaveReg',0,'Shadow_zone',0,'Shadow_zone_height',0,...
                 'DepthMin',0,'DepthMax',Inf,...
-                'ExportSlicedTransects',0);
+                'ExportSlicedTransects',0,...
+                'ExportRegions',0);
             
             p = inputParser;
             

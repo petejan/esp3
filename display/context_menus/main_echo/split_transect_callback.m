@@ -40,24 +40,23 @@ else
 end
 
 
+surv{1}=edit_survey_data_fig(main_figure,surv_to_split,{'off' 'off' 'on' 'on' 'on' 'on' 'on'},'First Part');
+if isempty(surv{1})
+    return;
+end
 surv{1}.StartTime=surv_to_split.StartTime;
 surv{1}.EndTime=t_n;
-surv{1}.Comment=surv_to_split.Comment;
+
+surv{2}=edit_survey_data_fig(main_figure,surv_to_split,{'off' 'off' 'on' 'on' 'on' 'on' 'on'},'Second Part');
+if isempty(surv{2})
+    return;
+end
+
 surv{2}.StartTime=t_n;
 surv{2}.EndTime=surv_to_split.EndTime;
-surv{2}.Comment=surv_to_split.Comment;
-
-
-[surv{1}.Voyage,surv{1}.SurveyName,surv{1}.Snapshot,surv{1}.Stratum,surv{1}.Transect,cancel]=fill_survey_data_dlbox(surv_to_split,'Title','Enter Data For First Part');
-if cancel>0
-    return;
-end
-[surv{2}.Voyage,surv{2}.SurveyName,surv{2}.Snapshot,surv{2}.Stratum,surv{2}.Transect,cancel]=fill_survey_data_dlbox(surv_to_split,'Title','Enter Data For Second Part');
-if cancel>0
-    return;
-end
 
 new_surveydata=layer.SurveyData;
+
 if idx_split>0
     new_surveydata(idx_split)=[];
 end

@@ -49,7 +49,7 @@ output_diff=cell(numel(reg_primary),numel(idx_freqs_secondary));
 for ireg=1:numel(reg_primary)
     
     output_reg_primary=trans_obj_primary.integrate_region_v3(reg_primary,'keep_bottom',1,'keep_all',1,'sv_thr',p.Results.sv_thr);    
-    [regs_secondary,idx_freqs_secondary]=layer_obj.generate_regions_for_other_freqs(idx_freq_primary,reg_primary,idx_freqs_secondary);
+    [regs_secondary,idx_freqs_secondary,~,~]=layer_obj.generate_regions_for_other_freqs(idx_freq_primary,reg_primary,idx_freqs_secondary);
     
     output_regs_secondary=cell(1,numel(idx_freqs_secondary));    
     cax=nan(numel(idx_freqs_secondary),2);

@@ -23,7 +23,7 @@ ls=[ls addlistener(curr_disp_obj,'Cmap','PostSet',@(src,envdata)listenCmap(src,e
 ls=[ls addlistener(curr_disp_obj,'Cax','PostSet',@(src,envdata)listenCax(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'Font','PostSet',@(src,envdata)listenFont(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispSecFreqs','PostSet',@(src,envdata)listenDispSecFreqs(src,envdata,main_figure))];
-
+ls=[ls addlistener(curr_disp_obj,'DispSecFreqsOr','PostSet',@(src,envdata)listenDispSecFreqs(src,envdata,main_figure))];
 setappdata(main_figure,'ListenersH',ls);
 
 end

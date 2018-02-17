@@ -242,6 +242,7 @@ try
             map_tab_comp=getappdata(main_figure,'Map_tab');
             if ~isempty(map_tab_comp.Proj)                
                 delete(map_tab_comp.boat_pos);
+                m_proj(map_tab_comp.Proj,'long',map_tab_comp.LongLim,'lat',map_tab_comp.LatLim);
                 map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
                 setappdata(main_figure,'Map_tab',map_tab_comp);
             end
@@ -256,15 +257,13 @@ try
             idx_fig=find(strcmp({hfigs(:).Tag},'nav'));
             for iu=idx_fig
                 if isvalid(hfigs(iu))
-                    hAllAxes = findobj(hfigs(iu),'type','axes');
-                    
-                    if isappdata(hfigs(iu),'Map_info')
-                        Map_info=getappdata(hfigs(iu),'Map_info');
-                        m_proj(Map_info.Proj,'long',Map_info.LongLim,'lat',Map_info.LatLim);
-                    end
-                    
+                    hAllAxes = findobj(hfigs(iu),'type','axes');                                     
                     if ~isempty(Long)
                         for iui=1:length(hAllAxes)
+                            if isfield(hAllAxes(iui).UserData,'Proj')
+                                Map_info=hAllAxes(iui).UserData;
+                                m_proj(Map_info.Proj,'long',Map_info.LongLim,'lat',Map_info.LatLim);
+                            end
                             delete(findobj(hAllAxes(iui),'tag','boat_pos'));
                             m_plot(hAllAxes(iui),Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k','tag','boat_pos')
                         end

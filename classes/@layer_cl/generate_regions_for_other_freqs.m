@@ -1,11 +1,12 @@
-function [regs,idx_freq_end]=generate_regions_for_other_freqs(layer,idx_freq,active_reg,idx_freq_end)
+function [regs,idx_freq_end,r_factor,t_factor]=generate_regions_for_other_freqs(layer,idx_freq,active_reg,idx_freq_end)
 
 if isempty(idx_freq_end)
     idx_freq_end=1:length(layer.Transceivers);
 end
 
 idx_freq_end=setdiff(idx_freq_end,idx_freq);
-
+r_factor=ones(1,numel(idx_freq_end));
+t_factor=ones(1,numel(idx_freq_end));
 trans_obj=layer.Transceivers(idx_freq);
 
 range_ori=trans_obj.get_transceiver_range();
@@ -18,19 +19,19 @@ mask_reg_ori=active_reg.get_mask();
 
 [nb_samples_ori,nb_pings_ori]=size(mask_reg_ori);
 regs=[];
-
+u=0;
 for i=1:length(layer.Transceivers)
     
     if i==idx_freq||~any(i==idx_freq_end)
         continue;
     end
-    
+    u=u+1;
     trans_obj_sec=layer.Transceivers(i);
     new_range=trans_obj_sec.get_transceiver_range();
     new_time=trans_obj_sec.Time;
     
-    r_factor=dr_ori/nanmean(diff(new_range));
-    t_factor=dt_ori/nanmean(diff(new_time));
+    r_factor(u)=dr_ori/nanmean(diff(new_range));
+    t_factor(u)=dt_ori/nanmean(diff(new_time));
     
     [~,idx_ping_start]=nanmin(abs(new_time-time_ori(active_reg.Idx_pings(1))));
     [~,sample_start]=nanmin(abs(new_range-range_ori(active_reg.Idx_r(1))));
@@ -42,17 +43,16 @@ for i=1:length(layer.Transceivers)
     
     switch active_reg.Cell_w_unit
         case 'pings'
-            cell_w=nanmax(floor(active_reg.Cell_w*t_factor),1);
+            cell_w=nanmax(floor(active_reg.Cell_w*t_factor(u)),1);
         case 'meters'
             cell_w=active_reg.Cell_w;
     end
     
     switch active_reg.Cell_h_unit
         case 'samples'
-            cell_h=nanmax(floor(active_reg.Cell_h*r_factor),1);
+            cell_h=nanmax(floor(active_reg.Cell_h*r_factor(u)),1);
         case 'meters'
-            cell_h=active_reg.Cell_h;
-            
+            cell_h=active_reg.Cell_h;            
     end
     
     switch active_reg.Shape

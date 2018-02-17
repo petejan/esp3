@@ -32,7 +32,7 @@ for i=1:length(obj_vec)
         out=obj_vec(i).SurvOutput.regionsIntegrated.RegOutput{i_reg};
         if ~isempty(out)
             depth=out.Layer_depth_min;
-            nb_idx(:,i)=nb_idx(:,i)+nansum(nanmax(out.Nb_good_pings_esp2));
+            nb_idx(:,i)=nb_idx(:,i)+nansum(nanmax(out.Nb_good_pings));
             for i_d=1:(length(strat_lim)-1)
                 idx_depth=depth>=strat_lim(i_d)&depth<strat_lim(i_d+1);
                 if ~isempty(idx_depth)

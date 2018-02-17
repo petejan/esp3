@@ -140,7 +140,7 @@ setappdata(reg_bot_data_fig,'reg_data_table',reg_data_table);
 setappdata(reg_bot_data_fig,'bot_ver_select',[]);
 setappdata(reg_bot_data_fig,'reg_ver_select',[]);
 
-centerfig(reg_bot_data_fig);
+
 end
 
 function selec_ver_cback(src,event)

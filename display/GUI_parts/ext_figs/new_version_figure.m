@@ -26,7 +26,7 @@ if isdeployed()
             QuestFig=new_echo_figure(main_figure,'units','pixels','position',[200 200 400 100],...
                 'WindowStyle','modal','Visible','on','resize','off','tag','dlnewversion','Name','Update Available');
             bgcolor = num2cell(get(main_figure, 'Color'));
-            centerfig(QuestFig);
+            
             % Create and display the text label
             labelStr = sprintf('<html>New version available! Download here: <a href="">%s</a></html>',real_struct.url);
             jLabel = javaObjectEDT('javax.swing.JLabel', labelStr);
@@ -42,7 +42,7 @@ if isdeployed()
                        
         end
     catch
-        disp('Could not check for updates online\n');
+        disp('Could not check for updates online');
     end
 end
 

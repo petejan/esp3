@@ -8,8 +8,9 @@ end
 
 surveydata=layer.get_survey_data();
 
-[Voyage,SurveyName,~,~,~,can]=fill_survey_data_dlbox(surveydata,'Voyage_only',1,'Title','Edit Voyage Info');
-if can>0
+survey_data_out=edit_survey_data_fig(main_figure,surveydata,{'on' 'on' 'off' 'off' 'off' 'off' 'off'},'Trip');
+
+if isempty(survey_data_out)
     return;
 end
 
@@ -34,7 +35,7 @@ if ~isempty(hfigs)
     end
 end
 
-layer.update_echo_logbook_dbfile('SurveyName',SurveyName,'Voyage',Voyage);
+layer.update_echo_logbook_dbfile('SurveyName',survey_data_out.SurveyName,'Voyage',survey_data_out.Voyage);
 update_mini_ax(main_figure,0);
 setappdata(main_figure,'Layer',layer);
 import_survey_data_callback([],[],main_figure);

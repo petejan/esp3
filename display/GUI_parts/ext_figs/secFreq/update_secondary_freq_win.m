@@ -20,7 +20,6 @@ end
 
 secondary_freq=getappdata(main_figure,'Secondary_freq');
 
-
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');

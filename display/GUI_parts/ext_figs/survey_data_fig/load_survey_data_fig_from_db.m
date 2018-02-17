@@ -42,6 +42,7 @@ p = inputParser;
 addRequired(p,'main_figure',@ishandle);
 addOptional(p,'reload',0,@isnumeric);
 addOptional(p,'new_logbook',0,@isnumeric);
+addOptional(p,'filename','',@ischar);
 parse(p,main_figure,varargin{:});
 
 new_logbook=p.Results.new_logbook;
@@ -52,11 +53,15 @@ app_path=getappdata(main_figure,'App_path');
 
 
 if isempty(layer)||new_logbook>0
-    [~,path_f]= uigetfile({fullfile(app_path.data,'echo_logbook.db')}, 'Pick a logbook file','MultiSelect','off');
+    if isempty(p.Results.filename)||~exist(p.Results.filename,'file')
+        [~,path_f]= uigetfile({fullfile(app_path.data,'echo_logbook.db')}, 'Pick a logbook file','MultiSelect','off');
     if path_f==0
         return;
     end
     [path_f,~,~]=fileparts(path_f);
+    else
+        [path_f,~,~]=fileparts(p.Results.filename);
+    end
     file_add={};
 else
     switch layer.Filetype

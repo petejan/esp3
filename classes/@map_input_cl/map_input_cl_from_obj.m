@@ -129,13 +129,13 @@ switch class(Ext_obj)
                 
                 
                 surf_slice_int=nansum(output_2D_surf.eint);
-                good_pings_surf=nanmax(output_2D_surf.Nb_good_pings_esp2,[],1);
+                good_pings_surf=nanmax(output_2D_surf.Nb_good_pings,[],1);
 
                 num_slice=size(output_2D_surf.eint,2);
                 
                 if ~isempty(output_2D_bot)
                     bot_slice_int=nansum(output_2D_bot.eint);
-                    good_pings_bot=nanmax(output_2D_bot.Nb_good_pings_esp2,[],1);
+                    good_pings_bot=nanmax(output_2D_bot.Nb_good_pings,[],1);
 
                 else
                     bot_slice_int=zeros(1,num_slice);

@@ -28,7 +28,7 @@ for i=1:length(regions)
     
     switch (regions(i).Cell_w_unit)
         case 'meters'
-          regions(i).Cell_w=nanmax(nanmax(diff(trans_obj.GPSDataPing.Dist(regions(i).Idx_pings))),regions(i).Cell_w);  
+          regions(i).Cell_w=regions(i).Cell_w;  
         case 'pings'
           regions(i).Cell_w=nanmax(1,regions(i).Cell_w);
     end
@@ -36,7 +36,7 @@ for i=1:length(regions)
         
     switch (regions(i).Cell_h_unit)
         case 'meters'
-            regions(i).Cell_h=nanmax(nanmax(diff(trans_obj.get_transceiver_range(regions(i).Idx_r))),regions(i).Cell_h); 
+            regions(i).Cell_h=regions(i).Cell_h; 
         case 'samples'
             regions(i).Cell_h=nanmax(1,regions(i).Cell_h);
     end

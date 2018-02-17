@@ -68,7 +68,7 @@ function update_webmap_from_db(main_figure,force_open)
 %         continue;
 %     end
 %     path_done=union(path_done,path_new);
-%     [gps_data,files]=layers(ilay).get_gps_data_from_db();
+%     [gps_data,files]=layers(ilay).get_gps_data_from_db_lay();
 %     new_file_list=union(files,new_file_list);
 %     [~,idx_new_files] = setdiff(files,old_file_list,'legacy');
 %     for i=1:length(idx_new_files)

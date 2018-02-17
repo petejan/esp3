@@ -134,7 +134,7 @@ uicontrol(path_fig,'Style','pushbutton','units','normalized',...
 
 setappdata(path_fig,'Controls',controls);
 setappdata(path_fig,'AppPath_temp',app_path);
-centerfig(path_fig);
+
 
 
 end

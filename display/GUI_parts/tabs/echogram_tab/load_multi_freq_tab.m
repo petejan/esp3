@@ -107,7 +107,6 @@ if isempty(secondary_freqs)
     return;
 end
 
-
 [secondary_freqs,cax,~]=layer.generate_freq_differences('primary_freq',primary_freq,'secondary_freqs',secondary_freqs,...
     'Cell_h',str2double(multi_freq_tab.grid_samples.String),'Cell_w',str2double(multi_freq_tab.grid_pings.String),'sv_thr',str2double(multi_freq_tab.db_threshold.String));
 if isempty(secondary_freqs)

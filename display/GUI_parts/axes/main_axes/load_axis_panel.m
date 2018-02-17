@@ -109,11 +109,15 @@ axes_panel_comp.colorbar=colorbar(axes_panel_comp.main_axes,'PickableParts','non
 axes_panel_comp.main_axes.Position=[0 0 1 1];
 
 
-echo_init=imread(fullfile(whereisEcho,'EchoAnalysis.png'));
+%echo_init=imread(fullfile(whereisEcho,'EchoAnalysis.png'));
+echo_init=[0 0];
+axes_panel_comp.main_echo=image(1:size(echo_init,1),1:size(echo_init,2),uint8(echo_init),'parent',axes_panel_comp.main_axes,'tag','echo','CDataMapping','scaled','AlphaData',0);
 
-axes_panel_comp.main_echo=image(1:size(echo_init,1),1:size(echo_init,2),uint8(echo_init),'parent',axes_panel_comp.main_axes,'tag','echo','CDataMapping','scaled');
+
 axes_panel_comp.bad_transmits=image(1:size(echo_init,1),1:size(echo_init,2),zeros(size(echo_init),'uint8'),'parent',axes_panel_comp.main_axes,'AlphaData',0,'tag','bad_transmits');
-set(axes_panel_comp.main_axes,'xlim',[1 size(echo_init,1)],'ylim',[1 size(echo_init,2)]);
+
+%set(axes_panel_comp.main_axes,'xlim',[1 size(echo_init,1)],'ylim',[1 size(echo_init,2)]);
+
 axes_panel_comp.bottom_plot=plot(axes_panel_comp.main_axes,nan,nan,'tag','bottom');
 enterFcn =  @(figHandle, currentPoint)...
     set(figHandle, 'Pointer', 'hand');

@@ -173,7 +173,7 @@ if ~isempty(load_bar_comp)
 end
 
 nb_dg=length(idx_raw_obj.type_dg);
-idx_unknown=[];
+
 for idg=1:nb_dg
     pos=ftell(fid);
     
@@ -182,6 +182,7 @@ for idg=1:nb_dg
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
         end
     end
+    
     switch  idx_raw_obj.type_dg{idg}
         case 'XML0'
             
@@ -429,8 +430,7 @@ for idg=1:nb_dg
                     i_ping(idx) = i_ping(idx) + 1;
                     
                     if i_ping(idx)>p.Results.PingRange(2)
-                        fclose(fid);
-                        return;
+                        break;
                     end
                     
                 end
@@ -456,6 +456,7 @@ for idg=1:nb_dg
             end
             chan=idx_raw_obj.chan_dg(idg);
             idx_chan=find(chan==channels);
+            
             if isempty(idx_chan)
                 continue;
             end

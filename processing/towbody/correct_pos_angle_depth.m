@@ -8,9 +8,7 @@ heading=heading_from_lat_long(old_lat(1:n:end),old_long(1:n:end));
 
 heading=mode(round(heading));
 
-
 [x_ship,y_ship,Zone]=deg2utm(old_lat,old_long);
-
 
 Y_new=y_ship-distance*sind(heading);%E
 X_new=x_ship-distance*cosd(heading);%N

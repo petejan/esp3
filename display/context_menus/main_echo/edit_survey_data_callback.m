@@ -32,9 +32,10 @@ end
 
 
 if rem==0
-    surv=survey_data_cl();
-    [surv.Voyage,surv.SurveyName,surv.Snapshot,surv.Stratum,surv.Transect,cancel]=fill_survey_data_dlbox(surv_temp,'title','Enter New Survey Data');
-    if cancel>0
+
+    surv=edit_survey_data_fig(main_figure,surv_temp,{'off' 'off' 'on' 'on' 'on' 'on' 'on'},'Transect');
+
+    if isempty(surv)
         return;
     end
 else

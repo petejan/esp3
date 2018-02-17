@@ -342,7 +342,7 @@ if ~isequal(Filename_cell, 0)
                 end
                 
                 
-                if p.Results.LoadEKbot>0;
+                if p.Results.LoadEKbot>0
                     Filename_bot=[Filename(1:end-4) '.bot'];
                     if exist(Filename_bot,'file')
                         [Bottom_sim, frequencies] = readEKBotSimple(Filename_bot);
