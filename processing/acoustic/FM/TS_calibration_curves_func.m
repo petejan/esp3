@@ -133,7 +133,7 @@ for uui=select
         sph.lont_c, sph.trans_c, density_at_sphere, sph.rho);
     [path_out,~]=fileparts(layer.Filename{1});
     log_file=fullfile(path_out,['cal_log' num2str(layer.Frequencies(uui)) '.txt']);
-    fid=[1 fopen(log_file,'w+')];
+    fid=[1 fopen(log_file,'w')];
     
     % print out the parameters
     for ifi=1:length(fid)
@@ -206,7 +206,7 @@ for uui=select
         ZI = griddata(AlongAngle_sph,AcrossAngle_sph,Sp_sph, XI, YI);
         
         
-        new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp%.0f',uui));
+        new_echo_figure(main_figure,'Name',sprintf('%.0fkHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp%.0f',uui));
         contourf(XI, YI, ZI)
         hold on
         plot(AlongAngle_sph,AcrossAngle_sph,'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
@@ -222,7 +222,7 @@ for uui=select
         drawnow;
         
         
-        new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp2%.0f',uui));
+        new_echo_figure(main_figure,'Name',sprintf('%.0fkHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp2%.0f',uui));
         surf(XI, YI, ZI)
         shading interp
         hold on;
@@ -332,7 +332,7 @@ for uui=select
     else
        fprintf('%s not in  FM mode\n',trans_obj.Config.ChannelID);
 
-       process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,idx_r,sphere_ts,log_file);
+       process_data(trans_obj,layer.EnvData,idx_peak,idx_pings,idx_r,sphere_ts,log_file,main_figure);
 
     end
 end

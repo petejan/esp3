@@ -48,7 +48,8 @@ if isempty(reglist_tab_comp)
     return;
 end
 
-if isempty(layer)||isempty(reglist_tab_comp)
+if isempty(layer)    
+	reglist_tab_comp.table.Data(:)=[];
     return;
 end
 

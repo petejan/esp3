@@ -133,7 +133,7 @@ switch main_figure.SelectionType
         order_stacks_fig(main_figure);
 
     case 'open'
-        regCellInt=trans_obj.integrate_region_v3(reg_curr);
+        regCellInt=trans_obj.integrate_region_v4(reg_curr);
         
         if isempty(regCellInt)
             return;

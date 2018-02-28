@@ -52,7 +52,7 @@ for ifile=1:length(path_xml)
         comment=reg_xml_version{idx_xml,3};
         
         xml_str=reg_xml_version{idx_xml,1};
-        fid = fopen(fullfile(path_xml{ifile},reg_file_str{ifile}),'w+');
+        fid = fopen(fullfile(path_xml{ifile},reg_file_str{ifile}),'w');
         fprintf(fid,'%s', xml_str);
         fclose(fid);
     end

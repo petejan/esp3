@@ -65,7 +65,7 @@ end
 
 
 %% set up an HTML table
-fid = fopen(fname,'w+');
+fid = fopen(fname,'w');
 if p.Results.WriteFileHtmlHeaders
     fprintf(fid,['<html>\n\n\t<head>\n\t\t<title>',p.Results.Title, '</title>\n\t</head>\n\n\t<body>\n\n']);
 end

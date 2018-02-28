@@ -149,9 +149,9 @@ for i_cell=1:length(Filename_cell)
         for ic=1:data.nb_channel(ip)
             if(data.data_type(ic,ip))
                 if(data.average_ping_flag(ip))
-                    divisor = data.ping_per_profile(ip) * data.data.range_sple_bin(ic,ip);
+                    divisor = data.ping_per_profile(ip) * data.range_sple_bin(ic,ip);
                 else
-                    divisor = data.data.range_sple_bin(ic,ip);
+                    divisor = data.range_sple_bin(ic,ip);
                 end
                 ls = fread(fid,data.nb_bins(ic,ip),'uint32',enc);
                 lso = fread(fid,data.nb_bins(ic,ip),'uchar',enc);

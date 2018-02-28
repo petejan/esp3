@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ESP3 version 0.9.3</title>
+    <link href="esp3_1.css" rel="stylesheet">
+  </head>
+  <body>
+  
+	<header>
+      <div id="header-inner">
+	   <h1>ESP3 ver. 0.9.3</h1>
+       <div id="logo"> <a href="./index.html"><img alt="logo" src="./img/logo.png"></a> </div>      
+      </div>
+    </header>	
+	
+<nav>
+  <ul>
+	<li><a href="./index.html">Home page</a> </li>
+    <li><a href="./release_notes.html">Release notes</a> </li>
+    <li><a href="./tutorials.html">Tutorials</a> </li>
+	<li><a href="./links.html">Links</a> </li>
+	<li><a href="./subscribe.html">Subscribe</a> </li>
+	<li><a href="./howtocite.html">How to cite</a> </li>
+  </ul>
+</nav>
+
+<section>
+<h2> Installation instructions </h2> 
+<h3><u> Important notes: </u></h3> 
+
+- ESP3 currently only runs on PC with a 64bit version of Windows.
+<br></br>
+????????????? Do **not** use the download link on the menu bar on the left as it will not include some of the files required to run ESP3.??????????????
+
+<h3>Currently you have two options to download and run ESP3, using either the MATLAB source code, or a compiled version.</h3>
+
+<strong>- Option 1. Download the MATLAB source code, and run it within the MATLAB environment.</strong>
+<br></br>
+<u>You will need:</u>
+<br></br>
+i. MATLAB R2016a (or more recent).
+<br></br>
+ii. The following Licenced MATLAB toolboxes: 
+<br></br>
+<section style="margin-left:30px">
+    a. Signal Processing
+    <br></br>
+	b. Image Processing
+    <br></br>
+	c. Statistics and Machine Learning
+    <br></br>
+	d. Curve Fitting
+</section>
+<br></br>
+iii. The following Installed MATLAB toolboxes:
+<br></br>
+<section style="margin-left:30px">    
+	a. Database  (needs to be installed to have access to the sqlite functionnality of Matlab, but Matlab does not require a licence for the use of the sqlite embedded function...)
+</section>
+<br></br>
+iv. <strong> Git </strong> available at <a href="https://git-scm.com/downloads">https://git-scm.com/downloads</a> and <strong> Git Large File Storage (Git LFS)</strong> available at <a href="https://git-lfs.github.com/">https://git-lfs.github.com/</a>.
+<br></br>
+    * Note that instead of installing those stand-alone versions, you can simply download and use a Git client that will install them for you. We use and recommend 'Sourcetree' (<a href="https://www.sourcetreeapp.com/">https://www.sourcetreeapp.com/</a>).
+<br></br>
+    * If you don't know Git yet, learn about it and version controlling here??????????? <a href="https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git">https://www.atlassian.com/git?utm_source=bitbucket&utm_medium=link&utm_campaign=help_dropdown&utm_content=learn_git</a> .
+<br></br>
+<br></br>
+<u>Then</u>:
+<br></br>
+1. Clone the ESP3 repository and check it out (download) on your machine. 
+<br></br>
+2. Once you have the repository on your machine, open MATLAB, make the "ESP3" root folder your current directory, and launch "EchoAnalysis.m".
+<br></br>
+<br></br>
+<strong>- Option 2. Download and run 'the compiled version'.</strong>
+<br></br>
+<u>You will need:</u>
+<br></br>
+i. To download and install the (free)  <strong>Matlab Compiler Runtime R2017b(9.3)</strong> available at <a href="https://ch.mathworks.com/products/compiler/matlab-runtime.html"> https://ch.mathworks.com/products/compiler/matlab-runtime.html</a>. 
+<br></br>
+<br></br>
+<u>Then:</u>
+<br></br>
+1. Download the latest installer for the ESP3 compiled version on SourceForge available at <a href="https://sourceforge.net/projects/esp3/">https://sourceforge.net/projects/esp3/</a> or ??????(https://sourceforge.net/projects/esp3/files/latest/download).
+<br></br>
+    *Note: Earlier compiled versions are also available at <a href="https://sourceforge.net/projects/esp3/files/">https://sourceforge.net/projects/esp3/files/</a>.
+<br></br>
+2. Run the installer and follow the instructions.
+<br></br>
+
+<h3><u> FAQs </u></h3> 
+
+<strong>- How do I stay up-to-date with the latest developments? Do I have to re-download a new version every time it comes out?</strong>
+<br></br>
+For the compiled version, yes. For the MATLAB version, Git will allow you to keep it updated to the latest version if you so wish.
+<br></br>
+<strong>- I would like to code my own MATLAB algorithms and extensions for ESP3. Can I do it?</strong>
+<br></br>
+Yes. Fork the project using Git and develop it on your side. Your changes will stay on your copy, without affecting the development of the main branch. You can always integrate the latest changes made on the main branch back into your forked copy (see Git functions "sync" and "merge").
+<br></br>
+If down the line you wish to suggest to integrate parts of your code to the main branch, you can do that too using "pull requests" in Git.
+<br></br>
+<strong>- I would like to help developing the main branch. Can I join the development team?</strong>
+<br></br>
+It would be a pleasure to have you onboard. Contact the team.
+<br></br>
+</section>
+	  
+  </body>
+</html>

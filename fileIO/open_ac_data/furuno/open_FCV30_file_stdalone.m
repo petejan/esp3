@@ -259,7 +259,7 @@ for iconfig=id_config
     trans_obj.set_transceiver_range(R);
     trans_obj.set_transceiver_time(params_current.Time);
     
-    trans_obj.computeSpSv(env_data);
+    trans_obj.computeSpSv_v2(env_data);
     
     gps_data_ping=gps_data;
     attitude=att_data;

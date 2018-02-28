@@ -234,14 +234,22 @@ if ~isequal(Filename_cell, 0)
                 continue;
             end
             
+                [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,...
+                 'Frequencies',vec_freq,...
+                 'GPSOnly',p.Results.GPSOnly,...
+                 'FieldNames',p.Results.FieldNames,...
+                 'PathToMemmap',p.Results.PathToMemmap,...
+                 'load_bar_comp',p.Results.load_bar_comp);
+% %              
+%            [~,~,~,~] =data_from_raw_idx_cl_v3(path_f,idx_raw_obj,...
+%                 'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,...
+%                 'GPSOnly',p.Results.GPSOnly,...
+%                 'FieldNames',p.Results.FieldNames,...
+%                 'PathToMemmap',p.Results.PathToMemmap,...
+%                 'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
             
-            [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,...
-                'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,...
-                'GPSOnly',p.Results.GPSOnly,...
-                'FieldNames',p.Results.FieldNames,...
-                'PathToMemmap',p.Results.PathToMemmap,...
-                'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
-            
+
+
             if isempty(trans_obj)
                 id_rem=union(id_rem,uu);
                 continue;
@@ -266,7 +274,7 @@ if ~isequal(Filename_cell, 0)
             end
             
             if ~isempty(load_bar_comp)
-                load_bar_comp.status_bar.setText(sprintf('Parsing NMEA and computing Sv for File %s',Filename));
+                load_bar_comp.status_bar.setText(sprintf('Parsing NMEA File %s',Filename));
             end
             
             [~,fname,~]=fileparts(idx_raw_obj.filename);
@@ -378,7 +386,7 @@ if ~isequal(Filename_cell, 0)
                     id_rem=union(id_rem,uu);
                     continue;
                 end
-                               
+                load_bar_comp.status_bar.setText(sprintf('Computing Sv for File %s',Filename));     
                 for i =1:length(trans_obj)                   
                     gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Time);
                     attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);                                    
@@ -390,7 +398,9 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
                     trans_obj(i).add_algo(algo_vec);                   
-                    trans_obj(i).computeSpSv(envdata,'FieldNames',p.Results.FieldNames);                     
+                end
+                for i =1:length(trans_obj) 
+                     trans_obj(i).computeSpSv_v2(envdata,'FieldNames',p.Results.FieldNames);   
                 end               
             else
                 trans_obj=transceiver_cl.empty();
@@ -408,7 +418,9 @@ if ~isequal(Filename_cell, 0)
         catch err
             id_rem=union(id_rem,uu);
             disp(err.message);
-            fprintf('Could not open files %s\n',Filename);
+            warning('Could not open files %s\n',Filename);
+            [~,f_temp,e_temp]=fileparts(err.stack(1).file);
+            warning('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
             if ~isdeployed
                 rethrow(err);
             end

@@ -3,8 +3,9 @@ function docNode=create_trans_reg_xml_node(trans_obj,docNode,file_id,ver)
 p = inputParser;
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'docNode',@(docnode) isa(docNode,'org.apache.xerces.dom.DocumentImpl'));
-
-parse(p,trans_obj,docNode);
+addRequired(p,'file_id',@isnumeric);
+addRequired(p,'ver',@ischar);
+parse(p,trans_obj,docNode,file_id,ver);
 
 idx_ping=find(file_id==trans_obj.Data.FileId);
 
@@ -47,6 +48,7 @@ for ir=1:length(trans_obj.Regions)
             if splitted_reg(irs).Remove_ST==1
                 region_node.setAttribute('Remove_ST',num2str(splitted_reg(irs).Remove_ST,'%.0f'));
             end
+            
             [X_cont,Y_cont]=vertices2contours(splitted_reg(irs).Poly.Vertices);
             
             switch ver

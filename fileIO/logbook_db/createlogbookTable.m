@@ -21,6 +21,6 @@ else
     isthereatypecolumn=dbconn.fetch('select sql FROM sqlite_master WHERE type=''table'' AND name=''logbook''');
     if ~contains(isthereatypecolumn{1},'Type')
         dbconn.exec(['ALTER TABLE logbook '...
-            'ADD Type VARCHAR DEFAULT ""']);
+            'ADD Type VARCHAR DEFAULT " "']);
     end 
 end

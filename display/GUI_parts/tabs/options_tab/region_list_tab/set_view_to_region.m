@@ -29,11 +29,28 @@ y_lim=get(ah,'ylim');
 
 if all(x_reg_lim>x_lim(2)|x_reg_lim<x_lim(1))||all(y_reg_lim>y_lim(2)|y_reg_lim<y_lim(1))
     
-    dx=nanmax(diff(x_lim),(x_reg_lim(end)-x_reg_lim(1)));
-    dy=nanmax(diff(y_lim),(y_reg_lim(end)-y_reg_lim(1)));
+    dx=diff(x_lim);
+    dy=diff(y_lim);
     
     x_lim_new= [nanmean(x_reg_lim)-dx/2 nanmean(x_reg_lim)+dx/2];
     y_lim_new= [nanmean(y_reg_lim)-dy/2 nanmean(y_reg_lim)+dy/2];
+    
+    if any(x_lim_new<xdata(1))
+        x_lim_new=[1 dx];
+    end
+            
+    if any(y_lim_new<ydata(1))
+        y_lim_new=[1 dy];
+    end
+    
+    if any(x_lim_new>xdata(end))
+        x_lim_new=[xdata(end)-dx+1 xdata(end)];
+    end
+    
+       
+    if any(y_lim_new>ydata(end))
+        y_lim_new=[ydata(end)-dy+1 ydata(end)];
+    end
     
     set(ah,'XLim',x_lim_new,'YLim',y_lim_new);
     

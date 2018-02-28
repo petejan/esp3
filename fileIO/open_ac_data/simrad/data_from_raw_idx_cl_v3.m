@@ -75,7 +75,7 @@ if isempty(idx_freq)
 end
 
 if length(idx_freq)>length(channels)
-    idx_freq=idx_freq(1:length(channels));
+    idx_freq=(1:length(channels));
 end
 
 channels=channels(idx_freq);
@@ -117,6 +117,7 @@ for i=1:nb_trans
     %data.pings(i).samples=(1:nb_samples(i))';
     trans_obj(i).Params=params_cl(nb_pings(i));
     
+
     if p.Results.force_open==0
         [~,mem]=memory;
         if nb_samples(i)*nb_pings(i)*8*4>mem.PhysicalMemory.Available*50/100
@@ -462,7 +463,7 @@ for idg=1:nb_dg
             end
             
             if i_ping(idx_chan)==p.Results.PingRange(1)
-                data.pings(idx_chan).power=nan(nb_samples(idx_chan),nb_pings(idx_chan),array_type);
+                data.pings(idx_chan).power=zeros(nb_samples(idx_chan),nb_pings(idx_chan),array_type);
                 data.pings(idx_chan).AlongPhi=zeros(nb_samples(idx_chan),nb_pings(idx_chan),array_type);
                 data.pings(idx_chan).AcrossPhi=zeros(nb_samples(idx_chan),nb_pings(idx_chan),array_type);
             end

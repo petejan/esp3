@@ -36,7 +36,7 @@ try
             xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
     end
     
-    
+   
     
     ydata_grid=trans_obj.get_transceiver_range(idx_r);
     
@@ -76,28 +76,29 @@ try
     set(axes_panel_comp.vaxes,'box','on');
     
     fmt=' %.0fm';
-    y_labels=cellfun(@(x) num2str(x,fmt),num2cell(ydata_grid(idx_yticks)),'UniformOutput',0);
+    yl=num2cell(floor(ydata_grid(idx_yticks)/dy)*dy);
+    y_labels=cellfun(@(x) num2str(x,fmt),yl,'UniformOutput',0);
     set(axes_panel_comp.vaxes,'yticklabels',y_labels);
     
     set(axes_panel_comp.haxes,'XTickLabelRotation',-90,'box','on');
     str_start=' ';
-    
+    xl=num2cell(floor(xdata_grid(idx_xticks)/dx)*dx);
     switch lower(curr_disp.Xaxes_current)
         case 'seconds'
             h_fmt='HH:MM:SS';
-            x_labels=cellfun(@(x) datestr(x,h_fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+            x_labels=cellfun(@(x) datestr(x,h_fmt),xl,'UniformOutput',0);
         case 'pings'
             fmt=[str_start '%.0f'];
             axes_panel_comp.haxes.XTickLabelMode='auto';
-            x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+            x_labels=cellfun(@(x) num2str(x,fmt),xl,'UniformOutput',0);
         case 'meters'
             axes_panel_comp.haxes.XTickLabelMode='auto';
             fmt=[str_start '%.0fm'];
-            x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+            x_labels=cellfun(@(x) num2str(x,fmt),xl,'UniformOutput',0);
         otherwise
             axes_panel_comp.haxes.XTickLabelMode='auto';
-            fmt=[str_start '%.0f'];
-            x_labels=cellfun(@(x) num2str(x,fmt),num2cell(xdata_grid(idx_xticks)),'UniformOutput',0);
+            fmt=[str_start '%.0f'];             
+            x_labels=cellfun(@(x) num2str(x,fmt),xl,'UniformOutput',0);
     end
     set(axes_panel_comp.haxes,'xticklabels',x_labels);
 catch err

@@ -9,7 +9,7 @@ classdef env_data_cl < handle
         SVP=[];
         DropKeelOffset=0;
         DropKeelOffsetIsManual=0;
-        Latitude=nan;
+        Latitude=-45;
         SoundVelocityProfile=[]
         SoundVelocitySource='';
         WaterLevelDraft=0;

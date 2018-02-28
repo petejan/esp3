@@ -18,17 +18,26 @@ for ip=1:length(unique_paths)
     createlogbookTable(dbconn);
     
     for i=1:length(files_temp)
-        
-        curr_file_data=dbconn.fetch(sprintf('select Snapshot,Type,Stratum,Transect,StartTime,EndTime,Comment from logbook where Filename like "%s%s"',files_temp{i},term_file{i}));
+        try
+            curr_file_data=dbconn.fetch(sprintf('select Snapshot,Type,Stratum,Transect,StartTime,EndTime,Comment from logbook where Filename like "%s%s"',files_temp{i},term_file{i}));
+        catch
+            continue;
+        end
         nb_data=size(curr_file_data,1);
         
         
         for id=1:nb_data
-            if curr_file_data{id,1}==0&&(strcmp(deblank(curr_file_data{id,3}),''))&&curr_file_data{id,4}==0
-                continue;
-            end
-            missing_file_temp=dbconn.fetch(sprintf('select Filename from logbook where Snapshot=%.0f and Type is "%s" and Stratum is "%s" and Transect=%.0f',...
-                curr_file_data{id,1},curr_file_data{id,2},curr_file_data{id,3},curr_file_data{id,4}));
+
+                if curr_file_data{id,1}==0&&(strcmp(deblank(curr_file_data{id,3}),''))&&curr_file_data{id,4}==0
+                    continue;
+                end
+                try
+                    missing_file_temp=dbconn.fetch(sprintf('select Filename from logbook where Snapshot=%.0f and Type is "%s" and Stratum is "%s" and Transect=%.0f',...
+                        curr_file_data{id,1},curr_file_data{id,2},curr_file_data{id,3},curr_file_data{id,4}));
+                catch
+                    missing_file_temp={};
+                end
+           
             missing_files=union(missing_files,fullfile(unique_paths{ip},missing_file_temp));
         end
         

@@ -37,6 +37,8 @@
 function update_layer_tab(main_figure)
 
 layer_tab_comp=getappdata(main_figure,'Layer_tab');
+
+
 if isempty(layer_tab_comp)
     opt_panel=getappdata(main_figure,'option_tab_panel');
     load_layer_tab(main_figure,opt_panel);
@@ -47,6 +49,7 @@ layers=getappdata(main_figure,'Layers');
 layer=getappdata(main_figure,'Layer');
 
 if isempty(layer)
+    layer_tab_comp.table.Data=[];   
     return;
 end
 

@@ -41,8 +41,8 @@ function docNode = create_reg_xml_node(docNode,reg_xml,ver)
 p = inputParser;
 addRequired(p,'docNode',@(docnode) isa(docNode,'org.apache.xerces.dom.DocumentImpl'));
 addRequired(p,'reg_xml',@(x) isstruct(x));
-
-parse(p,docNode,reg_xml);
+addRequired(p,'ver',@(x) ischar(x));
+parse(p,docNode,reg_xml,ver);
 
 region_file=docNode.getDocumentElement;
 
@@ -55,7 +55,7 @@ for ir=1:length(reg_xml.Regions)
     
         reg_curr=reg_xml.Regions{ir};
         
-        if isnumeric()
+        if isnumeric(reg_curr.Unique_ID)
             Unique_ID=num2str(reg_curr.Unique_ID,'%.0f');
         else
             Unique_ID=reg_curr.Unique_ID;
@@ -107,7 +107,7 @@ for ir=1:length(reg_xml.Regions)
                 end
             case '0.2'
 
-                bbox_str=sprintf('%d %d ',bbox_p_s,reg_curr.bbox_s(1),bbox_p_e,reg_curr.bbox_s(2));
+                bbox_str=sprintf('%d %d ',reg_curr.bbox_p(1),reg_curr.bbox_s(1),reg_curr.bbox_p(2),reg_curr.bbox_s(2));
                 
                 bbox_node = docNode.createElement('bbox');
                 bbox_node.appendChild(docNode.createTextNode(bbox_str));
@@ -121,7 +121,7 @@ for ir=1:length(reg_xml.Regions)
                             ping_cont=reg_curr.Contours{icont}.Ping;
                             sample_cont=reg_curr.Contours{icont}.Sample;
                             cont_str=[];
-                            for istr=1:length(range_cont)
+                            for istr=1:length(ping_cont)
                                 cont_str=[cont_str sprintf('%d %.d ',ping_cont(istr,:),sample_cont(istr))];
                             end
                             contour_node.appendChild(docNode.createTextNode(cont_str));

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ESP3 version 0.9.3</title>
+    <link href="esp3_1.css" rel="stylesheet">
+  </head>
+  <body>
+  
+	<header>
+      <div id="header-inner">
+	   <h1>ESP3 ver. 0.9.3</h1>
+       <div id="logo"> <a href="./index.html"><img alt="logo" src="./img/logo.png"></a> </div>      
+      </div>
+    </header>	
+	
+<nav>
+  <ul>
+	<li><a href="./index.html">Home page</a> </li>
+    <li><a href="./release_notes.html">Release notes</a> </li>
+    <li><a href="./tutorials.html">Tutorials</a> </li>
+	<li><a href="./links.html">Links</a> </li>
+	<li><a href="./subscribe.html">Subscribe</a> </li>
+	<li><a href="./howtocite.html">How to cite</a> </li>
+  </ul>
+</nav>
+
+<section>
+<h2> Tutorials </h2> 
+
+<h3> Target tracking </h3>
+
+Single target detection and target tracking can be applied to a whole layer or a defined region or specific selection in the echogram. Regardless what part of your data you wish to apply the target algorithm to, there are common steps which are outlined next. For this tutorial single target detection and target tracking will be applied to a defined region.
+<br></br>
+1. First, let's define a region. Press keyboard short-cut 4 or go to the toolbar and selection the region tool, and select from the drop-down menu the Rectangular region. Define a region in the echogram by left-clicking and holding while dragging the mouse to reach the extent of the region you wish to include:
+<br></br>
+<figure><img src="./img/tracking_region.PNG" \="" height="600" width="1060" style="margin-left: -40px; margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.1: Region defined for tracking single targets. </figcaption>
+<br></br>
+2. In the Single Targets tab of the Algorithms panel define the algorithm parameter you want to apply for single target detection. Next right click on your region and choose “Algorithms", then "Apply Single Target detection”:
+<br></br>
+<figure><img src="./img/Single_target_detection.PNG" \="" height="600" width="1060" style="margin-left: -40px; margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.2: Single Target Detection algorithm available from the Algorithms list accessible by left-clicking on the defined region. </figcaption>
+<br></br>
+Note: Single target detection can be applied to a whole layer or to specific selection following the same steps.
+<br></br>
+3. Your defined region should now contained detected single targets under the current settings. Remember to adjust the color scale so that there is no “hidden” targets:
+<br></br>
+<figure><img src="./img/Detected_single_targets.PNG" \="" height="600" width="1060" style="margin-left: -40px; margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.3: Single Target Detection algorithm available from the Algorithms list accessible by left-clicking on the defined region. </figcaption>
+<br></br>
+
+4. In the Target tracking tab of the Algorithms panel, define the algorithm parameter you want to use for target tracking, right-click on your region and choose “Algorithms", then "Apply Target Tracking”:
+<br></br>
+<figure><img src="./img/tracked_targets.PNG" \="" height="600" width="1060" style="margin-left: -40px; margin-bottom: -10px;"> </figure>
+<figcaption style="padding-left: 0px;margin-right: 0px;"> Fig.4: Tracked targets displayed as coloured segments joining the individual detections meeting the specification in the Target tracking tab </figcaption>
+<br></br>
+Note: Tracked targets are just shown for demonstration purposes only, and they do not represent real fish tracks. Settings on the Target tracking algorithm tab were chosen for demonstration and they should not necessarily be used for tracking real targets.
+<br></br>
+
+5. The last step is to go to the Export menu on the main menu bar, and choose Export Tracked target to xls files. Same as for single targets. Values for each target contained in each track are saved in the xls files, with a Track_ID to be able to sort them track per track.
+<br></br>
+</section>
+</div>
+
+	  
+  </body>
+</html>

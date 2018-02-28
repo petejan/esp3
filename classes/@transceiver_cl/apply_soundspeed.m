@@ -4,6 +4,7 @@ old_range=trans_obj.get_transceiver_range();
 
 new_range = trans_obj.compute_transceiver_range(new_c);
 
+
 [~,Np]=trans_obj.get_pulse_length(1);
 
 [TVG_Sp_old,TVG_Sv_old]=computeTVG(old_range,Np);
@@ -16,22 +17,12 @@ alpha_diff=2*alpha*(new_range-old_range);
 
 trans_obj.set_transceiver_range(new_range);
 
-Sv=trans_obj.Data.get_datamat('sv');
-Sp=trans_obj.Data.get_datamat('sp');
-Sp_un=trans_obj.Data.get_datamat('spunmatched');
 
-if ~isempty(Sv)
-    Sv=bsxfun(@plus,Sv,TVG_Sv_new-TVG_Sv_old+alpha_diff);
-    trans_obj.Data.replace_sub_data('sv',Sv);
-end
+diff_db_sv=TVG_Sv_new-TVG_Sv_old+alpha_diff;
 
-if ~isempty(Sp)
-    Sp=bsxfun(@plus,Sp,TVG_Sp_new-TVG_Sp_old+alpha_diff);
-    trans_obj.Data.replace_sub_data('sp',Sp);
-end
+diff_db_sp=TVG_Sp_new-TVG_Sp_old+alpha_diff;
 
-if ~isempty(Sp_un)
-    Sp_un=bsxfun(@plus,Sp_un,TVG_Sp_new-TVG_Sp_old+alpha_diff);
-    trans_obj.Data.replace_sub_data('spunmatched',Sp_un);
-end
+trans_obj.Data.add_to_sub_data('sv',diff_db_sv);
+trans_obj.Data.add_to_sub_data('sp',diff_db_sp);
+trans_obj.Data.add_to_sub_data('spunmatched',diff_db_sp);
 

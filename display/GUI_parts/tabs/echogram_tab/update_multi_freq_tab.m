@@ -6,7 +6,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 [idx_freq,~]=find_freq_idx(layer,curr_disp.Freq);
 
-%
 
 set(multi_freq_tab.primary_freq,'String',layer.Frequencies,'value',idx_freq);
 set(multi_freq_tab.secondary_freqs,'String',layer.Frequencies,'value',1);

@@ -1,6 +1,6 @@
 function map_survey_mat_callback(~,~,hObject_main)
 
-app_path=getappdata(main_figure,'App_path');
+app_path=getappdata(hObject_main,'App_path');
 
 [Filename,PathToFile]= uigetfile( {fullfile(app_path.results,'*_survey_output.mat')}, 'Pick a survey output file','MultiSelect','on');
 if ~isequal(Filename, 0)

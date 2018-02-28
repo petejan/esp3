@@ -231,7 +231,7 @@ files=fullfile(path_f,selected_files);
 if isequal(filename,0) || isequal(pathname,0)
     fid=1;
 else
-    fid_f=fopen(fullfile(pathname,filename),'w+');
+    fid_f=fopen(fullfile(pathname,filename),'w');
     if fid_f~=-1
         fid=[1 fid_f];
     end

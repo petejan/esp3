@@ -1,6 +1,5 @@
 function update_multi_freq_disp_tab(main_figure,tab_tag,replot)
 
-
 multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
 if isempty(multi_freq_disp_tab_comp)
     opt_panel=getappdata(main_figure,'option_tab_panel');
@@ -12,6 +11,8 @@ end
 setappdata(main_figure,tab_tag,multi_freq_disp_tab_comp);
 layer=getappdata(main_figure,'Layer');
 if isempty(layer)
+     multi_freq_disp_tab_comp.table.Data=[];
+     delete(findobj(multi_freq_disp_tab_comp.ax,{'Type','errorbar'}));
     return;
 end
 

@@ -69,7 +69,7 @@ replace_interaction(src,'interaction','KeyPressFcn','id',1);
 try
     switch callbackdata.Key
         
-        case {'leftarrow','rightarrow','uparrow','downarrow','a','d'}
+        case {'leftarrow','rightarrow','uparrow','downarrow','a','d','w','s'}
             
             
             axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -99,19 +99,31 @@ try
                             set(main_axes,'ylim',y_lim);
                         end
                     end
-                        
+                    
                 case {'rightarrow' 'd'}
                     if x_lim(2)<xdata(end)
                         x_lim=[nanmin(xdata(end),x_lim(2)+0.2*dx)-dx,nanmin(xdata(end),x_lim(2)+0.2*dx)];
                         set(main_axes,'xlim',x_lim);
                         set(main_axes,'ylim',y_lim);
                     end
-                case 'downarrow'
+                case {'downarrow'}
                     if y_lim(2)<ydata(end)
                         y_lim=[nanmin(ydata(end),y_lim(2)+0.2*dy)-dy,nanmin(ydata(end),y_lim(2)+0.2*dy)];
                         set(main_axes,'ylim',y_lim);
                     end
-                case 'uparrow'
+                case 's'
+                    
+                    if isempty(callbackdata.Modifier)
+                        if y_lim(2)<ydata(end)
+                            y_lim=[nanmin(ydata(end),y_lim(2)+0.2*dy)-dy,nanmin(ydata(end),y_lim(2)+0.2*dy)];
+                            set(main_axes,'ylim',y_lim);
+                        end
+                    elseif strcmpi(callbackdata.Modifier,'control')
+                        
+                            save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
+                    end
+                    
+                case {'uparrow' 'w'}
                     if y_lim(1)>ydata(1)
                         y_lim=[nanmax(ydata(1),y_lim(1)-0.2*dy),nanmax(ydata(1),y_lim(1)-0.2*dy)+dy];
                         set(main_axes,'ylim',y_lim);
@@ -153,7 +165,7 @@ try
             end
         case {'2' 'numpad2'}
             
-            switch get(cursor_mode_tool_comp.bad_trans,'state');
+            switch get(cursor_mode_tool_comp.bad_trans,'state')
                 case 'off'
                     set(cursor_mode_tool_comp.bad_trans,'state','on');
                     curr_disp.CursorMode='Bad Transmits';
@@ -281,16 +293,16 @@ try
                 load_survey_data_fig_from_db(main_figure,0,1);
             end
             hide_status_bar(main_figure);
-        case 'w'
-            keyboard_zoom(-1,main_figure);
-        case 's'
-            if isempty(callbackdata.Modifier)
-                keyboard_zoom(1,main_figure)
-            elseif strcmpi(callbackdata.Modifier,'control')
-
-                save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
-
-            end
+            %         case 'w'
+            %             keyboard_zoom(-1,main_figure);
+            %         case 's'
+            %             if isempty(callbackdata.Modifier)
+            %                 keyboard_zoom(1,main_figure)
+            %             elseif strcmpi(callbackdata.Modifier,'control')
+            %
+            %                 save_bot_reg_xml_to_db_callback([],[],main_figure,0,0);
+            %
+            %             end
         case 'y'
             if  strcmpi(callbackdata.Modifier,'control')
                 uiundo(main_figure,'execRedo')

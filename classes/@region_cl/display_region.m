@@ -62,12 +62,14 @@ parse(p,reg_obj,trans_obj,varargin{:});
 
 field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
-    %       profile on;
+           profile on;
     %      output_reg_old=trans_obj.integrate_region(reg_obj);
-    output_reg=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj,'denoised',1);
-    %     compare_reg_output(output_reg_old,output_reg,reg_obj.Reference);
-    %      profile off;
-    %     profile viewer;
+    %profile on;
+    %output_reg_3=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj,'denoised',1);
+    output_reg=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1);
+    %compare_reg_output(output_reg,output_reg_3,reg_obj.Reference);
+%     profile off;
+%     profile viewer;
     tt=sprintf('%s %s %.0fkHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
     
 else
@@ -183,17 +185,17 @@ xmax=nanmax(x_disp);
 
 % ticks and grid
 
-
 ax_in.XTick=x_disp(~isnan(x_disp));
 ax_in.YTick=sort((ymin:reg_obj.Cell_h:ymax));
+
 grid(ax_in,'on');
 
 % colour
 caxis(ax_in,cax);
 colorbar(ax_in,'Position',[0.92 0.25 0.03 0.65]);
-[cmap,~,~,col_grid,~,~]=init_cmap(cmap_name);
+[cmap,col_ax,~,col_grid,~,~]=init_cmap(cmap_name);
 colormap(ax_in,cmap);
-set(ax_in,'GridColor',col_grid);
+set(ax_in,'GridColor',col_grid,'Color',col_ax);
 
 %% linear or dB scales for bottom and side displays
 
@@ -218,8 +220,8 @@ plot(ax_horz,x_disp,horz_plot,'r');
 grid(ax_horz,'on');
 xlabel(ax_horz,sprintf('%s',reg_obj.Cell_w_unit))
 ylabel(ax_horz,ylab)
-ax_horz.XTick=get(ax_in,'XTick');
-ax_horz.XTickLabelRotation=90;
+%ax_horz.XTick=get(ax_in,'XTick');
+ax_horz.XTickLabelRotation=45;
 
 switch reg_obj.Cell_w_unit
     case 'meters'
@@ -227,7 +229,8 @@ switch reg_obj.Cell_w_unit
     case 'pings'
         ax_horz.XAxis.TickLabelFormat='%.0f';
 end
-
+ax_horz.XAxis.ExponentMode='manual';
+ax_horz.XAxis.Exponent=0;
 %% side display
 
 % axes
@@ -253,7 +256,7 @@ switch reg_obj.Reference
 end
 
 grid(ax_vert,'on');
-ax_vert.YTick=get(ax_in,'YTick');
+%ax_vert.YTick=get(ax_in,'YTick');
 ax_vert.YAxis.TickLabelFormat='%.0gm';
 
 %% link axes of main display and bottom/side plots
@@ -286,6 +289,7 @@ set(ax_in,'Ylim',[ymin-reg_obj.Cell_h/2 ymax+reg_obj.Cell_h/2]);
         if isvalid(ax_in)
             if isvalid(ax_in)
                 colormap(ax_in,cmap);
+                set(ax_in,'GridColor',col_grid),'Color',col_ax;
             end
         end
     end

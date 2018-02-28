@@ -15,7 +15,7 @@ switch lower(deblank(Fieldname))
         Type='Denoised Sv';
     case 'sp'
         Cax=[-60 -30];
-        Type='TS Unc';
+        Type='TS (uncompensated)';
     case 'sp_comp'
         Cax=[-60 -30];
         Type='TS';
@@ -24,7 +24,7 @@ switch lower(deblank(Fieldname))
         Type='Denoised Sp';
     case 'spunmatched'
         Cax=[-60 -30];
-        Type='Sp before match filtering';
+        Type='TS (uncompensated non pulse-compressed)';
     case 'power'
         Cax=[-200 0];
         Type='Power';

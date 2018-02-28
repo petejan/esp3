@@ -1,7 +1,7 @@
         function print_output(surv_obj,file) % print the whole SurvOutput on the screen
             % and if defined in surv_obj.SurvOutput into a text file
 
-            fids = fopen(file, 'w+');
+            fids = fopen(file, 'w');
             for i = 1:length(fids)
                 
                 fid = fids(i);

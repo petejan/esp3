@@ -1,8 +1,8 @@
         function print_output(mbs) % print the whole Output on the screen
 
-             fids{1} = fopen(mbs.OutputFile, 'w+');
+             fids{1} = fopen(mbs.OutputFile, 'w');
            
-            for i = 1:length(fids);
+            for i = 1:length(fids)
                 fid = fids{i};
                 
                 %% Header

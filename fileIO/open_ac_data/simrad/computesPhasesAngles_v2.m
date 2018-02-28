@@ -72,7 +72,7 @@ for idx_freq=1:length(trans_obj)
         end
     end
     
-    data.pings(idx_freq).AlongAngle=(data.pings(idx_freq).AlongPhi)*k_angle/angleSensitivityAlongship-trans_obj(idx_freq).Config.AngleOffsetAthwartship;
+    data.pings(idx_freq).AlongAngle=(data.pings(idx_freq).AlongPhi)*k_angle/angleSensitivityAlongship-trans_obj(idx_freq).Config.AngleOffsetAlongship;
     data.pings(idx_freq).AcrossAngle=(data.pings(idx_freq).AcrossPhi)*k_angle/angleSensitivityAthwartship-trans_obj(idx_freq).Config.AngleOffsetAthwartship;
     
 end

@@ -30,7 +30,7 @@ for i=1:length(filenames)
         end
     end
     
-    [~,~,NMEA,~]=data_from_raw_idx_cl_v3(path_f,idx_raw_obj,'GPSOnly',1,'load_bar_comp',load_bar_comp);
+    [~,~,NMEA,~]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,'GPSOnly',1,'load_bar_comp',load_bar_comp);
     
     fileNMEA=fullfile(path_f,[fileN '_NMEA.csv']);
     

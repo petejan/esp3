@@ -121,7 +121,7 @@ else
 end
 
 [~,idx_r_min]=nanmin(abs(r_min-Range));
-idx_r_min=nanmax(idx_r_min,10);
+idx_r_min=nanmax(idx_r_min,5*Np);
 idx_r_min=nanmin(idx_r_min,nb_samples);
 
 RingDown=Sp(3,:);
@@ -142,6 +142,7 @@ BS(isnan(BS))=-999;
 BS_ori=BS;
 
 BS(:,~idx_ringdown)=nan;
+
 BS_lin=10.^(BS/10);
 [max_bs,~]=nanmax(BS);
 Max_BS_reg=(bsxfun(@gt,BS,max_bs+thr_echo));
@@ -149,7 +150,8 @@ Max_BS_reg(:,max_bs<thr_bottom)=0;
 
 Bottom_region_temp=Max_BS_reg;
 
-Bottom_region_temp=ceil(filter2(ones(Np,5),Bottom_region_temp)/(5*Np))==1;
+Bottom_region_temp=ceil(filter2(ones(2*Np,5),Bottom_region_temp))>=(2*5*Np/2);
+
 idx_empty=nansum(Bottom_region_temp)==0;
 Bottom_region_temp(:,idx_empty)=[];
 
@@ -230,8 +232,11 @@ BS_filter(Bottom_region==0)=nan;
 BS_bottom=nanmax(BS_filter);
 BS_bottom(isnan(Bottom))=nan;
 
+idx_low=(BS_bottom<thr_bottom);
 
 Bottom=Bottom- ceil(p.Results.shift_bot./nanmax(diff(Range)));
+Bottom(idx_low)=nan;
+BS_bottom(idx_low)=nan;
 Bottom(Bottom<=0)=1;
 
 bottom_ori=trans_obj.get_bottom_idx();

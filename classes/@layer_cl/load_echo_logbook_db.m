@@ -58,6 +58,7 @@ for ip=1:length(pathtofile)
     createlogbookTable(dbconn);
     
     files_db=dbconn.fetch('select Filename from logbook');
+    
     close(dbconn);
     
    

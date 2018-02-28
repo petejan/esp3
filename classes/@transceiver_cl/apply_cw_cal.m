@@ -19,18 +19,9 @@ end
 
 trans_obj.set_cal(struct('G0',new_cal.G0,'SACORRECT',new_cal.SACORRECT));
 
-Sv=trans_obj.Data.get_datamat('sv');
-
-if ~isempty(Sv)
-    Sv_new=Sv+2*(old_cal.SACORRECT-new_cal.SACORRECT)+2*(old_cal.G0-new_cal.G0);
-    trans_obj.Data.replace_sub_data('sv',Sv_new);
+diff_db_sv=2*(old_cal.SACORRECT-new_cal.SACORRECT)+2*(old_cal.G0-new_cal.G0);
+trans_obj.Data.add_to_sub_data('sv',diff_db_sv)
+diff_db_sp=2*(old_cal.G0-new_cal.G0);
+trans_obj.Data.add_to_sub_data('sv',diff_db_sp)
 end
 
-Sp=trans_obj.Data.get_datamat('sp');
-
-if ~isempty(Sp)
-    Sp_new=Sp+2*(old_cal.G0-new_cal.G0);
-    trans_obj.Data.replace_sub_data('sp',Sp_new);
-end
-
-end

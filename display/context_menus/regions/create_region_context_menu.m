@@ -88,7 +88,7 @@ end
 
 if isreg>0
     export_menu=uimenu(context_menu,'Label','Export');
-    uimenu(export_menu,'Label','Export integrated region to .xlsx','Callback',{@export_region_callback,main_figure});
+    uimenu(export_menu,'Label','Export integrated region to .xlsx','Callback',{@export_regions_callback,main_figure});
 end
 
 uimenu(analysis_menu,'Label','Spectral Analysis (noise)','Callback',{@noise_analysis_callback,select_plot,main_figure});
@@ -137,7 +137,7 @@ for i=1:n
     trans=layer.Transceivers(i);
     for j=1:numel(IDs)
         reg=trans.get_region_from_Unique_ID(reg_curr(j).Unique_ID);
-        output_reg{j,i}=trans.integrate_region_v3(reg,'keep_bottom',1);
+        output_reg{j,i}=trans.integrate_region_v4(reg,'keep_bottom',1);
     end
 end
 
@@ -175,28 +175,6 @@ end
 
 end
 
-function export_region_callback(~,~,main_figure)
-
-layer=getappdata(main_figure,'Layer');
-curr_disp=getappdata(main_figure,'Curr_disp');
-
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-reg_curr=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
-[path_tmp,~,~]=fileparts(layer.Filename{1});
-layers_Str=list_layers(layer,'nb_char',80);
-
-for i=1:numel(reg_curr)    
-    [fileN, path_tmp] = uiputfile('*.xlsx',...
-        'Save Sliced transect (integration results)',...
-        fullfile(path_tmp,[layers_Str{1} 'reg_' reg_curr(i).disp_str() '.xlsx']));
-    
-    if isequal(path_tmp,0)
-        return;
-    end    
-    layer.export_region_to_xls(reg_curr(i),'output_f',fullfile(path_tmp,fileN),'idx_freq',idx_freq);   
-end
-
-end
 
 
 
@@ -207,7 +185,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 reg_curr=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
 for i=1:numel(reg_curr)
-    regCellInt=trans_obj.integrate_region_v3(reg_curr(i));
+    regCellInt=trans_obj.integrate_region_v4(reg_curr(i));
     if isempty(regCellInt)
         return;
     end

@@ -1,3 +1,4 @@
+
 function compare_reg_output( out_reg_1,out_reg_2,ref )
 
 fields=fieldnames(out_reg_1);
@@ -22,24 +23,34 @@ for i=1:length(fields)
         fprintf('Can not compare field %s, not same size\n',fields{i});
         continue;
     end
+    
     switch ref
         case 'Surface'
             reg_1_f=(out_reg_1.(fields{i}));
             alpha_1=~isnan((out_reg_1.(fields{i})));
+            
+            reg_2_f=(out_reg_2.(fields{i}));
+            alpha_2=~isnan((out_reg_2.(fields{i})));
+            
         otherwise
             reg_1_f=flipud(out_reg_1.(fields{i}));
             alpha_1=~isnan(flipud(out_reg_1.(fields{i})));
+                       
+            reg_2_f=flipud(out_reg_2.(fields{i}));
+            alpha_2=~isnan(flipud(out_reg_2.(fields{i})));
     end
     
-    diff_cells=reg_1_f-out_reg_2.(fields{i});
-    diff_mean=nanmean(diff_cells(:));
-    
-    image(ax2,reg_1_f,'AlphaData',alpha_1,'CDataMapping','scaled');colorbar(ax2);
-    image(ax3,out_reg_2.(fields{i}),'AlphaData',~isnan(out_reg_2.(fields{i})));colorbar(ax3,'CDataMapping','scaled');
-    
-    image(ax,diff_cells,'CDataMapping','scaled');colorbar(ax);
-    title(ax,sprintf('Average diff for %s: %f',fields{i},diff_mean));
-    pause(0.1);
+    diff_cells=reg_1_f-reg_2_f;
+    if any(diff_cells(:)~=0)||any(isnan(diff_cells(:)))
+        diff_mean=nanmean(diff_cells(:));
+        
+        imagesc(ax2,reg_1_f,'AlphaData',alpha_1,'CDataMapping','scaled');colorbar(ax2);
+        imagesc(ax3,reg_2_f,'AlphaData',alpha_2,'CDataMapping','scaled');colorbar(ax3);
+        
+        image(ax,diff_cells,'CDataMapping','scaled');colorbar(ax);
+        title(ax,sprintf('Average diff for %s: %f',fields{i},diff_mean),'interpreter','none');
+    end
+    pause(1);
     
 end
 close(fig);

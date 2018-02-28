@@ -54,7 +54,8 @@ disable_listeners(main_figure);
 uiundo(main_figure,'clear');
 
 nb_layers = length(layers);
-
+up_curr_disp=0;
+flag=0;
 try
     if strcmp(layer.Unique_ID,curr_disp.CurrLayerID) && nb_layers==curr_disp.NbLayers
         flag = 0;

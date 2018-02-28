@@ -340,7 +340,7 @@ for uu=1:length(files_in_temp)
 end
 
 for i=1:length(idx_delete)
-    if exist(fullfile(app_path.data_temp,files_in_temp(idx_delete(i)).name),'file')==2
+    if isfile(fullfile(app_path.data_temp,files_in_temp(idx_delete(i)).name))
         delete(fullfile(app_path.data_temp,files_in_temp(idx_delete(i)).name));
     end
 end

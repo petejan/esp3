@@ -19,8 +19,8 @@ idx_reg=trans_obj.find_regions_type('Data');
 %profile on;
 sh_height=10;
 
-[output_2D_surf_tot,output_2D_bot_tot,regs_tot,regCellInt_tot,output_2D_sh_tot,shadow_height_est_tot,idx_freq_out]=layer.multi_freq_slice_transect2D(...
-    'idx_main_freq',idx_freq,'idx_sec_freq',[],...
+[output_2D_surf_tot,output_2D_bot_tot,~,~,~,output_2D_sh_tot,shadow_height_est_tot,idx_freq_out]=layer.multi_freq_slice_transect2D(...
+    'idx_main_freq',idx_freq,'idx_sec_freq',idx_freq,...
     'Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
     'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg);
 
@@ -29,85 +29,6 @@ output_2D_surf=output_2D_surf_tot{idx_freq==idx_freq_out};
 output_2D_sh=output_2D_sh_tot{idx_freq==idx_freq_out};
 output_2D_bot=output_2D_bot_tot{idx_freq==idx_freq_out};
 shadow_height_est=shadow_height_est_tot{idx_freq==idx_freq_out};
-% regCellInt=regCellInt_tot{idx_freq==idx_freq_out};
-% regs=regs_tot{idx_freq==idx_freq_out};
-% tic
-% [output_2D_surf_tmp,output_2D_bot_tmp,regs_tmp,regCellInt_tmp,output_2D_sh_tmp,shadow_height_est_tmp]=trans_obj.slice_transect2D_new_int(...
-%     'Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
-%     'RegInt',1,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg);
-% toc
-% fields=fieldnames(output_2D_surf);
-% 
-% surf_b=true;
-% bot_b=true;
-% shdz_b=true;
-% shdz_h_b=true;
-% reg_cell_b=true;
-% 
-% for ifield=1:numel(fields)
-%     if any(output_2D_surf.(fields{ifield})(:)-output_2D_surf_tmp.(fields{ifield})(:))
-%         fprintf('Surf:Differences for field %s\n',fields{ifield});
-%         surf_b=false;
-%     end
-%     
-%     for ireg=1:length(regCellInt)
-%         if any(regCellInt{ireg}.(fields{ifield})(:)-regCellInt_tmp{ireg}.(fields{ifield})(:))
-%             fprintf('Reg:Differences for field %s in region %d\n',fields{ifield},ireg);
-%             reg_cell_b=false;
-%         end
-%     end
-%     
-%     if ~isempty(output_2D_bot)
-%         if any(output_2D_bot.(fields{ifield})(:)-output_2D_bot_tmp.(fields{ifield})(:))
-%             fprintf('Bot:Differences for field %s\n',fields{ifield});
-%             bot_b=false;
-%         end
-%     end
-%     
-%     if ~isempty(output_2D_sh)
-%         if any(output_2D_sh.(fields{ifield})(:)-output_2D_sh_tmp.(fields{ifield})(:))
-%             fprintf('ShdZ:Differences for field %s\n',fields{ifield});
-%             shdz_b=false;
-%         end
-%     end
-%     
-% end
-% 
-% if ~surf_b
-%     disp('!!!!!!!!!!!!!!!!!!!!!!!Differences in Surface-referenced regions integration');
-% else
-%     disp('No Differences in Surface-referenced regions integration');
-% end
-% 
-% if ~bot_b
-%     disp('!!!!!!!!!!!!!!!!!!!!!!!Differences in Bottom-referenced regions integration');
-% else
-%     disp('No Differences in Bottom-referenced regions integration');
-% end
-% 
-% if ~reg_cell_b
-%     disp('!!!!!!!!!!!!!!!!!!!!!!!Differences in regions integration');
-% else
-%     disp('No Differences in regions integration');
-% end
-% 
-% if ~shdz_b
-%     disp('!!!!!!!!!!!!!!!!!!!!!!!Differences in Shadow-zone integration');
-% else
-%     disp('No Differences in Shadow-zone integration');
-% end
-% 
-% if any(shadow_height_est(:)-shadow_height_est_tmp(:))
-%     shdz_h_b=false; 
-% end
-% 
-% if ~shdz_h_b
-%     disp('!!!!!!!!!!!!!!!!!!!!!!!Differences in Shadow-zone height estimation');
-% else
-%     disp('No Differences in Shadow-zone height estimation');
-% end
-% 
-% 
 
 surf_slice_int=nansum(output_2D_surf.eint);
 good_pings_surf=nanmax(output_2D_surf.Nb_good_pings,[],1);

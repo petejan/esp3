@@ -173,7 +173,7 @@ end
 function save_envdata_callback(~,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 
 new_sal=str2double(get(calibration_tab_comp.sal,'string'));
@@ -185,8 +185,10 @@ new_temp=str2double(get(calibration_tab_comp.temp,'string'));
 layer.EnvData.Temperature=new_temp;
 
 new_ss =str2double(get(calibration_tab_comp.soundspeed,'string'));
-
-layer.apply_soundspeed(new_ss);
+if new_ss~=layer.EnvData.SoundSpeed
+    fprintf('   Old Soundspeed value: %.0f m/s\n',layer.EnvData.SoundSpeed);
+    layer.apply_soundspeed(new_ss);
+end
 
 new_abs=str2double(get(calibration_tab_comp.att,'string'));
 
@@ -196,12 +198,14 @@ set(calibration_tab_comp.string_cal,'string',sprintf('Currently used values:\n S
     new_ss,new_abs,new_sal,new_temp));
 
 update_axis_panel(main_figure,0);
-update_calibration_tab(main_figure);
-display_bottom(main_figure);
-display_tracks(main_figure);
-display_file_lines(main_figure);
-display_regions(main_figure,'both');
-display_survdata_lines(main_figure);
+update_secondary_freq_win(main_figure);
+update_mini_ax(main_figure,0);
+% update_calibration_tab(main_figure);
+% display_bottom(main_figure);
+% display_tracks(main_figure);
+% display_file_lines(main_figure);
+% display_regions(main_figure,'both');
+% display_survdata_lines(main_figure);
 set_alpha_map(main_figure);
 order_stacks_fig(main_figure);
 
@@ -216,7 +220,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
 calibration_tab_comp=getappdata(main_figure,'Calibration_tab');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 
 if strcmp(trans_obj.Mode,'CW')
@@ -240,7 +244,18 @@ if strcmp(trans_obj.Mode,'CW')
 end
 
 setappdata(main_figure,'Layer',layer);
-loadEcho(main_figure);
+
+update_axis_panel(main_figure,0);
+update_secondary_freq_win(main_figure);
+update_mini_ax(main_figure,0);
+% update_calibration_tab(main_figure);
+% display_bottom(main_figure);
+% display_tracks(main_figure);
+% display_file_lines(main_figure);
+% display_regions(main_figure,'both');
+% display_survdata_lines(main_figure);
+set_alpha_map(main_figure);
+order_stacks_fig(main_figure);
 
 end
 
@@ -252,7 +267,7 @@ layer=getappdata(main_figure,'Layer');
 
 [cal_path,~,~]=fileparts(layer.Filename{1});
 
-fid=fopen(fullfile(cal_path,'cal_echo.csv'),'w+');
+fid=fopen(fullfile(cal_path,'cal_echo.csv'),'w');
 fprintf(fid,'%s,%s,%s,%s\n', 'F', 'G0', 'SACORRECT','alpha');
 for i=1:length(layer.Transceivers)
     cal_cw=get_cal(layer.Transceivers(i));

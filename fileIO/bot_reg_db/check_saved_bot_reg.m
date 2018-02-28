@@ -15,7 +15,7 @@ if curr_disp.Bot_changed_flag==1
     switch choice
         case 'Yes'
             layer.write_bot_to_bot_xml();
-            layer.save_bot_reg_to_db('bot',1,'reg',0);
+            %layer.save_bot_reg_to_db('bot',1,'reg',0);
     end
     
 end
@@ -30,7 +30,7 @@ if curr_disp.Reg_changed_flag==1
     switch choice
         case 'Yes'
             layer.write_reg_to_reg_xml();
-            layer.save_bot_reg_to_db('bot',0,'reg',1);
+            %layer.save_bot_reg_to_db('bot',0,'reg',1);
     end
 end
 

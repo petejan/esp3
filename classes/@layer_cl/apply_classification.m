@@ -104,8 +104,8 @@ for idx_school=idx_schools
         trans_obj_prim=layer.Transceivers(idx_primary_freqs(i));
         trans_obj_sec=layer.Transceivers(idx_secondary_freqs(i));
         
-        schools_output_primary_temp=trans_obj_prim.integrate_region_v3(reg_prim,'denoised',0,'keep_all',1);
-        schools_output_secondary_temp=trans_obj_sec.integrate_region_v3(reg_sec,'denoised',0,'keep_all',1);
+        schools_output_primary_temp=trans_obj_prim.integrate_region_v4(reg_prim,'denoised',0,'keep_all',1);
+        schools_output_secondary_temp=trans_obj_sec.integrate_region_v4(reg_sec,'denoised',0,'keep_all',1);
         
         if idx_primary_freqs(i)==idx_primary_freq
             schools_output_temp=schools_output_primary_temp;

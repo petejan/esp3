@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> 
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <title>ESP3 version 0.9.3</title>
+    <link href="esp3_1.css" rel="stylesheet">
+  </head>
+  <body>
+  
+	<header>
+      <div id="header-inner">
+	   <h1>ESP3 ver. 0.9.3</h1>
+       <div id="logo"> <a href="./index.html"><img alt="logo" src="./img/logo.png"></a> </div>      
+      </div>
+    </header>	
+	
+<nav>
+  <ul>
+	<li><a href="./index.html">Home page</a> </li>
+    <li><a href="./release_notes.html">Release notes</a> </li>
+    <li><a href="./tutorials.html">Tutorials</a> </li>
+	<li><a href="./links.html">Links</a> </li>
+	<li><a href="./subscribe.html">Subscribe</a> </li>
+	<li><a href="./howtocite.html">How to cite</a> </li>
+  </ul>
+</nav>
+
+<section>
+<h2> Keyboard shortcuts </h2> 
+
+<h3> Keyboard shortcuts for the main display:</h3> 
+<strong> <u> Data display:</u></strong>
+<br></br>
+<section>
+F: Change frequency shown in the echogram.
+<br></br>
+E: Change data type shown in the echogram (Power, Angle across, Angle along, Sv, TS Unc).
+<br></br>
++: Shift color map up.
+<br></br>
+-: Shift color map down.
+<br></br>
+B: Toggle "Display/hide Under Bottom data".
+<br></br>
+R: Toggle "Display/hide Regions" (filled or boundary only).
+<br></br>
+T: Toggle "Display/hide bad transmits".
+</section>
+<br></br>
+<strong> <u>  Zoom in/out or move around the display:</u></strong>
+<br></br>
+Mouse scroll: Zoom in/out.
+<br></br>
+Arrow Keys: Move up/down/left/right.
+<br></br>
+W: Zoom in.
+<br></br>
+S: Zoom out.
+<br></br>
+A: Move left.
+<br></br>
+D: Move right.
+<br></br>
+
+<h3>  Important shortcuts: </h3>
+L: Display/edit logbook.
+<br></br>
+shift+L: Open multiple logbooks.
+<br></br>
+N: Next layer.
+<br></br>
+P: Previous layer.
+<br></br>
+C: Change echogram display Colormap (e.g., EK60, EK500, etc.)
+<br></br>
+Ctrl+S: Save current bottom/regions to XML file.
+<br></br>
+Ctr+Z: Undo last action (not available for all actions).
+<br></br>
+Ctr+Y: Redo last undone action (not available for all actions).
+<br></br>
+Home: Go to the start of an echogram (layer/transect)
+<br></br>
+End: Go to the end of an echogram (layer/transect)
+<br></br>
+
+<h3> Cursor modes:</h3>
+0: "Normal" mode.
+<br></br>
+1: "Zoom In" mode.
+<br></br>
+Shift+1: "Zoom Out" mode.
+<br></br>
+2: "Bad Transmit" mode.
+<br></br>
+3: "Edit Bottom" mode.
+<br></br>
+4: "Create Region" mode.
+<br></br>
+5: "Measure Distance" mode.
+<br></br>
+6: "Draw Line" mode.
+<br></br>
+
+<h3> Mouse use in various modes:</h3>
+<strong> <u>i. In "Normal" mode:</u></strong>
+<br></br>
+<section>
+Left-click on a region: Make region active.
+<br></br>
+M: Move user-created regions. Press M, click on a region (note how the cursor shape changes) and drag it. 
+<br></br>
+Right-click on bottom/region/selection/display: Specific contextual menu. If on a region, this also makes it active.
+<br></br>
+Ctrl + left-click, drag & release: Create a rectangle selection box.
+<br></br>
+Shift + left-click, drag & release: Create a rectangle selection box spreading across all pings.
+<br></br>
+Double left-click: Delete selection box.
+</section>
+<br></br>
+<strong><u>ii. In "Zoom In" mode:</u></strong>
+<br></br>
+<section>
+Left-click* or *right-click: Zoom in.
+<br></br>
+Left-click, drag & release: Zoom-in box.
+<br></br>
+Right-click, drag & release* or *Ctrl + left-click, drag & release: Vertical zoom-in.
+</section>
+<br></br>
+<strong><u> iii. In "Zoom Out" mode: </u></strong>
+<br></br>
+<section>
+Left-click: Zoom out.
+<br></br>
+Right-click* or *Ctrl + left-click* or *double left-click: Zoom all the way out.
+</section>
+<br></br>
+<strong> <u>iv. In "Bad Transmit" mode: </u></strong>
+<br></br>
+<section>
+Left-click: Flag ping as bad transmit.
+<br></br>
+Left-click, drag and release: Flag series of pings as bad transmits.
+<br></br>
+Right-click: Remove bad transmit flag.
+<br></br>
+Right-click, drag and release: Remove bad transmit flag for series of pings.
+</section>
+<br></br>
+<strong> <u>v. In "Edit Bottom" mode:</u></strong>
+<br></br>
+<strong>- "Classic Tool" is a mode combining hand-drawn and polyline to set the bottom manually: </strong>
+<br></br>
+Left-click: to start setting bottom, then...
+<br></br>
+<section style="margin-left: 30px;">
+    a. Maintain left button pressed and drag: to create a hand-drawn section over a series of pings, or...
+	<br></br>
+    b. Release button and left-click again*: to create a polyline section over a series of pings.
+	<br></br>
+    c. Double left-click: to complete.
+<br></br>
+</section>
+<section>
+Right-click* or *Ctrl + left-click: to remove bottom for one ping.
+<br></br>
+Right-click, drag and release* or *Ctrl + left-click, drag and release*: to remove bottom for series of pings.
+</section>
+<br></br>
+<strong>-"Spline Tool" is a mode allowing to "push" up or down an existing bottom for a series of ping.</strong>
+<br></br>
+<section>
+Right-click: to open a contextual menu to set the size of the tool.
+<br></br>
+Left-click above the bottom and drag down: to push the bottom downwards.
+<br></br>
+Left-click below the bottom and drag up: to push the bottom upwards.
+</section>
+<br></br>
+<strong>-"Brush Tool" is a mode allowing to remove obviously bad bottoms.</strong>
+<br></br>
+<section>
+Left-click, drag and release: to define a rectangle area where bottom is to be removed.
+<br></br>
+Right-click, drag and release: to do the same AND also flag pings where a bottom was found as bad transmits
+</section>
+<br></br>
+<strong><u> vi. In "Create Region" mode: </u></strong>
+<br></br>
+<section>
+Left-click, drag & release: Create a region.
+<br></br>
+Left-click on a region: Make region active when in "Display Regions" (filled regions) mode.
+<br></br>
+Delete: Delete active region.
+</section>
+<br></br>
+
+<strong> <u>vii. In "Measure Distance" mode: </u></strong>
+<br></br>
+Left-click: to start a polyline, then..
+<br></br>
+<section style="margin-left: 30px;">
+    a. Left-click: to add a vertex to the polyline. Finally...
+	<br></br>
+    b. Right-click: to delete the polyline.
+</section>
+<br></br>
+<strong> <u>viii. In "Draw Line" mode:</u></strong>
+<br></br>
+Right-click, keep pressed, drag and release: to create a hand-drawn line.
+<br></br>
+Shift + Left-click: to start a polyline, then...
+<br></br>
+<section style="margin-left: 30px;">
+    a. Left-click: to add a vertex to the polyline. Finally...
+    <br></br>
+	b. Double left-click* or *Right-click: to complete the polyline.
+</section>
+<br></br>
+<h3> Mini display tips & tricks: </h3>
+The 'blue box' on the mini display represents the **extent of the main display**.
+<br></br>
+If the main display is currently zoomed-in, the blue box on the mini display can be **left-clicked and dragged around** and the main display will automatically update on release.
+<br></br>
+Likewise, if the main display is currently zoomed-in, a **left-click, drag and release** on another area of the mini display will create a new zoom-in blue box.
+<br></br>
+Right-click anywhere on the mini display to bring up a contextual menu allowing to undock the mini display.
+<br></br>
+</section>
+</div>
+
+	  
+  </body>
+</html>

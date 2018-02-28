@@ -1,6 +1,7 @@
 function update_curves_and_table(main_figure,tab_tag,id_new)
 
 layer=getappdata(main_figure,'Layer');
+
 if isempty(layer)
     return;
 end
@@ -58,6 +59,7 @@ for i=1:numel(id_new)
     end
     
 end
+
 end
 
 function display_line_cback(src,evt,main_figure,tab_tag)

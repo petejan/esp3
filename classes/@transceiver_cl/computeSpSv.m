@@ -1,6 +1,5 @@
 function computeSpSv(trans_obj,env_data_obj,varargin)
 
-
 p = inputParser;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
@@ -27,7 +26,7 @@ range=trans_obj.get_transceiver_range();
 [powerunmatched,~]=get_datamat(trans_obj.Data,'powerunmatched');
 
 gpu_comp=get_gpu_comp_stat();
-
+%gpu_comp=0;
 if gpu_comp%use of gpuArray results in about 20% speed increase here
     %disp('GPU computation available')
     power=gpuArray(power);

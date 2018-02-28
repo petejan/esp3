@@ -45,7 +45,7 @@ switch tab_panel.Type
 end
 
 columnname = {'Name','ID','Tag','Type','Reference','Cell Width','Width Unit','Cell Height','Height Unit','Unique ID'};
-columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom','Line'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
+columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
 
 
 reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
@@ -73,6 +73,7 @@ reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT co
 
 
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,main_figure});
+uimenu(rc_menu,'Label','Export Region(s)','Callback',{@export_regions_callback,main_figure});
 uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,main_figure});
 
 % reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
@@ -91,7 +92,6 @@ setappdata(main_figure,'Reglist_tab',reglist_tab_comp);
 update_reglist_tab(main_figure,0);
 
 end
-
 
 
 

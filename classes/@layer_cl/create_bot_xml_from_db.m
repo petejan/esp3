@@ -50,7 +50,7 @@ for ifile=1:length(path_xml)
         end
         
         xml_str=bot_xml_version{idx_xml,1};
-        fid = fopen(fullfile(path_xml{ifile},bot_file_str{ifile}),'w+');
+        fid = fopen(fullfile(path_xml{ifile},bot_file_str{ifile}),'w');
         fprintf(fid,'%s', xml_str);
         fclose(fid);
     end

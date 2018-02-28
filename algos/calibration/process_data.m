@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Part 2: Processing of sphere echoes to yield calibration parameters
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function trans_obj=process_data(trans_obj,envData,idx_peak,idx_pings,idx_r,sphere_ts,log_file)
+function trans_obj=process_data(trans_obj,envData,idx_peak,idx_pings,idx_r,sphere_ts,log_file,main_figure)
 
 
 % Optional single target and sphere processing parameters:
@@ -220,7 +220,8 @@ if exitflag ~= 1
         fprintf(fid(ifi),'that there is something wrong with the echosounder.\n');
     end
     % Plot the probably wrong data, using the un-filtered dataset
-    new_echo_figure([],'Name', 'Beam pattern contour plot');
+    Freq=trans_obj.Config.Frequency;
+    new_echo_figure(main_figure,'Name',sprintf('%.0fkHz Beam pattern contour plot',Freq/1e3),'Tag',sprintf('%.0fkHz Beam pattern contour plot',Freq/1e3));
     [XI,YI]=meshgrid(-trimTo:.1:trimTo,-trimTo:.1:trimTo);
     warning('off','MATLAB:griddata:DuplicateDataPoints');
     ZI = griddata(original.sphere(:,2), original.sphere(:,3), original.sphere(:,1), XI, YI);
@@ -311,7 +312,7 @@ end
 
 
 % plot up the on-axis TS values
-fig=new_echo_figure([],'Name', 'On-axis sphere TS');
+fig=new_echo_figure(main_figure,'Name', sprintf('%.0fkHz On-axis sphere TS',Freq/1e3),'Tag', sprintf('%.0fkHz On-axis sphere TS',Freq/1e3));
 ax1=axes(fig,'units','normalized','outerposition',[0 0 1 0.5]);
 boxplot(ax1,ts_values);
 ax2=axes(fig,'units','normalized','outerposition',[0 0.5 1 0.5]);
@@ -368,7 +369,7 @@ warning('off','MATLAB:griddata:DuplicateDataPoints');
 ZI=griddata(double(sphere(:,2)), double(sphere(:,3)), double(sphere(:,1)+outby(1)),XI,YI);
 
 if ~isempty(ZI)
-    fig=new_echo_figure([],'Name', 'Beam pattern contour plot');
+    fig=new_echo_figure(main_figure,'Name',sprintf('%.0f kHz: Beam pattern contour plot',Freq/1e3),'Tag',sprintf('%.0f kHz: Beam pattern contour plot',Freq/1e3));
     warning('on','MATLAB:griddata:DuplicateDataPoints');
     contourf(XI,YI,ZI)
     axis equal
@@ -388,7 +389,7 @@ if ~isempty(ZI)
     end
     
     % Do a 3d plot of the uncorrected and corrected beampattern
-    fig=new_echo_figure([],'Name', '3D beam pattern (corrected and uncorrected)');
+    fig=new_echo_figure(main_figure,'Name',sprintf('%.0f kHz: 3D beam pattern (corrected and uncorrected)',Freq/1e3),'Tag',sprintf('%.0f kHz: 3D beam pattern (corrected and uncorrected)',Freq/1e3));
     surf(XI, YI, ZI)
     warning('off','MATLAB:griddata:DuplicateDataPoints');
     ZI=griddata(double(sphere(:,2)), double(sphere(:,3)), double(sphere(:,1)+compensation+outby(1)),XI,YI);
@@ -405,7 +406,7 @@ if ~isempty(ZI)
 end
 
 % Do a plot of the sphere range during the calibration
-fig=new_echo_figure([],'Name', 'Sphere range');
+fig=new_echo_figure(main_figure,'Name',sprintf('%.0f kHz: Sphere range',Freq/1e3),'Tag',sprintf('%.0f kHz: Sphere range',Freq/1e3));
 plot(sphere(:,4))
 axis ij;
 title('Sphere range during the calibration.')
@@ -421,7 +422,7 @@ for ifi=1:length(fid)
 end
 % Do a plot of the compensated and uncompensated echoes at a selection of
 % angles, similar to what one can get from the Simrad calibration program
-fig=new_echo_figure([],'Name', 'Beam slice plot');
+fig=new_echo_figure(main_figure,'Name',sprintf('%.0f kHz: Beam slice plot',Freq/1e3),'Tag',sprintf('%.0f kHz: Beam slice plot',Freq/1e3));
 plotBeamSlices(sphere, outby(1), trimTo, faBW, psBW, peak_ts, p.onAxisTol)
 if~isempty(path_out)
     print(fig,fullfile(path_out,['slices' freq_str '.png']),'-dpng','-r300');
@@ -464,7 +465,7 @@ sig_pulse(floor(Np/2):floor(Np/2)+Np-1)=sim_pulse(:)';
 alpha = mean((sum(power(:,i)))./(max(power(:,i))))/nansum(abs(sim_pulse).^2);
 
 t=(1:length(sig_pulse))/dt*1e3;
-new_echo_figure([],'Name','Pulse Comparison');
+new_echo_figure(main_figure,'Name',sprintf('%.0f kHz: Pulse Comparison',Freq/1e3),'Tag',sprintf('%.0f kHz: Pulse Comparison',Freq/1e3));
 plot(t,bsxfun(@rdivide,power,max(power,[],1)));
 hold on;
 plot(t,abs(sig_pulse),'r','linewidth',2);

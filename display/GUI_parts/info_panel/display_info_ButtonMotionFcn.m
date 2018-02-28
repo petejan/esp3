@@ -12,7 +12,7 @@ end
 echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
 
 if ~strcmpi(echo_tab_panel.SelectedTab.Tag,'axes_panel')
-   return 
+    return
 end
 
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -106,13 +106,13 @@ try
                         sub_tag=Bottom.Tag(idx_pings);
                         sub_bot(sub_tag==0)=inf;
                         bot_sample_red=downsample(round(sub_bot*nb_samples_red/length(idx_rs)),round(length(idx_pings)/nb_pings_red));
-                                               
+                        
                         idx_keep=bsxfun(@(x,y) x<=y&x>=y-3  ,(1:nb_samples_red)',bot_sample_red);
                         idx_keep(:,bot_sample_red>=nb_samples)=0;
                         cdata_bot=cdata;
                         cdata_bot(~idx_keep)=nan;
                         horz_val=nanmax(cdata_bot);
-
+                        
                         idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)));
                     otherwise
                         horz_val=cdata(idx_r_red,:);
@@ -181,7 +181,7 @@ try
         
         time_params=trans_obj.Params.Time;
         [~,idx_params]=min(abs(time_params-Time(idx_ping)));
-
+        
         summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz Power: %.0fW Pulse: %.3fms',file_curr,trans_obj.Mode,curr_disp.Freq/1000,...
             trans_obj.Params.TransmitPower(idx_params),...
             trans_obj.Params.PulseLength(idx_params)*1e3);
@@ -197,20 +197,20 @@ try
         axh=axes_panel_comp.haxes;
         axh_plot_high=axes_panel_comp.h_axes_plot_high;
         axh_plot_low=axes_panel_comp.h_axes_plot_low;
-
+        
         axv=axes_panel_comp.vaxes;
         axv_plot=axes_panel_comp.v_axes_plot;
         axv_text=axes_panel_comp.v_axes_text;
         
         delete(findobj(axh,'Tag','curr_val'));
         delete(findobj(axv,'Tag','curr_val'));
-            
+        
         set(axv_plot,'XData',vert_val,'YData',ydata_red);
         
         if bot_x_val(2)>bot_x_val(1)
             set(axv,'xlim',bot_x_val)
         end
-
+        
         
         plot(axv,bot_x_val,[ydata_red(idx_r_red) ydata_red(idx_r_red)],'--b','Tag','curr_val');
         plot(axv,bot_x_val,([bot_val bot_val]),'k','Tag','curr_val');
@@ -221,18 +221,18 @@ try
         
         set(allchild(axv),'visible',get(axv,'visible'))
         y_val=[nanmin(horz_val(~isinf(horz_val))) nanmax(horz_val(~isinf(horz_val)))*10/15^(-1*sign( nanmax(horz_val(~isinf(horz_val)))))];
-  
+        
         horz_val_high=horz_val;
         horz_val_high(idx_low>0)=nan;
         
         set(axh_plot_low,'XData',xdata_red,'YData',horz_val);
         set(axh_plot_high,'XData',xdata_red,'YData',horz_val_high);
-    
+        
         if x_lim(2)>x_lim(1)
             set(axh,'xlim',x_lim);
             
         end
-
+        
         
         plot(axh,[xdata_red(idx_ping_red) xdata_red(idx_ping_red)],y_val,'--b','Tag','curr_val');
         
@@ -240,7 +240,7 @@ try
         
         try
             map_tab_comp=getappdata(main_figure,'Map_tab');
-            if ~isempty(map_tab_comp.Proj)                
+            if ~isempty(map_tab_comp.Proj)
                 delete(map_tab_comp.boat_pos);
                 m_proj(map_tab_comp.Proj,'long',map_tab_comp.LongLim,'lat',map_tab_comp.LatLim);
                 map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
@@ -257,7 +257,7 @@ try
             idx_fig=find(strcmp({hfigs(:).Tag},'nav'));
             for iu=idx_fig
                 if isvalid(hfigs(iu))
-                    hAllAxes = findobj(hfigs(iu),'type','axes');                                     
+                    hAllAxes = findobj(hfigs(iu),'type','axes');
                     if ~isempty(Long)
                         for iui=1:length(hAllAxes)
                             if isfield(hAllAxes(iui).UserData,'Proj')
@@ -285,16 +285,18 @@ try
             end
         end
         
-%         switch lower(deblank(curr_disp.Fieldname))
-%             case 'sp_comp'
-%                 single_target_tab_comp=getappdata(main_figure,'Single_target_tab');
-%       
-%         end
+        %         switch lower(deblank(curr_disp.Fieldname))
+        %             case 'sp_comp'
+        %                 single_target_tab_comp=getappdata(main_figure,'Single_target_tab');
+        %
+        %         end
         
     end
     
 catch err
     if ~isdeployed
+        [~,f_temp,e_temp]=fileparts(err.stack(1).file);
+        fprintf('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
         disp(err.message);
         disp('Could not update info panel');
     end

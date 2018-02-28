@@ -63,7 +63,7 @@ if new==0
     [~,idx_ping_max]=nanmin(abs(xdata-x(2)));
     [~,idx_r_max]=nanmin(abs(ydata-y(2)));
     if y(2)==Inf
-        idx_r_max=length(ydata_r);
+        idx_r_max=length(ydata);
     end
     idx_ping=idx_ping_min:idx_ping_max;
     idx_r=idx_r_min:idx_r_max;
@@ -71,7 +71,8 @@ else
     idx_ping=1:length(xdata);
     idx_r=1:length(ydata);
     idx_ping=idx_ping(1:floor(nanmin(screensize(3),length(idx_ping))));
-    idx_r=idx_r(1:floor(nanmin(3*screensize(4),length(idx_r))));
+    %idx_r=idx_r(1:floor(nanmin(3*screensize(4),length(idx_r))));
+    idx_r=idx_r(1:length(idx_r));
     x=[xdata(idx_ping(1)) xdata(idx_ping(end))];
     y=[ydata(1) ydata(idx_r(end))];
 end

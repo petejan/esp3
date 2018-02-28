@@ -66,7 +66,7 @@ surv_out_obj=survey_output_cl(size(strat_couple,1),size(trans_triple,1),nansum(r
 
 snap_temp=[surv_in_obj.Snapshots{:}];
 folders={snap_temp.Folder};
-
+reg_descr_table=[];
 idx_lay_processed=[];
 i_trans=0;
 i_reg=0;
@@ -183,7 +183,11 @@ for isn=1:length(snaps)
     for ilay=idx_lay
         ir=ir+1;
         layer_obj_tr=layers(output.Layer_idx(ilay));
-        trans_obj_tr=layer_obj_tr.get_trans(surv_in_obj.Options.Frequency);
+        [trans_obj_tr,idx_freq_main]=layer_obj_tr.get_trans(surv_in_obj.Options.Frequency);
+        [idx_freq_sec,found]=layer_obj_tr.find_freq_idx(surv_in_obj.Options.FrequenciesToLoad);
+        idx_freq_sec(found==0)=[];
+        idx_freq_sec=union(idx_freq_sec,idx_freq_main);
+        
         gps=trans_obj_tr.GPSDataPing;
         gps.Long(gps.Long>180)=gps.Long(gps.Long>180)-360;
  
@@ -238,8 +242,12 @@ for isn=1:length(snaps)
             idx_reg=[];
         end
        
+        
         %%%%%%%%%%Transect Integration%%%%%%%%
-        [output_2D_surf,output_2D_bot,regs,regCellInt_tot,output_2D_sh,shadow_height_est]=trans_obj_tr.slice_transect2D_new_int(...
+%         profile on;
+        [output_2D_surf_t,output_2D_bot_t,regs_t,regCellInt_t,reg_descr_table_n,output_2D_sh_t,shadow_height_est_t,idx_freq_out_tot]=layer_obj_tr.multi_freq_slice_transect2D(...
+            'idx_main_freq',idx_freq_main,...
+            'idx_sec_freq',idx_freq_sec,...
             'Slice_w',vert_slice,'Slice_w_units',vert_slice_units,...
             'Slice_h',horz_slice,...
             'StartTime',output.StartTime(ilay),'EndTime',output.EndTime(ilay),...
@@ -253,9 +261,19 @@ for isn=1:length(snaps)
             'Remove_ST',surv_in_obj.Options.Remove_ST,...
             'idx_regs',idx_reg);
         %%%%%%%%%%
+%         profile off;
+%         profile viewer;
+        
+        idx_f=idx_freq_main==idx_freq_out_tot;
+        output_2D_surf=output_2D_surf_t{idx_f};
+        output_2D_bot=output_2D_bot_t{idx_f};
+        output_2D_sh=output_2D_sh_t{idx_f};
+        regCellInt=regCellInt_t{idx_f};
+        regs=regs_t{idx_f};
+        shadow_height_est=shadow_height_est_t{idx_f};
         
         if isempty(output_2D_surf)
-             warning('    Nothing to integrate in Snapshot %.0f Stratum %s Transect %d in layer %d\n',snap_num,strat_name,trans_num,ilay);
+             warning('Nothing to integrate in Snapshot %.0f Stratum %s Transect %d in layer %d\n',snap_num,strat_name,trans_num,ilay);
             continue;
         end
              
@@ -279,27 +297,37 @@ for isn=1:length(snaps)
             sh_slice_int=zeros(1,num_slice);
             good_pings_sh=[];
         end
-        
+        %reg_descr_table=[reg_descr_table;reg_descr_table_n];
+        reg_descr_table=[reg_descr_table;reg_descr_table_n];
+     
         if  surv_in_obj.Options.ExportSlicedTransects>0   
             
-            outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d.xlsx',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
+            outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d_surf.csv',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
             
             if exist(outputFileXLS,'file')>0
                 delete(outputFileXLS);
             end
             
             reg_output_table=reg_output_to_table(output_2D_surf);            
-            writetable(reg_output_table,outputFileXLS,'Sheet','Surface Reference');
-
+            writetable(reg_output_table,outputFileXLS);
+            
             
             if ~isempty(output_2D_bot)
-                reg_output_table=reg_output_to_table(output_2D_bot);               
-                writetable(reg_output_table,outputFileXLS,'Sheet','Bottom Reference');
+                outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d_bot.csv',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
+            if exist(outputFileXLS,'file')>0
+                delete(outputFileXLS);
+            end
+                reg_output_table=reg_output_to_table(output_2D_bot);
+                writetable(reg_output_table,outputFileXLS);
             end
             
             if ~isempty(output_2D_sh)
-                reg_output_table=reg_output_to_table(output_2D_sh);               
-                writetable(reg_output_table,outputFileXLS,'Sheet','Shadow Zone');
+                outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d_sh.csv',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
+            if exist(outputFileXLS,'file')>0
+                delete(outputFileXLS);
+            end
+                reg_output_table=reg_output_to_table(output_2D_sh);
+                writetable(reg_output_table,outputFileXLS);
             end
         end
         
@@ -332,18 +360,18 @@ for isn=1:length(snaps)
         for j=1:length(regs)
             
             reg_curr =regs{j};
-            regCellInt=regCellInt_tot{j};
-            if isempty(regCellInt)
+            regCellInt_r=regCellInt{j};
+            if isempty(regCellInt_r)
                continue; 
             end
             
-            if nansum(nansum(nansum(regCellInt.eint)))==0
+            if nansum(nansum(nansum(regCellInt_r.eint)))==0
                 continue; 
             end
             
             i_reg=i_reg+1;
-            startPing = regCellInt.Ping_S(1);
-            stopPing = regCellInt.Ping_E(end);
+            startPing = regCellInt_r.Ping_S(1);
+            stopPing = regCellInt_r.Ping_E(end);
             ix = (startPing:stopPing);
             ix_good=intersect(ix,find(trans_obj_tr.Bottom.Tag>0));
             
@@ -351,13 +379,13 @@ for isn=1:length(snaps)
             switch reg_curr.Reference
                 case 'Surface'
                       refType = 's';
-                    if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmin(regCellInt.Ping_S(:)))
-                        start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmin(regCellInt.Ping_S(:)));
+                    if~isnan(nanmin(regCellInt_r.Sample_S(:)))&&~isnan(nanmin(regCellInt_r.Ping_S(:)))
+                        start_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt_r.Sample_S(:)),nanmin(regCellInt_r.Ping_S(:)));
                     else
                         start_d=0;
                     end
-                    if~isnan(nanmin(regCellInt.Sample_S(:)))&&~isnan(nanmax(regCellInt.Ping_E(:)))
-                        finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt.Sample_S(:)),nanmax(regCellInt.Ping_S(:)));
+                    if~isnan(nanmin(regCellInt_r.Sample_S(:)))&&~isnan(nanmax(regCellInt_r.Ping_E(:)))
+                        finish_d = trans_obj_tr.get_transceiver_depth(nanmin(regCellInt_r.Sample_S(:)),nanmax(regCellInt_r.Ping_S(:)));
                     else
                         finish_d=0;
                     end
@@ -373,7 +401,7 @@ for isn=1:length(snaps)
             surv_out_obj.regionsIntegrated.transect(i_reg)=trans_num;
             surv_out_obj.regionsIntegrated.file{i_reg}=layer_obj_tr.Filename;
             surv_out_obj.regionsIntegrated.Region{i_reg}=reg_curr;
-            surv_out_obj.regionsIntegrated.RegOutput{i_reg}=regCellInt;
+            surv_out_obj.regionsIntegrated.RegOutput{i_reg}=regCellInt_r;
             
             surv_out_obj.regionSum.snapshot(i_reg)=snap_num;
             surv_out_obj.regionSumAbscf.snapshot(i_reg)=snap_num;
@@ -396,8 +424,8 @@ for isn=1:length(snaps)
             surv_out_obj.regionSumVbscf.region_id(i_reg)=reg_curr.ID;
             
             %% Region Summary (4th Mbs Output Block)
-            surv_out_obj.regionSum.time_end(i_reg)=regCellInt.Time_E(end);
-            surv_out_obj.regionSum.time_start(i_reg)=regCellInt.Time_S(1);
+            surv_out_obj.regionSum.time_end(i_reg)=regCellInt_r.Time_E(end);
+            surv_out_obj.regionSum.time_start(i_reg)=regCellInt_r.Time_S(1);
             surv_out_obj.regionSum.ref{i_reg}=refType;
             surv_out_obj.regionSum.slice_size(i_reg)=reg_curr.Cell_h;
             surv_out_obj.regionSum.good_pings(i_reg)=length(ix_good);
@@ -405,31 +433,31 @@ for isn=1:length(snaps)
             surv_out_obj.regionSum.mean_d(i_reg)=mean_bot(ir);
             surv_out_obj.regionSum.finish_d(i_reg)=finish_d;
             surv_out_obj.regionSum.av_speed(i_reg)=av_speed(ir);
-            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nansum(regCellInt.Nb_good_pings.*regCellInt.Thickness_tot));
-            surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt.eint))./nansum(nanmax(regCellInt.Nb_good_pings));%Abscf Region
+            surv_out_obj.regionSum.vbscf(i_reg)= nansum(nansum(regCellInt_r.eint))./nansum(nansum(regCellInt_r.Nb_good_pings.*regCellInt_r.Thickness_tot));
+            surv_out_obj.regionSum.abscf(i_reg)= nansum(nansum(regCellInt_r.eint))./nansum(nanmax(regCellInt_r.Nb_good_pings));%Abscf Region
             surv_out_obj.regionSum.tag{i_reg}=reg_curr.Tag;
             
             %% Region Summary (abscf by vertical slice) (5th Mbs Output Block)
-            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt.Time_E(end);
-            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt.Time_S(1);
-            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt.eint,2);
-            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = regCellInt.Ping_S; % transmit Start vertical slice
-            surv_out_obj.regionSumAbscf.latitude{i_reg} = regCellInt.Lat_S; % lat vertical slice
-            surv_out_obj.regionSumAbscf.longitude{i_reg} = regCellInt.Lon_S; % lon vertical slice
-            surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt.eint)./nanmax(regCellInt.Nb_good_pings);%sum up all abcsf per vertical slice
+            surv_out_obj.regionSumAbscf.time_end{i_reg}=regCellInt_r.Time_E(end);
+            surv_out_obj.regionSumAbscf.time_start{i_reg}=regCellInt_r.Time_S(1);
+            surv_out_obj.regionSumAbscf.num_v_slices(i_reg)=size(regCellInt_r.eint,2);
+            surv_out_obj.regionSumAbscf.transmit_start{i_reg} = regCellInt_r.Ping_S; % transmit Start vertical slice
+            surv_out_obj.regionSumAbscf.latitude{i_reg} = regCellInt_r.Lat_S; % lat vertical slice
+            surv_out_obj.regionSumAbscf.longitude{i_reg} = regCellInt_r.Lon_S; % lon vertical slice
+            surv_out_obj.regionSumAbscf.column_abscf{i_reg} = nansum(regCellInt_r.eint)./nanmax(regCellInt_r.Nb_good_pings);%sum up all abcsf per vertical slice
             
             %% Region vbscf (6th Mbs Output Block)
-            surv_out_obj.regionSumVbscf.time_end{i_reg}=regCellInt.Time_E;
-            surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellInt.Time_S;
-            surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt.Sv_mean_lin,1);% num_h_slices
-            surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt.Sv_mean_lin,2); % num_v_slices
+            surv_out_obj.regionSumVbscf.time_end{i_reg}=regCellInt_r.Time_E;
+            surv_out_obj.regionSumVbscf.time_start{i_reg}=regCellInt_r.Time_S;
+            surv_out_obj.regionSumVbscf.num_h_slices(i_reg) = size(regCellInt_r.Sv_mean_lin,1);% num_h_slices
+            surv_out_obj.regionSumVbscf.num_v_slices(i_reg) = size(regCellInt_r.Sv_mean_lin,2); % num_v_slices
             tmp=surv_out_obj.regionSum.vbscf(i_reg);
             tmp(isnan(tmp))=0;
             surv_out_obj.regionSumVbscf.region_vbscf(i_reg) = tmp; % Vbscf Region
-            surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt.Sv_mean_lin; %
+            surv_out_obj.regionSumVbscf.vbscf_values{i_reg} = regCellInt_r.Sv_mean_lin; %
             
             %% Region echo integral for Transect Summary
-            eint =eint + nansum(regCellInt.eint(:));
+            eint =eint + nansum(regCellInt_r.eint(:));
 
         end%end of regions iteration for this file
     end%end of layer iteration for this transect
@@ -569,6 +597,15 @@ end
 surv_obj.SurvOutput=surv_out_obj;
 
 surv_obj.clean_output();
+
+if surv_in_obj.Options.ExportRegions>0&&~isempty(reg_descr_table)
+    outputFileXLS = fullfile(p.Results.PathToResults,[surv_obj.SurvInput.Infos.Title '_reg_descriptors.csv']);
+    if exist(outputFileXLS,'file')>1
+        delete(outputFileXLS);
+    end
+    writetable(reg_descr_table,outputFileXLS);
+end
+        
 
 end
 

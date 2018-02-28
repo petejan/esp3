@@ -119,7 +119,7 @@ for isn = 1:length(snapshots)
         %         strat_radius = stratum{ist}.radius;
         
         for itr = 1:length(transects)
-           itr_tot=itr_tot+1;      
+            itr_tot=itr_tot+1;
             try
                 filenames_cell = transects{itr}.files;
                 trans_num = transects{itr}.number;
@@ -221,13 +221,13 @@ for isn = 1:length(snapshots)
                                 'LoadEKbot',1,'CVSCheck',0,...
                                 'force_open',1,...
                                 'CVSroot',cvs_root,'dfile',dfile,'CVSCheck',0,'SvCorr',svCorr);
-                                                       
+                            
                             switch lower(fType{ifiles})
                                 case {'ek60','ek80','raw'}
                                     new_lay.add_gps_data_to_db();
-
+                                    
                                 case {'asl' 'dfile'}
-
+                                    
                                 otherwise
                                     fprintf('Unrecognized file type for file %s',fileN);
                                     continue
@@ -330,7 +330,7 @@ for isn = 1:length(snapshots)
                                     
                                 otherwise
                                     
-                                    layers_out_temp = shuffle_layers(layers_in(idx_unique(itype) == idx_out),'multi_layer',-1);
+                                    layers_out_temp = shuffle_layers(layers_in(idx_unique(itype) == idx_out),'multi_layer',0);
                                     clear layers_in;
                                     
                             end
@@ -348,6 +348,13 @@ for isn = 1:length(snapshots)
                 i_cal = 0;
                 for i_lay = 1:length(layers_out_temp)
                     layer_new = layers_out_temp(i_lay);
+                    [cal_path,~,~]=fileparts(layer_new.Filename{1});
+                    cal_file=fullfile(cal_path,'cal_echo.csv');
+                    if isfile(cal_file)                      
+                        cal_f=csv2struct(cal_file);
+                    else
+                        cal_f=[];
+                    end
                     trans_obj_primary= layer_new.get_trans(options.Frequency);
                     
                     i_cal = i_cal+length(layer_new.Filename);
@@ -356,9 +363,13 @@ for isn = 1:length(snapshots)
                     else
                         cal_curr = cal;
                     end
-                    for i_freq = 1:length(layer_new.Frequencies)
-                        curr_freq = layer_new.Frequencies(i_freq);
-                        
+                    for i = 1:length(options.FrequenciesToLoad)
+                        curr_freq = options.FrequenciesToLoad(i);
+                        [i_freq,found]=layer_new.find_freq_idx(options.FrequenciesToLoad(i));
+                        if found==0
+                            warning('Could not find %.0f kHz',curr_freq/1e3);
+                            continue;
+                        end
                         switch origin
                             case 'xml'
                                 switch lower(layer_new.Filetype)
@@ -369,28 +380,68 @@ for isn = 1:length(snapshots)
                                         layer_new.set_survey_data(surv);
                                 end
                                 layer_new.load_bot_regs('Frequencies',unique([options.Frequency options.FrequenciesToLoad]),'bot_ver',bot_ver,'reg_ver',reg_ver);
-                                layer_new.add_lines_from_line_xml();              
+                                layer_new.add_lines_from_line_xml();
                         end
                         
                         if ~isnan(options.Soundspeed)
                             layer_new.apply_soundspeed(options.Soundspeed);
                         end
-                        
+                        nocal=1;
                         switch lower(layer_new.Filetype)
                             case {'ek60','ek80'}
-                                if any([cal_curr(:).FREQ] == curr_freq)
-                                    layer_new.Transceivers(i_freq).apply_cw_cal(cal_curr([cal_curr(:).FREQ] == layer_new.Frequencies(i_freq)));
-                                else
-                                    fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                                idx_cal=[cal_curr(:).FREQ] == curr_freq;
+                                if any(idx_cal)
+                                    if all(isfield(cal_curr(idx_cal),{'G0' 'SACORRECT'}))
+                                        nocal=0;
+                                        cal_t=cal_curr([cal_curr(:).FREQ] == layer_new.Frequencies(i_freq));
+                                        
+                                        
+                                    end
                                 end
+                                if nocal==1&&all(isfield(cal_f,{'F' 'G0' 'SACORRECT'}))
+                                    try
+                                        idx_cal=cal_f.F == curr_freq;
+                                        if any(idx_cal)
+                                            cal_t=struct('G0',cal_f.G0(idx_cal),'SACORRECT',cal_f.SACORRECT(idx_cal));
+                                            nocal=0;
+                                        end
+                                    catch
+                                        nocal=1;
+                                    end
+                                end
+                                if nocal>0
+                                    fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                                    
+                                else
+                                    layer_new.Transceivers(i_freq).apply_cw_cal(cal_t);
+                                    
+                                end
+                                
                             case {'dfile' 'asl'}
                                 
                         end
                         
+                        noabs=1;
                         if ~isnan(options.Absorption(options.FrequenciesToLoad == curr_freq))
-                            layer_new.Transceivers(i_freq).apply_absorption(options.Absorption(options.FrequenciesToLoad == curr_freq)/1e3);
-                        else
+                            alpha=options.Absorption(options.FrequenciesToLoad == curr_freq);
+                            noabs=0;
+                        elseif  all(isfield(cal_f,{'alpha' 'F'}))
+                            
+                            try
+                                idx_abs=cal_f.F == curr_freq;
+                                if any(idx_cal)
+                                    alpha=cal_f.alpha(idx_abs);
+                                    noabs=0;
+                                end
+                            catch
+                                noabs=1;
+                            end
+                                              
+                        end
+                        if noabs>0
                             fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                        else
+                            layer_new.Transceivers(i_freq).apply_absorption(alpha/1e3);
                         end
                         
                         if options.Motion_correction
@@ -402,6 +453,7 @@ for isn = 1:length(snapshots)
                     
                     
                     for ial = 1:length(algos)
+                        fprintf('Applying %s\n',algos{ial}.Name);
                         if isempty(algos{ial}.Varargin.Frequencies)
                             trans_obj_primary.add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
                             trans_obj_primary.apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
@@ -456,7 +508,7 @@ for isn = 1:length(snapshots)
                                             'Cell_h',regions_wc{irewc}.Cell_h,...
                                             'Cell_w_unit',regions_wc{irewc}.Cell_w_unit,...
                                             'Cell_h_unit',regions_wc{irewc}.Cell_h_unit);
-                                       
+                                        
                                         
                                         trans_obj_primary.add_region(reg_wc,'Split',0);
                                     end
@@ -497,14 +549,14 @@ for isn = 1:length(snapshots)
                     
                 end
                 clear layers_out_temp;
-
+                
             catch error
                 disp(error.message);
                 fprintf('Error openning file for Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
             end
-        end   
-    end  
-   
+        end
+    end
+    
 end
 hide_status_bar(gui_main_handle);
 

@@ -86,13 +86,12 @@ esp3_tab_comp=getappdata(main_figure,'esp3_tab');
 echo_tab_panel.SelectedTab=esp3_tab_comp.esp3_tab;
 obj_enable=findobj(main_figure,'Enable','on','-not','Type','uimenu');
 set(obj_enable,'Enable','off');
-
+centerfig(main_figure);
 set(main_figure,'Visible','on');
 drawnow;
 
 load_loading_bar(main_figure);
 load_info_panel(main_figure);
-
 
 
 end

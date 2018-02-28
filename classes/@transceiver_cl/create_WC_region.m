@@ -55,7 +55,7 @@ nb_pings=length(xdata);
 time_t=trans_obj.Params.Time();
 
 idx_pings=find(time_t>=p.Results.t_min&time_t<=p.Results.t_max);
-
+bot_data(trans_obj.get_bottom_idx()==numel(ydata))=nan;
 switch lower(p.Results.Ref)
     case 'surface'
         name='WC';
@@ -78,6 +78,7 @@ switch lower(p.Results.Ref)
     case 'bottom' 
         name='WC';
         idxBad=trans_obj.Bottom.Tag==0;
+       
         bot_data(idxBad)=nan;
         shape='Polygon';
         
@@ -87,6 +88,7 @@ switch lower(p.Results.Ref)
     
         idx_r=find(nansum(mask,2)>0,1,'first'):find(nansum(mask,2)>0,1,'last');
         mask=mask(idx_r,:);
+        
 end
 
 

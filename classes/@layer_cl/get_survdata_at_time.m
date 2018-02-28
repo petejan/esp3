@@ -8,8 +8,8 @@ surv_data_tot=layer_obj.SurveyData;
 
 if isempty(surv_data_tot)
     surv=survey_data_cl();
-    start_time=trans.Time(1);
-    end_time=trans.Time(end);
+    start_time=layer_obj.Transceivers(1).Time(1);
+    end_time=layer_obj.Transceivers(1).Time(end);
 else
     dt_before=nan(1,length(surv_data_tot));
     dt_after=nan(1,length(surv_data_tot));
@@ -47,7 +47,7 @@ else
             start_time=surv_temp.EndTime;
         end
         
-        if ~any(~isnan(dt_after));
+        if ~any(~isnan(dt_after))
             end_time=layer_obj.Transceivers(1).Time(end);
         else
             [~,idx_end]=nanmin(dt_after);

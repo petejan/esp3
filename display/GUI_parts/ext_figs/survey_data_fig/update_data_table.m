@@ -4,8 +4,11 @@ data_ori_new=data_ori;
 
 for i=1:length(filename_cell)
     [~,file_c,ext_c]=fileparts(filename_cell{i});
-    data_logbook_to_up=dbconn.fetch(sprintf('select Filename,Snapshot,Type,Stratum,Transect,Comment,StartTime,EndTime from logbook where Filename = ''%s''',[file_c ext_c]));
-    
+    try
+        data_logbook_to_up=dbconn.fetch(sprintf('select Filename,Snapshot,Type,Stratum,Transect,Comment,StartTime,EndTime from logbook where Filename = ''%s''',[file_c ext_c]));
+    catch
+        continue;
+    end
     if~isempty(data_ori_new)
         idx_mod=find(strcmpi(data_ori_new(:,2),[file_c ext_c]));
     else

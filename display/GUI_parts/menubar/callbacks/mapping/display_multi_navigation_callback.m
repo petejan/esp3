@@ -41,7 +41,7 @@ layers=getappdata(main_figure,'Layers');
 
 % profile on;
 
-map_input=map_input_cl.map_input_cl_from_obj(layers,'SliceSize',0);
+map_input=map_input_cl.map_input_cl_from_obj(layers,'SliceSize',0,'Depth_Contour',500);
 
 if nansum(isnan(map_input.LatLim))>=1
     return;

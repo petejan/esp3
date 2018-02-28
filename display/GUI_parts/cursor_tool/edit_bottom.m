@@ -61,7 +61,7 @@ switch lower(curr_disp.Cmap)
         
 end
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 xdata=trans_obj.get_transceiver_pings();
 ydata=trans_obj.get_transceiver_samples();
@@ -105,7 +105,7 @@ switch src.SelectionType
         hp=plot(ah,xinit,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
         
         switch src.SelectionType
-            case 'normal'
+            case 'normal' 
                 replace_interaction(main_figure,'interaction','WindowButtonMotionFcn','id',2,'interaction_fcn',@wbmcb_ext);
                 replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',1,'interaction_fcn',@wbucb);
                 replace_interaction(main_figure,'interaction','WindowButtonDownFcn','id',1,'interaction_fcn',@wbdcb_ext);
@@ -181,6 +181,11 @@ end
 
     function wbucb(~,~)
         mouse_state=0;
+        if u==1
+            xinit(u)=cp(1,1);
+            yinit(u)=cp(1,2);
+            u=2;
+        end
 %         x_lim=(xinit(u)-x0)+x_lim;
 %         y_lim=(yinit(u)-y0)+y_lim;
 %         x0=xinit(u);

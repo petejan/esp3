@@ -6,7 +6,7 @@ file_summary=fullfile(path_classes,'class_summary.txt');
 
 [pathdir,dir_name]=find_dir_recursive(path_classes,'^@');
 fid{1}=1;
-fid{2}=fopen(file_summary,'w+');
+fid{2}=fopen(file_summary,'w');
 
 
 for ii=1:length(fid)
