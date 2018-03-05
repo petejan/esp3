@@ -7,26 +7,27 @@ layer=getappdata(main_figure,'Layer');
 
 
 [~,idx_sort]=sort(layer.Frequencies);
-    new_echo_figure(main_figure,'Tag','calibration');
+    fig=new_echo_figure(main_figure,'Tag','calibration');
 
+    dx=1/8;
+    dy=1/10;
+    y=(1-2*dy)/3;
+    x=1-2*dx;
     
-    ax_1=subplot(3,1,1);
-    hold(ax_1,'on');
+    ax_1=axes(fig,'Box','on','Nextplot','add','position',[dx 2*y+dy x y]);
     grid(ax_1,'on');
-    xlabel('kHz')
-    ylabel('G(dB)')
-
-    ax_2=subplot(3,1,2);
-    hold(ax_2,'on');
-     grid(ax_2,'on')
-    xlabel('Frequency (kHz)')
-    ylabel('BeamWidth(deg)')
+    ylabel(ax_1,'G(dB)')
+    ax_1.XTickLabels={''};
     
-    ax_3=subplot(3,1,3);
-    hold(ax_3,'on');
-     grid(ax_3,'on')
-    xlabel('Frequency (kHz)')
-    ylabel('EBA(dB)')
+    ax_2=axes(fig,'Box','on','Nextplot','add','position',[dx y+dy x y]);
+    grid(ax_2,'on')
+    ylabel(ax_2,'BeamWidth(deg)')
+    ax_2.XTickLabels={''};
+     
+    ax_3=axes(fig,'Box','on','Nextplot','add','position',[dx dy x y]);
+    grid(ax_3,'on')
+    ax_3.XAxis.TickLabelFormat  = '%d\kHz';
+    ylabel(ax_3,'EBA(dB)')
 
 for uui=idx_sort
     Freq=(layer.Transceivers(uui).Config.Frequency);
@@ -96,7 +97,7 @@ for uui=idx_sort
 
 
         
-        plot(ax_2,cal_eba.freq_vec/1e3,cal_eba.BeamWidthAlongship_f_fit,'-g','linewidth',2);
+        plot(ax_2,cal_eba.freq_vec/1e3,cal_eba.BeamWidthAlongship_f_fit,'Color',[0 0.8 0],'Linestyle','-','linewidth',2);
         plot(ax_2,cal_eba.freq_vec/1e3,BeamWidthAlongship_f_th,'-k','linewidth',2);
         plot(ax_2,cal_eba.freq_vec/1e3,cal_eba.BeamWidthAthwartship_f_fit,'-r','linewidth',2);
         plot(ax_2,cal_eba.freq_vec/1e3,BeamWidthAthwartship_f_th,'-b','linewidth',2);

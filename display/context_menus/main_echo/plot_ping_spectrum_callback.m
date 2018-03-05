@@ -51,7 +51,7 @@ for uui=idx_sort
         xlabel('Frequency (kHz)');
         ylabel('Range(m)');
         caxis(curr_disp.getCaxField('sp')); colormap(cmap);
-        title(sprintf('TS(f) for %.0fkHz, Ping %i, Frequency resolution %.1f kHz',layer.Frequencies(uui)/1e3,idx_ping,df));
+        title(sprintf('TS(f) for %.0f kHz, Ping %i, Frequency resolution %.1fkHz',layer.Frequencies(uui)/1e3,idx_ping,df));
          
         colorbar(ax);
         
@@ -64,16 +64,5 @@ for uui=idx_sort
 
     else
         fprintf('%s not in  FM mode\n',layer.Transceivers(uui).Config.ChannelID);
-        %         f_vec_save=layer.Frequencies;
-        %
-        %         Sp=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
-        %         AlongAngle=layer.Transceivers(uui).Data.get_datamat('AlongAngle');
-        %         AcrossAngle=layer.Transceivers(uui).Data.get_datamat('AcrossAngle');
-        %
-        %         BeamWidthAlongship=layer.Transceivers(uui).Config.BeamWidthAlongship;
-        %         BeamWidthAthwartship=layer.Transceivers(uui).Config.BeamWidthAthwartship;
-        %
-        %         comp=simradBeamCompensation(BeamWidthAlongship,BeamWidthAthwartship , AcrossAngle((idx_pings-1)*length(range)+idx_peak), AlongAngle((idx_pings-1)*length(range)+idx_peak));
-        %         TS_f(uui,:)=Sp_max+comp;
     end
 end

@@ -155,7 +155,7 @@ classdef curr_state_disp_cl <handle
         
         function setTypeCax(obj)
             
-            [cax,obj.Type]=init_cax(obj.Fieldname);
+            [cax,obj.Type,~]=init_cax(obj.Fieldname);
           
             idx_field=find(cellfun(@(x) strcmpi(obj.Fieldname,x),obj.Fieldnames));
             
@@ -178,7 +178,7 @@ classdef curr_state_disp_cl <handle
             if ~isempty(idx_field)
                 cax=obj.Caxes{idx_field};
             else
-                [cax,~]=init_cax(field);
+                [cax,~,~]=init_cax(field);
             end
         end
         

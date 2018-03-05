@@ -69,8 +69,13 @@ if ~isempty(p.Results.load_bar_comp)
     p.Results.load_bar_comp.status_bar.setText(sprintf('Applying %s on %.0f kHz\n',algo_name,trans_obj.Config.Frequency/1e3));
 end
 
-eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',...
-    str_eval ');']);
+if ~isempty(str_output)
+    eval(['[' str_output ']=feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',...
+        str_eval ');']);
+else
+        eval(['feval(init_func(algo_obj.Name),trans_obj,''load_bar_comp'',p.Results.load_bar_comp,',...
+        str_eval ');']);
+end
 
 if ~isempty(p.Results.load_bar_comp)
     p.Results.load_bar_comp.status_bar.setText('');
@@ -82,15 +87,13 @@ for i=1:length(algo_obj.Varargout)
 end
 
 switch algo_name
-    case'BottomDetection'
+
+    case {'BottomDetectionV2','BottomDetection'}
         old_tag=trans_obj.Bottom.Tag;
-        trans_obj.Bottom=bottom_cl('Origin','Algo_v3',...
-            'Sample_idx',bottom,...
-            'Tag',old_tag);
-    case'BottomDetectionV2'
-        old_tag=trans_obj.Bottom.Tag;
+        old_bot=trans_obj.Bottom.Sample_idx;
+        old_bot(idx_pings)=bottom;
         trans_obj.Bottom=bottom_cl('Origin','Algo_v4',...
-            'Sample_idx',bottom,...
+            'Sample_idx',old_bot,...
             'Tag',old_tag);
     case 'BadPings'
         tag=double(idx_noise_sector==0);
@@ -128,12 +131,7 @@ switch algo_name
             'Tag',tag);
         trans_obj.Bottom=new_bot;
     case 'Denoise'
-        if ~isempty(power_unoised)
-            trans_obj.Data.replace_sub_data('powerdenoised',power_unoised);
-            trans_obj.Data.replace_sub_data('spdenoised',Sp_unoised);
-            trans_obj.Data.replace_sub_data('svdenoised',Sv_unoised);
-            trans_obj.Data.replace_sub_data('snr',SNR);
-        end
+            %%Do nothing here everything should be done inside the function now...
     case 'SchoolDetection'
         
         if isempty(p.Results.reg_obj)

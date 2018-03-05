@@ -2,8 +2,12 @@
 classdef sub_ac_data_cl < handle
     properties
         Memap
-        Type
-        Fieldname
+        Type='Power';
+        Fmt='single';
+        ConvFactor=1;
+        Scale='db';
+        Fieldname='power'
+        Units='dB';
     end
     methods
         function obj = sub_ac_data_cl(varargin)
@@ -26,7 +30,23 @@ classdef sub_ac_data_cl < handle
             memapname=p.Results.memapname;
             data=p.Results.data;
             
+            [fields_tot,scale_fields,fmt_fields,factor_fields]=init_fields();
+            
             obj.Fieldname=lower(deblank(field));
+            
+            idx_field=strcmpi(fields_tot,obj.Fieldname);
+            if ~any(idx_field)&&contains(lower(obj.Fieldname),'khz')
+                idx_field=contains(fields_tot,'khz');
+            end
+            
+            
+            if any(idx_field)
+                obj.Scale=scale_fields{idx_field};
+                obj.Fmt=fmt_fields{idx_field};
+                obj.ConvFactor=factor_fields(idx_field);
+            end
+            
+            
             
             if ischar(memapname)
                 memapname={memapname};
@@ -39,7 +59,7 @@ classdef sub_ac_data_cl < handle
             if ~strcmpi(p.Results.type,'')
                 obj.Type=p.Results.type;
             else
-                [~,obj.Type]=init_cax(field);
+                [~,obj.Type,obj.Units]=init_cax(field);
             end
             
             obj.Memap={};
@@ -49,10 +69,10 @@ classdef sub_ac_data_cl < handle
                     case 'memmapfile'
                         obj.Memap{icell}=data{icell};
                     case 'char'
-                        format={'single',p.Results.datasize,obj.Fieldname};
+                        format={obj.Fmt,p.Results.datasize,obj.Fieldname};
                         obj.Memap{icell} = memmapfile(data{icell},...
-                                'Format',format,'repeat',1,'writable',true);
-                    otherwise                       
+                            'Format',format,'repeat',1,'writable',true);
+                    otherwise
                         if ~isempty(data{icell})
                             curr_name=[memapname{icell} obj.Fieldname '.bin'];
                             
@@ -68,20 +88,20 @@ classdef sub_ac_data_cl < handle
                             else
                                 [nb_samples,nb_pings]=size(data{icell});
                             end
-                            format={'single',[nb_samples,nb_pings],obj.Fieldname};
-                                                      
+                            format={obj.Fmt,[nb_samples,nb_pings],obj.Fieldname};
+                            
                             if numel(data{icell})==2
                                 b_size=1000;
                                 u=0;
                                 while u<ceil(nb_pings*nb_samples/b_size)
-                                    fwrite(fileID,p.Results.default_value*ones(1,nanmin(b_size,nb_samples*nb_pings-(b_size*u))),'single');
+                                    fwrite(fileID,p.Results.default_value*ones(1,nanmin(b_size,nb_samples*nb_pings-(b_size*u)))/obj.ConvFactor,obj.Fmt);
                                     u=u+1;
                                 end
                                 
                             else
-                                fwrite(fileID,double(data{icell}),'single');
+                                fwrite(fileID,double(data{icell})/obj.ConvFactor,obj.Fmt);
                             end
-                            %fwrite(fileID,double(data{icell}),'single');
+                            %fwrite(fileID,double(data{icell}),obj.Fmt);
                             fclose(fileID);
                             
                             
@@ -89,7 +109,7 @@ classdef sub_ac_data_cl < handle
                         else
                             obj.Memap{icell}=[];
                         end
-                    
+                        
                 end
             end
             
@@ -126,5 +146,5 @@ classdef sub_ac_data_cl < handle
         [sub_ac_data_temp,curr_name]=sub_ac_data_from_struct(curr_data,dir_data,fieldnames);
         sub_ac_data_temp=sub_ac_data_from_files(dfiles,dsize,fieldnames);
     end
-
+    
 end

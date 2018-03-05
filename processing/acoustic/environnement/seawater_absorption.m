@@ -49,7 +49,7 @@ end
 
 error = 0;
 if (f < 10 || f > 120) && (nargin < 5 || strcmp(method,'doonan'))
-    disp('The formula is only valid for frequencies between 10 and 120 kHz.')
+    disp('The formula is only valid for frequencies between 10 and 120kHz.')
     disp('Try the Francois & Garrison formula')
     error = 1;
 end

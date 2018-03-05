@@ -103,7 +103,8 @@ classdef survey_data_cl < handle
             else
                 t_temp=t;
             end
-            if ismember(t_temp,init_trans_type())
+            [types,~]=init_trans_type();
+            if ismember(t_temp,types)
                 obj.Type=t_temp;
             end   
         end

@@ -12,7 +12,7 @@ layers_Str=list_layers(layer,'nb_char',80);
 [fileN, pathname] = uiputfile({'*.xlsx','*.csv'},...
     'Save regions to file',...
     fullfile(path_tmp,[layers_Str{1} '_regions.xlsx']));
-if isequal(pathname,0)||fileN==0
+if isequal(pathname,0)||isequal(fileN,0)
     return;
 end
 

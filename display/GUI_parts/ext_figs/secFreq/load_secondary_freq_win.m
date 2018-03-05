@@ -47,8 +47,8 @@ set(secondary_freq.echoes_bt,'UIContextMenu',context_menu);
 
 set(secondary_freq.axes,'GridLineStyle',axes_panel_comp.main_axes.GridLineStyle,...
     'XTick',axes_panel_comp.main_axes.XTick);
-secondary_freq.link_props=linkprop([secondary_freq.axes axes_panel_comp.main_axes],{'YColor','XColor','GridLineStyle','XTick','Color','Clim','GridColor','MinorGridColor','YDir'});
-
+secondary_freq.link_props=linkprop([axes_panel_comp.main_axes secondary_freq.axes],{'YColor','XColor','GridLineStyle','XTick','Color','Clim','GridColor','MinorGridColor','YDir'});
+secondary_freq.link_props_fig=linkprop([main_figure, secondary_freq.fig],'AlphaMap');
 setappdata(main_figure,'Secondary_freq',secondary_freq);
 update_secondary_freq_win(main_figure);
 

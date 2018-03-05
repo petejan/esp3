@@ -56,7 +56,7 @@ idx_higher_freq=find(layer.Frequencies>layer.Frequencies(idx_freq));
 idx_other=setdiff(1:numel(layer.Frequencies),idx_freq);
 uimenu(uifreq,'Label','Higher Frequencies','Callback',{@copy_bottom_cback,main_figure,idx_higher_freq});
 for ifreq=idx_other
-    uimenu(uifreq,'Label',sprintf('%.0fkHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_bottom_cback,main_figure,ifreq});
+    uimenu(uifreq,'Label',sprintf('%.0f kHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_bottom_cback,main_figure,ifreq});
 end
 
 end
@@ -142,7 +142,7 @@ function display_bottom_region_callback(src,~)
 main_figure=ancestor(src,'Figure');
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 
 % profile on;
@@ -156,7 +156,7 @@ reg_wc=trans_obj.create_WC_region('y_min',0,...
     'Cell_w_unit','pings',...
     'Cell_h_unit','samples');
 
-reg_wc.display_region(trans_obj,'main_figure',main_figure);
+reg_wc.display_region(trans_obj,'main_figure',main_figure,'load_bar_comp',getappdata(main_figure,load_bar_comp));
 
 % profile off;
 % profile viewer;

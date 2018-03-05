@@ -45,7 +45,7 @@ if ~isappdata(main_figure,'Axes_panel')
     axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel');
     load_axis_panel(main_figure,axes_panel);
     display_tab_comp=getappdata(main_figure,'Display_tab');
-    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.60]);
+    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 1 0.60]);
 end
 
 opt_panel=getappdata(main_figure,'option_tab_panel');
@@ -70,12 +70,12 @@ if new==1
     update_multi_freq_disp_tab(main_figure,'sv_f',0);
     update_multi_freq_disp_tab(main_figure,'ts_f',0);
     update_lines_tab(main_figure);
-    load_calibration_tab(main_figure,opt_panel);
+    update_calibration_tab(main_figure);
     update_layer_tab(main_figure);
     update_reglist_tab(main_figure,1);
     clear_regions(main_figure,{},{});
     update_multi_freq_tab(main_figure);
-    
+    clean_echo_figures(main_figure,'Tag','attitude');
 end
 
 update_axis_panel(main_figure,new);
@@ -90,7 +90,7 @@ try
     update_mini_ax(main_figure,new);
 catch
     display_tab_comp=getappdata(main_figure,'Display_tab');
-    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 0.85 0.55]);
+    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 1 0.60]);
     update_mini_ax(main_figure,new);
 end
 opt_panel.SelectedTab=sel_tab;

@@ -65,7 +65,8 @@ end
 sv=trans_obj.Data.get_datamat('sv');
 
 data_mat=10.^(sv-TS)/10;
-trans_obj.Data.replace_sub_data('fishdensity',data_mat);
+trans_obj.Data.replace_sub_data_v2('fishdensity',data_mat,[],0);
+
 curr_disp.setField('fishdensity');
 setappdata(main_figure,'Curr_disp',curr_disp);
 

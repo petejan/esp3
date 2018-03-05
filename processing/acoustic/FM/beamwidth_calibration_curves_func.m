@@ -203,7 +203,7 @@ for uui=1:length(layer.Frequencies)
         options.Default = 'No thank you';
         options.WindowStyle = 'modal';
         % Constructt a questdlg with two options
-        qstring=sprintf('Do you want to save those results for frequency %.0fkHz',Freq/1e3);
+        qstring=sprintf('Do you want to save those results for frequency %.0f kHz',Freq/1e3);
         choice = questdlg(qstring, ...
             'Calibration', ...
             'Yes','No thank you',options);

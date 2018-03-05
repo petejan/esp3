@@ -15,7 +15,7 @@ end
 
 for i=idx_bad
     curr_reg=trans_obj.Regions(i);
-    mask_temp=curr_reg.create_mask();
+    mask_temp=curr_reg.get_mask();
     idx_r_curr=curr_reg.Idx_r;
     idx_pings_curr=curr_reg.Idx_pings;
     mask(idx_r_curr,idx_pings_curr)= mask_temp;
@@ -23,7 +23,7 @@ end
 
 for i=idx_good
     curr_reg=trans_obj.Regions(i);
-    mask_temp=curr_reg.create_mask();
+    mask_temp=curr_reg.get_mask();
     idx_r_curr=curr_reg.Idx_r;
     idx_pings_curr=curr_reg.Idx_pings;
     mask(idx_r_curr,idx_pings_curr)= double(mask(idx_r_curr,idx_pings_curr)>0&mask_temp==0);

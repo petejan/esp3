@@ -43,7 +43,8 @@ p = inputParser;
 
 addRequired(p,'surv_obj',@(obj) isa(obj,'survey_cl'));
 addRequired(p,'layers',@(obj) isa(obj,'layer_cl')||isempty(obj));
-addParameter(p,'PathToResults',pwd,@ischar)
+addParameter(p,'PathToResults',pwd,@ischar);
+addParameter(p,'load_bar_comp',[]);
 parse(p,surv_obj,layers,varargin{:});
 
 
@@ -259,7 +260,7 @@ for isn=1:length(snaps)
             'DepthMax',surv_in_obj.Options.DepthMax,...
             'RegInt',1,...
             'Remove_ST',surv_in_obj.Options.Remove_ST,...
-            'idx_regs',idx_reg);
+            'idx_regs',idx_reg,'load_bar_comp',p.Results.load_bar_comp);
         %%%%%%%%%%
 %         profile off;
 %         profile viewer;
@@ -522,8 +523,7 @@ for isn=1:length(snaps)
     slice_shadow_zone_abscf_temp=[Output_echo(:).shadow_zone_slice_abscf];
     slice_shadow_zone_abscf_temp(surv_out_obj.slicedTransectSum.slice_abscf{i_trans}==0)=0;
     surv_out_obj.slicedTransectSum.slice_shadow_zone_abscf{i_trans}=slice_shadow_zone_abscf_temp;
-    catch err
-        
+    catch err        
         warning('    Could not Integrate Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
         [~,f_temp,e_temp]=fileparts(err.stack(1).file);
         fprintf('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);

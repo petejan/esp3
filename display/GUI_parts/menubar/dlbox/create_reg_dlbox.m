@@ -311,15 +311,10 @@ w_units_idx = get(reg_fig_comp.cell_w_unit,'value');
 y_min = str2double(get(reg_fig_comp.y_min,'string'));
 y_max = str2double(get(reg_fig_comp.y_max,'string'));
 
-% -- OLD CODE using only one field instead of two for y_min/y_max
-% switch ref{ref_idx}
-%     case 'Surface'
-%         y_min = str2double(get(reg_fig_comp.depth_info,'string'));
-%         y_max = Inf;
-%     case 'Bottom'
-%         y_min = 0;
-%         y_max = str2double(get(reg_fig_comp.depth_info,'string'));
-% end
+if y_max<=y_min
+    warning('Incorrect Parameters (y_max<y_min)')
+    return;
+end
 
 % create the WC region in trans object
 reg_wc = trans_obj.create_WC_region(...
@@ -341,10 +336,8 @@ display_regions(main_figure,'both');
 
 curr_disp = getappdata(main_figure,'Curr_disp');
 
-trans_obj = layer.get_trans(curr_disp);
 
-curr_disp.Active_reg_ID = trans_obj.get_reg_first_Unique_ID();
-
+curr_disp.setActive_reg_ID({})
 order_stacks_fig(main_figure);
 
 end

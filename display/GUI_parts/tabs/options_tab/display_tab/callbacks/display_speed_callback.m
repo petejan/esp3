@@ -40,11 +40,11 @@ function display_speed_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 
 new_fig=trans_obj.GPSDataPing.display_speed(main_figure);
 layers_Str=list_layers(layer);
-set(new_fig,'Tag',sprintf('attitude%s',layer.Unique_ID),'Name',sprintf('Speed  %s',layers_Str{1}));
+set(new_fig,'Name',sprintf('Speed  %s',layers_Str{1}));
 
 % profile off;
 % profile viewer;

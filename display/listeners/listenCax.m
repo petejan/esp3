@@ -12,6 +12,7 @@ cax=curr_disp.getCaxField('singletarget');
 caxis(map_tab_comp.ax_pos,cax);
 
 cax=curr_disp.getCaxField('singletarget');
+
 xlim(map_tab_comp.ax_hist,cax);
 % link_ylim_to_echo_clim([],[],main_figure,'sv_f');
 % link_ylim_to_echo_clim([],[],main_figure,'ts_f');

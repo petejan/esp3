@@ -72,6 +72,7 @@ set(mini_axes_comp.mini_echo_bt,'ButtonDownFcn',{@zoom_in_callback_mini_ax,main_
 
 if isgraphics(parent,'figure')
     set(parent,'SizeChangedFcn',{@resize_mini_ax,main_figure});
+    mini_axes_comp.link_prop=linkprop([main_figure parent],'AlphaMap');
 else
     set(mini_axes_comp.mini_ax,'ButtonDownFcn',{@move_mini_axis_grab,main_figure});
 end

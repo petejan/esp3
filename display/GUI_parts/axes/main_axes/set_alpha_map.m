@@ -17,6 +17,7 @@ addParameter(p,'update_bt',1);
 
 parse(p,main_figure,varargin{:});
 
+%alpha_map_fig=get(main_figure,'alphamap')%5 elt vector: first under clim(1), second underbottom, third bad trans, fourth regions, fifth normal]
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 update_bt=p.Results.update_bt;

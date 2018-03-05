@@ -113,7 +113,7 @@ try
                         cdata_bot(~idx_keep)=nan;
                         horz_val=nanmax(cdata_bot);
                         
-                        idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)));
+                        idx_low=~((horz_val>=prctile(cdata_bot(idx_keep),90))&(horz_val>=(curr_disp.Cax(2)-6)))|bot_sample_red==nb_samples_red;
                     otherwise
                         horz_val=cdata(idx_r_red,:);
                         horz_val(horz_val<=-999)=nan;
@@ -155,7 +155,8 @@ try
         end
         
         if ~isempty(Lat)&&nansum(Lat+Long)>0
-            pos_string=print_pos(Lat(idx_ping),Long(idx_ping));
+            [lat_str,lon_str]=print_pos_str(Lat(idx_ping),Long(idx_ping));
+            pos_string=sprintf('%s\n%s',lat_str,lon_str);
             pos_weigtht='normal';
             pos_col='k';
         else
@@ -167,9 +168,9 @@ try
         
         switch lower(deblank(curr_disp.Fieldname))
             case{'alongangle','acrossangle'}
-                val_str=sprintf('Angle: %.2f deg.',cdata(idx_r_red,idx_ping_red));
+                val_str=sprintf('Angle: %.2f%c',cdata(idx_r_red,idx_ping_red),char(hex2dec('00BA')));
             case{'alongphi','acrossphi'}
-                val_str=sprintf('Phase: %.2f deg.(phase)',cdata(idx_r_red,idx_ping_red));
+                val_str=sprintf('Phase: %.2f%c',cdata(idx_r_red,idx_ping_red),char(hex2dec('00BA')));
             case {'fishdensity'}
                 val_str=sprintf('%s: %.2g fish/m^3',curr_disp.Type,cdata(idx_r_red,idx_ping_red));
             otherwise
@@ -182,7 +183,7 @@ try
         time_params=trans_obj.Params.Time;
         [~,idx_params]=min(abs(time_params-Time(idx_ping)));
         
-        summary_str=sprintf('%s. Mode: %s Freq: %.0fkHz Power: %.0fW Pulse: %.3fms',file_curr,trans_obj.Mode,curr_disp.Freq/1000,...
+        summary_str=sprintf('%s. Mode: %s Freq: %.0f kHz Power: %.0fW Pulse: %.3fms',file_curr,trans_obj.Mode,curr_disp.Freq/1000,...
             trans_obj.Params.TransmitPower(idx_params),...
             trans_obj.Params.PulseLength(idx_params)*1e3);
         

@@ -33,20 +33,18 @@ if new>0
     
     nb_pings=length(pings);
     nb_samples=length(samples);
-
+    
     temp_size = getpixelposition(mini_axes_comp.mini_ax);
     size_mini=temp_size(3:4);
     
     idx_r_disp=unique(round(linspace(1,nb_samples,size_mini(2))));
     idx_p_disp=unique(round(linspace(1,nb_pings,size_mini(1))));
-    data=trans_obj.Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);
+    [data,sc]=trans_obj.Data.get_subdatamat(idx_r_disp,idx_p_disp,'field',curr_disp.Fieldname);
     
-    switch lower(deblank(curr_disp.Fieldname))
-        case {'y','y_imag','y_real'}
+    
+    switch sc
+        case 'lin'
             data_disp=10*log10(abs(data));
-        case {'power','powerdenoised','powerunmatched'}
-            data(data<=0)=nan;
-            data_disp=10*log10(data);
         otherwise
             data_disp=data;
     end
@@ -54,7 +52,7 @@ if new>0
     data_disp=single(data_disp);
     set(mini_axes_comp.mini_ax,'Xlim',[pings(1) pings(end)],'Ylim',[samples(1) samples(end)])
     set(mini_axes_comp.mini_echo,'XData',pings,'YData',samples,'CData',data_disp);
-
+    
 end
 
 patch_col='b';

@@ -94,7 +94,7 @@ if isempty(p.Results.reg_obj)
 else
     idx_pings=p.Results.reg_obj.Idx_pings;
     idx_r=p.Results.reg_obj.Idx_r;
-    mask=~(p.Results.reg_obj.create_mask());
+    mask=~p.Results.reg_obj.get_sub_mask(idx_r-p.Results.reg_obj.Idx_r(1)+1,idx_pings-p.Results.reg_obj.Idx_pings(1)+1);
     reg_obj=p.Results.reg_obj; 
 end
 

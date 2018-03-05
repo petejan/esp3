@@ -49,8 +49,10 @@ voy_handle=uicontrol(edit_sd_fig,EdInfo,'pos',[100 280 80 20],'string',survey_da
 uicontrol(edit_sd_fig,StInfo,'string','Snapshot: ','pos',[20 240 80 20],'HorizontalAlignment','right');
 snap_handle=uicontrol(edit_sd_fig,EdInfo,'pos',[100 240 40 20],'string',num2str(survey_data_obj.Snapshot),'callback',{@check_fmt_box,0,inf,0,'%.0f'},'enable',editable{3});
 
+[type_cell,~]=init_trans_type();
+
 uicontrol(edit_sd_fig,StInfo,'string','Type: ','pos',[20 200 80 20],'HorizontalAlignment','right');
-type_handle=uicontrol(edit_sd_fig,LstboxInfo,'pos',[100 200 100 20],'string',init_trans_type(),'value',idx_t,'enable',editable{4});
+type_handle=uicontrol(edit_sd_fig,LstboxInfo,'pos',[100 200 100 20],'string',type_cell,'value',idx_t,'enable',editable{4});
 
 uicontrol(edit_sd_fig,StInfo,'string','Stratum: ','pos',[20 160 80 20],'HorizontalAlignment','right');
 strat_handle=uicontrol(edit_sd_fig,EdInfo,'pos',[100 160 60 20],'string',survey_data_obj.Stratum,'enable',editable{5});

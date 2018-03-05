@@ -42,65 +42,63 @@ school_detect_tab_comp.school_detect_tab=uitab(algo_tab_panel,'Title','School De
 algo=algo_cl('Name','SchoolDetection');
 varin=algo.Varargin;
 
-x_ini=0.0;
-y_ini=1;
-x_sep=0.02;
-y_sep=0.02;
+gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_2(5,2,x_ini,y_ini,x_sep,y_sep);
+pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
-parameters_1=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0. 0.2 0.3 0.7],'fontsize',11);
-
-uicontrol(parameters_1,'Style','text','units','normalized','string','Can. Min. Len(m)','pos',pos{1,1},'HorizontalAlignment','right');
-school_detect_tab_comp.l_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.l_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.l_min_can,'%.2f'});
+p_button=pos{6,1}{1};
+p_button(3)=gui_fmt.button_w;
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Can. Min. Hgth(m)','pos',pos{2,1},'HorizontalAlignment','right');
-school_detect_tab_comp.h_min_can=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.h_min_can),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.h_min_can,'%.2f'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Can. Min. Len(m)','pos',pos{1,1}{1});
+school_detect_tab_comp.l_min_can=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{1,1}{2},'string',num2str(varin.l_min_can),'callback',{@ check_fmt_box,0,500,varin.l_min_can,'%.2f'});
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Tot. Min. Len(m)','pos',pos{3,1},'HorizontalAlignment','right');
-school_detect_tab_comp.l_min_tot=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.l_min_tot),'BackgroundColor','white','callback',{@ check_fmt_box,0,10000,varin.l_min_tot,'%.2f'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Can. Min. Hgth(m)','pos',pos{2,1}{1});
+school_detect_tab_comp.h_min_can=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{2,1}{2},'string',num2str(varin.h_min_can),'callback',{@ check_fmt_box,0,inf,varin.h_min_can,'%.2f'});
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Tot. Min. Hgth(m)','pos',pos{4,1},'HorizontalAlignment','right');
-school_detect_tab_comp.h_min_tot=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.h_min_tot),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.h_min_tot,'%.2f'});
-
-parameters_2=uipanel(school_detect_tab_comp.school_detect_tab,'title','','Position',[0.3 0.2 0.3 0.7],'fontsize',11);
-
-uicontrol(parameters_2,'Style','text','units','normalized','string','Max. horz. link(m)','pos',pos{1,1},'HorizontalAlignment','right');
-school_detect_tab_comp.horz_link_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.horz_link_max),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.horz_link_max,'%.2f'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Tot. Min. Len(m)','pos',pos{3,1}{1});
+school_detect_tab_comp.l_min_tot=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{3,1}{2},'string',num2str(varin.l_min_tot),'callback',{@ check_fmt_box,0,10000,varin.l_min_tot,'%.2f'});
 
 
-uicontrol(parameters_2,'Style','text','units','normalized','string','Max. vert. link(m)','pos',pos{2,1},'HorizontalAlignment','right');
-school_detect_tab_comp.vert_link_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.vert_link_max),'BackgroundColor','white','callback',{@ check_fmt_box,0,500,varin.vert_link_max,'%.2f'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Tot. Min. Hgth(m)','pos',pos{4,1}{1});
+school_detect_tab_comp.h_min_tot=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{4,1}{2},'string',num2str(varin.h_min_tot),'callback',{@ check_fmt_box,0,500,varin.h_min_tot,'%.2f'});
 
 
-uicontrol(parameters_2,'Style','text','units','normalized','string','Min. sple number','pos',pos{3,1},'HorizontalAlignment','right');
-school_detect_tab_comp.nb_min_sples=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.nb_min_sples),'BackgroundColor','white','callback',{@ check_fmt_box,0,1000,varin.nb_min_sples,'%.0f'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Max. horz. link(m)','pos',pos{1,2}{1});
+school_detect_tab_comp.horz_link_max=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{1,2}{2},'string',num2str(varin.horz_link_max),'callback',{@ check_fmt_box,0,500,varin.horz_link_max,'%.2f'});
 
-uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Thr.(dB)','pos',pos{4,1},'HorizontalAlignment','right');
-school_detect_tab_comp.Sv_thr=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.Sv_thr),'BackgroundColor','white','callback',{@ check_fmt_box,-120,0,varin.Sv_thr,'%.0f'});
 
-uicontrol(parameters_2,'Style','text','units','normalized','string','Sv Max.(dB)','pos',pos{5,1},'HorizontalAlignment','right');
-school_detect_tab_comp.Sv_max=uicontrol(parameters_2,'Style','Edit','units','normalized','pos',pos{5,2},'string',num2str(varin.Sv_max),'BackgroundColor','white','callback',{@ check_fmt_box,-120,Inf,varin.Sv_max,'%.0f'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Max. vert. link(m)','pos',pos{2,2}{1});
+school_detect_tab_comp.vert_link_max=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{2,2}{2},'string',num2str(varin.vert_link_max),'callback',{@ check_fmt_box,0,500,varin.vert_link_max,'%.2f'});
 
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Defaults Values','units','normalized','Position',[0.7 0.8 0.2 0.1]);
 
-school_detect_tab_comp.denoised=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','checkbox','Value',0,'String','Compute on Denoised data','units','normalized','Position',[0.7 0.4 0.3 0.1]);
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Min. sple number','pos',pos{3,2}{1});
+school_detect_tab_comp.nb_min_sples=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{3,2}{2},'string',num2str(varin.nb_min_sples),'callback',{@ check_fmt_box,0,1000,varin.nb_min_sples,'%.0f'});
+
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Sv Thr.(dB)','pos',pos{4,2}{1});
+school_detect_tab_comp.Sv_thr=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{4,2}{2},'string',num2str(varin.Sv_thr),'callback',{@ check_fmt_box,-120,0,varin.Sv_thr,'%.0f'});
+
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtStyle,'string','Sv Max.(dB)','pos',pos{5,2}{1});
+school_detect_tab_comp.Sv_max=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.edtStyle,'pos',pos{5,2}{2},'string',num2str(varin.Sv_max),'callback',{@ check_fmt_box,-120,Inf,varin.Sv_max,'%.0f'});
+
+
+school_detect_tab_comp.denoised=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.chckboxStyle,'Value',0,'String','Compute on Denoised data','Position',pos{5,1}{1}+[0 0 100 0]);
 
 [~,~,algo_files]=get_config_files('SchoolDetection');
 [~,~,names]=read_config_algo_xml(algo_files{1});
 
 list_params=names;
+uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Load Values','Position',pos{1,1}{1}+[0 gui_fmt.y_sep+gui_fmt.box_h 0 0]);
+school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.popumenuStyle,'String',list_params,'Value',find(strcmpi(list_params,'--')),...
+    'Position', pos{1,1}{1}+[gui_fmt.txt_w+gui_fmt.x_sep gui_fmt.y_sep+gui_fmt.box_h 0 0],'callback',{@load_params,main_figure});
 
-school_detect_tab_comp.default_params=uicontrol(school_detect_tab_comp.school_detect_tab,'Style','popupmenu','String',list_params,'Value',find(strcmpi(list_params,'--')),'units','normalized','Position', [0.7 0.7 0.2 0.1],'callback',{@load_params,main_figure});
-
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.2 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Save as','units','normalized','pos',[0.75 0.2 0.1 0.1],'callback',{@save_new_display_algos_config_callback,main_figure,'SchoolDetection'});
-uicontrol(school_detect_tab_comp.school_detect_tab,'Style','pushbutton','String','Delete','units','normalized','pos',[0.85 0.2 0.1 0.1],'callback',{@delete_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Apply','pos',p_button+[1*gui_fmt.button_w 0 0 0],'callback',{@validate,main_figure});
+%uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Copy','pos',p_button+[1*gui_fmt.button_w 0 0 0],'callback',{@copy_across_algo,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Save','pos',p_button+[2*gui_fmt.button_w 0 0 0],'callback',{@save_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Save as','pos',p_button+[3*gui_fmt.button_w 0 0 0],'callback',{@save_new_display_algos_config_callback,main_figure,'SchoolDetection'});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Delete','pos',p_button+[4*gui_fmt.button_w 0 0 0],'callback',{@delete_display_algos_config_callback,main_figure,'SchoolDetection'});
 
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
 end

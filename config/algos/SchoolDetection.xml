@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
    <algos>
+      <SchoolDetection Sv_max="Inf" Sv_thr="-75.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="10.000000" h_min_tot="20.000000" horz_link_max="100.000000" l_min_can="500.000000" l_min_tot="1000.000000" nb_min_sples="1000.000000" savename="DSL" vert_link_max="10.000000"/>
+      <SchoolDetection Sv_max="Inf" Sv_thr="-65.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="2.000000" h_min_tot="2.000000" horz_link_max="20.000000" l_min_can="5.000000" l_min_tot="5.000000" nb_min_sples="50.000000" savename="krill" vert_link_max="5.000000"/>
       <SchoolDetection Sv_max="Inf" Sv_thr="-60.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="10.000000" h_min_tot="20.000000" horz_link_max="5.000000" l_min_can="10.000000" l_min_tot="50.000000" nb_min_sples="100.000000" savename="--" vert_link_max="5.000000"/>
       <SchoolDetection Sv_max="Inf" Sv_thr="-65.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="5.000000" h_min_tot="10.000000" horz_link_max="20.000000" l_min_can="5.000000" l_min_tot="10.000000" nb_min_sples="100.000000" savename="Small Round" vert_link_max="5.000000"/>
       <SchoolDetection Sv_max="Inf" Sv_thr="-65.000000" Type="sv" depth_max="Inf" depth_min="0.000000" h_min_can="5.000000" h_min_tot="10.000000" horz_link_max="50.000000" l_min_can="50.000000" l_min_tot="100.000000" nb_min_sples="100.000000" savename="Long Schools" vert_link_max="5.000000"/>

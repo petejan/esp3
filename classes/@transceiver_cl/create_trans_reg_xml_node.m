@@ -120,7 +120,7 @@ for ir=1:length(trans_obj.Regions)
             regions_node.appendChild(region_node);
         end
     catch
-        sprintf('Could not save region %.0f from %.0fkHz',trans_obj.Regions(ir).ID,trans_obj.Config.Frequency/1e3);
+        sprintf('Could not save region %.0f from %.0f kHz',trans_obj.Regions(ir).ID,trans_obj.Config.Frequency/1e3);
     end
     
 end

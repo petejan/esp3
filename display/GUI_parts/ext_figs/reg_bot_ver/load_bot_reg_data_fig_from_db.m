@@ -44,7 +44,8 @@ else
     [path_xml,reg_bot_file_str,bot_file_str]=layer.create_files_str();
 end
 
-
+nb_bot=1;
+nb_reg=1;
 for ip=1:length(path_xml)
     db_file=fullfile(path_xml{ip},'bot_reg.db');
     
@@ -54,43 +55,47 @@ for ip=1:length(path_xml)
     
     dbconn=sqlite(db_file,'connect');
     
-    regions_db_temp=dbconn.fetch(sprintf('select Version,Comment,Save_time from region where Filename is "%s" order by datetime(Save_time)',reg_bot_file_str{ip}));
-    bottom_db_temp=dbconn.fetch(sprintf('select Version,Comment,Save_time from bottom where Filename is "%s" order by datetime(Save_time)',bot_file_str{ip}));
+    regions_db_temp=dbconn.fetch(sprintf('select Version,Filename,Comment,Save_time from region where Filename is "%s" order by datetime(Save_time)',reg_bot_file_str{ip}));
+    bottom_db_temp=dbconn.fetch(sprintf('select Version,Filename,Comment,Save_time from bottom where Filename is "%s" order by datetime(Save_time)',bot_file_str{ip}));
     dbconn.close();
     
-
+    if ~isempty(bottom_db_temp)
+        botDataSummary(nb_bot:nb_bot+size(bottom_db_temp,1)-1,1)=bottom_db_temp(:,1);
+        botDataSummary(nb_bot:nb_bot+size(bottom_db_temp,1)-1,2)=bottom_db_temp(:,2);
+        botDataSummary(nb_bot:nb_bot+size(bottom_db_temp,1)-1,3)=bottom_db_temp(:,3);
+        botDataSummary(nb_bot:nb_bot+size(bottom_db_temp,1)-1,4)=bottom_db_temp(:,4);
+    end
+    if ~isempty(regions_db_temp)
+        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,1)=regions_db_temp(:,1);
+        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,2)=regions_db_temp(:,2);
+        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,3)=regions_db_temp(:,3);
+        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,4)=regions_db_temp(:,4);
+    end
+    nb_bot=nb_bot+size(bottom_db_temp,1);
+    nb_reg=nb_reg+size(regions_db_temp,1);
 end
 
+if nb_reg==1
+    regDataSummary=[];
+end
 
-
-if ~isempty(bottom_db_temp)
-    botDataSummary(:,1)=bottom_db_temp(:,1);
-    botDataSummary(:,2)=bottom_db_temp(:,2);
-    botDataSummary(:,3)=bottom_db_temp(:,3);
-else
+if nb_bot==1
     botDataSummary=[];
 end
 
-if ~isempty(regions_db_temp)
-    regDataSummary(:,1)=regions_db_temp(:,1);
-    regDataSummary(:,2)=regions_db_temp(:,2);
-    regDataSummary(:,3)=regions_db_temp(:,3);
-else
-    regDataSummary=[];
-end
 
 
 reg_bot_data_fig=new_echo_figure(main_figure,...
     'Units','pixels',...
-    'Position',[0 0 600 300],...
+    'Position',[0 0 1000 300],...
     'Resize','off',...
     'MenuBar','none',...
     'Name','Region Bottom Version','Tag','reg_bot_ver','WindowStyle','modal');
 
 
 % Column names and column format
-columnname = {'Version' 'Comment' 'Date'};
-columnformat = {'numeric' 'char','char'};
+columnname = {'Version' 'File' 'Comment' 'Date'};
+columnformat = {'numeric' 'char' 'char','char'};
 
 % Create the uitable
 uicontrol(reg_bot_data_fig,'Style','Text','String','BOTTOM','Units','Normalized','Position',[0.1 0.95 0.3 0.05],'Fontweight','bold','Background','w');
@@ -100,12 +105,12 @@ bot_data_table.table_main = uitable('Parent',reg_bot_data_fig,...
     'ColumnFormat', columnformat,...
     'CellSelectionCallback',@selec_ver_cback,...
     'CellEditCallback',{@insert_comment,main_figure},...
-    'ColumnEditable', [false true false],...
+    'ColumnEditable', [false false true false],...
     'Units','Normalized','Position',[0 0 0.5 0.95],...
     'RowName',[],'tag','bot');
 pos_t = getpixelposition(bot_data_table.table_main);
 set(bot_data_table.table_main,'ColumnWidth',...
-    num2cell(pos_t(3)*[0.1 0.5 0.4]));
+    num2cell(pos_t(3)*[0.1 0.35 0.35 0.2]));
 
 rc_menu = uicontextmenu(ancestor(bot_data_table.table_main,'figure'),'tag','bot');
 uimenu(rc_menu,'Label','Load Selected bottom version','Callback',{@import_bot_reg_cback,main_figure});
@@ -121,12 +126,12 @@ reg_data_table.table_main = uitable('Parent',reg_bot_data_fig,...
     'ColumnFormat', columnformat,...
     'CellSelectionCallback',@selec_ver_cback,...   
     'CellEditCallback',{@insert_comment,main_figure},...
-    'ColumnEditable', [false true false],...
+    'ColumnEditable', [false false true false],...
     'Units','Normalized','Position',[0.5 0 0.5 0.95],...
     'RowName',[],'tag','reg');
 pos_t = getpixelposition(reg_data_table.table_main);
 set(reg_data_table.table_main,'ColumnWidth',...
-    num2cell(pos_t(3)*[0.1 0.5 0.4]));
+    num2cell(pos_t(3)*[0.1 0.35 0.35 0.2]));
 
 %set_single_select_mode_table(reg_data_table.table_main) ;
 
@@ -182,7 +187,9 @@ switch src.Tag
         str_file='Reg_XML';
 end
 ver=tb.table_main.Data{evt.Indices(1),1};
-Comment=tb.table_main.Data{evt.Indices(1),2};
+Comment=tb.table_main.Data{evt.Indices(1),3};
+idx_ver=cellfun(@(x) x==ver,tb.table_main.Data(:,1));
+tb.table_main.Data(idx_ver,3)={Comment};
 for ip=1:length(path_xml)
     db_file=fullfile(path_xml{ip},'bot_reg.db');
     

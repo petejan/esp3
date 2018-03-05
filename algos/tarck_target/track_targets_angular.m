@@ -60,13 +60,9 @@ parse(p,trans_obj,varargin{:});
 if isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
     idx_pings=1:length(trans_obj.get_transceiver_pings());
-    %mask=zeros(numel(idx_r),numel(idx_pings));
-    %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
 else
     idx_pings=p.Results.reg_obj.Idx_pings;
     idx_r=p.Results.reg_obj.Idx_r;
-    %mask=~(p.Results.reg_obj.create_mask());
-    %reg_obj=p.Results.reg_obj; 
 end
 
 
@@ -210,7 +206,8 @@ for i=2:nb_pings
         while u<=p.Results.Max_Gap_Track&&(i-1-u)>0
             
             if (nb_targets_pings(i-u)>0&&~isempty(X_s{i-1-u}))
-                target_gate=(repmat(X_o{i},nb_targets_pings(i-1-u),1)-repmat(X_p{i-u}',1,nb_targets_pings(i))).^2./((p.Results.ExcluDistMajAxis+repmat(abs(Z_o{i}),nb_targets_pings(i-1-u),1)*tand(p.Results.MaxStdMajorAxisAngle))*(1+u*p.Results.MissedPingExpMajAxis/100)).^2+...
+                target_gate=...
+                    (repmat(X_o{i},nb_targets_pings(i-1-u),1)-repmat(X_p{i-u}',1,nb_targets_pings(i))).^2./((p.Results.ExcluDistMajAxis+repmat(abs(Z_o{i}),nb_targets_pings(i-1-u),1)*tand(p.Results.MaxStdMajorAxisAngle))*(1+u*p.Results.MissedPingExpMajAxis/100)).^2+...
                     (repmat(Y_o{i},nb_targets_pings(i-1-u),1)-repmat(Y_p{i-u}',1,nb_targets_pings(i))).^2./((p.Results.ExcluDistMinAxis+repmat(abs(Z_o{i}),nb_targets_pings(i-1-u),1)*tand(p.Results.MaxStdMinorAxisAngle))*(1+u*p.Results.MissedPingExpMinAxis/100)).^2+...
                     (repmat(Z_o{i},nb_targets_pings(i-1-u),1)-repmat(Z_p{i-u}',1,nb_targets_pings(i))).^2/(p.Results.ExcluDistRange*(1+u*p.Results.MissedPingExpRange/100))^2;
                 

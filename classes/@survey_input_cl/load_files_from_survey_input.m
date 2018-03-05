@@ -119,7 +119,7 @@ for isn = 1:length(snapshots)
         %         strat_radius = stratum{ist}.radius;
         
         for itr = 1:length(transects)
-            itr_tot=itr_tot+1;
+            
             try
                 filenames_cell = transects{itr}.files;
                 trans_num = transects{itr}.number;
@@ -131,10 +131,7 @@ for isn = 1:length(snapshots)
                 show_status_bar(gui_main_handle);
                 disp_str=sprintf('Loading Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
                 disp(disp_str);
-                if ~isempty(load_bar_comp)
-                    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_trans_tot,'Value',itr_tot);
-                    load_bar_comp.status_bar.setText(disp_str);
-                end
+                
                 if ~iscell(filenames_cell)
                     filenames_cell = {filenames_cell};
                 end
@@ -350,7 +347,7 @@ for isn = 1:length(snapshots)
                     layer_new = layers_out_temp(i_lay);
                     [cal_path,~,~]=fileparts(layer_new.Filename{1});
                     cal_file=fullfile(cal_path,'cal_echo.csv');
-                    if isfile(cal_file)                      
+                    if isfile(cal_file)
                         cal_f=csv2struct(cal_file);
                     else
                         cal_f=[];
@@ -410,7 +407,7 @@ for isn = 1:length(snapshots)
                                     end
                                 end
                                 if nocal>0
-                                    fprintf('No calibration specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                                    fprintf('No calibration specified for Frequency %.0f kHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                                     
                                 else
                                     layer_new.Transceivers(i_freq).apply_cw_cal(cal_t);
@@ -436,10 +433,10 @@ for isn = 1:length(snapshots)
                             catch
                                 noabs=1;
                             end
-                                              
+                            
                         end
                         if noabs>0
-                            fprintf('No absorption specified for Frequency %.0fkHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
+                            fprintf('No absorption specified for Frequency %.0f kHz. Using file value\n',layer_new.Frequencies(i_freq)/1e3);
                         else
                             layer_new.Transceivers(i_freq).apply_absorption(alpha/1e3);
                         end
@@ -464,7 +461,7 @@ for isn = 1:length(snapshots)
                                     layer_new.Transceivers(idx_freq_al).add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
                                     layer_new.Transceivers(idx_freq_al).apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
                                 else
-                                    fprintf('Could not find Frequency %.0fkHz. Algo %s not applied on it\n',algos{ial}.Varargin.Frequencies(i_freq_al)/1e3,algos{ial}.Name);
+                                    fprintf('Could not find Frequency %.0f kHz. Algo %s not applied on it\n',algos{ial}.Varargin.Frequencies(i_freq_al)/1e3,algos{ial}.Name);
                                 end
                             end
                         end
@@ -553,6 +550,11 @@ for isn = 1:length(snapshots)
             catch error
                 disp(error.message);
                 fprintf('Error openning file for Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
+            end
+            itr_tot=itr_tot+1;
+            if ~isempty(load_bar_comp)
+                set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_trans_tot,'Value',itr_tot);
+                load_bar_comp.status_bar.setText(disp_str);
             end
         end
     end

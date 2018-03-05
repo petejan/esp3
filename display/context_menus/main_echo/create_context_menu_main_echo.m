@@ -35,7 +35,7 @@ idx_higher_freq=find(layer.Frequencies>layer.Frequencies(idx_freq));
 idx_other=setdiff(1:numel(layer.Frequencies),idx_freq);
 uimenu(uifreq,'Label','Higher Frequencies','Callback',{@copy_bt_cback,main_figure,idx_higher_freq});
 for ifreq=idx_other
-    uimenu(uifreq,'Label',sprintf('%.0fkHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_bt_cback,main_figure,ifreq});
+    uimenu(uifreq,'Label',sprintf('%.0f kHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_bt_cback,main_figure,ifreq});
 end
 
 config_menu=uimenu(context_menu,'Label','Configuration');

@@ -43,7 +43,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function idx_noise_sector = bad_pings_removal_3(trans_obj,varargin)
+function idx_noise_sector_tot = bad_pings_removal_3(trans_obj,varargin)
 global DEBUG
 
 %% managing input variables
@@ -70,11 +70,10 @@ addParameter(p,'Above',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'Below',true,@(x) isnumeric(x)||islogical(x));
 addParameter(p,'reg_obj',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'load_bar_comp',[]);
+addParameter(p,'block_len',1e7,@(x) x>0);
 
 % parse
 parse(p,trans_obj,varargin{:});
-
-
 
 % grab values from the parser
 BS_std           = p.Results.BS_std;
@@ -84,182 +83,203 @@ thr_spikes_Below = p.Results.thr_spikes_Below;
 Above            = p.Results.Above;
 Below            = p.Results.Below;
 
-
 if  isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
-    idx_pings=1:length(trans_obj.get_transceiver_pings());
-    mask=zeros(numel(idx_r),numel(idx_pings));
-    %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
+    idx_pings_tot=1:length(trans_obj.get_transceiver_pings());
 else
-    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_pings_tot=p.Results.reg_obj.Idx_pings;
     idx_r=p.Results.reg_obj.Idx_r;
-    mask=~(p.Results.reg_obj.create_mask());
-    %reg_obj=p.Results.reg_obj; 
 end
 
-%% more pre-processing
+idx_noise_sector_tot=[];
+nb_pings_tot=numel(idx_pings_tot);
 
-% grab data to work on
-if p.Results.denoised>0
-    Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
-    if isempty(Sv)
+block_size=nanmin(ceil(p.Results.block_len/numel(idx_r)),numel(idx_pings_tot));
+num_ite=ceil(numel(idx_pings_tot)/block_size);
+if ~isempty(p.Results.load_bar_comp)
+    set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_ite, 'Value',0);
+end
+
+[~,Np]=trans_obj.get_pulse_length(1);
+for ui=1:num_ite
+    idx_pings=idx_pings_tot((ui-1)*block_size+1:nanmin(ui*block_size,numel(idx_pings_tot)));
+    
+    if  isempty(p.Results.reg_obj)
+        mask=zeros(numel(idx_r),numel(idx_pings));
+    else    
+        mask=~p.Results.reg_obj.get_sub_mask(idx_r-p.Results.reg_obj.Idx_r(1)+1,idx_pings-p.Results.reg_obj.Idx_pings(1)+1);
+    end
+    
+    %% more pre-processing
+    
+    % grab data to work on
+    if p.Results.denoised>0
+        Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','svdenoised');
+        if isempty(Sv)
+            Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
+        end
+    else
         Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
     end
-else
-    Sv = trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sv');
-end
-Sv(mask>0)=-999;
-
-[nb_samples,nb_pings] = size(Sv);
-
-if idx_r(1)<=20
-    start_sample = nanmin([20-idx_r(1)+1 nb_samples]);
-    Sv(1:start_sample,:) = nan; % we nan the first 20 samples
-else
-    start_sample=1;
-end
-% grab extra parameters
-
-RingDown = trans_obj.Data.get_subdatamat(3,idx_pings,'field','sv');
-
-idx_ringdown=analyse_ringdown(RingDown);
-
-% define b_filter:
-b_filter = 3:2:7;
-
-%% First let's get the bottom and the BS...
-Range= trans_obj.get_transceiver_range(idx_r);
-BS=bsxfun(@plus,Sv,10*log10(Range));
-idx_bottom=trans_obj.get_bottom_idx(idx_pings);
-idx_bs=bsxfun(@(x,y) x>=y<=(y*11/10),trans_obj.get_transceiver_samples(idx_r),idx_bottom);
-BS(~idx_bs)=nan;
-BS_bottom=lin_space_mean(BS);
-
-%% BS Analysis
-if BS_std_bool>0
+    Sv(mask==1)=-999;
     
-    % Bottom is the sample corresponding to the bottom detect
-    % BS_bottom is the backscatter level of the sample corresponding to the bottom detection
-    BS_bottom(idx_bottom<start_sample) = nan;
+    [nb_samples,nb_pings] = size(Sv);
     
-    BS_bottom_analysis = BS_bottom;
-    BS_bottom_analysis(isnan(idx_bottom)|idx_bottom==nb_samples) = nan;
+    if idx_r(1)<=20
+        start_sample = nanmin([20-idx_r(1)+1 nb_samples]);
+        Sv(1:start_sample,:) = nan; % we nan the first 20 samples
+    else
+        start_sample=1;
+    end
+    % grab extra parameters
     
-    % BS_std_up = -20*log10((sqrt(4/pi-1)));
-    % BS_std_dw = 20*log10((sqrt(4/pi-1)));
+    ringdown=trans_obj.Data.get_subdatamat(ceil(Np/3),idx_pings,'field','power');
+    RingDown=pow2db_perso(ringdown);
     
-    BS_std_up =  BS_std;
-    BS_std_dw = -BS_std;
+    idx_ringdown=analyse_ringdown(RingDown);
     
-    Mean_BS = nan(length(b_filter),nb_pings);
+    % define b_filter:
+    b_filter = 3:2:7;
     
-    for j = 1:length(b_filter)
+    %% First let's get the bottom and the BS...
+    Range= trans_obj.get_transceiver_range(idx_r);
+    BS=bsxfun(@plus,Sv,10*log10(Range));
+    idx_bottom=trans_obj.get_bottom_idx(idx_pings);
+    idx_bs=bsxfun(@(x,y) x>=y<=(y*11/10),trans_obj.get_transceiver_samples(idx_r),idx_bottom);
+    BS(~idx_bs)=nan;
+    BS_bottom=lin_space_mean(BS);
+    
+    %% BS Analysis
+    if BS_std_bool>0
         
-        filter_window = ones(1,b_filter(j));
-        Mean_BS(j,:) = 20*log10( filter_nan(filter_window,10.^(BS_bottom_analysis/20)) ./ filter_nan(filter_window,ones(1,length(BS_bottom))) );
+        % Bottom is the sample corresponding to the bottom detect
+        % BS_bottom is the backscatter level of the sample corresponding to the bottom detection
+        BS_bottom(idx_bottom<start_sample) = nan;
+        BS_bottom(idx_bottom==numel(Range))=nan;
+        BS_bottom_analysis = BS_bottom;
+        BS_bottom_analysis(isnan(idx_bottom)|idx_bottom==nb_samples) = nan;
         
-        idx_temp = ((BS_bottom_analysis-Mean_BS(j,:)) <= BS_std_up & (BS_bottom_analysis-Mean_BS(j,:)) >= BS_std_dw);
+        % BS_std_up = -20*log10((sqrt(4/pi-1)));
+        % BS_std_dw = 20*log10((sqrt(4/pi-1)));
         
-        BS_bottom_analysis(~idx_temp) = nan;
+        BS_std_up =  BS_std;
+        BS_std_dw = -BS_std;
         
-        if DEBUG
-            figure();
-            clf;
-            plot(BS_bottom-Mean_BS(j,:),'r');
-            hold on;
-            plot(BS_bottom_analysis-Mean_BS(j,:));
-            plot(BS_std_up*ones(1,nb_pings),'k','linewidth',2)
-            plot(BS_std_dw*ones(1,nb_pings),'k','linewidth',2)
-            grid on;
-            set(gca,'fontsize',16);
-            xlabel('Ping Number');
-            ylabel('BS(dB)');
-            ylim([-20 20])
-            title(['Filter size ' num2str(b_filter(j))])
-            pause;
-            close gcf;
+        Mean_BS = nan(length(b_filter),nb_pings);
+        
+        for j = 1:length(b_filter)
+            
+            filter_window = ones(1,b_filter(j));
+            Mean_BS(j,:) = 20*log10( filter_nan(filter_window,10.^(BS_bottom_analysis/20)) ./ filter_nan(filter_window,ones(1,length(BS_bottom))) );
+            
+            idx_temp = ((BS_bottom_analysis-Mean_BS(j,:)) <= BS_std_up & (BS_bottom_analysis-Mean_BS(j,:)) >= BS_std_dw);
+            
+            BS_bottom_analysis(~idx_temp) = nan;
+            
+            if DEBUG
+                figure();
+                clf;
+                plot(BS_bottom-Mean_BS(j,:),'r');
+                hold on;
+                plot(BS_bottom_analysis-Mean_BS(j,:));
+                plot(BS_std_up*ones(1,nb_pings),'k','linewidth',2)
+                plot(BS_std_dw*ones(1,nb_pings),'k','linewidth',2)
+                grid on;
+                set(gca,'fontsize',16);
+                xlabel('Ping Number');
+                ylabel('BS(dB)');
+                ylim([-20 20])
+                title(['Filter size ' num2str(b_filter(j))])
+                pause;
+                close gcf;
+            end
         end
+        
+        idx_bottom_bs_eval = ~isnan(BS_bottom_analysis);
+        idx_bottom_bs_eval(nansum(idx_bottom)==0) = 1;
+        idx_bottom_bs_eval(isnan(idx_bottom)) = 1;
+        idx_bottom_bs_eval(isnan(BS_bottom)) = 1;
+        
+    else
+        idx_bottom_bs_eval = ones(1,nb_pings);
     end
     
-    idx_bottom_bs_eval = ~isnan(BS_bottom_analysis);
-    idx_bottom_bs_eval(nansum(idx_bottom)==0) = 1;
-    idx_bottom_bs_eval(isnan(idx_bottom)) = 1;
-    idx_bottom_bs_eval(isnan(BS_bottom)) = 1;
+    if isempty(p.Results.reg_obj)
+        idx_below=bsxfun(@(x,y) x>y*12/10&x<y*14/10,idx_r(:),idx_bottom);
+        idx_above=bsxfun(@(x,y) x<y*9.5/10&x>y/2,idx_r(:),idx_bottom);
+    else
+        idx_below=bsxfun(@(x,y) x>y*11/10,idx_r(:),idx_bottom);
+        idx_above=bsxfun(@(x,y) x<y,idx_r(:),idx_bottom);
+    end
     
-else
-    idx_bottom_bs_eval = ones(1,nb_pings);
+    
+    
+    
+    %% Removing noisy pings
+    idx_bad_above=[];
+    idx_bad_below=[];
+    if Above>0
+        thr_down=-thr_spikes_Above*[1 2 2 2];
+        thr_up=-thr_spikes_Above*[1 2 2];
+        Sv_Above=nan(size(Sv));
+        Sv_Above(idx_above)=Sv(idx_above);
+        sv_mean_vert_above=lin_space_mean(Sv_Above);
+        
+        [idx_bad_up,idx_bad_down]=find_idx_bad_up_down(sv_mean_vert_above,thr_down,thr_up);
+        
+        idx_bad_above=union(idx_bad_up,idx_bad_down);
+    else
+        sv_mean_vert_above=nan(1,nb_pings);
+    end
+    
+    
+    if Below>0
+        %thr_down=-thr_spikes_Below*[1 2 2 2] ;
+        thr_up=-thr_spikes_Below*[1 2 2];
+        Sv_Below=nan(size(Sv));
+        Sv_Below(idx_below)=Sv(idx_below);
+        sv_mean_vert_below=lin_space_mean(Sv_Below);
+        [idx_bad_below,~]=find_idx_bad_up_down(sv_mean_vert_below,[],thr_up);
+    else
+        sv_mean_vert_below=nan(1,nb_pings);
+    end
+    
+    
+    if DEBUG==1
+        sv_mean_vert_bad_below=nan(1,nb_pings);
+        sv_mean_vert_bad_above=nan(1,nb_pings);
+        sv_mean_vert_bad_below(idx_bad_below)=sv_mean_vert_below(idx_bad_below);
+        sv_mean_vert_bad_above(idx_bad_above)=sv_mean_vert_above(idx_bad_above);
+        
+        
+        h_fig=new_echo_figure([],'Name','Bad Transmits test','Tag','temp_badt');
+        ax=axes(h_fig,'nextplot','add');
+        grid(ax,'on');
+        plot(ax,sv_mean_vert_below,'-+');
+        plot(ax,sv_mean_vert_bad_below,'or');
+        
+        plot(ax,sv_mean_vert_above,'-x');
+        plot(ax,sv_mean_vert_bad_above,'ok');
+    end
+    
+    %%%%%%And compile the final vector designing the bad pings%%%%%%%%%%%%%%%%
+    idx_bs=find(~idx_bottom_bs_eval);
+    idx_rd=find(~idx_ringdown);
+    
+    idx_noise_sector=unique([idx_bad_below(:)' idx_bad_above(:)' idx_bs(:)' idx_rd(:)']);
+    idx_noise_sector=idx_noise_sector+idx_pings(1)-1;
+    
+    idx_noise_sector_tot=union(idx_noise_sector_tot,idx_noise_sector);
+    
+    if ~isempty(p.Results.load_bar_comp)
+        set(p.Results.load_bar_comp.progress_bar, 'Value',ui);
+    end
 end
-
-if isempty(p.Results.reg_obj)
-    idx_below=bsxfun(@(x,y) x>y*12/10&x<y*14/10,idx_r(:),idx_bottom);
-    idx_above=bsxfun(@(x,y) x<y*9.5/10&x>y/2,idx_r(:),idx_bottom);
-else
-    idx_below=bsxfun(@(x,y) x>y*11/10,idx_r(:),idx_bottom);
-    idx_above=bsxfun(@(x,y) x<y,idx_r(:),idx_bottom);
-end
-
-
-
-
-%% Removing noisy pings
-idx_bad_above=[];
-idx_bad_below=[];
-if Above>0
-    thr_down=-thr_spikes_Above*[1 2 2 2];
-    thr_up=-thr_spikes_Above*[1 2 2];
-    Sv_Above=nan(size(Sv));
-    Sv_Above(idx_above)=Sv(idx_above);    
-    sv_mean_vert_above=lin_space_mean(Sv_Above);
-    
-    [idx_bad_up,idx_bad_down]=find_idx_bad_up_down(sv_mean_vert_above,thr_down,thr_up);
-    
-    idx_bad_above=union(idx_bad_up,idx_bad_down);
-else
-    sv_mean_vert_above=nan(1,nb_pings);
-end
-
-
-if Below>0
-    %thr_down=-thr_spikes_Below*[1 2 2 2] ;
-    thr_up=-thr_spikes_Below*[1 2 2];
-    Sv_Below=nan(size(Sv));
-    Sv_Below(idx_below)=Sv(idx_below);
-    sv_mean_vert_below=lin_space_mean(Sv_Below);
-    [idx_bad_below,~]=find_idx_bad_up_down(sv_mean_vert_below,[],thr_up);   
-else
-    sv_mean_vert_below=nan(1,nb_pings);
-end
-
-
-if DEBUG==1
-    sv_mean_vert_bad_below=nan(1,nb_pings);
-    sv_mean_vert_bad_above=nan(1,nb_pings);
-    sv_mean_vert_bad_below(idx_bad_below)=sv_mean_vert_below(idx_bad_below);
-    sv_mean_vert_bad_above(idx_bad_above)=sv_mean_vert_above(idx_bad_above);
-    
-    
-    h_fig=new_echo_figure([],'Name','Bad Transmits test','Tag','temp_badt');
-    ax=axes(h_fig,'nextplot','add');
-    grid(ax,'on');
-    plot(ax,sv_mean_vert_below,'-+');
-    plot(ax,sv_mean_vert_bad_below,'or');
-    
-    plot(ax,sv_mean_vert_above,'-x');
-    plot(ax,sv_mean_vert_bad_above,'ok');
-end
-
-%%%%%%And compile the final vector designing the bad pings%%%%%%%%%%%%%%%%
-idx_bs=find(~idx_bottom_bs_eval);
-idx_rd=find(~idx_ringdown);
-
-idx_noise_sector=unique([idx_bad_below(:)' idx_bad_above(:)' idx_bs(:)' idx_rd(:)']);
-idx_noise_sector=idx_noise_sector+idx_pings(1)-1;
-
 %%%%%%%%%%%%%Remove isolated "good" pings%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % idx_noise_sector_filter = filter(ones(1,9),1,idx_noise_sector/9);
 % idx_noise_sector(idx_noise_sector_filter>=7/9) = 1;
 
-bad_pings_percent = numel(idx_noise_sector)/nb_pings*100;
+bad_pings_percent = numel(idx_noise_sector_tot)/nb_pings_tot*100;
 disp([num2str(bad_pings_percent) '% of bad pings']);
 
 

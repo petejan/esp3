@@ -45,9 +45,9 @@ horz_val=trans.Data.get_subdatamat(idx_r,1:length(xdata),'field',curr_disp.Field
 
 switch lower(deblank(curr_disp.Fieldname))
     case{'alongangle','acrossangle'}
-        ylab_str=sprintf('Angle(deg.)');
+        ylab_str=sprintf('Angle(%c)',char(hex2dec('00BA')));
     case{'alongphi','acrossphi'}
-        ylab_str=sprintf('Phase(deg.)');
+        ylab_str=sprintf('Phase(%c)',char(hex2dec('00BA')));
     case 'power'
         ylab_str=sprintf('%s(dB)',curr_disp.Type);
         vert_val=pow2db_perso(vert_val);

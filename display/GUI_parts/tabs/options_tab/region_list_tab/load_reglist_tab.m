@@ -44,6 +44,62 @@ switch tab_panel.Type
         reglist_tab_comp.reglist_tab=tab_panel;
 end
 
+gui_fmt=init_gui_fmt_struct();
+gui_fmt.txt_w=80;
+pos=create_pos_3(7,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
+
+p_button=pos{6,1}{1};
+p_button(3)=gui_fmt.button_w;
+
+reg_curr=region_cl();
+
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Tag','Position',pos{1,1}{1});
+reglist_tab_comp.tag=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.edtStyle,'String',reg_curr.Tag,'Position',pos{1,1}{2}+[0 0 gui_fmt.box_w 0]);
+
+data_type={'Data' 'Bad Data'};
+data_idx=find(strcmp(data_type,reg_curr.Type));
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Data Type','Position',pos{2,1}{1});
+reglist_tab_comp.data_type=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.popumenuStyle,'String',data_type,'Value',data_idx,'Position',pos{2,1}{2}+[0 0 gui_fmt.box_w 0]);
+
+%ref={'Surface','Bottom','Line'};
+
+ref={'Surface','Bottom','Line'};
+ref_idx=find(strcmp(reg_curr.Reference,ref));
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Reference','Position',pos{3,1}{1});
+reglist_tab_comp.tog_ref=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.popumenuStyle,'String',ref,'Value',ref_idx,'Position',pos{3,1}{2}+[0 0 gui_fmt.box_w 0]);
+
+
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Cell Width','Position',pos{4,1}{1});
+reglist_tab_comp.cell_w=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.edtStyle,'position',pos{4,1}{2},'string',reg_curr.Cell_w,'Tag','w');
+
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Cell Height','Position',pos{5,1}{1});
+reglist_tab_comp.cell_h=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.edtStyle,'position',pos{5,1}{2},'string',reg_curr.Cell_h,'Tag','h');
+set([reglist_tab_comp.cell_w reglist_tab_comp.cell_h],'callback',{@check_cell,main_figure})
+
+units_w= {'pings','meters'};
+units_h={'meters','samples'};
+
+h_unit_idx=find(strcmp(reg_curr.Cell_h_unit,units_h));
+w_unit_idx=find(strcmp(reg_curr.Cell_w_unit,units_w));
+
+reglist_tab_comp.cell_w_unit=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.popumenuStyle,'String',units_w,'Value',w_unit_idx,'Position',pos{4,2}{1},'Tag','w');
+reglist_tab_comp.cell_h_unit=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.popumenuStyle,'String',units_h,'Value',h_unit_idx,'Position',pos{5,2}{1},'Tag','h');
+reglist_tab_comp.cell_w_unit_curr=get(reglist_tab_comp.cell_w_unit,'value');
+reglist_tab_comp.cell_h_unit_curr=get(reglist_tab_comp.cell_w_unit,'value');
+set(reglist_tab_comp.cell_w_unit ,'callback',{@tog_units,main_figure});
+set(reglist_tab_comp.cell_h_unit ,'callback',{@tog_units,main_figure});
+
+
+
+str_delete='<HTML><center><FONT color="Red"><b>Delete</b></Font> ';
+str_delete_all='<HTML><center><FONT color="Red"><b>Del. All</b></Font> ';
+
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.pushbtnStyle,'String',str_delete,'pos',p_button,'callback',{@delete_region_callback,main_figure,[]});
+uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.pushbtnStyle,'String',str_delete_all,'pos',p_button+[gui_fmt.button_w 0 0 0],'callback',{@delete_all_region_callback,main_figure});
+% uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.pushbtnStyle,'String','Del. Across Freq.','TooltipString','Delete Across Frequencies','pos',[0.65 0.1 0.15 0.15],'callback',{@rm_over_freq_callback,main_figure});
+% uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.pushbtnStyle,'String','Copy Across Freq.','TooltipString','Copy All Regions Across Frequencies','pos',[0.5 0.1 0.15 0.15],'callback',{@copy_to_other_freq,main_figure});
+% 
+
 columnname = {'Name','ID','Tag','Type','Reference','Cell Width','Width Unit','Cell Height','Height Unit','Unique ID'};
 columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
 
@@ -53,14 +109,14 @@ reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
     'ColumnName', columnname,...
     'ColumnFormat', columnformat,...
     'ColumnEditable', [false true true true true true true true true false],...
-    'Units','Normalized','Position',[0 0 1 1],...
+    'Units','Normalized','Position',[0.3 0 0.7 1],...
     'RowName',[]);
 
 
 pos_t = getpixelposition(reglist_tab_comp.table);
 
 set(reglist_tab_comp.table,'ColumnWidth',...
-    num2cell(pos_t(3)*[5/20 1/20 2/20 2/20 2/20 2/20 2/20 2/20 2/20 0]));
+    num2cell(pos_t(3)*[4/20 1/20 2/20 2/20 3/20 2/20 2/20 2/20 2/20 0]));
 
 set(reglist_tab_comp.table,'CellEditCallback',{@edit_reg,main_figure});
 set(reglist_tab_comp.table,'CellSelectionCallback',{@act_reg,main_figure});
@@ -151,6 +207,7 @@ else
 end
 
 active_regs=trans_obj.get_region_from_Unique_ID(selected_regs);
+
 if ~isempty(active_regs)    
     if ~all(ismember({active_regs(:).Unique_ID},curr_disp.Active_reg_ID))||isempty(setdiff({active_regs(:).Unique_ID},curr_disp.Active_reg_ID))
         curr_disp.setActive_reg_ID({active_regs(:).Unique_ID});

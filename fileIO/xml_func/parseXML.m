@@ -3,7 +3,7 @@ function theStruct = parseXML(filename)
 try   
     tree = xmlread(filename);
 catch
-    error('Failed to read XML file %s.',filename);
+        error('Failed to read XML file %s.',filename);
 end
 
 % Recurse over child nodes. This could run into problems

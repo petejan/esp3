@@ -206,7 +206,7 @@ for uui=select
         ZI = griddata(AlongAngle_sph,AcrossAngle_sph,Sp_sph, XI, YI);
         
         
-        new_echo_figure(main_figure,'Name',sprintf('%.0fkHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp%.0f',uui));
+        new_echo_figure(main_figure,'Name',sprintf('%.0f kHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp%.0f',uui));
         contourf(XI, YI, ZI)
         hold on
         plot(AlongAngle_sph,AcrossAngle_sph,'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
@@ -222,7 +222,7 @@ for uui=select
         drawnow;
         
         
-        new_echo_figure(main_figure,'Name',sprintf('%.0fkHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp2%.0f',uui));
+        new_echo_figure(main_figure,'Name',sprintf('%.0f kHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp2%.0f',uui));
         surf(XI, YI, ZI)
         shading interp
         hold on;
@@ -314,7 +314,7 @@ for uui=select
         options.Default = 'No thank you';
         options.WindowStyle = 'modal';
         % Construct a questdlg with two options
-        qstring=sprintf('Do you want to save those results for frequency %.0fkHz',Freq/1e3);
+        qstring=sprintf('Do you want to save those results for frequency %.0f kHz',Freq/1e3);
         choice = questdlg(qstring, ...
             'Calibration', ...
             'Yes','No thank you',options);

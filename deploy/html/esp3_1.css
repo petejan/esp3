@@ -1,0 +1,84 @@
+@charset "UTF-8";
+/* CSS Document */
+
+header {
+	width: 101%;
+	height: 5.5em;
+	margin-bottom: 10px;
+	-moz-border-radius: 10px 10px 0px 0px;
+	border-radius: 10px 10px 0px 0px;
+	background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.26, #AFC9DC
+		), color-stop(0.42, #DEE9F1), color-stop(0.56, #FFFFFF) );
+	background-image: -moz-linear-gradient(center bottom, #AFC9DC 26%, #DEE9F1 42%, #FFFFFF
+		66%);
+}
+
+#header-inner {	
+	height: 6em;
+	width: 100%;
+	padding: 22px 0 0 10px;
+	position: relative;
+}
+
+#logo {
+	position: absolute;
+	right: 3em;    
+	top: 2em;      
+}
+
+
+#column_right {
+position: absolute;
+  left: 45em;  
+  top: 9em;  
+  width: 40em;
+  text-align: center;
+  }
+  
+  #column_left {
+position: absolute;
+  left: 15em;  
+  top: 7em;  
+  width: 43em;
+  text-align: justify;
+}
+
+body {
+  padding-left: 10.5em;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: purple;
+  color: #333333;
+  }
+  
+nav {
+  margin: -6;
+  position: absolute;
+  top: 7em;
+  left: -0.5em;
+  width: 10em;
+  font-weight: bold;
+font-size: 15px;
+line-height:1.5;  }  
+  
+nav ul{
+  list-style-type: none;
+}
+  
+ nav li {
+  background: white;
+  padding-bottom: 0.3em;
+  border-right: em}
+  
+ nav a {
+  text-decoration: none }
+a:link {
+  color: #4895aa }
+a:visited {
+  color: purple }
+  
+    h1,h2,h3,h4 {
+	color: #0079aa;
+}
+
+

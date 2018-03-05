@@ -34,7 +34,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function [Bottom,Double_bottom_region,BS_bottom,idx_bottom,idx_ringdown]=detec_bottom_algo_v3(trans_obj,varargin)
+function [Bottom_tot,Double_bottom_region_tot,BS_bottom_tot,idx_bottom_tot,idx_ringdown_tot,idx_pings_tot]=detec_bottom_algo_v3(trans_obj,varargin)
 
 %profile on;
 %Parse Arguments
@@ -66,30 +66,38 @@ addParameter(p,'horz_filt',50,check_filt);
 addParameter(p,'shift_bot',0,check_shift_bot);
 addParameter(p,'rm_rd',0);
 addParameter(p,'load_bar_comp',[]);
+addParameter(p,'block_len',1e7,@(x) x>0);
 parse(p,trans_obj,varargin{:});
+
+
 
 if isempty(p.Results.reg_obj)
     idx_r=1:length(trans_obj.get_transceiver_range());
-    idx_pings=1:length(trans_obj.get_transceiver_pings());
-    mask=zeros(numel(idx_r),numel(idx_pings));
-    %reg_obj=region_cl('Idx_r',idx_r,'Idx_pings',idx_pings);
+    idx_pings_tot=1:length(trans_obj.get_transceiver_pings());
 else
-    idx_pings=p.Results.reg_obj.Idx_pings;
+    idx_pings_tot=p.Results.reg_obj.Idx_pings;
     idx_r=p.Results.reg_obj.Idx_r;
-    mask=~(p.Results.reg_obj.create_mask());
-    %reg_obj=p.Results.reg_obj; 
 end
 
-if p.Results.denoised>0
-    Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','spdenoised');
-    if isempty(Sp)
-        Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
-    end
-else
-    Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
+Bottom_tot=nan(1,numel(idx_pings_tot));
+Double_bottom_region_tot=false(numel(idx_r),numel(idx_pings_tot));
+BS_bottom_tot=nan(1,numel(idx_pings_tot));
+idx_bottom_tot=nan(numel(idx_r),numel(idx_pings_tot));
+idx_ringdown_tot=nan(1,numel(idx_pings_tot));
+
+block_size=nanmin(ceil(p.Results.block_len/numel(idx_r)),numel(idx_pings_tot));
+num_ite=ceil(numel(idx_pings_tot)/block_size);
+if ~isempty(p.Results.load_bar_comp)
+    set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_ite, 'Value',0);
 end
 
-Sp(mask>0)=-999;
+
+block_size=nanmin(ceil(p.Results.block_len/numel(idx_r)),numel(idx_pings_tot));
+num_ite=ceil(numel(idx_pings_tot)/block_size);
+if ~isempty(p.Results.load_bar_comp)
+    set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_ite, 'Value',0);
+end
+
 
 Range= trans_obj.get_transceiver_range(idx_r);
 dr=nanmean(diff(Range));
@@ -103,182 +111,218 @@ r_max=p.Results.r_max;
 
 thr_echo=-35;
 thr_cum=1;
-
-[nb_samples,nb_pings]=size(Sp);
-
 load_bar_comp=p.Results.load_bar_comp;
 if ~isempty(p.Results.load_bar_comp)
-    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_pings, 'Value',0);
+    set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_ite, 'Value',0);
 end
 
 
-if r_max==Inf
-    idx_r_max=nb_samples;
-else
-    [~,idx_r_max]=nanmin(abs(r_max+p.Results.vert_filt-Range));
-    idx_r_max=nanmin(idx_r_max,nb_samples);
-    idx_r_max=nanmax(idx_r_max,10);
-end
-
-[~,idx_r_min]=nanmin(abs(r_min-p.Results.vert_filt-Range));
-idx_r_min=nanmax(idx_r_min,10);
-idx_r_min=nanmin(idx_r_min,nb_samples);
-
-RingDown=Sp(3,:);
-Sp(1:idx_r_min,:)=nan;
-Sp(idx_r_max:end,:)=nan;
-
-%First let's find the bottom...
-
-dist=trans_obj.GPSDataPing.Dist;
-heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
-
-if ~all(diff(dist)==0)&&nb_pings>1&&p.Results.horz_filt>0
-    b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
-else
-    b_filter=ceil(nanmin(15,nb_pings/10));
-    %b_filter=nb_pings;
-end
-
-if p.Results.rm_rd
-    idx_ringdown=analyse_ringdown(RingDown);
-else
-    idx_ringdown=ones(size(RingDown));
-end
-
-BS=bsxfun(@minus,Sp,10*log10(Range));
-
-BS(isnan(BS))=-999;
-BS_ori=BS;
-
-
-BS(:,~idx_ringdown)=nan;
-BS_lin=10.^(BS/10);
-BS_lin(isnan(BS_lin))=0;
-
-BS_lin_red=BS_lin(idx_r_min:idx_r_max,:);
-
-
-filter_fun = @(block_struct) max(block_struct.data(:));
-BS_filtered_bot_lin=blockproc(BS_lin_red,[heigh_b_filter b_filter],filter_fun);
-[nb_samples_red,~]=size(BS_filtered_bot_lin);
-
-BS_filtered_bot=10*log10(BS_filtered_bot_lin);
-BS_filtered_bot_lin(isnan(BS_filtered_bot_lin))=0;
-
-cumsum_BS=cumsum((BS_filtered_bot_lin),1);
-cumsum_BS(cumsum_BS<0)=nan;
-if size(cumsum_BS,1)>1
-    diff_cum_BS=diff(10*log10(cumsum_BS),1,1);
-else
-    diff_cum_BS=zeros(size(cumsum_BS));
-end
-diff_cum_BS(isnan(diff_cum_BS))=0;
-
-[~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS,[],1);
-
-idx_start=idx_max_diff_cum_BS-1;
-idx_end=idx_max_diff_cum_BS+3;
-
-Bottom_region=(bsxfun(@ge,(1:nb_samples_red)',idx_start)&bsxfun(@le,(1:nb_samples_red)',idx_end));
-max_bs=nanmax(BS_filtered_bot);
-Max_BS_reg=(bsxfun(@gt,BS_filtered_bot,max_bs+thr_echo));
-Max_BS_reg(:,max_bs<thr_bottom)=0;
-
-Bottom_region=find_cluster((Bottom_region>0&BS_filtered_bot>=thr_bottom&Max_BS_reg),1);
-
-Bottom_region=ceil(filter(ones(1,3)/3,1,Bottom_region));
-Bottom_region_red=imresize(Bottom_region,size(BS_lin_red),'nearest');
-Bottom_region=zeros(size(BS_lin));
-Bottom_region(idx_r_min:idx_r_max,:)=Bottom_region_red;
-
-n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
-Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
-
-Bottom_region=Bottom_region(Permut,:);
-Bottom_region(1:n_permut,:)=0;
-
-idx_bottom=bsxfun(@times,Bottom_region,(1:nb_samples)');
-idx_bottom(~Bottom_region)=nan;
-idx_bottom(end,(nansum(idx_bottom)==0))=nb_samples;
-
-
-[I_bottom,J_bottom]=find(~isnan(idx_bottom));
-
-I_bottom(I_bottom>nb_samples)=nb_samples;
-
-J_double_bottom=[J_bottom ; J_bottom ; J_bottom];
-I_double_bottom=[I_bottom ; 2*I_bottom ; 2*I_bottom+1];
-I_double_bottom(I_double_bottom > nb_samples)=nan;
-idx_double_bottom=I_double_bottom(~isnan(I_double_bottom))+nb_samples*(J_double_bottom(~isnan(I_double_bottom))-1);
-Double_bottom=nan(nb_samples,nb_pings);
-Double_bottom(idx_double_bottom)=1;
-Double_bottom_region=~isnan(Double_bottom);
-
-%%%%%%%%%%%%%%%%%%%%%Bottom detection and BS analysis%%%%%%%%%%%%%%%%%%%%%%
-
-
-BS_lin_norm=bsxfun(@rdivide,Bottom_region.*BS_lin,nansum(Bottom_region.*BS_lin));
-
-
-BS_lin_norm_bis=BS_lin_norm;
-BS_lin_norm_bis(isnan(BS_lin_norm))=0;
-BS_lin_cumsum=(cumsum(BS_lin_norm_bis,1)./repmat(sum(BS_lin_norm_bis),size(Bottom_region,1),1));
-BS_lin_cumsum(BS_lin_cumsum<thr_cum/100)=Inf;
-[~,Bottom_temp]=min((abs(BS_lin_cumsum-thr_cum/100)));
-Bottom_temp_2=nanmin(idx_bottom);
-Bottom=nanmax(Bottom_temp,Bottom_temp_2);
-
-backstep=nanmax([1 Np]);
-
-for i=1:nb_pings
-    if mod(i,floor(nb_pings/100))==1
-        if ~isempty(load_bar_comp)
-            set(load_bar_comp.progress_bar,'Value',i);
-        end
+for ui=1:num_ite
+    idx_pings=idx_pings_tot((ui-1)*block_size+1:nanmin(ui*block_size,numel(idx_pings_tot)));
+    
+    if  isempty(p.Results.reg_obj)
+        mask=ones(numel(idx_r),numel(idx_pings));
+    else
+        mask=p.Results.reg_obj.get_sub_mask(idx_r-p.Results.reg_obj.Idx_r(1)+1,idx_pings-p.Results.reg_obj.Idx_pings(1)+1);
     end
-    BS_ping=BS_ori(:,i);
-    if Bottom(i)>2*backstep
-        Bottom(i)=Bottom(i)-backstep;
-        if Bottom(i)>backstep
-            [bs_val,idx_max_tmp]=nanmax(BS_ping((Bottom(i)-backstep):Bottom(i)-1));
-        else
-            continue;
+    
+    if p.Results.denoised>0
+        Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','spdenoised');
+        if isempty(Sp)
+            Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
         end
-        
-        while bs_val>=BS_ping(Bottom(i))+thr_backstep &&bs_val>-999
-            if Bottom(i)-(backstep-idx_max_tmp+1)>0
-                Bottom(i)=Bottom(i)-(backstep-idx_max_tmp+1);
+    else
+        Sp=trans_obj.Data.get_subdatamat(idx_r,idx_pings,'field','sp');
+    end
+    
+    Sp(mask==0)=-999;
+    
+    [nb_samples,nb_pings]=size(Sp);
+       
+    
+    if r_max==Inf
+        idx_r_max=nb_samples;
+    else
+        [~,idx_r_max]=nanmin(abs(r_max+p.Results.vert_filt-Range));
+        idx_r_max=nanmin(idx_r_max,nb_samples);
+        idx_r_max=nanmax(idx_r_max,10);
+    end
+    
+    [~,idx_r_min]=nanmin(abs(r_min-p.Results.vert_filt-Range));
+    idx_r_min=nanmax(idx_r_min,10);
+    idx_r_min=nanmin(idx_r_min,nb_samples);
+    
+    ringdown=trans_obj.Data.get_subdatamat(ceil(Np/3),idx_pings,'field','power');
+    RingDown=pow2db_perso(ringdown);
+    
+    Sp(1:idx_r_min,:)=nan;
+    Sp(idx_r_max:end,:)=nan;
+    
+    %First let's find the bottom...
+    
+    dist=trans_obj.GPSDataPing.Dist;
+    heigh_b_filter=floor(p.Results.vert_filt/dr)+1;
+    
+    if ~all(diff(dist)==0)&&nb_pings>1&&p.Results.horz_filt>0
+        b_filter=floor(p.Results.horz_filt/nanmax(diff(dist)))+1;
+    else
+        b_filter=ceil(nanmin(15,nb_pings/10));
+        %b_filter=nb_pings;
+    end
+    
+    if p.Results.rm_rd
+        idx_ringdown=analyse_ringdown(RingDown);
+    else
+        idx_ringdown=ones(size(RingDown));
+    end
+    
+    BS=bsxfun(@minus,Sp,10*log10(Range));
+    
+    BS(isnan(BS))=-999;
+    BS_ori=BS;
+    
+    
+    BS(:,~idx_ringdown)=nan;
+    BS_lin=10.^(BS/10);
+    BS_lin(isnan(BS_lin))=0;
+    
+    BS_lin_red=BS_lin(idx_r_min:idx_r_max,:);
+    
+    
+    filter_fun = @(block_struct) max(block_struct.data(:));
+    BS_filtered_bot_lin=blockproc(BS_lin_red,[heigh_b_filter b_filter],filter_fun);
+    [nb_samples_red,~]=size(BS_filtered_bot_lin);
+    
+    BS_filtered_bot=10*log10(BS_filtered_bot_lin);
+    BS_filtered_bot_lin(isnan(BS_filtered_bot_lin))=0;
+    
+    cumsum_BS=cumsum((BS_filtered_bot_lin),1);
+    cumsum_BS(cumsum_BS<0)=nan;
+    if size(cumsum_BS,1)>1
+        diff_cum_BS=diff(10*log10(cumsum_BS),1,1);
+    else
+        diff_cum_BS=zeros(size(cumsum_BS));
+    end
+    diff_cum_BS(isnan(diff_cum_BS))=0;
+    
+    [~,idx_max_diff_cum_BS]=nanmax(diff_cum_BS,[],1);
+    
+    idx_start=idx_max_diff_cum_BS-1;
+    idx_end=idx_max_diff_cum_BS+3;
+    
+    Bottom_region=(bsxfun(@ge,(1:nb_samples_red)',idx_start)&bsxfun(@le,(1:nb_samples_red)',idx_end));
+    max_bs=nanmax(BS_filtered_bot);
+    Max_BS_reg=(bsxfun(@gt,BS_filtered_bot,max_bs+thr_echo));
+    Max_BS_reg(:,max_bs<thr_bottom)=0;
+    
+    Bottom_region=find_cluster((Bottom_region>0&BS_filtered_bot>=thr_bottom&Max_BS_reg),1);
+    
+    Bottom_region=ceil(filter(ones(1,3)/3,1,Bottom_region));
+    Bottom_region_red=imresize(Bottom_region,size(BS_lin_red),'nearest');
+    Bottom_region=zeros(size(BS_lin));
+    Bottom_region(idx_r_min:idx_r_max,:)=Bottom_region_red;
+    
+    n_permut=nanmin(floor((heigh_b_filter+1)/4),nb_samples);
+    Permut=[nb_samples-n_permut+1:nb_samples 1:nb_samples-n_permut];
+    
+    Bottom_region=Bottom_region(Permut,:);
+    Bottom_region(1:n_permut,:)=0;
+    
+    idx_bottom=bsxfun(@times,Bottom_region,(1:nb_samples)');
+    idx_bottom(~Bottom_region)=nan;
+    idx_bottom(end,(nansum(idx_bottom)==0))=nb_samples;
+    
+    
+    [I_bottom,J_bottom]=find(~isnan(idx_bottom));
+    
+    I_bottom(I_bottom>nb_samples)=nb_samples;
+    
+    J_double_bottom=[J_bottom ; J_bottom ; J_bottom];
+    I_double_bottom=[I_bottom ; 2*I_bottom ; 2*I_bottom+1];
+    I_double_bottom(I_double_bottom > nb_samples)=nan;
+    idx_double_bottom=I_double_bottom(~isnan(I_double_bottom))+nb_samples*(J_double_bottom(~isnan(I_double_bottom))-1);
+    Double_bottom=nan(nb_samples,nb_pings);
+    Double_bottom(idx_double_bottom)=1;
+    Double_bottom_region=~isnan(Double_bottom);
+    
+    %%%%%%%%%%%%%%%%%%%%%Bottom detection and BS analysis%%%%%%%%%%%%%%%%%%%%%%
+    
+    
+    BS_lin_norm=bsxfun(@rdivide,Bottom_region.*BS_lin,nansum(Bottom_region.*BS_lin));
+    
+    
+    BS_lin_norm_bis=BS_lin_norm;
+    BS_lin_norm_bis(isnan(BS_lin_norm))=0;
+    BS_lin_cumsum=(cumsum(BS_lin_norm_bis,1)./repmat(sum(BS_lin_norm_bis),size(Bottom_region,1),1));
+    BS_lin_cumsum(BS_lin_cumsum<thr_cum/100)=Inf;
+    [~,Bottom_temp]=min((abs(BS_lin_cumsum-thr_cum/100)));
+    Bottom_temp_2=nanmin(idx_bottom);
+    Bottom=nanmax(Bottom_temp,Bottom_temp_2);
+    
+    backstep=nanmax([1 Np]);
+    
+    for i=1:nb_pings
+        if mod(i,floor(nb_pings/100))==1
+            if ~isempty(load_bar_comp)
+                set(load_bar_comp.progress_bar,'Value',i);
             end
+        end
+        BS_ping=BS_ori(:,i);
+        if Bottom(i)>2*backstep
+            Bottom(i)=Bottom(i)-backstep;
             if Bottom(i)>backstep
                 [bs_val,idx_max_tmp]=nanmax(BS_ping((Bottom(i)-backstep):Bottom(i)-1));
             else
-                break;
+                continue;
+            end
+            
+            while bs_val>=BS_ping(Bottom(i))+thr_backstep &&bs_val>-999
+                if Bottom(i)-(backstep-idx_max_tmp+1)>0
+                    Bottom(i)=Bottom(i)-(backstep-idx_max_tmp+1);
+                end
+                if Bottom(i)>backstep
+                    [bs_val,idx_max_tmp]=nanmax(BS_ping((Bottom(i)-backstep):Bottom(i)-1));
+                else
+                    break;
+                end
             end
         end
     end
+    
+    % figure();plot(Bottom_temp)
+    % hold on;plot(Bottom_temp_2)
+    % plot(Bottom);
+    
+    Bottom(Bottom==1)=nan;
+    Bottom(nanmin(idx_bottom)>=nanmax(1,nb_samples-round(heigh_b_filter)/2))=nan;
+    
+    BS_filter=(20*log10(filter(ones(4*Np,1)/(4*Np),1,10.^(BS/20)))).*Bottom_region;
+    BS_filter(Bottom_region==0)=nan;
+    
+    BS_bottom=nanmax(BS_filter);
+    BS_bottom(isnan(Bottom))=nan;
+    
+    Bottom=Bottom- ceil(p.Results.shift_bot./nanmax(diff(Range)));
+    Bottom(Bottom<=0)=1;
+    
+    idx_pings=idx_pings-idx_pings_tot(1)+1;
+    % profile off;
+    % profile viewer;
+    Bottom_tot(idx_pings)=Bottom;
+    Double_bottom_region_tot(:,idx_pings)=Double_bottom_region;
+    BS_bottom_tot(idx_pings)=BS_bottom;
+    idx_bottom_tot(:,idx_pings)=idx_bottom;
+    idx_ringdown_tot(idx_pings)=idx_ringdown;
+    
+    if ~isempty(p.Results.load_bar_comp)
+        set(p.Results.load_bar_comp.progress_bar, 'Value',ui);
+    end
 end
 
-% figure();plot(Bottom_temp)
-% hold on;plot(Bottom_temp_2)
-% plot(Bottom);
 
-Bottom(Bottom==1)=nan;
-Bottom(nanmin(idx_bottom)>=nanmax(1,nb_samples-round(heigh_b_filter)/2))=nan;
-
-BS_filter=(20*log10(filter(ones(4*Np,1)/(4*Np),1,10.^(BS/20)))).*Bottom_region;
-BS_filter(Bottom_region==0)=nan;
-
-BS_bottom=nanmax(BS_filter);
-BS_bottom(isnan(Bottom))=nan;
-
-Bottom=Bottom- ceil(p.Results.shift_bot./nanmax(diff(Range)));
-Bottom(Bottom<=0)=1;
+Bottom_tot=Bottom_tot+idx_r(1)-1;
 
 
-bottom_ori=trans_obj.get_bottom_idx();
-bottom_ori(idx_pings)=Bottom+idx_r(1)-1;
-Bottom=bottom_ori;
 % profile off;
 % profile viewer;
 

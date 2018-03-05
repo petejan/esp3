@@ -1,7 +1,7 @@
 function set_ST(trans_obj,ST)
 
 if ~isempty(ST)
-    dataMat=nan(numel(trans_obj.Range),numel(trans_obj.Time));
+    dataMat=-999*ones(numel(trans_obj.Range),numel(trans_obj.Time));
     switch trans_obj.Mode
     case 'CW'
             np=ceil(nanmean(ST.Transmitted_pulse_length));
@@ -16,7 +16,7 @@ if ~isempty(ST)
         dataMat(idx(~idx_nope))=ST.TS_comp(~idx_nope);
     end
     
-    trans_obj.Data.replace_sub_data('singletarget',dataMat);
+    trans_obj.Data.replace_sub_data_v2('singletarget',dataMat,[],-999);
     trans_obj.ST=ST;
 end
 

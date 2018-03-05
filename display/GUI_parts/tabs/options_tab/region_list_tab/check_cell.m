@@ -1,7 +1,7 @@
 function check_cell(src,~,main_figure)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-region_tab_comp=getappdata(main_figure,'Region_tab');
+reglist_tab_comp=getappdata(main_figure,'Reglist_tab');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 dist=trans_obj.GPSDataPing.Dist;
@@ -9,8 +9,8 @@ dist=trans_obj.GPSDataPing.Dist;
 nb_pings=length(trans_obj.get_transceiver_pings());
 nb_samples=length(trans_obj.get_transceiver_range());
 
-w_units=get(region_tab_comp.cell_w_unit,'string');
-w_unit_idx=get(region_tab_comp.cell_w_unit,'value');
+w_units=get(reglist_tab_comp.cell_w_unit,'string');
+w_unit_idx=get(reglist_tab_comp.cell_w_unit,'value');
 if isempty(w_unit_idx)
     w_unit_idx=1;
 end
@@ -18,8 +18,8 @@ w_unit=w_units{w_unit_idx};
 
 
 
-h_units=get(region_tab_comp.cell_h_unit,'string');
-h_unit_idx=get(region_tab_comp.cell_h_unit,'value');
+h_units=get(reglist_tab_comp.cell_h_unit,'string');
+h_unit_idx=get(reglist_tab_comp.cell_h_unit,'value');
 if isempty(h_unit_idx)
     h_unit_idx=1;
 end

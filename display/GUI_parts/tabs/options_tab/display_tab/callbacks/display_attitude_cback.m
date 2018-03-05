@@ -37,16 +37,17 @@
 function display_attitude_cback(~,~,main_figure)
 
 layer=getappdata(main_figure,'Layer');
-
+curr_disp=getappdata(main_figure,'Curr_disp');
 if isempty(layer)
     return;
 end
 
 layers_Str=list_layers(layer);
-new_figs=layer.AttitudeNav.display_att(main_figure);
+[trans_obj,~]=layer.get_trans(curr_disp);
+new_figs=trans_obj.AttitudeNavPing.display_att(main_figure);
 
 for i=1:length(new_figs)
-    set(new_figs(i),'Tag',sprintf('attitude%s',layer.Unique_ID),'Name',sprintf('Attitude  %s',layers_Str{1}));
+    set(new_figs(i),'Name',sprintf('Attitude  %s',layers_Str{1}));
 end
 
 end

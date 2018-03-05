@@ -88,7 +88,7 @@ dr=nanmax(floor(nb_samples/outputSize(2))-1,1);
 dp=nanmax(floor(nb_pings/outputSize(1))-1,1);
 
 % profile on;
-data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+ [data,sc]=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
 %data=trans_obj.Data.get_datamat(fieldname);
 % profile off;
 % profile viewer;
@@ -99,10 +99,10 @@ if isempty(data)
     switch  fieldname
         case 'spdenoised'
             fieldname='sp';
-            data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
+            [data,sc]=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);
         case 'svdenoised'
             fieldname='sv';
-            data=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);           
+            [data,sc]=trans_obj.Data.get_subdatamat(idx_r(1):dr:idx_r(end),idx_ping(1):dp:idx_ping(end),'field',fieldname);           
     end
     
 end
@@ -111,16 +111,12 @@ x_data_disp=xdata(idx_ping);
 y_data_disp=ydata(idx_r);
 if isempty(data)
     data=nan(numel(y_data_disp),numel(x_data_disp));
+    sc='lin';
 end
 
-
-switch lower(deblank(fieldname))
-    case {'y','y_imag','y_real'}
+switch sc
+    case 'lin'
         data_mat=10*log10(abs(data));
-    case {'power','powerdenoised','powerunmatched'}
-        data_mat_lin=data;
-        data_mat_lin(data_mat_lin<=0)=nan;
-        data_mat=10*log10(data_mat_lin);
     otherwise
         data_mat=data;
 end

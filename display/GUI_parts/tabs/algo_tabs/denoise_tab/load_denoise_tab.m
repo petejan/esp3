@@ -43,34 +43,33 @@ denoise_tab_comp.denoise_tab=uitab(algo_tab_panel,'Title','Denoise');
 algo=algo_cl('Name','Denoise');
 varin=algo.Varargin;
 
-x_ini=0.0;
-y_ini=1;
-x_sep=0.02;
-y_sep=0.02;
+gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_2(4,2,x_ini,y_ini,x_sep,y_sep);
+pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,150,gui_fmt.box_w,gui_fmt.box_h);
 
-parameters_1=uipanel(denoise_tab_comp.denoise_tab,'title','','Position',[0. 0.2 0.3 0.7],'fontsize',11);
-
-uicontrol(parameters_1,'Style','text','units','normalized','string','Horz. Filt.(nb pings)','pos',pos{1,1},'HorizontalAlignment','right');
-denoise_tab_comp.HorzFilt=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.HorzFilt),'BackgroundColor','white','callback',{@ check_fmt_box,1,inf,varin.HorzFilt,'%.0f'});
+p_button=pos{5,1}{1};
+p_button(3)=gui_fmt.button_w;
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Vert. Filt.(m)','pos',pos{2,1},'HorizontalAlignment','right');
-denoise_tab_comp.VertFilt=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.VertFilt),'BackgroundColor','white','callback',{@ check_fmt_box,0,inf,varin.VertFilt,'%.2f'});
+uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.txtStyle,'string','Horz. Filt.(nb pings)','pos',pos{1,1}{1});
+denoise_tab_comp.HorzFilt=uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.edtStyle,'pos',pos{1,1}{2},'string',num2str(varin.HorzFilt),'callback',{@ check_fmt_box,1,inf,varin.HorzFilt,'%.0f'});
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','Noise Level Thr(db)','pos',pos{3,1},'HorizontalAlignment','right');
-denoise_tab_comp.NoiseThr=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.NoiseThr),'BackgroundColor','white','callback',{@ check_fmt_box,-180,-80,varin.NoiseThr,'%.0f'});
+uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.txtStyle,'string','Vert. Filt.(m)','pos',pos{2,1}{1});
+denoise_tab_comp.VertFilt=uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.edtStyle,'pos',pos{2,1}{2},'string',num2str(varin.VertFilt),'callback',{@ check_fmt_box,0,inf,varin.VertFilt,'%.2f'});
 
 
-uicontrol(parameters_1,'Style','text','units','normalized','string','SNR Thr(dB)','pos',pos{4,1},'HorizontalAlignment','right');
-denoise_tab_comp.SNRThr=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{4,2},'string',num2str(varin.SNRThr),'BackgroundColor','white','callback',{@ check_fmt_box,0,30,varin.SNRThr,'%.0f'});
+uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.txtStyle,'string','Noise Level Thr(db)','pos',pos{3,1}{1});
+denoise_tab_comp.NoiseThr=uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.edtStyle,'pos',pos{3,1}{2},'string',num2str(varin.NoiseThr),'callback',{@ check_fmt_box,-180,-80,varin.NoiseThr,'%.0f'});
 
 
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.1],'callback',{@validate,main_figure});
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'Denoise'});
-uicontrol(denoise_tab_comp.denoise_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.1],'callback',{@save_display_algos_config_callback,main_figure,'Denoise'});
+uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.txtStyle,'string','SNR Thr(dB)','pos',pos{4,1}{1});
+denoise_tab_comp.SNRThr=uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.edtStyle,'pos',pos{4,1}{2},'string',num2str(varin.SNRThr),'callback',{@ check_fmt_box,0,30,varin.SNRThr,'%.0f'});
+
+
+uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.pushbtnStyle,'String','Apply','pos',p_button+[1*gui_fmt.button_w 0 0 0],'callback',{@validate,main_figure});
+%uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.pushbtnStyle,'String','Copy','pos',[0.75 0.1 0.1 0.1],'callback',{@copy_across_algo,main_figure,'Denoise'});
+uicontrol(denoise_tab_comp.denoise_tab,gui_fmt.pushbtnStyle,'String','Save','pos',p_button+[2*gui_fmt.button_w 0 0 0],'callback',{@save_display_algos_config_callback,main_figure,'Denoise'});
 
 
 %set(findall(denoise_tab_comp.denoise_tab, '-property', 'Enable'), 'Enable', 'off');

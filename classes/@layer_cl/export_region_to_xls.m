@@ -28,9 +28,9 @@ for u=1:numel(active_reg)
     reg_descriptors=layer_obj.Transceivers(p.Results.idx_freq).get_region_descriptors(active_reg(u));
     
     for ir=1:length(idx_freq_sort)
-        output_reg=layer_obj.Transceivers(ir).integrate_region_v4(regs(ir));
+        output_reg=layer_obj.Transceivers(ir).integrate_region_v5(regs(ir));
         reg_output_table=reg_output_to_table(output_reg);
-        %writetable(reg_output_table,p.Results.output_f,'Sheet',sprintf('%.0fkHz',layer_obj.Frequencies(idx_freq_sort(ir))/1e3));
+        %writetable(reg_output_table,p.Results.output_f,'Sheet',sprintf('%.0f kHz',layer_obj.Frequencies(idx_freq_sort(ir))/1e3));
         writetable(reg_output_table,p.Results.output_f,'Sheet',ir+1);
         output_reg.Sv_mean_lin(output_reg.Sv_mean_lin==0)=nan;
         Sv_mean=pow2db_perso(nanmean(output_reg.Sv_mean_lin(:)));

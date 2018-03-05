@@ -122,23 +122,23 @@ classdef region_cl
         function str=disp_str(obj)
             str=sprintf('%s(%.0f)',obj.Tag,obj.ID);
         end
-        
-        function mask=create_mask(obj)
-            nb_pings=length(obj.Idx_pings);
-            nb_samples=length(obj.Idx_r);
-            mask=true(nb_samples,nb_pings);
+        function mask=get_sub_mask(obj,idx_r,idx_p)
+            
+            
+            nb_pings=length(idx_r);
+            nb_samples=length(idx_p);
+            mask=ones(nb_samples,nb_pings);
             
             switch obj.Shape
                 case 'Polygon'
-                    %mask=mask_from_cont(obj.X_cont,obj.Y_cont,nb_samples,nb_pings);
-                    mask=mask_from_poly(obj.Poly);
+                    mask=obj.MaskReg(idx_r,idx_p);
             end
             
-            
         end
-        
-        
+      
+              
         function mask=get_mask(obj)
+               
             nb_pings=length(obj.Idx_pings);
             nb_samples=length(obj.Idx_r);
             mask=ones(nb_samples,nb_pings);

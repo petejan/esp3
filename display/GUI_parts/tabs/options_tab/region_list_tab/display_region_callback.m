@@ -29,7 +29,9 @@ for i=1:length(curr_disp.Active_reg_ID)
     else
         field='sv';
     end
-    
-    reg_curr.display_region(trans_obj,'main_figure',main_figure,'line_obj',line_obj,'field',field);
+    show_status_bar(main_figure);
+    load_bar_comp=getappdata(main_figure,'Loading_bar');
+    reg_curr.display_region(trans_obj,'main_figure',main_figure,'line_obj',line_obj,'field',field,'load_bar_comp',load_bar_comp);
+    hide_status_bar(main_figure);
 end
 end

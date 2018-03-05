@@ -56,7 +56,7 @@ addParameter(p,'gui_main_handle',matlab.ui.Figure.empty(),@ishandle);
 parse(p,Filenames,varargin{:});
 
 % get results
-layers_out      = p.Results.layers;
+layers_ori      = p.Results.layers;
 origin          = p.Results.origin;
 cvs_root        = p.Results.cvs_root;
 data_root       = p.Results.data_root;
@@ -132,7 +132,7 @@ for i = 1:length(Filenames)
         
         % step 1.2 Load files
         [layers_new,layers_old] = surv_obj.SurvInput.load_files_from_survey_input('PathToMemmap',PathToMemmap,'cvs_root',cvs_root,'origin',origin,...
-            'layers',layers_out,'Fieldnames',fields_req,'gui_main_handle',gui_main_handle);
+            'layers',layers_ori,'Fieldnames',fields_req,'gui_main_handle',gui_main_handle);
         
     catch err
         
@@ -143,8 +143,8 @@ for i = 1:length(Filenames)
     end
     
     % step 2: reorganize layers    
-    layers_out = [layers_old layers_new];
-    layers_out = reorder_layers_time(layers_out);
+    layers = [layers_old layers_new];
+    layers_out = reorder_layers_time(layers);
     
     % path for saving results
     if isempty(gui_main_handle)
@@ -159,7 +159,7 @@ for i = 1:length(Filenames)
     
     % step 3: run the integration script
     try
-        surv_obj.generate_output_v2(layers_new,'PathToResults',PathToFile);
+        surv_obj.generate_output_v2(layers_new,'PathToResults',PathToFile,'load_bar_comp',getappdata(gui_main_handle,'load_bar_comp'));
     catch err
         disp(err.message);
         warning('Script file %s could not be run.',Filenames{i});

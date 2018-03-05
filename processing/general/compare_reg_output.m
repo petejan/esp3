@@ -41,16 +41,19 @@ for i=1:length(fields)
     end
     
     diff_cells=reg_1_f-reg_2_f;
-    if any(diff_cells(:)~=0)||any(isnan(diff_cells(:)))
+    diff_mean=nanmean(diff_cells(:));
+    if any(reg_2_f(:)~=reg_1_f(:)&~(isnan(reg_2_f(:))&isnan(reg_1_f(:))))&&diff_mean>eps
         diff_mean=nanmean(diff_cells(:));
         
         imagesc(ax2,reg_1_f,'AlphaData',alpha_1,'CDataMapping','scaled');colorbar(ax2);
-        imagesc(ax3,reg_2_f,'AlphaData',alpha_2,'CDataMapping','scaled');colorbar(ax3);
-        
+        imagesc(ax3,reg_2_f,'AlphaData',alpha_2,'CDataMapping','scaled');colorbar(ax3);        
         image(ax,diff_cells,'CDataMapping','scaled');colorbar(ax);
         title(ax,sprintf('Average diff for %s: %f',fields{i},diff_mean),'interpreter','none');
+        pause(1);
+    else
+       fprintf('%s identical\n',fields{i}) 
     end
-    pause(1);
+   
     
 end
 close(fig);

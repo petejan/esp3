@@ -169,7 +169,7 @@ selected_scripts=getappdata(hObject,'SelectedScripts');
 app_path=getappdata(main_figure,'App_path');
 layers=getappdata(main_figure,'Layers');
 
-
+show_status_bar(main_figure);
 switch flag
     case 'mbs'
         [layers,~]=process_surveys(selected_scripts,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','mbs','cvs_root',app_path.cvs_root,'data_root',app_path.data_root,'tag',src.Tag,'gui_main_handle',main_figure);
@@ -177,6 +177,8 @@ switch flag
         selected_scripts_full=cellfun(@(x) fullfile(app_path.scripts,x),selected_scripts,'UniformOutput',0);
         [layers,~]=process_surveys(selected_scripts_full,'PathToMemmap',app_path.data_temp,'layers',layers,'origin','xml','gui_main_handle',main_figure);
 end
+hide_status_bar(main_figure);
+
 if ~isempty(layers)
     [~,found]=find_layer_idx(layers,0);
 else

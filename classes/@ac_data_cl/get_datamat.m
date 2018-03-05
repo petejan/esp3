@@ -7,7 +7,7 @@ if found
     
     for icell=1:length(data.SubData(idx).Memap)
         idx_ping=(data.FileId==icell);
-        datamat(:,idx_ping)=double(data.SubData(idx).Memap{icell}.Data.(lower(deblank(field))));
+        datamat(:,idx_ping)=data.SubData(idx).ConvFactor*double(data.SubData(idx).Memap{icell}.Data.(lower(deblank(field))));
     end
 else
     datamat=[];

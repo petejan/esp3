@@ -178,7 +178,7 @@ bot_int(isnan(bot_int)) = inf;
 
 % meshgrid the vectors in X and Y as well as range (horz) and sample counter 
 [x_mat,y_mat] = meshgrid(x,y);
-[~,sub_r_mat] = meshgrid(bot_int,sub_r);
+
 %[sub_pings_mat,sub_samples_mat] = meshgrid(sub_pings,sub_samples);
 
 
@@ -292,7 +292,7 @@ output.Layer_depth_min=nan(N_y,N_x);
 output.Layer_depth_min(~idx_mask)=sub_r(idx_s_min);
  
 output.Layer_depth_max=nan(N_y,N_x);
-output.Layer_depth_max(~idx_mask)=sub_r(idx_s_max);
+output.Layer_depth_max(~idx_mask)=sub_r(idx_s_max)+dr;
 
 % average depth of each cell
 output.Depth_mean = (output.Layer_depth_min+output.Layer_depth_max)/2;
@@ -307,7 +307,7 @@ switch lower(region.Cell_h_unit)
         output.Range_ref_min = output.Range_ref_min*dr;
         output.Range_ref_max = output.Range_ref_max*dr;
 end
-
+output.Range_ref_max = output.Range_ref_max+dr;
 % "thickness" (height of each cell)
 output.Thickness_tot = abs(output.Range_ref_max-output.Range_ref_min);
 output.Thickness_mean = (output.nb_samples)./output.Nb_good_pings*dr;
@@ -324,7 +324,7 @@ output.Lon_S = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmin,nan)';
 output.Lat_E = accumarray(x_mat_idx(1,:)',sub_lat(:),[N_x 1],@nanmax,nan)';
 output.Lon_E = accumarray(x_mat_idx(1,:)',sub_lon(:),[N_x 1],@nanmax,nan)';
 
-output.Sv_mean_lin = eint_sparse./(output.Nb_good_pings.*output.Thickness_tot);
+output.Sv_mean_lin = eint_sparse./(output.Nb_good_pings.*output.Thickness_mean);
 % output.Sv_mean_lin      = eint_sparse./output.nb_samples/dr;
 % output.Sv_mean_lin(output.nb_samples==0)=0;
 
@@ -341,7 +341,7 @@ for ifi = 1:length(fields)
 end
 
 if p.Results.keep_all==0
-    
+    [N_y,N_x]=size(output.Sv_mean_lin);
     
     idx_rem = [];
     

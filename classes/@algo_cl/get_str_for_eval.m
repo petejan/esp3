@@ -24,7 +24,7 @@
 %
 % *NEW FEATURES*
 %
-% * 2017-09-04: first version (Yoann Ladroit). 
+% * 2017-09-04: first version (Yoann Ladroit).
 %
 % *EXAMPLE*
 %
@@ -42,7 +42,7 @@ str_eval=[];
 fields_algo_in=fields(algo_obj.Varargin);
 
 for i=1:length(fields_algo_in)
-
+    
     if ischar(algo_obj.Varargin.(fields_algo_in{i}))
         str_eval=[str_eval sprintf('''%s'',',fields_algo_in{i})];
         str_eval=[str_eval sprintf('''%s'',',algo_obj.Varargin.(fields_algo_in{i}))];
@@ -51,7 +51,7 @@ for i=1:length(fields_algo_in)
         str_eval=[str_eval '['];
         str_eval=[str_eval sprintf('%f ',algo_obj.Varargin.(fields_algo_in{i}))];
         str_eval=[str_eval '],'];
-    end 
+    end
 end
 
 str_eval(end)=[];
@@ -62,6 +62,7 @@ fields_algo_out=algo_obj.Varargout;
 for i=1:length(fields_algo_out)
     str_output=[str_output sprintf('%s ',fields_algo_out{i})];
 end
-str_output(end)=[];
-
+if ~isempty(str_output)
+    str_output(end)=[];
+end
 

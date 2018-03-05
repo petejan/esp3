@@ -43,29 +43,27 @@ bad_ping_tab_comp.bad_ping_tab=uitab(algo_tab_panel,'Title','Bad Transmit');
 algo=algo_cl('Name','BadPingsV2');
 varin=algo.Varargin;
 
-x_ini=0.0;
-y_ini=1;
-x_sep=0.02;
-y_sep=0.02;
+gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_2(6,2,x_ini,y_ini,x_sep,y_sep);
+pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,150,gui_fmt.box_w,gui_fmt.box_h);
 
-parameters_1=uipanel(bad_ping_tab_comp.bad_ping_tab,'title','','Position',[0.05 0.05 0.3 0.9],'fontsize',11);
+p_button=pos{4,1}{1};
+p_button(3)=gui_fmt.button_w;
 
-bad_ping_tab_comp.BS_std_bool=uicontrol(parameters_1,'Style','checkbox','Value',1,'String','BS fluct. limit (dB)','units','normalized','Position',pos{1,1});
-bad_ping_tab_comp.BS_std=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{1,2},'string',num2str(varin.BS_std),'BackgroundColor','white','callback',{@check_fmt_box,0,20,varin.BS_std,'%.0f'});
+bad_ping_tab_comp.BS_std_bool=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',1,'String','BS fluct. limit (dB)','units','pixels','Position',pos{1,1}{1});
+bad_ping_tab_comp.BS_std=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Edit','units','pixels','pos',pos{1,1}{2},'string',num2str(varin.BS_std),'BackgroundColor','white','callback',{@check_fmt_box,0,20,varin.BS_std,'%.0f'});
 
-bad_ping_tab_comp.Above=uicontrol(parameters_1,'Style','checkbox','Value',1,'String','Above Bot. thr (dB)','units','normalized','Position',pos{2,1});
-bad_ping_tab_comp.thr_spikes_Above=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{2,2},'string',num2str(varin.thr_spikes_Above),'BackgroundColor','white','callback',{@check_fmt_box,0,100,varin.thr_spikes_Above,'%.0f'});
+bad_ping_tab_comp.Above=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',1,'String','Above Bot. thr (dB)','units','pixels','Position',pos{2,1}{1});
+bad_ping_tab_comp.thr_spikes_Above=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Edit','units','pixels','pos',pos{2,1}{2},'string',num2str(varin.thr_spikes_Above),'BackgroundColor','white','callback',{@check_fmt_box,0,100,varin.thr_spikes_Above,'%.0f'});
 
-bad_ping_tab_comp.Below=uicontrol(parameters_1,'Style','checkbox','Value',0,'String','Below Bot. thr (dB)','units','normalized','Position',pos{3,1});
-bad_ping_tab_comp.thr_spikes_Below=uicontrol(parameters_1,'Style','Edit','units','normalized','pos',pos{3,2},'string',num2str(varin.thr_spikes_Below),'BackgroundColor','white','callback',{@ check_fmt_box,0,100,varin.thr_spikes_Below,'%.0f'});
+bad_ping_tab_comp.Below=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',0,'String','Below Bot. thr (dB)','units','pixels','Position',pos{3,1}{1});
+bad_ping_tab_comp.thr_spikes_Below=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Edit','units','pixels','pos',pos{3,1}{2},'string',num2str(varin.thr_spikes_Below),'BackgroundColor','white','callback',{@ check_fmt_box,0,100,varin.thr_spikes_Below,'%.0f'});
 
-bad_ping_tab_comp.percent_BP=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','text','String','','units','normalized','pos',[0.6 0.5 0.4 0.2],'fontweight','bold','fontsize',14);
+bad_ping_tab_comp.percent_BP=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','text','String','','units','pixels','pos',pos{2,2}{1}+[0 0 gui_fmt.txt_w 0],'fontweight','bold','fontsize',14);
 
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','normalized','pos',[0.75 0.1 0.1 0.12],'callback',{@copy_across_algo,main_figure,'BadPingsV2'});
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','normalized','pos',[0.85 0.1 0.1 0.12],'callback',{@validate,main_figure});
-uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Save','units','normalized','pos',[0.65 0.1 0.1 0.12],'callback',{@save_display_algos_config_callback,main_figure,'BadPingsV2'});
+%uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Copy','units','pixels','pos',p_button+[1*gui_fmt.button_w 0 0 0],'callback',{@copy_across_algo,main_figure,'BadPingsV2'});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Apply','units','pixels','pos',p_button+[1*gui_fmt.button_w 0 0 0],'callback',{@validate,main_figure});
+uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','pushbutton','String','Save','units','pixels','pos',p_button+[2*gui_fmt.button_w 0 0 0],'callback',{@save_display_algos_config_callback,main_figure,'BadPingsV2'});
 
 setappdata(main_figure,'Bad_ping_tab',bad_ping_tab_comp);
 end

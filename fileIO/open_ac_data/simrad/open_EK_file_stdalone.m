@@ -108,7 +108,7 @@ if ~isequal(Filename_cell, 0)
     for uu=1:nb_files
         Filename=Filename_cell{uu};
         [path_f,fileN,~]=fileparts(Filename);
-         
+        
         str_disp=sprintf('Opening File %d/%d : %s\n',uu,nb_files,Filename);
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_files,'Value',uu-1);
@@ -153,7 +153,7 @@ if ~isequal(Filename_cell, 0)
                 list_freq_str=cell(1,transceivercount);
                 for ki=1:transceivercount
                     vec_freq_temp(ki)=frequency(ki);
-                    list_freq_str{ki}=num2str(frequency(ki),'%.0f');
+                    list_freq_str{ki}=num2str(frequency(ki)/1e3,'%.0f kHz');
                 end
                 
                 if p.Results.GPSOnly==0
@@ -202,9 +202,9 @@ if ~isequal(Filename_cell, 0)
             fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
             
             if exist(fileIdx,'file')==0
-
+                
                 %idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
-
+                
                 idx_raw_obj=idx_from_raw_v2(Filename,p.Results.load_bar_comp);
                 
                 save(fileIdx,'idx_raw_obj');
@@ -234,22 +234,22 @@ if ~isequal(Filename_cell, 0)
                 continue;
             end
             
-                [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,...
-                 'Frequencies',vec_freq,...
-                 'GPSOnly',p.Results.GPSOnly,...
-                 'FieldNames',p.Results.FieldNames,...
-                 'PathToMemmap',p.Results.PathToMemmap,...
-                 'load_bar_comp',p.Results.load_bar_comp);
-% %              
-%            [~,~,~,~] =data_from_raw_idx_cl_v3(path_f,idx_raw_obj,...
-%                 'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,...
-%                 'GPSOnly',p.Results.GPSOnly,...
-%                 'FieldNames',p.Results.FieldNames,...
-%                 'PathToMemmap',p.Results.PathToMemmap,...
-%                 'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
+            [trans_obj,envdata,NMEA,mru0_att]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,...
+                'Frequencies',vec_freq,...
+                'GPSOnly',p.Results.GPSOnly,...
+                'FieldNames',p.Results.FieldNames,...
+                'PathToMemmap',p.Results.PathToMemmap,...
+                'load_bar_comp',p.Results.load_bar_comp);
+            % %
+            %            [~,~,~,~] =data_from_raw_idx_cl_v3(path_f,idx_raw_obj,...
+            %                 'PingRange',pings_range,'SampleRange',sample_range,'Frequencies',vec_freq,...
+            %                 'GPSOnly',p.Results.GPSOnly,...
+            %                 'FieldNames',p.Results.FieldNames,...
+            %                 'PathToMemmap',p.Results.PathToMemmap,...
+            %                 'load_bar_comp',p.Results.load_bar_comp,'force_open',p.Results.force_open);
             
-
-
+            
+            
             if isempty(trans_obj)
                 id_rem=union(id_rem,uu);
                 continue;
@@ -288,12 +288,12 @@ if ~isequal(Filename_cell, 0)
                 gps_data_tmp=gps_data_cl.load_gps_from_file(gps_file);
             elseif ~exist(gps_file,'file')&&exist(att_file,'file')==2
                 fprintf('Using _att.csv file as Attitude input for file %s\n',Filename);
-                 idx_NMEA_gps=[strcmpi(NMEA.type,'GGA');...
+                idx_NMEA_gps=[strcmpi(NMEA.type,'GGA');...
                     strcmpi(NMEA.type,'GLL');...
                     strcmpi(NMEA.type,'RMC')];
                 
                 [~,idx_GPS]=max(sum(idx_NMEA_gps,2));
-                idx_NMEA=find(idx_NMEA_gps(idx_GPS,:));               
+                idx_NMEA=find(idx_NMEA_gps(idx_GPS,:));
                 [gps_data_tmp,~]=nmea_to_attitude_gps(NMEA.string,NMEA.time,idx_NMEA);
                 attitude_full= attitude_nav_cl.load_att_from_file(att_file);
             elseif exist(gps_file,'file')==2&&exist(att_file,'file')==2
@@ -386,10 +386,10 @@ if ~isequal(Filename_cell, 0)
                     id_rem=union(id_rem,uu);
                     continue;
                 end
-                load_bar_comp.status_bar.setText(sprintf('Computing Sv for File %s',Filename));     
-                for i =1:length(trans_obj)                   
+                load_bar_comp.status_bar.setText(sprintf('Computing Sv for File %s',Filename));
+                for i =1:length(trans_obj)
                     gps_data_ping=gps_data.resample_gps_data(trans_obj(i).Time);
-                    attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);                                    
+                    attitude=attitude_full.resample_attitude_nav_data(trans_obj(i).Time);
                     [~,~,algo_vec,~]=load_config_from_xml_v2(0,0,1);
                     algo_vec_init=init_algos();
                     algo_vec_init=reset_range(algo_vec_init,trans_obj(i).get_transceiver_range());
@@ -397,20 +397,20 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).GPSDataPing=gps_data_ping;
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
-                    trans_obj(i).add_algo(algo_vec);                   
+                    trans_obj(i).add_algo(algo_vec);
+
+                    trans_obj(i).computeSpSv_v2(envdata,'FieldNames',p.Results.FieldNames);
+
                 end
-                for i =1:length(trans_obj) 
-                     trans_obj(i).computeSpSv_v2(envdata,'FieldNames',p.Results.FieldNames);   
-                end               
             else
                 trans_obj=transceiver_cl.empty();
                 envdata=env_data_cl.empty();
             end
             
-           layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
-
+            layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);
+            
             for i=1:length(trans_obj)
-                layers(uu).add_trans(trans_obj(i));                
+                layers(uu).add_trans(trans_obj(i));
             end
             
             layers(uu).add_lines(line_cl('Name','TransducerDepth','Range',trans_depth,'Time',depth_time));
@@ -435,7 +435,7 @@ if ~isequal(Filename_cell, 0)
     
     clear('data','transceiver');
     
-%      profile off;
-%      profile viewer;
+    %      profile off;
+    %      profile viewer;
     
 end

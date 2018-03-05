@@ -20,6 +20,7 @@ addParameter(p,'DepthMin',0,@isnumeric);
 addParameter(p,'DepthMax',Inf,@isnumeric);
 addParameter(p,'intersect_only',1,@isnumeric);
 addParameter(p,'Remove_ST',0,@isnumeric);
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,trans_obj,varargin{:});
 
@@ -78,14 +79,14 @@ reg_wc_bot=trans_obj.create_WC_region(...
     'Remove_ST',p.Results.Remove_ST);
 
 
-output_surf=trans_obj.integrate_region_v4(reg_wc_surf,'vertExtend',[p.Results.DepthMin p.Results.DepthMax],...
+output_surf=trans_obj.integrate_region_v5(reg_wc_surf,'vertExtend',[p.Results.DepthMin p.Results.DepthMax],...
     'horiExtend',[st et],'idx_regs',idx_reg_surf,'regs',regs_surf,'select_reg','selected','intersect_only',p.Results.intersect_only,'denoised'...
-    ,p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1);
+    ,p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1,'load_bar_comp',p.Results.load_bar_comp);
 
 if ~isempty(idx_reg_bot)||~isempty(regs_bot)
-    output_bot=trans_obj.integrate_region_v4(reg_wc_bot,'vertExtend',[p.Results.DepthMin p.Results.DepthMax],...
+    output_bot=trans_obj.integrate_region_v5(reg_wc_bot,'vertExtend',[p.Results.DepthMin p.Results.DepthMax],...
         'horiExtend',[st et],'idx_regs',idx_reg_bot,'regs',regs_bot,'select_reg','selected','intersect_only',p.Results.intersect_only,'denoised',...
-        p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1);
+        p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'keep_all',1,'load_bar_comp',p.Results.load_bar_comp);
 else
     output_bot=[];
 end
@@ -98,15 +99,15 @@ regs=cell(1,length(idx_reg_out)+numel(p.Results.regs));
 if p.Results.RegInt
     for i=1:length(idx_reg_out)
         regs{i}=trans_obj.Regions(idx_reg_out(i));
-        regCellInt{i}=trans_obj.integrate_region_v4(trans_obj.Regions(idx_reg_out(i)),...
+        regCellInt{i}=trans_obj.integrate_region_v5(trans_obj.Regions(idx_reg_out(i)),...
         'horiExtend',[st et],...
-        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);
+        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'load_bar_comp',p.Results.load_bar_comp);
     end
     for i=1:length(p.Results.regs)
         regs{i+length(idx_reg_out)}=p.Results.regs(i);
-        regCellInt{i+length(idx_reg_out)}=trans_obj.integrate_region_v4(p.Results.regs(i),...
+        regCellInt{i+length(idx_reg_out)}=trans_obj.integrate_region_v5(p.Results.regs(i),...
         'horiExtend',[st et],...
-        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction);        
+        'denoised',p.Results.Denoised,'motion_correction',p.Results.Motion_correction,'load_bar_comp',p.Results.load_bar_comp);        
     end  
 else
     regs=[];

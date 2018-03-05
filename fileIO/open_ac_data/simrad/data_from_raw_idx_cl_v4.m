@@ -25,8 +25,9 @@ ftype=get_ftype(filename);
 load_bar_comp=results.load_bar_comp;
 block_len=results.block_len;
 
-
 array_type='double';
+
+
 
 switch ftype
     case 'EK80'
@@ -103,7 +104,9 @@ NMEA.string= cell(1,nb_nmea);
 NMEA.type= cell(1,nb_nmea);
 
 params_cl_init(nb_trans)=params_cl();
-fields={'power','alongangle','acrossangle','powerunmatched','y_real','y_imag'};
+
+[fields,~,fmt_fields,factor_fields]=init_fields();
+
 curr_data_name=cell(nb_trans,numel(fields));
 curr_data_name_t=cell(nb_trans,1);
 fileID=-ones(nb_trans,numel(fields));
@@ -394,9 +397,9 @@ for idg=1:nb_dg
                                 trans_obj(idx).Config.AngleOffsetAlongship,...
                                 trans_obj(idx).Config.AngleOffsetAthwartship);
                             
-                            fwrite(fileID(idx,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx}.power)),'single');
-                            fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle),'single');
-                            fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle),'single');
+                            fwrite(fileID(idx,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                            fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                            fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
                             block_i(idx)=0;
                         end
                     end
@@ -457,25 +460,19 @@ for idg=1:nb_dg
                             trans_obj(idx).Config.AngleOffsetAlongship,...
                             trans_obj(idx).Config.AngleOffsetAthwartship);
                         if strcmp(mode{idx},'FM')
-                            fwrite(fileID(idx,strcmp(fields,'powerunmatched')),double(powerunmatched),'single');                           
-                            fwrite(fileID(idx,strcmp(fields,'y_real')),double(real(y)),'single');
-                            fwrite(fileID(idx,strcmp(fields,'y_imag')),double(imag(y)),'single');
+                            fwrite(fileID(idx,strcmp(fields,'powerunmatched')),(double(powerunmatched))/factor_fields(strcmpi(fields,'powerunmatched')),fmt_fields{strcmpi(fields,'powerunmatched')});                           
+                            fwrite(fileID(idx,strcmp(fields,'y_real')),double(real(y))/factor_fields(strcmpi(fields,'y_real')),fmt_fields{strcmpi(fields,'y_real')});
+                            fwrite(fileID(idx,strcmp(fields,'y_imag')),double(imag(y))/factor_fields(strcmpi(fields,'y_imag')),fmt_fields{strcmpi(fields,'y_imag')});
                         end
-                        fwrite(fileID(idx,strcmp(fields,'power')),double(pow),'single');
-                        fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle),'single');
-                        fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle),'single');
+                        fwrite(fileID(idx,strcmp(fields,'power')),(double(pow))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                        fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                        fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
                         block_i(idx)=0;
                     end
                 end
                 i_ping(idx) = i_ping(idx) + 1;
                 block_i(idx)=block_i(idx)+1;
             end
-            
-            
-            
-            
-            
-            
             
             
         case 'MRU0'
@@ -533,9 +530,9 @@ for idg=1:nb_dg
                     trans_obj(idx_chan).Config.AngleOffsetAlongship,...
                     trans_obj(idx_chan).Config.AngleOffsetAthwartship);
                 
-                fwrite(fileID(idx_chan,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx_chan}.power)),'single');
-                fwrite(fileID(idx_chan,strcmp(fields,'alongangle')),double(AlongAngle),'single');
-                fwrite(fileID(idx_chan,strcmp(fields,'acrossangle')),double(AcrossAngle),'single');
+                fwrite(fileID(idx_chan,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx_chan}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                fwrite(fileID(idx_chan,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                fwrite(fileID(idx_chan,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
                 block_i(idx_chan)=0;
             end
             i_ping(idx_chan)=i_ping(idx_chan)+1;
@@ -619,7 +616,8 @@ if p.Results.GPSOnly==0
             alpha= seawater_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
             trans_obj(i).Params.Absorption(:)=round(alpha*1e3)/1e3*ones(1,nb_pings(i));
         end
-        
+
+
         sub_ac_data_temp=sub_ac_data_cl.sub_ac_data_from_files(curr_data_name(i,idx_fields(i,:)),[nb_samples(i) nb_pings(i)],fields(idx_fields(i,:)));
         trans_obj(i).Data=ac_data_cl('SubData',sub_ac_data_temp,...
             'Nb_samples',nb_samples(i),...

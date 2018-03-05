@@ -221,7 +221,7 @@ if exitflag ~= 1
     end
     % Plot the probably wrong data, using the un-filtered dataset
     Freq=trans_obj.Config.Frequency;
-    new_echo_figure(main_figure,'Name',sprintf('%.0fkHz Beam pattern contour plot',Freq/1e3),'Tag',sprintf('%.0fkHz Beam pattern contour plot',Freq/1e3));
+    new_echo_figure(main_figure,'Name',sprintf('%.0f kHz Beam pattern contour plot',Freq/1e3),'Tag',sprintf('%.0f kHz Beam pattern contour plot',Freq/1e3));
     [XI,YI]=meshgrid(-trimTo:.1:trimTo,-trimTo:.1:trimTo);
     warning('off','MATLAB:griddata:DuplicateDataPoints');
     ZI = griddata(original.sphere(:,2), original.sphere(:,3), original.sphere(:,1), XI, YI);
@@ -312,7 +312,7 @@ end
 
 
 % plot up the on-axis TS values
-fig=new_echo_figure(main_figure,'Name', sprintf('%.0fkHz On-axis sphere TS',Freq/1e3),'Tag', sprintf('%.0fkHz On-axis sphere TS',Freq/1e3));
+fig=new_echo_figure(main_figure,'Name', sprintf('%.0f kHz On-axis sphere TS',Freq/1e3),'Tag', sprintf('%.0f kHz On-axis sphere TS',Freq/1e3));
 ax1=axes(fig,'units','normalized','outerposition',[0 0 1 0.5]);
 boxplot(ax1,ts_values);
 ax2=axes(fig,'units','normalized','outerposition',[0 0.5 1 0.5]);

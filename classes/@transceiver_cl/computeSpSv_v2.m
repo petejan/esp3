@@ -6,7 +6,7 @@ p = inputParser;
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addRequired(p,'env_data_obj',@(obj) isa(obj,'env_data_cl'));
 addParameter(p,'FieldNames',{},@iscell);
-addParameter(p,'block_len',100,@(x) x>0);
+addParameter(p,'block_len',1e7,@(x) x>0);
 
 
 parse(p,trans_obj,env_data_obj,varargin{:});
@@ -30,7 +30,7 @@ nb_samples=numel(range);
 nb_pings=numel(pings);
 gpu_comp=get_gpu_comp_stat();
 
-bsize=p.Results.block_len;
+bsize=ceil(p.Results.block_len/nb_samples);
 u=0;
 while u<ceil(nb_pings/bsize)
     idx_pings=(u*bsize+1):nanmin(((u+1)*bsize),nb_pings);

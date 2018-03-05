@@ -514,43 +514,20 @@ classdef transceiver_cl < handle
                 Sa=[];
                 return;
             end
-            active_reg=trans_obj.Regions(reg_idx);
-            Sv=trans_obj.Data.get_datamat('sv');
-            idx=find_regions_type(trans_obj,'Bad Data');
+            active_reg=trans_obj.Regions(reg_idx);  
+
+            [Sv,idx_r,idx_pings,bad_data_mask,bad_trans_vec,intersection_mask,below_bot_mask,mask_from_st]=get_data_from_region(trans_obj,active_reg,...
+                'field','sv');
             
-            for i=idx
-                curr_reg=trans_obj.Regions(i);
-                Sv_temp=Sv(idx_r_curr,idx_pings_curr);
-                mask=curr_reg.create_mask();
-                Sv(mask)=nan;
-                Sv(idx_r_curr,idx_pings_curr)=Sv_temp;
-            end
-            range=trans_obj.get_transceiver_range();
-            
-            Sv(:,(trans_obj.Bottom.Tag==0))=NaN;
-            bot_r=trans_obj.get_bottom_range();
-            bot_r(bot_r==0)=range(end);
-            bot_r(isnan(bot_r))=range(end);
-            
-            Sv(repmat(bot_r,size(Sv,1),1)<=repmat(trans_obj.get_transceiver_range(),1,size(Sv,2)))=NaN;
-            
-            idx_r=active_reg.Idx_r;
-            idx_pings=active_reg.Idx_pings;
-            bot_r_pings=bot_r(idx_pings);
-            
-            switch active_reg.Shape
-                case 'Polygon'
-                    Sv_reg=active_reg.Sv_reg;
-                otherwise
-                    Sv_reg=Sv(idx_r,idx_pings);
-            end
-            Sv_reg(repmat(bot_r_pings,size(Sv_reg,1),1)<=repmat(trans_obj.get_transceiver_range(idx_r),1,size(Sv_reg,2)))=NaN;
-            
-            Sv_reg(Sv_reg<-90)=nan;
+            Mask_reg = ~bad_data_mask & intersection_mask & ~mask_from_st & ~isnan(Sv)&~below_bot_mask;
+            Mask_reg(:,bad_trans_vec) = false;
+            Sv(Sv<-90) = -999;
+            Sv(~Mask_reg) = nan;
+
             range=double(trans_obj.get_transceiver_range(idx_r));
-            Sa=10*log10(nansum(10.^(Sv_reg/10).*nanmean(diff(range))));
+            Sa=10*log10(nansum(10.^(Sv/10).*nanmean(diff(range))));
             
-            mean_depth= nansum(10.^(Sv_reg/20).*repmat(range,1,size(Sv_reg,2)))./nansum(10.^(Sv_reg/20));
+            mean_depth= nansum(10.^(Sv/20).*repmat(range,1,size(Sv,2)))./nansum(10.^(Sv/20));
             mean_depth(Sa<-90)=NaN;
             
         end

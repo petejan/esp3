@@ -65,8 +65,8 @@ region.Idx_r=idx_r;
 
 switch region.Shape
     case 'Polygon'
-        region.MaskReg=region.MaskReg(idx_keep_r,idx_keep_x);
-        data(region.MaskReg==0)=NaN;
+        region.MaskReg=region.get_sub_mask(idx_keep_r,idx_keep_x);
+        data(region.get_mask==0)=NaN;
 end
 
 if isempty(idx_r)||isempty(idx_pings)

@@ -44,17 +44,18 @@ p = inputParser;
 % default values
 field_def='sv';
 TS_def=-52;
-
+[cax_d,~,~]=init_cax(field_def);
 addRequired(p,'reg_obj',@(obj) isa(obj,'region_cl'));
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl')|isstruct(obj));
 addParameter(p,'line_obj',[],@(x) isa(x,'line_cl')||isempty(x));
 addParameter(p,'Name',reg_obj.print(),@ischar);
-addParameter(p,'Cax',init_cax(field_def),@isnumeric);
+addParameter(p,'Cax',cax_d,@isnumeric);
 addParameter(p,'Cmap','jet',@ischar);
 addParameter(p,'alphadata',[],@isnumeric);
 addParameter(p,'field',field_def,@ischar);
 addParameter(p,'TS',TS_def,@isnumeric);
 addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
+addParameter(p,'load_bar_comp',[]);
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
@@ -62,15 +63,18 @@ parse(p,reg_obj,trans_obj,varargin{:});
 
 field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
-           profile on;
+           %profile on;
     %      output_reg_old=trans_obj.integrate_region(reg_obj);
-    %profile on;
-    %output_reg_3=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj,'denoised',1);
-    output_reg=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1);
-    %compare_reg_output(output_reg,output_reg_3,reg_obj.Reference);
-%     profile off;
-%     profile viewer;
-    tt=sprintf('%s %s %.0fkHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
+%profile on;
+    %output_reg_old=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1); 
+     output_reg=trans_obj.integrate_region_v5(reg_obj,'line_obj',p.Results.line_obj,'denoised',1,'load_bar_comp',p.Results.load_bar_comp);
+% 
+%      profile off;
+%      profile viewer;
+%output_reg_old=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1); 
+    %compare_reg_output(output_reg,output_reg_old,reg_obj.Reference);
+     
+    tt=sprintf('%s %s %.0f kHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
     
 else
     output_reg=trans_obj;
@@ -157,7 +161,7 @@ h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str(
 %% main region display
 
 % axes
-ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on');
+ax_in=axes('Parent',h_fig,'Units','Normalized','position',[0.2 0.25 0.7 0.65],'xticklabel',{},'yticklabel',{},'nextplot','add','box','on','TickLength',[0 0],'GridAlpha',0.05);
 
 % title
 title(ax_in,tt);
@@ -185,7 +189,7 @@ xmax=nanmax(x_disp);
 
 % ticks and grid
 
-ax_in.XTick=x_disp(~isnan(x_disp));
+ax_in.XTick=unique(x_disp(~isnan(x_disp)));
 ax_in.YTick=sort((ymin:reg_obj.Cell_h:ymax));
 
 grid(ax_in,'on');
@@ -285,11 +289,11 @@ set(ax_in,'Ylim',[ymin-reg_obj.Cell_h/2 ymax+reg_obj.Cell_h/2]);
         if ~isdeployed
             disp('listenCmapReg')
         end
-        [cmap,~,~,col_grid,~,~]=init_cmap(evt.AffectedObject.Cmap);
-        if isvalid(ax_in)
+        [cmap,col_ax,~,col_grid,~,~]=init_cmap(evt.AffectedObject.Cmap);
+        try
             if isvalid(ax_in)
                 colormap(ax_in,cmap);
-                set(ax_in,'GridColor',col_grid),'Color',col_ax;
+                set(ax_in,'GridColor',col_grid,'Color',col_ax);
             end
         end
     end

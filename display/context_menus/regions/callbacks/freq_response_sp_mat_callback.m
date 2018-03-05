@@ -118,7 +118,7 @@ end
 % [~,idx_freq]=nanmin(abs(f_vec/1e3-f_val));
 %
 % set(im,'Cdata',TS_f(:,:,idx_freq)','alphadata',double(TS_f(:,:,idx_freq)'>ax.CLim(1)));
-% title(ax,sprintf('%.0fkHz',f_vec(idx_freq)/1e3));
+% title(ax,sprintf('%.0f kHz',f_vec(idx_freq)/1e3));
 %
 % grid(ax,'on');
 %

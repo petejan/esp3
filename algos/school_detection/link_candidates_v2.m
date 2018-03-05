@@ -38,7 +38,6 @@ while u<length(vec_candidates(1:end-1))
     i=vec_candidates(u);
     
     if ~isempty(load_bar_comp)
-        load_bar_comp.status_bar.setText('Linking Candidates');
         set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',length(vec_candidates(1:end)), 'Value',u);
     end
     

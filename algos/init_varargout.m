@@ -2,13 +2,14 @@ function varout=init_varargout(name)
 
 switch name
     case {'BottomDetectionV2','BottomDetection'}
-        varout={'bottom','double_bottom_region','bs_bottom','idx_bottom','idx_ringdown'};
+        varout={'bottom','double_bottom_region','bs_bottom','idx_bottom','idx_ringdown','idx_pings'};
     case 'BadPings'
         varout={'bottom','double_bottom_region','idx_noise_sector'};
     case 'BadPingsV2'
         varout={'idx_noise_sector'};
     case 'Denoise'
-        varout={'power_unoised','Sv_unoised','Sp_unoised','SNR'};
+        varout={};
+        %varout={'power_unoised','Sv_unoised','Sp_unoised','SNR'};
     case 'SchoolDetection'
         varout={'linked_candidates'};
     case 'SingleTarget'

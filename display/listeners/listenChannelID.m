@@ -7,7 +7,6 @@ layer=getappdata(main_figure,'Layer');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 curr_disp.Freq=layer.Frequencies(idx_freq);
-opt_panel=getappdata(main_figure,'option_tab_panel');
 
 update_bottom_tab(main_figure);
 update_bottom_tab_v2(main_figure);
@@ -18,8 +17,7 @@ update_single_target_tab(main_figure,1);
 update_track_target_tab(main_figure);
 update_processing_tab(main_figure);
 update_display_tab(main_figure);
-
-load_calibration_tab(main_figure,opt_panel);
+update_calibration_tab(main_figure);
 
 load_info_panel(main_figure);
 

@@ -1,6 +1,6 @@
 function load_file_panel(main_figure,echo_tab_panel)
 app_path=getappdata(main_figure,'App_path');
-a=findjobj(echo_tab_panel);
+
 file_tab_comp.file_tab=new_echo_tab(main_figure,echo_tab_panel,'Title','Files');
 
 pos=getpixelposition(file_tab_comp.file_tab);
@@ -236,7 +236,7 @@ try
                    legd_str{ifi}=[];
                 end
             end
-            legd_str(cellfun(@isempty,legd_str))=[];
+            %legd_str(cellfun(@isempty,legd_str))=[];
             try
                 set(file_tab_comp.map_axes,'visible','on')
                 m_grid('tickdir','in','axes',file_tab_comp.map_axes);
@@ -246,9 +246,9 @@ try
                 warning('area too small for ticks to display')
             end
                        
-             if ~isempty(file_tab_comp.tracks_plots)
-                legend(file_tab_comp.tracks_plots(2:2:end),legd_str,'Location','bestoutside');
-             end
+%              if ~isempty(file_tab_comp.tracks_plots)
+%                 legend(file_tab_comp.tracks_plots(2:2:end),legd_str,'Location','bestoutside');
+%              end
 
             %profile off;
             %profile viewer;

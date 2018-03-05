@@ -25,7 +25,7 @@ for ifile=file_ids
         if length(idx_reg_inter)<length(reg_obj.Idx_pings)
             switch reg_obj.Shape
                 case 'Polygon'            
-                    mask=reg_obj.MaskReg(:,Idx_pings-reg_obj.Idx_pings(1)+1);
+                    mask=reg_obj.get_sub_mask(1:numel(reg_obj.Idx_r),Idx_pings-reg_obj.Idx_pings(1)+1);
 
                     %poly=intersect(poly_file,reg_obj.Poly);
                 case 'Rectangular'

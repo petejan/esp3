@@ -41,39 +41,39 @@ if isempty(obj.Time)
     h_fig=[];
     return;
 end
-
-% if ~isempty(parenth)
-%     axes_panel_comp=getappdata(parenth,'Axes_panel');
-%     if~isempty(axes_panel_comp)
-%         ah=axes_panel_comp.main_axes;
-%     else
-%         ah=[];
-%     end
-% else
-%     ah=[];
-% end
-
-
 dist=obj.Dist;
 time=obj.Time(1:end);
+if ~isempty(parenth)
+    axes_panel_comp=getappdata(parenth,'Axes_panel');
+    if~isempty(axes_panel_comp)
+        ah=axes_panel_comp.haxes;
+        x=1:numel(time);
+    else
+        ah=[];
+        x=time;
+    end
+else
+    ah=[];
+end
+
+
 if any(dist>0)
-    speed=diff(dist/1852)./diff(time*24*60*60/3600);
+    speed=gradient(dist/1852)./gradient(time*24*60*60/3600);
     h_fig=new_echo_figure(parenth,'Name','Speed','Tag','attitude');
-    ax= axes(h_fig,'nextplot','add','OuterPosition',[0 0 1 1]);
-    plot(ax,time(2:end),speed,'k');
-    xlabel(ax,'Time(s)');
-    ylabel(ax,'Speed (knot)');
-    grid(ax,'on');
-    box(ax,'on');
-    xlim(ax,[time(2) time(end)]);
-    xt=get(ax,'XTick');
-    xt_n=datestr(xt,'HH:MM:SS');
-    set(ax,'XtickLabels',xt_n,'XtickLabelRotation',90)
-    
+    ax= axes(h_fig,'nextplot','add','OuterPosition',[0 0 1 1],'box','on');
+    grid(ax,'on')
+    plot(ax,x,speed,'k');
+    ylabel(ax,'Speed (knot)'); 
+    set(ax,'XtickLabelRotation',90);
+    if isempty(ah)
+        datetick(ax,'x');
+        xlabel(ax,'time');
+    end
+    h_fig.UserData=linkprop([ah ax],{'XTick' 'XTickLabels' 'XLim'});
 else
     h_fig=[];
 end
 
-%linkaxes([ah ax],'x');
+
 
 end

@@ -20,7 +20,7 @@ addParameter(p,'DepthMin',0,@isnumeric);
 addParameter(p,'DepthMax',Inf,@isnumeric);
 addParameter(p,'intersect_only',1,@isnumeric);
 addParameter(p,'Remove_ST',0,@isnumeric);
-
+addParameter(p,'load_bar_comp',[]);
 parse(p,layer_obj,varargin{:});
 
 regions_init=[p.Results.regs layer_obj.Transceivers(p.Results.idx_main_freq).Regions(p.Results.idx_regs)];
@@ -86,7 +86,8 @@ for i_freq=1:numel(idx_freq_out_tot)
         'DepthMax',p.Results.DepthMax,...
         'RegInt',p.Results.RegInt,...
         'Remove_ST',p.Results.Remove_ST,...
-        'intersect_only',p.Results.intersect_only);
+        'intersect_only',p.Results.intersect_only,...
+        'load_bar_comp',p.Results.load_bar_comp);
 end
 
 idx_main_freq=p.Results.idx_main_freq;

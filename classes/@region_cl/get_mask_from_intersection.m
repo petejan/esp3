@@ -18,7 +18,7 @@ for iu=1:length(regs_2)
     
     switch regs_2(iu).Shape
         case 'Polygon'
-            mask_2=regs_2(iu).MaskReg;
+            mask_2=regs_2(iu).get_mask();
             mask_temp=mask_1(idx_r_from_1,idx_pings_from_1)&mask_2(idx_r_from_2,idx_pings_from_2);
         otherwise
             mask_temp=true(length(idx_r_from_1),length(idx_pings_from_1));

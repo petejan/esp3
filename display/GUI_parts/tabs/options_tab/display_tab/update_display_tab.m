@@ -22,7 +22,7 @@ end
 set(display_tab_comp.grid_x,'String',int2str(dx));
 set(display_tab_comp.grid_y,'String',int2str(dy));
 
-set(display_tab_comp.tog_freq,'String',int2str(layer.Frequencies'),'Value',idx_freq);
+set(display_tab_comp.tog_freq,'String',num2str(layer.Frequencies'/1e3,'%.0f kHz'),'Value',idx_freq);
 set(display_tab_comp.tog_type,'String',trans_obj.Data.Type,'Value',idx_field);
 set(display_tab_comp.tog_axes,'String',Axes_type,'Value',idx_axes);
 set(display_tab_comp.caxis_up,'String',int2str(curr_disp.Cax(2)));

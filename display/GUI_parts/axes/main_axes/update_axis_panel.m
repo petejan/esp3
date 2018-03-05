@@ -37,7 +37,7 @@ if isempty(trans_obj)
     return;
 end
 
-set(axes_panel_comp.axes_panel,'Title',sprintf('%.0fkHz',curr_disp.Freq/1e3),'Userdata',curr_disp.ChannelID)
+set(axes_panel_comp.axes_panel,'Title',sprintf('%.0f kHz',curr_disp.Freq/1e3),'Userdata',curr_disp.ChannelID)
 
 [~,found]=find_field_idx(trans_obj.Data,curr_disp.Fieldname);
 
@@ -62,7 +62,7 @@ if new
     curr_disp.R_disp=range(get(axes_panel_comp.main_axes,'YLim'));
 end
 
-str_subsampling=sprintf('Disp. SubSampling: [%.0fx%.0f]',dp,dr);
+str_subsampling=sprintf('SubSampling: [%.0fx%.0f]',dr,dp);
 info_panel_comp=getappdata(main_figure,'Info_panel');
 
 if dr>1||dp>1

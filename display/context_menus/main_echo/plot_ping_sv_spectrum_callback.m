@@ -61,7 +61,7 @@ for uui=idx_sort
         xlabel('Frequency (kHz)');
         ylabel('Range(m)');
         caxis(curr_disp.getCaxField('sv')); colormap(cmap);
-        title(sprintf('Sv(f) for %.0fkHz, Ping %i, Frequency resolution %.1f kHz',layer.Frequencies(uui)/1e3,idx_ping,df));
+        title(sprintf('Sv(f) for %.0f kHz, Ping %i, Frequency resolution %.1fkHz',layer.Frequencies(uui)/1e3,idx_ping,df));
          
         colorbar(ax);
         

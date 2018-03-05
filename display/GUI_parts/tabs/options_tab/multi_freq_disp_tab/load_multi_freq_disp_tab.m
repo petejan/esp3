@@ -53,7 +53,7 @@ uimenu(select_menu,'Label','Inverse Selection','Callback',{@selection_callback,m
 
 multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_disp_tab,'Units','normalized','box','on',...
      'OuterPosition',[1/3 0 2/3 1],'visible','on','NextPlot','add','box','on');
- multi_freq_disp_tab_comp.ax.XAxis.TickLabelFormat='%.0fkHz';
+ multi_freq_disp_tab_comp.ax.XAxis.TickLabelFormat='%.0f kHz';
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=0;
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
 grid(multi_freq_disp_tab_comp.ax,'on'); 
@@ -233,5 +233,25 @@ end
 text_obj=findobj(multi_freq_disp_tab_comp.ax,'Tag','DataText');
 if ~isempty(text_obj)
     delete(text_obj);
+end
+layer=getappdata(main_figure,'Layer');
+curr_disp=getappdata(main_figure,'Curr_disp');
+[trans_obj,~]=layer.get_trans(curr_disp);
+
+if isempty(evt.Indices)
+    selected_regs=[];
+else
+    selected_regs=src.Data(evt.Indices(:,1),end);
+end
+
+active_regs=trans_obj.get_region_from_Unique_ID(selected_regs);
+
+if ~isempty(active_regs)    
+    if ~all(ismember({active_regs(:).Unique_ID},curr_disp.Active_reg_ID))||isempty(setdiff({active_regs(:).Unique_ID},curr_disp.Active_reg_ID))
+        curr_disp.setActive_reg_ID({active_regs(:).Unique_ID});
+        set_view_to_region(active_regs(1).Unique_ID,main_figure);
+    end
+else
+   curr_disp.setActive_reg_ID({}); 
 end
 end

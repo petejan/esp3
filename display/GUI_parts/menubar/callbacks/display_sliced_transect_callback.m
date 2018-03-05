@@ -18,12 +18,12 @@ Slice_w_units=curr_disp.Xaxes_current;
 idx_reg=trans_obj.find_regions_type('Data');
 %profile on;
 sh_height=10;
-
+show_status_bar(main_figure);
 [output_2D_surf_tot,output_2D_bot_tot,~,~,~,output_2D_sh_tot,shadow_height_est_tot,idx_freq_out]=layer.multi_freq_slice_transect2D(...
     'idx_main_freq',idx_freq,'idx_sec_freq',idx_freq,...
     'Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
-    'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg);
-
+    'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg,'load_bar_comp',getappdata(main_figure,'Loading_bar'));
+hide_status_bar(main_figure);
 
 output_2D_surf=output_2D_surf_tot{idx_freq==idx_freq_out};
 output_2D_sh=output_2D_sh_tot{idx_freq==idx_freq_out};

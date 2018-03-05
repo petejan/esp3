@@ -156,9 +156,11 @@ if reload==0
     
     dbconn.close();
        
+
+    [types,~]=init_trans_type();
     % Column names and column format
     columnname = {'' 'File','Snap.','Type','Strat.','Trans.','Bot','Reg. Tags','Comment','Start Time','End Time','id'};
-    columnformat = {'logical' 'char','numeric',init_trans_type(),'char','numeric','logical','char','char','char','char','numeric'};
+    columnformat = {'logical' 'char','numeric',types,'char','numeric','logical','char','char','char','char','numeric'};
     
     
     % Create the uitable
@@ -238,19 +240,19 @@ else
 end
 
 for ifreq=1:length(freq_vec)
-    h_fig=new_echo_figure(main_figure,'ButtonDownFcn',@display_filename_callback,'Tag',sprintf('bp%.0fkHz\n',freq_vec(ifreq)/1e3));
+    h_fig=new_echo_figure(main_figure,'ButtonDownFcn',@display_filename_callback,'Tag',sprintf('bp%.0f kHz\n',freq_vec(ifreq)/1e3));
     ax=axes(h_fig);
     plot_temp=plot(ax,nb_bad_pings{ifreq}./nb_pings{ifreq}*100,'--+');
     grid(ax,'on');
     %set(ax,'XTick',1:length(files_out{ifreq}),'XTickLabels',files_out{ifreq},'XTickLabelRotation',45);
     ylabel('%')
-    title(sprintf('Bad pings percentage for %.0fkHz',freq_vec(ifreq)/1e3));
+    title(sprintf('Bad pings percentage for %.0f kHz',freq_vec(ifreq)/1e3));
     set(plot_temp,'ButtonDownFcn',{@display_filename_callback,files_out{ifreq}});
     
     
     for i=1:length(fid)
         
-        fprintf(fid(i),'Bad Pings for frequency %.0fkHz\n',freq_vec(ifreq)/1e3);
+        fprintf(fid(i),'Bad Pings for frequency %.0f kHz\n',freq_vec(ifreq)/1e3);
         for i_sub=1:length(nb_bad_pings{ifreq})
             fprintf(fid(i),'%s %.2f\n',files_out{ifreq}{i_sub},nb_bad_pings{ifreq}(i_sub)./nb_pings{ifreq}(i_sub)*100);
         end

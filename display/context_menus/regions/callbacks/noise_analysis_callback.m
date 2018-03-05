@@ -16,6 +16,7 @@ switch class(select_plot)
 end
 
 data=trans_obj.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field','power');
+
 fs=1./trans_obj.Params.SampleInterval(reg_curr.Idx_pings);
 
 

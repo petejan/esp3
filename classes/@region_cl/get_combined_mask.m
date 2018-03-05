@@ -16,14 +16,14 @@ mask_common_2_tot=zeros(length(idx_r),length(idx_pings));
 
 switch region_1.Shape
     case 'Polygon'
-        mask_common_1=region_1.MaskReg;
+        mask_common_1=region_1.get_mask();
     otherwise
         mask_common_1=ones(length(region_1.Idx_r),length(region_1.Idx_pings));
 end
 
 switch region_2.Shape
     case 'Polygon'
-        mask_common_2=region_2.MaskReg;
+        mask_common_2=region_2.get_mask;
     otherwise
         mask_common_2=ones(length(region_2.Idx_r),length(region_2.Idx_pings));
 end

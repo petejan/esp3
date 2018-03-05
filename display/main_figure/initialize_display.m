@@ -36,13 +36,13 @@
 %% Function
 function initialize_display(main_figure)
 
-opt_panel=uitabgroup(main_figure,'Position',[0 2/3 0.5 1/3]);
-algo_panel=uitabgroup(main_figure,'Position',[0.5 2/3 0.5 1/3]);
+pan_height=300;
+pix_pos=getpixelposition(main_figure);
+opt_panel=uitabgroup(main_figure,'Units','pixels','Position',[0 pix_pos(4)-pan_height 0.5*pix_pos(3) pan_height]);
+algo_panel=uitabgroup(main_figure,'Units','pixels','Position',[0.5*pix_pos(3) pix_pos(4)-pan_height 0.5*pix_pos(3) pan_height]);
+echo_tab_panel=uitabgroup(main_figure,'Units','pixels','Position',[0 0.05*pix_pos(4) pix_pos(3) pix_pos(4)-pan_height-0.05*pix_pos(4)]);
+
 curr_disp=getappdata(main_figure,'Curr_disp');
-
-echo_tab_panel=uitabgroup(main_figure,'Units','Normalized','Position',[0 0.05 1 2/3-0.05]);
-
-
 setappdata(main_figure,'echo_tab_panel',echo_tab_panel);
 setappdata(main_figure,'option_tab_panel',opt_panel);
 setappdata(main_figure,'algo_tab_panel',algo_panel);
@@ -57,20 +57,18 @@ load_file_panel(main_figure,echo_tab_panel);
 %fixed Tab in option panel
 load_cursor_tool(main_figure);
 load_display_tab(main_figure,opt_panel);
-load_regions_tab(main_figure,opt_panel);
 load_lines_tab(main_figure,opt_panel);
 load_calibration_tab(main_figure,opt_panel);
 load_processing_tab(main_figure,opt_panel);
 
 %Undockable tabs
-%load_layer_tab(main_figure,opt_panel);
-%load_reglist_tab(main_figure,opt_panel);
+load_layer_tab(main_figure,opt_panel);
+load_reglist_tab(main_figure,opt_panel);
 load_map_tab(main_figure,opt_panel);
 load_multi_freq_disp_tab(main_figure,opt_panel,'sv_f');
 load_multi_freq_disp_tab(main_figure,opt_panel,'ts_f');
 
 load_bottom_tab(main_figure,algo_panel);
-load_bottom_tab_v2(main_figure,algo_panel);
 load_bad_pings_tab(main_figure,algo_panel);
 load_denoise_tab(main_figure,algo_panel);
 load_school_detect_tab(main_figure,algo_panel);

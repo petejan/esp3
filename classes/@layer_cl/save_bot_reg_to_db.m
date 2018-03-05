@@ -10,6 +10,32 @@ parse(p,layer_obj,varargin{:});
 bot_ver_new=0;
 reg_ver_new=0;
 
+max_bot_ver=0;
+max_reg_ver=0;
+for ib=1:length(bot_file_str)
+    dbfile=fullfile(path_xml{ib},'bot_reg.db');
+    if exist(dbfile,'file')==0
+        initialize_reg_bot_db(dbfile)
+    end
+    dbconn=sqlite(dbfile,'connect');
+    if p.Results.bot>0
+        bot_ver = dbconn.fetch(sprintf('select Version from bottom where Filename is "%s"',bot_file_str{ib}));
+        if ~isempty(bot_ver)
+            max_bot_ver=nanmax([max_bot_ver nanmax(cell2mat(bot_ver))]);
+        end
+    end
+    
+    if p.Results.reg>0
+        reg_ver = dbconn.fetch(sprintf('select Version from region where Filename is "%s"',reg_file_str{ib}));
+        if ~isempty(reg_ver)
+            max_reg_ver=nanmax([max_reg_ver nanmax(cell2mat(reg_ver))]);
+        end
+    end
+    
+    close(dbconn);
+    
+end
+
 for ifile=1:length(reg_file_str)
     if exist(path_xml{ifile},'dir')==0
         mkdir(path_xml{ifile});
@@ -17,42 +43,25 @@ for ifile=1:length(reg_file_str)
     xml_reg_file=fullfile(path_xml{ifile},reg_file_str{ifile});
     xml_bot_file=fullfile(path_xml{ifile},bot_file_str{ifile});
     
-    
     dbfile=fullfile(path_xml{ifile},'bot_reg.db');
-    if exist(dbfile,'file')==0
-        
-        initialize_reg_bot_db(dbfile)
-        
-    end
+    
     dbconn=sqlite(dbfile,'connect');
     
-     
+    
     if exist(xml_bot_file,'file')==2&&p.Results.bot>0
-        bot_ver = dbconn.fetch(sprintf('select Version from bottom where Filename is "%s"',bot_file_str{ifile}));
         xml_str_bot=fileread(xml_bot_file);
-        if isempty(bot_ver)
-            bot_ver={0};
-        end
-        bot_ver_new=nanmax(cell2mat(bot_ver))+1;
-        sprintf('Saving Bottom to database as version %.0f\n',bot_ver_new);
+        bot_ver_new=max_bot_ver+1;
+        fprintf('Saving Bottom to database as version %.0f for file %s\n',max_bot_ver+1,bot_file_str{ifile});
         dbconn.insert('bottom',{'Filename' 'Bot_XML' 'Version'},{bot_file_str{ifile} xml_str_bot bot_ver_new});
     end
     
     
     if exist(xml_reg_file,'file')==2&&p.Results.reg>0
-        reg_ver = dbconn.fetch(sprintf('select Version from region where Filename is "%s"',reg_file_str{ifile}));
         xml_str_reg=fileread(xml_reg_file);
-        if isempty(reg_ver)
-            reg_ver={0};
-        end
-        reg_ver_new=nanmax(cell2mat(reg_ver))+1;
-        dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg reg_ver_new});
-        fprintf('Saving Regions to database as version %.0f\n',reg_ver_new);
+        reg_ver_new=max_reg_ver+1;
+        fprintf('Saving Regions to database as version %.0f\nfor file %s',reg_ver_new,reg_file_str{ifile});
+        dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg reg_ver_new});   
     end
-    
-    %     out_bot = dbconn.fetch('select * from bottom')
-    %
-    %     out_reg = dbconn.fetch('select * from region')
     
     
     close(dbconn)

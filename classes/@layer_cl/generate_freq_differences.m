@@ -48,7 +48,7 @@ output_diff=cell(numel(reg_primary),numel(idx_freqs_secondary));
 
 for ireg=1:numel(reg_primary)
     
-    output_reg_primary=trans_obj_primary.integrate_region_v4(reg_primary,'keep_bottom',1,'keep_all',1,'sv_thr',p.Results.sv_thr);    
+    output_reg_primary=trans_obj_primary.integrate_region_v5(reg_primary,'keep_bottom',1,'keep_all',1,'sv_thr',p.Results.sv_thr);    
     [regs_secondary,idx_freqs_secondary,~,~]=layer_obj.generate_regions_for_other_freqs(idx_freq_primary,reg_primary,idx_freqs_secondary);
     
     output_regs_secondary=cell(1,numel(idx_freqs_secondary));    
@@ -56,7 +56,7 @@ for ireg=1:numel(reg_primary)
     
     for i=1:numel(idx_freqs_secondary)
         trans_obj_secondary=layer_obj.Transceivers(idx_freqs_secondary(i));
-        output_regs_secondary{i}=trans_obj_secondary.integrate_region_v4(regs_secondary(i),'keep_bottom',1,'keep_all',1,'sv_thr',p.Results.sv_thr);        
+        output_regs_secondary{i}=trans_obj_secondary.integrate_region_v5(regs_secondary(i),'keep_bottom',1,'keep_all',1,'sv_thr',p.Results.sv_thr);        
         output_diff{ireg,i}  = substract_reg_outputs(output_reg_primary,output_regs_secondary{i});
         
         if isempty(p.Results.region)

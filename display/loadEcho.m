@@ -131,6 +131,8 @@ curr_disp.UIupdate=1;
 curr_disp.setActive_reg_ID({});
 
 setappdata(main_figure,'Curr_disp',curr_disp);
+enabled_obj=findobj(main_figure,'Enable','off');
+set(enabled_obj,'Enable','on');
 
 update_display(main_figure,flag);
 
@@ -143,8 +145,7 @@ enable_listeners(main_figure);
 %curr_disp.CursorMode=curr_mode;
 curr_disp.CursorMode='Normal';
 
-enabled_obj=findobj(main_figure,'Enable','off');
-set(enabled_obj,'Enable','on');
+
 
 if ~isdeployed
     fprintf(1,'Currently %.0f active objects in ESP3\n\n',numel(findall(main_figure)));

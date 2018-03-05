@@ -17,7 +17,7 @@ nb_samples=repmat(data_obj.Nb_samples,1,length(nb_pings));
 
 for ii=1:length(data_mat_cell)
     if ~isempty(idx_pings_cell{ii})
-        data_obj.SubData(idx).Memap{ii}.Data.(lower(deblank(field)))(:,idx_pings_cell{ii})=data_mat_cell{ii};
+        data_obj.SubData(idx).Memap{ii}.Data.(lower(deblank(field)))(:,idx_pings_cell{ii})=data_mat_cell{ii}/data_obj.SubData(idx).ConvFactor;
     end
     data_mat_cell{ii}=[];
 end

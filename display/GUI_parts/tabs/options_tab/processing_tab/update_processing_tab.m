@@ -6,7 +6,7 @@ processing_tab_comp=getappdata(main_figure,'Processing_tab');
 process_list=getappdata(main_figure,'Process');
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
-set(processing_tab_comp.tog_freq,'String',layer.Frequencies,'Value',idx_freq);
+set(processing_tab_comp.tog_freq,'String',num2str(layer.Frequencies'/1e3,'%.0f kHz'),'Value',idx_freq);
 
 if ~isempty(process_list)
     [~,~,found]=find_process_algo(process_list,curr_disp.Freq,'Denoise');

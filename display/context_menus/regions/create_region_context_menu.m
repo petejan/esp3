@@ -69,7 +69,7 @@ if isreg>0
     uimenu(uifreq,'Label','all','Callback',{@copy_region_callback,main_figure,[]});
     
     for ifreq=idx_other
-        uimenu(uifreq,'Label',sprintf('%.0fkHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_region_callback,main_figure,ifreq});
+        uimenu(uifreq,'Label',sprintf('%.0f kHz',layer.Frequencies(ifreq)/1e3),'Callback',{@copy_region_callback,main_figure,ifreq});
     end
     
     uimenu(region_menu,'Label','Merge Overlapping Regions','CallBack',{@merge_overlapping_regions_callback,main_figure});
@@ -137,7 +137,7 @@ for i=1:n
     trans=layer.Transceivers(i);
     for j=1:numel(IDs)
         reg=trans.get_region_from_Unique_ID(reg_curr(j).Unique_ID);
-        output_reg{j,i}=trans.integrate_region_v4(reg,'keep_bottom',1);
+        output_reg{j,i}=trans.integrate_region_v5(reg,'keep_bottom',1);
     end
 end
 
@@ -185,7 +185,7 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 
 reg_curr=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
 for i=1:numel(reg_curr)
-    regCellInt=trans_obj.integrate_region_v4(reg_curr(i));
+    regCellInt=trans_obj.integrate_region_v5(reg_curr(i));
     if isempty(regCellInt)
         return;
     end
@@ -205,7 +205,6 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 switch class(select_plot)
     case 'region_cl'
         [trans_obj,~]=layer.get_trans(curr_disp);
-        
         reg_obj=trans_obj.get_region_from_Unique_ID(curr_disp.Active_reg_ID);
     otherwise
         idx_pings=round(nanmin(select_plot.XData)):round(nanmax(select_plot.XData));
@@ -217,27 +216,11 @@ trans=layer.get_trans(curr_disp);
 
 for i=1:length(reg_obj)
     reg_curr=reg_obj(i);
-    data=trans.Data.get_subdatamat(reg_curr.Idx_r,reg_curr.Idx_pings,'field',curr_disp.Fieldname);
-    
-    sub_bot=trans.Bottom.Sample_idx(reg_curr.Idx_pings);
-    idxBad=find(trans.Bottom.Tag==0);
-    
-    
-    
-    [sub_bot_mat,sub_sample_mat]=meshgrid(sub_bot,reg_curr.Idx_r);
-    
-    sub_idx_bad=intersect(reg_curr.Idx_pings,idxBad);
-    sub_idx_bad=sub_idx_bad-reg_curr.Idx_pings(1)+1;
-    
-    switch reg_curr.Shape
-        case 'Polygon'
-            mask=reg_curr.MaskReg;
-            data(~mask)=nan;
-        case 'Rectangular'
-            
-    end
-    data(sub_sample_mat>=sub_bot_mat)=nan;
-    data(:,sub_idx_bad)=nan;
+    [data,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=trans.get_data_from_region(reg_curr,...
+        'field',field);
+        
+    data(bad_data_mask||below_bot_mask)=nan;
+    data(:,bad_trans_vec)=nan;
     
     if ~any(~isnan(data))
         return;

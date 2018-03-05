@@ -68,7 +68,7 @@ if ~isempty(main_figure)
             end
         end
     end
-    
+    setappdata(main_figure,'ExternalFigures',hfigs);
 else
    hfigs=[]; 
 end

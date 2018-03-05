@@ -109,7 +109,12 @@ if ~isdeployed()
         return;
     end
 end
-
+%% Software main path
+main_path = whereisEcho();
+if ~isdeployed
+    update_path(main_path);
+end
+update_java_path(main_path);
 
 %% Get monitor's dimensions
 size_max = get(0, 'MonitorPositions');
@@ -126,6 +131,7 @@ main_figure = figure('Units','pixels',...
                      'Toolbar','none',...
                      'visible','off',...
                      'WindowStyle','normal',...
+                     'ResizeFcn',@resize_echo,...
                      'CloseRequestFcn',@closefcn_clean);
                  
 %% Install mouse pointer manager in figure
@@ -145,12 +151,7 @@ end
 set(0,'DefaultUicontrolFontSize',10);
 set(0,'DefaultUipanelFontSize',12);
 
-%% Software main path
-main_path = whereisEcho();
-if ~isdeployed
-    update_path(main_path);
-end
-update_java_path(main_path);
+
 
 %% Check if GPU computation is available %%
 gpu_comp=get_gpu_comp_stat();
@@ -228,8 +229,22 @@ setappdata(main_figure,'Layer',layer_obj);
 setappdata(main_figure,'Curr_disp',curr_disp_obj);
 setappdata(main_figure,'App_path',app_path);
 setappdata(main_figure,'Process',process_obj);
-setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty());
 
+setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty())
+switch curr_disp_obj.DispBadTrans
+    case 'off'
+        alpha_bt=0.4;
+    case 'on'
+        alpha_bt=0;
+end
+switch curr_disp_obj.DispReg
+    case 'off'
+        alpha_reg=0;
+    case 'on'
+        alpha_reg=0.6;
+end
+
+main_figure.Alphamap=[0 (1-curr_disp_obj.UnderBotTransparency/100) alpha_bt alpha_reg 1];
 
 %% Initialize the display and the interactions with the user
 initialize_display(main_figure);

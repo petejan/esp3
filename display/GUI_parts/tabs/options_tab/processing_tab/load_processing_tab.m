@@ -38,21 +38,31 @@
 function load_processing_tab(main_figure,option_tab_panel)
 
 processing_tab_comp.processing_tab=uitab(option_tab_panel,'Title','Processing');
+gui_fmt=init_gui_fmt_struct();
+gui_fmt.txt_w=140;
+
+pos=cell(8,4);
+for j=1:8
+    for i=1:4
+      pos{j,i}=[gui_fmt.x_sep+(i-1)*(gui_fmt.x_sep+gui_fmt.txt_w+gui_fmt.x_sep) gui_fmt.y_sep+(j-1)*(gui_fmt.y_sep+gui_fmt.txt_h)  gui_fmt.txt_w gui_fmt.txt_h];       
+    end
+end
+
+pos=flipud(pos);
+
+uicontrol(processing_tab_comp.processing_tab,gui_fmt.txtStyle,'String','Channels','Position',pos{1,1});
+processing_tab_comp.tog_freq=uicontrol(processing_tab_comp.processing_tab,gui_fmt.popumenuStyle,'String','--','Value',1,...
+    'Position',pos{2,1},'Callback',{@tog_freq,main_figure});
 
 
-uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Frequency','units','normalized','Position',[0.05 0.85 0.2 0.1]);
-processing_tab_comp.tog_freq=uicontrol(processing_tab_comp.processing_tab,'Style','popupmenu','String','--','Value',1,'units','normalized','Position', [0.05 0.7 0.2 0.1],'Callback',{@tog_freq,main_figure});
-
-
-uicontrol(processing_tab_comp.processing_tab,'Style','Text','String','Algorithms','units','normalized','Position',[0.3 0.85 0.2 0.1]);
-processing_tab_comp.noise_removal=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Noise Removal','units','normalized','Position',[0.3 0.75 0.3 0.1]);
-processing_tab_comp.bot_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Bottom Detection','units','normalized','Position',[0.3 0.65 0.3 0.1]);
-processing_tab_comp.bot_detec_v2=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Bottom Detection V2','units','normalized','Position',[0.3 0.55 0.3 0.1]);
-processing_tab_comp.bad_transmit=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Bad Transmit Removal','units','normalized','Position',[0.3 0.45 0.3 0.1]);
-processing_tab_comp.school_detec=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','School detection','units','normalized','Position',[0.3 0.35 0.3 0.1]);
-processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Single Target Detection','units','normalized','Position',[0.3 0.25 0.3 0.1]);
-processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,'Style','checkbox','Value',0,'String','Track Targets','units','normalized','Position',[0.3 0.15 0.3 0.1]);
-
+uicontrol(processing_tab_comp.processing_tab,gui_fmt.txtStyle,'String','Algorithms','Position',pos{1,2});
+processing_tab_comp.noise_removal=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','Noise Removal','Position',pos{1,2});
+processing_tab_comp.bot_detec=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','Bot. Detec.','Position',pos{2,2});
+processing_tab_comp.bot_detec_v2=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','Bot. Detec. V2','Position',pos{3,2});
+processing_tab_comp.bad_transmit=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','Bad Transmit Removal','Position',pos{4,2});
+processing_tab_comp.school_detec=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','School detec.','Position',pos{5,2});
+processing_tab_comp.single_target=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','Single Target Detec.','Position',pos{6,2});
+processing_tab_comp.track_target=uicontrol(processing_tab_comp.processing_tab,gui_fmt.chckboxStyle,'Value',0,'String','Track Targets','Position',pos{7,2});
 
 
 set([processing_tab_comp.track_target ...
@@ -64,9 +74,9 @@ set([processing_tab_comp.track_target ...
     processing_tab_comp.school_detec]...
     ,'Callback',{@update_process_list,main_figure})
 
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to current layer','units','normalized','pos',[0.6 0.70 0.2 0.15],'callback',{@process,main_figure,0});
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Apply to all loaded layers','units','normalized','pos',[0.6 0.50 0.2 0.15],'callback',{@process,main_figure,1});
-uicontrol(processing_tab_comp.processing_tab,'Style','pushbutton','String','Select *.raw files','units','normalized','pos',[0.6 0.30 0.2 0.15],'callback',{@process,main_figure,2});
+uicontrol(processing_tab_comp.processing_tab,gui_fmt.pushbtnStyle,'String','Apply to current layer','pos',pos{2,3},'callback',{@process,main_figure,0});
+uicontrol(processing_tab_comp.processing_tab,gui_fmt.pushbtnStyle,'String','Apply to all loaded layers','pos',pos{3,3},'callback',{@process,main_figure,1});
+uicontrol(processing_tab_comp.processing_tab,gui_fmt.pushbtnStyle,'String','Select *.raw files','pos',pos{4,3},'callback',{@process,main_figure,2});
 
 %set(findall(processing_tab_comp.processing_tab, '-property', 'Enable'), 'Enable', 'off');
 setappdata(main_figure,'Processing_tab',processing_tab_comp);
@@ -149,7 +159,7 @@ for ii=1:length(layer_to_proc)
         trans_obj=layer.get_trans(process_list(kk).Freq);
         
         if isempty(trans_obj)
-            fprintf('Could not find %.0fkhz on this layer\n',process_list(kk).Freq/1e3);
+            fprintf('Could not find %.0f kHz on this layer\n',process_list(kk).Freq/1e3);
             continue;
         end
 

@@ -45,7 +45,7 @@ for ix=1:length(reg_file_str)
 
 		 [trans_obj,~]=layer_obj.get_trans(region_xml.Infos.ChannelID);
          if isempty(trans_obj)
-             fprintf('Could not load regions for frequency %.0fkHz, there is none...\n',region_xml.Infos.Freq);
+             fprintf('Could not load regions for frequency %.0f kHz, there is none...\n',region_xml.Infos.Freq);
              continue;
          end
          iping_file=find(trans_obj.Data.FileId==ix);
@@ -54,7 +54,7 @@ for ix=1:length(reg_file_str)
       
         
         if ~strcmp(deblank(trans_obj.Config.ChannelID),region_xml.Infos.ChannelID)
-            fprintf('Those regions have been written for a different GPT %.0fkHz\n',region_xml.Infos.Freq);
+            fprintf('Those regions have been written for a different GPT %.0f kHz\n',region_xml.Infos.Freq);
         end
         
         t_max=nanmax(trans_obj.Time);

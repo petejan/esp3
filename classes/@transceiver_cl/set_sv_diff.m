@@ -11,7 +11,7 @@ if ~isempty(diff_output)
             end
         end
     end
-    trans_obj.Data.replace_sub_data(sprintf('Sv%.0fkHz',freq/1e3),dataMat);
+    trans_obj.Data.replace_sub_data_v2(sprintf('Sv%.0fkHz',freq/1e3),dataMat,[],-999);
 end
 
 end
