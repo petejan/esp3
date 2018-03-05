@@ -17,7 +17,7 @@ addParameter(p,'update_bt',1);
 
 parse(p,main_figure,varargin{:});
 
-%alpha_map_fig=get(main_figure,'alphamap')%5 elt vector: first under clim(1), second underbottom, third bad trans, fourth regions, fifth normal]
+%alpha_map_fig=get(main_figure,'alphamap')%6 elts vector: first: empty, second: under clim(1), third: underbottom, fourth: bad trans, fifth regions, sixth normal]
 
 curr_disp=getappdata(main_figure,'Curr_disp');
 update_bt=p.Results.update_bt;
@@ -45,7 +45,7 @@ for iax=1:length(echo_ax_tot)
     data=double(get(echo_im,'CData'));
     xdata=double(get(echo_im,'XData'));
     ydata=double(get(echo_im,'YData'));
-    alpha_map=ones(size(data),'single');
+    alpha_map=ones(size(data),'single')*6;
     
     nb_pings=length(xdata);
     
@@ -60,12 +60,9 @@ for iax=1:length(echo_ax_tot)
         idx_bad_red=(intersect(idxBad,idx_pings)-idx_pings(1)+1);
         idx_bad_red(idx_bad_red==0)=[];
     end
+
+    %alpha_map(:,idx_bad_red)=2;
     
-    if strcmp(curr_disp.DispBadTrans,'on')
-        alpha_map(:,idx_bad_red)=1;
-    end
-    
-        
     bot_vec=trans_obj{iax}.get_bottom_idx(idx_pings);
     n_bot=size(alpha_map,2);
     
@@ -78,31 +75,32 @@ for iax=1:length(echo_ax_tot)
     
     ydata_red=linspace(ydata(1),ydata(end),size(alpha_map,1))';
     idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
-    
-    
-    if strcmpi(curr_disp.DispUnderBottom,'off')==1
-        alpha_map(idx_bot_red)=1-curr_disp.UnderBotTransparency/100;
-    end
+        
+    alpha_map(idx_bot_red)=2;
+    %alpha_map(idx_bot_red)=1-curr_disp.UnderBotTransparency/100;
     
     if update_bt>0
         data_temp=nan(2,size(alpha_map,2));
         data_temp(:,idx_bad_red)=Inf;
-        
-        if strcmp(curr_disp.DispBadTrans,'on')
-            alpha_map_bt=(~isnan(data_temp))-0.6;
-        else
-            alpha_map_bt=zeros(2,size(data_temp,2));
-        end       
+%         
+%         if strcmp(curr_disp.DispBadTrans,'on')
+%             alpha_map_bt=(~isnan(data_temp))-0.6;
+%         else
+%             alpha_map_bt=zeros(2,size(data_temp,2));
+%         end 
+
+        alpha_map_bt=ones(2,size(data_temp,2));
+        alpha_map_bt(:,idx_bad_red)=3;
         set(echo_im_bt,'XData',xdata,'YData',[ydata(1) ydata(end)],'CData',data_temp,'AlphaData',alpha_map_bt);
     end
     
-    alpha_map(data<min_axis|isnan(data))=0;
+    alpha_map(data<=min_axis|isnan(data))=1;
     
     if strcmp(echo_ax.Tag,'main')
         set(echo_ax,'CLim',curr_disp.Cax);
     end
     set(echo_im,'AlphaData',alpha_map);
-    
+    %figure();imagesc(alpha_map)
     % if strcmpi(curr_disp.CursorMode,'Normal')&&strcmp(p.Results.main_or_mini,'main')
     %     create_context_menu_main_echo(main_figure);
     % end

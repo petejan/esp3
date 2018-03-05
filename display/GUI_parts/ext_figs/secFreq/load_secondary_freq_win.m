@@ -35,8 +35,8 @@ for i=1:nb_chan
     secondary_freq.axes(i)=axes(secondary_freq.fig,'Units','Normalized','Position',pos,...
         'nextplot','add','Layer','top','XLimMode','manual','YLimMode','manual','LineWidth',1.0,...
         'TickLength',[0.005 0.005],'XGrid','on','YGrid','off','ClippingStyle','rectangle','box','on','YTickLabel',{});
-    secondary_freq.echoes(i)=image(1,1,1,'Parent',secondary_freq.axes(i),'CDataMapping','scaled','Tag',curr_disp.SecChannelIDs{i});
-    secondary_freq.echoes_bt(i)=image(1,1,1,'Parent',secondary_freq.axes(i),'Tag','bad_transmits','AlphaData',0,'Tag',curr_disp.SecChannelIDs{i},'UserData',curr_disp.SecChannelIDs{i});
+    secondary_freq.echoes(i)=image(1,1,1,'Parent',secondary_freq.axes(i),'CDataMapping','scaled','Tag',curr_disp.SecChannelIDs{i},'AlphaDataMapping','direct');
+    secondary_freq.echoes_bt(i)=image(1,1,1,'Parent',secondary_freq.axes(i),'Tag','bad_transmits','AlphaData',0,'Tag',curr_disp.SecChannelIDs{i},'UserData',curr_disp.SecChannelIDs{i},'AlphaDataMapping','direct');
     secondary_freq.names(i)=text(secondary_freq.axes(i),10,15,sprintf('%.0fkHz',curr_disp.SecFreqs(i)/1e3),'Units','Pixel','Fontweight','Bold','Fontsize',16,'ButtonDownFcn',{@change_cid,main_figure},'Tag',curr_disp.SecChannelIDs{i},'UserData',curr_disp.SecChannelIDs{i});
     secondary_freq.bottom_plots(i)=plot(secondary_freq.axes(i),nan,nan,'tag','bottom');
     secondary_freq.axes(i).XTick=axes_panel_comp.main_axes.XTick;
