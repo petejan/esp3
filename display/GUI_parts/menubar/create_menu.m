@@ -106,7 +106,7 @@ uimenu(m_survey,'Label','Look for new files in current folder','Callback',{@look
 
 m_map=uimenu(main_figure,'Label','Mapping Tools','Tag','mapping');
 %uimenu(m_map,'Label','Open/Reload WebMap','Callback',{@display_webmap_from_db_callback,main_figure});
-uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});
+%uimenu(m_map,'Label','Plot Tracks from current layers','Callback',{@display_multi_navigation_callback,main_figure});
 uimenu(m_map,'Label','Plot Tracks from Raw files','Callback',{@plot_gps_track_from_files_callback,main_figure});
 uimenu(m_map,'Label','Map from current layers (integrated)','Callback',{@load_map_fig_callback,main_figure},'separator','on');
 uimenu(m_map,'Label','Map from MBS result files','Callback',{@map_mbs_scripts_callback,main_figure});
@@ -318,7 +318,7 @@ function reload_current_layer_callback(~,~,main_figure)
 layer=getappdata(main_figure,'Layer');
 
 file_id=layer.Filename;
-delete_layer_callback([],[],main_figure);
+delete_layer_callback([],[],main_figure,[]);
 
 open_file([],[],file_id,main_figure);
 

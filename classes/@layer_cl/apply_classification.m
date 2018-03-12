@@ -5,7 +5,8 @@ p = inputParser;
 addRequired(p,'layer',@(x) isa(x,'layer_cl'));
 addParameter(p,'primary_freq',layer.Frequencies(1),@isnumeric);
 addParameter(p,'idx_schools',[],@isnumeric);
-addParameter(p,'classification_file',fullfile(whereisEcho,'config','classification.xml'),@ischar);
+addParameter(p,'denoised',0,@isnumeric);
+addParameter(p,'classification_file',fullfile(whereisEcho,'config','classification','classification.xml'),@ischar);
 
 parse(p,layer,varargin{:});
 
@@ -22,10 +23,10 @@ if isempty(trans_obj_primary)
     return;
 end
 
-if isempty(idx_schools)  
+if isempty(idx_schools)
     idx_schools=trans_obj_primary.find_regions_type('Data');
     if isempty(idx_schools)
-         warning('No regions defined on %dkHz!',primary_freq/1e3);
+        warning('No regions defined on %dkHz!',primary_freq/1e3);
     end
 end
 
@@ -44,7 +45,7 @@ end
 %freqs=class_tree_obj.get_frequencies();
 vars=class_tree_obj.get_variables();
 
-idx_var_freq=find(~(cellfun(@isempty,strfind(vars,'delta_sv'))));
+idx_var_freq=find(contains(vars,'delta_sv'));
 primary_freqs=nan(1,numel(idx_var_freq));
 secondary_freqs=nan(1,numel(idx_var_freq));
 
@@ -74,67 +75,39 @@ for i=1:numel(primary_freqs)
     end
 end
 
+idx_freq_tot=union(idx_primary_freqs,idx_secondary_freqs);
+[~,~,~,regCellInt,~,~,~,idx_freq_out_tot]=layer.multi_freq_slice_transect2D(...
+    'SliceInt',0,'RegInt',1,'idx_regs',idx_schools,'idx_main_freq',idx_primary_freq,'idx_sec_freq',idx_freq_tot,'keep_all',1,'keep_bottom',1,'denoised',p.Results.denoised);
 
-j=0;
 
-for idx_school=idx_schools
-    j=j+1;
-    
-    school_reg=trans_obj_primary.Regions(idx_school);
-    
-    if ~any(idx_primary_freqs==idx_primary_freq)&&~any(idx_secondary_freqs==idx_primary_freq)
-        schools_output_temp=trans_obj_primary.integrate_region_v5(school_reg,'denoised',0,'keep_all',1);
-    end
+for j=1:nb_schools
     
     for i=1:numel(primary_freqs)
-        [regs,idx_freq_out,~,~]=layer.generate_regions_for_other_freqs(idx_primary_freq,school_reg,[idx_primary_freqs(i) idx_secondary_freqs(i)]);
-        
-        if idx_primary_freqs(i)==idx_primary_freq
-            reg_prim=school_reg;
-        else
-            reg_prim=regs(idx_freq_out==idx_primary_freqs(i));
-        end
-        
-        if idx_secondary_freqs(i)==idx_primary_freq
-            reg_sec=school_reg;
-        else
-            reg_sec=regs(idx_freq_out==idx_secondary_freqs(i));
-        end
-               
-        trans_obj_prim=layer.Transceivers(idx_primary_freqs(i));
-        trans_obj_sec=layer.Transceivers(idx_secondary_freqs(i));
-        
-        schools_output_primary_temp=trans_obj_prim.integrate_region_v5(reg_prim,'denoised',0,'keep_all',1);
-        schools_output_secondary_temp=trans_obj_sec.integrate_region_v5(reg_sec,'denoised',0,'keep_all',1);
-        
-        if idx_primary_freqs(i)==idx_primary_freq
-            schools_output_temp=schools_output_primary_temp;
-        end
-        
-        if idx_secondary_freqs(i)==idx_primary_freq
-            schools_output_temp=schools_output_secondary_temp;
-        end
-               
-        output_reg_1=schools_output_primary_temp;
-        output_reg_2=schools_output_secondary_temp;
-        
-        delta_temp=nanmean(pow2db_perso(output_reg_1.Sv_mean_lin(:))-pow2db_perso(output_reg_2.Sv_mean_lin(:)));
+        i_freq_p=idx_freq_out_tot==idx_primary_freqs(i);
+        i_freq_s=idx_freq_out_tot==idx_secondary_freqs(i);
+              
+        output_reg_p=regCellInt{i_freq_p}{j};
+        output_reg_s=regCellInt{i_freq_s}{j};
+        ns=numel(output_reg_s.nb_samples(:));
+        np=numel(output_reg_p.nb_samples(:));
+        n=nanmin(ns,np);
+        delta_temp=nanmean(pow2db_perso(output_reg_p.Sv_mean_lin(1:n))-pow2db_perso(output_reg_s.Sv_mean_lin(1:n)));
         delta_temp(isnan(delta_temp))=0;
-        school_struct{j}.(sprintf('delta_sv_%d_%d_mean',primary_freqs(i)/1e3,secondary_freqs(i)/1e3))=delta_temp;
-        
+        school_struct{j}.(sprintf('delta_sv_%d_%d',primary_freqs(i)/1e3,secondary_freqs(i)/1e3))=delta_temp;
+        school_struct{j}.(sprintf('sv_%d',primary_freqs(i)/1e3))=pow2db_perso(nanmean(output_reg_p.Sv_mean_lin(:)));
+        school_struct{j}.(sprintf('sv_%d',secondary_freqs(i)/1e3))=pow2db_perso(nanmean(output_reg_p.Sv_mean_lin(:)));
     end
     
-    school_struct{j}.nb_cell=length(~isnan(schools_output_temp.Sv_mean_lin(:)));
-    school_struct{j}.sv_mean=pow2db_perso(nanmean(schools_output_temp.Sv_mean_lin(:)));
-    school_struct{j}.aggregation_depth_mean=nanmean(schools_output_temp.Depth_mean(:));
-    school_struct{j}.aggregation_depth_min=nanmax(schools_output_temp.Depth_mean(:));
-    school_struct{j}.bottom_depth=nanmean(trans_obj_primary.get_bottom_range(schools_output_temp.Ping_S(1):schools_output_temp.Ping_E(end)));
-    school_struct{j}.lat_mean=nanmean(schools_output_temp.Lat_E(:));   
+    school_struct{j}.nb_cell=length(~isnan(output_reg_p.Sv_mean_lin(:)));
+    school_struct{j}.aggregation_depth_mean=nanmean(output_reg_p.Depth_mean(:));
+    school_struct{j}.aggregation_depth_min=nanmax(output_reg_p.Depth_mean(:));
+    school_struct{j}.bottom_depth=nanmean(trans_obj_primary.get_bottom_range(output_reg_p.Ping_S(1):output_reg_p.Ping_E(end)));
+    school_struct{j}.lat_mean=nanmean(output_reg_p.Lat_E(:));
 end
 
-for j=1:length(school_struct)    
-   tag=class_tree_obj.apply_classification_tree(school_struct{j}); 
-   trans_obj_primary.Regions(idx_schools(j)).Tag=tag;  
+for j=1:length(school_struct)
+    tag=class_tree_obj.apply_classification_tree(school_struct{j});
+    trans_obj_primary.Regions(idx_schools(j)).Tag=tag;
 end
 
 end

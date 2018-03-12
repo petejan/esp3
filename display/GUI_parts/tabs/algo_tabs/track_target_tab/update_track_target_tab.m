@@ -29,5 +29,5 @@ end
 %set(findall(track_target_tab_comp.track_target_tab, '-property', 'Enable'), 'Enable', 'on');
 setappdata(main_figure,'Track_target_tab',track_target_tab_comp);
 
-update_map_tab(main_figure,'map',0,'histo',1);
+update_st_tracks_tab(main_figure,'histo',1,'st',0);
 end

@@ -1,9 +1,6 @@
 function [data,power,AlongPhi,AcrossPhi]=readRaw0_v2(data,idx_data,i_ping,fid)
 
-temp=fread(fid,4,'int8', 'l');
-data.pings(idx_data).datatype='11000000000';
 data.pings(idx_data).number(i_ping) = i_ping;
-data.pings(idx_data).mode(i_ping) = 256 * temp(3) + temp(4);
 
 temp=fread(fid,8,'float32', 'l');
 data.pings(idx_data).transducerdepth(i_ping) = temp(1);
@@ -22,19 +19,25 @@ data.pings(idx_data).count(i_ping) = temp(9);
 if data.pings(idx_data).count(i_ping) > 0
     len_load=data.pings(idx_data).count(i_ping);
 
-    if data.pings(idx_data).mode(i_ping) ~= 2
+    if data.pings(idx_data).datatype(1)==dec2bin(1)
         %  power * 10 * log10(2) / 256
         data_ping=fread(fid,len_load,'int16', 'l');
         len_load=numel(data_ping);
         power=(0.011758984205624*data_ping);
-    end    
-    if data.pings(idx_data).mode(i_ping) > 1
+    else
+        power=[];
+    end
+
+    if data.pings(idx_data).datatype(2)==dec2bin(1)
         angle=fread(fid,[2 len_load],'int8', 'l');
         len_load=size(angle,2);
         if len_load>0
             AcrossPhi=angle(1,:);
             AlongPhi=angle(2,:);
         end
+    else
+        AcrossPhi=[];
+        AlongPhi=[];
     end
         data.pings(idx_data).samplerange=[1 len_load];
 end

@@ -5,7 +5,16 @@ curr_dist=0;
 curr_att=0;
 curr_heading=0;
 [nmea,nmea_type]=cellfun(@parseNMEA,NMEA_string_cell(idx_NMEA),'UniformOutput',0);
+
 NMEA_time=NMEA_time(idx_NMEA);
+
+% idx_gps=strcmp(nmea_type,'gps');
+% nmea_gps=nmea(idx_gps);
+% time_nmea_gps=NMEA_time(idx_gps);
+% 
+% seconds_gps=time_nmea_gps*(24*60*60)-round(time_nmea_gps*(24*60*60))
+% seconds_computer=nmea_gps.time*[60*60 60 1];
+
 
 for iiii=1:length(idx_NMEA)
 
@@ -28,12 +37,12 @@ for iiii=1:length(idx_NMEA)
                     gps.type{curr_gps}=nmea{iiii}.type;
                     gps.time(curr_gps) = NMEA_time(iiii);
                     %  set lat/lon signs and store values
-                    if (nmea{iiii}.lat_hem == 'S');
+                    if (nmea{iiii}.lat_hem == 'S')
                         gps.lat(curr_gps) = -nmea{iiii}.lat;
                     else
                         gps.lat(curr_gps) = nmea{iiii}.lat;
                     end
-                    if (nmea{iiii}.lon_hem == 'W');
+                    if (nmea{iiii}.lon_hem == 'W')
                         gps.lon(curr_gps) = -nmea{iiii}.lon;
                     else
                         gps.lon(curr_gps) = nmea{iiii}.lon;

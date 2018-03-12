@@ -30,7 +30,29 @@ if found
         [idx_ping_cell_red,idx_ping_temp,~]=intersect(idx_ping,idx_ping_cell);
         
         if ~isempty(idx_ping_temp)
-               datamat(:,idx_ping_temp)=data.SubData(idx).ConvFactor*double(data.SubData(idx).Memap{icell}.Data.(lower(deblank(field)))(idx_r,idx_ping_cell_red-idx_ping_cell(1)+1));            
+            data_tmp=data.SubData(idx).Memap{icell}.Data.(lower(deblank(field)))(idx_r,idx_ping_cell_red-idx_ping_cell(1)+1);
+            switch data.SubData(idx).Fmt
+                case {'int8' 'uint8' 'int16' 'uint16' 'int32' 'uint32' 'int64' 'uint164'}
+                    if data.SubData(idx).ConvFactor<0
+                        idx_nan=data_tmp==intmax(data.SubData(idx).Fmt);
+                    else
+                        idx_nan=data_tmp==intmin(data.SubData(idx).Fmt);
+                    end
+                              
+                case {'single' 'double'}
+                    idx_nan=[];
+                    %idx_nan=(data_tmp==realmin(data.SubData(idx).Fmt))|(data_tmp==realmax(data.SubData(idx).Fmt));
+            end
+            
+            switch data.SubData(idx).Scale
+                case 'db'
+                    val=-999;
+                otherwise
+                    val=0;
+            end
+            data_tmp=data.SubData(idx).ConvFactor*double(data_tmp);
+            data_tmp(idx_nan)=val;
+            datamat(:,idx_ping_temp)=data_tmp;
         end
     end
 else

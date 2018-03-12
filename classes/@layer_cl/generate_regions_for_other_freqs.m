@@ -43,14 +43,14 @@ for i=1:length(layer.Transceivers)
     
     switch active_reg.Cell_w_unit
         case 'pings'
-            cell_w=nanmax(floor(active_reg.Cell_w*t_factor(u)),1);
+            cell_w=nanmax(ceil(active_reg.Cell_w*t_factor(u)),1);
         case 'meters'
             cell_w=active_reg.Cell_w;
     end
     
     switch active_reg.Cell_h_unit
         case 'samples'
-            cell_h=nanmax(floor(active_reg.Cell_h*r_factor(u)),1);
+            cell_h=nanmax(ceil(active_reg.Cell_h*r_factor(u)),1);
         case 'meters'
             cell_h=active_reg.Cell_h;            
     end

@@ -139,9 +139,10 @@ for ui=1:num_ite
     idx_ringdown=analyse_ringdown(RingDown);
     
     % define b_filter:
-    b_filter = 3:2:7;
+    b_filter = 3:2:5;
     
     %% First let's get the bottom and the BS...
+    Range_t= trans_obj.get_transceiver_range();
     Range= trans_obj.get_transceiver_range(idx_r);
     BS=bsxfun(@plus,Sv,10*log10(Range));
     idx_bottom=trans_obj.get_bottom_idx(idx_pings);
@@ -155,7 +156,7 @@ for ui=1:num_ite
         % Bottom is the sample corresponding to the bottom detect
         % BS_bottom is the backscatter level of the sample corresponding to the bottom detection
         BS_bottom(idx_bottom<start_sample) = nan;
-        BS_bottom(idx_bottom==numel(Range))=nan;
+        BS_bottom(idx_bottom==numel(Range_t))=nan;
         BS_bottom_analysis = BS_bottom;
         BS_bottom_analysis(isnan(idx_bottom)|idx_bottom==nb_samples) = nan;
         
@@ -244,7 +245,7 @@ for ui=1:num_ite
         sv_mean_vert_below=nan(1,nb_pings);
     end
     
-    
+   
     if DEBUG==1
         sv_mean_vert_bad_below=nan(1,nb_pings);
         sv_mean_vert_bad_above=nan(1,nb_pings);

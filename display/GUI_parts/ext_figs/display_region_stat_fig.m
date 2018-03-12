@@ -44,29 +44,35 @@ columnname = {'Variable','Value','unit'};
 columnformat = {'char','numeric','char'};
 regSummary=cell(6,3);
 
+Sa_lin=(nansum(nansum(regIntStruct.eint))./nansum(nanmax(regIntStruct.Nb_good_pings)));
+
 regSummary{1,1}='Sv Mean';
 regSummary{1,2}=pow2db_perso(nanmean(regIntStruct.Sv_mean_lin(:)));
 regSummary{1,3}='dB';
 
-regSummary{2,1}='NASC Esp3';
-regSummary{2,2}=4*pi*1852^2*nansum(nansum(regIntStruct.eint))./nansum(nanmax(regIntStruct.Nb_good_pings));
-regSummary{2,3}='m2/nmi2';
+regSummary{2,1}='Sa';
+regSummary{2,2}=pow2db_perso(Sa_lin);
+regSummary{2,3}='dB';
 
-regSummary{3,1}='NASC Echoview';
-regSummary{3,2}=nanmean(nansum(regIntStruct.NASC));
+regSummary{3,1}='NASC Esp3';
+regSummary{3,2}=4*pi*1852^2*Sa_lin;
 regSummary{3,3}='m2/nmi2';
 
-regSummary{4,1}='Region Length';
-regSummary{4,2}=nanmax(regIntStruct.Dist_E(:))-nanmin(regIntStruct.Dist_S(:));
-regSummary{4,3}='m';
+regSummary{4,1}='NASC Echoview';
+regSummary{4,2}=nanmean(nansum(regIntStruct.NASC));
+regSummary{4,3}='m2/nmi2';
 
-regSummary{5,1}='Region Height';
-regSummary{5,2}=nanmax(regIntStruct.Layer_depth_max(:))-nanmin(regIntStruct.Layer_depth_min(:));
+regSummary{5,1}='Region Length';
+regSummary{5,2}=nanmax(regIntStruct.Dist_E(:))-nanmin(regIntStruct.Dist_S(:));
 regSummary{5,3}='m';
 
-regSummary{6,1}='Nb Cells';
-regSummary{6,2}=nansum(regIntStruct.Sv_mean_lin(:)>0);
-regSummary{6,3}='';
+regSummary{6,1}='Region Height';
+regSummary{6,2}=nanmax(regIntStruct.Layer_depth_max(:))-nanmin(regIntStruct.Layer_depth_min(:));
+regSummary{6,3}='m';
+
+regSummary{7,1}='Nb Cells';
+regSummary{7,2}=nansum(regIntStruct.Sv_mean_lin(:)>0);
+regSummary{7,3}='';
 
 
 table_main=uitable('Parent',hfig,...

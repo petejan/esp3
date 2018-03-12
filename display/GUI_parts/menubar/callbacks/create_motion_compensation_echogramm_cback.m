@@ -5,8 +5,8 @@ if isempty(layer)
     return;
 end
 curr_disp=getappdata(main_figure,'Curr_disp');
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-create_motion_comp_subdata(layer,idx_freq,1);
+[~,idx_freq]=layer.get_trans(curr_disp);
+layer.create_motion_comp_subdata(idx_freq,1);
 
 curr_disp.setField('motioncompensation');
 setappdata(main_figure,'Curr_disp',curr_disp);

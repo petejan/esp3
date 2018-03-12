@@ -9,7 +9,7 @@ state_haxes=get(main_menu.show_haxes,'checked');
 state_vaxes=get(main_menu.show_vaxes,'checked');
 
 pos=[0 0 1 1];
-vpos=[-0.1 0 0.1 1];
+vpos=[-0.05 0 0.05 1];
 hpos=[0 1 1 0.15];
 pos_colorbar=[0.95 0 0.05 1];
 

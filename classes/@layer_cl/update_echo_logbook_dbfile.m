@@ -158,7 +158,7 @@ for ilay=1:length(layers_obj)
         end
         
         
-        dbconn.close();
+        close(dbconn);
         
     end
     

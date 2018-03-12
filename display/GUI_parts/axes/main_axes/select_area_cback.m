@@ -184,6 +184,7 @@ replace_interaction(main_figure,'interaction','WindowButtonUpFcn','id',2,'intera
         enterFcn =  @(figHandle, currentPoint)...
             set(figHandle, 'Pointer', 'fleur');
         iptSetPointerBehavior(hp_a,enterFcn);
+               
         set(hp_a,'ButtonDownFcn',{@move_patch_select,main_figure});
         
         %reset_disp_info(main_figure);

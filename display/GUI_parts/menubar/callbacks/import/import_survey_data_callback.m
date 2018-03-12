@@ -12,6 +12,6 @@ else
     return;
 end
 setappdata(main_figure,'Layers',layers);
-update_layer_tab(main_figure);
+update_tree_layer_tab(main_figure);
 display_survdata_lines(main_figure)
 end

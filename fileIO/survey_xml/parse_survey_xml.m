@@ -115,7 +115,7 @@ if isfield(Options,'FrequenciesToLoad')
             Options.Absorption = abs_temp;
         end
     else
-        Options.Absorption(Options.FrequenciesToLoad == Options.Frequency) = abs_ori;
+        Options.Absorption=abs_ori;
     end
 end
 

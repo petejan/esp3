@@ -74,7 +74,7 @@ end
 
 time_tot=trans_obj.get_transceiver_time(region.Idx_pings);
 pings_tot=trans_obj.get_transceiver_pings(region.Idx_pings);
-
+output=[];
 
 %% creating line_obj
 if isempty(p.Results.line_obj)
@@ -93,6 +93,10 @@ else
 end
 
 idx_in=find(time_tot>=p.Results.horiExtend(1)&time_tot<=p.Results.horiExtend(2));
+
+if isempty(idx_in)
+    return;
+end
 idx_pings_tot=region.Idx_pings(idx_in);
 pings_tot=pings_tot(idx_in);
 time_tot=time_tot(idx_in);
@@ -167,7 +171,7 @@ N_y_tot=ceil((range(y_tot)+range(line_ref_tot))/region.Cell_h);
 y0=(nanmin(y_tot(:))-nanmax(line_ref_tot(:)));
 x0=nanmin(x_tot);
 idx_x_empty=[];
-output=[];
+
 load_bar_comp=p.Results.load_bar_comp;
 if ~isempty(load_bar_comp)
     load_bar_comp.status_bar.setText(sprintf('Integrating %s',region.print()));

@@ -449,9 +449,9 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
     %% Get current figure (even if its 'HandleVisibility' property is 'off')
     function curFig = getCurrentFigure
         oldShowHidden = get(0,'ShowHiddenHandles');
-        set(0,'ShowHiddenHandles','on');  % minor fix per Johnny Smith
+        %set(0,'ShowHiddenHandles','on');  % minor fix per Johnny Smith
         curFig = gcf;
-        set(0,'ShowHiddenHandles',oldShowHidden);
+        %set(0,'ShowHiddenHandles',oldShowHidden);
     end
 
     %% Get Java reference to top-level (root) panel - actually, a reference to the java figure
@@ -1309,9 +1309,11 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
             root = uitreenode(handle(container), rootName, icon, ~hasChildren);
         end
         setTreeNodeIcon(root,container);  % constructor must accept a char icon unfortunately, so need to do this afterwards...
+        
         if ~isempty(rootTitle)
             set(hTreeFig, 'Name',['FindJObj - ' char(rootTitle)]);
         end
+        
         nodedata.idx = 1;
         nodedata.obj = container;
         set(root,'userdata',nodedata);
@@ -1702,6 +1704,7 @@ function [handles,levels,parentIdx,listing] = findjobj(container,varargin) %#ok<
     end
 
     %% Recursively expand all nodes (except toolbar/menubar) in startup
+    %  expandNode(progressBar, jTreeObj, tree_h, root, 0);
     function expandNode(progressBar, tree, tree_h, parentNode, parentRow)
         try
             if nargin < 5

@@ -44,7 +44,7 @@ varin=algo.Varargin;
 
 gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
+pos=create_pos_3(6,4,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{6,1}{1};
 p_button(3)=gui_fmt.button_w;
@@ -100,7 +100,46 @@ uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String'
 uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Save as','pos',p_button+[3*gui_fmt.button_w 0 0 0],'callback',{@save_new_display_algos_config_callback,main_figure,'SchoolDetection'});
 uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Delete','pos',p_button+[4*gui_fmt.button_w 0 0 0],'callback',{@delete_display_algos_config_callback,main_figure,'SchoolDetection'});
 
+[school_detect_tab_comp.classification_files,school_detect_tab_comp.classification_trees,titles]=list_classification_files();
+
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.txtTitleStyle,'string','Trees:','pos',pos{2,3}{1});
+if isempty(titles)
+    titles={'--'};
+end
+
+school_detect_tab_comp.classification_list=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.popumenuStyle,'pos',pos{3,3}{1}+[0 0 gui_fmt.box_w 0],'string',titles,'value',1);
+
+p_button=pos{4,3}{1};
+p_button(3)=gui_fmt.button_w;
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Reload','pos',p_button,'callback',{@reload_classification_trees_cback,main_figure});
+uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.pushbtnStyle,'String','Edit','pos',p_button+[gui_fmt.button_w 0 0 0],'callback',{@edit_classif_file_cback,main_figure});
+
 setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
+
+end
+function edit_classif_file_cback(~,~,main_figure)
+school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
+
+if isempty(school_detect_tab_comp.classification_files)
+    return;
+end
+idx_val=get(school_detect_tab_comp.classification_list,'value');
+
+[stat,~]=system(['start notepad++ ' school_detect_tab_comp.classification_files{idx_val}]);
+if stat~=0
+    disp('You should install Notepad++...');
+    system(['start ' school_detect_tab_comp.classification_files{idx_val}]);
+end
+
+end
+
+function reload_classification_trees_cback(~,~,main_figure)
+school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
+[school_detect_tab_comp.classification_files,school_detect_tab_comp.classification_trees,titles]=list_classification_files();
+if isempty(titles)
+    titles={'--'};
+end
+set(school_detect_tab_comp.classification_list,'string',titles,'value',1);
 end
 
 function load_params(src,~,main_figure)

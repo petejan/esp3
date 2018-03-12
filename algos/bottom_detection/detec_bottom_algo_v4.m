@@ -256,6 +256,7 @@ for ui=1:num_ite
     idx_pings=idx_pings-idx_pings_tot(1)+1;
     % profile off;
     % profile viewer;
+    %Bottom
     Bottom_tot(idx_pings)=Bottom;
     Double_bottom_region_tot(:,idx_pings)=Double_bottom_region;
     BS_bottom_tot(idx_pings)=BS_bottom;

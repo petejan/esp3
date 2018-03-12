@@ -1,13 +1,11 @@
 function obj=create_line_from_rbr_mat(filename)
 
     load(filename);
-    %The sample times in the RBR file are strings of the format 
-    %dd/mm/yyyy HH:MM:SS.FFF PM
-    
+
     timestamp=zeros(1,length(RBR.sampletimes));
     for i=1:length(RBR.sampletimes)
-        [Y,M,D,H,MN,S] = datevec(RBR.sampletimes{i},'dd/mm/yyyy HH:MM:SS.FFF PM');
-        timestamp(i) = datenum(Y,M,D,H,MN,S);
+        %[Y,M,D,H,MN,S] = datevec(RBR.sampletimes{i},'dd/mm/yyyy HH:MM:SS.FFF PM');
+        timestamp(i) = datenum(RBR.sampletimes{i});
     end
     fprintf('\nRBR file starts at %s and finishes at %s\n',datestr(timestamp(1)),datestr(timestamp(end)));
     depth = RBR.data(:,4);     % uncomment lines below to compensate for vessel draught

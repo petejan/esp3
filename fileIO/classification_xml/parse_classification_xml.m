@@ -1,6 +1,7 @@
-function [Frequencies,Variables,Nodes]=parse_classification_xml(xml_file)
+function [Frequencies,Variables,Nodes,Title]=parse_classification_xml(xml_file)
 
 xml_struct=parseXML(xml_file);
+Title='';
 Frequencies=[];
 Variables={};
 Nodes={};
@@ -9,6 +10,10 @@ if ~strcmpi(xml_struct.Name,'classification_descr')
     return;
 end
 
+Title=get_att(xml_struct,'title');
+if isempty(Title)
+    Title='';
+end
 
 nb_child=length(xml_struct.Children);
 
@@ -39,18 +44,23 @@ function node_cell=get_nodes(nodes_node)
 nb_node=length(nodes_node.Children);
 node_cell=cell(1,nb_node);
 for i=1:nb_node
-    node_cell{i}=get_node_att(nodes_node.Children(i));
-    cond_child=get_childs(nodes_node.Children(i),'condition');
-    if ~isempty(cond_child)
-        node_cell{i}.Condition=cond_child.Data;
+    switch nodes_node.Children(i).Name
+        case '#comment'
+        case 'node'
+            node_cell{i}=get_node_att(nodes_node.Children(i));
+            cond_child=get_childs(nodes_node.Children(i),'condition');
+            if ~isempty(cond_child)
+                node_cell{i}.Condition=cond_child.Data;
+            end
+            
+            class_child=get_childs(nodes_node.Children(i),'class');
+            if ~isempty(class_child)
+                node_cell{i}.Class=class_child.Data;
+            end
     end
-   
-    class_child=get_childs(nodes_node.Children(i),'class');
-    if ~isempty(class_child)
-        node_cell{i}.Class=class_child.Data;
-    end
-    
 end
+node_cell(cellfun(@isempty,node_cell))=[];
+
 end
 
 

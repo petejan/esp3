@@ -36,13 +36,11 @@ reg_descriptor=struct(...
     'Roundness',[]);
 
 reg_poly=region.Poly;
-
 reg_poly.Vertices(:,1)=reg_poly.Vertices(:,1)*nanmean(diff(range_reg));
 reg_poly.Vertices(:,2)=reg_poly.Vertices(:,2)*nanmean(diff(dist_reg));
 conv_hull_poly=reg_poly.convhull;
 reg_descriptor.Area=conv_hull_poly.area;
 reg_descriptor.Perimeter=conv_hull_poly.perimeter;
-
 reg_descriptor.Roundness=4*pi*conv_hull_poly.area/conv_hull_poly.perimeter^2;
 
 end

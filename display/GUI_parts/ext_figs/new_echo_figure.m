@@ -85,6 +85,8 @@ end
 %        set(fig_handle,'MenuBar','figure');
 %        set(fig_handle,'Toolbar','figure');
 %     end
+%% Install mouse pointer manager in figure
+iptPointerManager(fig_handle);
 
 javaFrame = get(fig_handle,'JavaFrame');
 javaFrame.setFigureIcon(javax.swing.ImageIcon(fullfile(whereisEcho(),'icons','echoanalysis.png')));

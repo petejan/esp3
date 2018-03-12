@@ -55,7 +55,7 @@ for ifile=1:length(path_xml)
         fclose(fid);
     end
     
-    
+     close(dbconn);
 end
 
 

@@ -52,7 +52,7 @@ setappdata(main_figure,'algo_tab_panel',algo_panel);
 create_menu(main_figure);
 load_esp3_panel(main_figure,echo_tab_panel);
 load_file_panel(main_figure,echo_tab_panel);
-
+%load_echo_int_tab(main_figure,echo_tab_panel);
 
 %fixed Tab in option panel
 load_cursor_tool(main_figure);
@@ -62,9 +62,10 @@ load_calibration_tab(main_figure,opt_panel);
 load_processing_tab(main_figure,opt_panel);
 
 %Undockable tabs
-load_layer_tab(main_figure,opt_panel);
+load_tree_layer_tab(main_figure,opt_panel);
 load_reglist_tab(main_figure,opt_panel);
 load_map_tab(main_figure,opt_panel);
+load_st_tracks_tab(main_figure,opt_panel);
 load_multi_freq_disp_tab(main_figure,opt_panel,'sv_f');
 load_multi_freq_disp_tab(main_figure,opt_panel,'ts_f');
 

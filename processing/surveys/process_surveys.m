@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function [layers_out,surv_obj] = process_surveys(Filenames,varargin)
+function [layers_out,surv_objs_out] = process_surveys(Filenames,varargin)
 
 %% Managing input variables
 
@@ -65,7 +65,8 @@ tag             = p.Results.tag;
 gui_main_handle = p.Results.gui_main_handle;
 
 %% processing
-
+layers_out=[];
+surv_objs_out=[];
 % check script filenames
 if ~iscell(Filenames)
     Filenames = {Filenames};
@@ -113,13 +114,12 @@ for i = 1:length(Filenames)
                 [valid,~] = surv_obj.SurvInput.check_n_complete_input();
                 
                 if valid == 0
-                    warning('XML script file %s does not appear valid. Please check the script.',Filenames{i});
+                        warning('XML script file %s does not appear valid. Please check the script.',Filenames{i});
                     continue;
                 end
                 
         end
         
-        % ?
         if isdeployed
             if isempty(surv_obj.SurvInput.Algos)
                 fields_req = {'power','sv','sp'};
@@ -143,8 +143,9 @@ for i = 1:length(Filenames)
     end
     
     % step 2: reorganize layers    
-    layers = [layers_old layers_new];
-    layers_out = reorder_layers_time(layers);
+    surv_objs_out=[surv_objs_out surv_obj];
+    layers_out = [layers_old layers_new];
+    %layers_out = reorder_layers_time(layers);
     
     % path for saving results
     if isempty(gui_main_handle)

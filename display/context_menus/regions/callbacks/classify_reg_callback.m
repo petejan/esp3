@@ -36,6 +36,12 @@
 
 %% Function
 function classify_reg_callback(~,~,main_figure)
+school_detect_tab_comp=getappdata(main_figure,'School_detect_tab');
+
+if isempty(school_detect_tab_comp.classification_files)
+    return;
+end
+idx_val=get(school_detect_tab_comp.classification_list,'value');
 
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -47,7 +53,8 @@ hfigs=getappdata(main_figure,'ExternalFigures');
 
 idx_reg=trans_obj.find_regions_Unique_ID(curr_disp.Active_reg_ID);
 
-layer.apply_classification('primary_freq',curr_disp.Freq,'idx_schools',idx_reg);
+layer.apply_classification('primary_freq',curr_disp.Freq,'idx_schools',idx_reg,...
+    'classification_file',school_detect_tab_comp.classification_files{idx_val},'denoised',school_detect_tab_comp.denoised.Value);
 
 setappdata(main_figure,'ExternalFigures',hfigs);
 setappdata(main_figure,'Layer',layer);

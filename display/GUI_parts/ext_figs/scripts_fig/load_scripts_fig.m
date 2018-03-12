@@ -184,6 +184,7 @@ if ~isempty(layers)
 else
     found=0;
 end
+
 if  found==1
     layers=layers.delete_layers(0);
 end

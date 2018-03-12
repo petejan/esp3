@@ -59,7 +59,7 @@ for ifile=1:length(reg_file_str)
     if exist(xml_reg_file,'file')==2&&p.Results.reg>0
         xml_str_reg=fileread(xml_reg_file);
         reg_ver_new=max_reg_ver+1;
-        fprintf('Saving Regions to database as version %.0f\nfor file %s',reg_ver_new,reg_file_str{ifile});
+        fprintf('Saving Regions to database as version %.0f for file %s\n',reg_ver_new,reg_file_str{ifile});
         dbconn.insert('region',{'Filename' 'Reg_XML' 'Version'},{reg_file_str{ifile} xml_str_reg reg_ver_new});   
     end
     

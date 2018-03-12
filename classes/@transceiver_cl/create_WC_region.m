@@ -59,7 +59,7 @@ bot_data(trans_obj.get_bottom_idx()==numel(ydata))=nan;
 switch lower(p.Results.Ref)
     case 'surface'
         name='WC';
-        idx_r_min=find(ydata>p.Results.y_min,'first');
+        idx_r_min=find(ydata>p.Results.y_min,1,'first');
 
         idxBad=trans_obj.Bottom.Tag==0;
         bot_data(idxBad)=nan;
@@ -73,7 +73,7 @@ switch lower(p.Results.Ref)
         
         shape='Rectangular';
         if p.Results.y_max~=Inf
-            [~,idx_r_y_max]=find(ydata<=p.Results.y_max,'last');
+            idx_r_y_max=find(ydata<=p.Results.y_max,1,'last');
             idx_r_max=nanmin(idx_r_max,idx_r_y_max);
         end
         mask=[]; idx_r=idx_r_min:idx_r_max;

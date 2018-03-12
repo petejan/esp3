@@ -36,8 +36,13 @@
 
 function add_files_to_db(datapath,list_raw,ftypes,dbconn,survdata_temp)
 nb_files_raw=length(list_raw);
+
 if isempty(survdata_temp)
     survdata_temp=survey_data_cl();
+end
+
+if ~iscell(list_raw)
+    list_raw={list_raw};
 end
 
 for i=1:nb_files_raw

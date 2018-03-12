@@ -21,6 +21,9 @@ region_file.appendChild(regions_node);
 
 for ir=1:length(trans_obj.Regions)
     try
+        if isempty(intersect(idx_ping,trans_obj.Regions(ir).Idx_pings))
+            continue;
+        end
         if numel(unique(trans_obj.Data.FileId))>1
             splitted_reg=trans_obj.Regions(ir).split_region(trans_obj.Data.FileId,1);
         else

@@ -18,6 +18,9 @@ if exist(fullfile(datapath,csv_file),'file')==2&&force_create==0
     csv_logbook_to_db(datapath,csv_file,'','');
     return;
 end
+if isfile(db_file)
+    delete(db_file);
+end
 disp('Creating .db logbook file, this might take a couple minutes...');
 dbconn=sqlite(db_file,'create');
 

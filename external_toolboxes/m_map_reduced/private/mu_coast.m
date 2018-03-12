@@ -1,4 +1,4 @@
-function [ncst,Area,k]=mu_coast(optn,varargin);
+function [ncst,Area,k]=mu_coast(optn,varargin)
 % MU_COAST Add a coastline to a given map.
 %         MU_COAST draw a coastline as either filled patches (slow) or
 %         lines (fast) on a given projection. It uses a coastline database with

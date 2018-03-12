@@ -195,7 +195,7 @@ if ~isempty(idx_old)
     % by default, don't delete
     delete_files=0;
     
-    choice = questdlg('There are files your ESP3 temp folder, do you want to delete them?','Delete files?','Yes','No','No');
+    choice = questdlg('There are files in your ESP3 temp folder, do you want to delete them?','Delete files?','Yes','No','No');
     
     switch choice
         case 'Yes'
@@ -233,9 +233,9 @@ setappdata(main_figure,'Process',process_obj);
 setappdata(main_figure,'ExternalFigures',matlab.ui.Figure.empty())
 switch curr_disp_obj.DispBadTrans
     case 'off'
-        alpha_bt=0.4;
-    case 'on'
         alpha_bt=0;
+    case 'on'
+        alpha_bt=0.8;
 end
 switch curr_disp_obj.DispReg
     case 'off'

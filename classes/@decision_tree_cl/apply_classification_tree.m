@@ -19,7 +19,7 @@ while classified==0
         try
             output=eval(node.Condition);
         catch
-            warning('Cannot use this tree...');
+            warning('Failed on evaluation of condition %s...',node.Condition);
             return;
         end
         if output>=1

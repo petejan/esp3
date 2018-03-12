@@ -501,9 +501,8 @@ else
 end
 
 
-set(get(ax,'title'),'visible','on');
-set(get(ax,'xlabel'),'visible','on');
-set(get(ax,'ylabel'),'visible','on');
+set([get(ax,'title') get(ax,'xlabel') get(ax,'ylabel')],'visible','on');
+
 
 % Set coordinate system back
 

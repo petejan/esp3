@@ -36,6 +36,7 @@
 
 %% Function
 function update_display(main_figure,new)
+
 if ~isdeployed
     disp('Update Display');
 end
@@ -67,11 +68,12 @@ if new==1
     update_processing_tab(main_figure);
     
     update_map_tab(main_figure);
+    update_st_tracks_tab(main_figure);
     update_multi_freq_disp_tab(main_figure,'sv_f',0);
     update_multi_freq_disp_tab(main_figure,'ts_f',0);
     update_lines_tab(main_figure);
     update_calibration_tab(main_figure);
-    update_layer_tab(main_figure);
+    update_tree_layer_tab(main_figure);
     update_reglist_tab(main_figure,1);
     clear_regions(main_figure,{},{});
     update_multi_freq_tab(main_figure);

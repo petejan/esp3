@@ -62,7 +62,8 @@ addParameter(p,'DispReg',0);
 addParameter(p,'idx_regs',[]);
 addParameter(p,'regs',region_cl.empty(),@(x) isa(x,'region_cl'));
 addParameter(p,'intersect_only',1);
-addParameter(p,'load_bar_comp',[]);
+addParameter(p,'intersect_only',1);
+addParameter(p,'sv_thr',-999);
 parse(p,trans_obj,varargin{:});
 
 reg_sh = trans_obj.create_WC_region(...
@@ -86,6 +87,7 @@ output_reg = trans_obj.integrate_region_v5(reg_sh,'horiExtend',[p.Results.StartT
         'intersect_only',p.Results.intersect_only,...
         'idx_reg',p.Results.idx_regs,...
         'regs',p.Results.regs,...
+        'sv_thr',p.Results.sv_thr,...
         'select_reg','selected','keep_all',1,'load_bar_comp',p.Results.load_bar_comp);
 
 [shadow_height_est,slope_est] = trans_obj.get_shadow_zone_height_est();

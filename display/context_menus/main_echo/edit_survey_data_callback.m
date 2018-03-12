@@ -62,7 +62,7 @@ layer.set_survey_data(new_surveydata);
 layer.update_echo_logbook_dbfile();
 setappdata(main_figure,'Layer',layer);
 
-update_layer_tab(main_figure);
+update_tree_layer_tab(main_figure);
 display_survdata_lines(main_figure)
 update_mini_ax(main_figure,0);
 load_survey_data_fig_from_db(main_figure,1);

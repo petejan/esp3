@@ -221,8 +221,8 @@ for isn = 1:length(snapshots)
                             
                             switch lower(fType{ifiles})
                                 case {'ek60','ek80','raw'}
-                                    new_lay.add_gps_data_to_db();
-                                    
+                                    %new_lay.add_gps_data_to_db();
+                                    new_lay.add_ping_data_to_db();
                                 case {'asl' 'dfile'}
                                     
                                 otherwise
@@ -452,6 +452,7 @@ for isn = 1:length(snapshots)
                     for ial = 1:length(algos)
                         fprintf('Applying %s\n',algos{ial}.Name);
                         if isempty(algos{ial}.Varargin.Frequencies)
+                            
                             trans_obj_primary.add_algo(algo_cl('Name',algos{ial}.Name,'Varargin',algos{ial}.Varargin));
                             trans_obj_primary.apply_algo(algos{ial}.Name,'load_bar_comp',load_bar_comp);
                         else
@@ -518,7 +519,8 @@ for isn = 1:length(snapshots)
                     end
                     
                     if options.ClassifySchool>0
-                        layer_new.apply_classification('primary_freq',options.Frequency);
+                        
+                        layer_new.apply_classification('primary_freq',options.Frequency,'classification_file',options.ClassificationFile,'denoised',options.Denoised);
                     end
                     
                     if options.Remove_tracks
@@ -547,9 +549,13 @@ for isn = 1:length(snapshots)
                 end
                 clear layers_out_temp;
                 
-            catch error
-                disp(error.message);
-                fprintf('Error openning file for Snapshot %.0f Stratum %s Transect %.0f\n',snap_num,strat_name,trans_num);
+            catch err
+
+                warning('Error openning file for Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num);
+                [~,f_temp,e_temp]=fileparts(err.stack(1).file);
+                fprintf('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
+                disp(err.message);
+                
             end
             itr_tot=itr_tot+1;
             if ~isempty(load_bar_comp)

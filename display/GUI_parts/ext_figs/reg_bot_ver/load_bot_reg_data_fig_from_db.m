@@ -66,10 +66,10 @@ for ip=1:length(path_xml)
         botDataSummary(nb_bot:nb_bot+size(bottom_db_temp,1)-1,4)=bottom_db_temp(:,4);
     end
     if ~isempty(regions_db_temp)
-        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,1)=regions_db_temp(:,1);
-        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,2)=regions_db_temp(:,2);
-        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,3)=regions_db_temp(:,3);
-        regDataSummary(nb_reg:nb_reg+size(region_db_temp,1)-1,4)=regions_db_temp(:,4);
+        regDataSummary(nb_reg:nb_reg+size(regions_db_temp,1)-1,1)=regions_db_temp(:,1);
+        regDataSummary(nb_reg:nb_reg+size(regions_db_temp,1)-1,2)=regions_db_temp(:,2);
+        regDataSummary(nb_reg:nb_reg+size(regions_db_temp,1)-1,3)=regions_db_temp(:,3);
+        regDataSummary(nb_reg:nb_reg+size(regions_db_temp,1)-1,4)=regions_db_temp(:,4);
     end
     nb_bot=nb_bot+size(bottom_db_temp,1);
     nb_reg=nb_reg+size(regions_db_temp,1);

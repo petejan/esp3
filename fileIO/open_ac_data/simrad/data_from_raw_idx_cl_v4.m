@@ -160,9 +160,24 @@ end
 
 nb_dg=length(idx_raw_obj.type_dg);
 envdata=env_data_cl.empty();
+% idg_time=idx_raw_obj.time_dg();
+% [~,idg_sort]=sort(idg_time);
+
 for idg=1:nb_dg
     pos=ftell(fid);
     
+    chan=idx_raw_obj.chan_dg(idg);
+    if ~isnan(chan)
+        idx_chan=chan==channels;
+        if ~any(idx_chan)
+            continue;
+        end
+    end
+    
+    if (idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN)<0
+        disp('');
+        continue;
+    end
     if mod(idg,floor(nb_dg/10))==1
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
@@ -245,7 +260,7 @@ for idg=1:nb_dg
                                 end
                             end
                         end
-
+                        
                     end
                 case 'Parameter'
                     params_temp=output;
@@ -339,140 +354,147 @@ for idg=1:nb_dg
             
             
             if isempty(idx)
-                fread(fid, idx_raw_obj.len_dg(idg) - HEADER_LEN -128);
-            else
-                
-                datatype=fread(fid,1,'int16', 'l');
-                fread(fid,1,'int16', 'l');
-                data.pings(idx).datatype=fliplr(dec2bin(datatype,11));
-                
-                
-                temp=fread(fid,2,'int32', 'l');
-                %  store sample number if required/valid
-                number=i_ping(idx);
-                
-                data.pings(idx).channelID=channelID;
-                
-                data.pings(idx).offset(i_ping(idx))=temp(1);
-                data.pings(idx).sampleCount(i_ping(idx))=temp(2);
-                data.pings(idx).number(i_ping(idx))=number;
-                data.pings(idx).time(i_ping(idx))=dgTime;
-                sampleCount=temp(2);
-                
-                if data.pings(idx).datatype(1)==dec2bin(1)
-                    if (sampleCount > 0)
-                        
-                        if block_i(idx)==1
-                            data_tmp{idx}.power=nan(nb_samples(idx),nanmin(block_len,nb_pings(idx)-i_ping(idx)+1));
+                continue;
+            end
+            
+            datatype=fread(fid,1,'int16', 'l');
+            fread(fid,1,'int16', 'l');
+            data.pings(idx).datatype=fliplr(dec2bin(datatype,11));
+            
+            
+            temp=fread(fid,2,'int32', 'l');
+            %  store sample number if required/valid
+            number=i_ping(idx);
+            
+            data.pings(idx).channelID=channelID;
+            
+            data.pings(idx).offset(i_ping(idx))=temp(1);
+            data.pings(idx).sampleCount(i_ping(idx))=temp(2);
+            data.pings(idx).number(i_ping(idx))=number;
+            data.pings(idx).time(i_ping(idx))=dgTime;
+            sampleCount=temp(2);
+            
+            if data.pings(idx).datatype(1)==dec2bin(1)
+                if (sampleCount > 0)
+                    
+                    if block_i(idx)==1
+                        data_tmp{idx}.power=-999*ones(nb_samples(idx),nanmin(block_len,nb_pings(idx)-i_ping(idx)+1));
+                        if data.pings(idx).datatype(2)==dec2bin(1)
                             data_tmp{idx}.AcrossPhi=zeros(nb_samples(idx),nanmin(block_len,nb_pings(idx)-i_ping(idx)+1));
                             data_tmp{idx}.AlongPhi=zeros(nb_samples(idx),nanmin(block_len,nb_pings(idx)-i_ping(idx)+1));
-                            
                         end
-                        
-                        
+                    end
+                    
+                    data_tmp{idx}.power(1:sampleCount,block_i(idx))=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
+                    
+                    if data.pings(idx).datatype(2)==dec2bin(1)
+                        if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
+                            angle=fread(fid,[2 sampleCount],'int8', 'l');
+                            data_tmp{idx}.AcrossPhi(1:sampleCount,block_i(idx))=angle(1,:);
+                            data_tmp{idx}.AlongPhi(1:sampleCount,block_i(idx))=angle(2,:);
+                        end
                         if number==1
                             mode{idx}='CW';
                             idx_fields(idx,:)=ismember(fields,{'power' 'alongangle' 'acrossangle'});
                         end
+                    else
                         
-                        data_tmp{idx}.power(1:sampleCount,block_i(idx))=(fread(fid,sampleCount,'int16', 'l') * 0.011758984205624);
-                        
-                        if data.pings(idx).datatype(2)==dec2bin(1)
-                            if data.pings(idx).datatype(2)==dec2bin(1)
-                                
-                                if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
-                                    angle=fread(fid,[2 sampleCount],'int8', 'l');
-                                    data_tmp{idx}.AcrossPhi(1:sampleCount,block_i(idx))=angle(1,:);
-                                    data_tmp{idx}.AlongPhi(1:sampleCount,block_i(idx))=angle(2,:);
-                                end
-                                
-                            end
+                        if number==1
+                            idx_fields(idx,:)=ismember(fields,{'power'});
                         end
-                        
-                        if block_i(idx)==block_len||i_ping(idx)==nb_pings(idx)
+                    end
+                    
+                    if block_i(idx)==block_len||i_ping(idx)==nb_pings(idx)
+                        if data.pings(idx).datatype(2)==dec2bin(1)
                             [AlongAngle,AcrossAngle]=computesPhasesAngles_v3(data_tmp{idx},...
                                 trans_obj(idx).Config.AngleSensitivityAlongship,...
                                 trans_obj(idx).Config.AngleSensitivityAthwartship,...
                                 data.pings(idx).datatype,trans_obj(idx).Config.TransducerName,...
                                 trans_obj(idx).Config.AngleOffsetAlongship,...
                                 trans_obj(idx).Config.AngleOffsetAthwartship);
-                            
-                            fwrite(fileID(idx,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                        end
+                        
+                        fwrite(fileID(idx,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                        if data.pings(idx).datatype(2)==dec2bin(1)
                             fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
                             fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
-                            block_i(idx)=0;
                         end
-                    end
-                else
-                    
-                    nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
-                    if data.pings(idx).datatype(4)==dec2bin(1)
-                        fmt='float32';
-                    elseif data.pings(idx).datatype(3)==dec2bin(1)
-                        fmt='float16';
-                    end
-                    
-                    if (sampleCount > 0)
-                        temp = fread(fid,nb_cplx_per_samples*sampleCount,fmt, 'l');
-                    else
-                        continue;
-                    end
-                    
-                    if length(temp)/(nb_cplx_per_samples)~=sampleCount
-                        continue;
-                    end
-                    
-                    if (sampleCount > 0)
-                        if block_i(idx)==1
-                            for isig=1:nb_cplx_per_samples/2
-                                data_tmp{idx}.(sprintf('comp_sig_%1d',isig))=zeros(nb_samples(idx),nanmin(block_len,nb_pings(idx)-i_ping(idx)+1));
-                            end
-                        end
-                        
-                    end
-                    
-                    for isig=1:nb_cplx_per_samples/2
-                        data_tmp{idx}.(sprintf('comp_sig_%1d',isig))(1:sampleCount,block_i(idx))=temp(1+2*(isig-1):nb_cplx_per_samples:end)+1i*temp(2+2*(isig-1):nb_cplx_per_samples:end);
-                    end
-                    
-                    if block_i(idx)==block_len||i_ping(idx)==nb_pings(idx)
-                        [~,powerunmatched]=compute_PwEK80_v3(trans_obj(idx).Config.Impedance,trans_obj(idx).Config.Ztrd,data.pings(idx).datatype,data_tmp{idx});
-                        [data_tmp{idx},mode_tmp]=match_filter_data_v3(data_tmp{idx},trans_obj(idx).Params,trans_obj(idx).Filters);
-                        
-                        switch mode_tmp
-                            case 'FM'
-                                [y,pow]=compute_PwEK80_v3(trans_obj(idx).Config.Impedance,trans_obj(idx).Config.Ztrd,data.pings(idx).datatype,data_tmp{idx});
-                                if i_ping(idx)==block_len||i_ping(idx)==nb_pings(idx)
-                                    mode{idx}=mode_tmp;
-                                    idx_fields(idx,:)=ismember(fields,{'power','alongangle','acrossangle','y_real','y_imag','powerunmatched'});
-                                end
-                            case 'CW'
-                                pow=powerunmatched;
-                                if i_ping(idx)==block_len||i_ping(idx)==nb_pings(idx)
-                                    mode{idx}=mode_tmp;
-                                    idx_fields(idx,:)=ismember(fields,{'power','alongangle','acrossangle'});
-                                end
-                        end
-                        [AlongAngle,AcrossAngle]=computesPhasesAngles_v3(data_tmp{idx},...
-                            trans_obj(idx).Config.AngleSensitivityAlongship,...
-                            trans_obj(idx).Config.AngleSensitivityAthwartship,...
-                            data.pings(idx).datatype,trans_obj(idx).Config.TransducerName,...
-                            trans_obj(idx).Config.AngleOffsetAlongship,...
-                            trans_obj(idx).Config.AngleOffsetAthwartship);
-                        if strcmp(mode{idx},'FM')
-                            fwrite(fileID(idx,strcmp(fields,'powerunmatched')),(double(powerunmatched))/factor_fields(strcmpi(fields,'powerunmatched')),fmt_fields{strcmpi(fields,'powerunmatched')});                           
-                            fwrite(fileID(idx,strcmp(fields,'y_real')),double(real(y))/factor_fields(strcmpi(fields,'y_real')),fmt_fields{strcmpi(fields,'y_real')});
-                            fwrite(fileID(idx,strcmp(fields,'y_imag')),double(imag(y))/factor_fields(strcmpi(fields,'y_imag')),fmt_fields{strcmpi(fields,'y_imag')});
-                        end
-                        fwrite(fileID(idx,strcmp(fields,'power')),(double(pow))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
-                        fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
-                        fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
                         block_i(idx)=0;
                     end
                 end
-                i_ping(idx) = i_ping(idx) + 1;
-                block_i(idx)=block_i(idx)+1;
+            else
+                
+                nb_cplx_per_samples=bin2dec(fliplr(data.pings(idx).datatype(8:end)));
+                if data.pings(idx).datatype(4)==dec2bin(1)
+                    fmt='float32';
+                elseif data.pings(idx).datatype(3)==dec2bin(1)
+                    fmt='float16';
+                end
+                
+                if (sampleCount > 0)
+                    temp = fread(fid,nb_cplx_per_samples*sampleCount,fmt, 'l');
+                else
+                    continue;
+                end
+                
+                if length(temp)/(nb_cplx_per_samples)~=sampleCount
+                    continue;
+                end
+                
+                if (sampleCount > 0)
+                    if block_i(idx)==1
+                        for isig=1:nb_cplx_per_samples/2
+                            data_tmp{idx}.(sprintf('comp_sig_%1d',isig))=zeros(nb_samples(idx),nanmin(block_len,nb_pings(idx)-i_ping(idx)+1));
+                        end
+                    end
+                    
+                end
+                
+                for isig=1:nb_cplx_per_samples/2
+                    data_tmp{idx}.(sprintf('comp_sig_%1d',isig))(1:sampleCount,block_i(idx))=temp(1+2*(isig-1):nb_cplx_per_samples:end)+1i*temp(2+2*(isig-1):nb_cplx_per_samples:end);
+                end
+                
+                if block_i(idx)==block_len||i_ping(idx)==nb_pings(idx)
+                    [~,powerunmatched]=compute_PwEK80_v3(trans_obj(idx).Config.Impedance,trans_obj(idx).Config.Ztrd,data.pings(idx).datatype,data_tmp{idx});
+                    [data_tmp{idx},mode_tmp]=match_filter_data_v3(data_tmp{idx},trans_obj(idx).Params,trans_obj(idx).Filters);
+                    
+                    switch mode_tmp
+                        case 'FM'
+                            [y,pow]=compute_PwEK80_v3(trans_obj(idx).Config.Impedance,trans_obj(idx).Config.Ztrd,data.pings(idx).datatype,data_tmp{idx});
+                            if i_ping(idx)==block_len||i_ping(idx)==nb_pings(idx)
+                                mode{idx}=mode_tmp;
+                                idx_fields(idx,:)=ismember(fields,{'power','alongangle','acrossangle','y_real','y_imag','powerunmatched'});
+                            end
+                        case 'CW'
+                            pow=powerunmatched;
+                            if i_ping(idx)==block_len||i_ping(idx)==nb_pings(idx)
+                                mode{idx}=mode_tmp;
+                                idx_fields(idx,:)=ismember(fields,{'power','alongangle','acrossangle'});
+                            end
+                    end
+                    
+                    [AlongAngle,AcrossAngle]=computesPhasesAngles_v3(data_tmp{idx},...
+                        trans_obj(idx).Config.AngleSensitivityAlongship,...
+                        trans_obj(idx).Config.AngleSensitivityAthwartship,...
+                        data.pings(idx).datatype,trans_obj(idx).Config.TransducerName,...
+                        trans_obj(idx).Config.AngleOffsetAlongship,...
+                        trans_obj(idx).Config.AngleOffsetAthwartship);
+                    
+                    if strcmp(mode{idx},'FM')
+                        fwrite(fileID(idx,strcmp(fields,'powerunmatched')),(double(powerunmatched))/factor_fields(strcmpi(fields,'powerunmatched')),fmt_fields{strcmpi(fields,'powerunmatched')});
+                        fwrite(fileID(idx,strcmp(fields,'y_real')),double(real(y))/factor_fields(strcmpi(fields,'y_real')),fmt_fields{strcmpi(fields,'y_real')});
+                        fwrite(fileID(idx,strcmp(fields,'y_imag')),double(imag(y))/factor_fields(strcmpi(fields,'y_imag')),fmt_fields{strcmpi(fields,'y_imag')});
+                    end
+                    fwrite(fileID(idx,strcmp(fields,'power')),(double(pow))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                    fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                    fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                    
+                    block_i(idx)=0;
+                end
             end
+            i_ping(idx) = i_ping(idx) + 1;
+            block_i(idx)=block_i(idx)+1;
+            
             
             
         case 'MRU0'
@@ -493,6 +515,7 @@ for idg=1:nb_dg
             if p.Results.GPSOnly>0
                 continue;
             end
+            
             chan=idx_raw_obj.chan_dg(idg);
             idx_chan=find(chan==channels);
             
@@ -502,37 +525,52 @@ for idg=1:nb_dg
             
             %fseek(fid,idx_raw_obj.pos_dg(idg),'bof');
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
+            data.pings(idx_chan).time(i_ping(idx_chan))=idx_raw_obj.time_dg(idg);
+            temp=fread(fid,4,'int8', 'l');
+            data.pings(idx_chan).datatype=(dec2bin(256*temp(3)+temp(4),8));
+            data.pings(idx_chan).mode(i_ping(idx_chan))=256*temp(3)+temp(4);
             
             if block_i(idx_chan)==1
-                data_tmp{idx_chan}.power=nan(nb_samples(idx_chan),nanmin(block_len,nb_pings(idx_chan)-i_ping(idx_chan)+1));
-                data_tmp{idx_chan}.AcrossPhi=zeros(nb_samples(idx_chan),nanmin(block_len,nb_pings(idx_chan)-i_ping(idx_chan)+1));
-                data_tmp{idx_chan}.AlongPhi=zeros(nb_samples(idx_chan),nanmin(block_len,nb_pings(idx_chan)-i_ping(idx_chan)+1));
+                data_tmp{idx_chan}.power=-999*ones(nb_samples(idx_chan),nanmin(block_len,nb_pings(idx_chan)-i_ping(idx_chan)+1));
+                if data.pings(idx_chan).datatype(2)==dec2bin(1)
+                    data_tmp{idx_chan}.AcrossPhi=zeros(nb_samples(idx_chan),nanmin(block_len,nb_pings(idx_chan)-i_ping(idx_chan)+1));
+                    data_tmp{idx_chan}.AlongPhi=zeros(nb_samples(idx_chan),nanmin(block_len,nb_pings(idx_chan)-i_ping(idx_chan)+1));
+                end
             end
-            data.pings(idx_chan).time(i_ping(idx_chan))=idx_raw_obj.time_dg(idg);
+            
             [data,power_tmp,AlongPhi_tmp,AcrossPhi_tmp]=readRaw0_v2(data,idx_chan,i_ping(idx_chan),fid);
             
             if i_ping(idx_chan)==1
                 mode{idx_chan}='CW';
-                idx_fields(idx_chan,:)=ismember(fields,{'power' 'alongangle' 'acrossangle'});
+                if data.pings(idx_chan).datatype(2)==dec2bin(1)
+                    idx_fields(idx_chan,:)=ismember(fields,{'power' 'alongangle' 'acrossangle'});
+                else
+                    idx_fields(idx_chan,:)=ismember(fields,{'power'});
+                end
                 [trans_obj(idx_chan).Config,trans_obj(idx_chan).Params]=config_from_ek60(data.pings(idx_chan),config_EK60(idx_freq(idx_chan)));
             end
             
             data_tmp{idx_chan}.power(1:numel(power_tmp),block_i(idx_chan))=power_tmp;
-            data_tmp{idx_chan}.AlongPhi(1:numel(AlongPhi_tmp),block_i(idx_chan))=AlongPhi_tmp;
-            data_tmp{idx_chan}.AcrossPhi(1:numel(AcrossPhi_tmp),block_i(idx_chan))=AcrossPhi_tmp;
+            if data.pings(idx_chan).datatype(2)==dec2bin(1)
+                data_tmp{idx_chan}.AlongPhi(1:numel(AlongPhi_tmp),block_i(idx_chan))=AlongPhi_tmp;
+                data_tmp{idx_chan}.AcrossPhi(1:numel(AcrossPhi_tmp),block_i(idx_chan))=AcrossPhi_tmp;
+            end
             
             if block_i(idx_chan)==block_len||i_ping(idx_chan)==nb_pings(idx_chan)
-                [AlongAngle,AcrossAngle]=computesPhasesAngles_v3(data_tmp{idx_chan},... 
-                    trans_obj(idx_chan).Config.AngleSensitivityAlongship,...
-                    trans_obj(idx_chan).Config.AngleSensitivityAthwartship,...
-                    data.pings(idx_chan).datatype,...
-                    trans_obj(idx_chan).Config.TransducerName,...
-                    trans_obj(idx_chan).Config.AngleOffsetAlongship,...
-                    trans_obj(idx_chan).Config.AngleOffsetAthwartship);
-                
+                if data.pings(idx_chan).datatype(2)==dec2bin(1)
+                    [AlongAngle,AcrossAngle]=computesPhasesAngles_v3(data_tmp{idx_chan},...
+                        trans_obj(idx_chan).Config.AngleSensitivityAlongship,...
+                        trans_obj(idx_chan).Config.AngleSensitivityAthwartship,...
+                        data.pings(idx_chan).datatype,...
+                        trans_obj(idx_chan).Config.TransducerName,...
+                        trans_obj(idx_chan).Config.AngleOffsetAlongship,...
+                        trans_obj(idx_chan).Config.AngleOffsetAthwartship);
+                end
                 fwrite(fileID(idx_chan,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx_chan}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
-                fwrite(fileID(idx_chan,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
-                fwrite(fileID(idx_chan,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                if data.pings(idx_chan).datatype(2)==dec2bin(1)
+                    fwrite(fileID(idx_chan,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                    fwrite(fileID(idx_chan,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                end
                 block_i(idx_chan)=0;
             end
             i_ping(idx_chan)=i_ping(idx_chan)+1;
@@ -548,7 +586,10 @@ for i=1:nb_trans
     end
 end
 
-
+idx_rem_nmea=cellfun(@isempty,NMEA.string);
+NMEA.string(idx_rem_nmea)=[];
+NMEA.type(idx_rem_nmea)=[];
+NMEA.time(idx_rem_nmea)=[];
 
 %Complete Params if necessary
 
@@ -604,6 +645,8 @@ if p.Results.GPSOnly==0
             
     end
     
+    
+    
     idx_fields=idx_fields>0;
     
     c = envdata.SoundSpeed;
@@ -616,8 +659,8 @@ if p.Results.GPSOnly==0
             alpha= seawater_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
             trans_obj(i).Params.Absorption(:)=round(alpha*1e3)/1e3*ones(1,nb_pings(i));
         end
-
-
+        
+        
         sub_ac_data_temp=sub_ac_data_cl.sub_ac_data_from_files(curr_data_name(i,idx_fields(i,:)),[nb_samples(i) nb_pings(i)],fields(idx_fields(i,:)));
         trans_obj(i).Data=ac_data_cl('SubData',sub_ac_data_temp,...
             'Nb_samples',nb_samples(i),...

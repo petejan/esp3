@@ -25,7 +25,7 @@ cursor_mode_tool_comp.redo = uipushtool('parent',cursor_mode_tool_comp.cursor_mo
 
 cursor_mode_tool_comp.previous=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.prev_lay ,'TooltipString','Previous Layer (p)','ClickedCallback',{@change_layer_callback,main_figure,'prev'},'Separator','on');
 cursor_mode_tool_comp.next=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.next_lay ,'TooltipString','Next Layer (n)','ClickedCallback',{@change_layer_callback,main_figure,'next'});
-cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.del_lay ,'TooltipString','Delete Layer','ClickedCallback',{@delete_layer_callback,main_figure});
+cursor_mode_tool_comp.del=uipushtool(cursor_mode_tool_comp.cursor_mode_tool,'CData',icon.del_lay ,'TooltipString','Delete Layer','ClickedCallback',{@delete_layer_callback,main_figure,[]});
 
 
 setappdata(main_figure,'Cursor_mode_tool',cursor_mode_tool_comp);

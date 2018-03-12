@@ -14,7 +14,7 @@ switch field
         if~isempty(layer.Curves)
             layer.Curves(contains({layer.Curves(:).Unique_ID},'track'))=[];
         end
-        update_map_tab(main_figure,'st',1,'histo',1);
+        update_st_tracks_tab(main_figure,'histo',1,'st',1);
         update_multi_freq_disp_tab(main_figure,'ts_f',1);
 end
     

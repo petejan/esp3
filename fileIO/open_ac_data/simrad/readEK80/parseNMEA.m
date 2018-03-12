@@ -109,7 +109,7 @@ switch type(3:end)
     case 'RMC'    
         
         %$GPRMC,022345.976,A,4118.1066,S,17448.3002,E,0.33,24.92,260116,,,A*44
-        format = '%2.0f %2d %f %s %2d %f %c %3d %f %c %f %d %2d %2d %2d ';
+        format = '%2d %2d %f %s %2d %f %c %3d %f %c %f %d %2d %2d %2d ';
         out = textscan(nmeadata, format, 1, 'delimiter', ',');
         nmea = struct('type', type, ...
             'time', [out{1} out{2} out{3}], ...

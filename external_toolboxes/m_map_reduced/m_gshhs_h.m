@@ -20,7 +20,7 @@ function m_gshhs_h(varargin);
 %
 % This software is provided "as is" without warranty of any kind. But
 % it's mine, so you can't sell it.
-
+    
 
 FILNAME='private/gshhs_h.b';
 
@@ -28,12 +28,12 @@ FILNAME='private/gshhs_h.b';
 Currentmap=m_coord('set');
 m_coord('geographic');
 
-if length(varargin)>1 & strcmp(varargin{1},'save'),
+if length(varargin)>1 && strcmp(varargin{1},'save')
   [ncst,Area,k]=mu_coast('h',FILNAME);
   eval(['save ' varargin{2} ' ncst k Area']);
 else
   mu_coast('h',FILNAME,varargin{:},'tag','m_gshhs_h');
-end;
+end
 
 m_coord(Currentmap.name);
 

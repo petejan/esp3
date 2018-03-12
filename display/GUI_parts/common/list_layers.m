@@ -11,15 +11,7 @@ nb_char=p.Results.nb_char;
 nb_layers=length(layers);
 layers_Str=cell(1,nb_layers);
 for i=1:nb_layers
-    file_curr='';
     
-    [~,filename_cell,~]=cellfun(@fileparts,layers(i).Filename,'UniformOutput',false);
-    
-    for il=1:length(layers(i).Filename)
-        file_curr=[file_curr ' ' filename_cell{il}];
-    end
-    
-    %file_curr=layers(i).Filename{1};
     switch layers(i).Filetype
         case 'ASL'
             t1=floor(layers(i).Transceivers(1).Time(1));
@@ -32,17 +24,26 @@ for i=1:nb_layers
             
         otherwise
             if ~isempty(layers(i).get_survey_data())
-                new_name=[deblank(layers(i).get_survey_data().print_survey_data()) file_curr];
+                new_name='';
+                for isdata=1:numel(layers(i).SurveyData)
+                    temp_str=layers(i).get_survey_data('Idx',isdata).print_survey_data();
+                    if~contains(new_name, temp_str)
+                        new_name=[new_name ' ' layers(i).get_survey_data('Idx',isdata).print_survey_data()];
+                    end
+                end
             else
-                new_name=file_curr;
+                new_name=survey_data_cl().print_survey_data();
             end
-            
-            if strcmp(new_name,'')
-                new_name=file_curr;
+            if strcmp(deblank(new_name),'')
+                [~,files_lay]=layers(i).get_path_files();
+               if numel(files_lay)>1
+                   new_name=[files_lay{1} '...' files_lay{end}];
+               else
+                   new_name=files_lay{1} ;
+               end
             end
     end
-    
-    
+       
     u=1;
     new_name_ori=new_name;
     while nansum(strcmp(new_name,layers_Str))>=1

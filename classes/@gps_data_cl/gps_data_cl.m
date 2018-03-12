@@ -86,7 +86,7 @@ classdef gps_data_cl
                 'NMEA',gps_data_1.NMEA);
         end
         
-        function gps_data_out=clean_gps_track(gps_data)
+        function [gps_data_out,id_keep]=clean_gps_track(gps_data)
             if isempty(gps_data)
                 gps_data_out=gps_data;
                 return;

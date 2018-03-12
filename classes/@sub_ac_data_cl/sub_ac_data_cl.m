@@ -90,18 +90,33 @@ classdef sub_ac_data_cl < handle
                             end
                             format={obj.Fmt,[nb_samples,nb_pings],obj.Fieldname};
                             
+                            switch obj.Fmt
+                                case {'int8' 'uint8'}
+                                     nb=1;
+                                case {'int16' 'uint16'}
+                                     nb=2;
+                                case {'int32' 'uint32'}
+                                    nb=4;
+                                case {'int64' 'uint64'}
+                                    nb=8;
+                                case {'single'}
+                                    nb=4;
+                                case {'double'}   
+                                    nb=8;
+                            end
+                           
                             if numel(data{icell})==2
-                                b_size=1000;
-                                u=0;
-                                while u<ceil(nb_pings*nb_samples/b_size)
-                                    fwrite(fileID,p.Results.default_value*ones(1,nanmin(b_size,nb_samples*nb_pings-(b_size*u)))/obj.ConvFactor,obj.Fmt);
-                                    u=u+1;
-                                end
-                                
+%                                 b_size=ceil(1e7/nb_samples);
+%                                 u=0;
+%                                 while u<ceil(nb_pings*nb_samples/b_size)
+%                                     fwrite(fileID,p.Results.default_value*ones(1,nanmin(b_size,nb_samples*nb_pings-(b_size*u)))/obj.ConvFactor,obj.Fmt);
+%                                     u=u+1;
+%                                 end
+                                    fwrite(fileID,p.Results.default_value*ones/obj.ConvFactor,obj.Fmt,nb*(nb_samples*nb_pings-1));
                             else
                                 fwrite(fileID,double(data{icell})/obj.ConvFactor,obj.Fmt);
                             end
-                            %fwrite(fileID,double(data{icell}),obj.Fmt);
+
                             fclose(fileID);
                             
                             

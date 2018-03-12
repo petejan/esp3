@@ -5,17 +5,26 @@ if isempty(layer)
     return;
 end
 switch tab
+    case 'st_tracks'
+        map_tab_comp=getappdata(main_figure,'ST_Tracks');
+        tab_h=map_tab_comp.map_tab;
+        tt='St&Tracks';
     case 'map'
         map_tab_comp=getappdata(main_figure,'Map_tab');
+        cont_disp=map_tab_comp.cont_disp;
+        cont_val=map_tab_comp.cont_val;
+        idx_lays=map_tab_comp.idx_lays;
+        coast_disp=map_tab_comp.coast_disp;
+        all_lays=map_tab_comp.all_lays;
         tab_h=map_tab_comp.map_tab;
-        tt='Map&Co';
+        tt='Map';
     case 'reglist'
         tab_comp=getappdata(main_figure,'Reglist_tab');
         tab_h=tab_comp.reglist_tab;
         tt='Region List';
     case 'laylist'
-        tab_comp=getappdata(main_figure,'Layer_tab');
-        tab_h=tab_comp.layer_tab;
+        tab_comp=getappdata(main_figure,'Layer_tree_tab');
+        tab_h=tab_comp.layer_tree_tab;
         tt='Layers';       
     case 'sv_f'
         tab_comp=getappdata(main_figure,tab);
@@ -25,6 +34,11 @@ switch tab
         tab_comp=getappdata(main_figure,tab);
         tab_h=tab_comp.multi_freq_disp_tab;
         tt='TS(f)';
+    case 'echoint'
+        e 'ts_f'
+        tab_comp=getappdata(main_figure,'EchoInt');
+        tab_h=tab_comp.echo_int_tab;
+        tt='Echo-Integration';
     otherwise
         tab_h=[];
 end
@@ -53,12 +67,16 @@ end
 
 
 switch tab
+    case 'st_tracks'
+        load_st_tracks_tab(main_figure,dest_fig);
     case 'map'
-        load_map_tab(main_figure,dest_fig);
+        load_map_tab(main_figure,dest_fig,'cont_disp',cont_disp,'cont_val',cont_val,'coast_disp',coast_disp,'idx_lays',idx_lays,'all_lays',all_lays);
     case 'reglist'
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
-        load_layer_tab(main_figure,dest_fig);
+        load_tree_layer_tab(main_figure,dest_fig);
+    case 'echoint'
+        load_echo_int_tab(main_figure,dest_fig);
     case {'sv_f' 'ts_f'}
         load_multi_freq_disp_tab(main_figure,dest_fig,tab);
 end
@@ -69,16 +87,32 @@ end
 function close_tab(src,~,main_figure)
 tag=src.Tag;
 
-delete(src);
+
 dest_fig=getappdata(main_figure,'option_tab_panel');
 switch tag
+    case 'st_tracks'
+        delete(src);
+        load_st_tracks_tab(main_figure,dest_fig);
     case 'map'
-        load_map_tab(main_figure,dest_fig);
+        map_tab_comp=getappdata(main_figure,'Map_tab');
+        cont_disp=map_tab_comp.cont_disp;
+        cont_val=map_tab_comp.cont_val;
+        idx_lays=map_tab_comp.idx_lays;
+        coast_disp=map_tab_comp.coast_disp;
+        all_lays=map_tab_comp.all_lays;
+        delete(src);
+        load_map_tab(main_figure,dest_fig,'cont_disp',cont_disp,'cont_val',cont_val,'coast_disp',coast_disp,'idx_lays',idx_lays,'all_lays',all_lays);
     case 'reglist'
+        delete(src);
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
-        load_layer_tab(main_figure,dest_fig);
+        delete(src);
+        load_tree_layer_tab(main_figure,dest_fig);
+    case 'echoint'
+         delete(src);
+        load_echo_int_tab(main_figure,dest_fig);
     case {'sv_f' 'ts_f'}
+        delete(src);
         load_multi_freq_disp_tab(main_figure,dest_fig,tag);
 end
 end

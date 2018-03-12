@@ -70,6 +70,7 @@ for ip=1:length(pathtofile)
         gps_data(nb_data)=gps_data_cl('Lat',lat(~idx_nan),'Long',lon(~idx_nan),'Time',time(~idx_nan));
         files{nb_data}=gps_data_temp{id,1};
     end
+     close(dbconn);
 end
 
 

@@ -112,7 +112,7 @@ classdef survey_data_cl < handle
         function i_str=print_survey_data(obj)
             i_str=sprintf('%s Snap %d, %s, Strat. %s, Trans. %d',...
                 obj.Voyage,obj.Snapshot,obj.Type,obj.Stratum,obj.Transect);
-            if obj.Snapshot==0&&strcmp(obj.Type,'')&&strcmp(obj.Stratum,'')&&obj.Transect==0
+            if obj.Snapshot==0&&strcmp(deblank(obj.Type),'')&&strcmp(deblank(obj.Stratum),'')&&obj.Transect==0
                 i_str='';
             end
         end

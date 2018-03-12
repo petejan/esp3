@@ -126,6 +126,7 @@ for ui=1:num_ite
     trans_obj.Data.replace_sub_data_v2('spdenoised',Sp_unoised,idx_pings,-999);
     trans_obj.Data.replace_sub_data_v2('svdenoised',Sv_unoised,idx_pings,-999);
     trans_obj.Data.replace_sub_data_v2('snr',SNR,idx_pings,-999);
+    clear Sp_unoised Sv_unoised snr pow     
     if ~isempty(p.Results.load_bar_comp)
         set(p.Results.load_bar_comp.progress_bar, 'Value',ui);
     end

@@ -15,6 +15,7 @@ classdef survey_options_cl
         Frequency=38000;
         FrequenciesToLoad=[];
         ClassifySchool=0;
+        ClassificationFile=fullfile(whereisEcho(),'config','classification','classification.xml');
         BadTransThr=100;
         Soundspeed=1500;
         SaveBot=0;
@@ -23,6 +24,7 @@ classdef survey_options_cl
         DepthMax=Inf;
         ExportSlicedTransects=0;
         ExportRegions=0;
+        SvThr=-999;
     end
     methods
         function options=survey_options_cl(varargin)
@@ -40,7 +42,8 @@ classdef survey_options_cl
                 'SaveBot',0,'SaveReg',0,'Shadow_zone',0,'Shadow_zone_height',0,...
                 'DepthMin',0,'DepthMax',Inf,...
                 'ExportSlicedTransects',0,...
-                'ExportRegions',0);
+                'ExportRegions',0,'SvThr',-999,...
+                'ClassificationFile',fullfile(whereisEcho(),'config','classification','classification.xml'));
             
             p = inputParser;
             

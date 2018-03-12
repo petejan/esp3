@@ -123,6 +123,9 @@ switch algo_name
          tag=trans_obj.Bottom.Tag;
          if isempty(p.Results.reg_obj)
              tag=ones(size(tag));
+         else
+             tag=trans_obj.Bottom.Tag;
+             %  tag(p.Results.reg_obj.Idx_pings)=1;
          end
         tag(idx_noise_sector)=0;
         
@@ -136,8 +139,8 @@ switch algo_name
         
         if isempty(p.Results.reg_obj)
             idx_r=1:length(trans_obj.get_transceiver_range());
-            idx_pings=1:length(trans_obj.get_transceiver_pings());
-            
+            idx_pings=1:length(trans_obj.get_transceiver_pings());    
+            trans_obj.rm_region_name('School');
         else
             idx_pings=p.Results.reg_obj.Idx_pings;
             idx_r=p.Results.reg_obj.Idx_r;

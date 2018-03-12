@@ -50,7 +50,7 @@ for ip=1:length(filenames)
         survey_data{ip}{1}=survey_data_cl('Voyage',survey_data_db{1},...,...
             'SurveyName',survey_data_db{2});
     end
-    
+     close(dbconn);
     
 end
 

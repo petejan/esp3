@@ -9,4 +9,5 @@ switch listdata.AffectedObject.DispBadTrans
     case 'on'
         main_figure.Alphamap(3)=0.8;
 end
+
 end

@@ -385,9 +385,7 @@ classdef transceiver_cl < handle
             trans_obj.Regions=reg_new;
         end
         
-        function rm_overlapping_region(trans_obj,name,idx_r,idx_p)    
-            
-        end
+
         
         function rm_regions(trans_obj)
             trans_obj.Regions=[];

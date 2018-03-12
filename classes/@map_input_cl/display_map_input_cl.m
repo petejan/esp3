@@ -148,6 +148,9 @@ if ~strcmp(field,'Tag')
                     idx_rings=find(ring_size>0);
                     gobj=m_range_ring(obj.SliceLong{idx_snap(uui)}(idx_rings),obj.SliceLat{idx_snap(uui)}(idx_rings),ring_size(idx_rings),'color',col_snap{rem(usnap,length(col_snap))+1},'linewidth',1.5,'parent',n_ax(usnap),'Tag','Nav');
                     set(gobj,'ButtonDownFcn',{@disp_line_name_callback,hfig,idx_snap(uui)});
+                    enterFcn =  @(figHandle, currentPoint)...
+                        set(figHandle, 'Pointer', 'hand');
+                    iptSetPointerBehavior(gobj,enterFcn);
                     if~isempty(main_figure)
                         create_context_menu_track(main_figure,hfig,gobj);
                     end

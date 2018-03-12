@@ -64,7 +64,7 @@ Range= trans_obj.get_transceiver_range();
 id=nanmean(diff(Range));
 t=trans_obj.get_transceiver_time();
 dt=(t(2)-t(1))*(24*60*60);
-ratio=ceil(dt/id);
+ratio=ceil(dt/id*2);
 
 ah=axes_panel_comp.main_axes;
 
@@ -115,15 +115,20 @@ switch src.SelectionType
 end
 
 hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
-rect=rectangle(ah,'Position',[ping_init-dr sample_init-ratio*dr 2*dr dr*2*ratio],'EdgeColor',line_col);
+%rect=rectangle(ah,'Position',[ping_init-dr sample_init-ratio*dr 2*dr dr*2*ratio],'EdgeColor',line_col,'tag','BrushedArea');
+x_box=[ping_init-dr ping_init-dr ping_init+dr ping_init+dr];
+y_box=[sample_init-ratio*dr sample_init+ratio*dr sample_init+ratio*dr sample_init-ratio*dr];
+rect=patch(ah,'XData',x_box,'YData',y_box,'FaceColor',line_col,'tag','BrushedArea','FaceAlpha',0.5,'EdgeColor',line_col);
 wbmcb([],[])
     function wbmcb(~,~)
 
         cp=ah.CurrentPoint;
         ping_new =round(cp(1,1));
         sample_new=round(cp(1,2));
-        
-        rect.Position=[ping_new-dr sample_new-ratio*dr 2*dr dr*2*ratio];
+        x_box=[ping_new-dr ping_new-dr ping_new+dr ping_new+dr];
+        y_box=[sample_new-ratio*dr sample_new+ratio*dr sample_new+ratio*dr sample_new-ratio*dr];
+%         rect.Position=[ping_new-dr sample_new-ratio*dr 2*dr dr*2*ratio];
+        set(rect,'XData',x_box,'YData',y_box);
         
         [idx_pings,idx_r]=get_pr(ping_new,sample_new);
 

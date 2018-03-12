@@ -58,9 +58,19 @@ end
             end
         end
         patch_obj.Vertices=new_vert;
-
         x0=x1;
         y0=y1;
+        if ischar(patch_obj.UserData)
+            switch patch_obj.UserData
+                case 'bot_detec_v1'
+                    apply_bottom_detect_cback([],[],patch_obj,main_figure,'v1');
+                case 'bot_detec_v2'
+                    apply_bottom_detect_cback([],[],patch_obj,main_figure,'v2');
+                case 'bad_transmits'
+                    find_bt_cback([],[],patch_obj,main_figure);
+            end
+        end
+        
         
         
     end

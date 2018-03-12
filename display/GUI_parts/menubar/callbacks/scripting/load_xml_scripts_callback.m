@@ -71,8 +71,9 @@ k=0;
 for i=idx_sort
     try
         xml_surveys_input_tmp=parse_survey_xml(fullfile(scripts,Filenames(i).name),{'survey'});
-    catch
+    catch err
         fprintf('Could not parse xml survey from file %s\n',Filenames(i).name);
+        disp(err.message);
         continue;
     end
     if isempty(xml_surveys_input_tmp)

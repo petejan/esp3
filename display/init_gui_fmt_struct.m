@@ -16,3 +16,4 @@ gui_fmt.pushbtnStyle=struct('Style','pushbutton','units','pixels');
 gui_fmt.chckboxStyle=struct('Style','checkbox','Units','pixels','BackgroundColor','white');
 gui_fmt.popumenuStyle=struct('Style','popupmenu','Units','pixels');
 gui_fmt.lstboxStyle=struct('Style','listbox','Units','pixels');
+gui_fmt.radbtnStyle=struct('Style','radiobutton','Units','pixels','BackgroundColor','white');

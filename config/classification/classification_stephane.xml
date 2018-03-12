@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<classification_descr>
+    
+<frequencies>18000;38000;120000</frequencies>
+
+<variables>
+	<variable name='nb_cell'/>
+	<variable name='sv_38'/>
+	<variable name='delta_sv_120_18'/>
+	<variable name='delta_sv_120_38'/>
+	<variable name='aggregation_depth_mean'/>
+	<variable name='aggregation_depth_min'/>
+	<variable name='bottom_depth'/>
+	<variable name='lat_mean'/>
+</variables>
+
+<nodes>
+	<node id="0" true_target="1" false_target="10">
+        <condition>gt(school.nb_cell,10)</condition>
+    </node>
+	
+	<node id="1" true_target="2" false_target="10">
+        <condition>gt(school.sv_38,-85)</condition>
+    </node>
+	
+	<node id="2" true_target="11" false_target="3">
+        <condition>and(gt(school.delta_sv_120_18,8),gt(school.delta_sv_120_38,5))</condition>
+    </node>
+	
+	<node id="11" true_target="111" false_target="10">
+        <condition>lt(school.aggregation_depth_mean,400)</condition>
+    </node>
+	
+	<node id="3" true_target="12" false_target="4">
+        <condition>gt(school.aggregation_depth_mean,400)</condition>
+    </node>
+	
+	<node id="4" true_target="13" false_target="5">
+        <condition>	gt(200,school.aggregation_depth_min)</condition>
+    </node>
+	
+	<node id="5" true_target="14" false_target="15">
+        <condition>and(gt(school.bottom_depth,400),gt(-44,school.bottom_depth))</condition>
+    </node>
+	
+	<node id="10">
+        <class>UNC</class>
+    </node>
+	
+	<node id="111">
+        <class>EUP</class>
+    </node>
+	
+	<node id="12">
+        <class>DIA</class>
+    </node>
+	
+		<node id="13">
+        <class>MMU</class>
+    </node>
+	
+	<node id="14">
+        <class>ELC</class>
+    </node>
+	
+	<node id="15">
+        <class>LHE</class>
+    </node>
+</nodes>
+
+</classification_descr>

@@ -324,8 +324,9 @@ for itype = 1:length(ftype_unique)
             
             load_bar_comp.status_bar.setText('Updating Database with GPS Data');
             
-            new_layers.add_gps_data_to_db();
-            %new_layers.add_ping_data_to_db();
+            %new_layers.add_gps_data_to_db();
+            
+            new_layers.add_ping_data_to_db();
             
             load_bar_comp.status_bar.setText('Loading Survey Metadata');
             new_layers.load_echo_logbook_db();
@@ -386,20 +387,20 @@ for itype = 1:length(ftype_unique)
     end
     
     
-    new_layers=reorder_layers_time(new_layers);
+    %new_layers=reorder_layers_time(new_layers);
     files_lay=new_layers(1).Filename;
     all_layer=[layers new_layers];
     all_layers_sorted=all_layer.sort_per_survey_data();
     
     load_bar_comp.status_bar.setText('Shuffling layers');
     
-    layers_out=[];
+    layers=[];
     
     for icell=1:length(all_layers_sorted)
-        layers_out=[layers_out shuffle_layers(all_layers_sorted{icell},'multi_layer',multi_lay_mode)];
+        layers=[layers shuffle_layers(all_layers_sorted{icell},'multi_layer',multi_lay_mode)];
     end
     
-    layers=reorder_layers_time(layers_out);
+
 end
 
 %%% TODO: comment

@@ -39,7 +39,7 @@ layer.update_echo_logbook_dbfile('SurveyName',survey_data_out.SurveyName,'Voyage
 update_mini_ax(main_figure,0);
 setappdata(main_figure,'Layer',layer);
 import_survey_data_callback([],[],main_figure);
-update_layer_tab(main_figure);
+update_tree_layer_tab(main_figure);
 load_info_panel(main_figure);
 update_mini_ax(main_figure,0);
 

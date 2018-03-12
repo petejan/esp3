@@ -86,9 +86,13 @@ for ifi=1:length(ftype)
                 update_display(main_figure,1);
         end
         
-    catch
+    catch err
+         warning('Could not load_file');
+        [~,f_temp,e_temp]=fileparts(err.stack(1).file);
+        fprintf('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
+        disp(err.message);
         loadEcho(main_figure);
-        warning('Could not load file(s)');
+       
     end
 end
 

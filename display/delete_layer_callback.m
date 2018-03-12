@@ -34,24 +34,34 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function delete_layer_callback(~,~,main_figure)
-layers=getappdata(main_figure,'Layers');
-layer=getappdata(main_figure,'Layer');
+function delete_layer_callback(~,~,main_figure,IDs)
 
-if isempty(layer)
+layers=getappdata(main_figure,'Layers');
+
+if isempty(layers)
     return;
 end
 
-check_saved_bot_reg(main_figure);
+if isempty(IDs)
+    layer=getappdata(main_figure,'Layer');
+    IDs=layer.Unique_ID;
+    check_saved_bot_reg(main_figure);
+end
 
-[idx,~]=find_layer_idx(layers,layer.Unique_ID);
+if ~iscell(IDs)
+    IDs={IDs};
+end
 
-str_cell=list_layers(layers(idx),'nb_char',80);
-try
-    fprintf('Deleting temp files from %s\n',str_cell{1});
-    layers=layers.delete_layers(layer.Unique_ID);
-catch
-    fprintf('Could not clean files from %s\n',str_cell{1});
+for idi=1:numel(IDs)    
+    [idx,~]=find_layer_idx(layers,IDs{idi});
+    
+    str_cell=list_layers(layers(idx),'nb_char',80);
+    try
+        fprintf('Deleting temp files from %s\n',str_cell{1});
+        layers=layers.delete_layers(layer.Unique_ID);
+    catch
+        fprintf('Could not clean files from %s\n',str_cell{1});
+    end
 end
 
 if ~isempty(layers)
@@ -82,12 +92,11 @@ else
         delete(sec_freq.fig);
         rmappdata(main_figure,'Secondary_freq');
     end
-
     
     update_multi_freq_disp_tab(main_figure,'sv_f',1);
     update_multi_freq_disp_tab(main_figure,'ts_f',1);
     update_reglist_tab(main_figure,0);
-    update_layer_tab(main_figure);
+    update_tree_layer_tab(main_figure);
 
 end
 end

@@ -45,6 +45,6 @@ for ip=1:length(filenames)
             'Long',lon(~idx_nan),...
             'Time',time(~idx_nan));
     end
-    
+     close(dbconn);
 end
 end

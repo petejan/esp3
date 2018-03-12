@@ -74,8 +74,10 @@ try
     if ~isempty(cdata)
         [~,idx_ping]=nanmin(abs(xdata-x));
         idx_ping=idx_ping+idx_ping_ori-1;
+		idx_ping=nanmin(nb_pings,idx_ping);
         [~,idx_r]=nanmin(abs(ydata-y));
         idx_r=idx_r+idx_r_ori-1;
+		idx_r=nanmin(nb_samples,idx_r);
         if nb_pings_red<nb_pings
             [~,idx_ping_red]=nanmin(abs(xdata_red-x));
         else
@@ -241,9 +243,9 @@ try
         
         try
             map_tab_comp=getappdata(main_figure,'Map_tab');
-            if ~isempty(map_tab_comp.Proj)
+            if ~isempty(map_tab_comp.map_info)
                 delete(map_tab_comp.boat_pos);
-                m_proj(map_tab_comp.Proj,'long',map_tab_comp.LongLim,'lat',map_tab_comp.LatLim);
+                m_proj(map_tab_comp.map_info.Proj,'long',map_tab_comp.map_info.LongLim,'lat',map_tab_comp.map_info.LatLim);
                 map_tab_comp.boat_pos=m_plot(map_tab_comp.ax,Long(idx_ping),Lat(idx_ping),'marker','s','markersize',10,'markeredgecolor','r','markerfacecolor','k');
                 setappdata(main_figure,'Map_tab',map_tab_comp);
             end

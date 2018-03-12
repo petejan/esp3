@@ -1,4 +1,4 @@
-
+    
 function set_alpha_map(main_figure,varargin)
 if ~isdeployed
     disp('set_alpha_map')
@@ -77,8 +77,7 @@ for iax=1:length(echo_ax_tot)
     idx_bot_red=bsxfun(@le,bot_vec_red,ydata_red);
         
     alpha_map(idx_bot_red)=2;
-    %alpha_map(idx_bot_red)=1-curr_disp.UnderBotTransparency/100;
-    
+
     if update_bt>0
         data_temp=nan(2,size(alpha_map,2));
         data_temp(:,idx_bad_red)=Inf;

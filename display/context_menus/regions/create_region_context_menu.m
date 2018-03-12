@@ -113,8 +113,19 @@ uimenu(algo_menu,'Label','Apply Single Target Detection','Callback',{@apply_st_d
 uimenu(algo_menu,'Label','Apply Target tracking','Callback',{@apply_track_target_cback,select_plot,main_figure});
 uimenu(algo_menu,'Label','Apply School Detection','Callback',{@apply_school_detect_cback,select_plot,main_figure});
 
+if isreg==0&&~isdeployed()
+    algo_menu=uimenu(context_menu,'Label','"Sliding" Algorithms');
+    uimenu(algo_menu,'Label','Bottom Detection V1','Callback',{@change_userdata_cback,select_plot,'bot_detec_v1'});
+    uimenu(algo_menu,'Label','Bottom Detection V2','Callback',{@change_userdata_cback,select_plot,'bot_detec_v2'});
+    %uimenu(algo_menu,'Label','Bad transmits','Callback',{@change_userdata_cback,select_plot,'bad_transmits'});
+    uimenu(algo_menu,'Label','Disable "Sliding" Algorithm','Callback',{@change_userdata_cback,select_plot,''});
+end
 
 
+end
+
+function change_userdata_cback(~,~,select_plot,str)
+select_plot.UserData=str;
 end
 
 function freq_diff_callback(~,~,main_figure)
@@ -137,7 +148,7 @@ for i=1:n
     trans=layer.Transceivers(i);
     for j=1:numel(IDs)
         reg=trans.get_region_from_Unique_ID(reg_curr(j).Unique_ID);
-        output_reg{j,i}=trans.integrate_region_v5(reg,'keep_bottom',1);
+        output_reg{j,i}=trans.integrate_region_v5(reg,'keep_bottom',1,'keep_all',1);
     end
 end
 
@@ -197,7 +208,7 @@ end
 
 
 
-function disp_hist_region_callback(~,~,select_plot,main_figure)
+function disp_hist_region_callback(src,evt,select_plot,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
 

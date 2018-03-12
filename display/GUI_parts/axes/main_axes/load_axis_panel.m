@@ -81,7 +81,7 @@ axes_panel_comp.vaxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fo
     'visible','on');
 
 axes_panel_comp.v_axes_plot=plot(axes_panel_comp.vaxes,nan,nan,'r');
-axes_panel_comp.v_axes_text=text(nan,nan,'','Color','k','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.vaxes);
+axes_panel_comp.v_axes_text=text(nan,nan,'','Color','k','HorizontalAlignment','center','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.vaxes);
 
 
 axes_panel_comp.haxes=axes('Parent',axes_panel_comp.axes_panel,'FontSize',10,'Fontweight','Bold','Units','normalized',...
@@ -102,7 +102,7 @@ linkaxes([axes_panel_comp.main_axes axes_panel_comp.haxes],'x');
 linkaxes([axes_panel_comp.main_axes axes_panel_comp.vaxes],'y');
 
 axes_panel_comp.h_axes_plot_low=plot(axes_panel_comp.haxes,nan,nan,'color',[0 0.5 0]);
-axes_panel_comp.h_axes_plot_high=plot(axes_panel_comp.haxes,nan,nan,'color','r','linestyle','-','marker','o');
+axes_panel_comp.h_axes_plot_high=plot(axes_panel_comp.haxes,nan,nan,'color',[0.5 0 0],'linestyle','-','marker','o','MarkerFaceColor',[0.5 0 0]);
 
 axes_panel_comp.h_axes_text=text(nan,nan,'','Color','r','VerticalAlignment','bottom','fontsize',10,'parent',axes_panel_comp.haxes);
 

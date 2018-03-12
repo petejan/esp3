@@ -277,12 +277,13 @@ try
             curr_disp=getappdata(main_figure,'Curr_disp');
             curr_disp.setCax(curr_disp.Cax-1);
         case 'delete'
-            if ~isempty(get(gco,'Tag'))
-                switch get(gco,'Tag')
-                    case {'region','region_text'}
-                        delete_regions_from_uid(main_figure,curr_disp.Active_reg_ID);
-                end
-            end
+            delete_region_callback([],[],main_figure,curr_disp.Active_reg_ID);
+%             if ~isempty(get(gco,'Tag'))
+%                 switch get(gco,'Tag')
+%                     case {'region','region_text'}
+%                         delete_region_callback([],[],main_figure,curr_disp.Active_reg_ID);
+%                 end
+%             end
         case 'l'
             show_status_bar(main_figure);
             load_bar_comp=getappdata(main_figure,'Loading_bar');

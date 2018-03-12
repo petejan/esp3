@@ -15,12 +15,15 @@ file_tab_comp.FileChooser.setPreferredSize(java.awt.Dimension(pos(3)/2,pos(4)*0.
 file_tab_comp.FileChooser.setCurrentDirectory(java.io.File(app_path.data));
 file_tab_comp.FileChooser.setMultiSelectionEnabled(true);
 file_tab_comp.FileChooser.setDragEnabled(true);
-
-[file_tab_comp.JPanel, file_tab_comp.JPanelContainer] = javacomponent('javax.swing.JPanel', [0 0 pos(3)/2 pos(4)*0.95], file_tab_comp.file_tab);
-
-
+globalPanel = javax.swing.JPanel(java.awt.BorderLayout);
+[file_tab_comp.JPanel, file_tab_comp.JPanelContainer] = javacomponent(globalPanel, [0 0 pos(3)/2 pos(4)], file_tab_comp.file_tab);
+set(file_tab_comp.JPanelContainer,'units','normalized');
 file_tab_comp.JPanel.add(file_tab_comp.FileChooser);
 file_tab_comp.FileChooser.repaint();
+
+drawnow;
+
+
 
 bgcolor = num2cell(get(main_figure, 'Color'));
 
@@ -55,7 +58,7 @@ init_map_from_folder(file_tab_comp.map_axes,app_path.data);
 
 file_tab_comp.tracks_plots=plot(file_tab_comp.map_axes,[],[]);
 
-set(file_tab_comp.file_tab,'SizeChangedFcn',{@resize_file_selector_cback,main_figure});
+%set(file_tab_comp.file_tab,'SizeChangedFcn',{@resize_file_selector_cback,main_figure});
 
 setappdata(main_figure,'file_tab',file_tab_comp);
 end
@@ -63,7 +66,7 @@ end
 function init_map_from_folder(ax,folder)
 
 cla(ax);
-legend(ax,'off');
+%legend(ax,'off');
 map_info.Proj= [];
 map_info.LatLim=[];
 map_info.LongLim=[];
@@ -91,15 +94,15 @@ set(ax,'UserData',map_info);
 
 end
 
-function resize_file_selector_cback(htab,~,main_figure)
-file_tab_comp=getappdata(main_figure,'file_tab');
-pos=getpixelposition(htab);
-file_tab_comp.JPanel.setPreferredSize(java.awt.Dimension(pos(3)/2,pos(4)*0.95));
-% jColor = java.awt.Color.red;  % or: java.awt.Color(1,0,0)
-% jNewBorder = javax.swing.border.LineBorder(jColor, 1, true);  % red, 1px, rounded=true
-% file_tab_comp.JPanel.setBorder(jNewBorder);
-file_tab_comp.JPanel.repaint();
-end
+% function resize_file_selector_cback(htab,~,main_figure)
+% file_tab_comp=getappdata(main_figure,'file_tab');
+% pos=getpixelposition(htab);
+% file_tab_comp.JPanel.setPreferredSize(java.awt.Dimension(pos(3)/2,pos(4)*0.95));
+% % jColor = java.awt.Color.red;  % or: java.awt.Color(1,0,0)
+% % jNewBorder = javax.swing.border.LineBorder(jColor, 1, true);  % red, 1px, rounded=true
+% % file_tab_comp.JPanel.setBorder(jNewBorder);
+% file_tab_comp.JPanel.repaint();
+% end
 
 function file_select_cback(FileChooser, eventData, main_figure)
 
@@ -131,7 +134,7 @@ try
                 files{i}=char(tmp(i));
             end
             if isempty(files)
-                legend(file_tab_comp.map_axes,'off');
+                %legend(file_tab_comp.map_axes,'off');
                 return;
             end
             
@@ -156,7 +159,13 @@ try
                 file_old{iold}=file_tab_comp.tracks_plots(iold).UserData.file;
                 txt_old{iold}=file_tab_comp.tracks_plots(iold).UserData.txt;
             end
-                
+            
+            [~,idx_keep]=unique(file_old);
+            
+            txt_old=txt_old(idx_keep);
+            file_old=file_old(idx_keep);
+            gps_data_old=gps_data_old(idx_keep);
+
             
             delete(file_tab_comp.tracks_plots);
             file_tab_comp.tracks_plots=[];
@@ -167,15 +176,13 @@ try
             idx_rem=cellfun(@numel,survey_data)==0;
             files(idx_rem)=[];
             survey_data(idx_rem)=[];
-            
-            gps_data=get_ping_data_from_db(files);
-            
-            if all(cellfun(@isempty,gps_data))
-                gps_data=get_gps_data_from_db(files);
+            if ~isempty(files)
+                gps_data=get_ping_data_from_db(files);
+            else
+                gps_data={};
             end
-            
-            
             txt=cell(1,numel(files));
+            
             for ifi=1:numel(files)
                 if ~isempty(gps_data{ifi})
                     [~,text_str,ext_str]=fileparts(files{ifi});
@@ -184,15 +191,18 @@ try
                         text_str=[text_str survey_data{ifi}{is}.print_survey_data ' '];
                     end
                      txt{ifi}=text_str;
+                else
+                    
+                    
                 end
             end
             
             gps_data=[gps_data gps_data_old];
             txt=[txt txt_old];
             files=[files file_old];
-            
+
             if all(cellfun(@isempty,gps_data))
-                legend(file_tab_comp.map_axes,'off');
+                %legend(file_tab_comp.map_axes,'off');
                 return;
             end
             
@@ -208,7 +218,7 @@ try
                     LatLim(2)=nanmax(LatLim(2),nanmax(gps_data{ifi}.Lat));
                 end
             end
-                
+             map_info.Proj= init_proj('Mercator',LongLim,LatLim);   
             [LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.3);
             map_info.Proj= init_proj('Mercator',LongLim,LatLim);
             map_info.LatLim=LatLim;
@@ -219,9 +229,9 @@ try
             end
             
             set(file_tab_comp.map_axes,'UserData',map_info);
-            
+
             % m_proj(map_info.Proj,'long',map_info.LongLim,'lat',map_info.LatLim);
-            legd_str=cell(1,numel(files));
+    
             for ifi=1:numel(files)
                 if ~isempty(gps_data{ifi})
                     userdata.txt=txt{ifi};
@@ -229,14 +239,17 @@ try
                     userdata.file=files{ifi};
                     
                     file_tab_comp.tracks_plots=[file_tab_comp.tracks_plots ...
-                        m_plot(file_tab_comp.map_axes,gps_data{ifi}.Long(1),gps_data{ifi}.Lat(1),'Marker','o','Tag',files{ifi},'Color',[0 0.8 0]) ...
-                        m_plot(file_tab_comp.map_axes,gps_data{ifi}.Long,gps_data{ifi}.Lat,'Tag',files{ifi},'UserData',userdata)] ;
-                    legd_str{ifi}=userdata.txt;
+                        m_plot(file_tab_comp.map_axes,gps_data{ifi}.Long(1),gps_data{ifi}.Lat(1),'Marker','o','Tag',files{ifi},'Color',[0 0.6 0],'UserData',userdata,'Markersize',6,'LineWidth',2,'MarkerFaceColor',[0 0.6 0]) ...
+                        m_plot(file_tab_comp.map_axes,gps_data{ifi}.Long,gps_data{ifi}.Lat,'Tag',files{ifi},'UserData',userdata,'ButtonDownFcn',@disp_file_name_callback,'linewidth',2)] ;
+                    enterFcn =  @(figHandle, currentPoint)...
+                        set(figHandle, 'Pointer', 'hand');
+                    iptSetPointerBehavior(file_tab_comp.tracks_plots,enterFcn);
+
                 else
-                   legd_str{ifi}=[];
+                  
                 end
             end
-            %legd_str(cellfun(@isempty,legd_str))=[];
+
             try
                 set(file_tab_comp.map_axes,'visible','on')
                 m_grid('tickdir','in','axes',file_tab_comp.map_axes);
@@ -246,13 +259,10 @@ try
                 warning('area too small for ticks to display')
             end
                        
-%              if ~isempty(file_tab_comp.tracks_plots)
-%                 legend(file_tab_comp.tracks_plots(2:2:end),legd_str,'Location','bestoutside');
-%              end
 
             %profile off;
             %profile viewer;
-            %             setappdata(main_figure,'file_tab',file_tab_comp);
+            setappdata(main_figure,'file_tab',file_tab_comp);
         case 'directoryChanged'
             file_tab_comp=getappdata(main_figure,'file_tab');
             
@@ -274,7 +284,25 @@ end
 
 end
 
+function disp_file_name_callback(src,~)
 
+ax=get(src,'parent');
+hfig=ancestor(ax,'Figure');
+
+cp=ax.CurrentPoint;
+x = cp(1,1);
+y=cp(1,2);
+
+switch hfig.SelectionType
+    case 'normal'
+        str=src.UserData.txt;
+        u = findobj(ax,'Tag','name');
+        delete(u);
+       
+        text(x,y,str,'Interpreter','None','Tag','name','parent',ax,'Tag','name');
+        
+end
+end
 
 function fileFilter = add_file_filter(FileChooser, description, extension)
 try
