@@ -69,7 +69,7 @@ set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_c
 cax=[0 1];
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=50;
+gui_fmt.txt_w=60;
 pos=create_pos_3(2,nb_col,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 
