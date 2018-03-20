@@ -51,12 +51,12 @@ switch p.Results.Cell_h_unit
         ydata=trans_obj.get_transceiver_range();
         bot_data=trans_obj.get_bottom_range();
 end
-nb_pings=length(xdata);
 
 time_t=trans_obj.Params.Time();
-
 idx_pings=find(time_t>=p.Results.t_min&time_t<=p.Results.t_max);
 bot_data(trans_obj.get_bottom_idx()==numel(ydata))=nan;
+bot_data=bot_data(idx_pings);
+nb_pings=length(bot_data);
 switch lower(p.Results.Ref)
     case 'surface'
         name='WC';
@@ -87,11 +87,10 @@ switch lower(p.Results.Ref)
         block_size=ceil(p.Results.block_len/numel(ydata));
         num_ite=ceil(nb_pings/block_size);
         
-        idx_pings_tot=1:nb_pings;
         for ui=1:num_ite
-            idx_pings=idx_pings_tot((ui-1)*block_size+1:nanmin(ui*block_size,numel(idx_pings_tot)));
-            mask(:,idx_pings)=bsxfun(@ge,ydata,bot_data(idx_pings)-p.Results.y_max)&...
-                bsxfun(@le,ydata,bot_data(idx_pings)-p.Results.y_min);
+            idx_pings_red=idx_pings((ui-1)*block_size+1:nanmin(ui*block_size,numel(nb_pings)));
+            mask(:,idx_pings_red)=bsxfun(@ge,ydata,bot_data(idx_pings_red)-p.Results.y_max)&...
+                bsxfun(@le,ydata,bot_data(idx_pings_red)-p.Results.y_min);
         end
         
         idx_r=find(nansum(mask,2)>0,1,'first'):find(nansum(mask,2)>0,1,'last');
@@ -108,7 +107,7 @@ else
         'MaskReg',mask,...
         'Name',name,...
         'Type',p.Results.Type,...
-        'Idx_pings',idx_pings_tot,...
+        'Idx_pings',idx_pings,...
         'Idx_r',idx_r,...
         'Reference',p.Results.Ref,...
         'Cell_w',cell_w,...
