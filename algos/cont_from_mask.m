@@ -1,8 +1,8 @@
 function [x,y]=cont_from_mask(Mask)
-Mask_exp=zeros(size(Mask)+2);
+Mask_exp=false(size(Mask)+2);
 Mask_exp(2:end-1,2:end-1)=Mask;
 
-cont=contourc(Mask_exp,[1 1]);
+cont=contourc(double(Mask_exp),[1 1]);
 if isempty(cont)
     x=[];
     y=[];

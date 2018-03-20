@@ -19,6 +19,7 @@ addParameter(p,'Cell_h',10,@isnumeric);
 addParameter(p,'Cell_w_unit','pings',check_w_unit);
 addParameter(p,'Cell_h_unit','meters',check_h_unit);
 addParameter(p,'Remove_ST',0,@isnumeric);
+addParameter(p,'block_len',1e7,@(x) x>0);
 parse(p,trans_obj,varargin{:});
 
 switch p.Results.Cell_w_unit
@@ -82,13 +83,20 @@ switch lower(p.Results.Ref)
         %bot_data(idxBad)=nan;
         shape='Polygon';
         
-        mask=bsxfun(@ge,ydata,bot_data-p.Results.y_max)&...
-            bsxfun(@le,ydata,bot_data+p.Results.Cell_h)&...
-            bsxfun(@ge,ydata,repmat(p.Results.y_min,size(bot_data)));
+        mask=false(numel(ydata),nb_pings);
+        block_size=ceil(p.Results.block_len/numel(ydata));
+        num_ite=ceil(nb_pings/block_size);
+        
+        idx_pings_tot=1:nb_pings;
+        for ui=1:num_ite
+            idx_pings=idx_pings_tot((ui-1)*block_size+1:nanmin(ui*block_size,numel(idx_pings_tot)));
+            mask(:,idx_pings)=bsxfun(@ge,ydata,bot_data(idx_pings)-p.Results.y_max)&...
+                bsxfun(@le,ydata,bot_data(idx_pings)-p.Results.y_min);
+        end
         
         idx_r=find(nansum(mask,2)>0,1,'first'):find(nansum(mask,2)>0,1,'last');
         mask=mask(idx_r,:);
-        
+                
 end
 
 if isempty(idx_r)||isempty(idx_pings)
@@ -100,7 +108,7 @@ else
         'MaskReg',mask,...
         'Name',name,...
         'Type',p.Results.Type,...
-        'Idx_pings',idx_pings,...
+        'Idx_pings',idx_pings_tot,...
         'Idx_r',idx_r,...
         'Reference',p.Results.Ref,...
         'Cell_w',cell_w,...

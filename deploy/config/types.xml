@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<type_file version="0.1">
+	<Type name=" " descr="Default type"/>
+   <Type name="Acoustic" descr="Acoustic transect"/>
+   <Type name="Whales" descr="Whales Observations"/>
+   <Type name="RMT" descr="RMT Trawl"/>
+   <Type name="Trawl" descr="Trawl"/>
+   <Type name="Steam" descr="Steam transect"/>
+   <Type name="Mooring" descr="Mooring deployement"/>
+   <Type name="Calibration" descr="Calibration file"/>
+   <Type name="Deployement" descr="Instrument deployement"/>
+ </type_file>
+

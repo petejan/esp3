@@ -6,7 +6,6 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
-idx_reg=trans_obj.find_regions_type('Data');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
@@ -14,6 +13,7 @@ idx_reg=trans_obj.find_regions_type('Data');
 
 Slice_w_units=curr_disp.Xaxes_current;
 
+idx_reg=trans_obj.find_regions_type('Data');
 
 %profile on;
 sh_height=10;

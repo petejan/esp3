@@ -1,7 +1,7 @@
 function gpu_comp=get_gpu_comp_stat()
 
 try
-    gpu_comp=license('test','Distrib_Computing_Toolbox');
+    gpu_comp=license('checkout','Distrib_Computing_Toolbox');
     if gpu_comp
         g = gpuDevice;
         if str2double(g.ComputeCapability)>=3&&g.SupportsDouble&&g.DriverVersion>7

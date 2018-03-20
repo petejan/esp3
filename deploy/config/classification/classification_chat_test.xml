@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<classification_descr title='Chatham Rise Mesopelagic tree manual mode'>
+    
+<frequencies>18000;38000;70000;120000</frequencies>
+
+<variables>
+	<variable name='sv_38'/>
+	<variable name='sv_70'/>
+	<variable name='delta_sv_18_38'/>
+	<variable name='delta_sv_120_38'/>	
+	<variable name='aggregation_depth_mean'/>
+	<variable name='bottom_depth'/>
+</variables>
+
+<nodes>
+	<node id="1" true_target="5" false_target="2">
+        <condition>and(gt(school.delta_sv_120_38,2),lt(school.delta_sv_120_38,16))</condition>
+    </node>
+	
+	<node id="2" false_target="11" true_target="20">
+        <condition>gt(school.delta_sv_18_38,1.10)</condition>
+    </node>
+	
+<!-- Right branch -->	
+
+	<node id="11" false_target="1111" true_target="3">
+        <condition>gt(school.delta_sv_18_38,-6.3)</condition>
+    </node>
+	
+	<node id="1111" false_target="11111" true_target="3">
+        <condition>lt(school.bottom_depth,75)</condition>
+    </node>
+	
+	<node id="11111" false_target="4" true_target="7">
+        <condition>gt(school.sv_70,-66.6)</condition>
+    </node>
+	<!-- Left Branch -->
+		 
+	<node id="20" false_target="6" true_target="2110">
+        <condition>gt(school.aggregation_depth_mean,290)</condition>
+    </node>
+	
+	<node id="2110" false_target="6" true_target="7">
+        <condition>lt(school.bottom_depth,510)</condition>
+    </node>
+	
+	<node id="3">
+        <class>UNC1</class>
+    </node>
+	
+	<node id="4">
+        <class>UNC3</class>
+    </node>
+	
+	<node id="5">
+        <class>EUP</class>
+    </node>
+		
+	<node id="6">
+        <class>MMU</class>
+    </node>
+	
+	<node id="7">
+        <class>LHE</class>
+    </node>
+</nodes>
+
+</classification_descr>
