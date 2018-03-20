@@ -16,6 +16,7 @@ vaxes=axes_panel_comp.vaxes;
 new_fig=new_echo_figure(main_figure,'Units','Pixels','Position',get(0,'ScreenSize'),...
     'Name','','Tag','save_echo');
 pos=get(new_fig,'position');
+set(new_fig,'Alphamap',main_figure.Alphamap);
 new_axes=copyobj(main_axes,new_fig);
 set(new_axes,'units','pixels','XAxisLocation','bottom','XTickLabelRotation',90,'outerposition',[0 0 pos(3) pos(4)],'YTickLabel',vaxes.YTickLabel,'XTickLabel',haxes.XTickLabel);
 set(new_fig,'Visible','off');

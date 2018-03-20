@@ -54,12 +54,15 @@ addParameter(p,'Cmap','jet',@ischar);
 addParameter(p,'alphadata',[],@isnumeric);
 addParameter(p,'field',field_def,@ischar);
 addParameter(p,'TS',TS_def,@isnumeric);
-addParameter(p,'main_figure',[],@(h) isempty(h)|isa(h,'matlab.ui.Figure'));
+addParameter(p,'main_figure',[],@(h) isempty(h)|ishghandle(h));
+addParameter(p,'parent',[],@(h) isempty(h)|ishghandle(h));
 addParameter(p,'load_bar_comp',[]);
 
 parse(p,reg_obj,trans_obj,varargin{:});
 
 %%
+
+h_fig=p.Results.parent;
 
 field= p.Results.field;
 if isa(trans_obj,'transceiver_cl')
@@ -150,14 +153,17 @@ switch reg_obj.Cell_w_unit
         x_disp=output_reg.Ping_S;
     case 'meters'
         x_disp=(output_reg.Dist_S+output_reg.Dist_E)/2;
+     case 'seconds'
+        x_disp=((output_reg.Time_S+output_reg.Time_E)/2-output_reg.Time_S(1))*24*60*60;       
 end
 
 
 
 %% create new figure here
+if isempty(h_fig)
 h_fig=new_echo_figure(p.Results.main_figure,'Name',tt,'Tag',[tt reg_obj.tag_str()],...
     'Units','normalized','Position',[0.1 0.2 0.8 0.6],'Group','Regions','Windowstyle','Docked');
-
+end
 %% main region display
 
 % axes
@@ -230,9 +236,10 @@ ax_horz.XTickLabelRotation=45;
 switch reg_obj.Cell_w_unit
     case 'meters'
         ax_horz.XAxis.TickLabelFormat='%.0fm';
-    case 'pings'
+    case {'pings' 'seconds'}
         ax_horz.XAxis.TickLabelFormat='%.0f';
 end
+
 ax_horz.XAxis.ExponentMode='manual';
 ax_horz.XAxis.Exponent=0;
 %% side display

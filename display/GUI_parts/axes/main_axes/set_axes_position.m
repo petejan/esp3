@@ -3,63 +3,39 @@ main_menu=getappdata(main_figure,'main_menu');
 axes_panel_comp=getappdata(main_figure,'Axes_panel');
 
 state_colorbar=get(main_menu.show_colorbar,'checked');
-% state_xaxes=get(main_menu.show_xaxes,'checked');
-% state_yaxes=get(main_menu.show_yaxes,'checked');
-state_haxes=get(main_menu.show_haxes,'checked');
-state_vaxes=get(main_menu.show_vaxes,'checked');
+
+curr_disp=getappdata(main_figure,'Curr_disp');
+
+vpos_r=curr_disp.V_axes_ratio;
+hpos_r=curr_disp.H_axes_ratio;
 
 pos=[0 0 1 1];
-vpos=[-0.05 0 0.05 1];
-hpos=[0 1 1 0.15];
-pos_colorbar=[0.95 0 0.05 1];
-
-if nansum(isfield(axes_panel_comp,{'haxes','vaxes'}))==2
-    %     hpos=get(axes_panel_comp.haxes,'Position');
-    %     vpos=get(axes_panel_comp.vaxes,'Position');
-else
-    return;
-end
+vpos=[-vpos_r 0 vpos_r 1];
+hpos=[0 1 1 hpos_r];
+pos_colorbar=[1-0.05 0 0.05 1];
 
 switch state_colorbar
     case 'on'
-        if isfield(axes_panel_comp,'colorbar')
-           set(axes_panel_comp.colorbar,'visible','on');
-           hpos=hpos+[0 0 -pos_colorbar(3) 0];
-           pos=pos+[0 0 -pos_colorbar(3) 0];
-        end
+        set(axes_panel_comp.colorbar,'visible','on');
+        hpos=hpos+[0 0 -pos_colorbar(3) 0];
+        pos=pos+[0 0 -pos_colorbar(3) 0];
         
     case 'off'
-        if isfield(axes_panel_comp,'colorbar')
-            set(axes_panel_comp.colorbar,'visible','off');
-        end
+        set(axes_panel_comp.colorbar,'visible','off');
 end
 
 
-switch state_haxes
-    case 'off'
-        %set(axes_panel_comp.haxes,'visible','off');
-        set(allchild(axes_panel_comp.haxes),'visible', 'off');
-    case 'on'
-        %set(axes_panel_comp.haxes,'visible','on');
-        set(allchild(axes_panel_comp.haxes), 'visible', 'on');
-        hpos=hpos+[0 -hpos(4) 0 0];
-        vpos=vpos+[0 0 0 -hpos(4)];
-        pos=pos+[0 0 0 -hpos(4)];
-        pos_colorbar=pos_colorbar+[0 0 0 -hpos(4)];
-end
+hpos=hpos+[0 -hpos(4) 0 0];
+vpos=vpos+[0 0 0 -hpos(4)];
+pos=pos+[0 0 0 -hpos(4)];
+pos_colorbar=pos_colorbar+[0 0 0 -hpos(4)];
 
-switch state_vaxes
-    case 'off'
-        %set(axes_panel_comp.vaxes,'visible','off');
-        set(allchild(axes_panel_comp.vaxes), 'visible', 'off')
-    case 'on'
-        %set(axes_panel_comp.vaxes,'visible','on');
-        set(allchild(axes_panel_comp.vaxes), 'visible', 'on');
-        vpos=vpos+[vpos(3) 0 0 0];
-        hpos=hpos+[vpos(3) 0 -vpos(3) 0];
-        pos=pos+[vpos(3) 0 -vpos(3) 0];
-               
-end
+
+vpos=vpos+[vpos(3) 0 0 0];
+hpos=hpos+[vpos(3) 0 -vpos(3) 0];
+pos=pos+[vpos(3) 0 -vpos(3) 0];
+
+
 
 width_colorbar=pos_colorbar(3);
 pos_colorbar(3)=width_colorbar*1/3;

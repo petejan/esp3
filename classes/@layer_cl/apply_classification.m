@@ -45,14 +45,22 @@ end
 %freqs=class_tree_obj.get_frequencies();
 vars=class_tree_obj.get_variables();
 
-idx_var_freq=find(contains(vars,'delta_sv'));
+
+idx_var_freq=find(contains(vars,'sv_'));
+idx_var_freq_sec=find(contains(vars,'delta_sv_'));
 primary_freqs=nan(1,numel(idx_var_freq));
 secondary_freqs=nan(1,numel(idx_var_freq));
 
 for i=1:numel(idx_var_freq)
-    freqs_tmp=textscan(vars{idx_var_freq(i)},'delta_sv_%d_%d');
+    if ismember(i,idx_var_freq_sec)
+        freqs_tmp=textscan(vars{idx_var_freq(i)},'delta_sv_%d_%d');
+    else
+        freqs_tmp=textscan(vars{idx_var_freq(i)},'sv_%d');
+    end
     primary_freqs(i)=freqs_tmp{1}*1e3;
-    secondary_freqs(i)=freqs_tmp{2}*1e3;
+    if ismember(i,idx_var_freq_sec)
+        secondary_freqs(i)=freqs_tmp{2}*1e3;
+    end
 end
 
 nb_schools=numel(idx_schools);
@@ -67,15 +75,17 @@ for i=1:numel(primary_freqs)
         warning('Cannot find %dkHz! Cannot apply classification here....',primary_freqs(i)/1e3);
         return;
     end
-    
-    [idx_secondary_freqs(i),found]=find_freq_idx(layer,secondary_freqs(i));
-    if ~found
-        warning('Cannot find %dkHz! Cannot apply classification here....',secondary_freqs(i)/1e3);
-        return;
+    if ~isnan(secondary_freqs(i))
+        [idx_secondary_freqs(i),found]=find_freq_idx(layer,secondary_freqs(i));
+        if ~found
+            warning('Cannot find %dkHz! Cannot apply classification here....',secondary_freqs(i)/1e3);
+            return;
+        end
     end
 end
 
 idx_freq_tot=union(idx_primary_freqs,idx_secondary_freqs);
+idx_freq_tot(isnan(idx_freq_tot))=[];
 [~,~,~,regCellInt,~,~,~,idx_freq_out_tot]=layer.multi_freq_slice_transect2D(...
     'SliceInt',0,'RegInt',1,'idx_regs',idx_schools,'idx_main_freq',idx_primary_freq,'idx_sec_freq',idx_freq_tot,'keep_all',1,'keep_bottom',1,'denoised',p.Results.denoised);
 
@@ -84,18 +94,20 @@ for j=1:nb_schools
     
     for i=1:numel(primary_freqs)
         i_freq_p=idx_freq_out_tot==idx_primary_freqs(i);
-        i_freq_s=idx_freq_out_tot==idx_secondary_freqs(i);
-              
         output_reg_p=regCellInt{i_freq_p}{j};
-        output_reg_s=regCellInt{i_freq_s}{j};
-        ns=numel(output_reg_s.nb_samples(:));
-        np=numel(output_reg_p.nb_samples(:));
-        n=nanmin(ns,np);
-        delta_temp=nanmean(pow2db_perso(output_reg_p.Sv_mean_lin(1:n))-pow2db_perso(output_reg_s.Sv_mean_lin(1:n)));
-        delta_temp(isnan(delta_temp))=0;
-        school_struct{j}.(sprintf('delta_sv_%d_%d',primary_freqs(i)/1e3,secondary_freqs(i)/1e3))=delta_temp;
         school_struct{j}.(sprintf('sv_%d',primary_freqs(i)/1e3))=pow2db_perso(nanmean(output_reg_p.Sv_mean_lin(:)));
-        school_struct{j}.(sprintf('sv_%d',secondary_freqs(i)/1e3))=pow2db_perso(nanmean(output_reg_p.Sv_mean_lin(:)));
+        
+        if ~isnan(idx_secondary_freqs(i))
+            i_freq_s=idx_freq_out_tot==idx_secondary_freqs(i);
+            output_reg_s=regCellInt{i_freq_s}{j};
+            ns=numel(output_reg_s.nb_samples(:));
+            np=numel(output_reg_p.nb_samples(:));
+            n=nanmin(ns,np); 
+            delta_temp=nanmean(pow2db_perso(output_reg_p.Sv_mean_lin(1:n))-pow2db_perso(output_reg_s.Sv_mean_lin(1:n)));
+            delta_temp(isnan(delta_temp))=0;
+            school_struct{j}.(sprintf('delta_sv_%d_%d',primary_freqs(i)/1e3,secondary_freqs(i)/1e3))=delta_temp;
+            school_struct{j}.(sprintf('sv_%d',secondary_freqs(i)/1e3))=pow2db_perso(nanmean(output_reg_p.Sv_mean_lin(:)));
+        end
     end
     
     school_struct{j}.nb_cell=length(~isnan(output_reg_p.Sv_mean_lin(:)));

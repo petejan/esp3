@@ -37,9 +37,9 @@ switch p.Results.Cell_w_unit
             xdata=trans_obj.get_transceiver_pings();
         end
     case 'seconds'
+        cell_w_units='seconds'; 
         xdata=trans_obj.get_transceiver_pings();
-        cell_w_units='pings';
-        cell_w=ceil(p.Results.Cell_w/nanmean(diff(trans_obj.get_transceiver_time()*24*60*60)));
+        cell_w=p.Results.Cell_w;
 end
 
 switch p.Results.Cell_h_unit
@@ -62,10 +62,8 @@ switch lower(p.Results.Ref)
         idx_r_min=find(ydata>p.Results.y_min,1,'first');
 
         idxBad=trans_obj.Bottom.Tag==0;
-        bot_data(idxBad)=nan;
-        
-        
-        if nansum(isnan(bot_data))<nb_pings
+        if all(~isnan(bot_data(~idxBad)))
+        %bot_data(idxBad)=nan;
             [~,idx_r_max]=nanmin(abs(ydata-(nanmax(bot_data+p.Results.Cell_h))));
         else
             idx_r_max=length(ydata);
@@ -79,9 +77,9 @@ switch lower(p.Results.Ref)
         mask=[]; idx_r=idx_r_min:idx_r_max;
     case 'bottom'
         name='WC';
-        idxBad=trans_obj.Bottom.Tag==0;
+        %idxBad=trans_obj.Bottom.Tag==0;
         
-        bot_data(idxBad)=nan;
+        %bot_data(idxBad)=nan;
         shape='Polygon';
         
         mask=bsxfun(@ge,ydata,bot_data-p.Results.y_max)&...

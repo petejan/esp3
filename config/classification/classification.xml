@@ -16,39 +16,35 @@
 <nodes>
 	
 	<node id="1" false_target="11" true_target="20">
-        <condition>gt(school.delta_sv_18_38,1.113)</condition>
+        <condition>gt(school.delta_sv_18_38,1.10)</condition>
     </node>
-		
-	<node id="11" false_target="111" true_target="110">
-        <condition>gt(school.delta_sv_70_38,0.141)</condition>
+`<!-- Right branch -->	
+	<node id="11" false_target="111" true_target="5">
+        <condition>gt(school.delta_sv_70_38,0.15)</condition>
     </node>
-	<!-- Right branch -->
-	<node id="10" false_target="111" true_target="4">
-        <condition>gt(school.delta_sv_70_38,0.141)</condition>
-    </node>
-	
+
 	<node id="111" false_target="1111" true_target="3">
         <condition>gt(school.delta_sv_18_38,-6.3)</condition>
     </node>
 	
 	<node id="1111" false_target="11111" true_target="3">
-        <condition>lt(school.bottom_depth,73.71)</condition>
+        <condition>lt(school.bottom_depth,75)</condition>
     </node>
 	
 	<node id="11111" false_target="4" true_target="7">
-        <condition>gt(school.sv_70,-66.62)</condition>
+        <condition>gt(school.sv_70,-66.6)</condition>
     </node>
 	<!-- Left Branch -->
 <node id="20" false_target="211" true_target="5">
-        <condition>gt(school.delta_sv_120_18,-2.331)</condition>
-</node>
+        <condition>gt(school.delta_sv_120_18,-2.30)</condition>
+	</node>
 		 
 		<node id="211" false_target="6" true_target="2110">
-        <condition>gt(school.aggregation_depth_mean,293)</condition>
+        <condition>gt(school.aggregation_depth_mean,290)</condition>
     </node>
 	
 			<node id="2110" false_target="6" true_target="7">
-        <condition>lt(school.bottom_depth,511)</condition>
+        <condition>lt(school.bottom_depth,510)</condition>
     </node>
 	
 	<node id="3">

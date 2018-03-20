@@ -205,8 +205,8 @@ if ~isempty(layer)
     
     trans_obj.apply_absorption(new_abs/1e3);
     
-    set(calibration_tab_comp.string_cal,'string',sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
-        new_ss,new_abs,new_sal,new_temp));
+    set(calibration_tab_comp.string_cal,'string',sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n',...
+        new_ss,new_abs));
     
     update_axis_panel(main_figure,0);
     update_secondary_freq_win(main_figure);

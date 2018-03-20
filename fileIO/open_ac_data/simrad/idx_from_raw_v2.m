@@ -83,13 +83,13 @@ end
 nb_dg=length(idx_dg);
 
 for i=1:length(idx_dg)
-    if mod(i,floor(nb_dg/100))==1
-    if ~isempty(load_bar_comp)
-        set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',i);
-    end
+    if mod(i,floor(nb_dg/100))==5
+        if ~isempty(load_bar_comp)
+            set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',i);
+        end
     end
     curr_pos=ftell(fid);
-    fread(fid,idx_dg(i)-5-curr_pos);
+    fseek(fid,idx_dg(i)-5-curr_pos,'cof');
     %fseek(fid,idx_dg(i)-5,-1);
     len=fread(fid, 1, 'int32', 'l');
     

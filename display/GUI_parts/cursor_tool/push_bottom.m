@@ -121,7 +121,7 @@ if sample_init>=samples_ori(ping_init)
     setptr(main_figure,'udrag');
 else
     position='below';
-    setptr(main_figure,'ddrag');
+    setptr(main_figure,'udrag');
 end
 hp=plot(ah,xdata,yinit,'color',line_col,'linewidth',1,'Tag','bottom_temp');
 

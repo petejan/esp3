@@ -7,7 +7,7 @@ switch listdata.AffectedObject.DispBadTrans
     case 'off'
         main_figure.Alphamap(3)=0;
     case 'on'
-        main_figure.Alphamap(3)=0.8;
+        main_figure.Alphamap(3)=0.6;
 end
 
 end

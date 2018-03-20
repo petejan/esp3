@@ -280,7 +280,7 @@ for itype = 1:length(ftype_unique)
             
         case 'db'
             for ifi=1:length(Filename)
-                load_survey_data_fig_from_db(main_figure,0,1,Filename{ifi});
+                load_logbook_tab_from_db(main_figure,0,1,Filename{ifi});
             end
             continue;
         otherwise
@@ -357,8 +357,7 @@ for itype = 1:length(ftype_unique)
                                 new_layers(i).Transceivers(i_freq).apply_cw_cal(struct('G0',cal_curr.G0(idx_cal),'SACORRECT',cal_curr.SACORRECT(idx_cal)));
                                 if isfield(cal_curr,'alpha')
                                     fprintf('Applying new absorption to %.0f kHz.\n',new_layers(i).Frequencies(i_freq)/1e3);
-                                    new_layers(i).Transceivers(i_freq).apply_absorption(cal_curr.alpha(idx_cal)/1e3);
-                                    
+                                    new_layers(i).Transceivers(i_freq).apply_absorption(cal_curr.alpha(idx_cal)/1e3); 
                                 end
                             end
                         else

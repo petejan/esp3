@@ -6,8 +6,8 @@ if isempty(layer)
 end
 switch tab
     case 'st_tracks'
-        map_tab_comp=getappdata(main_figure,'ST_Tracks');
-        tab_h=map_tab_comp.map_tab;
+        st_tracks_tab_comp=getappdata(main_figure,'ST_Tracks');
+        tab_h=st_tracks_tab_comp.st_tracks_tab;
         tt='St&Tracks';
     case 'map'
         map_tab_comp=getappdata(main_figure,'Map_tab');
@@ -34,10 +34,9 @@ switch tab
         tab_comp=getappdata(main_figure,tab);
         tab_h=tab_comp.multi_freq_disp_tab;
         tt='TS(f)';
-    case 'echoint'
-        e 'ts_f'
-        tab_comp=getappdata(main_figure,'EchoInt');
-        tab_h=tab_comp.echo_int_tab;
+    case 'echoint_tab'
+        tab_comp=getappdata(main_figure,'EchoInt_tab');
+        tab_h=tab_comp.echo_int_tab;        
         tt='Echo-Integration';
     otherwise
         tab_h=[];
@@ -46,6 +45,7 @@ end
 if~isvalid(tab_h)
     return;
 end
+pos_tab=getpixelposition(tab_h);
 delete(tab_h);
 
 switch dest
@@ -53,12 +53,10 @@ switch dest
         dest_fig=getappdata(main_figure,'option_tab_panel');
     case 'echo_tab'
         dest_fig=getappdata(main_figure,'echo_tab_panel');
-    case 'new_fig'
-        
-        pos_fig=[0.2 0.2 0.6 0.4];
+    case 'new_fig'    
         dest_fig=new_echo_figure(main_figure,...
-            'Units','normalized',...
-            'Position',pos_fig,...
+            'Units','pixels',...
+            'Position',pos_tab,...
             'Name',tt,...
             'Resize','on',...
             'CloseRequestFcn',@close_tab,...
@@ -75,7 +73,7 @@ switch tab
         load_reglist_tab(main_figure,dest_fig);
     case 'laylist'
         load_tree_layer_tab(main_figure,dest_fig);
-    case 'echoint'
+    case 'echoint_tab'
         load_echo_int_tab(main_figure,dest_fig);
     case {'sv_f' 'ts_f'}
         load_multi_freq_disp_tab(main_figure,dest_fig,tab);
@@ -108,9 +106,12 @@ switch tag
     case 'laylist'
         delete(src);
         load_tree_layer_tab(main_figure,dest_fig);
-    case 'echoint'
-         delete(src);
-        load_echo_int_tab(main_figure,dest_fig);
+    case 'echoint_tab'
+         echo_int_tab_comp=getappdata(main_figure,'EchoInt_tab');
+         sliced_t=echo_int_tab_comp.sliced_t;
+        dest_fig=getappdata(main_figure,'echo_tab_panel');
+        delete(src);
+        load_echo_int_tab(main_figure,dest_fig,sliced_t);
     case {'sv_f' 'ts_f'}
         delete(src);
         load_multi_freq_disp_tab(main_figure,dest_fig,tag);

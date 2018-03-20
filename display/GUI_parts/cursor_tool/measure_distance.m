@@ -47,8 +47,8 @@ ah=axes_panel_comp.main_axes;
 
 clear_lines(ah)
 
-obj_meas=findobj(ah,'Tag','measurement_text','-or','Tag','measurement');
-delete(obj_meas);
+% obj_meas=findobj(ah,'Tag','measurement_text','-or','Tag','measurement');
+% delete(obj_meas);
 
 switch lower(curr_disp.Cmap)
     case 'esp2'

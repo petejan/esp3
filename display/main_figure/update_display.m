@@ -86,6 +86,7 @@ if new==1
     update_display_tab(main_figure);
     load_secondary_freq_win(main_figure);
     update_file_panel(main_figure);
+    update_echo_int_tab(main_figure,new);
 end
 
 try

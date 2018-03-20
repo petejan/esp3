@@ -31,7 +31,7 @@ classdef gps_data_cl
                         end
                     end
                 end
-                
+                obj.NMEA=obj.NMEA(:)';
                 obj.Long(obj.Long<0)=obj.Long(obj.Long<0)+360;
                 idx_nan=find((isnan(obj.Lat)+isnan(obj.Long))>0|(obj.Lat==0));
                 
@@ -86,7 +86,7 @@ classdef gps_data_cl
                 'NMEA',gps_data_1.NMEA);
         end
         
-        function [gps_data_out,id_keep]=clean_gps_track(gps_data)
+        function [gps_data_out,id_keep]=clean_gps_track(gps_data,varargin)
             if isempty(gps_data)
                 gps_data_out=gps_data;
                 return;
@@ -95,9 +95,28 @@ classdef gps_data_cl
                 gps_data_out=gps_data;
                 return;
             end
-            [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,1e-6,0,1e3,0);
+            if isempty(varargin)
+                prec=1e-6*2;
+            else
+                prec=varargin{1};
+            end
+            [~,~,id_keep]=DouglasPeucker(gps_data.Long,gps_data.Lat,prec,0,1e3,0);
             gps_data_out=gps_data_cl('Lat',gps_data.Lat(id_keep),'Long',gps_data.Long(id_keep),'Time',gps_data.Time(id_keep),'NMEA',gps_data.NMEA);
         end
+        
+        function geostruct=gps_to_geostruct(obj,idx_pings)
+            
+            if isempty(idx_pings)
+                idx_pings=1:length(obj.Lat);
+            end
+            geostruct.Geometry='Line';
+            geostruct.BoundingBox=[[min(obj.Long(idx_pings)) min(obj.Lat(idx_pings))];[max(obj.Long(idx_pings)) max(obj.Lat(idx_pings))]];
+            geostruct.Lat=obj.Lat(idx_pings);
+            geostruct.Lon=obj.Long(idx_pings);
+            geostruct.Date=datestr(nanmean(obj.Time(idx_pings)));
+            
+        end
+        
         
         function save_gps_to_file(obj,fileN,idx_pings)
             

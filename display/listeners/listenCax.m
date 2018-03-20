@@ -18,6 +18,7 @@ xlim(track_tab_comp.ax_hist,cax);
 % link_ylim_to_echo_clim([],[],main_figure,'ts_f');
 fix_ylim([],[],main_figure,'sv_f');
 fix_ylim([],[],main_figure,'ts_f');
+update_echo_int_alphamap(main_figure);
 
 replace_interaction(main_figure,'interaction','KeyPressFcn','id',1,'interaction_fcn',{@keyboard_func,main_figure});
 % profile off;

@@ -27,6 +27,6 @@ end
 csv_logbook_to_db(path_f,csv_file,Voyage,SurveyName);
 
 import_survey_data_callback([],[],main_figure);
-load_survey_data_fig_from_db(main_figure,0);
+load_logbook_tab_from_db(main_figure,0);
 
 end

@@ -74,7 +74,8 @@ export_menu = uimenu(main_figure,'Label','Export','Tag','menuexport');
 
 uimenu(export_menu,'Label','Save Echogram','Callback',{@save_echo_callback,main_figure});
 ext_exp_menu= uimenu(export_menu,'Label','Attitude and position','Tag','menuexportatt');
-uimenu(ext_exp_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@save_gps_callback,main_figure,0});
+uimenu(ext_exp_menu,'Label','Export GPS to _gps_data.csv file','Callback',{@export_gps_data_to_csv_callback,main_figure,0,[]});
+uimenu(ext_exp_menu,'Label','Export GPS to shapefile','Callback',{@export_gps_data_to_shapefile_callback,main_figure,[]});
 uimenu(ext_exp_menu,'Label','Export Attitude to _att_data.csv file','Callback',{@save_att_callback,main_figure});
 uimenu(ext_exp_menu,'Label','Export NMEA data to csv file','Callback',{@save_NMEA_callback,main_figure});
 
@@ -82,9 +83,9 @@ st_exp_menu= uimenu(export_menu,'Label','Single Targets/Tacks','Tag','menuexport
 uimenu(st_exp_menu,'Label','Export Single Targets to xls file','Callback',{@save_st_to_xls_callback,main_figure});
 uimenu(st_exp_menu,'Label','Export Tracked Targets to xls file','Callback',{@save_tt_to_xls_callback,main_figure});
 
-int_exp_menu= uimenu(export_menu,'Label','Integration Results','Tag','menuexportint');
-uimenu(int_exp_menu,'Label','Export Sliced transect','Callback',{@save_sliced_transect_to_xls_callback,main_figure});
-
+% int_exp_menu= uimenu(export_menu,'Label','Integration Results','Tag','menuexportint');
+% uimenu(int_exp_menu,'Label','Export Sliced transect','Callback',{@save_sliced_transect_to_xls_callback,main_figure});
+% 
 
 m_import = uimenu(main_figure,'Label','Import','Tag','menuimport');
 
@@ -127,8 +128,8 @@ for imap=1:numel(cmap_list)
 end
 
 main_menu.show_colorbar=uimenu(m_display,'Label','Show Colorbar','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','col');
-main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
-main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axh');
+%main_menu.show_vaxes=uimenu(m_display,'Label','Show Vert Profile','checked','on','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axv');
+%main_menu.show_haxes=uimenu(m_display,'Label','Show Horz profile','Callback',{@checkbox_callback,main_figure,@set_axes_position},'Tag','axh');
 
 main_menu.disp_bottom=uimenu(m_display,'checked',curr_disp.DispBottom,'Label','Display bottom');
 main_menu.disp_bad_trans=uimenu(m_display,'checked',curr_disp.DispBadTrans,'Label','Display Bad transmits');
@@ -290,7 +291,7 @@ switch choice
         trans_obj.GPSDataPing.Lat=new_lat;
         trans_obj.GPSDataPing.Long=new_long;
         layer.replace_gps_data_layer(trans_obj.GPSDataPing);
-        save_gps_callback([],[],main_figure,1);
+        export_gps_data_to_csv_callback([],[],main_figure,1,layer.Unique_ID);
     case 'No'
         return;
         
@@ -393,7 +394,7 @@ if isempty(layer)
     return;
 end
 layer.update_echo_logbook_dbfile();
-load_survey_data_fig_from_db(main_figure,0);
+load_logbook_tab_from_db(main_figure,0);
 
 end
 

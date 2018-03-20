@@ -32,7 +32,7 @@ if ~isempty(bot)
     end
 end
 setappdata(main_figure,'Curr_disp',curr_disp);
-load_survey_data_fig_from_db(main_figure,1);
+load_logbook_tab_from_db(main_figure,1);
 
 set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',100, 'Value',100);
 load_bar_comp.status_bar.setText('Saved');

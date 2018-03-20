@@ -6,16 +6,15 @@ if isempty(layer)
 end
 
 curr_disp=getappdata(main_figure,'Curr_disp');
+idx_reg=trans_obj.find_regions_type('Data');
 
+[trans_obj,idx_freq]=layer.get_trans(curr_disp);
 
 [Slice_w,Slice_h]=curr_disp.get_dx_dy();
 
 Slice_w_units=curr_disp.Xaxes_current;
 
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
-idx_reg=trans_obj.find_regions_type('Data');
 %profile on;
 sh_height=10;
 show_status_bar(main_figure);
@@ -24,6 +23,8 @@ show_status_bar(main_figure);
     'Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
     'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg,'load_bar_comp',getappdata(main_figure,'Loading_bar'));
 hide_status_bar(main_figure);
+
+
 
 output_2D_surf=output_2D_surf_tot{idx_freq==idx_freq_out};
 output_2D_sh=output_2D_sh_tot{idx_freq==idx_freq_out};

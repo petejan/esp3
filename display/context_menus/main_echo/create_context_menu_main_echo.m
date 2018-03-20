@@ -164,7 +164,7 @@ switch choice
         trans_obj.GPSDataPing.Lat(idx_t)=new_lat;
         trans_obj.GPSDataPing.Long(idx_t)=new_long;
         layer.replace_gps_data_layer(trans_obj.GPSDataPing);
-        save_gps_callback([],[],main_figure,1);
+        export_gps_data_to_csv_callback([],[],main_figure,1,layer.Unique_ID);
     case 'No'
         return;
         

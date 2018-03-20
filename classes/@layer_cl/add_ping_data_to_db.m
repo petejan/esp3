@@ -15,7 +15,7 @@ for ilay=1:length(layers_obj)
         id_keep=intersect(id_keep,find(~isnan(gps_data_obj.Lat)));
         
         if~isdeployed()
-            fprintf('number of pings: %.0f\nReduced Number of pings in navigation:%.0f\n',numel(gps_data_obj.Time),numel(id_keep))
+            fprintf('Number of pings: %.0f\nReduced Number of point in navigation:%.0f\n',numel(gps_data_obj.Time),numel(id_keep))
         end
         
         for ip=1:length(layers_obj(ilay).Filename)

@@ -54,7 +54,6 @@ tab_main=uitab(algo_tab_panel,'Title','Bottom Detect');
 algo=algo_cl('Name','BottomDetection');
 varin=algo.Varargin;
 
-
 bottom_tab_comp.bottom_tab=uipanel(tab_main,'title','Version 1','Position',[0 0 0.5 1],'fontsize',11);
 
 uicontrol(bottom_tab_comp.bottom_tab,gui_fmt.txtStyle,'string','BS thr(dB)','pos',pos{1,1}{1});

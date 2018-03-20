@@ -58,7 +58,8 @@ output_2D_sh=cell(1,numel(idx_freq_out_tot));
 regCellInt=cell(1,numel(idx_freq_out_tot));
 shadow_height_est=cell(1,numel(idx_freq_out_tot));
 regs=cell(1,numel(idx_freq_out_tot));
-
+t_main=layer_obj.Transceivers(p.Results.idx_main_freq).get_transceiver_time();
+dt_main=nanmean(diff(t_main));
 for i_freq=1:numel(idx_freq_out_tot)
     idx_regs=cellfun(@(x) x==idx_freq_out_tot(i_freq) ,idx_freq_out,'un',0);
     regs_temp=[];
@@ -70,13 +71,20 @@ for i_freq=1:numel(idx_freq_out_tot)
         %r_fac=[r_fac r_factor{ireg}(idx_regs{ireg})];
     end
     
+   t_new=layer_obj.Transceivers(idx_freq_out_tot(i_freq)).get_transceiver_time();
+   dt_new=nanmean(diff(t_new));
+
     switch p.Results.Slice_w_units
         case 'pings'
-            cell_w=nanmax(floor(p.Results.Slice_w*nanmean(t_fac)),1);
-        case 'meters'
-            cell_w=p.Results.Slice_w;
+            cell_w=floor(p.Results.Slice_w* dt_main/dt_new);
+        case {'meters' 'seconds'}
+            cell_w=p.Results.Slice_w;   
     end
     
+    
+    if isempty(cell_w)
+        cell_w=floor(p.Results.Slice_w*nanmean(t_fac));
+    end
     trans_obj=layer_obj.Transceivers(idx_freq_out_tot(i_freq));
     [output_2D_surf{i_freq},output_2D_bot{i_freq},regs{i_freq},regCellInt{i_freq},output_2D_sh{i_freq},shadow_height_est{i_freq}]=trans_obj.slice_transect2D_new_int(...
         'regs',regs_temp,....
@@ -160,9 +168,9 @@ for ir=1:length(idx_freq_other)
         [mask_in,mask_out]=match_data(output_2D_bot_sec.Time_S,output_2D_bot_sec.Range_ref_min,output_2D_bot{idx_main}.Time_S,output_2D_bot{idx_main}.Range_ref_min);
         output_2D_bot{idx_main}.(sprintf('Sv_mean_lin_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_bot);
         output_2D_bot{idx_main}.(sprintf('Sv_mean_lin_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))(mask_out)=output_2D_bot_sec.Sv_mean_lin(mask_in);
-        output_2D_bot.(sprintf('Sv_dB_sd_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_bot);
+        output_2D_bot{idx_main}.(sprintf('Sv_dB_sd_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_bot);
         output_2D_bot{idx_main}.(sprintf('Sv_dB_sd_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))(mask_out)=output_2D_bot_sec.Sv_dB_std(mask_in);
-        output_2D_bot{idx_main}.(sprintf('PRC_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_surf);
+        output_2D_bot{idx_main}.(sprintf('PRC_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_bot);
         output_2D_bot{idx_main}.(sprintf('PRC_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))(mask_out)=output_2D_bot_sec.PRC(mask_in);
     end
     
@@ -172,7 +180,7 @@ for ir=1:length(idx_freq_other)
         output_2D_sh{idx_main}.(sprintf('Sv_mean_lin_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))(mask_out)=output_2D_sh_sec.Sv_mean_lin(mask_in);
         output_2D_sh{idx_main}.(sprintf('Sv_dB_sd_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_sh);
         output_2D_sh{idx_main}.(sprintf('Sv_dB_sd_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))(mask_out)=output_2D_sh_sec.Sv_dB_std(mask_in);
-        output_2D_sh{idx_main}.(sprintf('PRC_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_surf);
+        output_2D_sh{idx_main}.(sprintf('PRC_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))=zeros(data_size_sh);
         output_2D_sh{idx_main}.(sprintf('PRC_%.0fkHz',layer_obj.Frequencies(idx_freq_other(ir))/1e3))(mask_out)=output_2D_sh_sec.PRC(mask_in);
     end
 end

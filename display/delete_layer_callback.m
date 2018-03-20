@@ -58,7 +58,7 @@ for idi=1:numel(IDs)
     str_cell=list_layers(layers(idx),'nb_char',80);
     try
         fprintf('Deleting temp files from %s\n',str_cell{1});
-        layers=layers.delete_layers(layer.Unique_ID);
+        layers=layers.delete_layers(IDs{idi});
     catch
         fprintf('Could not clean files from %s\n',str_cell{1});
     end

@@ -27,7 +27,7 @@ for i=1:length(regions)
     regions(i).Idx_pings=regions(i).Idx_pings-Ping_offset;
     
     switch (regions(i).Cell_w_unit)
-        case 'meters'
+        case {'meters' 'seconds'}
           regions(i).Cell_w=regions(i).Cell_w;  
         case 'pings'
           regions(i).Cell_w=nanmax(1,regions(i).Cell_w);

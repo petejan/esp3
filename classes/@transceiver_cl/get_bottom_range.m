@@ -9,6 +9,7 @@ if isempty(Bottom_idx)
 else
     bot_range=nan(size(Bottom_idx));
     bot_range(~isnan(Bottom_idx))=range(Bottom_idx(~isnan(Bottom_idx)));
+    bot_range(Bottom_idx==numel(range))=nan;
 end
 bot_range=bot_range(:)';
 

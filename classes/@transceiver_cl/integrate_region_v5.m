@@ -103,8 +103,7 @@ time_tot=time_tot(idx_in);
 
 
 if isempty(trans_obj.GPSDataPing.Dist)
-    region.Cell_w_unit = 'pings';
-    
+    region.Cell_w_unit = 'pings';   
 else
     dist_tot = trans_obj.GPSDataPing.Dist(idx_in);
 end
@@ -114,6 +113,8 @@ switch region.Cell_w_unit
         x_tot = pings_tot;
     case 'meters'
         x_tot = dist_tot;
+    case 'seconds'
+        x_tot= time_tot*24*60*60;
 end
 
 idx_tot_idx = floor((x_tot-nanmin(x_tot(:)))/region.Cell_w)+1;
@@ -166,9 +167,9 @@ dslice=nanmin(ceil(block_size/nanmean(nb_pings_per_slices)),N_x_tot);
 idx_ite_x=unique([dslice:dslice:N_x_tot N_x_tot]);
 
 
-N_y_tot=ceil((range(y_tot)+range(line_ref_tot))/region.Cell_h);
+N_y_tot=ceil((range(y_tot)+range(line_ref_tot(~isinf(line_ref_tot))))/region.Cell_h);
 
-y0=(nanmin(y_tot(:))-nanmax(line_ref_tot(:)));
+y0=(nanmin(y_tot(:))-nanmax(line_ref_tot(~isinf(line_ref_tot))));
 x0=nanmin(x_tot);
 idx_x_empty=[];
 
@@ -290,9 +291,9 @@ for ui=idx_ite_x
     
     % row index of cells composing the region
     y_mat_idx = floor((y_mat-y0)/cell_h)+1;
-    iy1=nanmin(y_mat_idx(:));
+    iy1=nanmin(y_mat_idx(~isinf(y_mat)));
     y_mat_idx=y_mat_idx-iy1+1;
-    
+    y_mat_idx(isinf(y_mat_idx))=size(y_mat_idx,1);
     
     %% INTEGRATION CALCULATIONS
     
@@ -321,6 +322,7 @@ for ui=idx_ite_x
     
     idx_s_min = accumarray( [y_mat_idx(:) x_mat_idx(:)] ,idx_mat(:), [N_y N_x] , @min , nan);
     idx_s_max = accumarray( [y_mat_idx(:) x_mat_idx(:)] ,idx_mat(:), [N_y N_x] , @max , nan);
+    
     idx_mask=(isnan(idx_s_max));
     idx_s_min(idx_mask)=[];
     idx_s_max(idx_mask)=[];

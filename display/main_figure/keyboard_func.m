@@ -289,9 +289,9 @@ try
             load_bar_comp=getappdata(main_figure,'Loading_bar');
             load_bar_comp.status_bar.setText('Loading Logbook');
             if isempty(callbackdata.Modifier)
-                load_survey_data_fig_from_db(main_figure,0);
+                load_logbook_tab_from_db(main_figure,0);
             elseif  strcmpi(callbackdata.Modifier,'shift')
-                load_survey_data_fig_from_db(main_figure,0,1);
+                load_logbook_tab_from_db(main_figure,0,1);
             end
             hide_status_bar(main_figure);
             %         case 'w'

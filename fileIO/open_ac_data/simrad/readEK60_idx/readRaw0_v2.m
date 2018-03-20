@@ -1,4 +1,4 @@
-function [data,power,AlongPhi,AcrossPhi]=readRaw0_v2(data,idx_data,i_ping,fid)
+function [data,power,angle]=readRaw0_v2(data,idx_data,i_ping,fid)
 
 data.pings(idx_data).number(i_ping) = i_ping;
 
@@ -21,23 +21,16 @@ if data.pings(idx_data).count(i_ping) > 0
 
     if data.pings(idx_data).datatype(1)==dec2bin(1)
         %  power * 10 * log10(2) / 256
-        data_ping=fread(fid,len_load,'int16', 'l');
-        len_load=numel(data_ping);
-        power=(0.011758984205624*data_ping);
+        power=0.011758984205624*fread(fid,len_load,'int16', 'l');
+        len_load=numel(power);
     else
         power=[];
     end
 
     if data.pings(idx_data).datatype(2)==dec2bin(1)
         angle=fread(fid,[2 len_load],'int8', 'l');
-        len_load=size(angle,2);
-        if len_load>0
-            AcrossPhi=angle(1,:);
-            AlongPhi=angle(2,:);
-        end
     else
-        AcrossPhi=[];
-        AlongPhi=[];
+        angles=[];
     end
         data.pings(idx_data).samplerange=[1 len_load];
 end

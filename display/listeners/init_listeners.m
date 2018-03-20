@@ -24,6 +24,8 @@ ls=[ls addlistener(curr_disp_obj,'Cax','PostSet',@(src,envdata)listenCax(src,env
 ls=[ls addlistener(curr_disp_obj,'Font','PostSet',@(src,envdata)listenFont(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispSecFreqs','PostSet',@(src,envdata)listenDispSecFreqs(src,envdata,main_figure))];
 ls=[ls addlistener(curr_disp_obj,'DispSecFreqsOr','PostSet',@(src,envdata)listenDispSecFreqs(src,envdata,main_figure))];
+ls=[ls addlistener(curr_disp_obj,'H_axes_ratio','PostSet',@(src,envdata)listenAxesRatio(src,envdata,main_figure))];
+ls=[ls addlistener(curr_disp_obj,'V_axes_ratio','PostSet',@(src,envdata)listenAxesRatio(src,envdata,main_figure))];
 setappdata(main_figure,'ListenersH',ls);
 
 end

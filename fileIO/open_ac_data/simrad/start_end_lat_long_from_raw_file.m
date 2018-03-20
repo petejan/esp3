@@ -34,7 +34,7 @@ while start_found==0&&i<=length(idx_nme0)
     pos=ftell(fid);
     fread(fid,idx_raw_obj.pos_dg(idx_nme0(i))-pos+HEADER_LEN,'uchar', 'l');
     str_temp=fread(fid,idx_raw_obj.len_dg(idx_nme0(i))-HEADER_LEN,'*char', 'l')';
-    [gps_data,~]=nmea_to_attitude_gps({str_temp},idx_raw_obj.time_dg(idx_nme0(i)),1);
+    [gps_data,~]=nmea_to_attitude_gps_v2({str_temp},idx_raw_obj.time_dg(idx_nme0(i)),1);
     if ~isempty(gps_data.Lat)
         start_found=1;
         lat_s=gps_data.Lat;
@@ -50,7 +50,7 @@ end_found=0;
 while end_found==0&&i>01
     fseek(fid,idx_raw_obj.pos_dg(idx_nme0(i))+HEADER_LEN,'bof');
     str_temp=fread(fid,idx_raw_obj.len_dg(idx_nme0(i))-HEADER_LEN,'*char', 'l')';
-    [gps_data,~]=nmea_to_attitude_gps({str_temp},idx_raw_obj.time_dg(idx_nme0(i)),1);
+    [gps_data,~]=nmea_to_attitude_gps_v2({str_temp},idx_raw_obj.time_dg(idx_nme0(i)),1);
     if ~isempty(gps_data.Lat)
         end_found=1;
         lat_e=gps_data.Lat;

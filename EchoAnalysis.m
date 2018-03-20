@@ -235,13 +235,13 @@ switch curr_disp_obj.DispBadTrans
     case 'off'
         alpha_bt=0;
     case 'on'
-        alpha_bt=0.8;
+        alpha_bt=0.6;
 end
 switch curr_disp_obj.DispReg
     case 'off'
         alpha_reg=0;
     case 'on'
-        alpha_reg=0.6;
+        alpha_reg=0.4;
 end
 
 main_figure.Alphamap=[0 (1-curr_disp_obj.UnderBotTransparency/100) alpha_bt alpha_reg 1];

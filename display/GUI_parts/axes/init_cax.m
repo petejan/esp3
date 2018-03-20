@@ -76,7 +76,7 @@ switch lower(deblank(Fieldname))
         Cax=[-10 10];
         Type='Angle Across';
         Units='deg';
-   case 'fishdensity'
+    case 'fishdensity'
         Cax=[0 10];
         Type='Fish Density';
         Units='fish/m^3';
@@ -84,6 +84,14 @@ switch lower(deblank(Fieldname))
         Cax=[0 12];
         Type='Motion Compensation';
         Units='dB';
+    case 'std_sv'
+        Cax=[0 12];
+        Type='Std Sv';
+        Units='dB';
+    case 'prc'
+        Cax=[0 50];
+        Type='PRC';
+        Units='%';
     otherwise
         if contains(lower(Fieldname),'khz')
             Type=['Sv-' Fieldname];

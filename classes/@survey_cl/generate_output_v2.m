@@ -78,7 +78,7 @@ for isn=1:length(snaps)
     snap_num=snaps(isn);
     strat_name=strat{isn};
     trans_num=trans(isn);
-    regs_t=regs_trans{isn};
+    regs_tmp=regs_trans{isn};
     
     fprintf('Integrating Snapshot %.0f Stratum %s Transect %d\n',snap_num,strat_name,trans_num); 
     i_trans=i_trans+1;
@@ -230,7 +230,7 @@ for isn=1:length(snaps)
             
         end
         
-        reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_t);
+        reg_tot=trans_obj_tr.get_reg_specs_to_integrate(regs_tmp);
         
         
         if isempty(reg_tot)

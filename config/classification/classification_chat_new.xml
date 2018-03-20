@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<classification_descr title='Chatham Rise Mesopelagic tree NEW'>
+    
+<frequencies>18000;38000;70000;120000</frequencies>
+
+<variables>
+	<variable name='sv_70'/>
+	<variable name='delta_sv_18_38'/>
+	<variable name='delta_sv_120_38'/>	
+	<variable name='aggregation_depth_mean'/>
+</variables>
+
+<nodes>
+	<node id="1" true_target="4" false_target="2">
+        <condition>and(gt(school.delta_sv_120_38,2),lt(school.delta_sv_120_38,16))</condition>
+    </node>
+	
+		<node id="2" false_target="3" true_target="20">
+        <condition>gt(school.delta_sv_18_38,1.1)</condition>
+    </node>
+	
+	<node id="20" false_target="5" true_target="21">
+        <condition>gt(school.aggregation_depth_mean,280)</condition>
+    </node>
+	
+	<node id="21" false_target="5" true_target="6">
+        <condition>lt(school.sv_70,-58.5)</condition>
+    </node>
+	
+	<node id="3">
+        <class>UNC</class>
+    </node>
+	
+	<node id="4">
+        <class>EUP</class>
+    </node>
+		
+	<node id="5">
+        <class>MMU</class>
+    </node>
+	
+	<node id="6">
+        <class>LHE</class>
+    </node>
+</nodes>
+
+</classification_descr>

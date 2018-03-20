@@ -1,4 +1,4 @@
-%% load_survey_data_fig_from_db.m
+%% load_logbook_tab_from_db.m
 %
 % TODO: write short description of function
 %
@@ -35,7 +35,7 @@
 % Yoann Ladroit, NIWA. Type |help EchoAnalysis.m| for copyright information.
 
 %% Function
-function load_survey_data_fig_from_db(main_figure,varargin)
+function load_logbook_tab_from_db(main_figure,varargin)
 
 p = inputParser;
 
@@ -309,22 +309,26 @@ if isnan(src.Data{evt.Indices(1,1),evt.Indices(1,2)})
 end
 
 idx_struct=src.Data{evt.Indices(1,1),12};
-
-switch evt.Indices(1,2)
+fields={ '' 'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect' '' '' 'StartTime' 'EndTime' 'Comment' ''};
+col_id=evt.Indices(1,2);
+row_id=evt.Indices(1,1);
+switch col_id
+    
     case {1}
         data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1),evt.Indices(1,2)};
         setappdata(surv_data_tab,'data_ori',data_ori);
         return;
     case{3,4,5,6,9}
-        filename=src.Data{evt.Indices(1,1),2};
-        snap=src.Data{evt.Indices(1,1),3};
-        type=src.Data{evt.Indices(1,1),4};
-        strat=src.Data{evt.Indices(1,1),5};
-        trans=src.Data{evt.Indices(1,1),6};
-        st=src.Data{evt.Indices(1,1),10};
-        et=src.Data{evt.Indices(1,1),11};
-        comm=src.Data{evt.Indices(1,1),9};
-        data_ori{idx_struct,evt.Indices(1,2)}=src.Data{evt.Indices(1,1),evt.Indices(1,2)};
+         filename=src.Data{row_id,2};
+%         snap=src.Data{row_id,3};
+%         type=src.Data{row_id,4};
+%         strat=src.Data{row_id,5};
+%         trans=src.Data{row_id,6};
+         st=src.Data{row_id,10};
+%         et=src.Data{row_id,11};
+%         comm=src.Data{row_id,9};
+        new_val=src.Data{row_id,col_id};
+        data_ori{idx_struct,col_id}=src.Data{row_id,col_id};
     otherwise
         return;
 end
@@ -344,10 +348,19 @@ if dbconn.IsReadOnly
     fprintf('Database file is readonly... Check file permissions\n');
     return;
 end
-
+ 
 %dbconn.fetch(sprintf('delete from logbook where Filename is "%s" and StartTime=%.0f',filename,st));
-dbconn.insert('logbook',{'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
-    {filename snap type strat trans st et comm});
+% dbconn.insert('logbook',{'Filename' 'Snapshot' 'Type' 'Stratum' 'Transect'  'StartTime' 'EndTime' 'Comment'},...
+%     {filename snap type strat trans st et comm});
+if isnumeric(new_val)
+    fmt='%d';
+else
+    fmt='%s';
+end
+
+sql_query=sprintf(['update logbook set %s=' fmt ' where Filename is "%s" and StartTime is "%s"'],fields{col_id},new_val,filename,st);
+
+dbconn.exec(sql_query);
 
 dbconn.close();
 

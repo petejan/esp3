@@ -250,11 +250,12 @@ classdef transceiver_cl < handle
             end
         end
         
-        function idx=find_regions_tag(trans_obj,tag)
+
+        function idx=find_regions_tag(trans_obj,tags)
             if isempty(trans_obj.Regions)
                 idx=[];
             else
-                idx=find(strcmp({trans_obj.Regions(:).Tag},tag));
+                idx=find(ismember({trans_obj.Regions(:).Tag},tags));
             end
         end
         
@@ -301,10 +302,7 @@ classdef transceiver_cl < handle
             if isempty(trans_obj.Regions)
                 idx=[];
             else
-                idx=[];
-                for i=1:length(ID)
-                    idx=union(idx,find([trans_obj.Regions(:).ID]==ID(i)));
-                end
+                idx=find(ismember([trans_obj.Regions(:).ID],ID));
             end
         end
         
@@ -321,8 +319,8 @@ classdef transceiver_cl < handle
                 end
             end
         end
-        function reg=get_region_from_name(trans_obj,name)
-            idx=trans_obj.find_regions_name(name);
+        function reg=get_region_from_name(trans_obj,names)
+            idx=trans_obj.find_regions_name(names);
             if ~isempty(idx)
                 reg=trans_obj.Regions(idx);
             else
@@ -348,11 +346,11 @@ classdef transceiver_cl < handle
             end
         end
         
-        function idx=find_regions_name(trans_obj,name)
+        function idx=find_regions_name(trans_obj,names)
             if isempty(trans_obj.Regions)
                 idx=[];
             else
-                idx=find(strcmpi({trans_obj.Regions(:).Name},name));
+                idx=find(ismember(lower({trans_obj.Regions(:).Name}),lower(names)));
             end
         end
         

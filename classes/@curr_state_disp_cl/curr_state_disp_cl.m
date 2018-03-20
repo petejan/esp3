@@ -23,8 +23,8 @@ classdef curr_state_disp_cl <handle
         DispReg='on';
         DispLines='on';
         CursorMode='Normal'
-        Grid_x=[0 0 0];
-        Grid_y=0;
+        Grid_x=[100 10 10];
+        Grid_y=10;
         CurrLayerID='';
         NbLayers=0;
         Cmap='ek60';
@@ -36,6 +36,8 @@ classdef curr_state_disp_cl <handle
         Active_line_ID='';
         Reg_changed_flag=0; %flag=0 nothing change flag=1 : changes made nothing saved; flag=2  changes made saved to the xml file; flag=3  changes made saved to db file
         R_disp=[1 inf];
+        V_axes_ratio=0.05;
+        H_axes_ratio=0.15;
     end
     
     methods
@@ -60,8 +62,8 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'DispLines','on',@ischar);
             addParameter(p,'Xaxes',{'meters' 'pings' 'seconds'},@iscell);
             addParameter(p,'Xaxes_current','meters',@ischar);
-            addParameter(p,'Grid_x',[0 0 0],@isnumeric);
-            addParameter(p,'Grid_y',0,@isnumeric);
+            addParameter(p,'Grid_x',[100 10 10],@isnumeric);
+            addParameter(p,'Grid_y',10,@isnumeric);
             addParameter(p,'CursorMode','Normal',@ischar);
             addParameter(p,'CurrLayerID','',@ischar);
             addParameter(p,'NbLayers',0,@isnumeric);
@@ -71,6 +73,8 @@ classdef curr_state_disp_cl <handle
             addParameter(p,'Font','default',@ischar);
             addParameter(p,'UIupdate',0,@isnumeric);
             addParameter(p,'UnderBotTransparency',90,@isnumeric);
+            addParameter(p,'V_axes_ratio',0.05,@isnumeric);
+            addParameter(p,'H_axes_ratio',0.15,@isnumeric);
             
             parse(p,varargin{:});
             results=p.Results;

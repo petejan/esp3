@@ -52,21 +52,20 @@ else
     end
 end
 
-for in=1:length(names)
-    idx_temp=trans_obj.find_regions_name(names{in});
-    if ~isempty(idx_temp)
-        reg_temp=trans_obj.get_reg_spec(idx_temp);
-        reg_tot=[reg_tot reg_temp];
-    end
+
+idx_temp=trans_obj.find_regions_name(names);
+if ~isempty(idx_temp)
+    reg_temp=trans_obj.get_reg_spec(idx_temp);
+    reg_tot=[reg_tot reg_temp];
 end
 
-for in=1:length(tags)
-    idx_temp=trans_obj.find_regions_tag(tags{in});
-    if ~isempty(idx_temp)
-        reg_temp=trans_obj.get_reg_spec(idx_temp);
-        reg_tot=[reg_tot reg_temp];
-    end
+
+idx_temp=trans_obj.find_regions_tag(tags);
+if ~isempty(idx_temp)
+    reg_temp=trans_obj.get_reg_spec(idx_temp);
+    reg_tot=[reg_tot reg_temp];
 end
+
 if ~isempty(reg_tot)
     ids={reg_tot(:).id};
     [ids_unique,ia,~]=unique(ids);

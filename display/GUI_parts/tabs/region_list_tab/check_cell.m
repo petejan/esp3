@@ -1,11 +1,10 @@
-function check_cell(src,~,main_figure)
+function check_cell(src,~,main_figure,reglist_tab_comp)
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer=getappdata(main_figure,'Layer');
-reglist_tab_comp=getappdata(main_figure,'Reglist_tab');
 
-[trans_obj,idx_freq]=layer.get_trans(curr_disp);
+[trans_obj,~]=layer.get_trans(curr_disp);
 dist=trans_obj.GPSDataPing.Dist;
-
+time=trans_obj.get_transceiver_time();
 nb_pings=length(trans_obj.get_transceiver_pings());
 nb_samples=length(trans_obj.get_transceiver_range());
 
@@ -39,9 +38,14 @@ if ~isnan(val)&&val>0
                     fmt='%.0f';
                 case 'meters'
                     if val>dist(end)
-                        val=floor(dist(end));
+                        val=dist(end);
                     end
-                     fmt='%.2f';
+                     fmt='%.1f';
+                case 'seconds'
+                     fmt='%.1f';
+                     if val>(time(end)-time(1))*24*60*60
+                         val=(time(end)-time(1))*24*60*60;
+                     end
             end
         case 'h'
             switch h_unit
@@ -52,10 +56,10 @@ if ~isnan(val)&&val>0
                      fmt='%.0f';
                 case 'meters'
                     
-                    if val>range(end);
+                    if val>range(end)
                         val=range(end);
                     end
-                     fmt='%.2f';
+                     fmt='%.1f';
             end
     end
     set(src,'string',num2str(val,fmt));

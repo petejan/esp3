@@ -4,7 +4,7 @@ file_sql=fullfile(whereisEcho,'config','db','ac_db.sql');
 
 if isfile(ac_db_filename)
     if replace==1
-    delete(ac_db_filename);
+        delete(ac_db_filename);
     else
         return;
     end
@@ -17,6 +17,7 @@ strrep(str_sql,'SERIAL PRIMARY KEY','INTEGER PRIMARY KEY AUTOINCREMENT');
 idx_com_start=strfind(str_sql,'/*');
 idx_com_end=strfind(str_sql,'*/');
 idx_rem=[];
+
 for i=1:numel(idx_com_start)
      fprintf('%s\n\n',str_sql(idx_com_start(i):idx_com_end(i)+1));
    idx_rem=union(idx_rem,(idx_com_start(i):idx_com_end(i)+1));

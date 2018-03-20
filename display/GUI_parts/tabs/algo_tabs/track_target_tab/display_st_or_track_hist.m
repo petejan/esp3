@@ -19,7 +19,7 @@ for i=1:length(disp_var)
 end
 
 
-set(ax,'YTickLabel','');
+%   set(ax,'YTickLabel','');
 if isempty(trans_obj)
     return;
 end

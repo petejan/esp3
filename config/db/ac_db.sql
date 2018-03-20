@@ -384,6 +384,8 @@ CREATE TABLE t_file
 	file_cruise_id		INT, 		-- Cruise during which this file was recorded
 	file_mooring_id		INT, 		-- Cruise during which this file was recorded
 	file_comments		TEXT, 		-- Free text field for relevant information not captured by other attributes
+	UNIQUE(file_name,file_end_time) ON CONFLICT REPLACE,
+    CHECK (file_end_time>=file_start_time),
 	FOREIGN KEY (file_software_id) REFERENCES t_software(t_software_id),
 	FOREIGN KEY (file_cruise_id) REFERENCES t_cruise(t_cruise_id),
 	FOREIGN KEY (file_mooring_id) REFERENCES t_mooring(t_mooring_id)
@@ -438,6 +440,7 @@ CREATE TABLE t_navigation
 	navigation_depth 	FLOAT,		--
 	navigation_file_id	INT,		-- Identifier of file for which this navigation data record is relevant
 	navigation_comments	TEXT,	 	-- Free text field for relevant information not captured by other attributes
+	UNIQUE(navigation_file_id,navigation_time) ON CONFLICT REPLACE,
 	FOREIGN KEY (navigation_file_id) REFERENCES t_file(t_file_id)
 );
 

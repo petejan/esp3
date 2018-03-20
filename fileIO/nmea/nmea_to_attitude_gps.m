@@ -29,12 +29,12 @@ for iiii=idx_NMEA(:)'
                     gps.type{curr_gps}=nmea.type;
                     gps.time(curr_gps) = NMEA_time(iiii);
                     %  set lat/lon signs and store values
-                    if (nmea.lat_hem == 'S');
+                    if (nmea.lat_hem == 'S')
                         gps.lat(curr_gps) = -nmea.lat;
                     else
                         gps.lat(curr_gps) = nmea.lat;
                     end
-                    if (nmea.lon_hem == 'W');
+                    if (nmea.lon_hem == 'W')
                         gps.lon(curr_gps) = -nmea.lon;
                     else
                         gps.lon(curr_gps) = nmea.lon;

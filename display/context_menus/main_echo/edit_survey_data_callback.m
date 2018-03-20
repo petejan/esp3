@@ -65,4 +65,4 @@ setappdata(main_figure,'Layer',layer);
 update_tree_layer_tab(main_figure);
 display_survdata_lines(main_figure)
 update_mini_ax(main_figure,0);
-load_survey_data_fig_from_db(main_figure,1);
+load_logbook_tab_from_db(main_figure,1);

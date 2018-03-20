@@ -13,6 +13,7 @@ classdef layer_cl < handle
         AttitudeNav=attitude_nav_cl();
         EnvData=env_data_cl();
         Curves=[];
+        EchoIntStruct=[];
         SurveyData=survey_data_cl();
 
     end
@@ -25,7 +26,8 @@ classdef layer_cl < handle
             
             check_att_class=@(obj) isa(obj,'attitude_nav_cl');
             check_gps_class=@(gps_data_obj) isa(gps_data_obj,'gps_data_cl');
-            check_curve_cl=@(curve_obj) isempty(curve_obj)|isa(curve_obj,'curve_cl');
+            check_echo_int_cl=@(echo_int_struct) isempty(echo_int_struct)|isa(echo_int_struct,'curve_cl');
+            check_curve_cl=@(curve_obj) isempty(curve_obj)|isstruct(curve_obj);
             check_env_class=@(env_data_obj) isa(env_data_obj,'env_data_cl')|isempty(env_data_obj);
             check_transceiver_class=@(transceiver_obj) isa(transceiver_obj,'transceiver_cl')|isempty(transceiver_obj);
             check_line_class=@(obj) isa(obj,'line_cl')|isempty(obj);
@@ -39,6 +41,7 @@ classdef layer_cl < handle
             addParameter(p,'ChannelID',{},@iscell);
             addParameter(p,'GPSData',gps_data_cl(),check_gps_class);
             addParameter(p,'Curves',[],check_curve_cl);
+            addParameter(p,'EchoIntStruct',[],check_echo_int_cl);
             addParameter(p,'AttitudeNav',attitude_nav_cl(),check_att_class);
             addParameter(p,'EnvData',env_data_cl(),check_env_class);
             addParameter(p,'OriginCrest','');

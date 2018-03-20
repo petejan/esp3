@@ -207,7 +207,6 @@ end
 
 
 
-
 function disp_hist_region_callback(src,evt,select_plot,main_figure)
 layer=getappdata(main_figure,'Layer');
 curr_disp=getappdata(main_figure,'Curr_disp');
@@ -228,7 +227,7 @@ trans=layer.get_trans(curr_disp);
 for i=1:length(reg_obj)
     reg_curr=reg_obj(i);
     [data,~,~,bad_data_mask,bad_trans_vec,~,below_bot_mask,~]=trans.get_data_from_region(reg_curr,...
-        'field',field);
+        'field',curr_disp.Fieldname);
         
     data(bad_data_mask||below_bot_mask)=nan;
     data(:,bad_trans_vec)=nan;

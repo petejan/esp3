@@ -52,7 +52,7 @@ setappdata(main_figure,'algo_tab_panel',algo_panel);
 create_menu(main_figure);
 load_esp3_panel(main_figure,echo_tab_panel);
 load_file_panel(main_figure,echo_tab_panel);
-%load_echo_int_tab(main_figure,echo_tab_panel);
+
 
 %fixed Tab in option panel
 load_cursor_tool(main_figure);

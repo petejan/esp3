@@ -7,7 +7,8 @@ st_tracks_tab_comp=getappdata(main_figure,'ST_Tracks');
 [cmap,col_ax,col_lab,col_grid,col_bot,col_txt]=init_cmap(curr_disp.Cmap);
 
 
-set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',col_grid,'MinorGridColor',col_grid,'XColor',col_lab,'YColor',col_lab);
+set(axes_panel_comp.main_axes,'Color',col_ax,'GridColor',...
+    col_grid,'MinorGridColor',col_grid,'XColor',col_lab,'YColor',col_lab);
 set(axes_panel_comp.bottom_plot,'Color',col_bot);
 set(mini_axes_comp.bottom_plot,'Color',col_bot);
 

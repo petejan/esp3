@@ -274,7 +274,7 @@ uicontrol(reg_fig,...
 set(reg_fig_comp.y_min,'callback',@check_y_callback)
 set(reg_fig_comp.y_max,'callback',@check_y_callback)
 set(reg_fig_comp.tog_ref,'callback',{@change_ref_callback,reg_fig_comp})
-set([reg_fig_comp.cell_w reg_fig_comp.cell_h],'callback',{@check_cell,main_figure})
+set([reg_fig_comp.cell_w reg_fig_comp.cell_h],'callback',{@check_cell,main_figure,reg_fig_comp})
 
 
 %% make window visible

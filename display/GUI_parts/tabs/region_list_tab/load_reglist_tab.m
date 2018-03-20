@@ -45,7 +45,7 @@ switch tab_panel.Type
 end
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=80;
+gui_fmt.txt_w=70;
 pos=create_pos_3(7,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{6,1}{1};
@@ -63,20 +63,20 @@ reglist_tab_comp.data_type=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.popume
 
 %ref={'Surface','Bottom','Line'};
 
-ref={'Surface','Bottom','Line'};
+ref={'Surface','Bottom'};
+
 ref_idx=find(strcmp(reg_curr.Reference,ref));
 uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Reference','Position',pos{3,1}{1});
 reglist_tab_comp.tog_ref=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.popumenuStyle,'String',ref,'Value',ref_idx,'Position',pos{3,1}{2}+[0 0 gui_fmt.box_w 0]);
-
 
 uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Cell Width','Position',pos{4,1}{1});
 reglist_tab_comp.cell_w=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.edtStyle,'position',pos{4,1}{2},'string',reg_curr.Cell_w,'Tag','w');
 
 uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.txtStyle,'String','Cell Height','Position',pos{5,1}{1});
 reglist_tab_comp.cell_h=uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.edtStyle,'position',pos{5,1}{2},'string',reg_curr.Cell_h,'Tag','h');
-set([reglist_tab_comp.cell_w reglist_tab_comp.cell_h],'callback',{@check_cell,main_figure})
+set([reglist_tab_comp.cell_w reglist_tab_comp.cell_h],'callback',{@check_cell,main_figure,reglist_tab_comp})
 
-units_w= {'pings','meters'};
+units_w= {'pings','meters', 'seconds'};
 units_h={'meters','samples'};
 
 h_unit_idx=find(strcmp(reg_curr.Cell_h_unit,units_h));
@@ -130,7 +130,7 @@ reglist_tab_comp.table.UIContextMenu =rc_menu;str_delete='<HTML><center><FONT co
 
 uimenu(rc_menu,'Label','Display region(s)','Callback',{@display_regions_callback,main_figure});
 uimenu(rc_menu,'Label','Export Region(s)','Callback',{@export_regions_callback,main_figure});
-uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_regions_callback,main_figure,[]});
+uimenu(rc_menu,'Label',str_delete,'Callback',{@delete_region_callback,main_figure,[]});
 
 % reglist_tab_comp.jScroll = findjobj(reglist_tab_comp.table, 'class','UIScrollPanel');
 % 
@@ -181,7 +181,7 @@ end
 function keypresstable(src,evt,main_figure)
 switch evt.Key
     case 'delete'
-        delete_regions_callback(src,[],main_figure,[]);
+        delete_region_callback(src,[],main_figure,[]);
 end
 
 end

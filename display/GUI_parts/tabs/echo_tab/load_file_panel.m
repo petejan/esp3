@@ -23,14 +23,12 @@ file_tab_comp.FileChooser.repaint();
 
 drawnow;
 
-
-
-bgcolor = num2cell(get(main_figure, 'Color'));
-
-file_tab_comp.FileChooser.setBackground(java.awt.Color(bgcolor{:}));
-file_tab_comp.FileChooser.setForeground(java.awt.Color(bgcolor{:}));
-file_tab_comp.JPanel.setBackground(java.awt.Color(bgcolor{:}));
-file_tab_comp.JPanel.setForeground(java.awt.Color(bgcolor{:}));
+% bgcolor = num2cell(get(main_figure, 'Color'));
+% 
+% file_tab_comp.FileChooser.setBackground(java.awt.Color(bgcolor{:}));
+% file_tab_comp.FileChooser.setForeground(java.awt.Color(bgcolor{:}));
+% file_tab_comp.JPanel.setBackground(java.awt.Color(bgcolor{:}));
+% file_tab_comp.JPanel.setForeground(java.awt.Color(bgcolor{:}));
 
 
 filterSpec={'Pick a raw/crest/asl/fcv30/logbook file (*.raw,d*,*A,*.lst,*.db)' {'*.raw';'d*';'*A';'*.lst';'echo_logbook.db'}};

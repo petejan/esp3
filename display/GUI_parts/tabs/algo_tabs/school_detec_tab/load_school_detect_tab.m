@@ -140,6 +140,8 @@ if isempty(titles)
     titles={'--'};
 end
 set(school_detect_tab_comp.classification_list,'string',titles,'value',1);
+setappdata(main_figure,'School_detect_tab',school_detect_tab_comp);
+
 end
 
 function load_params(src,~,main_figure)

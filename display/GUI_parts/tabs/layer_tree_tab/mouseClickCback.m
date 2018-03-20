@@ -30,21 +30,27 @@ import javax.swing.*
 menuLayItem1 = JMenuItem('Merge Selected layers');
 menuLayItem2 = JMenuItem('Split Selected Layers (per survey data)');
 menuLayItem3 = JMenuItem('Split Selected Layers (per files)');
+menuLayItem4 = JMenuItem('Export Gps Data to Shapefile');
+menuLayItem6 = JMenuItem('Export Gps Data to _gps_data.csv');
 str_delete='<HTML><center><FONT color="Red"><b>Delete selected layers</b></Font> ';
-menuLayItem4 = JMenuItem(str_delete);
+menuLayItem5 = JMenuItem(str_delete);
 
 set(handle(menuLayItem1,'CallbackProperties'), 'ActionPerformedCallback',{@merge_selected_callback,main_figure,IDs});
 set(handle(menuLayItem2,'CallbackProperties'), 'ActionPerformedCallback',{@split_selected_callback,main_figure,IDs,1});
 set(handle(menuLayItem3,'CallbackProperties'), 'ActionPerformedCallback',{@split_selected_callback,main_figure,IDs,0});
-set(handle(menuLayItem4,'CallbackProperties'), 'ActionPerformedCallback',{@delete_layers_callback,main_figure,IDs});
+set(handle(menuLayItem4,'CallbackProperties'), 'ActionPerformedCallback',{@export_gps_data_to_shapefile_callback,main_figure,IDs});
+set(handle(menuLayItem6,'CallbackProperties'), 'ActionPerformedCallback',{@export_gps_data_to_csv_callback,main_figure,0,IDs});
+set(handle(menuLayItem5,'CallbackProperties'), 'ActionPerformedCallback',{@delete_layer_callback,main_figure,IDs});
 
 jmenu = JPopupMenu;
 jmenu.add(menuLayItem1);
 jmenu.add(menuLayItem2);
 jmenu.add(menuLayItem3);
 jmenu.add(menuLayItem4);
-
+jmenu.add(menuLayItem6);
+jmenu.add(menuLayItem5);
 end 
+
 
 
 function split_selected_callback(~,~,main_figure,IDs,id)

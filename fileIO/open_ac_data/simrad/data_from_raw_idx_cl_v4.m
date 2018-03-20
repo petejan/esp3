@@ -308,9 +308,7 @@ for idg=1:nb_dg
             end
             
         case 'NME0'
-            if p.Results.DataOnly>0
-                continue;
-            end
+
             fread(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'uchar', 'l');
             i_nmea=i_nmea+1;
             NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
@@ -390,8 +388,8 @@ for idg=1:nb_dg
                     if data.pings(idx).datatype(2)==dec2bin(1)
                         if sampleCount*4==idx_raw_obj.len_dg(idg)-HEADER_LEN-12-128
                             angle=fread(fid,[2 sampleCount],'int8', 'l');
-                            data_tmp{idx}.AcrossPhi(1:sampleCount,block_i(idx))=angle(1,:);
-                            data_tmp{idx}.AlongPhi(1:sampleCount,block_i(idx))=angle(2,:);
+                            data_tmp{idx}.AlongPhi(1:sampleCount,block_i(idx))=angle(1,:);
+                            data_tmp{idx}.AcrossPhi(1:sampleCount,block_i(idx))=angle(2,:);                            
                         end
                         if number==1
                             mode{idx}='CW';
@@ -538,7 +536,7 @@ for idg=1:nb_dg
                 end
             end
             
-            [data,power_tmp,AlongPhi_tmp,AcrossPhi_tmp]=readRaw0_v2(data,idx_chan,i_ping(idx_chan),fid);
+            [data,power_tmp,angles]=readRaw0_v2(data,idx_chan,i_ping(idx_chan),fid);
             
             if i_ping(idx_chan)==1
                 mode{idx_chan}='CW';
@@ -552,8 +550,8 @@ for idg=1:nb_dg
             
             data_tmp{idx_chan}.power(1:numel(power_tmp),block_i(idx_chan))=power_tmp;
             if data.pings(idx_chan).datatype(2)==dec2bin(1)
-                data_tmp{idx_chan}.AlongPhi(1:numel(AlongPhi_tmp),block_i(idx_chan))=AlongPhi_tmp;
-                data_tmp{idx_chan}.AcrossPhi(1:numel(AcrossPhi_tmp),block_i(idx_chan))=AcrossPhi_tmp;
+                data_tmp{idx_chan}.AlongPhi(1:size(angles,2),block_i(idx_chan))=angles(1,:);
+                data_tmp{idx_chan}.AcrossPhi(1:size(angles,2),block_i(idx_chan))=angles(1,:);
             end
             
             if block_i(idx_chan)==block_len||i_ping(idx_chan)==nb_pings(idx_chan)

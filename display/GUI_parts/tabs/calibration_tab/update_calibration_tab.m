@@ -35,9 +35,10 @@ switch trans_obj.Mode
 end
 
 set(calibration_tab_comp.string_cal,'string',...
-    sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
-    layer.EnvData.SoundSpeed,trans_obj.Params.Absorption(1)*1e3,layer.EnvData.Salinity,layer.EnvData.Temperature));
-
+    sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km.\n',...
+    layer.EnvData.SoundSpeed,trans_obj.Params.Absorption(1)*1e3));
+%     sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
+%     layer.EnvData.SoundSpeed,trans_obj.Params.Absorption(1)*1e3,layer.EnvData.Salinity,layer.EnvData.Temperature));
 
 setappdata(main_figure,'Calibration_tab',calibration_tab_comp);
 end
