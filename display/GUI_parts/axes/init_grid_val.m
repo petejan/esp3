@@ -12,8 +12,7 @@ if dx==0
             dx=60*10^(floor(log10(x_vec(end)-x_vec(1))/60));
         case 'meters'
             x_vec=trans_obj.GPSDataPing.Dist;
-            dx=10^(floor(log10(x_vec(end)-x_vec(1))))/10;
-            
+            dx=10^(floor(log10(x_vec(end)-x_vec(1))))/10;           
         case 'pings'
             x_vec=trans_obj.get_transceiver_pings();
             dx=10^(floor(log10(x_vec(end)-x_vec(1))))/10;

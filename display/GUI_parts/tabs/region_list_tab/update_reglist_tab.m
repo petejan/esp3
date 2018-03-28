@@ -65,6 +65,21 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 %     end
 % end
 
+
+if isempty(layer.GPSData.Lat)
+    units_w= {'pings','seconds'};
+else
+    units_w= {'meters','pings','seconds'};
+  
+end
+columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom'},'numeric',units_w,'numeric',{'meters','samples'},'numeric'};
+
+set(reglist_tab_comp.cell_w_unit,'String',units_w);
+reglist_tab_comp.table.ColumnFormat=columnformat;
+if reglist_tab_comp.cell_w_unit.Value>numel(units_w)
+    reglist_tab_comp.cell_w_unit.Value=1;
+end
+
 regions=trans_obj.Regions;
 
 %{regions(:).Unique_ID}

@@ -1,4 +1,4 @@
-function add_file_to_t_file(ac_db_filename,files,varargin)
+function file_pkeys=add_files_to_t_file(ac_db_filename,files,varargin)
 
 p = inputParser;
 
@@ -6,27 +6,33 @@ addRequired(p,'ac_db_filename',@ischar);
 addRequired(p,'files',@(x) ischar(x)||iscell(x));
 addParameter(p,'file_path',[]);
 addParameter(p,'file_software_id',[]);
-addParameter(p,'file_cruise_id',[]);
-addParameter(p,'file_mooring_id',[]);
+addParameter(p,'file_cruise_key',[]);
+addParameter(p,'file_deployment_key',[]);
 addParameter(p,'file_comments',[]);
 
 parse(p,ac_db_filename,files,varargin{:});
 
 % CREATE TABLE t_file
 % (
-% 	t_file_id    		INTEGER PRIMARY KEY AUTOINCREMENT,
+% 	file_pkey   		SERIAL PRIMARY KEY,
+% 	
 % 	file_name		TEXT,	 	--
 % 	file_path		TEXT, 		--
 % 	file_start_time		TIMESTAMP,	--
 % 	file_end_time		TIMESTAMP,	--
-% 	file_software_id	INT, 		-- Software used to record the file
-% 	file_cruise_id		INT, 		-- Cruise during which this file was recorded
-% 	file_mooring_id		INT, 		-- Cruise during which this file was recorded
+% 	file_software_key	INT, 		-- Software used to record the file
+% 	file_cruise_key		INT, 		-- Cruise during which this file was recorded
+% 	file_deployment_key	INT, 		-- Cruise during which this file was recorded
+% 	
 % 	file_comments		TEXT, 		-- Free text field for relevant information not captured by other attributes
-% 	FOREIGN KEY (file_software_id) REFERENCES t_software(t_software_id),
-% 	FOREIGN KEY (file_cruise_id) REFERENCES t_cruise(t_cruise_id),
-% 	FOREIGN KEY (file_mooring_id) REFERENCES t_mooring(t_mooring_id)
-% )
+% 	
+% 	FOREIGN KEY (file_software_key) REFERENCES t_software(software_pkey),
+% 	FOREIGN KEY (file_cruise_key) REFERENCES t_cruise(cruise_pkey),
+% 	FOREIGN KEY (file_deployment_key) REFERENCES t_deployment(deployment_pkey).
+% 	UNIQUE(file_path,file_name,file_end_time) ON CONFLICT REPLACE,
+%     CHECK (file_end_time>=file_start_time))
+% );
+% COMMENT ON TABLE t_file is 'Acoustic data files';
 
 if ~iscell(files)
     files={files};
@@ -75,6 +81,8 @@ end
 t=struct2table(struct_in);
 dbconn=sqlite(ac_db_filename,'connect');  
 dbconn.insert('t_file',fieldnames(struct_in),t);
+sql_query=sprintf('SELECT file_pkey FROM t_file WHERE file_name IN ("%s")',strjoin(struct_in.file_name,'","'));
+file_pkeys=dbconn.fetch(sql_query);
 dbconn.close();
 
 end

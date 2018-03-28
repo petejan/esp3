@@ -10,10 +10,11 @@ if isfile(ac_db_filename)
     end
 end
 
-fid=fopen(file_sql,'r');
-str_sql=fread(fid,'*char')';
+fid=fopen(file_sql,'r','n');
+str_sql_ori=fread(fid,'*char')';
 fclose(fid);
-strrep(str_sql,'SERIAL PRIMARY KEY','INTEGER PRIMARY KEY AUTOINCREMENT');
+str_sql=strrep(str_sql_ori,'SERIAL PRIMARY KEY','INTEGER PRIMARY KEY AUTOINCREMENT');
+str_sql=strrep(str_sql,'COMMENT','--COMMENT');
 idx_com_start=strfind(str_sql,'/*');
 idx_com_end=strfind(str_sql,'*/');
 idx_rem=[];
@@ -27,13 +28,32 @@ str_sql(idx_rem)=[];
 idx_command=strfind(str_sql,');');
 idx_command=[-1 idx_command];
 
-dbconn=sqlite(ac_db_filename,'create');    
+if replace==0
+    dbconn=sqlite(ac_db_filename,'connect');  
+else
+    dbconn=sqlite(ac_db_filename,'create');  
+end
+
 for i=1:numel(idx_command)-1
     sql_cmd=str_sql(idx_command(i)+2:idx_command(i+1)+1);
     fprintf('%s\n\n',sql_cmd);
     dbconn.exec(sql_cmd);
 end
 
+idx_trigger_start=strfind(str_sql,'CREATE TRIGGER');
+idx_trigger_end=strfind(str_sql,'END;');
+idx_trigger_end=idx_trigger_end+numel('END;')-1;
+
+for i=1:numel(idx_trigger_start)
+    sql_cmd=str_sql(idx_trigger_start(i):idx_trigger_end(i));
+    fprintf('%s\n\n',sql_cmd);
+    dbconn.exec(sql_cmd);
+end
+
+
+
 dbconn.close();
+
+
 
 end

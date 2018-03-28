@@ -14,7 +14,7 @@ classdef layer_cl < handle
         EnvData=env_data_cl();
         Curves=[];
         EchoIntStruct=[];
-        SurveyData=survey_data_cl();
+        SurveyData=survey_data_cl.empty();
 
     end
     

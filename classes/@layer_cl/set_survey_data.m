@@ -14,8 +14,10 @@ end
 if ~isempty(layer_obj.Transceivers)
     dt=nanmean(diff(layer_obj.Transceivers(1).Time));
 else
-    dt=0;
+    dt=1/(24*60*60);
 end
+
+
 
 start_time=nan(1,length(surv_data_cell));
 

@@ -76,6 +76,35 @@ if ~isempty(p.Results.load_bar_comp)
     set(p.Results.load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',num_ite, 'Value',0);
 end
 
+heading=trans_obj.AttitudeNavPing.Heading(:)';
+pitch=trans_obj.AttitudeNavPing.Pitch(:)';
+roll=trans_obj.AttitudeNavPing.Roll(:)';
+heave=trans_obj.AttitudeNavPing.Heave(:)';
+dist=trans_obj.GPSDataPing.Dist(:)';
+
+pitch(isnan(pitch))=0;
+
+roll(isnan(roll))=0;
+
+heave(isnan(heave))=0;
+
+dist(isnan(dist))= 0;
+
+
+if isempty(dist)
+    dist=zeros(1,nb_pings_tot);
+end
+
+if isempty(heading)
+    heading=zeros(1,nb_pings_tot);
+end
+
+if isempty(roll)
+    roll=zeros(1,nb_pings_tot);
+    pitch=zeros(1,nb_pings_tot);
+    heave=zeros(1,nb_pings_tot);
+end
+
 single_targets_tot=[];
 for ui=1:num_ite
     idx_pings=idx_pings_tot((ui-1)*block_size+1:nanmin(ui*block_size,numel(idx_pings_tot)));
@@ -417,35 +446,6 @@ for ui=1:num_ite
     single_targets.PulseLength_Normalized_PLDL=(pulse_env_after_lin(idx_keep_final)'+pulse_env_before_lin(idx_keep_final)'+1)./pulse_length_trans_lin(idx_keep_final)';
     single_targets.Transmitted_pulse_length=pulse_length_lin(idx_keep_final)';
     
-    
-    heading=trans_obj.AttitudeNavPing.Heading;
-    pitch=trans_obj.AttitudeNavPing.Pitch;
-    roll=trans_obj.AttitudeNavPing.Roll;
-    heave=trans_obj.AttitudeNavPing.Heave;
-    dist=trans_obj.GPSDataPing.Dist';
-    
-    pitch(isnan(pitch))=0;
-    
-    roll(isnan(roll))=0;
-    
-    heave(isnan(heave))=0;
-    
-    dist(isnan(dist))= 0;
-    
-    
-    if isempty(dist)
-        dist=zeros(1,size(TS,2));
-    end
-    
-    if isempty(heading)
-        heading=zeros(1,size(TS,2));
-    end
-    
-    if isempty(roll)
-        roll=zeros(1,size(TS,2));
-        pitch=zeros(1,size(TS,2));
-        heave=zeros(1,size(TS,2));
-    end
     
     heading_mat=repmat(heading(idx_pings),nb_samples,1);
     roll_mat=repmat(roll(idx_pings),nb_samples,1);

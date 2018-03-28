@@ -67,7 +67,7 @@ uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtTitleStyle,'String','Parameters
 
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','Main Chan.','Position',pos{2,1}{1});
 echo_int_tab_comp.tog_freq=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.popumenuStyle,'String','--','Value',1,'Position',pos{2,1}{2}+[0 0 gui_fmt.box_w 0]);
-
+curr_disp=init_grid_val(main_figure);
 [dx,dy]=curr_disp.get_dx_dy();
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','Cell Width','Position',pos{3,1}{1});
 echo_int_tab_comp.cell_w=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,'position',pos{3,1}{2},'string',dx,'Tag','w');
@@ -75,9 +75,17 @@ echo_int_tab_comp.cell_w=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','Cell Height','Position',pos{4,1}{1});
 echo_int_tab_comp.cell_h=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,'position',pos{4,1}{2},'string',dy,'Tag','h');
 
-units_w= {'pings','seconds','meters'};
+if isempty(layer_obj.GPSData.Lat)
+    units_w= {'pings','seconds'};
+    xaxis_opt={'Ping Number' 'Time'};
+else
+    units_w= {'meters','pings','seconds'};
+    xaxis_opt={'Distance' 'Ping Number' 'Time' 'Lat' 'Long'};
+end
+
 units_h={'meters'};
 h_unit_idx=find(strcmp('meters',units_h));
+
 w_unit_idx=find(strcmp(curr_disp.Xaxes_current,units_w));
 
 echo_int_tab_comp.cell_w_unit=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.popumenuStyle,'String',units_w,'Value',w_unit_idx,'Position',pos{3,2}{1},'Tag','w');
@@ -134,7 +142,8 @@ uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','Data ','Positio
 echo_int_tab_comp.tog_type=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.popumenuStyle,'String',{'Sv' 'PRC' 'Std Sv' 'Nb Samples'},'Value',1,'Position',pos{init_disp+2,1}{1}+[gui_fmt.txt_w/2 0 -gui_fmt.txt_w/2 0],'callback',{@update_cback,main_figure});
 echo_int_tab_comp.tog_tfreq=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.popumenuStyle,'String',{'--'},'Value',1,'Position',pos{init_disp+2,1}{2}-[0 0 gui_fmt.txt_w/2 0],'callback',{@update_cback,main_figure});
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','X-Axis ','Position',pos{init_disp+3,1}{1}-[0 0 gui_fmt.txt_w/2 0]);
-echo_int_tab_comp.tog_xaxis=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.popumenuStyle,'String',{'Ping Number' 'Distance' 'Time' 'Lat' 'Long'},...
+
+echo_int_tab_comp.tog_xaxis=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.popumenuStyle,'String',xaxis_opt,...
     'Value',2,'Position',pos{init_disp+3,1}{1}+[ gui_fmt.txt_w/2 0 0 0],'callback',{@update_cback,main_figure});
 
 %axes_panel_comp=getappdata(main_figure,'Axes_panel');
@@ -227,8 +236,9 @@ end
 function export_cback(src,evt,main_figure)
 echo_int_tab_comp=getappdata(main_figure,'EchoInt_tab');
 idx_main_freq=get(echo_int_tab_comp.tog_freq,'value');
+layer_obj=getappdata(main_figure,'Layer');
 
-if isempty(echo_int_tab_comp.sliced_t)
+if isempty(layer_obj.EchoIntStruct)
     return;
 end
 
@@ -245,31 +255,31 @@ if isequal(path_tmp,0)
     return;
 end
 
-idx_main=idx_main_freq==echo_int_tab_comp.sliced_t.idx_freq_out;
-% regCellInt=echo_int_tab_comp.sliced_t.regCellInt_tot{idx_main};
-% regs=echo_int_tab_comp.sliced_t.regs_tot{idx_main};
+idx_main=idx_main_freq==layer_obj.EchoIntStruct.idx_freq_out;
+% regCellInt=layer_obj.EchoIntStruct.regCellInt_tot{idx_main};
+% regs=layer_obj.EchoIntStruct.regs_tot{idx_main};
 
-if ~isempty(echo_int_tab_comp.sliced_t.reg_descr_table) 
+if ~isempty(layer_obj.EchoIntStruct.reg_descr_table) 
     output_f=[fullfile(path_tmp,fileN) '_regions_descr.csv'];   
     if exist(output_f,'file')>1
         delete(output_f);
     end
-    writetable(echo_int_tab_comp.sliced_t.reg_descr_table,output_f);
+    writetable(layer_obj.EchoIntStruct.reg_descr_table,output_f);
 end
 
 output_f=[fullfile(path_tmp,fileN) '_surf_sliced_transect.csv'];
-reg_output_table=reg_output_to_table(echo_int_tab_comp.sliced_t.output_2D_surf_tot{idx_main});
+reg_output_table=reg_output_to_table(layer_obj.EchoIntStruct.output_2D_surf_tot{idx_main});
 writetable(reg_output_table,output_f);
 
-if ~isempty(echo_int_tab_comp.sliced_t.output_2D_bot_tot{idx_main})
+if ~isempty(layer_obj.EchoIntStruct.output_2D_bot_tot{idx_main})
     output_f=[fullfile(path_tmp,fileN) '_bot_sliced_transect.csv'];
-    reg_output_table=reg_output_to_table(echo_int_tab_comp.sliced_t.output_2D_bot_tot{idx_main});
+    reg_output_table=reg_output_to_table(layer_obj.EchoIntStruct.output_2D_bot_tot{idx_main});
     writetable(reg_output_table,output_f);
 end
 
-if ~isempty(echo_int_tab_comp.sliced_t.output_2D_sh_tot{idx_main})
+if ~isempty(layer_obj.EchoIntStruct.output_2D_sh_tot{idx_main})
     output_f=[fullfile(path_tmp,fileN) '_sh_sliced_transect.csv'];
-    reg_output_table=reg_output_to_table(echo_int_tab_comp.sliced_t.output_2D_sh_tot{idx_main});
+    reg_output_table=reg_output_to_table(layer_obj.EchoIntStruct.output_2D_sh_tot{idx_main});
     writetable(reg_output_table,output_f);
 end
 

@@ -1,10 +1,9 @@
 function [start_time,end_time]=start_end_time_from_raw_file(filename)
 fid=fopen(filename,'r','l');
 BLCK_SIZE=1e4;
-
+start_time=0;
+end_time=1;
 if fid==-1
-    start_time=0;
-    end_time=1;
     return;
 end
 
@@ -20,7 +19,9 @@ while ~feof(fid)
         break;
     end
     n=n+1;
-    fseek(fid,-3,'cof');
+    if ~feof(fid)
+        fseek(fid,-3,'cof');
+    end        
 end
 
 fseek(fid,0,'eof');
@@ -38,6 +39,7 @@ while pos>=BLCK_SIZE
         idx_end=pos-BLCK_SIZE+idx_dg(end)-1;
         break;
     end
+    
     fseek(fid,-BLCK_SIZE+3,'cof');
     
     

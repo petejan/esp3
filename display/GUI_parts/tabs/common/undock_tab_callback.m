@@ -108,10 +108,9 @@ switch tag
         load_tree_layer_tab(main_figure,dest_fig);
     case 'echoint_tab'
          echo_int_tab_comp=getappdata(main_figure,'EchoInt_tab');
-         sliced_t=echo_int_tab_comp.sliced_t;
         dest_fig=getappdata(main_figure,'echo_tab_panel');
         delete(src);
-        load_echo_int_tab(main_figure,dest_fig,sliced_t);
+        load_echo_int_tab(main_figure,dest_fig);
     case {'sv_f' 'ts_f'}
         delete(src);
         load_multi_freq_disp_tab(main_figure,dest_fig,tag);

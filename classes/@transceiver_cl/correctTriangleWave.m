@@ -4,16 +4,32 @@ p = inputParser;
 
 addRequired(p,'trans_obj',@(obj) isa(obj,'transceiver_cl'));
 addParameter(p,'EsOffset',[]);
+addParameter(p,'block_len',1e7,@(x) x>0);
 
 parse(p,trans_obj,varargin{:});
 
-[power,~]=get_datamat(trans_obj.Data,'power');
+range=trans_obj.get_transceiver_range();
+pings=trans_obj.get_transceiver_pings();
 
-[power_corr_db,mean_err]=correctES60(10*log10(power),p.Results.EsOffset);
+nb_samples=numel(range);
+nb_pings=numel(pings);
 
-if mean_err~=0
-    trans_obj.Data.replace_sub_data_v2('power',10.^(power_corr_db/10),[],0);
-    trans_obj.Config.EsOffset=mean_err;
+bsize=ceil(p.Results.block_len/nb_samples);
+if nb_pings>=2721    
+    bsize=nanmax(bsize,2721);
 end
 
+u=0;
+while u<ceil(nb_pings/bsize)
+    idx_pings=(u*bsize+1):nanmin(((u+1)*bsize),nb_pings);
+    u=u+1;
+    
+    power=get_subdatamat(trans_obj.Data,1:nb_samples,idx_pings,'field','power');
+
+    [power_corr_db,mean_err]=correctES60(10*log10(power),p.Results.EsOffset);
+
+if mean_err~=0
+    trans_obj.Data.replace_sub_data_v2('power',10.^(power_corr_db/10),idx_pings,0);    
+end
+    trans_obj.Config.EsOffset=mean_err;
 end

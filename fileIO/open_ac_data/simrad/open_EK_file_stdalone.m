@@ -202,29 +202,29 @@ if ~isequal(Filename_cell, 0)
             fileIdx=fullfile(path_f,'echoanalysisfiles',[fileN '_echoidx.mat']);
             
             if exist(fileIdx,'file')==0
-                
                 %idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
-                
                 idx_raw_obj=idx_from_raw_v2(Filename,p.Results.load_bar_comp);
-                
                 save(fileIdx,'idx_raw_obj');
             else
                 load(fileIdx);
-                [~,et]=start_end_time_from_file(Filename);
-                dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
-                if isempty(dgs)
-                    fprintf('No accoustic data in file %s\n',Filename);
-                    id_rem=union(id_rem,uu);
-                    continue;
-                end
-                
-                if et-idx_raw_obj.time_dg(dgs(end))>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
-                    fprintf('Re-Indexing file: %s\n',Filename);
-                    delete(fileIdx);
-                    idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
-                    save(fileIdx,'idx_raw_obj');
-                end
             end
+            
+            [~,et]=start_end_time_from_file(Filename);
+            dgs=find((strcmp(idx_raw_obj.type_dg,'RAW0')|strcmp(idx_raw_obj.type_dg,'RAW3'))&idx_raw_obj.chan_dg==nanmin(idx_raw_obj.chan_dg));
+            
+            if isempty(dgs)
+                fprintf('No accoustic data in file %s\n',Filename);
+                id_rem=union(id_rem,uu);
+                continue;
+            end
+            
+            if et-idx_raw_obj.time_dg(dgs(end))>2*nanmax(diff(idx_raw_obj.time_dg(dgs)))
+                fprintf('Re-Indexing file: %s\n',Filename);
+                delete(fileIdx);
+                idx_raw_obj=idx_from_raw(Filename,p.Results.load_bar_comp);
+                save(fileIdx,'idx_raw_obj');
+            end
+            
             
             nb_pings=idx_raw_obj.get_nb_pings_per_channels();
             
@@ -233,13 +233,13 @@ if ~isequal(Filename_cell, 0)
                 fprintf('Only one ping in file %s. Ignoring it.\n',Filename);
                 continue;
             end
-%             
-%             [~,~,~,~]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,...
-%                 'Frequencies',vec_freq,...
-%                 'GPSOnly',p.Results.GPSOnly,...
-%                 'FieldNames',p.Results.FieldNames,...
-%                 'PathToMemmap',p.Results.PathToMemmap,...
-%                 'load_bar_comp',p.Results.load_bar_comp);
+            %
+            %             [~,~,~,~]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,...
+            %                 'Frequencies',vec_freq,...
+            %                 'GPSOnly',p.Results.GPSOnly,...
+            %                 'FieldNames',p.Results.FieldNames,...
+            %                 'PathToMemmap',p.Results.PathToMemmap,...
+            %                 'load_bar_comp',p.Results.load_bar_comp);
             
             [trans_obj,envdata,NMEA,mru0_att] =data_from_raw_idx_cl_v5(path_f,idx_raw_obj,...%new version.10% faster...
                 'Frequencies',vec_freq,...
@@ -398,9 +398,9 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
                     trans_obj(i).add_algo(algo_vec);
-
+                    
                     trans_obj(i).computeSpSv_v2(envdata,'FieldNames',p.Results.FieldNames);
-
+                    
                 end
             else
                 trans_obj=transceiver_cl.empty();

@@ -53,10 +53,10 @@ p_button(3)=gui_fmt.button_w;
 bad_ping_tab_comp.BS_std_bool=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',1,'String','BS fluct. limit (dB)','units','pixels','Position',pos{1,1}{1});
 bad_ping_tab_comp.BS_std=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Edit','units','pixels','pos',pos{1,1}{2},'string',num2str(varin.BS_std),'BackgroundColor','white','callback',{@check_fmt_box,0,20,varin.BS_std,'%.0f'});
 
-bad_ping_tab_comp.Above=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',1,'String','Above Bot. thr (dB)','units','pixels','Position',pos{2,1}{1});
+bad_ping_tab_comp.Above=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',1,'String','Above Bot. thr(%)','units','pixels','Position',pos{2,1}{1});
 bad_ping_tab_comp.thr_spikes_Above=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Edit','units','pixels','pos',pos{2,1}{2},'string',num2str(varin.thr_spikes_Above),'BackgroundColor','white','callback',{@check_fmt_box,0,100,varin.thr_spikes_Above,'%.0f'});
 
-bad_ping_tab_comp.Below=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',0,'String','Below Bot. thr (dB)','units','pixels','Position',pos{3,1}{1});
+bad_ping_tab_comp.Below=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','checkbox','Value',0,'String','Below Bot. thr(%)','units','pixels','Position',pos{3,1}{1});
 bad_ping_tab_comp.thr_spikes_Below=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','Edit','units','pixels','pos',pos{3,1}{2},'string',num2str(varin.thr_spikes_Below),'BackgroundColor','white','callback',{@ check_fmt_box,0,100,varin.thr_spikes_Below,'%.0f'});
 
 bad_ping_tab_comp.percent_BP=uicontrol(bad_ping_tab_comp.bad_ping_tab,'Style','text','String','','units','pixels','pos',pos{2,2}{1}+[0 0 gui_fmt.txt_w 0],'fontweight','bold','fontsize',14);

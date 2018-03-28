@@ -358,7 +358,7 @@ else
     fmt='%s';
 end
 
-sql_query=sprintf(['update logbook set %s=' fmt ' where Filename is "%s" and StartTime is "%s"'],fields{col_id},new_val,filename,st);
+sql_query=sprintf(['UPDATE logbook SET %s=' fmt ' WHERE Filename IS "%s" and StartTime IS "%s"'],fields{col_id},new_val,filename,st);
 
 dbconn.exec(sql_query);
 

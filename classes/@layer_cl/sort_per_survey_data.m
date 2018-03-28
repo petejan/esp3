@@ -5,8 +5,10 @@ output=layers_in.list_layers_survey_data();
 [~,~,strat_vec_num]=unique(output.Stratum);
 [~,~,voy_vec_num]=unique(output.Voyage);
 [~,~,surv_name_vec_num]=unique(output.SurveyName);
+[~,~,type_vec_num]=unique(output.Type);
 
-mat_surv_data=[surv_name_vec_num';voy_vec_num';output.Snapshot;strat_vec_num';output.Transect]';
+mat_surv_data=[surv_name_vec_num';voy_vec_num';output.Snapshot;strat_vec_num';type_vec_num';output.Transect]';
+
 [~,unique_trans,trans_ids]=unique(mat_surv_data,'rows');
 
 id_lays_out_cell=cell(1,length(unique_trans));

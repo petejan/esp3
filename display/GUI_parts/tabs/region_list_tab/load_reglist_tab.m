@@ -101,8 +101,7 @@ uicontrol(reglist_tab_comp.reglist_tab,gui_fmt.pushbtnStyle,'String',str_delete_
 % 
 
 columnname = {'Name','ID','Tag','Type','Reference','Cell Width','Width Unit','Cell Height','Height Unit','Unique ID'};
-columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom'},'numeric',{'pings','meters'},'numeric',{'meters','samples'},'numeric'};
-
+ columnformat = {'char' 'numeric','char',{'Data','Bad Data'},{'Surface','Bottom'},'numeric',units_w,'numeric',{'meters','samples'},'numeric'};
 
 reglist_tab_comp.table = uitable('Parent', reglist_tab_comp.reglist_tab,...
     'Data', [],...

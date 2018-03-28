@@ -16,6 +16,8 @@ xdata=get(mini_axes_comp.mini_echo,'XData');
 ydata=get(mini_axes_comp.mini_echo,'YData');
 
 [idx_r,idx_pings]=get_idx_r_n_pings(layer,curr_disp,mini_axes_comp.mini_echo);
+
+curr_disp=init_grid_val(main_figure);
 [dx,dy]=curr_disp.get_dx_dy();
 
 switch curr_disp.Xaxes_current

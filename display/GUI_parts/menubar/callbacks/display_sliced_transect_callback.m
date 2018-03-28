@@ -8,7 +8,7 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 
 [trans_obj,idx_freq]=layer.get_trans(curr_disp);
-
+curr_disp=init_grid_val(main_figure);
 [Slice_w,Slice_h]=curr_disp.get_dx_dy();
 
 Slice_w_units=curr_disp.Xaxes_current;
@@ -23,8 +23,6 @@ show_status_bar(main_figure);
     'Slice_w',Slice_w,'Slice_w_units',Slice_w_units,'Slice_h',Slice_h,...
     'RegInt',0,'Shadow_zone',1,'Shadow_zone_height',sh_height,'idx_regs',idx_reg,'load_bar_comp',getappdata(main_figure,'Loading_bar'));
 hide_status_bar(main_figure);
-
-
 
 output_2D_surf=output_2D_surf_tot{idx_freq==idx_freq_out};
 output_2D_sh=output_2D_sh_tot{idx_freq==idx_freq_out};

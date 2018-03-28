@@ -24,22 +24,18 @@ parse(p,trans_obj,varargin{:});
 
 switch p.Results.Cell_w_unit
     case 'pings'
-        xdata=trans_obj.get_transceiver_pings();
         cell_w=p.Results.Cell_w;
         cell_w_units='pings';
     case 'meters'
         if ~isempty(trans_obj.GPSDataPing.Dist)
-            xdata=trans_obj.GPSDataPing.Dist;
             cell_w=p.Results.Cell_w;
             cell_w_units='meters';
         else
             cell_w_units='pings';
             cell_w=p.Results.Cell_w;
-            xdata=trans_obj.get_transceiver_pings();
         end
     case 'seconds'
         cell_w_units='seconds'; 
-        xdata=trans_obj.get_transceiver_pings();
         cell_w=p.Results.Cell_w;
 end
 
@@ -52,7 +48,7 @@ switch p.Results.Cell_h_unit
         bot_data=trans_obj.get_bottom_range();
 end
 
-time_t=trans_obj.Params.Time();
+time_t=trans_obj.get_transceiver_time();
 idx_pings=find(time_t>=p.Results.t_min&time_t<=p.Results.t_max);
 bot_data(trans_obj.get_bottom_idx()==numel(ydata))=nan;
 bot_data=bot_data(idx_pings);

@@ -13,6 +13,23 @@ curr_disp=getappdata(main_figure,'Curr_disp');
 [~,idx_freq]=layer_obj.get_trans(curr_disp);
 freqs=layer_obj.Frequencies;
 
+if isempty(layer_obj.GPSData.Lat)
+    units_w= {'pings','seconds'};
+    xaxis_opt={'Ping Number' 'Time'};
+else
+    units_w= {'meters','pings','seconds'};
+    xaxis_opt={'Distance' 'Ping Number' 'Time' 'Lat' 'Long'};
+end
+
+set(echo_int_tab_comp.cell_w_unit,'String',units_w);
+if echo_int_tab_comp.cell_w_unit.Value>numel(units_w)
+    echo_int_tab_comp.cell_w_unit.Value=1;
+end
+set(echo_int_tab_comp.tog_xaxis,'String',xaxis_opt);
+if echo_int_tab_comp.tog_xaxis.Value>numel(xaxis_opt)
+    echo_int_tab_comp.tog_xaxis.Value=1;
+end
+
 if new>0
     layer_obj.EchoIntStruct=layer_obj.EchoIntStruct;
     set(echo_int_tab_comp.tog_freq,'String',num2str(freqs'/1e3,'%.0f kHz'),'Value',idx_freq);

@@ -149,7 +149,7 @@ end
 
 %% Default font size for Controls and Panels
 set(0,'DefaultUicontrolFontSize',10);
-set(0,'DefaultUipanelFontSize',12);
+set(0,'DefaultUipanelFontSize',11);
 
 
 

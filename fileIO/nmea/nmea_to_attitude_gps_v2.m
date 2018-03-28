@@ -12,21 +12,26 @@ idx_gps=strcmp(nmea_type,'gps');
 nmea_gps=nmea(idx_gps);
 time_nmea_gps=NMEA_time(idx_gps);
 
-
-seconds_computer=time_nmea_gps*(24*60*60)-floor(time_nmea_gps)*24*60*60;
-seconds_gps=nan(1,numel(nmea_gps));
-for i=1:numel(nmea_gps)
-    if ~isempty(nmea_gps{i}.time)
-        seconds_gps(i)=nansum(double(nmea_gps{i}.time).*[60*60 60 1]);
+try
+    seconds_computer=time_nmea_gps*(24*60*60)-floor(time_nmea_gps)*24*60*60;
+    seconds_gps=nan(1,numel(nmea_gps));
+    for i=1:numel(nmea_gps)
+        if ~isempty(nmea_gps{i}.time)
+            if numel(nmea_gps{i}.time)==3
+                seconds_gps(i)=nansum(double(nmea_gps{i}.time).*[60*60 60 1]);
+            end
+        end
     end
-end
-
-time_diff=nanmean(seconds_gps-seconds_computer);
-
-if time_diff>1
-    warning('Computer time is %s in advance on GPS time',datestr(time_diff/(24*60*60),'HH:MM:SS'));
-elseif time_diff<-1
-    warning('Computer time is %s behind GPS time',datestr(time_diff/(24*60*60),'HH:MM:SS'));
+    
+    time_diff=nanmean(seconds_gps-seconds_computer);
+    
+    if time_diff>1
+        fprintf('Computer time is %s in advance on GPS time\n',datestr(time_diff/(24*60*60),'HH:MM:SS'));
+    elseif time_diff<-1
+        fprintf('Computer time is %s behind GPS time\n',datestr(time_diff/(24*60*60),'HH:MM:SS'));
+    end
+catch 
+    disp('Could not compare GPS to computer time');
 end
 
 for iiii=1:length(idx_NMEA)
@@ -93,7 +98,7 @@ for iiii=1:length(idx_NMEA)
                 end
         end
     catch
-        fprintf('Invalid NMEA message: %s\n',curr_message);
+        fprintf('Invalid NMEA message: %s\n',NMEA_string_cell{idx_NMEA(iiii)});
     end
 end
 
