@@ -46,27 +46,25 @@ Introduction:
 
 Main tables:
 * t_mission describing each mission/project for which acoustic data were collected;
-* t_cruise describing each cruise/voyage/trip during which acoustic data were collected (hull, towed bodies, AOS, and all other manned platforms of platforms operated from a ship);
 * t_ship describing each ship/vessel from which acoustic data were collected;
-* t_deployment describing each deployment from which acoustic data were collected (mooring, buoy, motorized/unmotorized gliders, autonomous surface/underwater vehicles, and all other unmanned platforms not operated from a ship);
+* t_deployment describing each deployment from which acoustic data were collected (ship, mooring, buoy, motorized/unmotorized gliders, autonomous surface/underwater vehicles);
 
 Controlled vocabulary tables:
 * t_ship_type controlled vocabulary table for ship_type attribute in t_ship.
 * t_deployment_type controlled vocabulary table for deployment_type attribute in t_deployment.
 
 Join tables:
-* t_mission_cruise to manage the many-many relationship between t_mission and t_cruise.
 * t_mission_deployment to manage the many-many relationship between t_mission and t_deployment.
 
 Rules:
-* 1 ship is used in 0, 1 or several cruises
-* 1 cruise uses 1 ship
-* 1 cruise uses 0, 1, or several towbodies
-* 1 towbody is used in 0, 1, or several cruises
+* 1 ship is used in 0, 1 or several deployement
+* 1 or several deployment is used for 1 mission
+* 1 deployment uses 0, or 1 ship
+* 1 deployment uses 0, 1, or several towbodies
+* 1 towbody is used in 0, 1, or several deployement
 * 1 cruise is used for 1 or several missions
-* 1 mission makes use of 0, 1 or several cruises
 * 1 mission makes use of 0, 1 or several deployments
-* 1 deployment is used for 1 mission
+
 
 Notes:
 * All attributes from the ICES category "Mission" are found in table "t_mission", except for attribute "mission_platform_type" which is split between look-up tables "t_ship_type" and "t_deployment_type".
@@ -129,53 +127,13 @@ CREATE TABLE t_ship
 );
 COMMENT ON TABLE t_ship is 'Ships or vessels from which acoustic data were collected.';
 
-CREATE TABLE t_cruise
-(
-	cruise_pkey			SERIAL PRIMARY KEY,
-
-	-- Cruise link to ship
-	cruise_ship_key			INT,		-- ID of ship used in cruise
-
-	-- Basic info on cruise/deployment
-	cruise_name			TEXT,		-- Formal name of cruise as recorded by cruise documentation or institutional data centre (ICES cruise_name)
-	cruise_id			TEXT, 		-- Cruise ID where one exists (ICES cruise_id). Use NIWA voyage code here.
-	cruise_description		TEXT,		-- Free text field to describe the cruise (ICES cruise_description)
-	cruise_area_description		TEXT,		-- List main areas of operation (ICES cruise_area_description)
-	cruise_operator			TEXT,		-- Name of organisation which operates the cruise (No ICES attribute for this normally, but inspired from mooring_operator)
-	cruise_summary_report		TEXT,		-- Published or web-based references that links to the cruise report (ICES cruise_summary_report)
-	cruise_start_date		TIMESTAMP,	-- Start date of cruise (ICES cruise_start_date)
-	cruise_end_date			TIMESTAMP,	-- End date of cruise (ICES cruise_end_date)
-
-	-- ICES geographic info on cruise/deployment
-	cruise_northlimit		FLOAT,		-- The constant coordinate for the northernmost face or edge (ICES cruise_northlimit)
-	cruise_eastlimit		FLOAT,		-- The constant coordinate for the easternmost face or edge (ICES cruise_eastlimit)
-	cruise_southlimit		FLOAT,		-- The constant coordinate for the southernmost face or edge (ICES cruise_southlimit)
-	cruise_westlimit		FLOAT,		-- The constant coordinate for the westernmost face or edge (ICES cruise_westlimit)
-	cruise_uplimit			FLOAT,		-- The constant coordinate for the uppermost face or edge in the vertical, z, dimension (ICES cruise_uplimit)
-	cruise_downlimit		FLOAT,		-- The constant coordinate for the lowermost face or edge in the vertical, z, dimension (ICES cruise_downlimit)
-	cruise_units			TEXT, 		-- The units of unlabelled numeric values of cruise_northlimit, cruise_eastlimit, cruise_southlimit, cruise_westlimit (ICES cruise_units)
-	cruise_zunits			TEXT,		-- The units of unlabelled numeric values of cruise_uplimit, cruise_downlimit (ICES cruise_zunits)
-	cruise_projection		TEXT,		-- The name of the projection used with any parameters required (ICES cruise_projection)
-
-	-- Additional specific ICES requirements for cruise
-	cruise_start_port		TEXT,		-- Commonly used name for the port where cruise started (ICES cruise_start_port)
-	cruise_end_port			TEXT,		-- Commonly used name for the port where cruise ended (ICES cruise_end_port)
-	cruise_start_BODC_code		TEXT,		-- Name of port from where cruise started (ICES cruise_start_BODC_code)
-	cruise_end_BODC_code		TEXT,		-- Name of port from where cruise ended (ICES cruise_end_BODC_code)
-	
-	cruise_comments			TEXT,		-- Free text field for relevant information not captured by other attributes (ICES cruise_comments)
-
-	FOREIGN KEY (cruise_ship_key) REFERENCES t_ship(ship_pkey)
-);
-COMMENT ON TABLE t_cruise is 'describes each cruise/voyage/trip during which acoustic data were collected.';
-
 CREATE TABLE t_deployment_type
 (	
 	deployment_type_pkey	SERIAL PRIMARY KEY,
 	deployment_type		TEXT -- Describe type of deployment platform that is hosting the acoustic instrumentation following controlled vocabulary (ICES mission_platform)
 );
 COMMENT ON TABLE t_deployment_type is 'Controlled vocabulary for deployment_type attribute in t_deployment.';
-INSERT INTO t_deployment_type (deployment_type) VALUES ('Buoy, moored'),('Buoy, drifting'),('Glider'),('Underwater vehicle, autonomous, motorized'),('Underwater vehicle, autonomous, glider'); -- Another ICES entry is possible ('Underwater vehicle, towed') but we remove it here as towed bodies (and AOS) fall under the cruise category
+INSERT INTO t_deployment_type (deployment_type) VALUES  ('Ship') ,('Buoy, moored'),('Buoy, drifting'),('Glider'),('Underwater vehicle, autonomous, motorized'),('Underwater vehicle, autonomous, glider'); -- Another ICES entry is possible ('Underwater vehicle, towed') but we remove it here as towed bodies (and AOS) fall under the cruise category
 
 CREATE TABLE t_deployment
 (
@@ -183,16 +141,19 @@ CREATE TABLE t_deployment
 
 	-- Deployment platform type (see ICES mission_platform)
 	deployment_type_key		INT,		-- Describe type of deployment platform that is hosting the acoustic instrumentation. See the lookup table t_deployment_type (ICES mission_platform)
+	-- Deployment link to ship if deployment_type_key refers to ship
+	deployment_ship_key	    INT,		-- ID of ship used in cruise
 
+	
 	-- Basic info on cruise/deployment
 	deployment_name			TEXT, 		-- Formal name of deployment as recorded by deployment documentation or institutional data centre (No ICES attribute for this normally, but inspired from cruise_name)
-	deployment_id			TEXT, 		-- Deployment ID where one exists (ICES mooring_code)
-	deployment_description		TEXT,		-- Free text field to describe the deployment (ICES mooring_description)
-	deployment_area_description	TEXT,		-- List main areas of operation (ICES mooring_site_name)
+	deployment_id			TEXT, 		-- Deployment ID where one exists (ICES mooring_code/ICES cruise_id)
+	deployment_description		TEXT,		-- Free text field to describe the deployment (ICES mooring_description/ICES cruise_description)
+	deployment_area_description	TEXT,		-- List main areas of operation (ICES mooring_site_name/ICES cruise_area_description)
 	deployment_operator		TEXT,		-- Name of organisation which operates the deployment (ICES mooring_operator)
 	deployment_summary_report	TEXT,		-- Published or web-based references that links to the deployment report (No ICES attribute for this normally, but inspired from cruise_summary_report)
-	deployment_start_date		TIMESTAMP, 	-- Start date of deployment (ICES mooring_deployment_date)                
-	deployment_end_date		TIMESTAMP,	-- End date of deployment (ICES mooring_retrieval_date)
+	deployment_start_date		TIMESTAMP, 	-- Start date of deployment (ICES mooring_deployment_date/ICES cruise_start_date)                
+	deployment_end_date		TIMESTAMP,	-- End date of deployment (ICES mooring_retrieval_date/ICES cruise_end_date)
 
 	-- ICES geographic info on cruise/deployment
 	deployment_northlimit		FLOAT,		-- The constant coordinate for the northernmost face or edge (ICES mooring_northlimit)
@@ -206,26 +167,16 @@ CREATE TABLE t_deployment
 	deployment_projection		TEXT,		-- The name of the projection used with any parameters required (ICES mooring_projection)
 
        -- Additional specific ICES requirements for deployment
-	                                                                                                                                                                                                                                                                                                        	
+	deployment_start_port		TEXT,		-- Commonly used name for the port where cruise started (ICES deployment_start_port)
+	deployment_end_port			TEXT,		-- Commonly used name for the port where cruise ended (ICES deployment_end_port)
+	deployment_start_BODC_code		TEXT,		-- Name of port from where cruise started (ICES deployment_start_BODC_code)
+	deployment_end_BODC_code		TEXT,		-- Name of port from where cruise ended (ICES deployment_end_BODC_code)                                                                                                                                                                                                                                                                                                       	
 	deployment_comments		TEXT,		-- Free text field for relevant information not captured by other attributes (ICES mooring_comments)
 
 	FOREIGN KEY (deployment_type_key) REFERENCES t_deployment_type(deployment_type_pkey)
+	FOREIGN KEY (deployment_ship_key) REFERENCES t_ship(ship_pkey)
 );
-COMMENT ON TABLE t_deployment is 'Non-cruise deployment (mooring, drifting buoy, glider, etc.) from which acoustic data were collected.';
-
-CREATE TABLE t_mission_cruise
-(
-	mission_cruise_pkey 	SERIAL PRIMARY KEY,
-	
-	mission_key    		INT,
-	cruise_key     		INT,
-
-	mission_cruise_comments	TEXT, -- Free text field for relevant information not captured by other attributes
-
-	FOREIGN KEY (mission_key) REFERENCES t_mission(mission_pkey),
-	FOREIGN KEY (cruise_key) REFERENCES t_cruise(cruise_pkey)
-);
-COMMENT ON TABLE t_mission_cruise is 'Join table to manage the many-many relationship between t_mission and t_cruise.';
+COMMENT ON TABLE t_deployment is 'Deployment (ship, towbody, AOS, mooring, drifting buoy, glider, etc.) from which acoustic data were collected.';
 
 CREATE TABLE t_mission_deployment
 (
@@ -344,13 +295,23 @@ CREATE TABLE t_calibration
 );
 COMMENT ON TABLE t_calibration is 'Instances of calibration of a given setup.';
 
-CREATE TABLE t_cruise_or_deployment
+CREATE TABLE t_parameters
 (
-	cruise_or_deployment_pkey	SERIAL PRIMARY KEY,
-	cruise_or_deployment		TEXT -- Cruise or Deployment
+	parameters_pkey			SERIAL PRIMARY KEY,
+	
+	parameters_pulse_mode		TEXT, 	-- CW/FM
+	parameters_pulse_length		FLOAT, 	-- in seconds? applies to both CW/FM
+	parameters_pulse_slope		TEXT,	-- pulse slope. applies to both CW/FM
+	parameters_FM_pulse_type	TEXT,	-- linear up-sweep, linear down-sweep, exponential up-sweep, exponential down-sweep, etc.
+	parameters_frequency_min	INT, 	-- see pulse type to see if upsweep or downsweep
+	parameters_frequency_max	INT, 	-- see pulse type to see if upsweep or downsweep
+	parameters_power		INT, 	-- in W?
+	
+	parameters_comments		TEXT, 	-- Free text field for relevant information not captured by other attributes
+	UNIQUE(parameters_pulse_mode,parameters_pulse_length,parameters_pulse_slope,parameters_FM_pulse_type,parameters_frequency_min,parameters_frequency_max,parameters_power) ON CONFLICT IGNORE
+	
 );
-COMMENT ON TABLE t_cruise_or_deployment is 'lookup table for cruise_or_deployment attribute in t_setup';
-INSERT INTO t_cruise_or_deployment (cruise_or_deployment) VALUES ('Cruise'),('Deployment');
+COMMENT ON TABLE t_parameters is 'Acoustic data acquisition parameters';
 
 CREATE TABLE t_platform_type
 (
@@ -380,14 +341,7 @@ CREATE TABLE t_setup
 (
 	setup_pkey				SERIAL PRIMARY KEY,
 
-	-- Cruise or Deployment switch
-	setup_cruise_or_deployment_key		INT, 		
-
-	-- If cruise...
-	setup_cruise_key			INT, 		-- Refers to attribute cruise_pkey in t_cruise
 	setup_platform_type_key			INT, 		-- Hull, Towbody or AOS
-	
-	-- If deployment...
 	setup_deployment_key			INT, 		-- Refers to attribute deployment_pkey in t_deployment
 
 	-- Keys to instrument combo
@@ -407,16 +361,19 @@ CREATE TABLE t_setup
 
 	-- Calibration
 	setup_calibration_key			INT, 		--
+	--Parameters
+	setup_parameters_key			INT, 		--
 	
 	setup_comments				TEXT,		-- Free text field for relevant information not captured by other attributes (ICES instrument_comments)
-
-	FOREIGN KEY (setup_cruise_or_deployment_key) REFERENCES t_cruise_or_deployment(cruise_or_deployment_pkey),
+	FOREIGN KEY (setup_deployment_key) REFERENCES t_deployment(deployment_pkey),
 	FOREIGN KEY (setup_platform_type_key) REFERENCES t_platform_type(platform_type_pkey),
 	FOREIGN KEY (setup_transceiver_key) REFERENCES t_transceiver(transceiver_pkey),
 	FOREIGN KEY (setup_transducer_key) REFERENCES t_transducer(transducer_pkey),
 	FOREIGN KEY (setup_transducer_location_type_key) REFERENCES t_transducer_location_type(transducer_location_type_pkey),
 	FOREIGN KEY (setup_transducer_orientation_type_key) REFERENCES t_transducer_orientation_type(transducer_orientation_type_pkey),
 	FOREIGN KEY (setup_calibration_key) REFERENCES t_calibration(calibration_pkey)
+	FOREIGN KEY (setup_parameters_key) REFERENCES t_parameters(parameters_pkey)
+	UNIQUE(setup_platform_type_key,setup_deployment_key,setup_transceiver_key,setup_transducer_key,setup_calibration_key,setup_parameters_key) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_setup is 'Each setup (or alteration of existing setup) of a transducer/transceiver combination.';
 
@@ -499,7 +456,7 @@ CREATE TABLE t_file
 	FOREIGN KEY (file_deployment_key) REFERENCES t_deployment(deployment_pkey),	
 	UNIQUE(file_path,file_name) ON CONFLICT REPLACE,
 	
-    CHECK (file_end_time>=file_start_time)
+    CHECK (file_end_time>=file_start_time) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_file is 'Acoustic data files';
 
@@ -534,28 +491,10 @@ CREATE TABLE t_transect
 	-- last ICES field, the usual comments
 	transect_comments		TEXT,		-- Free text field for relevant information not captured by other attributes (ICES)	
 	UNIQUE(transect_snapshot,transect_stratum,transect_type,transect_number,transect_start_time,transect_end_time) ON CONFLICT REPLACE,
-	CHECK (transect_end_time>=transect_start_time)
+	CHECK (transect_end_time>=transect_start_time) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_transect is 'Acoustic data transects';
 
-CREATE TABLE t_parameters
-(
-	parameters_pkey			SERIAL PRIMARY KEY,
-	
-	parameters_file_key		INT, 	-- File to which this parameters record applies
-	parameters_pulse_mode		TEXT, 	-- CW/FM
-	parameters_pulse_length		FLOAT, 	-- in seconds? applies to both CW/FM
-	parameters_pulse_shape		TEXT,	-- square, cosine, 10%_cosine etc. applies to both CW/FM
-	parameters_FM_pulse_type	TEXT,	-- linear up-sweep, linear down-sweep, exponential up-sweep, exponential down-sweep, etc.
-	parameters_frequency_min	INT, 	-- see pulse type to see if upsweep or downsweep
-	parameters_frequency_max	INT, 	-- see pulse type to see if upsweep or downsweep
-	parameters_power		INT, 	-- in W?
-	
-	parameters_comments		TEXT, 	-- Free text field for relevant information not captured by other attributes	
-	
-	FOREIGN KEY (parameters_file_key) REFERENCES t_file(file_pkey)
-);
-COMMENT ON TABLE t_parameters is 'Acoustic data file parameters';
 
 CREATE TABLE t_navigation
 (
@@ -585,7 +524,7 @@ CREATE TABLE t_file_transect
 	
 	FOREIGN KEY (file_key) REFERENCES t_file(file_pkey),
 	FOREIGN KEY (transect_key) REFERENCES t_transect(transect_pkey),
-	UNIQUE (file_key,transect_key) ON CONFLICT REPLACE
+	UNIQUE (file_key,transect_key) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_file_transect is 'Join table to manage the many-many relationship between t_file and t_transect.';
 
@@ -619,22 +558,24 @@ CREATE TABLE t_file_ancillary
 COMMENT ON TABLE t_file_ancillary is 'Join table to manage the many-many relationship between t_file and t_ancillary.';
 
 
---Create appropriate triggers
-/* 
-CREATE TRIGGER t_file_before_insert_trigger  BEFORE INSERT ON t_file
-WHEN ((SELECT COUNT() FROM t_file f WHERE f.file_name IS NEW.file_name and f.file_end_time>=NEW.file_end_time)>0)
-BEGIN
-	 SELECT RAISE(FAIL, 'File already Exist') ;
- END;
- */
+/*Creat triggers to help for many to many relationships*/
 
-CREATE TRIGGER t_transect_after_insert_trigger 
+
+/* CREATE TRIGGER t_transect_after_insert_trigger 
 AFTER INSERT ON t_transect 
 BEGIN
 	INSERT INTO t_file_transect ( transect_key, file_key )
 	SELECT t.transect_pkey, f.file_pkey
 		FROM t_transect t INNER JOIN t_file f ON NOT f.file_start_time>t.transect_end_time AND NOT f.file_end_time<t.transect_start_time
 		WHERE t.transect_pkey = NEW.transect_pkey;
+END;  */
+CREATE TRIGGER t_transect_after_insert_trigger 
+AFTER INSERT ON t_transect 
+BEGIN
+	INSERT INTO t_file_transect ( transect_key, file_key )
+	SELECT t.transect_pkey, f.file_pkey
+		FROM t_transect t, t_file f
+		WHERE NOT f.file_start_time>t.transect_end_time AND NOT f.file_end_time<t.transect_start_time AND t.transect_pkey = NEW.transect_pkey;
 END; 
 
 CREATE TRIGGER t_transect_after_delete_trigger 
@@ -647,6 +588,26 @@ END;
 CREATE TRIGGER t_file_after_delete_trigger 
 AFTER DELETE ON t_file 
 BEGIN
-	DELETE FROM t_file_transect
+	DELETE FROM t_file_setup
+	WHERE file_key = OLD.file_pkey;
+		DELETE FROM t_file_setup
 	WHERE file_key = OLD.file_pkey;
 END;
+
+/* FOREIGN KEY (setup_cruise_or_deployment_key) REFERENCES t_cruise_or_deployment(cruise_or_deployment_pkey),
+	FOREIGN KEY (setup_platform_type_key) REFERENCES t_platform_type(platform_type_pkey),
+	FOREIGN KEY (setup_transceiver_key) REFERENCES t_transceiver(transceiver_pkey),
+	FOREIGN KEY (setup_transducer_key) REFERENCES t_transducer(transducer_pkey),
+	FOREIGN KEY (setup_transducer_location_type_key) REFERENCES t_transducer_location_type(transducer_location_type_pkey),
+	FOREIGN KEY (setup_transducer_orientation_type_key) REFERENCES t_transducer_orientation_type(transducer_orientation_type_pkey),
+	FOREIGN KEY (setup_calibration_key) REFERENCES t_calibration(calibration_pkey)
+	FOREIGN KEY (setup_parameters_key) REFERENCES t_parameters(parameters_pkey)
+CREATE TRIGGER t_setup_after_insert_setup
+AFTER INSERT ON t_setup 
+BEGIN
+	INSERT INTO t_file_transect (transect_key, file_key )
+	SELECT t.transect_pkey, f.file_pkey
+		FROM t_transect t, t_file f
+		WHERE NOT f.file_start_time>t.transect_end_time AND NOT f.file_end_time<t.transect_start_time AND t.transect_pkey = NEW.transect_pkey;
+END; 
+ */

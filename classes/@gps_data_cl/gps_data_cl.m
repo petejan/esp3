@@ -73,6 +73,22 @@ classdef gps_data_cl
         
         
         function gps_data_out=concatenate_GPSData(gps_data_1,gps_data_2)
+            
+            if isempty(gps_data_1)&&isempty(gps_data_2)
+                gps_data_out=gps_data_cl.empty();
+                return;
+            end
+            
+            if isempty(gps_data_1)
+                gps_data_out=gps_data_2;
+                return;
+            end
+            
+            if isempty(gps_data_2)
+                gps_data_out=gps_data_1;
+                return;
+            end
+            
             Long_tot=[gps_data_1.Long(:); gps_data_2.Long(:)];
             Lat_tot=[gps_data_1.Lat(:); gps_data_2.Lat(:)];
             Time_tot=[gps_data_1.Time(:); gps_data_2.Time(:)];

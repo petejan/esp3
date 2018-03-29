@@ -1,9 +1,22 @@
 function data_out=concatenate_Data(data_1,data_2)
 
-ff_1=data_1.Fieldname;
+if isempty(data_1)&&isempty(data_2)
+    data_out=ac_data_cl.empty();
+    return;
+end
+
+if isempty(data_2)
+    data_out=data_1;
+    return;
+end
+
+if isempty(data_1)
+    data_out=data_2;
+    return;
+end
 
 new_sub_data=[];
-
+ff_1=data_1.Fieldname;
 for uuu=1:length(ff_1)
     [idx,found]=find_field_idx(data_2,ff_1{uuu});
     if found

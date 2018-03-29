@@ -33,10 +33,16 @@ for uu=1:length(trans_nb)
             for ii=1:trans_nb(uu)
                 curr_trans=curr_layer.Transceivers(ii);
                 layers_grp(uu).cid{ii,jj}=curr_trans.Config.ChannelID;
-                layers_grp(uu).time_start(ii,jj)=curr_trans.Time(1);
-                layers_grp(uu).time_end(ii,jj)=curr_trans.Time(end);
-                layers_grp(uu).dt(ii,jj)=(curr_trans.Time(end)-curr_trans.Time(1))/length(curr_trans.Time);
                 layers_grp(uu).nb_samples_range(ii,jj)=length(curr_trans.get_transceiver_range());
+                if layers_grp(uu).nb_samples_range(ii,jj)>0                 
+                    layers_grp(uu).time_start(ii,jj)=curr_trans.Time(1);
+                    layers_grp(uu).time_end(ii,jj)=curr_trans.Time(end);
+                    layers_grp(uu).dt(ii,jj)=(curr_trans.Time(end)-curr_trans.Time(1))/length(curr_trans.Time);                    
+                else
+                    layers_grp(uu).time_start(ii,jj)=curr_trans.Time(1);
+                    layers_grp(uu).time_end(ii,jj)=curr_trans.Time(end);
+                    layers_grp(uu).dt(ii,jj)=5/(24*60*60);
+                end
             end
         else
                 layers_grp(uu).cid{1,jj}='';

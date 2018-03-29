@@ -619,15 +619,14 @@ CREATE TABLE t_file_ancillary
 COMMENT ON TABLE t_file_ancillary is 'Join table to manage the many-many relationship between t_file and t_ancillary.';
 
 
-/* Create appropriate triggers*/
-/* CREATE TRIGGER t_file_before_insert_trigger 
-BEFORE INSERT ON t_file
+--Create appropriate triggers
+/* 
+CREATE TRIGGER t_file_before_insert_trigger  BEFORE INSERT ON t_file
 WHEN ((SELECT COUNT() FROM t_file f WHERE f.file_name IS NEW.file_name and f.file_end_time>=NEW.file_end_time)>0)
 BEGIN
-	 SELECT RAISE(ABORT, 'You can''t add records to my_tbl')
+	 SELECT RAISE(FAIL, 'File already Exist') ;
  END;
  */
-
 
 CREATE TRIGGER t_transect_after_insert_trigger 
 AFTER INSERT ON t_transect 
@@ -644,3 +643,10 @@ BEGIN
 	DELETE FROM t_file_transect
 	WHERE transect_key = OLD.transect_pkey;
 END; 
+
+CREATE TRIGGER t_file_after_delete_trigger 
+AFTER DELETE ON t_file 
+BEGIN
+	DELETE FROM t_file_transect
+	WHERE file_key = OLD.file_pkey;
+END;

@@ -86,8 +86,14 @@ school_detect_tab_comp.Sv_max=uicontrol(school_detect_tab_comp.school_detect_tab
 
 school_detect_tab_comp.denoised=uicontrol(school_detect_tab_comp.school_detect_tab,gui_fmt.chckboxStyle,'Value',0,'String','Compute on Denoised data','Position',pos{5,1}{1}+[0 0 100 0]);
 
-[~,~,algo_files]=get_config_files('SchoolDetection');
-[~,~,names]=read_config_algo_xml(algo_files{1});
+try
+    [~,~,algo_files]=get_config_files('SchoolDetection');
+    [~,~,names]=read_config_algo_xml(algo_files{1});
+catch
+    algo=init_algos('SchoolDetection');
+    write_config_algo_to_xml(algo,{'--'},0);
+    [~,~,names]=read_config_algo_xml(algo_files{1});
+end
 
 list_params=names;
 uicontrol(school_detect_tab_comp.school_detect_tab,'Style','Text','String','Load Values','Position',pos{1,1}{1}+[0 gui_fmt.y_sep+gui_fmt.box_h 0 0]);

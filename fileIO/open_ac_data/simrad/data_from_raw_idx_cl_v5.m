@@ -81,17 +81,18 @@ CIDs_freq=CIDs(idx_freq);
 trans_obj(length(CIDs_freq))=transceiver_cl();
 nb_trans=length(idx_freq);
 
+
+nb_pings=idx_raw_obj.get_nb_pings_per_channels();
+nb_pings=nb_pings(idx_freq);
+nb_pings(nb_pings<0)=0;
+
+nb_samples=idx_raw_obj.get_nb_samples_per_channels();
+nb_samples=nb_samples(idx_freq);
+nb_samples(nb_samples<0)=0;
+
 if p.Results.GPSOnly>0
-    nb_pings=zeros(1,length(CIDs_freq));
-    nb_samples=zeros(1,length(CIDs_freq));
-else
-    nb_pings=idx_raw_obj.get_nb_pings_per_channels();
-    nb_pings=nb_pings(idx_freq);
-    nb_pings(nb_pings<0)=0;
-    
-    nb_samples=idx_raw_obj.get_nb_samples_per_channels();
-    nb_samples=nb_samples(idx_freq);
-    nb_samples(nb_samples<0)=0;
+    nb_pings=nanmin(ones(1,length(CIDs_freq)),nb_pings);
+    nb_samples=nanmin(ones(1,length(CIDs_freq)),nb_samples);
 end
 
 nb_nmea=idx_raw_obj.get_nb_nmea_dg();
@@ -109,14 +110,14 @@ curr_data_name=cell(nb_trans,numel(fields));
 curr_data_name_t=cell(nb_trans,1);
 fileID=-ones(nb_trans,numel(fields));
 
-if p.Results.GPSOnly==0
-    for i=1:nb_trans
-        data.pings(i).number=nan(1,nb_pings(i),array_type);
-        data.pings(i).time=nan(1,nb_pings(i),array_type);
-        %data.pings(i).samples=(1:nb_samples(i))';
-        trans_obj(i).Params=params_cl(nb_pings(i));
-        
-        
+
+for i=1:nb_trans
+    data.pings(i).number=nan(1,nb_pings(i),array_type);
+    data.pings(i).time=nan(1,nb_pings(i),array_type);
+    %data.pings(i).samples=(1:nb_samples(i))';
+    trans_obj(i).Params=params_cl(nb_pings(i));
+    
+    if p.Results.GPSOnly==0
         [~,curr_filename,~]=fileparts(tempname);
         curr_data_name_t{i}=fullfile(p.Results.PathToMemmap,curr_filename);
         
@@ -125,9 +126,9 @@ if p.Results.GPSOnly==0
             fileID(i,ifif) = fopen(curr_data_name{i,ifif},'w');
         end
         
-        
     end
 end
+
 
 block_i=ones(1,nb_trans);
 data_tmp=cell(1,nb_trans);
@@ -161,7 +162,7 @@ end
 dg_type_keep={'XML0','CON0','NME0','RAW0','RAW3','FIL1','MRU0'};
 
 if p.Results.GPSOnly>0
-    dg_type_keep={'XML0','CON0','NME0'};
+    dg_type_keep={'XML0','CON0','NME0','RAW0'};
 end
 
 if p.Results.DataOnly>0
@@ -191,6 +192,7 @@ for idg=1:nb_dg
         disp('');
         continue;
     end
+    dgTime=idx_raw_obj.time_dg(idg);
     if mod(idg,floor(nb_dg/100))==5
         if ~isempty(load_bar_comp)
             set(load_bar_comp.progress_bar, 'Minimum',0, 'Maximum',nb_dg, 'Value',idg);
@@ -357,12 +359,11 @@ for idg=1:nb_dg
             %disp(dgType);
             % read channel ID
             fseek(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'cof');
-            dgTime=idx_raw_obj.time_dg(idg);
+            
             channelID = (fread(fid,128,'*char', 'l')');
             idx = find(strcmp(deblank(CIDs_freq),deblank(channelID)));
             
-            
-            if isempty(idx)
+            if isempty(idx)||i_ping(idx)>nb_pings(idx)
                 continue;
             end
             
@@ -422,11 +423,12 @@ for idg=1:nb_dg
                                 trans_obj(idx).Config.AngleOffsetAlongship,...
                                 trans_obj(idx).Config.AngleOffsetAthwartship);
                         end
-                        
-                        fwrite(fileID(idx,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
-                        if data.pings(idx).datatype(2)==dec2bin(1)
-                            fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
-                            fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                        if p.Results.GPSOnly==0
+                            fwrite(fileID(idx,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                            if data.pings(idx).datatype(2)==dec2bin(1)
+                                fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                                fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                            end
                         end
                         block_i(idx)=0;
                     end
@@ -488,16 +490,16 @@ for idg=1:nb_dg
                         data.pings(idx).datatype,trans_obj(idx).Config.TransducerName,...
                         trans_obj(idx).Config.AngleOffsetAlongship,...
                         trans_obj(idx).Config.AngleOffsetAthwartship);
-                    
-                    if strcmp(mode{idx},'FM')
-                        fwrite(fileID(idx,strcmp(fields,'powerunmatched')),(double(powerunmatched))/factor_fields(strcmpi(fields,'powerunmatched')),fmt_fields{strcmpi(fields,'powerunmatched')});
-                        fwrite(fileID(idx,strcmp(fields,'y_real')),double(real(y))/factor_fields(strcmpi(fields,'y_real')),fmt_fields{strcmpi(fields,'y_real')});
-                        fwrite(fileID(idx,strcmp(fields,'y_imag')),double(imag(y))/factor_fields(strcmpi(fields,'y_imag')),fmt_fields{strcmpi(fields,'y_imag')});
+                    if p.Results.GPSOnly==0
+                        if strcmp(mode{idx},'FM')
+                            fwrite(fileID(idx,strcmp(fields,'powerunmatched')),(double(powerunmatched))/factor_fields(strcmpi(fields,'powerunmatched')),fmt_fields{strcmpi(fields,'powerunmatched')});
+                            fwrite(fileID(idx,strcmp(fields,'y_real')),double(real(y))/factor_fields(strcmpi(fields,'y_real')),fmt_fields{strcmpi(fields,'y_real')});
+                            fwrite(fileID(idx,strcmp(fields,'y_imag')),double(imag(y))/factor_fields(strcmpi(fields,'y_imag')),fmt_fields{strcmpi(fields,'y_imag')});
+                        end
+                        fwrite(fileID(idx,strcmp(fields,'power')),(double(pow))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                        fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                        fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
                     end
-                    fwrite(fileID(idx,strcmp(fields,'power')),(double(pow))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
-                    fwrite(fileID(idx,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
-                    fwrite(fileID(idx,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
-                    
                     block_i(idx)=0;
                 end
             end
@@ -523,7 +525,7 @@ for idg=1:nb_dg
             chan=idx_raw_obj.chan_dg(idg);
             idx_chan=find(chan==channels);
             
-            if isempty(idx_chan)
+            if isempty(idx_chan)||i_ping(idx_chan)>nb_pings(idx_chan)
                 continue;
             end
             
@@ -570,10 +572,12 @@ for idg=1:nb_dg
                         trans_obj(idx_chan).Config.AngleOffsetAlongship,...
                         trans_obj(idx_chan).Config.AngleOffsetAthwartship);
                 end
-                fwrite(fileID(idx_chan,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx_chan}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
-                if data.pings(idx_chan).datatype(2)==dec2bin(1)
-                    fwrite(fileID(idx_chan,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
-                    fwrite(fileID(idx_chan,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                if p.Results.GPSOnly==0
+                    fwrite(fileID(idx_chan,strcmp(fields,'power')),db2pow_perso(double(data_tmp{idx_chan}.power))/factor_fields(strcmpi(fields,'power')),fmt_fields{strcmpi(fields,'power')});
+                    if data.pings(idx_chan).datatype(2)==dec2bin(1)
+                        fwrite(fileID(idx_chan,strcmp(fields,'alongangle')),double(AlongAngle)/factor_fields(strcmpi(fields,'alongangle')),fmt_fields{strcmpi(fields,'alongangle')});
+                        fwrite(fileID(idx_chan,strcmp(fields,'acrossangle')),double(AcrossAngle)/factor_fields(strcmpi(fields,'acrossangle')),fmt_fields{strcmpi(fields,'acrossangle')});
+                    end
                 end
                 block_i(idx_chan)=0;
             end
@@ -635,55 +639,56 @@ end
 
 
 
-if p.Results.GPSOnly==0
+
+
+switch ftype
+    case 'EK80'
+        
+    case 'EK60'
+        for i=1:length(idx_freq)
+            [trans_obj(i).Config,trans_obj(i).Params]=config_from_ek60(data.pings(i),config_EK60(idx_freq(i)));
+        end
+        envdata=env_data_cl();
+        envdata.SoundSpeed=data.pings(1).soundvelocity(1);
+end
+
+idx_fields=idx_fields>0;
+
+c = envdata.SoundSpeed;
+
+for i =1:nb_trans
     
-    switch ftype
-        case 'EK80'
-            
-        case 'EK60'
-            for i=1:length(idx_freq)
-                [trans_obj(i).Config,trans_obj(i).Params]=config_from_ek60(data.pings(i),config_EK60(idx_freq(i)));
-            end
-            envdata=env_data_cl();
-            envdata.SoundSpeed=data.pings(1).soundvelocity(1);
-            
-            
+    trans_obj(i).Mode=mode{i};
+    
+    if ~any(trans_obj(i).Params.Absorption~=0)
+        alpha= seawater_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
+        trans_obj(i).Params.Absorption(:)=round(alpha*1e3)/1e3*ones(1,nb_pings(i));
     end
     
-    idx_fields=idx_fields>0;
-    
-    c = envdata.SoundSpeed;
-    
-    for i =1:nb_trans
-        
-        trans_obj(i).Mode=mode{i};
-        
-        if ~any(trans_obj(i).Params.Absorption~=0)
-            alpha= seawater_absorption(trans_obj(i).Params.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
-            trans_obj(i).Params.Absorption(:)=round(alpha*1e3)/1e3*ones(1,nb_pings(i));
-        end
-        
-        
+    if p.Results.GPSOnly==0
         sub_ac_data_temp=sub_ac_data_cl.sub_ac_data_from_files(curr_data_name(i,idx_fields(i,:)),[nb_samples(i) nb_pings(i)],fields(idx_fields(i,:)));
+        
         trans_obj(i).Data=ac_data_cl('SubData',sub_ac_data_temp,...
             'Nb_samples',nb_samples(i),...
             'Nb_pings',nb_pings(i),...
             'MemapName',curr_data_name_t{i});
-        
-        f_to_del=curr_data_name(i,~idx_fields(i,:));
-        for ifif=1:numel(f_to_del)
-            delete(f_to_del{ifif});
-        end
-        
-        range=trans_obj(i).compute_transceiver_range(c);
-        trans_obj(i).set_transceiver_range(range);
-        trans_obj(i).set_transceiver_time(data.pings(i).time);
-        
-        trans_obj(i).Bottom=[];
     end
     
-else
-    trans_obj=transceiver_cl.empty();
-    envdata=env_data_cl.empty();
+    f_to_del=curr_data_name(i,~idx_fields(i,:));
+    for ifif=1:numel(f_to_del)
+        delete(f_to_del{ifif});
+    end
+    
+    range=trans_obj(i).compute_transceiver_range(c);
+    trans_obj(i).set_transceiver_range(range);
+    trans_obj(i).set_transceiver_time(data.pings(i).time);
+    if p.Results.GPSOnly==0
+        trans_obj(i).set_transceiver_time(data.pings(i).time);
+    else
+        trans_obj(i).set_transceiver_time([data.pings(i).time dgTime]);
+    end
+    trans_obj(i).Bottom=[];
 end
+
+
 

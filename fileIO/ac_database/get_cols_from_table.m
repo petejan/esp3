@@ -6,6 +6,7 @@ addRequired(p,'table_name',@ischar);
 addParameter(p,'input_cols',{},@iscell);
 addParameter(p,'input_vals',{},@iscell);
 addParameter(p,'output_cols',{},@iscell);
+addParameter(p,'input_struct',struct.empty(),@isstruct);
 
 parse(p,ac_db_filename,table_name,varargin{:});
 
@@ -13,20 +14,32 @@ parse(p,ac_db_filename,table_name,varargin{:});
 output_cols=p.Results.output_cols;
 output_vals=[];
 
-if numel(p.Results.input_cols)~=numel(p.Results.input_vals)
-     disp('get_cols_from_table:Invalid number of column specified in inputs fo sql query');
-    return; 
+if ~isempty(p.Results.input_vals)
+    if numel(p.Results.input_cols)~=numel(p.Results.input_vals)
+        disp('get_cols_from_table:Invalid number of column specified in inputs fo sql query');
+        return;
+    end
+    input_vals=p.Results.input_vals;
+    input_cols=p.Results.input_cols;
+elseif ~isempty(p.Results.input_struct)
+    input_cols=fieldnames(p.Results.input_struct);
+    input_vals=cell(1,numel(input_cols));
+    for iin=1:numel(input_cols)
+       input_vals{iin}=p.Results.input_struct.(input_cols{iin});
+    end
+else
+    return;
 end
 
-inputs_cell=cell(1,numel(p.Results.input_cols));
+inputs_cell=cell(1,numel(input_cols));
 
-for i_in=1:numel(p.Results.input_cols)
-    if ischar(p.Results.input_vals{i_in})||iscell(p.Results.input_vals{i_in})
-        if ~isempty(p.Results.input_vals{i_in})
-            inputs_cell{i_in}=sprintf('%s IN ("%s")',p.Results.input_cols{i_in},strjoin(p.Results.input_vals{i_in},'","'));
+for i_in=1:numel(input_cols)
+    if ischar(input_vals{i_in})||iscell(input_vals{i_in})
+        if ~isempty(input_vals{i_in})
+            inputs_cell{i_in}=sprintf('%s IN ("%s")',input_cols{i_in},strjoin(input_vals{i_in},'","'));
         end
-    elseif isnumeric(p.Results.input_vals{i_in})
-        inputs_cell{i_in}=sprintf('%s IN (%s)',p.Results.input_cols{i_in},strjoin(cellfun(@num2str,num2cell(p.Results.input_vals{i_in}),'un',0),','));
+    elseif isnumeric(input_vals{i_in})
+        inputs_cell{i_in}=sprintf('%s IN (%s)',input_cols{i_in},strjoin(cellfun(@num2str,num2cell(input_vals{i_in}),'un',0),','));
     end
 end
 

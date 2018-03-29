@@ -15,7 +15,6 @@
 % * |Calibration|: TODO write description (Optional. Default: empty num).
 % * |Frequencies|: TODO write description (Optional. Default: empty num).
 % * |PingRange|: TODO write description (Optional. Default: [1 inf]).
-% * |SampleRange|: TODO write description (Optional. Default: [1 inf]).
 % * |FieldNames|: TODO write description (Optional. Default: empty cell).
 % * |EsOffset|: TODO write description (Optional. Default: empty num).
 % * |GPSOnly|: TODO write description (Optional. Default: 0).
@@ -69,7 +68,6 @@ addParameter(p,'PathToMemmap',def_path_m,@ischar);
 addParameter(p,'Calibration',[]);
 addParameter(p,'Frequencies',[]);
 addParameter(p,'PingRange',[1 inf]);
-addParameter(p,'SampleRange',[1 inf]);
 addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
 addParameter(p,'GPSOnly',0);
@@ -83,7 +81,7 @@ parse(p,Filename_cell,varargin{:});
 cal=p.Results.Calibration;
 vec_freq_init=p.Results.Frequencies;
 pings_range=p.Results.PingRange;
-sample_range=p.Results.SampleRange;
+
 
 vec_freq_tot=[];
 
@@ -123,7 +121,6 @@ if ~isequal(Filename_cell, 0)
             
             ftype=get_ftype(Filename);
             if isempty(vec_freq_init)
-                
                 
                 switch ftype
                     case 'EK80'
@@ -172,7 +169,7 @@ if ~isequal(Filename_cell, 0)
                         vec_freq=vec_freq_temp;
                     end
                 else
-                    vec_freq=[];
+                    vec_freq=vec_freq_temp;
                 end
             else
                 vec_freq=vec_freq_init;
@@ -364,9 +361,6 @@ if ~isequal(Filename_cell, 0)
                             sample_idx=resample_data_v2(1:length(curr_range),curr_range,depth_resampled,'Opt','Nearest');
                             sample_idx(sample_idx==1)=nan;
                             trans_obj(itrans).Bottom=bottom_cl('Origin','Simrad','Sample_idx',sample_idx);
-                            
-                            
-                            
                         end
                     end
                 end
@@ -397,14 +391,10 @@ if ~isequal(Filename_cell, 0)
                     trans_obj(i).GPSDataPing=gps_data_ping;
                     trans_obj(i).AttitudeNavPing=attitude;
                     trans_obj(i).add_algo(algo_vec_init);
-                    trans_obj(i).add_algo(algo_vec);
-                    
+                    trans_obj(i).add_algo(algo_vec);                    
                     trans_obj(i).computeSpSv_v2(envdata,'FieldNames',p.Results.FieldNames);
                     
                 end
-            else
-                trans_obj=transceiver_cl.empty();
-                envdata=env_data_cl.empty();
             end
             
             layers(uu)=layer_cl('Filename',{Filename},'Filetype',ftype,'GPSData',gps_data,'AttitudeNav',attitude_full,'EnvData',envdata);

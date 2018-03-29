@@ -35,13 +35,13 @@ classdef params_cl
             
         end
         
-        function param_obj
-              props=properties(param_obj);
-              idx_nan=(param_obj.PulseLength==0);
-              for jj=1:length(props)
-                        param_obj.(props{jj})(idx_nan)=[];
-              end
-        end
+%         function param_obj
+%               props=properties(param_obj);
+%               idx_nan=(param_obj.PulseLength==0);
+%               for jj=1:length(props)
+%                         param_obj.(props{jj})(idx_nan)=[];
+%               end
+%         end
         
         function params_out=concatenate_Params(param_1,param_2)
             if param_1.Time(1)>param_2.Time(end)

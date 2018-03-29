@@ -22,11 +22,17 @@ end
 u=0;
 while u<ceil(nb_pings/bsize)
     idx_pings=(u*bsize+1):nanmin(((u+1)*bsize),nb_pings);
+    
     u=u+1;
+    idx_pings_next=(u*bsize+1):nanmin(((u+1)*bsize),nb_pings);
+    if idx_pings_next(end)==nb_pings
+       idx_pings=union(idx_pings,idx_pings_next);
+       u=u+1;
+    end
     
     power=get_subdatamat(trans_obj.Data,1:nb_samples,idx_pings,'field','power');
 
-    [power_corr_db,mean_err]=correctES60(10*log10(power),p.Results.EsOffset);
+    [power_corr_db,mean_err]=correctES60(10*log10(power),p.Results.EsOffset,u-1);
 
 if mean_err~=0
     trans_obj.Data.replace_sub_data_v2('power',10.^(power_corr_db/10),idx_pings,0);    

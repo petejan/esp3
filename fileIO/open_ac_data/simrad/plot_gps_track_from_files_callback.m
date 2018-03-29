@@ -41,10 +41,8 @@ else
     Filename_tmp=Filename;
 end
 
-if ~isequal(Filename, 0)
-    
-    open_EK_file_GPS_only(main_figure,Filename);
-     
+if ~isequal(Filename, 0)    
+    open_EK_file_GPS_only(main_figure,Filename);    
 else
     return
 end

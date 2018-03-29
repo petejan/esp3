@@ -1,8 +1,8 @@
-function [data_c,mean_corrected_value] = correctES60(data,offset)
+function [data_c,mean_corrected_value] = correctES60(data,offset,silent)
 
 period = 2721;
 if isempty(offset)||ischar(offset)
-offset=nan;
+    offset=nan;
 end
 
 num_pings = size(data,2);
@@ -33,7 +33,9 @@ fit.mean=nanmean(mat_tri,2);
 % Ideally, the minimum standard deviation will give the appropriate zero error ping number
 [val_std, zero_error_ping] = nanmin(fit.std);
 if val_std>0.1
-    disp('It does not look like there is a triangle wave error here...');
+    if silent==0
+        disp('It does not look like there is a triangle wave error here...');
+    end
     if isa(data,'gpuArray')
         data_c=gather(data);
     else
@@ -41,12 +43,12 @@ if val_std>0.1
     end
     mean_corrected_value=0;
     
-%     figure();   
-%     plot(rd_zone)
-%     xlabel('Ping number')
-%     ylabel('Third sample received power (dB re 1 W, uncalibrated)')
-%     legend('Uncorrected')
-%     grid on;
+    %     figure();
+    %     plot(rd_zone)
+    %     xlabel('Ping number')
+    %     ylabel('Third sample received power (dB re 1 W, uncalibrated)')
+    %     legend('Uncorrected')
+    %     grid on;
     
     return;
 end
@@ -60,9 +62,13 @@ if num_pings < period/2
     if length(close_values) > 40 % too many values close to the minimum, so we don't trust
         % any of them and use the supplied offset (or ask for one)
         if isnan(offset)
-            disp('Cannot find the zero error ping number. You need to manually supply an offset.')
+            if silent==0
+                disp('Cannot find the zero error ping number. You need to manually supply an offset.')
+            end
         else % we have been supplied with an offset to use
-            disp('Using supplied offset.')
+            if silent==0
+                disp('Using supplied offset.')
+            end
             % Now find the zero error ping number with the corrected mean that is closest to the
             % supplied offset, but still with a low std.
             % This code is not vectorised, but this is not the normal case so the loss in speed
@@ -77,19 +83,25 @@ if num_pings < period/2
             end
         end
         mean_corrected_value= nanmean(rd_zone - es60_error((1:num_pings)+zero_error_ping));
-        disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+        if silent==0
+            disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+        end
     else % Is this code good enough? Does there need to be more checking of the result here?
         % We get here if there are less than 40 zero error ping numbers with a low std. If this is the
         % case, we simply take the zero error ping number with the lowest std.
         mean_corrected_value = nanmean(rd_zone - es60_error((1:num_pings)+zero_error_ping));
-        disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+        if silent==0
+            disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+        end
     end
 else
     % There were enough pings to cover a change in slope in the error, so we're done.
     mean_corrected_value = nanmean(rd_zone - es60_error((1:num_pings)+zero_error_ping));
-    disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+    if silent==0
+        disp(['The mean corrected value is ' num2str(mean_corrected_value) ' dB'])
+    end
 end
-% 
+%
 % figure();
 % disp(['The zero error ping number is ' num2str(zero_error_ping)])
 % plot(rd_zone)
@@ -104,6 +116,6 @@ data_c=data-repmat(es60_error(pings+zero_error_ping),size(data,1),1);
 if isa(data_c,'gpuArray')
     data_c=gather(data_c);
 end
-    
+
 end
 

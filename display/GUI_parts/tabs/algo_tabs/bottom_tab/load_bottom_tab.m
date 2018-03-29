@@ -81,10 +81,15 @@ uicontrol(bottom_tab_comp.bottom_tab,gui_fmt.txtStyle,'string','Shift Bottom(m)'
 bottom_tab_comp.shift_bot=uicontrol(bottom_tab_comp.bottom_tab,gui_fmt.edtStyle,'pos',pos{3,2}{2},'string',num2str(varin.shift_bot),'callback',{@ check_fmt_box,0,inf,varin.shift_bot,'%.1f'});
 bottom_tab_comp.denoised=uicontrol(bottom_tab_comp.bottom_tab,gui_fmt.chckboxStyle,'Value',0,'String','Compute on Denoised data','Position',pos{4,2}{1}+[0 0 100 0]);
 
-
-[~,~,algo_files]=get_config_files('BottomDetection');
-[~,~,names]=read_config_algo_xml(algo_files{1});
-
+try
+    [~,~,algo_files]=get_config_files('BottomDetection');
+    [~,~,names]=read_config_algo_xml(algo_files{1});
+catch
+    algo=init_algos('BottomDetection');
+    write_config_algo_to_xml(algo,{'--'},0);
+    [~,~,names]=read_config_algo_xml(algo_files{1});
+end
+ 
 list_params=names;
 
 uicontrol(bottom_tab_comp.bottom_tab,'Style','Text','String','Load Values','Position',pos{1,1}{1}+[0 gui_fmt.y_sep+gui_fmt.box_h 0 0]);
@@ -136,9 +141,15 @@ uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.txtStyle,'string','Shift Bottom(
 bottom_tab_v2_comp.shift_bot=uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.edtStyle,'pos',pos{3,2}{2},'string',num2str(varin.shift_bot),'callback',{@ check_fmt_box,0,inf,varin.shift_bot,'%.1f'});
 bottom_tab_v2_comp.denoised=uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.chckboxStyle,'Value',0,'String','Compute on Denoised data','Position',pos{4,2}{1}+[0 0 100 0]);
 
+try
+    [~,~,algo_files]=get_config_files('BottomDetectionV2');
+    [~,~,names]=read_config_algo_xml(algo_files{1});
+catch
+    algo=init_algos('BottomDetectionV2');
+    write_config_algo_to_xml(algo,{'--'},0);
+    [~,~,names]=read_config_algo_xml(algo_files{1});
+end
 
-[~,~,algo_files]=get_config_files('BottomDetectionV2');
-[~,~,names]=read_config_algo_xml(algo_files{1});
 uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.txtStyle,'String','Load Values','Position',pos{1,1}{1}+[0 gui_fmt.y_sep+gui_fmt.box_h 0 0]);
 list_params=names;
 
