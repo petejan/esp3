@@ -6,6 +6,7 @@ for ilay=1:length(layers_obj)
         itrans=1;
         trans_obj=layers_obj(ilay).Transceivers(itrans);
         freq=layers_obj(ilay).Frequencies(itrans);
+        
         fileID_vec=trans_obj.get_fileID();
         
         gps_data_obj=trans_obj.GPSDataPing;

@@ -14,7 +14,6 @@
 % * |PathToMemmap|: TODO write description (Optional. Char, Default: TODO).
 % * |Calibration|: TODO write description (Optional. Default: empty num).
 % * |Frequencies|: TODO write description (Optional. Default: empty num).
-% * |PingRange|: TODO write description (Optional. Default: [1 inf]).
 % * |FieldNames|: TODO write description (Optional. Default: empty cell).
 % * |EsOffset|: TODO write description (Optional. Default: empty num).
 % * |GPSOnly|: TODO write description (Optional. Default: 0).
@@ -63,14 +62,19 @@ end
 
 [def_path_m,~,~]=fileparts(Filename_cell{1});
 
+if ischar(Filename_cell)
+    def_gps_only_val=1;
+else
+    def_gps_only_val=ones(1,numel(Filename_cell));
+end
+
 addRequired(p,'Filename_cell',@(x) ischar(x)||iscell(x));
 addParameter(p,'PathToMemmap',def_path_m,@ischar);
 addParameter(p,'Calibration',[]);
 addParameter(p,'Frequencies',[]);
-addParameter(p,'PingRange',[1 inf]);
 addParameter(p,'FieldNames',{});
 addParameter(p,'EsOffset',[]);
-addParameter(p,'GPSOnly',0);
+addParameter(p,'GPSOnly',def_gps_only_val);
 addParameter(p,'LoadEKbot',0);
 addParameter(p,'force_open',0);
 addParameter(p,'load_bar_comp',[]);
@@ -80,8 +84,6 @@ parse(p,Filename_cell,varargin{:});
 
 cal=p.Results.Calibration;
 vec_freq_init=p.Results.Frequencies;
-pings_range=p.Results.PingRange;
-
 
 vec_freq_tot=[];
 
@@ -92,12 +94,15 @@ load_bar_comp=p.Results.load_bar_comp;
 % the parsing of NMEA messages comming from the POS/MV, as they are
 % recorded at 10Hz....
 
+if numel(p.Results.GPSOnly)~=numel(Filename_cell)
+    GPSOnly=ones(1,numel(Filename_cell))*p.Results.GPSOnly;
+else
+    GPSOnly=p.Results.GPSOnly;
+end
 
 if ~isequal(Filename_cell, 0)
     nb_files=numel(Filename_cell);
-    prev_ping_end=0;
-    prev_ping_start=1;
-    
+
     layers(length(Filename_cell))=layer_cl();
     id_rem=[];
     
@@ -153,7 +158,7 @@ if ~isequal(Filename_cell, 0)
                     list_freq_str{ki}=num2str(frequency(ki)/1e3,'%.0f kHz');
                 end
                 
-                if p.Results.GPSOnly==0
+                if GPSOnly(uu)==0
                     if transceivercount>1
                         if length(intersect(vec_freq_temp,vec_freq_tot))~=transceivercount
                             vec_freq_tot=vec_freq_temp;
@@ -179,17 +184,6 @@ if ~isequal(Filename_cell, 0)
                 vec_freq=-1;
             end
             
-            
-            
-            pings_range(1)=pings_range(1)-prev_ping_start+1;
-            if pings_range(2)~=Inf
-                pings_range(2)=pings_range(2)-prev_ping_end;
-            end
-            
-            
-            if pings_range(2)-prev_ping_end<=pings_range(1)-prev_ping_start+1
-                break;
-            end
             
             if ~isdir(fullfile(path_f,'echoanalysisfiles'))
                 mkdir(fullfile(path_f,'echoanalysisfiles'));
@@ -233,21 +227,21 @@ if ~isequal(Filename_cell, 0)
             %
             %             [~,~,~,~]=data_from_raw_idx_cl_v4(path_f,idx_raw_obj,...
             %                 'Frequencies',vec_freq,...
-            %                 'GPSOnly',p.Results.GPSOnly,...
+            %                 'GPSOnly',GPSOnly(uu),...
             %                 'FieldNames',p.Results.FieldNames,...
             %                 'PathToMemmap',p.Results.PathToMemmap,...
             %                 'load_bar_comp',p.Results.load_bar_comp);
             
             [trans_obj,envdata,NMEA,mru0_att] =data_from_raw_idx_cl_v5(path_f,idx_raw_obj,...%new version.10% faster...
                 'Frequencies',vec_freq,...
-                'GPSOnly',p.Results.GPSOnly,...
+                'GPSOnly',GPSOnly(uu),...
                 'FieldNames',p.Results.FieldNames,...
                 'PathToMemmap',p.Results.PathToMemmap,...
                 'load_bar_comp',p.Results.load_bar_comp);
             
             
             
-            if isempty(trans_obj)&&p.Results.GPSOnly==0
+            if isempty(trans_obj)&&GPSOnly(uu)==0
                 id_rem=union(id_rem,uu);
                 continue;
             end
@@ -321,7 +315,7 @@ if ~isequal(Filename_cell, 0)
                 depth_time=[];
             end
             
-            if p.Results.GPSOnly==0
+            if GPSOnly(uu)==0
                 for i =1:length(trans_obj)
                     if trans_obj(i).need_escorr()
                         trans_obj(i).correctTriangleWave('EsOffset',p.Results.EsOffset);
@@ -372,10 +366,6 @@ if ~isequal(Filename_cell, 0)
                     end
                 end
                 
-                prev_ping_start=pings_range(1);
-                pings=trans_obj(1).get_transceiver_pings();
-                prev_ping_end=pings(end);
-                
                 if  ~isa(trans_obj,'transceiver_cl')
                     id_rem=union(id_rem,uu);
                     continue;
@@ -411,9 +401,9 @@ if ~isequal(Filename_cell, 0)
             warning('Could not open files %s\n',Filename);
             [~,f_temp,e_temp]=fileparts(err.stack(1).file);
             warning('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
-            if ~isdeployed
-                rethrow(err);
-            end
+%             if ~isdeployed
+%                 rethrow(err);
+%             end
         end
     end
     

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <config_file version="0.2">
-   <AppPath cvs_root=":local:Z:\" data="D:\Docs\Data misc\tan1802\hull\ek60" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" results="D:\Docs\Data misc\esp3_results" scripts="D:\Docs\Data misc\basic_scripts_tests"/>
+   <AppPath cvs_root=":local:Z:\" data="D:\Docs\Data misc\tan1802\hull\ek60" data_root="X:\" data_temp="C:\Users\ladroity\AppData\Local\Temp\data_echo" results="D:\Docs\Data misc\esp3_results" scripts="X:\echo_scripts"/>
 </config_file>

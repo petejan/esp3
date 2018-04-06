@@ -1,9 +1,9 @@
-function create_ac_database(ac_db_filename,replace)
+function create_ac_database(ac_db_filename,overwrite_db)
 
 file_sql=fullfile(whereisEcho,'config','db','ac_db.sql');
 
 if isfile(ac_db_filename)
-    if replace==1
+    if overwrite_db==1
         delete(ac_db_filename);
     else
         return;
@@ -28,7 +28,7 @@ str_sql(idx_rem)=[];
 idx_command=strfind(str_sql,');');
 idx_command=[-1 idx_command];
 
-if replace==0
+if overwrite_db==0
     dbconn=sqlite(ac_db_filename,'connect');  
 else
     dbconn=sqlite(ac_db_filename,'create');  
@@ -50,9 +50,22 @@ for i=1:numel(idx_trigger_start)
     dbconn.exec(sql_cmd);
 end
 
-
-
 dbconn.close();
+
+% user = '';
+% password = '';
+% driver = 'org.sqlite.JDBC';
+% protocol = 'jdbc';
+% subprotocol = 'sqlite';
+% resource = ac_db_filename;
+% url = strjoin({protocol, subprotocol, resource}, ':');
+% dbconn = database(ac_db_filename, user, password, driver, url);
+% dbconn.exec("PRAGMA recursive_triggers = ""1"";");
+% dbconn.exec("PRAGMA foreign_keys = ""1"";");
+% 
+% dbconn.close();
+
+
 
 
 

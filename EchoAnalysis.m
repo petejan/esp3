@@ -147,10 +147,10 @@ end
 
 
 
-%% Default font size for Controls and Panels
+%% Default font size for Controls and Panels and db prefs
 set(0,'DefaultUicontrolFontSize',10);
 set(0,'DefaultUipanelFontSize',11);
-
+setdbprefs('DataReturnFormat','table');
 
 
 %% Check if GPU computation is available %%

@@ -20,7 +20,7 @@ FOREIGN KEY (YYY_ZZZ_key) REFERENCES t_XXX(XXX_pkey)
 
 CREATE TABLE t_XXX_type
 (	
-	XXX_type_pkey	SERIAL PRIMARY KEY,
+	XXX_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	XXX_type		TEXT -- Description following controlled vocabulary
 );
 
@@ -31,7 +31,7 @@ FOREIGN KEY (XXX_key) REFERENCES t_XXX_type(XXX_type_pkey)
 
 CREATE TABLE t_XXX_YYY
 (
-	XXX_YYY_pkey 		SERIAL PRIMARY KEY,
+	XXX_YYY_pkey 		INTEGER PRIMARY KEY AUTOINCREMENT,
 	XXX_key    			INT,
 	YYY_key      		INT,
 	XXX_YYY_comments	TEXT, -- Free text field for relevant information not captured by other attributes
@@ -40,6 +40,7 @@ CREATE TABLE t_XXX_YYY
 );
 
 */
+
 
 /* ----- LOGISTICS GROUP -----
 
@@ -70,7 +71,7 @@ Notes:
 
 CREATE TABLE t_mission
 (
-	mission_pkey 					SERIAL PRIMARY KEY,
+	mission_pkey 					INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	mission_name 					TEXT, 		-- Name of mission (ICES mission_name)
 	mission_abstract 				TEXT, 		-- Text description of the mission, its purpose, scientific objectives and area of operation (ICES mission_abstract)
@@ -89,21 +90,21 @@ CREATE TABLE t_mission
 	
 	UNIQUE (mission_name) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_mission is 'Missions or projects for which acoustic data were collected.';
+--COMMENT ON TABLE t_mission is 'Missions or projects for which acoustic data were collected.';
 
 
 CREATE TABLE t_ship_type
 (	
-	ship_type_pkey	SERIAL PRIMARY KEY,
+	ship_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	ship_type		TEXT -- Describe type of ship that is hosting the acoustic instrumentation (ICES ship_type and mission_platform)
 );
-COMMENT ON TABLE t_ship_type is 'Controlled vocabulary for ship_type attribute in t_cruise.';
+--COMMENT ON TABLE t_ship_type is 'Controlled vocabulary for ship_type attribute in t_cruise.';
 INSERT INTO t_ship_type (ship_type) VALUES ('Ship, research'),('Ship, fishing'),('Ship, other');
 
 
 CREATE TABLE t_ship
 (
-	ship_pkey			SERIAL PRIMARY KEY,
+	ship_pkey			INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	ship_name 			TEXT, 	-- Name of the ship (ICES ship_name)
 	ship_type_key		INT,	-- Describe type of ship that is hosting the acoustic instrumentation. See controlled vocabulary table t_ship_type (ICES ship_type and mission_platform)
@@ -127,21 +128,21 @@ CREATE TABLE t_ship
 	UNIQUE (ship_IMO,ship_type_key,ship_name) ON CONFLICT IGNORE
 	FOREIGN KEY (ship_type_key) REFERENCES t_ship_type(ship_type_pkey)
 );
-COMMENT ON TABLE t_ship is 'Ships or vessels from which acoustic data were collected.';
+--COMMENT ON TABLE t_ship is 'Ships or vessels from which acoustic data were collected.';
 
 
 CREATE TABLE t_deployment_type
 (	
-	deployment_type_pkey	SERIAL PRIMARY KEY,
+	deployment_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	deployment_type		TEXT -- Describe type of deployment platform that is hosting the acoustic instrumentation (ICES mission_platform)
 );
-COMMENT ON TABLE t_deployment_type is 'Controlled vocabulary for deployment_type attribute in t_deployment.';
+--COMMENT ON TABLE t_deployment_type is 'Controlled vocabulary for deployment_type attribute in t_deployment.';
 INSERT INTO t_deployment_type (deployment_type) VALUES  ('Ship') ,('Buoy, moored'),('Buoy, drifting'),('Glider'),('Underwater vehicle, autonomous, motorized'),('Underwater vehicle, autonomous, glider'); -- Another ICES entry is possible ('Underwater vehicle, towed') but we remove it here as towed bodies (and AOS) fall under the cruise category
 
 
 CREATE TABLE t_deployment
 (
-	deployment_pkey			SERIAL PRIMARY KEY,
+	deployment_pkey			INTEGER PRIMARY KEY AUTOINCREMENT,
 
 	-- Deployment platform type (see ICES mission_platform)
 	deployment_type_key			INT,		-- Describe type of deployment platform that is hosting the acoustic instrumentation. See controlled vocabulary table t_deployment_type (ICES mission_platform)
@@ -182,12 +183,12 @@ CREATE TABLE t_deployment
 	FOREIGN KEY (deployment_ship_key) REFERENCES t_ship(ship_pkey)
 	UNIQUE (deployment_type_key,deployment_ship_key,deployment_id,deployment_operator,deployment_start_date,deployment_end_date,deployment_start_BODC_code,deployment_end_BODC_code) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_deployment is 'Individual deployments of 1 or several acoustic instruments (cruise, mooring deployment, drifting buoy, glider, autonomous vehicle, etc.) with which acoustic data were collected.';
+--COMMENT ON TABLE t_deployment is 'Individual deployments of 1 or several acoustic instruments (cruise, mooring deployment, drifting buoy, glider, autonomous vehicle, etc.) with which acoustic data were collected.';
 
 
 CREATE TABLE t_mission_deployment
 (
-	mission_deployment_pkey 	SERIAL PRIMARY KEY,
+	mission_deployment_pkey 	INTEGER PRIMARY KEY AUTOINCREMENT,
 
 	mission_key    				INT,
 	deployment_key     			INT,
@@ -197,7 +198,7 @@ CREATE TABLE t_mission_deployment
 	FOREIGN KEY (mission_key) REFERENCES t_mission(mission_pkey),
 	FOREIGN KEY (deployment_key) REFERENCES t_deployment(deployment_pkey)
 );
-COMMENT ON TABLE t_mission_deployment is 'Join table to manage the many-many relationship between t_mission and t_deployment.';
+--COMMENT ON TABLE t_mission_deployment is 'Join table to manage the many-many relationship between t_mission and t_deployment.';
 
 
 
@@ -242,16 +243,16 @@ Notes:
 
 CREATE TABLE t_transducer_beam_type
 (
-	transducer_beam_type_pkey	SERIAL PRIMARY KEY,
+	transducer_beam_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	transducer_beam_type		TEXT -- For example "single-beam, split-aperture" (ICES instrument_transducer_beam_type)
 );
-COMMENT ON TABLE t_transducer_beam_type is 'Controlled vocabulary for transducer_beam_type attribute in t_transducer';
+--COMMENT ON TABLE t_transducer_beam_type is 'Controlled vocabulary for transducer_beam_type attribute in t_transducer';
 INSERT INTO t_transducer_beam_type (transducer_beam_type) VALUES ('Single-beam'),('Single-beam, split-aperture'),('Multibeam'),('Multibeam, split-aperture');
 
 
 CREATE TABLE t_transducer
 (
-	transducer_pkey					SERIAL PRIMARY KEY,
+	transducer_pkey					INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	transducer_manufacturer			TEXT,	-- Transducer manufacturer (ICES instrument_transducer_manufacturer)
 	transducer_model				TEXT,	-- Transducer model (ICES instrument_transducer_model)
@@ -269,12 +270,12 @@ CREATE TABLE t_transducer
 	FOREIGN KEY (transducer_beam_type_key) REFERENCES t_transducer_beam_type(transducer_beam_type_pkey)
 	UNIQUE (transducer_model,transducer_serial,transducer_frequency_nominal) ON CONFLICT IGNORE	
 );
-COMMENT ON TABLE t_transducer is 'Transducers (sonar heads).';
+--COMMENT ON TABLE t_transducer is 'Transducers (sonar heads).';
 
 
 CREATE TABLE t_transceiver
 (
-	transceiver_pkey 				SERIAL PRIMARY KEY,
+	transceiver_pkey 				INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	transceiver_manufacturer		TEXT,	-- Transceiver manufacturer (ICES instrument_transceiver_manufacturer)
 	transceiver_model				TEXT,	-- Transceiver model (ICES instrument_transceiver_model)
@@ -288,12 +289,12 @@ CREATE TABLE t_transceiver
 	
 	UNIQUE (transceiver_model,transceiver_serial,transceiver_frequency_nominal) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_transceiver is 'Transceivers (GPT).';
+--COMMENT ON TABLE t_transceiver is 'Transceivers (GPT).';
 
 
 CREATE TABLE t_calibration
 (
-	calibration_pkey 				SERIAL PRIMARY KEY,
+	calibration_pkey 				INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	calibration_date				TIMESTAMP,	-- Date of calibration (ICES calibration_date)
 	calibration_acquisition_method	TEXT,		-- Describe the method used to acquire calibration data (ICES calibration_acquisition_method)
@@ -305,12 +306,12 @@ CREATE TABLE t_calibration
 	
 	UNIQUE (calibration_date,calibration_acquisition_method,calibration_processing_method,calibration_accuracy_estimate,calibration_report) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_calibration is 'Calibration sessions';
+--COMMENT ON TABLE t_calibration is 'Calibration sessions';
 
 
 CREATE TABLE t_parameters
 (
-	parameters_pkey				SERIAL PRIMARY KEY,
+	parameters_pkey				INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	parameters_pulse_mode		TEXT, 	-- CW/FM
 	parameters_pulse_length		FLOAT, 	-- in seconds? applies to both CW/FM
@@ -324,39 +325,39 @@ CREATE TABLE t_parameters
 	
 	UNIQUE (parameters_pulse_mode,parameters_pulse_length,parameters_pulse_slope,parameters_FM_pulse_type,parameters_frequency_min,parameters_frequency_max,parameters_power) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_parameters is 'Acquisition parameters';
+--COMMENT ON TABLE t_parameters is 'Acquisition parameters';
 
 
 CREATE TABLE t_platform_type
 (
-	platform_type_pkey	SERIAL PRIMARY KEY,
+	platform_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	platform_type		TEXT -- Location of installed transducer following NIWA vocabulary (Hull, Towbody or AOS). Doubles up a bit with t_transducer_location_type which reflects ICES instrument_transducer_location
 );
-COMMENT ON TABLE t_platform_type is 'Controlled vocabulary for platform_type attribute in t_setup.';
+--COMMENT ON TABLE t_platform_type is 'Controlled vocabulary for platform_type attribute in t_setup.';
 INSERT INTO t_platform_type (platform_type) VALUES ('Hull'),('Towbody'),('AOS');
 
 
 CREATE TABLE t_transducer_location_type
 (
-	transducer_location_type_pkey	SERIAL PRIMARY KEY,
+	transducer_location_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	transducer_location_type		TEXT -- Location of installed transducer following ICES vocabulary (ICES instrument_transducer_location)
 );
-COMMENT ON TABLE t_transducer_location_type is 'Controlled vocabulary for transducer_location_type attribute in t_setup.';
+--COMMENT ON TABLE t_transducer_location_type is 'Controlled vocabulary for transducer_location_type attribute in t_setup.';
 INSERT INTO t_transducer_location_type (transducer_location_type) VALUES ('Hull, keel'),('Hull, lowered keel'),('Hull, blister'),('Hull, gondola'),('Towed, shallow'),('Towed, deep'),('Towed, deep, trawlnet attached'),('Ship, pole');
 
 
 CREATE TABLE t_transducer_orientation_type
 (
-	transducer_orientation_type_pkey	SERIAL PRIMARY KEY,
+	transducer_orientation_type_pkey	INTEGER PRIMARY KEY AUTOINCREMENT,
 	transducer_orientation_type			TEXT -- Direction perpendicular to the face of the transducer (ICES instrument_transducer_orientation)
 );
-COMMENT ON TABLE t_transducer_orientation_type is 'Controlled vocabulary for transducer_orientation attribute in t_setup.';
+--COMMENT ON TABLE t_transducer_orientation_type is 'Controlled vocabulary for transducer_orientation attribute in t_setup.';
 INSERT INTO t_transducer_orientation_type (transducer_orientation_type) VALUES ('Downward-looking'),('Upward-looking'),('Sideways-looking, forward'),('Sideways-looking, backward'),('Sideways-looking, port'),('Sideways-looking, starboard'),('Other');
 
 
 CREATE TABLE t_setup
 (
-	setup_pkey								SERIAL PRIMARY KEY,
+	setup_pkey								INTEGER PRIMARY KEY AUTOINCREMENT,
 
 	-- What instruments
 	setup_transceiver_key					INT,		-- Refers to attribute transceiver_pkey in t_transceiver
@@ -391,12 +392,12 @@ CREATE TABLE t_setup
 	FOREIGN KEY (setup_parameters_key) REFERENCES t_parameters(parameters_pkey)
 	UNIQUE (setup_platform_type_key,setup_transceiver_key,setup_transducer_key,setup_calibration_key,setup_parameters_key) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_setup is 'Individual combinations of 1 transducer and 1 transceiver, on 1 platform/location, with 1 orientation, 1 appropriate calibration and 1 set of acquisition parameters, to which one channel in an acoustic file can be uniquely linked.';
+--COMMENT ON TABLE t_setup is 'Individual combinations of 1 transducer and 1 transceiver, on 1 platform/location, with 1 orientation, 1 appropriate calibration and 1 set of acquisition parameters, to which one channel in an acoustic file can be uniquely linked.';
 
 
 CREATE TABLE t_deployment_setup
 (
-	deployment_setup_pkey 		SERIAL PRIMARY KEY,
+	deployment_setup_pkey 		INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	deployment_key      		INT,
 	setup_key    				INT,
@@ -407,7 +408,7 @@ CREATE TABLE t_deployment_setup
 	FOREIGN KEY (setup_key) REFERENCES t_setup(setup_pkey)
 	UNIQUE (deployment_key,setup_key) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_deployment_setup is 'Join table to manage the many-many relationship between t_deployment_setup and t_setup.';
+--COMMENT ON TABLE t_deployment_setup is 'Join table to manage the many-many relationship between t_deployment_setup and t_setup.';
 
 
 
@@ -449,7 +450,7 @@ Notes:
 
 CREATE TABLE t_software
 (
-	software_pkey			SERIAL PRIMARY KEY,
+	software_pkey			INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	software_manufacturer	TEXT,		--
 	software_name			TEXT,		--
@@ -461,12 +462,12 @@ CREATE TABLE t_software
 	
 	UNIQUE (software_manufacturer,software_name,software_version,software_host,software_install_date) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_software is 'Instances of new software install on a new computer (or updating to new version).';
+--COMMENT ON TABLE t_software is 'Instances of new software install on a new computer (or updating to new version).';
 
 
 CREATE TABLE t_file
 (
-	file_pkey   		SERIAL PRIMARY KEY,
+	file_pkey   		INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	file_name			TEXT,	 	--
 	file_path			TEXT, 		--
@@ -480,12 +481,12 @@ CREATE TABLE t_file
 	UNIQUE (file_path,file_name) ON CONFLICT REPLACE,
     CHECK (file_end_time>=file_start_time) ON CONFLICT FAIL
 );
-COMMENT ON TABLE t_file is 'Acoustic data files';
+--COMMENT ON TABLE t_file is 'Acoustic data files';
 
 
 CREATE TABLE t_navigation
 (
-	navigation_pkey			SERIAL PRIMARY KEY,
+	navigation_pkey			INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	navigation_time			TIMESTAMP,	--
 	navigation_latitude		FLOAT,		--
@@ -498,12 +499,12 @@ CREATE TABLE t_navigation
 	FOREIGN KEY (navigation_file_key) REFERENCES t_file(file_pkey),
 	UNIQUE (navigation_time,navigation_file_key) ON CONFLICT REPLACE
 );
-COMMENT ON TABLE t_navigation is 'Simplified acoustic data file navigation';
+--COMMENT ON TABLE t_navigation is 'Simplified acoustic data file navigation';
 
 
 CREATE TABLE t_transect
 (
-	transect_pkey    			SERIAL PRIMARY KEY, -- NOTE: can be used for ICES transect_id
+	transect_pkey    			INTEGER PRIMARY KEY AUTOINCREMENT, -- NOTE: can be used for ICES transect_id
 	
 	-- ICES basics
 	transect_name				TEXT, 		-- Name of the transect (ICES transect_name)
@@ -524,12 +525,12 @@ CREATE TABLE t_transect
 	UNIQUE (transect_snapshot,transect_stratum,transect_type,transect_number,transect_start_time,transect_end_time) ON CONFLICT REPLACE,
 	CHECK (transect_end_time>=transect_start_time) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_transect is 'Acoustic data transects';
+--COMMENT ON TABLE t_transect is 'Acoustic data transects';
 
 
 CREATE TABLE t_ancillary
 (
-	ancillary_pkey			SERIAL PRIMARY KEY,
+	ancillary_pkey			INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	ancillary_type			TEXT,	--
 	ancillary_manufacturer	TEXT,	-- 
@@ -541,12 +542,12 @@ CREATE TABLE t_ancillary
 	
 	UNIQUE (ancillary_type,ancillary_manufacturer,ancillary_model,ancillary_serial) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_ancillary is 'Any other instruments - GPS, pitch roll sensor, anemometer, etc.';
+--COMMENT ON TABLE t_ancillary is 'Any other instruments - GPS, pitch roll sensor, anemometer, etc.';
 
 
 CREATE TABLE t_file_transect
 (
-	file_transect_pkey 	SERIAL PRIMARY KEY,
+	file_transect_pkey 	INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	file_key      		INT,
 	transect_key    	INT,
@@ -557,12 +558,12 @@ CREATE TABLE t_file_transect
 	FOREIGN KEY (transect_key) REFERENCES t_transect(transect_pkey),
 	UNIQUE (file_key,transect_key) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_file_transect is 'Join table to manage the many-many relationship between t_file and t_transect.';
+--COMMENT ON TABLE t_file_transect is 'Join table to manage the many-many relationship between t_file and t_transect.';
 
 
 CREATE TABLE t_file_setup
 (
-	file_setup_pkey 	SERIAL PRIMARY KEY,
+	file_setup_pkey 	INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	file_key      		INT,
 	setup_key    		INT,
@@ -573,12 +574,12 @@ CREATE TABLE t_file_setup
 	FOREIGN KEY (setup_key) REFERENCES t_setup(setup_pkey)
 	UNIQUE (file_key,setup_key) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_file_setup is 'Join table to manage the many-many relationship between t_file and t_setup.';
+--COMMENT ON TABLE t_file_setup is 'Join table to manage the many-many relationship between t_file and t_setup.';
 
 
 CREATE TABLE t_file_ancillary
 (
-	file_ancillary_pkey 	SERIAL PRIMARY KEY,
+	file_ancillary_pkey 	INTEGER PRIMARY KEY AUTOINCREMENT,
 	
 	file_key      			INT,
 	ancillary_key    		INT,
@@ -588,8 +589,7 @@ CREATE TABLE t_file_ancillary
 	FOREIGN KEY (ancillary_key) REFERENCES t_ancillary(ancillary_pkey)
 	UNIQUE (file_key,ancillary_key) ON CONFLICT IGNORE
 );
-COMMENT ON TABLE t_file_ancillary is 'Join table to manage the many-many relationship between t_file and t_ancillary.';
-
+--COMMENT ON TABLE t_file_ancillary is 'Join table to manage the many-many relationship between t_file and t_ancillary.';
 PRAGMA recursive_triggers = "1";
 PRAGMA foreign_keys = "1";
 

@@ -4,13 +4,29 @@ params_obj=params_cl();
 
 config_obj.EthernetAddress='';
 config_obj.IPAddress='';
-config_obj.SerialNumber='';
-config_obj.TransceiverName=config.soundername;
-% config_obj.TransceiverNumber=[];
-config_obj.TransceiverSoftwareVersion='';
-config_obj.TransceiverType='GPT';
 config_obj.ChannelID=config.channelid;
 config_obj.ChannelIdShort=config.channelid;
+%''GPT 200 kHz 00907205da23 5-1 ES200-7C'
+
+config_obj.SerialNumber='';
+config_obj.TransducerSerialNumber='';
+config_obj.TransceiverType='GPT';
+config_obj.TransducerName='';
+out=textscan(config_obj.ChannelID,'GPT %d kHz %s %d-%d %s');
+
+if ~isempty(out{2})
+    config_obj.SerialNumber=out{2}{1};
+end
+
+if ~isempty(out{5})
+    config_obj.TransducerName=out{5}{1};
+end
+
+config_obj.TransceiverName=config.soundername;
+% config_obj.TransceiverNumber=[];
+config_obj.TransceiverSoftwareVersion=-1;
+
+
 % config_obj.ChannelNumber=[];
 % config_obj.HWChannelConfiguration=[];
 % config_obj.MaxTxPowerTransceiver=[];
@@ -30,7 +46,6 @@ config_obj.FrequencyMinimum=config.frequency;
 config_obj.Gain=config.gaintable;
 config_obj.MaxTxPowerTransducer=0;
 config_obj.SaCorrection=config.sacorrectiontable;
-config_obj.TransducerName='';
 
 if ~isempty(pings)
     params_obj.Time=pings.time;

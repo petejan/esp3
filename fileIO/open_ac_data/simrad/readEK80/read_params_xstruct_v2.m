@@ -4,11 +4,11 @@ function params=read_params_xstruct_v2(xstruct)
 Channels=xstruct.Parameter.Channel;
 for i=1:length(Channels)
     if length(Channels)>1
-        Chanel=Channels{i};
+        Channel=Channels{i};
     else
-        Chanel=Channels;
+        Channel=Channels;
     end
-    params_temp=Chanel.Attributes;
+    params_temp=Channel.Attributes;
     att=fieldnames(params_temp);
     
     for j=1:length(att)

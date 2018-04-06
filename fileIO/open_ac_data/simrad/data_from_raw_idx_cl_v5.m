@@ -16,6 +16,11 @@ parse(p,path_f,idx_raw_obj,varargin{:});
 results=p.Results;
 Frequencies=results.Frequencies;
 
+trans_obj=transceiver_cl.empty();
+envdata=env_data_cl.empty();
+NMEA={};
+mru0_att=attitude_nav_cl.empty();
+
 filename=fullfile(path_f,idx_raw_obj.filename);
 
 ftype=get_ftype(filename);
@@ -24,7 +29,6 @@ load_bar_comp=results.load_bar_comp;
 block_len=results.block_len;
 
 array_type='double';
-
 
 
 switch ftype
@@ -41,16 +45,16 @@ switch ftype
         end
         
     case 'EK60'
-        fid=fopen(fullfile(path_f,idx_raw_obj.filename),'r');
-        
+        fid=fopen(fullfile(path_f,idx_raw_obj.filename),'r');        
         [header, freq] = readEKRaw_ReadHeader(fid);
+        fclose(fid);
         nb_trans_tot=length(freq);
         config_EK60=header.transceiver;
         
         CIDs=cell(1,nb_trans_tot);
         
         for uif=1:length(freq)
-            config_EK60(uif).soundername=header.header.soundername;
+            config_EK60(uif).soundername=deblank(header.header.soundername);
             CIDs{uif}=config_EK60(uif).channelid;
         end
         
@@ -124,8 +128,7 @@ for i=1:nb_trans
         for ifif=1:numel(fields)
             curr_data_name{i,ifif}=[curr_data_name_t{i} fields{ifif} '.bin'];
             fileID(i,ifif) = fopen(curr_data_name{i,ifif},'w');
-        end
-        
+        end       
     end
 end
 
@@ -152,6 +155,7 @@ idx_mru0=strcmp(idx_raw_obj.type_dg,'MRU0');
 mru0_att=attitude_nav_cl('Time',idx_raw_obj.time_dg(idx_mru0)');
 
 mode=cell(1,length(trans_obj));
+
 fid=fopen(filename,'r');
 
 if ~isempty(load_bar_comp)
@@ -186,8 +190,7 @@ envdata=env_data_cl.empty();
 
 for idg=1:nb_dg
     pos=ftell(fid);
-    
-    
+       
     if (idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN)<0
         disp('');
         continue;
@@ -252,11 +255,22 @@ for idg=1:nb_dg
                                                 fprintf('New parameter in Configuration XML: %s\n', props{iii});
                                             end
                                         end
-                                end
-                                
+                                end      
+                            end
+                            
+                            if isnumeric(trans_obj(idx).Config.SerialNumber)
+                                trans_obj(idx).Config.SerialNumber=num2str(trans_obj(idx).Config.SerialNumber);
+                            end
+                           
+                            if isnumeric(trans_obj(idx).Config.TransducerSerialNumber)
+                                trans_obj(idx).Config.TransducerSerialNumber=num2str(trans_obj(idx).Config.TransducerSerialNumber);
                             end
                             
                             trans_obj(idx).Config.XML_string=t_line;
+                            out=textscan(trans_obj(idx).Config.TransceiverName,'%s %d');
+                            if isempty(out{2})
+                                trans_obj(idx).Config.Serial=out{2};
+                            end
                         end
                     end
                 case 'Environment'
@@ -323,15 +337,16 @@ for idg=1:nb_dg
             end
             
         case 'NME0'
-            
-            fseek(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'cof');
-            i_nmea=i_nmea+1;
-            NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
-            if numel(NMEA.string{i_nmea})>=6
-                NMEA.type{i_nmea}=NMEA.string{i_nmea}(4:6);
-            else
-                NMEA.type{i_nmea}='';
-                %NMEA.string{i_nmea}
+            if  p.Results.GPSOnly<=1
+                fseek(fid,idx_raw_obj.pos_dg(idg)-pos+HEADER_LEN,'cof');
+                i_nmea=i_nmea+1;
+                NMEA.string{i_nmea}=fread(fid,idx_raw_obj.len_dg(idg)-HEADER_LEN,'*char', 'l')';
+                if numel(NMEA.string{i_nmea})>=6
+                    NMEA.type{i_nmea}=NMEA.string{i_nmea}(4:6);
+                else
+                    NMEA.type{i_nmea}='';
+                    %NMEA.string{i_nmea}
+                end
             end
         case 'FIL1'
             
@@ -636,9 +651,6 @@ for idx=1:nb_trans
     end
     trans_obj(idx).Params.Time=time_s;
 end
-
-
-
 
 
 switch ftype

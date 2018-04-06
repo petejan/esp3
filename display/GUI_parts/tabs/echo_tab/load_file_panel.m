@@ -20,7 +20,6 @@ globalPanel = javax.swing.JPanel(java.awt.BorderLayout);
 set(file_tab_comp.JPanelContainer,'units','normalized');
 file_tab_comp.JPanel.add(file_tab_comp.FileChooser);
 file_tab_comp.FileChooser.repaint();
-
 drawnow;
 
 % bgcolor = num2cell(get(main_figure, 'Color'));

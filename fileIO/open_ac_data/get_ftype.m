@@ -21,7 +21,7 @@ if exist(filename,'file')>0
         return;
     end
     fread(fid,1, 'int32', 'l');
-    [dgType, ~] =read_dgHeader(fid,0);
+    [dgType, ~] =read_dgHeader(fid,0);    
     fclose(fid);
     
     switch dgType
@@ -30,9 +30,11 @@ if exist(filename,'file')>0
         case 'CON0'
             ftype='EK60';
         otherwise
+            
             fid = fopen(filename,'r','b');
             dgType=fread(fid,1,'uint16');
             fclose(fid);
+            
             if hex2dec('FD02')==dgType
                 ftype='asl';
             else

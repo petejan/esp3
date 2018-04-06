@@ -11,15 +11,12 @@ addParameter(p, 'PathToAtt',    '', @(x) ischar(x));
 addParameter(p, 'Filename_Att', '', @(x) ischar(x));
 addParameter(p, 'PathToMemmap', def_path_to_mem,@ischar);
 addParameter(p, 'Frequencies',  []);
-addParameter(p, 'PingRange',    [1 inf]);
-addParameter(p, 'SampleRange',  [1 inf]);
 addParameter(p, 'Calibration',  []); %Calibration is a struct containing 3 fields:F,G0,SACORRECT.
 
 parse(p, Filename, varargin{:});
 
 layer = open_EK_file_stdalone(Filename, ...
     'PathToMemmap', p.Results.PathToMemmap,Path, 'Frequencies', p.Results.Frequencies,...
-    'PingRange', p.Results.PingRange, 'SampleRange', p.Results.SampleRange, ...
     'Calibration', p.Results.Calibration);
 
 if ~strcmp(p.Results.Filename_SVP, '')

@@ -23,3 +23,45 @@
 % COMMENT ON TABLE t_transducer is 'describes each (physical) transducer.';
 % 
 
+
+function transducer_pkey=add_transducer_to_t_transducer(ac_db_filename,varargin)
+
+p = inputParser;
+
+addRequired(p,'ac_db_filename',@ischar);
+addParameter(p,'transducer_manufacturer','',@ischar);
+addParameter(p,'transducer_model','',@ischar);
+addParameter(p,'transducer_beam_type_key',[],@isnumeric);
+addParameter(p,'transducer_serial','',@ischar);
+addParameter(p,'transducer_frequency_lower',[],@isnumeric);
+addParameter(p,'transducer_frequency_nominal',[],@isnumeric);
+addParameter(p,'transducer_frequency_upper',[],@isnumeric);
+addParameter(p,'transducer_psi',[],@isnumeric);
+addParameter(p,'transducer_beam_angle_major',[],@isnumeric);
+addParameter(p,'transducer_beam_angle_minor',[],@isnumeric);
+addParameter(p,'transducer_comments','',@ischar);
+
+parse(p,ac_db_filename,varargin{:});
+
+
+struct_in=p.Results;
+struct_in=rmfield(struct_in,'ac_db_filename');
+fields=fieldnames(struct_in);
+
+for ifi=1:numel(fields)
+    if ischar(p.Results.(fields{ifi}))
+        struct_in.(fields{ifi})={p.Results.(fields{ifi})};
+    else
+        struct_in.(fields{ifi})=p.Results.(fields{ifi});
+    end
+end
+
+t=struct2table(struct_in);
+
+dbconn=sqlite(ac_db_filename,'connect');  
+dbconn.insert('t_transducer',fieldnames(struct_in),t);
+
+dbconn.close();
+
+struct_in=rmfield(struct_in,'transducer_comments');
+[~,transducer_pkey]=get_cols_from_table(ac_db_filename,'t_transducer','input_struct',struct_in,'output_cols',{'transducer_pkey'});

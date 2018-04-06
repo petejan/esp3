@@ -196,7 +196,7 @@ for i_cell=1:length(Filename_cell)
         SvOffset = CalcSvOffset(data.freq(1,ic),params_obj.PulseLength(1));
         
         config_obj.PulseLength=nanmean(data.pulse_length(ic,:));
-        config_obj.BeamType='';
+        config_obj.BeamType=0;
         config_obj.BeamWidthAlongship=6;
         config_obj.BeamWidthAthwartship=6;
         config_obj.EquivalentBeamAngle=10*log10(calParms.BP(ic));

@@ -8,8 +8,6 @@ addRequired(p,'file_lst',@(x) ischar(x)||iscell(x));
 addParameter(p,'PathToMemmap',def_path_m,@ischar);
 addParameter(p,'Calibration',[]);
 addParameter(p,'Frequencies',[]);
-addParameter(p,'PingRange',[1 inf]);
-addParameter(p,'SampleRange',[1 inf]);
 addParameter(p,'FieldNames',{});
 addParameter(p,'GPSOnly',0);
 addParameter(p,'load_bar_comp',[]);

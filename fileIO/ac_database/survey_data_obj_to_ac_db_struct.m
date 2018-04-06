@@ -33,18 +33,21 @@ itr=1;
 for is=1:numel(survey_data_obj)
     for iss=1:numel(survey_data_obj{is})
         if  ~isempty(survey_data_obj{is}{iss})
-            struct_out.transect_name{itr}=survey_data_obj{is}{iss}.print_survey_data();
-            struct_out.transect_station{itr}='';
-            struct_out.transect_description{itr}='';
-            struct_out.transect_related_activity{itr}='';
-            struct_out.transect_start_time(itr)=survey_data_obj{is}{iss}.StartTime;
-            struct_out.transect_end_time(itr)=survey_data_obj{is}{iss}.EndTime;
-            struct_out.transect_snapshot(itr)=survey_data_obj{is}{iss}.Snapshot;
-            struct_out.transect_stratum{itr}=survey_data_obj{is}{iss}.Stratum;
-            struct_out.transect_type{itr}=survey_data_obj{is}{iss}.Type;
-            struct_out.transect_number(itr)=survey_data_obj{is}{iss}.Transect;
-            struct_out.transect_comments{itr}=survey_data_obj{is}{iss}.Comment;
-            itr=itr+1;
+            if ~(survey_data_obj{is}{iss}.Snapshot==0 && survey_data_obj{is}{iss}.Transect==0&& ...
+                 strcmpi(deblank(survey_data_obj{is}{iss}.Type),'')&&strcmpi(deblank(survey_data_obj{is}{iss}.Stratum),''))
+                struct_out.transect_name{itr}=survey_data_obj{is}{iss}.print_survey_data();
+                struct_out.transect_station{itr}='';
+                struct_out.transect_description{itr}='';
+                struct_out.transect_related_activity{itr}='';
+                struct_out.transect_start_time(itr)=survey_data_obj{is}{iss}.StartTime;
+                struct_out.transect_end_time(itr)=survey_data_obj{is}{iss}.EndTime;
+                struct_out.transect_snapshot(itr)=survey_data_obj{is}{iss}.Snapshot;
+                struct_out.transect_stratum{itr}=survey_data_obj{is}{iss}.Stratum;
+                struct_out.transect_type{itr}=survey_data_obj{is}{iss}.Type;
+                struct_out.transect_number(itr)=survey_data_obj{is}{iss}.Transect;
+                struct_out.transect_comments{itr}=survey_data_obj{is}{iss}.Comment;
+                itr=itr+1;
+            end
         end
     end
 end

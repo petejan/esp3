@@ -1,6 +1,10 @@
 function bot_range=get_bottom_range(trans_obj,varargin)
-
+bot_range=[];
 range=trans_obj.get_transceiver_range();
+
+if isempty(range)
+    return;
+end
 nb_pings=length(trans_obj.get_transceiver_pings());
 
 Bottom_idx=trans_obj.Bottom.Sample_idx;

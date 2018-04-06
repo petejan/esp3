@@ -48,7 +48,6 @@ end
 %
 % frewind(fid);
 
-
 start_time=0;
 end_time=1;
 
