@@ -168,6 +168,7 @@ for ilay=1:length(new_layers)
         for ifi=1:length(file_pkey{ilay})
             idx_keep=gps_data.Time>=start_time(ifi)&gps_data.Time<=end_time(ifi);
             if any(idx_keep)
+                try
                 add_nav_to_t_navigation(ac_db_filename,...
                     'navigation_file_key',file_pkey{ilay}(ifi),...
                     'navigation_time',gps_data.Time(idx_keep),...
@@ -175,6 +176,10 @@ for ilay=1:length(new_layers)
                     'navigation_longitude',gps_data.Long(idx_keep),...
                     'navigation_depth',depth_re(idx_keep),...
                     'navigation_comments',gps_data.NMEA);
+                catch err
+                     disp(err.message);
+                     warning('populate_ac_db_from_folder:add_nav_to_t_navigation: Error while loading navigation to dB');
+                end
             end
         end
         nb_trans=numel(lay_obj.Transceivers);

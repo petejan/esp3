@@ -16,7 +16,7 @@ try
     
     curr_disp=init_grid_val(main_figure);
     [dx,dy]=curr_disp.get_dx_dy();
-    
+
     switch curr_disp.Xaxes_current
         case 'seconds'
             xdata_grid=trans_obj.Time(idx_pings);
@@ -26,8 +26,10 @@ try
         case 'meters'
             xdata_grid=trans_obj.GPSDataPing.Dist();
             if  ~any(~isnan(trans_obj.GPSDataPing.Lat))
-                disp('NO GPS Data');
+                disp('No GPS Data');
                 curr_disp.Xaxes_current='pings';
+                curr_disp=init_grid_val(main_figure);
+                [dx,dy]=curr_disp.get_dx_dy();
                 xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
             else
                 xdata_grid=xdata_grid(idx_pings);
@@ -36,8 +38,7 @@ try
             xdata_grid=trans_obj.get_transceiver_pings(idx_pings);
     end
     
-   
-    
+     
     ydata_grid=trans_obj.get_transceiver_range(idx_r);
     
     dxmin=2;

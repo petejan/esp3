@@ -56,6 +56,9 @@ for i=1:nb_files
         end
         [~,file_tmp,ext_tmp]=fileparts(files{i});
         struct_in.file_name{i}=[file_tmp ext_tmp];
+        if struct_in.file_start_time{i}>struct_in.file_end_time{i}
+            idx_rem=union(idx_rem,i);
+        end
     catch
         idx_rem=union(idx_rem,i);
         fprintf('Error getting Start time for %s\n',files{i});

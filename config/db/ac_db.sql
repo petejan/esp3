@@ -1,4 +1,4 @@
-/* NIWA-MPI ACOUSTIC DATABASE GENERATION SCRIPT, version 0.7 (Schimel, 05 Apr 2018, 12:50)
+/* NIWA-MPI ACOUSTIC DATABASE GENERATION SCRIPT, version 0.1.4 (Ladroit, 09 Apr 2018, 9:00)
 
 * This text file is the SQL script that, when executed with psql, creates the content tables of the acoustic database.
 * It follows as much as possible the ICES metadata convention, augmented for NIWA-MPI needs.
@@ -194,8 +194,9 @@ CREATE TABLE t_mission_deployment
 
 	mission_deployment_comments	TEXT, -- Free text field for relevant information not captured by other attributes
 
-	FOREIGN KEY (mission_key) REFERENCES t_mission(mission_pkey),
+	FOREIGN KEY (mission_key) REFERENCES t_mission(mission_pkey)
 	FOREIGN KEY (deployment_key) REFERENCES t_deployment(deployment_pkey)
+	UNIQUE (mission_key,mission_key) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_mission_deployment is 'Join table to manage the many-many relationship between t_mission and t_deployment.';
 
@@ -590,14 +591,12 @@ CREATE TABLE t_file_ancillary
 );
 COMMENT ON TABLE t_file_ancillary is 'Join table to manage the many-many relationship between t_file and t_ancillary.';
 
+/* ----- PRAGMAS ----- */
 PRAGMA recursive_triggers = "1";
 PRAGMA foreign_keys = "1";
 
-
-/* ----- TRIGGERS ----- 
+/* ----- TRIGGERS -----  */
 to help for many to many relationships
-*/
-
 
 /* CREATE TRIGGER t_transect_after_insert_trigger 
 AFTER INSERT ON t_transect 

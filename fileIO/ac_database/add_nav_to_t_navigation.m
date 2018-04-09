@@ -116,10 +116,15 @@ end
 if~isdeployed()
     fprintf('Number of points: %.0f\nReduced Number of points in navigation table:%.0f\n',numel(p.Results.navigation_time),numel(id_keep))
 end
+
 struct_in.navigation_time=cellfun(@(x) datestr(x,'yyyy-mm-dd HH:MM:SS'),num2cell(struct_in.navigation_time),'un',0);
 
 t=struct2table(struct_in);
-
-dbconn=sqlite(ac_db_filename,'connect');
-dbconn.insert('t_navigation',fieldnames(struct_in),t);
-dbconn.close();
+try
+    dbconn=sqlite(ac_db_filename,'connect');
+    dbconn.insert('t_navigation',fieldnames(struct_in),t);
+    dbconn.close();
+catch err
+    disp(err.message);
+    warning('add_nav_to_t_navigation:Error while executing sql query');
+end

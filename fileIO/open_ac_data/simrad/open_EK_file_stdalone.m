@@ -401,9 +401,9 @@ if ~isequal(Filename_cell, 0)
             warning('Could not open files %s\n',Filename);
             [~,f_temp,e_temp]=fileparts(err.stack(1).file);
             warning('Error in file %s, line %d\n',[f_temp e_temp],err.stack(1).line);
-%             if ~isdeployed
-%                 rethrow(err);
-%             end
+            if ~isdeployed
+                rethrow(err);
+            end
         end
     end
     
