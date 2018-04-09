@@ -6,7 +6,7 @@ r_corr = Np/2*dr;
 range_tvg=range-(r_corr);
 range_tvg(range_tvg<0)=0;
 
-diff_db=2*alpha*range_tvg-2*alpha_ori*range_tvg;
+diff_db=-2*(alpha_ori-alpha)*range_tvg;
 
 end
 

@@ -20,8 +20,8 @@ end
 trans_obj.set_cal(struct('G0',new_cal.G0,'SACORRECT',new_cal.SACORRECT));
 
 diff_db_sv=2*(old_cal.SACORRECT-new_cal.SACORRECT)+2*(old_cal.G0-new_cal.G0);
-trans_obj.Data.add_to_sub_data('sv',diff_db_sv)
+trans_obj.Data.add_to_sub_data('sv',diff_db_sv);
 diff_db_sp=2*(old_cal.G0-new_cal.G0);
-trans_obj.Data.add_to_sub_data('sv',diff_db_sp)
+trans_obj.Data.add_to_sub_data('sp',diff_db_sp);
 end
 
