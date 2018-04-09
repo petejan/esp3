@@ -274,15 +274,21 @@ for isn=1:length(snaps)
         regs=regs_t{idx_f};
         shadow_height_est=shadow_height_est_t{idx_f};
         
-        if isempty(output_2D_surf)
+        if isempty(output_2D_surf)&&isempty(output_2D_bot)
              warning('Nothing to integrate in Snapshot %.0f Stratum %s Transect %d in layer %d\n',snap_num,strat_name,trans_num,ilay);
             continue;
         end
-             
-        num_slice=size(output_2D_surf.eint,2);
         
-        surf_slice_int=nansum(output_2D_surf.eint);
-        good_pings_surf=nanmax(output_2D_surf.Nb_good_pings,[],1);
+        if ~isempty(output_2D_surf)
+            num_slice=size(output_2D_surf.eint,2);
+        else
+            num_slice=size(output_2D_bot.eint,2);
+        end
+             
+        if ~isempty(output_2D_surf) 
+            surf_slice_int=nansum(output_2D_surf.eint);
+            good_pings_surf=nanmax(output_2D_surf.Nb_good_pings,[],1);
+        end
         
         if ~isempty(output_2D_bot)
             bot_slice_int=nansum(output_2D_bot.eint);
@@ -303,22 +309,22 @@ for isn=1:length(snaps)
         reg_descr_table=[reg_descr_table;reg_descr_table_n];
      
         if  surv_in_obj.Options.ExportSlicedTransects>0   
-            
-            outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d_surf.csv',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
-            
-            if exist(outputFileXLS,'file')>0
-                delete(outputFileXLS);
+             
+            if ~isempty(output_2D_surf)
+                outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d_surf.csv',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));   
+                if exist(outputFileXLS,'file')>0
+                    delete(outputFileXLS);
+                end
+                
+                reg_output_table=reg_output_to_table(output_2D_surf);
+                writetable(reg_output_table,outputFileXLS);
             end
-            
-            reg_output_table=reg_output_to_table(output_2D_surf);            
-            writetable(reg_output_table,outputFileXLS);
-            
             
             if ~isempty(output_2D_bot)
                 outputFileXLS = fullfile(p.Results.PathToResults,sprintf('%s_snap_%d_strat_%s_trans_%d_%d_bot.csv',surv_in_obj.Infos.Title,snap_num,strat_name,trans_num,ir));
-            if exist(outputFileXLS,'file')>0
-                delete(outputFileXLS);
-            end
+                if exist(outputFileXLS,'file')>0
+                    delete(outputFileXLS);
+                end
                 reg_output_table=reg_output_to_table(output_2D_bot);
                 writetable(reg_output_table,outputFileXLS);
             end

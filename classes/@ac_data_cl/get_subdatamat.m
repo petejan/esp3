@@ -21,6 +21,7 @@ if isempty(idx_ping)
 end
 
 [idx,found]=find_field_idx(data,lower(deblank(field)));
+
 sc=data.SubData(idx).Scale;
 if found
     datamat=nan(length(idx_r),length(idx_ping));
@@ -50,7 +51,7 @@ if found
                 otherwise
                     val=0;
             end
-            data_tmp=data.SubData(idx).ConvFactor*double(data_tmp);
+            data_tmp=double(data.SubData(idx).ConvFactor)*double(data_tmp);
             data_tmp(idx_nan)=val;
             datamat(:,idx_ping_temp)=data_tmp;
         end

@@ -71,12 +71,13 @@ if isa(trans_obj,'transceiver_cl')
 %profile on;
     %output_reg_old=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1); 
      output_reg=trans_obj.integrate_region_v5(reg_obj,'line_obj',p.Results.line_obj,'denoised',1,'load_bar_comp',p.Results.load_bar_comp);
-% 
+
 %      profile off;
 %      profile viewer;
-%output_reg_old=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1); 
-    %compare_reg_output(output_reg,output_reg_old,reg_obj.Reference);
-     
+% output_reg_old=trans_obj.integrate_region_v4(reg_obj,'line_obj',p.Results.line_obj,'denoised',1); 
+% output_reg_old=trans_obj.integrate_region_v3(reg_obj,'line_obj',p.Results.line_obj,'denoised',1); 
+% compare_reg_output(output_reg,output_reg_old,reg_obj.Reference);
+  
     tt=sprintf('%s %s %.0f kHz ' ,field,p.Results.Name,trans_obj.Params.FrequencyStart(1)/1e3 );
     
 else
