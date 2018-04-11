@@ -247,7 +247,4 @@ switch class(Ext_obj)
         obj.LongLim=lon_lim;
 end
 
-[obj.LatLim,obj.LongLim]=ext_lat_lon_lim(obj.LatLim,obj.LongLim,0.2);
-
-
 end

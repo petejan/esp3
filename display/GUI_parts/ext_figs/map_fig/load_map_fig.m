@@ -23,10 +23,9 @@ else
             list_Str=list_survey(obj_vec);
     end
 end
-box.lat_lim=[nan nan];
-box.lon_lim=[nan nan];
 
-
+box.proj= init_proj('Mercator',box.lon_box,box.lat_box);
+[box.lat_box,box.lon_box]=ext_lat_lon_lim(box.lat_box,box.lon_box,0.1);
 [box.lat_lim,box.lon_lim]=ext_lat_lon_lim(box.lat_box,box.lon_box,0.1);
 
 if nansum(isnan(box.lat_lim))==2
@@ -38,15 +37,15 @@ box.val_max=0.000001;
 box.r_max=2;
 box.nb_pts=100;
 proj=m_getproj;
-box.list_proj_str={proj(:).name};
 box.proj= init_proj('Mercator',box.lon_lim,box.lat_lim);
+box.list_proj_str={proj(:).name};
+
 if isempty(box.proj)
     return;
 end
 box.proj_idx=find(strcmp(box.proj,box.list_proj_str));
 
 box.depth_contour_size=1000;
-
 
 map_fig =new_echo_figure(main_fig,'Units','pixels','Position',[100 100 800 600],...
     'Resize','off',...

@@ -6,7 +6,7 @@ multi_freq_tab.setting_panel=uipanel(multi_freq_tab.parent_tab,'Position',[0 0 1
 
 gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_3(7,3,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
+pos=create_pos_3(6,3,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 p_button=pos{5,3}{1};
 
  uicontrol(...

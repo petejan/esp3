@@ -217,7 +217,7 @@ try
             end
              map_info.Proj= init_proj('Mercator',LongLim,LatLim);   
             [LatLim,LongLim]=ext_lat_lon_lim(LatLim,LongLim,0.3);
-            map_info.Proj= init_proj('Mercator',LongLim,LatLim);
+                map_info.Proj= init_proj('Mercator',LongLim,LatLim);
             map_info.LatLim=LatLim;
             map_info.LongLim=LongLim;
             

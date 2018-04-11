@@ -42,7 +42,7 @@ track_target_tab_comp.track_target_tab=uitab(algo_tab_panel,'Title','Target Trac
 
 gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_3(7,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
+pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{6,1}{1};
 p_button(3)=gui_fmt.button_w;
@@ -110,7 +110,7 @@ track_target_tab_comp.Min_Pings_Track=uicontrol(accept,gui_fmt.edtStyle,'pos',po
 uicontrol(accept,gui_fmt.txtStyle,'string','MaxPingGap #','pos',pos{4,1}{1});
 track_target_tab_comp.Max_Gap_Track=uicontrol(accept,gui_fmt.edtStyle,'pos',pos{4,1}{2},'string',num2str(2),'callback',{@check_box,[0 100]});
 
-track_target_tab_comp.IgnoreAttitude=uicontrol(accept,'Style','checkbox','Value',0,'String','Ignore Attitude','Position',pos{5,1}{1});
+track_target_tab_comp.IgnoreAttitude=uicontrol(accept,gui_fmt.chckboxStyle,'Value',0,'String','Ignore Attitude','Position',pos{5,1}{1});
 
 
 uicontrol(accept,gui_fmt.pushbtnStyle,'String','Apply','pos',p_button+[1*gui_fmt.button_w 0 0 0],'callback',{@validate,main_figure});

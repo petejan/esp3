@@ -1,7 +1,6 @@
 function map_mbs_scripts_callback(~,~,hObject_main)
 
-app_path=getappdata(main_figure,'App_path');
-
+app_path=getappdata(hObject_main,'App_path');
 
 [Filename,PathToFile]= uigetfile( {fullfile(app_path.results,'*')}, 'Pick an MBS output file','MultiSelect','on');
 if ~isequal(Filename, 0)

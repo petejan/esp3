@@ -11,7 +11,7 @@ range_diff_str=0;
 
 gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_3(7,3,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
+pos=create_pos_3(6,3,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 p_button=pos{3,2}{1};
 
 
@@ -50,8 +50,6 @@ p_button(3)=gui_fmt.button_w;
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Use as Offset','pos',p_button,'callback',{@offset_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Disp. Offset','pos',p_button+[p_button(3) 0 0 0],'callback',{@display_offset_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Remove Offset','pos',p_button+2*[p_button(3) 0 0 0],'callback',{@remove_offset_callback,main_figure});
-
-
 
 
 %set(findall(lines_tab_comp.lines_tab, '-property', 'Enable'), 'Enable', 'off');

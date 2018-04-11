@@ -125,7 +125,7 @@ uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.txtStyle,'string','Back Thr(dB)'
 bottom_tab_v2_comp.thr_backstep=uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.edtStyle,'pos',pos{4,1}{2},'string',num2str(varin.thr_backstep),'callback',{@ check_fmt_box,-12,6,varin.thr_backstep,'%.0f'});
 
 
-uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.txtStyle,'string','Around Echo Thr(dB)','pos',pos{1,2}{1});
+uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.txtStyle,'string','Echo Thr(dB)','pos',pos{1,2}{1});
 bottom_tab_v2_comp.thr_echo=uicontrol(bottom_tab_v2_comp.bottom_tab,gui_fmt.edtStyle,'pos',pos{1,2}{2},'string',num2str(varin.thr_echo),'callback',{@ check_fmt_box,-60,-3,varin.thr_echo,'%.0f'});
 
 

@@ -2,7 +2,7 @@
 function resize_echo(main_figure,~)
 
 pix_pos=getpixelposition(main_figure);
-pan_height=270;
+pan_height=get_top_panel_height(6);
 
 echo_tab_panel=getappdata(main_figure,'echo_tab_panel');
 opt_panel=getappdata(main_figure,'option_tab_panel');
