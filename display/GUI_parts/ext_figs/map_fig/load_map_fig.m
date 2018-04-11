@@ -25,7 +25,6 @@ else
 end
 
 box.proj= init_proj('Mercator',box.lon_box,box.lat_box);
-[box.lat_box,box.lon_box]=ext_lat_lon_lim(box.lat_box,box.lon_box,0.1);
 [box.lat_lim,box.lon_lim]=ext_lat_lon_lim(box.lat_box,box.lon_box,0.1);
 
 if nansum(isnan(box.lat_lim))==2
