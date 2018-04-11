@@ -15,7 +15,7 @@ end
 curr_disp=getappdata(main_figure,'Curr_disp');
 layer_obj=getappdata(main_figure,'Layer');
 
-opt_panel_size=[0 pos_tab(4)-600+1 300 600];
+opt_panel_size=[0 pos_tab(4)-550+1 300 550];
 ax_panel_size=[opt_panel_size(3) 0 pos_tab(3)-opt_panel_size(3) pos_tab(4)];
 
 echo_int_tab_comp.opt_panel=uipanel(echo_int_tab_comp.echo_int_tab,'units','pixels','BackgroundColor','white','position',opt_panel_size);
@@ -59,9 +59,9 @@ set(echo_int_tab_comp.main_plot,'facealpha','flat','edgecolor','none','AlphaData
 
 %%%%%%Option Panel on the left side%%%%
 %integration parameters
-nb_rows=17;
+nb_rows=18;
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=70;
+gui_fmt.txt_w=gui_fmt.txt_w*0.8;
 pos=create_pos_3(nb_rows,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtTitleStyle,'String','Parameters','Position',pos{1,1}{1}+[0 0 gui_fmt.txt_w 0]);
 
@@ -97,8 +97,8 @@ echo_int_tab_comp.cell_h_unit_curr=get(echo_int_tab_comp.cell_h_unit,'value');
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','R min(m)','Position',pos{5,1}{1});
 echo_int_tab_comp.r_min=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,'position',pos{5,1}{2},'string',0,'Tag','rmin','callback',{@check_fmt_box,0,Inf,0,'%.1f'});
 
-uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','R max(m)','Position',pos{5,2}{1});
-echo_int_tab_comp.r_max=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,'position',pos{5,2}{2},'string',Inf,'Tag','rmax','callback',{@check_fmt_box,0,Inf,Inf,'%.1f'});
+uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtStyle,'String','R max(m)','Position',pos{6,1}{1});
+echo_int_tab_comp.r_max=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,'position',pos{6,1}{2},'string',Inf,'Tag','rmax','callback',{@check_fmt_box,0,Inf,Inf,'%.1f'});
 
 
 
@@ -107,11 +107,11 @@ set(echo_int_tab_comp.cell_w_unit ,'callback',{@tog_units,main_figure,echo_int_t
 set(echo_int_tab_comp.cell_h_unit ,'callback',{@tog_units,main_figure,echo_int_tab_comp});
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=150;
+gui_fmt.txt_w=gui_fmt.txt_w*1.4;
 pos=create_pos_3(nb_rows,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.txt_w,gui_fmt.box_h);
 
-echo_int_tab_comp.denoised=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.chckboxStyle,'Value',0,'String','Denoised data','Position',pos{6,1}{1});
-echo_int_tab_comp.motion_corr=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.chckboxStyle,'Value',0,'String','Motion Correction','Position',pos{6,1}{2});
+echo_int_tab_comp.denoised=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.chckboxStyle,'Value',0,'String','Denoised data','Position',pos{7,1}{1});
+echo_int_tab_comp.motion_corr=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.chckboxStyle,'Value',0,'String','Motion Correction','Position',pos{7,1}{2});
 echo_int_tab_comp.shadow_zone=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.chckboxStyle,'Value',0,'String','Shadow zone Est. (m)','Position',pos{7,1}{1},'visible','off');
 echo_int_tab_comp.shadow_zone_h=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.edtStyle,'position',pos{7,1}{2}+[0 0 gui_fmt.box_w-gui_fmt.txt_w 0],'string','10','callback',{@ check_fmt_box,0,inf,10,'%.1f'},'visible','off');
 echo_int_tab_comp.rm_st=uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.chckboxStyle,'Value',0,'String','Rm.Single Targets','Position',pos{8,1}{1});
@@ -132,7 +132,7 @@ set(echo_int_tab_comp.echo_int_tab,'ResizeFcn',{@resize_echo_int_cback,main_figu
 
 
 %display part
-init_disp=12;
+init_disp=13;
 uicontrol(echo_int_tab_comp.opt_panel,gui_fmt.txtTitleStyle,'String','Display','Position',pos{init_disp,1}{1});
 ref={'Surface','Bottom'};
 ref_idx=find(strcmp(ref,'Surface'));
@@ -295,7 +295,7 @@ switch echo_int_tab_comp.echo_int_tab.Type
     case 'figure'
         pos_tab=getpixelposition(echo_int_tab_comp.echo_int_tab);
 end
-opt_panel_size=[0 pos_tab(4)-600+1 300 600];
+opt_panel_size=[0 pos_tab(4)-550+1 300 550];
 ax_panel_size=[opt_panel_size(3) 0 pos_tab(3)-opt_panel_size(3) pos_tab(4)];
 set(echo_int_tab_comp.opt_panel,'position',opt_panel_size);
 set(echo_int_tab_comp.ax_panel,'position',ax_panel_size);

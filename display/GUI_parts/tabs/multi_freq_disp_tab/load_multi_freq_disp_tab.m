@@ -17,8 +17,8 @@ switch tab_panel.Type
 end
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=120;
-gui_fmt.y_sep=5;
+gui_fmt.txt_w=gui_fmt.txt_w*3/2;
+
 size_tab=getpixelposition(multi_freq_disp_tab_comp.multi_freq_disp_tab);
 
 height=nanmin(size_tab(4)-20,80);
@@ -56,7 +56,7 @@ set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_
  multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.opt_panel,gui_fmt.chckboxStyle,...
      'position',pos{4,1}{1},'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
  multi_freq_disp_tab_comp.show_sd_bar=uicontrol(multi_freq_disp_tab_comp.opt_panel,gui_fmt.chckboxStyle,...
-     'BackgroundColor','White','units','pixels','position',pos{4,2}{1},'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+     'position',pos{4,2}{1},'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
 
 columnname = {'Name' 'Tag' 'Disp' 'ID'};
 columnformat = {'char' 'char','logical','char'};

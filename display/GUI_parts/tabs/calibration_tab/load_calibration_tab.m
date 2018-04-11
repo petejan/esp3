@@ -20,20 +20,20 @@ envdata=env_data_cl();
 curr_sal=envdata.Salinity;
 curr_temp=envdata.Temperature;
 curr_ss=envdata.SoundSpeed;
-curr_abs=10;
+curr_abs=10/1e3;
 calibration_tab_comp.cal_group=uipanel(calibration_tab_comp.calibration_tab,'Position',[0 0.0 0.5 1],'title','Calibration','units','norm','BackgroundColor','white');
 
 calibration_tab_comp.calibration_txt=uicontrol(calibration_tab_comp.cal_group,gui_fmt.txtTitleStyle,...
     'String',sprintf('Current Channel: %.0f kHz',curr_disp.Freq/1e3),'Position',pos{1,1}{1}+[0 0 gui_fmt.txt_w 0]);
 
 uicontrol(calibration_tab_comp.cal_group,gui_fmt.txtStyle,'String','Gain (dB)','Position',pos{2,1}{1});
-calibration_tab_comp.G0=uicontrol(calibration_tab_comp.cal_group,'style','edit','position',pos{2,1}{2},'string','25.00','callback',{@apply_calibration,main_figure},'enable','off');
+calibration_tab_comp.G0=uicontrol(calibration_tab_comp.cal_group,gui_fmt.edtStyle,'position',pos{2,1}{2},'string','25.00','callback',{@apply_calibration,main_figure},'enable','off');
 
 uicontrol(calibration_tab_comp.cal_group,gui_fmt.txtStyle,'String','Sa Corr (dB)','Position',pos{3,1}{1});
-calibration_tab_comp.SACORRECT=uicontrol(calibration_tab_comp.cal_group,'style','edit','position',pos{3,1}{2},'string','0.00','callback',{@apply_calibration,main_figure},'enable','off');
+calibration_tab_comp.SACORRECT=uicontrol(calibration_tab_comp.cal_group,gui_fmt.edtStyle,'position',pos{3,1}{2},'string','0.00','callback',{@apply_calibration,main_figure},'enable','off');
 
 %         uicontrol(calibration_tab_comp.cal_group,gui_fmt.txtStyle,'String','ES Corr (dB)','Position',pos{4,1}{1});
-%         calibration_tab_comp.EsOffset=uicontrol(calibration_tab_comp.cal_group,'style','edit','position',pos{4,1}{2},'string',num2str(trans_obj.Config.EsOffset,'%.2f'),'callback',{@apply_triangle_wave_corr_cback,main_figure});
+%         calibration_tab_comp.EsOffset=uicontrol(calibration_tab_comp.cal_group,gui_fmt.edtStyle,'position',pos{4,1}{2},'string',num2str(trans_obj.Config.EsOffset,'%.2f'),'callback',{@apply_triangle_wave_corr_cback,main_figure});
 %
 %         if trans_obj.need_escorr()==0
 %             set(calibration_tab_comp.EsOffset,'Enable','off');
@@ -58,23 +58,23 @@ calibration_tab_comp.att_model=uicontrol(calibration_tab_comp.env_group,gui_fmt.
     'position',pos{1,1}{1}+[0 0 gui_fmt.txt_w 0],'callback',{@update_values,main_figure});
 
 uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'String','Depth(m)','Position',pos{2,1}{1});
-calibration_tab_comp.depth=uicontrol(calibration_tab_comp.env_group,'style','edit','position',pos{2,1}{2},'string',num2str(5,'%.0f'),'callback',{@update_values,main_figure});
+calibration_tab_comp.depth=uicontrol(calibration_tab_comp.env_group,gui_fmt.edtStyle,'position',pos{2,1}{2},'string',num2str(5,'%.0f'),'callback',{@update_values,main_figure});
 
 uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'String','SS(m/s)','Position',pos{3,1}{1});
-calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.env_group,'style','edit','position',pos{3,1}{2},'string',num2str(curr_ss,'%.0f'),'callback',{@update_values,main_figure});
+calibration_tab_comp.soundspeed=uicontrol(calibration_tab_comp.env_group,gui_fmt.edtStyle,'position',pos{3,1}{2},'string',num2str(curr_ss,'%.0f'),'callback',{@update_values,main_figure});
 calibration_tab_comp.soundspeed_over=uicontrol(calibration_tab_comp.env_group,gui_fmt.chckboxStyle,'position',pos{3,1}{2}+[gui_fmt.box_w+gui_fmt.x_sep 0 0 0],'callback',{@update_values,main_figure});
 
 uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'String','Att.(dB/km)','Position',pos{4,1}{1});
-calibration_tab_comp.att=uicontrol(calibration_tab_comp.env_group,'style','edit','position',pos{4,1}{2},'string',num2str(curr_abs*1e3,'%.1f'),'callback',{@update_values,main_figure});
+calibration_tab_comp.att=uicontrol(calibration_tab_comp.env_group,gui_fmt.edtStyle,'position',pos{4,1}{2},'string',num2str(curr_abs*1e3,'%.1f'),'callback',{@update_values,main_figure});
 calibration_tab_comp.att_over=uicontrol(calibration_tab_comp.env_group,gui_fmt.chckboxStyle,'position',pos{4,1}{2}+[gui_fmt.box_w+gui_fmt.x_sep 0 0 0],'callback',{@update_values,main_figure});
 
 uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'String',sprintf('Temp.(%cC)',char(hex2dec('00BA'))),'Position',pos{5,1}{1});
-calibration_tab_comp.temp=uicontrol(calibration_tab_comp.env_group,'style','edit','position',pos{5,1}{2},'string',num2str(curr_temp,'%.1f'),'callback',{@update_values,main_figure});
+calibration_tab_comp.temp=uicontrol(calibration_tab_comp.env_group,gui_fmt.edtStyle,'position',pos{5,1}{2},'string',num2str(curr_temp,'%.1f'),'callback',{@update_values,main_figure});
 
 str=uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'String','Salinity.(PSU)','Position',pos{6,1}{1});
-calibration_tab_comp.sal=uicontrol(calibration_tab_comp.env_group,'style','edit','position',pos{6,1}{2},'string',num2str(curr_sal,'%.0f'),'callback',{@update_values,main_figure});
+calibration_tab_comp.sal=uicontrol(calibration_tab_comp.env_group,gui_fmt.edtStyle,'position',pos{6,1}{2},'string',num2str(curr_sal,'%.0f'),'callback',{@update_values,main_figure});
 
-calibration_tab_comp.string_cal=uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'position',pos{7,2}{1}+[0 0 gui_fmt.box_w*2 5*str.FontSize],...
+calibration_tab_comp.string_cal=uicontrol(calibration_tab_comp.env_group,gui_fmt.txtStyle,'position',pos{7,2}{1}+[0 0 gui_fmt.box_w*2 4],...
     'string',sprintf('Currently used values:\n Soundspeed: %.1f m/s\n Absorbtion %.2f dB/km\n Salinity %.0f PSU \n Temperature %.1f deg C.\n',...
     curr_ss,curr_abs*1e3,curr_sal,curr_temp),'HorizontalAlignment','left');
 

@@ -46,7 +46,7 @@ if ~isappdata(main_figure,'Axes_panel')
     axes_panel=uitab(echo_tab_panel,'BackgroundColor',[1 1 1],'tag','axes_panel');
     load_axis_panel(main_figure,axes_panel);
     display_tab_comp=getappdata(main_figure,'Display_tab');
-    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 1 0.60]);
+    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 1 0.70]);
 end
 
 opt_panel=getappdata(main_figure,'option_tab_panel');
@@ -93,7 +93,7 @@ try
     update_mini_ax(main_figure,new);
 catch
     display_tab_comp=getappdata(main_figure,'Display_tab');
-    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 1 0.60]);
+    load_mini_axes(main_figure,display_tab_comp.display_tab,[0 0 1 0.70]);
     update_mini_ax(main_figure,new);
 end
 opt_panel.SelectedTab=sel_tab;

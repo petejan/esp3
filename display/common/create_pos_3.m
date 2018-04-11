@@ -9,8 +9,6 @@ for i=1:n
     end
 end
 
-
-
 pos=flipud(pos);
 
 end

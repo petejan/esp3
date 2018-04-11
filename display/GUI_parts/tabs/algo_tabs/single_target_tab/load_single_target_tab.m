@@ -7,7 +7,7 @@ algo=algo_cl('Name','SingleTarget');
 varin=algo.Varargin;
 
 gui_fmt=init_gui_fmt_struct();
-
+gui_fmt.txt_w=gui_fmt.txt_w*1.2;
 pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{5,1}{1};

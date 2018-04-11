@@ -45,7 +45,7 @@ switch tab_panel.Type
 end
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=70;
+gui_fmt.txt_w=gui_fmt.txt_w*2/3;
 pos=create_pos_3(7,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{6,1}{1};

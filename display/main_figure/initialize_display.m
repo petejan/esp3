@@ -36,7 +36,7 @@
 %% Function
 function initialize_display(main_figure)
 
-pan_height=300;
+pan_height=270;
 pix_pos=getpixelposition(main_figure);
 opt_panel=uitabgroup(main_figure,'Units','pixels','Position',[0 pix_pos(4)-pan_height 0.5*pix_pos(3) pan_height]);
 algo_panel=uitabgroup(main_figure,'Units','pixels','Position',[0.5*pix_pos(3) pix_pos(4)-pan_height 0.5*pix_pos(3) pan_height]);

@@ -37,11 +37,14 @@ function init_java_fcn(main_figure)
 %%% Java stuff in case of first-time loading
 
 size_max = get(0, 'MonitorPositions');
+pos_main=getpixelposition(main_figure);
+[~,id_screen]=nanmin(abs(size_max(:,1)-pos_main(1)));
+
 try
     javaFrame = get(main_figure,'JavaFrame');
     % Set minimum size of the figure
     jProx = javaFrame.fHG2Client.getWindow;
-    jProx.setMinimumSize(java.awt.Dimension(size_max(1,3)/4*3,size_max(1,4)/4*3));
+    jProx.setMinimumSize(java.awt.Dimension(size_max(id_screen,3)/4*3,size_max(id_screen,4)/4*3));
     setappdata(main_figure,'javaWindow',jProx);
     %jFrame.setMaximized(true);
     

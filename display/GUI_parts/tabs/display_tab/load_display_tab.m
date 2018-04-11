@@ -39,10 +39,11 @@ function load_display_tab(main_figure,option_tab_panel)
 curr_disp=getappdata(main_figure,'Curr_disp');
 display_tab_comp.display_tab=uitab(option_tab_panel,'Title','Display Option');
 nb_col=6;
-size_bttn_grp=[0 0.6 1 0.4];
+size_bttn_grp=[0 0.7 1 0.3];
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=40;
-gui_fmt.box_w=80;
+gui_fmt.txt_w=gui_fmt.txt_w/2.5;
+gui_fmt.box_w=gui_fmt.box_w*2;
+
 pos=create_pos_3(2,nb_col,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 display_tab_comp.top_button_group=uipanel(display_tab_comp.display_tab,'units','norm','Position',size_bttn_grp);
@@ -69,7 +70,7 @@ set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_c
 cax=[0 1];
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=60;
+gui_fmt.txt_w=gui_fmt.txt_w/1.85;
 pos=create_pos_3(2,nb_col,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 
@@ -77,7 +78,7 @@ uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'String','TS(dB)','
 display_tab_comp.TS=uicontrol(display_tab_comp.top_button_group,gui_fmt.edtStyle,'position',pos{1,4}{2},...
     'string',-50,'callback',{@set_TS_cback,main_figure},'TooltipString','TS used for Fish density estimation display');
 
-uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'String','Transp.%','Position',pos{2,4}{1});
+uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'String','Trans.%','Position',pos{2,4}{1});
 display_tab_comp.trans_bot=uicontrol(display_tab_comp.top_button_group,gui_fmt.edtStyle,'position',pos{2,4}{2},...
     'string',num2str(curr_disp.UnderBotTransparency,'%.0f'),'callback',{@set_bot_trans_cback,main_figure},'TooltipString','Under Bottom Data Transparency');
 

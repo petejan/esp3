@@ -39,16 +39,12 @@ function load_bottom_tab(main_figure,algo_tab_panel)
 
 gui_fmt=init_gui_fmt_struct();
 
-pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
+pos=create_pos_3(5,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{5,1}{1};
 p_button(3)=gui_fmt.button_w;
 
-
-
 tab_main=uitab(algo_tab_panel,'Title','Bottom Detect');
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%Version 1%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 algo=algo_cl('Name','BottomDetection');

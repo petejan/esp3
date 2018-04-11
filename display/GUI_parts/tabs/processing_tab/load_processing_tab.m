@@ -39,7 +39,7 @@ function load_processing_tab(main_figure,option_tab_panel)
 
 processing_tab_comp.processing_tab=uitab(option_tab_panel,'Title','Processing');
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=140;
+gui_fmt.txt_w=gui_fmt.txt_w*1.5;
 
 pos=cell(8,4);
 for j=1:8

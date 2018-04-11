@@ -13,7 +13,6 @@ gui_fmt=init_gui_fmt_struct();
 
 pos=create_pos_3(7,3,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 p_button=pos{3,2}{1};
-p_button(3)=gui_fmt.button_w;
 
 
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.txtStyle,'String','Lines','Position',pos{1,2}{1});
@@ -39,15 +38,13 @@ uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String',str_draw,'pos',
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String',str_delete,'pos',p_button+[p_button(3) 0 0 0],'callback',{@delete_line_callback,main_figure});
 
 
-gui_fmt.button_w=100;
+gui_fmt.button_w=gui_fmt.button_w*2;
 p_button=pos{4,3}{1};
 p_button(3)=gui_fmt.button_w;
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Import','pos',p_button,'callback',{@import_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Save to XML','pos',p_button+[p_button(3) 0 0 0],'callback',{@export_line_callback,main_figure});
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Load from XML','pos',p_button+2*[p_button(3) 0 0 0],'callback',{@import_line_xml_callback,main_figure});
 
-
-gui_fmt.button_w=100;
 p_button=pos{5,3}{1};
 p_button(3)=gui_fmt.button_w;
 uicontrol(lines_tab_comp.lines_tab,gui_fmt.pushbtnStyle,'String','Use as Offset','pos',p_button,'callback',{@offset_line_callback,main_figure});

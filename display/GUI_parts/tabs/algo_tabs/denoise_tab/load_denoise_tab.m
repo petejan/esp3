@@ -39,13 +39,13 @@ function load_denoise_tab(main_figure,algo_tab_panel)
 
 denoise_tab_comp.denoise_tab=uitab(algo_tab_panel,'Title','Denoise');
 
-
 algo=algo_cl('Name','Denoise');
 varin=algo.Varargin;
 
 gui_fmt=init_gui_fmt_struct();
+gui_fmt.txt_w=gui_fmt.txt_w*2;
 
-pos=create_pos_3(6,2,gui_fmt.x_sep,gui_fmt.y_sep,150,gui_fmt.box_w,gui_fmt.box_h);
+pos=create_pos_3(5,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 p_button=pos{5,1}{1};
 p_button(3)=gui_fmt.button_w;

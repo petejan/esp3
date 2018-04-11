@@ -47,7 +47,7 @@ pos=create_pos_3(7,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui
 p_button=pos{6,1}{1};
 p_button(3)=gui_fmt.button_w;
 
-next_w=[gui_fmt.x_sep+gui_fmt.box_w 0 0 0   ];
+next_w=[gui_fmt.x_sep+gui_fmt.box_w 0 0 0];
 
 alpha_beta=uipanel(track_target_tab_comp.track_target_tab,'title','Alpha/Beta tracking','Position',[0.0 0.0 0.45 1],'fontsize',11,'Tag','alpha_beta');
 

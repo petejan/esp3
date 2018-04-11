@@ -1,17 +1,18 @@
 function fig_handle=new_echo_figure(main_figure,varargin)
 
-size_max = get(0, 'MonitorPositions');
 
 def_pos=[0.2 0.2 0.6 0.6];
+
+size_max = get(0, 'MonitorPositions');
 
 if ~isempty(main_figure)
     pos_main=getpixelposition(main_figure);
 else
     pos_main=size_max(1,:);
 end
-
+[~,id_screen]=nanmin(abs(size_max(:,1)-pos_main(1)));
 if size(size_max,1)>1
-    [~,id_screen]=nanmin(abs(size_max(:,1)-pos_main(1)));
+    
     size_max(id_screen,:)=[];
 end
 

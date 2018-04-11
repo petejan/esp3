@@ -13,7 +13,12 @@ main_axes=axes_panel_comp.main_axes;
 haxes=axes_panel_comp.haxes;
 vaxes=axes_panel_comp.vaxes;
 
-new_fig=new_echo_figure(main_figure,'Units','Pixels','Position',get(0,'ScreenSize'),...
+
+size_max = get(0, 'MonitorPositions');
+pos_main=getpixelposition(main_figure);
+[~,id_screen]=nanmin(abs(size_max(:,1)-pos_main(1)));
+
+new_fig=new_echo_figure(main_figure,'Units','Pixels','Position',size_max(id_screen,:),...
     'Name','','Tag','save_echo');
 pos=get(new_fig,'position');
 set(new_fig,'Alphamap',main_figure.Alphamap);
