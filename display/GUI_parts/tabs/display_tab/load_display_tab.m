@@ -57,20 +57,20 @@ display_tab_comp.tog_type=uicontrol(display_tab_comp.top_button_group,gui_fmt.po
     'Callback',{@choose_field,main_figure});
 
 uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'String','X grid:','Position',pos{1,2}{1});
-display_tab_comp.grid_x=uicontrol(display_tab_comp.top_button_group,gui_fmt.edtStyle,'position',pos{1,2}{2},'string','');
-display_tab_comp.tog_axes=uicontrol(display_tab_comp.top_button_group,gui_fmt.popumenuStyle,'String','--','Value',1,'Position',pos{1,2}{2}+[gui_fmt.box_w+gui_fmt.x_sep 0 0 0],...
+display_tab_comp.grid_x=uicontrol(display_tab_comp.top_button_group,gui_fmt.edtStyle,'position',pos{1,2}{2}+[0 0 -gui_fmt.box_w/2 0],'string','');
+display_tab_comp.tog_axes=uicontrol(display_tab_comp.top_button_group,gui_fmt.popumenuStyle,'String','--','Value',1,'Position',pos{1,2}{2}+[gui_fmt.box_w/2+gui_fmt.x_sep 0 0 0],...
     'Callback',{@choose_Xaxes,main_figure});
 
 uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'String','Y grid:','Position',pos{2,2}{1});
-display_tab_comp.grid_y=uicontrol(display_tab_comp.top_button_group,gui_fmt.edtStyle,'position',pos{2,2}{2},'string','');
-display_tab_comp.grid_y_unit=uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'position',pos{2,2}{2}+[gui_fmt.box_w+gui_fmt.x_sep 0 0 0],'string','meters');
+display_tab_comp.grid_y=uicontrol(display_tab_comp.top_button_group,gui_fmt.edtStyle,'position',pos{2,2}{2}+[0 0 -gui_fmt.box_w/2 0],'string','');
+display_tab_comp.grid_y_unit=uicontrol(display_tab_comp.top_button_group,gui_fmt.txtStyle,'position',pos{2,2}{2}+[gui_fmt.box_w/2+gui_fmt.x_sep 0 0 0],'string','meters');
 
 set([display_tab_comp.grid_x display_tab_comp.grid_y],'callback',{@change_grid_callback,main_figure})
 
 cax=[0 1];
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=gui_fmt.txt_w/1.85;
+gui_fmt.txt_w=gui_fmt.txt_w/1.9;
 pos=create_pos_3(2,nb_col,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 
 

@@ -10,7 +10,7 @@ if isempty(f_fpkeys)
     return;
 end
 
-dbconn=sqlite(ac_db_filename,'connect');
+dbconn=connect_to_db(ac_db_filename);
 sql_query=sprintf('SELECT file_key FROM t_file_transect WHERE transect_key IN (%s)',strjoin(cellfun(@num2str,num2cell(t_pkeys),'un',0),','));
 f_pkeys=dbconn.fetch(sql_query);
 dbconn.close();

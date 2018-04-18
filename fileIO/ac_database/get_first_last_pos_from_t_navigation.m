@@ -10,7 +10,7 @@ t_end=[];
 query_first=sprintf('SELECT navigation_latitude,navigation_longitude,navigation_time FROM t_navigation WHERE navigation_file_key=%d ORDER BY navigation_time ASC LIMIT 1',navigation_file_key);
 query_last=sprintf('SELECT navigation_latitude,navigation_longitude,navigation_time FROM t_navigation  WHERE navigation_file_key=%d ORDER BY navigation_time DESC LIMIT 1',navigation_file_key);
 
-dbconn=sqlite(ac_db_filename,'connect');  
+dbconn=connect_to_db(ac_db_filename);  
 data_first=dbconn.fetch(query_first);
 data_last=dbconn.fetch(query_last);
 dbconn.close();

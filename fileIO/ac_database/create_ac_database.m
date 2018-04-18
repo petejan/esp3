@@ -29,7 +29,7 @@ idx_command=strfind(str_sql,');');
 idx_command=[-1 idx_command];
 
 if overwrite_db==0
-    dbconn=sqlite(ac_db_filename,'connect');  
+    dbconn=connect_to_db(ac_db_filename);  
 else
     dbconn=sqlite(ac_db_filename,'create');  
 end
@@ -52,18 +52,14 @@ end
 
 dbconn.close();
 
-% user = '';
-% password = '';
-% driver = 'org.sqlite.JDBC';
-% protocol = 'jdbc';
-% subprotocol = 'sqlite';
-% resource = ac_db_filename;
-% url = strjoin({protocol, subprotocol, resource}, ':');
-% dbconn = database(ac_db_filename, user, password, driver, url);
-% dbconn.exec("PRAGMA recursive_triggers = ""1"";");
-% dbconn.exec("PRAGMA foreign_keys = ""1"";");
-% 
-% dbconn.close();
+
+
+dbconn=connect_to_db(ac_db_filename);
+
+dbconn.exec("PRAGMA recursive_triggers = ON;");
+dbconn.exec("PRAGMA foreign_keys = ON;");
+
+dbconn.close();
 
 
 

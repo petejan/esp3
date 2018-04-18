@@ -32,7 +32,6 @@ parse(p,ac_db_filename,varargin{:});
 struct_in=p.Results.mission_struct;
 
 struct_in.mission_start_date=cellfun(@(x) datestr(x,'yyyy-mm-dd'),num2cell(struct_in.mission_start_date),'un',0);
-
 struct_in.mission_end_date=cellfun(@(x) datestr(x,'yyyy-mm-dd'),num2cell(struct_in.mission_end_date),'un',0);
 
 
@@ -47,14 +46,16 @@ for ifi=1:numel(fields)
     end
 end
 
-t=struct2table(struct_in);
+% t=struct2table(struct_in);
+% 
+% dbconn=connect_to_db(ac_db_filename);  
+% dbconn.insert('t_mission',fieldnames(struct_in),t);
 
-dbconn=sqlite(ac_db_filename,'connect');  
-dbconn.insert('t_mission',fieldnames(struct_in),t);
+% dbconn.close();
 
-dbconn.close();
+struct_in_minus_key=rmfield(struct_in,{'mission_comments' 'mission_abstract' 'principal_investigator'});
 
-struct_in=rmfield(struct_in,'mission_comments');
-[~,mission_pkey]=get_cols_from_table(ac_db_filename,'t_mission','input_struct',struct_in,'output_cols',{'mission_pkey'});
+mission_pkey=insert_data_controlled(ac_db_filename,'t_mission',struct_in,struct_in_minus_key,'mission_pkey');
+
 
 end

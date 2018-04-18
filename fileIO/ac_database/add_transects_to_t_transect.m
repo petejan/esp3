@@ -40,7 +40,7 @@ end
 
 t=struct2table(ac_db_struct);
 
-dbconn=sqlite(ac_db_filename,'connect');
+dbconn=connect_to_db(ac_db_filename);
 dbconn.insert('t_transect',fieldnames(ac_db_struct),t);
 dbconn.close();
 

@@ -67,15 +67,16 @@ for ifi=1:numel(fields)
     end
 end
 
+% t=struct2table(struct_in);
+% 
+% dbconn=connect_to_db(ac_db_filename);  
+% dbconn.insert('t_deployment',fieldnames(struct_in),t);
+% 
+% dbconn.close();
 
-t=struct2table(struct_in);
+struct_in_minus_key=rmfield(struct_in,{'deployment_comments' 'deployment_northlimit' 'deployment_eastlimit' 'deployment_southlimit' 'deployment_westlimit' 'deployment_uplimit' 'deployment_downlimit'});
 
-dbconn=sqlite(ac_db_filename,'connect');  
-dbconn.insert('t_deployment',fieldnames(struct_in),t);
 
-dbconn.close();
-
-struct_in=rmfield(struct_in,{'deployment_comments' 'deployment_northlimit' 'deployment_eastlimit' 'deployment_southlimit' 'deployment_westlimit' 'deployment_uplimit' 'deployment_downlimit'});
-[~,deployment_pkey]=get_cols_from_table(ac_db_filename,'t_deployment','input_struct',struct_in,'output_cols',{'deployment_pkey'});
+deployment_pkey=insert_data_controlled(ac_db_filename,'t_deployment',struct_in,struct_in_minus_key,'deployment_pkey');
 
 end

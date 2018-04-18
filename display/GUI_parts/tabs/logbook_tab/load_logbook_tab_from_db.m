@@ -84,6 +84,15 @@ end
 %surv_data_struct=import_survey_data_db(db_file);
 
 dbconn=sqlite(db_file,'connect');
+% user = '';
+% password = '';
+% driver = 'org.sqlite.JDBC';
+% protocol = 'jdbc';
+% subprotocol = 'sqlite';
+% resource = db_file;
+% url = strjoin({protocol, subprotocol, resource}, ':');
+% dbconn = database(db_file, user, password, driver, url);
+
 
 data_survey=dbconn.fetch('select * from survey');
 dbconn.close();

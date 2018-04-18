@@ -17,7 +17,7 @@ function calibration_pkey=add_calibration_to_t_calibration(ac_db_filename,vararg
 p = inputParser;
 
 addRequired(p,'ac_db_filename',@ischar);
-addParameter(p,'calibration_date','',@ischar);
+addParameter(p,'calibration_date',0,@ischar);
 addParameter(p,'calibration_acquisition_method','',@ischar);
 addParameter(p,'calibration_processing_method','',@ischar);
 addParameter(p,'calibration_accuracy_estimate','',@ischar);
@@ -39,12 +39,20 @@ for ifi=1:numel(fields)
     end
 end
 
-t=struct2table(struct_in);
+struct_in.calibration_date=datestr(struct_in.calibration_date,'yyyy-mm-dd');
 
-dbconn=sqlite(ac_db_filename,'connect');  
-dbconn.insert('t_calibration',fieldnames(struct_in),t);
+% t=struct2table(struct_in);
+% 
+% dbconn=connect_to_db(ac_db_filename);  
+% dbconn.insert('t_calibration',fieldnames(struct_in),t);
+% dbconn.close();
+% 
+% struct_in=rmfield(struct_in,'calibration_comments');
+% [~,calibration_pkey]=get_cols_from_table(ac_db_filename,'t_calibration','input_struct',struct_in,'output_cols',{'calibration_pkey'});
 
-dbconn.close();
 
-struct_in=rmfield(struct_in,'calibration_comments');
-[~,calibration_pkey]=get_cols_from_table(ac_db_filename,'t_calibration','input_struct',struct_in,'output_cols',{'calibration_pkey'});
+struct_in_minus_key=rmfield(struct_in,'calibration_comments');
+
+calibration_pkey=insert_data_controlled(ac_db_filename,'t_calibration',struct_in,struct_in_minus_key,'calibration_pkey');
+
+

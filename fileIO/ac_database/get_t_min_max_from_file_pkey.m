@@ -9,7 +9,7 @@ sql_query=sprintf(['SELECT MIN(file_start_time),MAX(file_end_time))'....
 'from t_file where file_pkey IN (%s)'],...
      strjoin(str_cell(:),','));
 try
-    dbconn=sqlite(ac_db_filename,'connect');
+    dbconn=connect_to_db(ac_db_filename);
     output_vals=dbconn.fetch(sql_query);
     dbconn.close();
 catch err

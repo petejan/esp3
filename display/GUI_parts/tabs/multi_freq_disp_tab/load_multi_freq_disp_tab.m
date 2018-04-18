@@ -17,22 +17,22 @@ switch tab_panel.Type
 end
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=gui_fmt.txt_w*3/2;
+gui_fmt.txt_w=gui_fmt.txt_w*1.4;
 
 size_tab=getpixelposition(multi_freq_disp_tab_comp.multi_freq_disp_tab);
 
 height=nanmin(size_tab(4)-20,80);
-width=400;
+width=300;
 
 size_opt=[10 size_tab(4)-height width-20 height];
 ax_size=[size_opt(3)+size_opt(1) 0 size_tab(3)-size_opt(3) size_tab(4)];
-table_size=[size_opt(1) 0 size_opt(3) size_tab(4)-size_opt(4)];
+table_size=[size_opt(1) 5 size_opt(3) size_tab(4)-size_opt(4)-5];
 
 
 multi_freq_disp_tab_comp.ax=axes('Parent',multi_freq_disp_tab_comp.multi_freq_disp_tab,'Units','pixels','box','on',...
      'OuterPosition',ax_size,'visible','on','NextPlot','add','box','on');
  multi_freq_disp_tab_comp.ax.XAxis.TickLabelFormat='%.0f kHz';
- multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=0;
+ multi_freq_disp_tab_comp.ax.XAxis.TickLabelRotation=45;
  multi_freq_disp_tab_comp.ax.YAxis.TickLabelFormat='%.0fdB';
 grid(multi_freq_disp_tab_comp.ax,'on'); 
 
@@ -56,11 +56,10 @@ set([multi_freq_disp_tab_comp.ax_lim_cbox multi_freq_disp_tab_comp.thr_up multi_
  multi_freq_disp_tab_comp.detrend_cbox=uicontrol(multi_freq_disp_tab_comp.opt_panel,gui_fmt.chckboxStyle,...
      'position',pos{4,1}{1},'String','Normalize Curves','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
  multi_freq_disp_tab_comp.show_sd_bar=uicontrol(multi_freq_disp_tab_comp.opt_panel,gui_fmt.chckboxStyle,...
-     'position',pos{4,2}{1},'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
+     'position',pos{4,1}{1}+[gui_fmt.txt_w 0 0 0],'String','Show Error Bars','Value',0,'Callback',{@detrend_curves_cback,main_figure,tab_tag});
 
 columnname = {'Name' 'Tag' 'Disp' 'ID'};
 columnformat = {'char' 'char','logical','char'};
-
 
 
 multi_freq_disp_tab_comp.table = uitable('Parent', multi_freq_disp_tab_comp.multi_freq_disp_tab,...
@@ -112,11 +111,11 @@ multi_freq_disp_tab_comp=getappdata(main_figure,tab_tag);
 size_tab=getpixelposition(multi_freq_disp_tab_comp.multi_freq_disp_tab);
 
 height=nanmin(size_tab(4)-20,80);
-width=400;
+width=300;
 
 size_opt=[10 size_tab(4)-height width-20 height];
 ax_size=[size_opt(3)+size_opt(1) 0 size_tab(3)-size_opt(3) size_tab(4)];
-table_size=[size_opt(1) 0 size_opt(3) size_tab(4)-size_opt(4)];
+table_size=[size_opt(1) 5 size_opt(3) size_tab(4)-size_opt(4)-5];
 
 
 set(multi_freq_disp_tab_comp.opt_panel,'Position',size_opt);

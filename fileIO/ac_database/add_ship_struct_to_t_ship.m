@@ -1,7 +1,7 @@
 % CREATE TABLE t_ship
 % (
 % 	ship_pkey		SERIAL PRIMARY KEY,
-% 	
+%
 % 	ship_type_key		INT,	-- Describe type of ship that is hosting the acoustic instrumentation. See the lookup table t_ship_type (ICES ship_type and mission_platform)
 % 	ship_name 		TEXT, 	-- Name of the ship (ICES ship_name)
 % 	ship_code		TEXT,	-- For example, in-house code associated with ship (ICES ship_code). At NIWA, the three letters code (e.g. TAN for Tangaroa)
@@ -18,10 +18,10 @@
 % 	ship_engine_power	FLOAT,	-- The total power available for ship propulsion (ICES ship_engine_power)
 % 	ship_noise_design	TEXT,	-- For example, ICES 209 compliant (Mitson, 1995). Otherwise description of noise performance of the ship (ICES ship_noise_design)
 % 	ship_aknowledgement	TEXT,	-- Any users (include re-packagers) of these data are required to clearly acknowledge the source of the material in this format (ICES ship_aknowledgement)
-% 	
+%
 % 	ship_comments		TEXT,	-- Free text field for relevant information not captured by other attributes (ICES ship_comments)
-% 	
-% 	
+%
+%
 % 	UNIQUE(ship_IMO,ship_type_key,ship_name) ON CONFLICT IGNORE
 % 	FOREIGN KEY (ship_type_key) REFERENCES t_ship_type(ship_type_pkey)
 % );
@@ -42,19 +42,22 @@ fields=fieldnames(struct_in);
 for ifi=1:numel(fields)
     if ischar(struct_in.(fields{ifi}))
         struct_in.(fields{ifi})={struct_in.(fields{ifi})};
+    elseif isnumeric(struct_in.(fields{ifi}))
+        struct_in.(fields{ifi})=double(struct_in.(fields{ifi}));
     end
 end
 
 t=struct2table(struct_in);
 
-dbconn=sqlite(ac_db_filename,'connect');  
-%dbconn = database(ac_db_filename,'username','pwd','org.sqlite.JDBC','URL');
-dbconn.insert('t_ship',fieldnames(struct_in),t);
+% dbconn=connect_to_db(ac_db_filename);
+% dbconn.datainsert('t_ship',fieldnames(struct_in),t);
+% dbconn.close();
 
-dbconn.close();
+%datainsert_perso(ac_db_filename,'t_ship',t,'unique_conflict_handling','ON CONFLICT DO NOTHING');
 
-struct_in=rmfield(struct_in,'ship_comments');
+struct_in_minus_key=rmfield(struct_in,{'ship_comments'});
 
-[~,ship_pkey]=get_cols_from_table(ac_db_filename,'t_ship','input_struct',struct_in,'output_cols',{'ship_pkey'});
+ship_pkey=insert_data_controlled(ac_db_filename,'t_ship',struct_in,struct_in_minus_key,'ship_pkey');
+
 
 end

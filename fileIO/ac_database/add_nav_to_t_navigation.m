@@ -121,9 +121,10 @@ struct_in.navigation_time=cellfun(@(x) datestr(x,'yyyy-mm-dd HH:MM:SS'),num2cell
 
 t=struct2table(struct_in);
 try
-    dbconn=sqlite(ac_db_filename,'connect');
+    dbconn=connect_to_db(ac_db_filename);
     dbconn.insert('t_navigation',fieldnames(struct_in),t);
     dbconn.close();
+    
 catch err
     disp(err.message);
     warning('add_nav_to_t_navigation:Error while executing sql query');

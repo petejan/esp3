@@ -7,12 +7,13 @@ addParameter(p,'input_cols',{},@iscell);
 addParameter(p,'input_vals',{},@iscell);
 addParameter(p,'output_cols',{},@iscell);
 addParameter(p,'input_struct',struct.empty(),@isstruct);
+addParameter(p,'row_idx',[],@isnumeric);
 
 parse(p,ac_db_filename,table_name,varargin{:});
 
-
 output_cols=p.Results.output_cols;
 output_vals=[];
+
 
 if ~isempty(p.Results.input_vals)
     if numel(p.Results.input_cols)~=numel(p.Results.input_vals)
@@ -25,7 +26,24 @@ elseif ~isempty(p.Results.input_struct)
     input_cols=fieldnames(p.Results.input_struct);
     input_vals=cell(1,numel(input_cols));
     for iin=1:numel(input_cols)
-       input_vals{iin}=p.Results.input_struct.(input_cols{iin});
+        if ~isempty(p.Results.row_idx)
+            if iscell(p.Results.input_struct.(input_cols{iin}))
+                input_vals{iin}=p.Results.input_struct.(input_cols{iin})(p.Results.row_idx);
+            else
+                if ischar(p.Results.input_struct.(input_cols{iin})(p.Results.row_idx))
+                    input_vals{iin}=p.Results.input_struct.(input_cols{iin}){p.Results.row_idx};
+                else
+                    input_vals{iin}=p.Results.input_struct.(input_cols{iin})(p.Results.row_idx);
+                end
+            end
+        else
+             if ischar(p.Results.input_struct.(input_cols{iin})(p.Results.row_idx))
+                    input_vals{iin}={p.Results.input_struct.(input_cols{iin})};
+                else
+                    input_vals{iin}=p.Results.input_struct.(input_cols{iin});
+                end
+ 
+        end
     end
 else
     return;
@@ -41,12 +59,14 @@ for i_comb=1:nb_comb
     for i_in=1:numel(input_cols)
         if ~isempty(input_vals{i_in})
             if ischar(input_vals{i_in})
-                inputs_cell{i_in}=sprintf('%s IS "%s"',input_cols{i_in},input_vals{i_in});
+                input_vals{i_in}{i_comb}=strrep(input_vals{i_in}{i_comb},'''',''''''); 
+                inputs_cell{i_in}=sprintf('%s = ''%s''',input_cols{i_in},input_vals{i_in});
             elseif iscell(input_vals{i_in})
                 if isnumeric(input_vals{i_in}{i_comb})
                     inputs_cell{i_in}=sprintf('%s = %f',input_cols{i_in},input_vals{i_in}{i_comb});
                 else
-                    inputs_cell{i_in}=sprintf('%s IS "%s"',input_cols{i_in},input_vals{i_in}{i_comb});
+                    input_vals{i_in}{i_comb}=strrep(input_vals{i_in}{i_comb},'''',''''''); 
+                    inputs_cell{i_in}=sprintf('%s = ''%s''',input_cols{i_in},input_vals{i_in}{i_comb});
                 end
             elseif isnumeric(input_vals{i_in})
                 inputs_cell{i_in}=sprintf('%s = %f',input_cols{i_in},input_vals{i_in}(i_comb));
@@ -68,7 +88,7 @@ end
 
 
 try
-    dbconn=sqlite(ac_db_filename,'connect');
+    dbconn=connect_to_db(ac_db_filename);
     if ~isempty(input_tot)
         sql_query=sprintf('SELECT %s FROM %s WHERE (%s)',out_str,p.Results.table_name,strjoin(input_tot,') OR ('));
     else
@@ -112,7 +132,7 @@ end
 % end
 % 
 % try
-%     dbconn=sqlite(ac_db_filename,'connect');
+%     dbconn=connect_to_db(ac_db_filename);
 %     if ~isempty(inputs_cell)
 %         sql_query=sprintf('SELECT %s FROM %s WHERE %s IN (%s)',out_str,p.Results.table_name,input_statement_start,strjoin(inputs_cell,','));
 %     else

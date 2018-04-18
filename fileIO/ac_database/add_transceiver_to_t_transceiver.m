@@ -46,7 +46,7 @@ end
 
 t=struct2table(struct_in);
 
-dbconn=sqlite(ac_db_filename,'connect');  
+dbconn=connect_to_db(ac_db_filename);  
 dbconn.insert('t_transceiver',fieldnames(struct_in),t);
 
 dbconn.close();

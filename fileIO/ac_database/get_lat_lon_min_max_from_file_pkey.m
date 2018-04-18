@@ -10,7 +10,7 @@ sql_query=sprintf(['SELECT MIN(navigation_latitude),MAX(navigation_latitude),MIN
 'from t_navigation where navigation_file_key IN (%s)'],...
      strjoin(str_cell(:),','));
 try
-    dbconn=sqlite(ac_db_filename,'connect');
+    dbconn=connect_to_db(ac_db_filename);
     output_vals=dbconn.fetch(sql_query);
     dbconn.close();
 catch err
@@ -19,8 +19,8 @@ catch err
 end
 
 if ~isempty(output_vals)
-    lat_min=output_vals{1};
-    lat_max=output_vals{2};
-    lon_min=output_vals{3};
-    lon_max=output_vals{4};   
+    lat_min=output_vals{1,1};
+    lat_max=output_vals{1,2};
+    lon_min=output_vals{1,3};
+    lon_max=output_vals{1,4};   
 end

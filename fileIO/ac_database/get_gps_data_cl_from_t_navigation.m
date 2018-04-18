@@ -15,7 +15,7 @@ end
 
 gps_data_cl_cell=cell(1,numel(files));
 
-dbconn=sqlite(ac_db_filename,'connect');  
+dbconn=connect_to_db(ac_db_filename);  
 
 [~,f_tmp,e_tmp]=cellfun(@fileparts,files,'un',0);
 filenames=cellfun(@strcat,f_tmp,e_tmp,'un',0);

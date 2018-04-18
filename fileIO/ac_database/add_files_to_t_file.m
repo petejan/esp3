@@ -91,11 +91,26 @@ else
     struct_in.file_end_time=cellfun(@(x) datestr(x,'yyyy-mm-dd HH:MM:SS'),num2cell(struct_in.file_end_time),'un',0);
 end
 
-t=struct2table(struct_in);
-dbconn=sqlite(ac_db_filename,'connect');  
-dbconn.insert('t_file',fieldnames(struct_in),t);
-sql_query=sprintf('SELECT file_pkey FROM t_file WHERE file_name IN ("%s") AND file_path IN ("%s")',strjoin(struct_in.file_name,'","'),strjoin(struct_in.file_path,'","'));
-file_pkeys=dbconn.fetch(sql_query);
-dbconn.close();
-file_pkeys=cell2mat(file_pkeys);
+% t=struct2table(struct_in);
+% dbconn=connect_to_db(ac_db_filename);  
+% dbconn.insert('t_file',fieldnames(struct_in),t);
+% 
+% sql_query=sprintf('SELECT file_pkey FROM t_file WHERE file_name IN ("%s") AND file_path IN ("%s")',strjoin(struct_in.file_name,'","'),strjoin(struct_in.file_path,'","'));
+% file_pkeys=dbconn.fetch(sql_query);
+% dbconn.close();
+
+% struct_in_minus_key=rmfield(struct_in,{'file_comments'});
+struct_in_minus_key=struct_in;
+file_pkeys=insert_data_controlled(ac_db_filename,'t_file',struct_in,struct_in_minus_key,'file_pkey');
+
+
+if istable(file_pkeys)
+    tmp=table2struct(file_pkeys,'ToScalar',true);
+    file_pkeys=tmp.file_pkey;
+end
+
+if iscell(file_pkeys)
+    file_pkeys=cell2mat(file_pkeys);
+end
+
 end

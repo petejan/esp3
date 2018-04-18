@@ -196,7 +196,7 @@ CREATE TABLE t_mission_deployment
 
 	FOREIGN KEY (mission_key) REFERENCES t_mission(mission_pkey)
 	FOREIGN KEY (deployment_key) REFERENCES t_deployment(deployment_pkey)
-	UNIQUE (mission_key,mission_key) ON CONFLICT IGNORE
+	UNIQUE (mission_key,deployment_key) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_mission_deployment is 'Join table to manage the many-many relationship between t_mission and t_deployment.';
 
@@ -319,7 +319,7 @@ CREATE TABLE t_parameters
 	parameters_FM_pulse_type	TEXT,	-- linear up-sweep, linear down-sweep, exponential up-sweep, exponential down-sweep, etc.
 	parameters_frequency_min	INT, 	-- see pulse type to see if upsweep or downsweep
 	parameters_frequency_max	INT, 	-- see pulse type to see if upsweep or downsweep
-	parameters_power			FLOAT, 	-- in W
+	parameters_power			FLOAT, 	-- in Watts
 	
 	parameters_comments			TEXT, 	-- Free text field for relevant information not captured by other attributes
 	
@@ -357,7 +357,7 @@ INSERT INTO t_transducer_orientation_type (transducer_orientation_type) VALUES (
 
 CREATE TABLE t_setup
 (
-	setup_pkey								SERIAL PRIMARY KEY,
+	setup_pkey								SERIAL PRIMARY KEY, --pk_t_setup
 
 	-- What instruments
 	setup_transceiver_key					INT,		-- Refers to attribute transceiver_pkey in t_transceiver
@@ -383,14 +383,14 @@ CREATE TABLE t_setup
 	
 	setup_comments							TEXT,		-- Free text field for relevant information not captured by other attributes (ICES instrument_comments)
 	
-	FOREIGN KEY (setup_platform_type_key) REFERENCES t_platform_type(platform_type_pkey),
+	FOREIGN KEY (setup_platform_type_key) REFERENCES t_platform_type(platform_type_pkey), --fk_t_setup__t_platform_type 
 	FOREIGN KEY (setup_transceiver_key) REFERENCES t_transceiver(transceiver_pkey),
 	FOREIGN KEY (setup_transducer_key) REFERENCES t_transducer(transducer_pkey),
 	FOREIGN KEY (setup_transducer_location_type_key) REFERENCES t_transducer_location_type(transducer_location_type_pkey),
 	FOREIGN KEY (setup_transducer_orientation_type_key) REFERENCES t_transducer_orientation_type(transducer_orientation_type_pkey),
-	FOREIGN KEY (setup_calibration_key) REFERENCES t_calibration(calibration_pkey)
-	FOREIGN KEY (setup_parameters_key) REFERENCES t_parameters(parameters_pkey)
-	UNIQUE (setup_platform_type_key,setup_transceiver_key,setup_transducer_key,setup_calibration_key,setup_parameters_key) ON CONFLICT IGNORE
+	FOREIGN KEY (setup_calibration_key) REFERENCES t_calibration(calibration_pkey),
+	FOREIGN KEY (setup_parameters_key) REFERENCES t_parameters(parameters_pkey),
+	UNIQUE (setup_platform_type_key,setup_transceiver_key,setup_transducer_key,setup_calibration_key,setup_parameters_key) ON CONFLICT IGNORE --ui_t_setup
 );
 COMMENT ON TABLE t_setup is 'Individual combinations of 1 transducer and 1 transceiver, on 1 platform/location, with 1 orientation, 1 appropriate calibration and 1 set of acquisition parameters, to which one channel in an acoustic file can be uniquely linked.';
 
@@ -469,7 +469,7 @@ CREATE TABLE t_file
 (
 	file_pkey   		SERIAL PRIMARY KEY,
 	
-	file_name			TEXT,	 	--
+	file_name			TEXT,	 	--file_server_name    TEXT,
 	file_path			TEXT, 		--
 	file_start_time		TIMESTAMP,	--
 	file_end_time		TIMESTAMP,	--

@@ -20,7 +20,7 @@ addParameter(p,'software_manufacturer','',@ischar);
 addParameter(p,'software_name','',@ischar);
 addParameter(p,'software_version','',@ischar);
 addParameter(p,'software_host','',@ischar);
-addParameter(p,'software_install_date','',@ischar);
+addParameter(p,'software_install_date',0,@isnumeric);
 addParameter(p,'software_comments','',@ischar);
 
 parse(p,ac_db_filename,varargin{:});
@@ -37,14 +37,15 @@ for ifi=1:numel(fields)
     end
 end
 
-t=struct2table(struct_in);
+% t=struct2table(struct_in);
+% 
+% dbconn=connect_to_db(ac_db_filename);  
+% dbconn.insert('t_software',fieldnames(struct_in),t);
+% 
+% dbconn.close();
+struct_in.software_install_date=datestr(struct_in.software_install_date,'yyyy-mm-dd');
+struct_in_minus_key=rmfield(struct_in,{'software_comments'});
 
-dbconn=sqlite(ac_db_filename,'connect');  
-dbconn.insert('t_software',fieldnames(struct_in),t);
-
-dbconn.close();
-
-struct_in=rmfield(struct_in,'software_comments');
-[~,software_pkey]=get_cols_from_table(ac_db_filename,'t_software','input_struct',struct_in,'output_cols',{'software_pkey'});
+software_pkey=insert_data_controlled(ac_db_filename,'t_software',struct_in,struct_in_minus_key,'software_pkey');
 
 end
