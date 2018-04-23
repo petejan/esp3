@@ -91,11 +91,7 @@ for ifi=1:numel(fields)
 end
 
 t=struct2table(struct_in);
-
-dbconn=connect_to_db(ac_db_filename);  
-dbconn.insert('t_deployment',fieldnames(struct_in),t);
-
-dbconn.close();
+datainsert_perso(ac_db_filename,'t_deployment',fieldnames(struct_in),t);
 
 struct_in=rmfield(struct_in,'deployment_comments');
 [~,deployment_pkey]=get_cols_from_table(ac_db_filename,'t_deployment','input_struct',struct_in,'output_cols',{'deployment_pkey'});

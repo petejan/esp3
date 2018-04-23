@@ -207,7 +207,7 @@ for uui=select
         
         
         new_echo_figure(main_figure,'Name',sprintf('%.0f kHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp%.0f',uui));
-        contourf(XI, YI, ZI)
+        contourf( YI,XI, ZI)
         hold on
         plot(AlongAngle_sph,AcrossAngle_sph,'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
         axis equal
@@ -223,7 +223,7 @@ for uui=select
         
         
         new_echo_figure(main_figure,'Name',sprintf('%.0f kHz Beam Pattern',Freq/1e3),'Tag',sprintf('Bp2%.0f',uui));
-        surf(XI, YI, ZI)
+        surf(YI,    XI, ZI)
         shading interp
         hold on;
         %surf(XI, YI, ZI_comp)
@@ -242,7 +242,7 @@ for uui=select
         idx_pings(idx_low)=[];
         range_sph(idx_low)=[];
         
-        if idx_freq==uui;
+        if idx_freq==uui
             hold(ah,'on');
             plot(ah,idx_pings,range(idx_peak),'.r','markersize',5);
             drawnow;

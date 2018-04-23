@@ -269,7 +269,7 @@ for idg=1:nb_dg
                             trans_obj(idx).Config.XML_string=t_line;
                             out=textscan(trans_obj(idx).Config.TransceiverName,'%s %d');
                             if isempty(out{2})
-                                trans_obj(idx).Config.Serial=out{2};
+                                trans_obj(idx).Config.SerialNumber=out{2};
                             end
                         end
                     end

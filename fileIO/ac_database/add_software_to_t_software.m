@@ -20,7 +20,7 @@ addParameter(p,'software_manufacturer','',@ischar);
 addParameter(p,'software_name','',@ischar);
 addParameter(p,'software_version','',@ischar);
 addParameter(p,'software_host','',@ischar);
-addParameter(p,'software_install_date',0,@isnumeric);
+addParameter(p,'software_install_date',now,@isnumeric);
 addParameter(p,'software_comments','',@ischar);
 
 parse(p,ac_db_filename,varargin{:});
@@ -43,7 +43,7 @@ end
 % dbconn.insert('t_software',fieldnames(struct_in),t);
 % 
 % dbconn.close();
-struct_in.software_install_date=datestr(struct_in.software_install_date,'yyyy-mm-dd');
+struct_in.software_install_date={datestr(struct_in.software_install_date,'yyyy-mm-dd')};
 struct_in_minus_key=rmfield(struct_in,{'software_comments'});
 
 software_pkey=insert_data_controlled(ac_db_filename,'t_software',struct_in,struct_in_minus_key,'software_pkey');

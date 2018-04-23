@@ -15,7 +15,7 @@ if istable(data)
 end
 col_names=fieldnames(data);
 
-[dbconn,db_type]=connect_to_db(ac_db_filename);
+[dbconn,~]=connect_to_db(ac_db_filename);
 
 col_num=numel(col_names);
 row_num=nan(1,col_num);

@@ -17,7 +17,7 @@ function calibration_pkey=add_calibration_to_t_calibration(ac_db_filename,vararg
 p = inputParser;
 
 addRequired(p,'ac_db_filename',@ischar);
-addParameter(p,'calibration_date',0,@ischar);
+addParameter(p,'calibration_date',now,@isnumeric);
 addParameter(p,'calibration_acquisition_method','',@ischar);
 addParameter(p,'calibration_processing_method','',@ischar);
 addParameter(p,'calibration_accuracy_estimate','',@ischar);
@@ -39,7 +39,7 @@ for ifi=1:numel(fields)
     end
 end
 
-struct_in.calibration_date=datestr(struct_in.calibration_date,'yyyy-mm-dd');
+struct_in.calibration_date={datestr(struct_in.calibration_date,'yyyy-mm-dd')};
 
 % t=struct2table(struct_in);
 % 

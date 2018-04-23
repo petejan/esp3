@@ -97,7 +97,7 @@ for uui=1:length(layer.Frequencies)
     
     new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp%.0f',uui));
     subplot(1,length(layer.Frequencies),uui)
-    contourf(XI, YI, ZI,10)
+    contourf(YI,XI,  ZI,10)
     hold on
     plot(AlongAngle_sph,AcrossAngle_sph,'+','MarkerSize',2,'MarkerEdgeColor',[.5 .5 .5])
     axis equal
@@ -111,7 +111,7 @@ for uui=1:length(layer.Frequencies)
     shading interp;
     
     new_echo_figure(main_figure,'Name','Beam Pattern','Tag',sprintf('Bp2%.0f',uui));
-    surf(XI, YI, ZI)
+    surf( YI,XI, ZI)
     hold on;
     %surf(XI, YI, ZI_comp)
     axis equal

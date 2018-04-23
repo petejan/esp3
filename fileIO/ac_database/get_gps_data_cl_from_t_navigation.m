@@ -22,6 +22,11 @@ filenames=cellfun(@strcat,f_tmp,e_tmp,'un',0);
 
 sql_query=sprintf('SELECT file_pkey,file_name FROM t_file WHERE file_name IN ("%s")',strjoin(filenames,'","'));
 output=dbconn.fetch(sql_query);
+
+if istable(output)
+    output=table2cell(output);
+end
+
 if ~isempty(output)
     file_pkeys=(output(:,1));
     file_pkeys_vec=cell2mat(output(:,1));
@@ -34,6 +39,11 @@ end
 if ~isempty(file_pkeys)
     sql_query=sprintf('SELECT navigation_latitude,navigation_longitude,navigation_time,navigation_file_key FROM t_navigation WHERE navigation_file_key IN (%s)',strjoin(cellfun(@num2str,file_pkeys,'un',0),','));
     gps_data_f=dbconn.fetch(sql_query);
+    
+    if istable(gps_data_f)
+        gps_data_f=table2cell(gps_data_f);
+    end
+    
     if ~isempty(gps_data_f)
         lat=cell2mat(gps_data_f(:,1));
         lon=cell2mat(gps_data_f(:,2));

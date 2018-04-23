@@ -30,7 +30,7 @@ ax_size=[size_opt(3)+size_opt(1) 0 size_tab(3)-size_opt(3) size_tab(4)];
 map_tab_comp.opt_panel=uibuttongroup(map_tab_comp.map_tab,'units','pixels','Position',size_opt,'Title','Options','background','white');
 
 gui_fmt=init_gui_fmt_struct();
-gui_fmt.txt_w=gui_fmt.txt_w*2;
+gui_fmt.txt_w=gui_fmt.txt_w;
 pos=create_pos_3(5,2,gui_fmt.x_sep,gui_fmt.y_sep,gui_fmt.txt_w,gui_fmt.box_w,gui_fmt.box_h);
 %
 %  uicontrol(...

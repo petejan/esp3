@@ -196,7 +196,7 @@ CREATE TABLE t_mission_deployment
 
 	FOREIGN KEY (mission_key) REFERENCES t_mission(mission_pkey)
 	FOREIGN KEY (deployment_key) REFERENCES t_deployment(deployment_pkey)
-	UNIQUE (mission_key,mission_key) ON CONFLICT IGNORE
+	UNIQUE (mission_key,deployment_key) ON CONFLICT IGNORE
 );
 COMMENT ON TABLE t_mission_deployment is 'Join table to manage the many-many relationship between t_mission and t_deployment.';
 

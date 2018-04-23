@@ -24,27 +24,27 @@ end
 
 create_ac_database(ac_db_filename,p.Results.overwrite_db);
 
-[~,platform_type_pkey]=get_cols_from_table(ac_db_filename,'t_platform_type','input_cols',{'platform_type'},'input_vals',{p.Results.platform_type},...
+[~,platform_type_pkey]=get_cols_from_table(ac_db_filename,'t_platform_type','input_cols',{'platform_type'},'input_vals',{{p.Results.platform_type}},...
     'output_cols',{'platform_type_pkey'});
 if isempty(platform_type_pkey)
-   warning('Invalid platform_type, cannot load this mission'); 
-   return;
+    warning('Invalid platform_type, cannot load this mission');
+    return;
 end
 
-[~,transducer_orientation_type_pkey]=get_cols_from_table(ac_db_filename,'t_transducer_orientation_type','input_cols',{'transducer_orientation_type'},'input_vals',{p.Results.transducer_orientation_type},...
+[~,transducer_orientation_type_pkey]=get_cols_from_table(ac_db_filename,'t_transducer_orientation_type','input_cols',{'transducer_orientation_type'},'input_vals',{{p.Results.transducer_orientation_type}},...
     'output_cols',{'transducer_orientation_type_pkey'});
 
 if isempty(transducer_orientation_type_pkey)
-   warning('Invalid transducer_orientation_type, cannot load this mission'); 
-   return;
+    warning('Invalid transducer_orientation_type, cannot load this mission');
+    return;
 end
 
-[~,transducer_location_type_pkey]=get_cols_from_table(ac_db_filename,'t_transducer_location_type','input_cols',{'transducer_location_type'},'input_vals',{p.Results.transducer_location_type},...
+[~,transducer_location_type_pkey]=get_cols_from_table(ac_db_filename,'t_transducer_location_type','input_cols',{'transducer_location_type'},'input_vals',{{p.Results.transducer_location_type}},...
     'output_cols',{'transducer_location_type_pkey'});
 
 if isempty(transducer_location_type_pkey)
-   warning('Invalid transducer_location_type, cannot load this mission'); 
-   return;
+    warning('Invalid transducer_location_type, cannot load this mission');
+    return;
 end
 
 dir_raw=dir(fullfile(path_f,'*.raw'));
@@ -70,7 +70,7 @@ else
 end
 
 all_layer=open_EK_file_stdalone(Filenames,'GPSOnly',GPS_only,'load_bar_comp',load_bar_comp);
-    
+
 idx_gp=find(GPS_only==2);
 
 for ilay=idx_gp
@@ -83,8 +83,9 @@ end
 
 all_layers_sorted=all_layer.sort_per_survey_data();
 
-load_bar_comp.status_bar.setText('Shuffling layers');
-
+if ~isempty(load_bar_comp)
+    load_bar_comp.status_bar.setText('Shuffling layers');
+end
 new_layers=[];
 
 for icell=1:length(all_layers_sorted)
@@ -96,13 +97,13 @@ if isempty(new_layers)
 end
 
 new_layers.load_echo_logbook_db();
-
-load_bar_comp.status_bar.setText('Loading Ac db');
-
+if ~isempty(load_bar_comp)
+    load_bar_comp.status_bar.setText('Loading Ac db');
+end
 if isempty(p.Results.deployment_pkey)
     deployment_pkey=add_deployment_struct_to_t_deployment(ac_db_filename,'deployment_struct',init_deployment_struct());
 else
-    deployment_pkey{1}=p.Results.deployment_pkey;
+    deployment_pkey=p.Results.deployment_pkey;
 end
 
 
@@ -113,14 +114,12 @@ transceiver_pkey=cell(1,numel(new_layers));
 
 calibration_pkey=cell(1,numel(new_layers));
 parameters_pkey=cell(1,numel(new_layers));
-
 transect_pkey=cell(1,numel(new_layers));
 file_pkey=cell(1,numel(new_layers));
 software_pkey=cell(1,numel(new_layers));
 
 for ilay=1:length(new_layers)
-    lay_obj=new_layers(ilay);
-    
+    lay_obj=new_layers(ilay);    
     gps_data=lay_obj.GPSData;
     
     switch lay_obj.Filetype
@@ -143,42 +142,44 @@ for ilay=1:length(new_layers)
         'software_name',s_name,...
         'software_version',s_ver,...
         'software_host','',...
-        'software_install_date',0,...
+        'software_install_date',now,...
         'software_comments','');
     
     [start_time,end_time]=lay_obj.get_time_bound_files();
     
     file_pkey{ilay}=add_files_to_t_file(ac_db_filename,lay_obj.Filename,...
         'file_path',path_f,...
-        'file_software_key',software_pkey{ilay}{1,1},...
+        'file_software_key',software_pkey{ilay},...
         'file_start_time',start_time,...
         'file_end_time',end_time);
-    
-    
+        
     %file_pkey{ilay}=get_file_pkey_from_ac_db(ac_db_filename,lay_obj.Filename);
     ac_db_struct=survey_data_obj_to_ac_db_struct({lay_obj.SurveyData});
     transect_pkey{ilay}=add_transects_to_t_transect(ac_db_filename,ac_db_struct);
     calibration_pkey{ilay}=add_calibration_to_t_calibration(ac_db_filename);
     
     if ~isempty(gps_data)
-        %         depth=lay_obj.Transceivers(1).get_bottom_depth();
-        %         depth_re=resample_data_v2(depth,lay_obj.Transceivers(1).Time,gps_data.Time);
-        %
-        depth_re=nan(1,numel(gps_data.Time));
+        try
+            depth=lay_obj.Transceivers(1).get_bottom_depth();
+            depth_re=resample_data_v2(depth,lay_obj.Transceivers(1).Time,gps_data.Time);
+        catch
+            depth_re=zeros(1,numel(gps_data.Time));
+        end
+                        
         for ifi=1:length(file_pkey{ilay})
             idx_keep=gps_data.Time>=start_time(ifi)&gps_data.Time<=end_time(ifi);
             if any(idx_keep)
                 try
-                add_nav_to_t_navigation(ac_db_filename,...
-                    'navigation_file_key',file_pkey{ilay}(ifi,1),...
-                    'navigation_time',gps_data.Time(idx_keep),...
-                    'navigation_latitude',gps_data.Lat(idx_keep),...
-                    'navigation_longitude',gps_data.Long(idx_keep),...
-                    'navigation_depth',depth_re(idx_keep),...
-                    'navigation_comments',gps_data.NMEA);
+                    add_nav_to_t_navigation(ac_db_filename,...
+                        'navigation_file_key',file_pkey{ilay}(ifi,1),...
+                        'navigation_time',gps_data.Time(idx_keep),...
+                        'navigation_latitude',gps_data.Lat(idx_keep),...
+                        'navigation_longitude',gps_data.Long(idx_keep),...
+                        'navigation_depth',depth_re(idx_keep),...
+                        'navigation_comments',gps_data.NMEA);
                 catch err
-                     disp(err.message);
-                     warning('populate_ac_db_from_folder:add_nav_to_t_navigation: Error while loading navigation to dB');
+                    disp(err.message);
+                    warning('populate_ac_db_from_folder:add_nav_to_t_navigation: Error while loading navigation to dB');
                 end
             end
         end
@@ -216,7 +217,7 @@ for ilay=1:length(new_layers)
             if ~isempty(p_temp)
                 parameters_pkey{ilay}(itrans)=p_temp{1,1};
             else
-                 warning('Problem loading parameters'); 
+                warning('Problem loading parameters');
             end
             
             switch config.TransceiverType
@@ -241,7 +242,7 @@ for ilay=1:length(new_layers)
             if ~isempty(transceiver_pkey_temp)
                 transceiver_pkey{ilay}(itrans)=transceiver_pkey_temp{1,1};
             else
-                 warning('Problem loading transceiver'); 
+                warning('Problem loading transceiver');
             end
             
             switch config.BeamType
@@ -251,7 +252,7 @@ for ilay=1:length(new_layers)
                     bt='Single-beam';
                     
             end
-            [~,transducer_beam_type_pkey]=get_cols_from_table(ac_db_filename,'t_transducer_beam_type','input_cols',{'transducer_beam_type'},'input_vals',{bt},...
+            [~,transducer_beam_type_pkey]=get_cols_from_table(ac_db_filename,'t_transducer_beam_type','input_cols',{'transducer_beam_type'},'input_vals',{{bt}},...
                 'output_cols',{'transducer_beam_type_pkey'});
             
             
@@ -271,12 +272,12 @@ for ilay=1:length(new_layers)
             if ~isempty(transducer_pkey_temp)
                 transducer_pkey{ilay}(itrans)=transducer_pkey_temp{1,1};
             else
-                 warning('Problem loading transducer'); 
+                warning('Problem loading transducer');
             end
             
             setup_pkey_temp=add_setup_to_t_setup(ac_db_filename,...
                 'setup_platform_type_key',platform_type_pkey{1,1},...
-                'setup_calibration_key', calibration_pkey{ilay}{1,1},...
+                'setup_calibration_key', calibration_pkey{ilay},...
                 'setup_parameters_key',parameters_pkey{ilay}(itrans),...
                 'setup_transducer_key',transducer_pkey{ilay}(itrans),...
                 'setup_transceiver_key', transceiver_pkey{ilay}(itrans),...
@@ -294,18 +295,18 @@ for ilay=1:length(new_layers)
             if ~isempty(setup_pkey_temp)
                 setup_pkey{ilay}(itrans)=setup_pkey_temp{1,1};
             else
-                 warning('Problem loading setup'); 
+                warning('Problem loading setup');
             end
         end
         
     end
     add_many_to_many(ac_db_filename,'t_file_setup','file_key','setup_key',file_pkey{ilay},setup_pkey{ilay});
-    add_many_to_many(ac_db_filename,'t_deployment_setup','deployment_key','setup_key',deployment_pkey{1,1},setup_pkey{ilay});
+    add_many_to_many(ac_db_filename,'t_deployment_setup','deployment_key','setup_key',deployment_pkey,setup_pkey{ilay});
 end
 
 if ~isempty(p.Results.mission_pkey)
     for i_mission=1:numel(p.Results.mission_pkey)
-        add_many_to_many(ac_db_filename,'t_mission_deployment','deployment_key','mission_key',deployment_pkey{1,1},p.Results.mission_pkey(i_mission));
+        add_many_to_many(ac_db_filename,'t_mission_deployment','deployment_key','mission_key',deployment_pkey,p.Results.mission_pkey(i_mission));
     end
 end
 file_pkeys=cell2mat(file_pkey')';

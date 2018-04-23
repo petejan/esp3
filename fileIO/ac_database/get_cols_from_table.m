@@ -20,6 +20,7 @@ if ~isempty(p.Results.input_vals)
         disp('get_cols_from_table:Invalid number of column specified in inputs fo sql query');
         return;
     end
+    
     input_vals=p.Results.input_vals;
     input_cols=p.Results.input_cols;
 elseif ~isempty(p.Results.input_struct)
@@ -31,18 +32,18 @@ elseif ~isempty(p.Results.input_struct)
                 input_vals{iin}=p.Results.input_struct.(input_cols{iin})(p.Results.row_idx);
             else
                 if ischar(p.Results.input_struct.(input_cols{iin})(p.Results.row_idx))
-                    input_vals{iin}=p.Results.input_struct.(input_cols{iin}){p.Results.row_idx};
+                    input_vals{iin}={p.Results.input_struct.(input_cols{iin})};
                 else
                     input_vals{iin}=p.Results.input_struct.(input_cols{iin})(p.Results.row_idx);
                 end
             end
         else
-             if ischar(p.Results.input_struct.(input_cols{iin})(p.Results.row_idx))
-                    input_vals{iin}={p.Results.input_struct.(input_cols{iin})};
-                else
-                    input_vals{iin}=p.Results.input_struct.(input_cols{iin});
-                end
- 
+            if ischar(p.Results.input_struct.(input_cols{iin}))
+                input_vals{iin}={p.Results.input_struct.(input_cols{iin})};
+            else
+                input_vals{iin}=p.Results.input_struct.(input_cols{iin});
+            end
+            
         end
     end
 else
@@ -59,13 +60,13 @@ for i_comb=1:nb_comb
     for i_in=1:numel(input_cols)
         if ~isempty(input_vals{i_in})
             if ischar(input_vals{i_in})
-                input_vals{i_in}{i_comb}=strrep(input_vals{i_in}{i_comb},'''',''''''); 
+                input_vals{i_in}=strrep(input_vals{i_in},'''','''''');
                 inputs_cell{i_in}=sprintf('%s = ''%s''',input_cols{i_in},input_vals{i_in});
             elseif iscell(input_vals{i_in})
                 if isnumeric(input_vals{i_in}{i_comb})
                     inputs_cell{i_in}=sprintf('%s = %f',input_cols{i_in},input_vals{i_in}{i_comb});
                 else
-                    input_vals{i_in}{i_comb}=strrep(input_vals{i_in}{i_comb},'''',''''''); 
+                    input_vals{i_in}{i_comb}=strrep(input_vals{i_in}{i_comb},'''','''''');
                     inputs_cell{i_in}=sprintf('%s = ''%s''',input_cols{i_in},input_vals{i_in}{i_comb});
                 end
             elseif isnumeric(input_vals{i_in})
@@ -74,8 +75,8 @@ for i_comb=1:nb_comb
         end
     end
     
-inputs_cell(cellfun(@isempty,inputs_cell))=[];
-input_tot{i_comb}=strjoin(inputs_cell,' AND ');
+    inputs_cell(cellfun(@isempty,inputs_cell))=[];
+    input_tot{i_comb}=strjoin(inputs_cell,' AND ');
 end
 
 input_tot(cellfun(@isempty,input_tot))=[];
@@ -100,14 +101,16 @@ catch err
     disp(err.message);
     warning('get_cols_from_table:Error while executing sql query');
 end
-% 
+
+
+%
 % inputs_cell=cell(1,numel(input_cols));
-% 
+%
 % idx_keep=cellfun(@(x) ~isempty(x),input_vals);
-% 
+%
 % if any(idx_keep)
 %     input_statement_start=sprintf('(%s) IN',strjoin(input_cols,','));
-%     
+%
 %     for i_in=1:numel(input_cols)
 %         if ~isempty(input_vals{i_in})
 %             if ischar(input_vals{i_in})
@@ -122,15 +125,15 @@ end
 % else
 %     input_statement_start='';
 % end
-% 
+%
 % inputs_cell(cellfun(@isempty,inputs_cell))=[];
-% 
+%
 % if ~isempty(p.Results.output_cols)
 %     out_str=strjoin(p.Results.output_cols,',');
 % else
 %     out_str='*';
 % end
-% 
+%
 % try
 %     dbconn=connect_to_db(ac_db_filename);
 %     if ~isempty(inputs_cell)

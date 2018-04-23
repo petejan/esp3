@@ -27,6 +27,7 @@ for ip=1:length(filenames)
     end
     
     dbconn=sqlite(db_file,'connect');
+    
     try
         freq=dbconn.fetch(sprintf('select Frequency  from ping_data where Filename is "%s%s" limit 1',file,ext));
     catch
@@ -44,6 +45,10 @@ for ip=1:length(filenames)
         gps_data_f=dbconn.fetch(sprintf('select Lat,Long,Time from ping_data where Filename is "%s%s" and Frequency=%.0f',file,ext,freq));
     end
     
+    if istable(gps_data_f)
+        gps_data_f=table2cell(gps_data_f);
+    end
+    
     if ~isempty(gps_data_f)       
         lat=cell2mat(gps_data_f(:,1));
         lon=cell2mat(gps_data_f(:,2));
@@ -54,6 +59,6 @@ for ip=1:length(filenames)
             'Time',time(~idx_nan));
     end
     idata=idata+1;
-     close(dbconn);
+    close(dbconn);
 end
 end

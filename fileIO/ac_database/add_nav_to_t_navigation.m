@@ -110,7 +110,7 @@ fields=fieldnames(struct_in);
 for ifi=1:numel(fields)
     struct_in.(fields{ifi})=struct_in.(fields{ifi})(id_keep);
 end
-
+struct_in.navigation_depth(isnan(struct_in.navigation_depth))=0;
 % plot(ax,struct_in.navigation_longitude,struct_in.navigation_latitude,'x');
 
 if~isdeployed()
@@ -119,12 +119,14 @@ end
 
 struct_in.navigation_time=cellfun(@(x) datestr(x,'yyyy-mm-dd HH:MM:SS'),num2cell(struct_in.navigation_time),'un',0);
 
-t=struct2table(struct_in);
 try
-    dbconn=connect_to_db(ac_db_filename);
-    dbconn.insert('t_navigation',fieldnames(struct_in),t);
-    dbconn.close();
-    
+%     dbconn=sqlite(ac_db_filename,'connect');
+%     [dbconn,~]=connect_to_db(ac_db_filename);
+% 
+%     dbconn.insert('t_navigation',fieldnames(struct_in),t);
+%     dbconn.close(); 
+    datainsert_perso(ac_db_filename,'t_navigation',struct_in);
+
 catch err
     disp(err.message);
     warning('add_nav_to_t_navigation:Error while executing sql query');

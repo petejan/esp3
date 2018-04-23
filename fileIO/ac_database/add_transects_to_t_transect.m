@@ -40,9 +40,8 @@ end
 
 t=struct2table(ac_db_struct);
 
-dbconn=connect_to_db(ac_db_filename);
-dbconn.insert('t_transect',fieldnames(ac_db_struct),t);
-dbconn.close();
+datainsert_perso(ac_db_filename,'t_transect',fieldnames(ac_db_struct),t);
+
 
 [~,transect_pkeys]=get_cols_from_table(ac_db_filename,'t_transect',...
     'input_struct',ac_db_struct,...
