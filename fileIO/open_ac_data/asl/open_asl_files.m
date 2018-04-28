@@ -24,27 +24,26 @@ parse(p,Filename,varargin{:});
 files_out={};
 dates=[];
 
+id = 1;
 if ~iscell(Filename)
     [path_tmp,~,~]=fileparts(Filename);
-    file_list=ls(fullfile(path_tmp,'*.*A'));
-    out=textscan(file_list','%02f%02f%02f%02f.%02fA');
-    dates=datenum([out{1}+2000 out{2} out{3} out{4} zeros(size(out{1})) zeros(size(out{1}))]);
-    for id=1:length(dates)
-        files_out{id}=fullfile(path_tmp,file_list(id,:));
+    file_list=dir(fullfile(path_tmp,'*.*A'));
+    for k=1:length(file_list)
+        out=textscan(file_list(k).name,'%02f%02f%02f%02f.%02fA');
+        dates=[dates datenum([out{1}+2000 out{2} out{3} out{4} zeros(size(out{1})) zeros(size(out{1}))])];
+        files_out{id}=fullfile(file_list(k).folder, file_list(k).name);
+        id=id+1;
     end
-    
 else
-    il=0;
-
     [path_tmp,~,~]=cellfun(@fileparts,Filename,'UniformOutput',0);
     path_tmp=unique(path_tmp);
     for i=1:length(path_tmp)
-        file_list=ls(fullfile(path_tmp{i},'*.*A'));
-        out=textscan(file_list','%02f%02f%02f%02f.%02fA');
-        dates=[dates datenum([out{1}+2000 out{2} out{3} out{4} zeros(size(out{1})) zeros(size(out{1}))])];
-        for id=1:length(dates)
-            il=il+1;
-            files_out{il}=fullfile(path_tmp{i},file_list(id,:));
+        file_list=dir(fullfile(path_tmp{i},'*.*A'));
+        for k=1:length(file_list)
+            out=textscan(file_list(k).name,'%02f%02f%02f%02f.%02fA');
+            dates=[dates datenum([out{1}+2000 out{2} out{3} out{4} zeros(size(out{1})) zeros(size(out{1}))])];
+            files_out{id}=fullfile(file_list(k).folder, file_list(k).name);
+            id=id+1;
         end
     end
 end
@@ -69,8 +68,8 @@ end
 dates_selected=unique(floor(dates_to_load(idx_out)));
 idx_to_open=[];
 
-for il=1:length(dates_selected)
-    idx_to_open=union(idx_to_open,find(floor(dates)==dates_selected(il)));
+for id=1:length(dates_selected)
+    idx_to_open=union(idx_to_open,find(floor(dates)==dates_selected(id)));
 end
 
 Filename_out=files_out(idx_to_open);

@@ -193,7 +193,7 @@ for i_cell=1:length(Filename_cell)
         config_obj.IPAddress='';
         config_obj.SerialNumber='';
         
-        SvOffset = CalcSvOffset(data.freq(1,ic),params_obj.PulseLength(1));
+        SvOffset = CalcSvOffset(data.freq(ic,1),params_obj.PulseLength(1));
         
         config_obj.PulseLength=nanmean(data.pulse_length(ic,:));
         config_obj.BeamType=0;
@@ -215,7 +215,7 @@ for i_cell=1:length(Filename_cell)
         params_obj.PulseLength(:)=nanmean(data.pulse_length(ic,:));
         params_obj.SampleInterval(:)=1./nanmean(data.f_s(ic,:));
         params_obj.TransducerDepth(:)=0;
-        params_obj.TransmitPower(:)=1;
+        params_obj.TransmitPower(:)=45;
         params_obj.Absorption(:)= seawater_absorption(params_obj.Frequency(1)/1e3, (envdata.Salinity), (envdata.Temperature), (envdata.Depth),'fandg')/1e3;
         
         
@@ -335,7 +335,7 @@ function SvOffset = CalcSvOffset(Frequency,PulseLength)
 
 SvOffset = 0;
 
-if(Frequency > 38) % 125,200,455,769 kHz
+if(Frequency > 38000) % 125,200,455,769 kHz
     if(PulseLength == 300)
         SvOffset = 1.1;
     elseif(PulseLength == 500)
